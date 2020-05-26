@@ -578,7 +578,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: `{ "maxThroughput": ${this.maxAutoPilotThroughputSet() * 1} }`
+            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.maxAutoPilotThroughputSet() * 1 }
           }
         : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
     }
@@ -586,13 +586,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
   }
 
   private _updateThroughputLimitByDatabase() {
-    const subscriptionType = this.container.subscriptionType();
-    const flight = this.container.flight();
-    const throughputDefaults: AddCollectionUtility.ThroughputDefaults = AddCollectionUtility.Utilities.getDefaultThroughput(
-      flight,
-      subscriptionType
-    );
-
+    const throughputDefaults = this.container.collectionCreationDefaults.throughput;
     this.throughput(throughputDefaults.shared);
     this.maxThroughputRU(throughputDefaults.unlimitedmax);
     this.minThroughputRU(throughputDefaults.unlimitedmin);

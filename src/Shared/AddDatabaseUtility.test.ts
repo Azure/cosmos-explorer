@@ -51,7 +51,7 @@ describe("Add Database Utitlity", () => {
         resourceProviderClientPutAsyncSpy
       ).toHaveBeenCalledWith(
         "subscriptions/a1/resourceGroups/b1/providers/Microsoft.DocumentDB/databaseAccounts/main/gremlinDatabases/a1-db",
-        "2020-03-01",
+        "2020-04-01",
         { properties: { options: { throughput: "50000" }, resource: { id: "a1-db" } } }
       );
     });
@@ -63,7 +63,7 @@ describe("Add Database Utitlity", () => {
         resourceProviderClientPutAsyncSpy
       ).toHaveBeenCalledWith(
         "subscriptions/a1/resourceGroups/b1/providers/Microsoft.DocumentDB/databaseAccounts/main/gremlinDatabases/a1-db",
-        "2020-03-01",
+        "2020-04-01",
         { properties: { options: { "x-ms-cosmos-offer-autopilot-tier": "1" }, resource: { id: "a1-db" } } }
       );
     });
@@ -85,7 +85,7 @@ describe("Add Database Utitlity", () => {
         resourceProviderClientPutAsyncSpy
       ).toHaveBeenCalledWith(
         "subscriptions/a2/resourceGroups/c1/providers/Microsoft.DocumentDB/databaseAccounts/main/gremlinDatabases/a2-db",
-        "2020-03-01",
+        "2020-04-01",
         { properties: { options: {}, resource: { id: "a2-db" } } }
       );
     });
@@ -111,7 +111,7 @@ describe("Add Database Utitlity", () => {
         resourceProviderClientPutAsyncSpy
       ).toHaveBeenCalledWith(
         "subscriptions/a1/resourceGroups/b1/providers/Microsoft.DocumentDB/databaseAccounts/main/sqlDatabases/a1-db",
-        "2020-03-01",
+        "2020-04-01",
         { properties: { options: { throughput: "50000" }, resource: { id: "a1-db" } } }
       );
     });
@@ -123,7 +123,7 @@ describe("Add Database Utitlity", () => {
         resourceProviderClientPutAsyncSpy
       ).toHaveBeenCalledWith(
         "subscriptions/a1/resourceGroups/b1/providers/Microsoft.DocumentDB/databaseAccounts/main/sqlDatabases/a1-db",
-        "2020-03-01",
+        "2020-04-01",
         { properties: { options: { "x-ms-cosmos-offer-autopilot-tier": "1" }, resource: { id: "a1-db" } } }
       );
     });
@@ -145,7 +145,7 @@ describe("Add Database Utitlity", () => {
         resourceProviderClientPutAsyncSpy
       ).toHaveBeenCalledWith(
         "subscriptions/a2/resourceGroups/c1/providers/Microsoft.DocumentDB/databaseAccounts/main/sqlDatabases/a2-db",
-        "2020-03-01",
+        "2020-04-01",
         { properties: { options: {}, resource: { id: "a2-db" } } }
       );
     });

@@ -11,7 +11,7 @@ exports[`test render renders with directories and selected 1`] = `
     <StyledTextFieldBase
       ariaLabel="Directory filter text box"
       className="directoryListFilterTextBox"
-      onBeforeChange={[Function]}
+      onChange={[Function]}
       placeholder="Filter by directory name"
     />
   </Sticky>
@@ -79,19 +79,19 @@ exports[`test render renders with filters 1`] = `
         Object {
           "disableGlobalClassNames": false,
           "effects": Object {
-            "elevation16": "0 0 5px 0 rgba(0,0,0,.4)",
-            "elevation4": "0 0 5px 0 rgba(0,0,0,.4)",
-            "elevation64": "0 0 5px 0 rgba(0,0,0,.4)",
-            "elevation8": "0 0 5px 0 rgba(0,0,0,.4)",
-            "roundedCorner2": "0px",
+            "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+            "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+            "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+            "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+            "roundedCorner2": "2px",
           },
           "fonts": Object {
             "large": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
-              "fontFamily": "'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "17px",
-              "fontWeight": 300,
+              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+              "fontSize": "18px",
+              "fontWeight": 400,
             },
             "medium": Object {
               "MozOsxFontSmoothing": "grayscale",
@@ -104,15 +104,15 @@ exports[`test render renders with filters 1`] = `
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "15px",
+              "fontSize": "16px",
               "fontWeight": 400,
             },
             "mega": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "72px",
-              "fontWeight": 100,
+              "fontSize": "68px",
+              "fontWeight": 600,
             },
             "small": Object {
               "MozOsxFontSmoothing": "grayscale",
@@ -125,7 +125,7 @@ exports[`test render renders with filters 1`] = `
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "13px",
+              "fontSize": "12px",
               "fontWeight": 400,
             },
             "superLarge": Object {
@@ -133,34 +133,34 @@ exports[`test render renders with filters 1`] = `
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
               "fontSize": "42px",
-              "fontWeight": 100,
+              "fontWeight": 600,
             },
             "tiny": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
               "fontSize": "10px",
-              "fontWeight": 600,
+              "fontWeight": 400,
             },
             "xLarge": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "21px",
-              "fontWeight": 100,
+              "fontSize": "20px",
+              "fontWeight": 600,
             },
             "xLargePlus": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "21px",
-              "fontWeight": 100,
+              "fontSize": "24px",
+              "fontWeight": 600,
             },
             "xSmall": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "11px",
+              "fontSize": "10px",
               "fontWeight": 400,
             },
             "xxLarge": Object {
@@ -168,14 +168,14 @@ exports[`test render renders with filters 1`] = `
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
               "fontSize": "28px",
-              "fontWeight": 100,
+              "fontWeight": 600,
             },
             "xxLargePlus": Object {
               "MozOsxFontSmoothing": "grayscale",
               "WebkitFontSmoothing": "antialiased",
               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-              "fontSize": "28px",
-              "fontWeight": 100,
+              "fontSize": "32px",
+              "fontWeight": 600,
             },
           },
           "isInverted": false,
@@ -193,18 +193,18 @@ exports[`test render renders with filters 1`] = `
             "magenta": "#b4009e",
             "magentaDark": "#5c005c",
             "magentaLight": "#e3008c",
-            "neutralDark": "#212121",
-            "neutralLight": "#eaeaea",
-            "neutralLighter": "#f4f4f4",
-            "neutralLighterAlt": "#f8f8f8",
-            "neutralPrimary": "#333333",
-            "neutralPrimaryAlt": "#3c3c3c",
-            "neutralQuaternary": "#d0d0d0",
-            "neutralQuaternaryAlt": "#dadada",
-            "neutralSecondary": "#666666",
-            "neutralSecondaryAlt": "#767676",
-            "neutralTertiary": "#a6a6a6",
-            "neutralTertiaryAlt": "#c8c8c8",
+            "neutralDark": "#201f1e",
+            "neutralLight": "#edebe9",
+            "neutralLighter": "#f3f2f1",
+            "neutralLighterAlt": "#faf9f8",
+            "neutralPrimary": "#323130",
+            "neutralPrimaryAlt": "#3b3a39",
+            "neutralQuaternary": "#d2d0ce",
+            "neutralQuaternaryAlt": "#e1dfdd",
+            "neutralSecondary": "#605e5c",
+            "neutralSecondaryAlt": "#8a8886",
+            "neutralTertiary": "#a19f9d",
+            "neutralTertiaryAlt": "#c8c6c4",
             "orange": "#d83b01",
             "orangeLight": "#ea4300",
             "orangeLighter": "#ff8c00",
@@ -212,7 +212,7 @@ exports[`test render renders with filters 1`] = `
             "purpleDark": "#32145a",
             "purpleLight": "#b4a0ff",
             "red": "#e81123",
-            "redDark": "#a80000",
+            "redDark": "#a4262c",
             "teal": "#008272",
             "tealDark": "#004b50",
             "tealLight": "#00b294",
@@ -231,89 +231,108 @@ exports[`test render renders with filters 1`] = `
             "yellowDark": "#d29200",
             "yellowLight": "#fff100",
           },
+          "rtl": undefined,
           "semanticColors": Object {
             "accentButtonBackground": "#0078d4",
             "accentButtonText": "#ffffff",
-            "actionLink": "#333333",
-            "actionLinkHovered": "#212121",
-            "blockingBackground": "rgba(234, 67, 0, .2)",
+            "actionLink": "#323130",
+            "actionLinkHovered": "#201f1e",
+            "blockingBackground": "#FDE7E9",
+            "blockingIcon": "#FDE7E9",
             "bodyBackground": "#ffffff",
-            "bodyDivider": "#eaeaea",
+            "bodyBackgroundChecked": "#edebe9",
+            "bodyBackgroundHovered": "#f3f2f1",
+            "bodyDivider": "#edebe9",
             "bodyFrameBackground": "#ffffff",
-            "bodyFrameDivider": "#eaeaea",
-            "bodyStandoutBackground": "#f8f8f8",
-            "bodySubtext": "#666666",
-            "bodyText": "#333333",
+            "bodyFrameDivider": "#edebe9",
+            "bodyStandoutBackground": "#faf9f8",
+            "bodySubtext": "#605e5c",
+            "bodyText": "#323130",
             "bodyTextChecked": "#000000",
-            "buttonBackground": "#f4f4f4",
-            "buttonBackgroundChecked": "#c8c8c8",
-            "buttonBackgroundCheckedHovered": "#eaeaea",
-            "buttonBackgroundDisabled": "#f4f4f4",
-            "buttonBackgroundHovered": "#eaeaea",
-            "buttonBackgroundPressed": "#eaeaea",
-            "buttonBorder": "transparent",
-            "buttonBorderDisabled": "transparent",
-            "buttonText": "#333333",
-            "buttonTextChecked": "#212121",
+            "buttonBackground": "#ffffff",
+            "buttonBackgroundChecked": "#c8c6c4",
+            "buttonBackgroundCheckedHovered": "#edebe9",
+            "buttonBackgroundDisabled": "#f3f2f1",
+            "buttonBackgroundHovered": "#f3f2f1",
+            "buttonBackgroundPressed": "#edebe9",
+            "buttonBorder": "#8a8886",
+            "buttonBorderDisabled": "#f3f2f1",
+            "buttonText": "#323130",
+            "buttonTextChecked": "#201f1e",
             "buttonTextCheckedHovered": "#000000",
-            "buttonTextDisabled": "#a6a6a6",
-            "buttonTextHovered": "#212121",
-            "buttonTextPressed": "#212121",
-            "defaultStateBackground": "#f8f8f8",
-            "disabledBackground": "#f4f4f4",
-            "disabledBodySubtext": "#c8c8c8",
-            "disabledBodyText": "#a6a6a6",
-            "disabledSubtext": "#d0d0d0",
-            "disabledText": "#a6a6a6",
-            "errorBackground": "rgba(232, 17, 35, .2)",
-            "errorText": "#a80000",
-            "focusBorder": "#666666",
+            "buttonTextDisabled": "#a19f9d",
+            "buttonTextHovered": "#201f1e",
+            "buttonTextPressed": "#201f1e",
+            "defaultStateBackground": "#faf9f8",
+            "disabledBackground": "#f3f2f1",
+            "disabledBodySubtext": "#c8c6c4",
+            "disabledBodyText": "#a19f9d",
+            "disabledBorder": "#c8c6c4",
+            "disabledSubtext": "#d2d0ce",
+            "disabledText": "#a19f9d",
+            "errorBackground": "#FDE7E9",
+            "errorIcon": "#A80000",
+            "errorText": "#a4262c",
+            "focusBorder": "#605e5c",
+            "infoBackground": "#f3f2f1",
+            "infoIcon": "#605e5c",
             "inputBackground": "#ffffff",
             "inputBackgroundChecked": "#0078d4",
-            "inputBackgroundCheckedHovered": "#106ebe",
-            "inputBorder": "#a6a6a6",
-            "inputBorderHovered": "#333333",
+            "inputBackgroundCheckedHovered": "#005a9e",
+            "inputBorder": "#605e5c",
+            "inputBorderHovered": "#323130",
             "inputFocusBorderAlt": "#0078d4",
             "inputForegroundChecked": "#ffffff",
-            "inputPlaceholderText": "#666666",
-            "inputText": "#333333",
-            "inputTextHovered": "#212121",
+            "inputIcon": "#0078d4",
+            "inputIconDisabled": "#a19f9d",
+            "inputIconHovered": "#005a9e",
+            "inputPlaceholderBackgroundChecked": "#deecf9",
+            "inputPlaceholderText": "#605e5c",
+            "inputText": "#323130",
+            "inputTextHovered": "#201f1e",
             "link": "#0078d4",
             "linkHovered": "#004578",
             "listBackground": "#ffffff",
-            "listHeaderBackgroundHovered": "#f4f4f4",
-            "listHeaderBackgroundPressed": "#eaeaea",
-            "listItemBackgroundChecked": "#eaeaea",
-            "listItemBackgroundCheckedHovered": "#dadada",
-            "listItemBackgroundHovered": "#f4f4f4",
-            "listText": "#333333",
-            "listTextColor": "#333333",
+            "listHeaderBackgroundHovered": "#f3f2f1",
+            "listHeaderBackgroundPressed": "#edebe9",
+            "listItemBackgroundChecked": "#edebe9",
+            "listItemBackgroundCheckedHovered": "#e1dfdd",
+            "listItemBackgroundHovered": "#f3f2f1",
+            "listText": "#323130",
+            "listTextColor": "#323130",
             "menuBackground": "#ffffff",
-            "menuDivider": "#c8c8c8",
+            "menuDivider": "#c8c6c4",
             "menuHeader": "#0078d4",
             "menuIcon": "#0078d4",
-            "menuItemBackgroundChecked": "#eaeaea",
-            "menuItemBackgroundHovered": "#f4f4f4",
-            "menuItemBackgroundPressed": "#eaeaea",
-            "menuItemText": "#333333",
-            "menuItemTextHovered": "#212121",
+            "menuItemBackgroundChecked": "#edebe9",
+            "menuItemBackgroundHovered": "#f3f2f1",
+            "menuItemBackgroundPressed": "#edebe9",
+            "menuItemText": "#323130",
+            "menuItemTextHovered": "#201f1e",
+            "messageLink": "#005A9E",
+            "messageLinkHovered": "#004578",
+            "messageText": "#323130",
             "primaryButtonBackground": "#0078d4",
-            "primaryButtonBackgroundDisabled": "#f4f4f4",
+            "primaryButtonBackgroundDisabled": "#f3f2f1",
             "primaryButtonBackgroundHovered": "#106ebe",
             "primaryButtonBackgroundPressed": "#005a9e",
             "primaryButtonBorder": "transparent",
             "primaryButtonText": "#ffffff",
-            "primaryButtonTextDisabled": "#d0d0d0",
+            "primaryButtonTextDisabled": "#d2d0ce",
             "primaryButtonTextHovered": "#ffffff",
             "primaryButtonTextPressed": "#ffffff",
-            "smallInputBorder": "#666666",
-            "successBackground": "rgba(186, 216, 10, .2)",
+            "severeWarningBackground": "#FED9CC",
+            "severeWarningIcon": "#D83B01",
+            "smallInputBorder": "#605e5c",
+            "successBackground": "#DFF6DD",
+            "successIcon": "#107C10",
             "successText": "#107C10",
-            "variantBorder": "#eaeaea",
-            "variantBorderHovered": "#a6a6a6",
-            "warningBackground": "rgba(255, 185, 0, .2)",
+            "variantBorder": "#edebe9",
+            "variantBorderHovered": "#a19f9d",
+            "warningBackground": "#FFF4CE",
             "warningHighlight": "#ffb900",
-            "warningText": "#333333",
+            "warningIcon": "#797775",
+            "warningText": "#323130",
           },
           "spacing": Object {
             "l1": "20px",
@@ -329,6 +348,18 @@ exports[`test render renders with filters 1`] = `
         className="ms-ScrollablePane root-40"
         data-is-scrollable="true"
       >
+        <div
+          aria-hidden="true"
+          className="stickyAbove-42"
+          style={
+            Object {
+              "height": 0,
+              "left": "0",
+              "right": "0px",
+              "top": "0",
+            }
+          }
+        />
         <div
           className="ms-ScrollablePane--contentContainer contentContainer-41"
           data-is-scrollable={true}
@@ -359,6 +390,7 @@ exports[`test render renders with filters 1`] = `
                 style={Object {}}
               >
                 <div
+                  aria-hidden={false}
                   style={
                     Object {
                       "backgroundColor": "",
@@ -369,21 +401,14 @@ exports[`test render renders with filters 1`] = `
                   <StyledTextFieldBase
                     ariaLabel="Directory filter text box"
                     className="directoryListFilterTextBox"
-                    onBeforeChange={[Function]}
+                    onChange={[Function]}
                     placeholder="Filter by directory name"
                   >
                     <TextFieldBase
                       ariaLabel="Directory filter text box"
-                      autoAdjustHeight={false}
-                      borderless={false}
                       className="directoryListFilterTextBox"
                       deferredValidationTime={200}
-                      errorMessage=""
-                      multiline={false}
-                      onBeforeChange={[Function]}
                       onChange={[Function]}
-                      onGetErrorMessage={[Function]}
-                      onNotifyValidationResult={[Function]}
                       placeholder="Filter by directory name"
                       resizable={true}
                       styles={[Function]}
@@ -391,19 +416,19 @@ exports[`test render renders with filters 1`] = `
                         Object {
                           "disableGlobalClassNames": false,
                           "effects": Object {
-                            "elevation16": "0 0 5px 0 rgba(0,0,0,.4)",
-                            "elevation4": "0 0 5px 0 rgba(0,0,0,.4)",
-                            "elevation64": "0 0 5px 0 rgba(0,0,0,.4)",
-                            "elevation8": "0 0 5px 0 rgba(0,0,0,.4)",
-                            "roundedCorner2": "0px",
+                            "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                            "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                            "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                            "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                            "roundedCorner2": "2px",
                           },
                           "fonts": Object {
                             "large": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
-                              "fontFamily": "'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "17px",
-                              "fontWeight": 300,
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "18px",
+                              "fontWeight": 400,
                             },
                             "medium": Object {
                               "MozOsxFontSmoothing": "grayscale",
@@ -416,15 +441,15 @@ exports[`test render renders with filters 1`] = `
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "15px",
+                              "fontSize": "16px",
                               "fontWeight": 400,
                             },
                             "mega": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "72px",
-                              "fontWeight": 100,
+                              "fontSize": "68px",
+                              "fontWeight": 600,
                             },
                             "small": Object {
                               "MozOsxFontSmoothing": "grayscale",
@@ -437,7 +462,7 @@ exports[`test render renders with filters 1`] = `
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "13px",
+                              "fontSize": "12px",
                               "fontWeight": 400,
                             },
                             "superLarge": Object {
@@ -445,34 +470,34 @@ exports[`test render renders with filters 1`] = `
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "42px",
-                              "fontWeight": 100,
+                              "fontWeight": 600,
                             },
                             "tiny": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "10px",
-                              "fontWeight": 600,
+                              "fontWeight": 400,
                             },
                             "xLarge": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "21px",
-                              "fontWeight": 100,
+                              "fontSize": "20px",
+                              "fontWeight": 600,
                             },
                             "xLargePlus": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "21px",
-                              "fontWeight": 100,
+                              "fontSize": "24px",
+                              "fontWeight": 600,
                             },
                             "xSmall": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "11px",
+                              "fontSize": "10px",
                               "fontWeight": 400,
                             },
                             "xxLarge": Object {
@@ -480,14 +505,14 @@ exports[`test render renders with filters 1`] = `
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "28px",
-                              "fontWeight": 100,
+                              "fontWeight": 600,
                             },
                             "xxLargePlus": Object {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                              "fontSize": "28px",
-                              "fontWeight": 100,
+                              "fontSize": "32px",
+                              "fontWeight": 600,
                             },
                           },
                           "isInverted": false,
@@ -505,18 +530,18 @@ exports[`test render renders with filters 1`] = `
                             "magenta": "#b4009e",
                             "magentaDark": "#5c005c",
                             "magentaLight": "#e3008c",
-                            "neutralDark": "#212121",
-                            "neutralLight": "#eaeaea",
-                            "neutralLighter": "#f4f4f4",
-                            "neutralLighterAlt": "#f8f8f8",
-                            "neutralPrimary": "#333333",
-                            "neutralPrimaryAlt": "#3c3c3c",
-                            "neutralQuaternary": "#d0d0d0",
-                            "neutralQuaternaryAlt": "#dadada",
-                            "neutralSecondary": "#666666",
-                            "neutralSecondaryAlt": "#767676",
-                            "neutralTertiary": "#a6a6a6",
-                            "neutralTertiaryAlt": "#c8c8c8",
+                            "neutralDark": "#201f1e",
+                            "neutralLight": "#edebe9",
+                            "neutralLighter": "#f3f2f1",
+                            "neutralLighterAlt": "#faf9f8",
+                            "neutralPrimary": "#323130",
+                            "neutralPrimaryAlt": "#3b3a39",
+                            "neutralQuaternary": "#d2d0ce",
+                            "neutralQuaternaryAlt": "#e1dfdd",
+                            "neutralSecondary": "#605e5c",
+                            "neutralSecondaryAlt": "#8a8886",
+                            "neutralTertiary": "#a19f9d",
+                            "neutralTertiaryAlt": "#c8c6c4",
                             "orange": "#d83b01",
                             "orangeLight": "#ea4300",
                             "orangeLighter": "#ff8c00",
@@ -524,7 +549,7 @@ exports[`test render renders with filters 1`] = `
                             "purpleDark": "#32145a",
                             "purpleLight": "#b4a0ff",
                             "red": "#e81123",
-                            "redDark": "#a80000",
+                            "redDark": "#a4262c",
                             "teal": "#008272",
                             "tealDark": "#004b50",
                             "tealLight": "#00b294",
@@ -543,89 +568,108 @@ exports[`test render renders with filters 1`] = `
                             "yellowDark": "#d29200",
                             "yellowLight": "#fff100",
                           },
+                          "rtl": undefined,
                           "semanticColors": Object {
                             "accentButtonBackground": "#0078d4",
                             "accentButtonText": "#ffffff",
-                            "actionLink": "#333333",
-                            "actionLinkHovered": "#212121",
-                            "blockingBackground": "rgba(234, 67, 0, .2)",
+                            "actionLink": "#323130",
+                            "actionLinkHovered": "#201f1e",
+                            "blockingBackground": "#FDE7E9",
+                            "blockingIcon": "#FDE7E9",
                             "bodyBackground": "#ffffff",
-                            "bodyDivider": "#eaeaea",
+                            "bodyBackgroundChecked": "#edebe9",
+                            "bodyBackgroundHovered": "#f3f2f1",
+                            "bodyDivider": "#edebe9",
                             "bodyFrameBackground": "#ffffff",
-                            "bodyFrameDivider": "#eaeaea",
-                            "bodyStandoutBackground": "#f8f8f8",
-                            "bodySubtext": "#666666",
-                            "bodyText": "#333333",
+                            "bodyFrameDivider": "#edebe9",
+                            "bodyStandoutBackground": "#faf9f8",
+                            "bodySubtext": "#605e5c",
+                            "bodyText": "#323130",
                             "bodyTextChecked": "#000000",
-                            "buttonBackground": "#f4f4f4",
-                            "buttonBackgroundChecked": "#c8c8c8",
-                            "buttonBackgroundCheckedHovered": "#eaeaea",
-                            "buttonBackgroundDisabled": "#f4f4f4",
-                            "buttonBackgroundHovered": "#eaeaea",
-                            "buttonBackgroundPressed": "#eaeaea",
-                            "buttonBorder": "transparent",
-                            "buttonBorderDisabled": "transparent",
-                            "buttonText": "#333333",
-                            "buttonTextChecked": "#212121",
+                            "buttonBackground": "#ffffff",
+                            "buttonBackgroundChecked": "#c8c6c4",
+                            "buttonBackgroundCheckedHovered": "#edebe9",
+                            "buttonBackgroundDisabled": "#f3f2f1",
+                            "buttonBackgroundHovered": "#f3f2f1",
+                            "buttonBackgroundPressed": "#edebe9",
+                            "buttonBorder": "#8a8886",
+                            "buttonBorderDisabled": "#f3f2f1",
+                            "buttonText": "#323130",
+                            "buttonTextChecked": "#201f1e",
                             "buttonTextCheckedHovered": "#000000",
-                            "buttonTextDisabled": "#a6a6a6",
-                            "buttonTextHovered": "#212121",
-                            "buttonTextPressed": "#212121",
-                            "defaultStateBackground": "#f8f8f8",
-                            "disabledBackground": "#f4f4f4",
-                            "disabledBodySubtext": "#c8c8c8",
-                            "disabledBodyText": "#a6a6a6",
-                            "disabledSubtext": "#d0d0d0",
-                            "disabledText": "#a6a6a6",
-                            "errorBackground": "rgba(232, 17, 35, .2)",
-                            "errorText": "#a80000",
-                            "focusBorder": "#666666",
+                            "buttonTextDisabled": "#a19f9d",
+                            "buttonTextHovered": "#201f1e",
+                            "buttonTextPressed": "#201f1e",
+                            "defaultStateBackground": "#faf9f8",
+                            "disabledBackground": "#f3f2f1",
+                            "disabledBodySubtext": "#c8c6c4",
+                            "disabledBodyText": "#a19f9d",
+                            "disabledBorder": "#c8c6c4",
+                            "disabledSubtext": "#d2d0ce",
+                            "disabledText": "#a19f9d",
+                            "errorBackground": "#FDE7E9",
+                            "errorIcon": "#A80000",
+                            "errorText": "#a4262c",
+                            "focusBorder": "#605e5c",
+                            "infoBackground": "#f3f2f1",
+                            "infoIcon": "#605e5c",
                             "inputBackground": "#ffffff",
                             "inputBackgroundChecked": "#0078d4",
-                            "inputBackgroundCheckedHovered": "#106ebe",
-                            "inputBorder": "#a6a6a6",
-                            "inputBorderHovered": "#333333",
+                            "inputBackgroundCheckedHovered": "#005a9e",
+                            "inputBorder": "#605e5c",
+                            "inputBorderHovered": "#323130",
                             "inputFocusBorderAlt": "#0078d4",
                             "inputForegroundChecked": "#ffffff",
-                            "inputPlaceholderText": "#666666",
-                            "inputText": "#333333",
-                            "inputTextHovered": "#212121",
+                            "inputIcon": "#0078d4",
+                            "inputIconDisabled": "#a19f9d",
+                            "inputIconHovered": "#005a9e",
+                            "inputPlaceholderBackgroundChecked": "#deecf9",
+                            "inputPlaceholderText": "#605e5c",
+                            "inputText": "#323130",
+                            "inputTextHovered": "#201f1e",
                             "link": "#0078d4",
                             "linkHovered": "#004578",
                             "listBackground": "#ffffff",
-                            "listHeaderBackgroundHovered": "#f4f4f4",
-                            "listHeaderBackgroundPressed": "#eaeaea",
-                            "listItemBackgroundChecked": "#eaeaea",
-                            "listItemBackgroundCheckedHovered": "#dadada",
-                            "listItemBackgroundHovered": "#f4f4f4",
-                            "listText": "#333333",
-                            "listTextColor": "#333333",
+                            "listHeaderBackgroundHovered": "#f3f2f1",
+                            "listHeaderBackgroundPressed": "#edebe9",
+                            "listItemBackgroundChecked": "#edebe9",
+                            "listItemBackgroundCheckedHovered": "#e1dfdd",
+                            "listItemBackgroundHovered": "#f3f2f1",
+                            "listText": "#323130",
+                            "listTextColor": "#323130",
                             "menuBackground": "#ffffff",
-                            "menuDivider": "#c8c8c8",
+                            "menuDivider": "#c8c6c4",
                             "menuHeader": "#0078d4",
                             "menuIcon": "#0078d4",
-                            "menuItemBackgroundChecked": "#eaeaea",
-                            "menuItemBackgroundHovered": "#f4f4f4",
-                            "menuItemBackgroundPressed": "#eaeaea",
-                            "menuItemText": "#333333",
-                            "menuItemTextHovered": "#212121",
+                            "menuItemBackgroundChecked": "#edebe9",
+                            "menuItemBackgroundHovered": "#f3f2f1",
+                            "menuItemBackgroundPressed": "#edebe9",
+                            "menuItemText": "#323130",
+                            "menuItemTextHovered": "#201f1e",
+                            "messageLink": "#005A9E",
+                            "messageLinkHovered": "#004578",
+                            "messageText": "#323130",
                             "primaryButtonBackground": "#0078d4",
-                            "primaryButtonBackgroundDisabled": "#f4f4f4",
+                            "primaryButtonBackgroundDisabled": "#f3f2f1",
                             "primaryButtonBackgroundHovered": "#106ebe",
                             "primaryButtonBackgroundPressed": "#005a9e",
                             "primaryButtonBorder": "transparent",
                             "primaryButtonText": "#ffffff",
-                            "primaryButtonTextDisabled": "#d0d0d0",
+                            "primaryButtonTextDisabled": "#d2d0ce",
                             "primaryButtonTextHovered": "#ffffff",
                             "primaryButtonTextPressed": "#ffffff",
-                            "smallInputBorder": "#666666",
-                            "successBackground": "rgba(186, 216, 10, .2)",
+                            "severeWarningBackground": "#FED9CC",
+                            "severeWarningIcon": "#D83B01",
+                            "smallInputBorder": "#605e5c",
+                            "successBackground": "#DFF6DD",
+                            "successIcon": "#107C10",
                             "successText": "#107C10",
-                            "variantBorder": "#eaeaea",
-                            "variantBorderHovered": "#a6a6a6",
-                            "warningBackground": "rgba(255, 185, 0, .2)",
+                            "variantBorder": "#edebe9",
+                            "variantBorderHovered": "#a19f9d",
+                            "warningBackground": "#FFF4CE",
                             "warningHighlight": "#ffb900",
-                            "warningText": "#333333",
+                            "warningIcon": "#797775",
+                            "warningText": "#323130",
                           },
                           "spacing": Object {
                             "l1": "20px",
@@ -636,24 +680,21 @@ exports[`test render renders with filters 1`] = `
                           },
                         }
                       }
-                      underlined={false}
-                      validateOnFocusIn={false}
-                      validateOnFocusOut={false}
                       validateOnLoad={true}
                     >
                       <div
                         className="ms-TextField directoryListFilterTextBox root-46"
                       >
                         <div
-                          className="ms-TextField-wrapper wrapper-47"
+                          className="ms-TextField-wrapper"
                         >
                           <div
-                            className="ms-TextField-fieldGroup fieldGroup-48"
+                            className="ms-TextField-fieldGroup fieldGroup-47"
                           >
                             <input
                               aria-invalid={false}
                               aria-label="Directory filter text box"
-                              className="ms-TextField-field field-49"
+                              className="ms-TextField-field field-48"
                               id="TextField0"
                               onBlur={[Function]}
                               onChange={[Function]}
@@ -766,19 +807,19 @@ exports[`test render renders with filters 1`] = `
                           Object {
                             "disableGlobalClassNames": false,
                             "effects": Object {
-                              "elevation16": "0 0 5px 0 rgba(0,0,0,.4)",
-                              "elevation4": "0 0 5px 0 rgba(0,0,0,.4)",
-                              "elevation64": "0 0 5px 0 rgba(0,0,0,.4)",
-                              "elevation8": "0 0 5px 0 rgba(0,0,0,.4)",
-                              "roundedCorner2": "0px",
+                              "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                              "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                              "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                              "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                              "roundedCorner2": "2px",
                             },
                             "fonts": Object {
                               "large": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
-                                "fontFamily": "'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "17px",
-                                "fontWeight": 300,
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "18px",
+                                "fontWeight": 400,
                               },
                               "medium": Object {
                                 "MozOsxFontSmoothing": "grayscale",
@@ -791,15 +832,15 @@ exports[`test render renders with filters 1`] = `
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "15px",
+                                "fontSize": "16px",
                                 "fontWeight": 400,
                               },
                               "mega": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "72px",
-                                "fontWeight": 100,
+                                "fontSize": "68px",
+                                "fontWeight": 600,
                               },
                               "small": Object {
                                 "MozOsxFontSmoothing": "grayscale",
@@ -812,7 +853,7 @@ exports[`test render renders with filters 1`] = `
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "13px",
+                                "fontSize": "12px",
                                 "fontWeight": 400,
                               },
                               "superLarge": Object {
@@ -820,34 +861,34 @@ exports[`test render renders with filters 1`] = `
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "42px",
-                                "fontWeight": 100,
+                                "fontWeight": 600,
                               },
                               "tiny": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "10px",
-                                "fontWeight": 600,
+                                "fontWeight": 400,
                               },
                               "xLarge": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "21px",
-                                "fontWeight": 100,
+                                "fontSize": "20px",
+                                "fontWeight": 600,
                               },
                               "xLargePlus": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "21px",
-                                "fontWeight": 100,
+                                "fontSize": "24px",
+                                "fontWeight": 600,
                               },
                               "xSmall": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "11px",
+                                "fontSize": "10px",
                                 "fontWeight": 400,
                               },
                               "xxLarge": Object {
@@ -855,14 +896,14 @@ exports[`test render renders with filters 1`] = `
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "28px",
-                                "fontWeight": 100,
+                                "fontWeight": 600,
                               },
                               "xxLargePlus": Object {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                "fontSize": "28px",
-                                "fontWeight": 100,
+                                "fontSize": "32px",
+                                "fontWeight": 600,
                               },
                             },
                             "isInverted": false,
@@ -880,18 +921,18 @@ exports[`test render renders with filters 1`] = `
                               "magenta": "#b4009e",
                               "magentaDark": "#5c005c",
                               "magentaLight": "#e3008c",
-                              "neutralDark": "#212121",
-                              "neutralLight": "#eaeaea",
-                              "neutralLighter": "#f4f4f4",
-                              "neutralLighterAlt": "#f8f8f8",
-                              "neutralPrimary": "#333333",
-                              "neutralPrimaryAlt": "#3c3c3c",
-                              "neutralQuaternary": "#d0d0d0",
-                              "neutralQuaternaryAlt": "#dadada",
-                              "neutralSecondary": "#666666",
-                              "neutralSecondaryAlt": "#767676",
-                              "neutralTertiary": "#a6a6a6",
-                              "neutralTertiaryAlt": "#c8c8c8",
+                              "neutralDark": "#201f1e",
+                              "neutralLight": "#edebe9",
+                              "neutralLighter": "#f3f2f1",
+                              "neutralLighterAlt": "#faf9f8",
+                              "neutralPrimary": "#323130",
+                              "neutralPrimaryAlt": "#3b3a39",
+                              "neutralQuaternary": "#d2d0ce",
+                              "neutralQuaternaryAlt": "#e1dfdd",
+                              "neutralSecondary": "#605e5c",
+                              "neutralSecondaryAlt": "#8a8886",
+                              "neutralTertiary": "#a19f9d",
+                              "neutralTertiaryAlt": "#c8c6c4",
                               "orange": "#d83b01",
                               "orangeLight": "#ea4300",
                               "orangeLighter": "#ff8c00",
@@ -899,7 +940,7 @@ exports[`test render renders with filters 1`] = `
                               "purpleDark": "#32145a",
                               "purpleLight": "#b4a0ff",
                               "red": "#e81123",
-                              "redDark": "#a80000",
+                              "redDark": "#a4262c",
                               "teal": "#008272",
                               "tealDark": "#004b50",
                               "tealLight": "#00b294",
@@ -918,89 +959,108 @@ exports[`test render renders with filters 1`] = `
                               "yellowDark": "#d29200",
                               "yellowLight": "#fff100",
                             },
+                            "rtl": undefined,
                             "semanticColors": Object {
                               "accentButtonBackground": "#0078d4",
                               "accentButtonText": "#ffffff",
-                              "actionLink": "#333333",
-                              "actionLinkHovered": "#212121",
-                              "blockingBackground": "rgba(234, 67, 0, .2)",
+                              "actionLink": "#323130",
+                              "actionLinkHovered": "#201f1e",
+                              "blockingBackground": "#FDE7E9",
+                              "blockingIcon": "#FDE7E9",
                               "bodyBackground": "#ffffff",
-                              "bodyDivider": "#eaeaea",
+                              "bodyBackgroundChecked": "#edebe9",
+                              "bodyBackgroundHovered": "#f3f2f1",
+                              "bodyDivider": "#edebe9",
                               "bodyFrameBackground": "#ffffff",
-                              "bodyFrameDivider": "#eaeaea",
-                              "bodyStandoutBackground": "#f8f8f8",
-                              "bodySubtext": "#666666",
-                              "bodyText": "#333333",
+                              "bodyFrameDivider": "#edebe9",
+                              "bodyStandoutBackground": "#faf9f8",
+                              "bodySubtext": "#605e5c",
+                              "bodyText": "#323130",
                               "bodyTextChecked": "#000000",
-                              "buttonBackground": "#f4f4f4",
-                              "buttonBackgroundChecked": "#c8c8c8",
-                              "buttonBackgroundCheckedHovered": "#eaeaea",
-                              "buttonBackgroundDisabled": "#f4f4f4",
-                              "buttonBackgroundHovered": "#eaeaea",
-                              "buttonBackgroundPressed": "#eaeaea",
-                              "buttonBorder": "transparent",
-                              "buttonBorderDisabled": "transparent",
-                              "buttonText": "#333333",
-                              "buttonTextChecked": "#212121",
+                              "buttonBackground": "#ffffff",
+                              "buttonBackgroundChecked": "#c8c6c4",
+                              "buttonBackgroundCheckedHovered": "#edebe9",
+                              "buttonBackgroundDisabled": "#f3f2f1",
+                              "buttonBackgroundHovered": "#f3f2f1",
+                              "buttonBackgroundPressed": "#edebe9",
+                              "buttonBorder": "#8a8886",
+                              "buttonBorderDisabled": "#f3f2f1",
+                              "buttonText": "#323130",
+                              "buttonTextChecked": "#201f1e",
                               "buttonTextCheckedHovered": "#000000",
-                              "buttonTextDisabled": "#a6a6a6",
-                              "buttonTextHovered": "#212121",
-                              "buttonTextPressed": "#212121",
-                              "defaultStateBackground": "#f8f8f8",
-                              "disabledBackground": "#f4f4f4",
-                              "disabledBodySubtext": "#c8c8c8",
-                              "disabledBodyText": "#a6a6a6",
-                              "disabledSubtext": "#d0d0d0",
-                              "disabledText": "#a6a6a6",
-                              "errorBackground": "rgba(232, 17, 35, .2)",
-                              "errorText": "#a80000",
-                              "focusBorder": "#666666",
+                              "buttonTextDisabled": "#a19f9d",
+                              "buttonTextHovered": "#201f1e",
+                              "buttonTextPressed": "#201f1e",
+                              "defaultStateBackground": "#faf9f8",
+                              "disabledBackground": "#f3f2f1",
+                              "disabledBodySubtext": "#c8c6c4",
+                              "disabledBodyText": "#a19f9d",
+                              "disabledBorder": "#c8c6c4",
+                              "disabledSubtext": "#d2d0ce",
+                              "disabledText": "#a19f9d",
+                              "errorBackground": "#FDE7E9",
+                              "errorIcon": "#A80000",
+                              "errorText": "#a4262c",
+                              "focusBorder": "#605e5c",
+                              "infoBackground": "#f3f2f1",
+                              "infoIcon": "#605e5c",
                               "inputBackground": "#ffffff",
                               "inputBackgroundChecked": "#0078d4",
-                              "inputBackgroundCheckedHovered": "#106ebe",
-                              "inputBorder": "#a6a6a6",
-                              "inputBorderHovered": "#333333",
+                              "inputBackgroundCheckedHovered": "#005a9e",
+                              "inputBorder": "#605e5c",
+                              "inputBorderHovered": "#323130",
                               "inputFocusBorderAlt": "#0078d4",
                               "inputForegroundChecked": "#ffffff",
-                              "inputPlaceholderText": "#666666",
-                              "inputText": "#333333",
-                              "inputTextHovered": "#212121",
+                              "inputIcon": "#0078d4",
+                              "inputIconDisabled": "#a19f9d",
+                              "inputIconHovered": "#005a9e",
+                              "inputPlaceholderBackgroundChecked": "#deecf9",
+                              "inputPlaceholderText": "#605e5c",
+                              "inputText": "#323130",
+                              "inputTextHovered": "#201f1e",
                               "link": "#0078d4",
                               "linkHovered": "#004578",
                               "listBackground": "#ffffff",
-                              "listHeaderBackgroundHovered": "#f4f4f4",
-                              "listHeaderBackgroundPressed": "#eaeaea",
-                              "listItemBackgroundChecked": "#eaeaea",
-                              "listItemBackgroundCheckedHovered": "#dadada",
-                              "listItemBackgroundHovered": "#f4f4f4",
-                              "listText": "#333333",
-                              "listTextColor": "#333333",
+                              "listHeaderBackgroundHovered": "#f3f2f1",
+                              "listHeaderBackgroundPressed": "#edebe9",
+                              "listItemBackgroundChecked": "#edebe9",
+                              "listItemBackgroundCheckedHovered": "#e1dfdd",
+                              "listItemBackgroundHovered": "#f3f2f1",
+                              "listText": "#323130",
+                              "listTextColor": "#323130",
                               "menuBackground": "#ffffff",
-                              "menuDivider": "#c8c8c8",
+                              "menuDivider": "#c8c6c4",
                               "menuHeader": "#0078d4",
                               "menuIcon": "#0078d4",
-                              "menuItemBackgroundChecked": "#eaeaea",
-                              "menuItemBackgroundHovered": "#f4f4f4",
-                              "menuItemBackgroundPressed": "#eaeaea",
-                              "menuItemText": "#333333",
-                              "menuItemTextHovered": "#212121",
+                              "menuItemBackgroundChecked": "#edebe9",
+                              "menuItemBackgroundHovered": "#f3f2f1",
+                              "menuItemBackgroundPressed": "#edebe9",
+                              "menuItemText": "#323130",
+                              "menuItemTextHovered": "#201f1e",
+                              "messageLink": "#005A9E",
+                              "messageLinkHovered": "#004578",
+                              "messageText": "#323130",
                               "primaryButtonBackground": "#0078d4",
-                              "primaryButtonBackgroundDisabled": "#f4f4f4",
+                              "primaryButtonBackgroundDisabled": "#f3f2f1",
                               "primaryButtonBackgroundHovered": "#106ebe",
                               "primaryButtonBackgroundPressed": "#005a9e",
                               "primaryButtonBorder": "transparent",
                               "primaryButtonText": "#ffffff",
-                              "primaryButtonTextDisabled": "#d0d0d0",
+                              "primaryButtonTextDisabled": "#d2d0ce",
                               "primaryButtonTextHovered": "#ffffff",
                               "primaryButtonTextPressed": "#ffffff",
-                              "smallInputBorder": "#666666",
-                              "successBackground": "rgba(186, 216, 10, .2)",
+                              "severeWarningBackground": "#FED9CC",
+                              "severeWarningIcon": "#D83B01",
+                              "smallInputBorder": "#605e5c",
+                              "successBackground": "#DFF6DD",
+                              "successIcon": "#107C10",
                               "successText": "#107C10",
-                              "variantBorder": "#eaeaea",
-                              "variantBorderHovered": "#a6a6a6",
-                              "warningBackground": "rgba(255, 185, 0, .2)",
+                              "variantBorder": "#edebe9",
+                              "variantBorderHovered": "#a19f9d",
+                              "warningBackground": "#FFF4CE",
                               "warningHighlight": "#ffb900",
-                              "warningText": "#333333",
+                              "warningIcon": "#797775",
+                              "warningText": "#323130",
                             },
                             "spacing": Object {
                               "l1": "20px",
@@ -1021,6 +1081,9 @@ exports[`test render renders with filters 1`] = `
                           split={false}
                           styles={
                             Object {
+                              "description": Object {
+                                "display": "block",
+                              },
                               "flexContainer": Array [
                                 Object {
                                   "alignItems": "center",
@@ -1041,13 +1104,13 @@ exports[`test render renders with filters 1`] = `
                                 "lineHeight": "16px",
                                 "margin": "0 4px",
                                 "textAlign": "center",
-                                "verticalAlign": "middle",
                               },
                               "iconDisabled": Object {
-                                "color": "#a6a6a6",
+                                "color": "#a19f9d",
                               },
                               "label": Array [
                                 Object {
+                                  "display": "block",
                                   "lineHeight": "100%",
                                   "margin": "0 4px",
                                 },
@@ -1055,22 +1118,16 @@ exports[`test render renders with filters 1`] = `
                                   "fontWeight": 600,
                                 },
                               ],
-                              "menuIcon": Array [
-                                Object {
-                                  "flexShrink": 0,
-                                  "fontSize": "16px",
-                                  "height": "16px",
-                                  "lineHeight": "16px",
-                                  "margin": "0 4px",
-                                  "textAlign": "center",
-                                  "verticalAlign": "middle",
-                                },
-                                Object {
-                                  "fontSize": "12px",
-                                },
-                              ],
+                              "menuIcon": Object {
+                                "flexShrink": 0,
+                                "fontSize": "12px",
+                                "height": "16px",
+                                "lineHeight": "16px",
+                                "margin": "0 4px",
+                                "textAlign": "center",
+                              },
                               "menuIconDisabled": Object {
-                                "color": "#a6a6a6",
+                                "color": "#a19f9d",
                               },
                               "root": Array [
                                 Object {
@@ -1078,13 +1135,13 @@ exports[`test render renders with filters 1`] = `
                                   "position": "relative",
                                   "selectors": Object {
                                     ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                                      "border": "1px solid #ffffff",
-                                      "bottom": 0,
+                                      "border": "1px solid transparent",
+                                      "bottom": 2,
                                       "content": "\\"\\"",
-                                      "left": 0,
-                                      "outline": "1px solid #666666",
+                                      "left": 2,
+                                      "outline": "1px solid #605e5c",
                                       "position": "absolute",
-                                      "right": 0,
+                                      "right": 2,
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
                                           "border": "none",
@@ -1095,7 +1152,7 @@ exports[`test render renders with filters 1`] = `
                                           "top": -2,
                                         },
                                       },
-                                      "top": 0,
+                                      "top": 2,
                                       "zIndex": 1,
                                     },
                                     "::-moz-focus-inner": Object {
@@ -1111,12 +1168,11 @@ exports[`test render renders with filters 1`] = `
                                   "fontWeight": 400,
                                 },
                                 Object {
-                                  "border": "1px solid transparent",
-                                  "borderRadius": 0,
+                                  "border": "1px solid #8a8886",
+                                  "borderRadius": "2px",
                                   "boxSizing": "border-box",
                                   "cursor": "pointer",
                                   "display": "inline-block",
-                                  "margin": 0,
                                   "padding": "0 16px",
                                   "selectors": Object {
                                     ":active > *": Object {
@@ -1128,15 +1184,14 @@ exports[`test render renders with filters 1`] = `
                                   "textAlign": "center",
                                   "textDecoration": "none",
                                   "userSelect": "none",
-                                  "verticalAlign": "top",
                                 },
                                 Object {
                                   "height": "32px",
                                   "minWidth": "80px",
                                 },
                                 Object {
-                                  "backgroundColor": "#f4f4f4",
-                                  "color": "#333333",
+                                  "backgroundColor": "#ffffff",
+                                  "color": "#323130",
                                 },
                                 Object {
                                   "backgroundColor": "transparent",
@@ -1147,11 +1202,11 @@ exports[`test render renders with filters 1`] = `
                                 },
                               ],
                               "rootChecked": Object {
-                                "backgroundColor": "#c8c8c8",
-                                "color": "#212121",
+                                "backgroundColor": "#edebe9",
+                                "color": "#201f1e",
                               },
                               "rootCheckedHovered": Object {
-                                "backgroundColor": "#eaeaea",
+                                "backgroundColor": "#edebe9",
                                 "color": "#000000",
                               },
                               "rootDisabled": Array [
@@ -1160,13 +1215,13 @@ exports[`test render renders with filters 1`] = `
                                   "position": "relative",
                                   "selectors": Object {
                                     ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                                      "border": "1px solid #ffffff",
-                                      "bottom": 0,
+                                      "border": "1px solid transparent",
+                                      "bottom": 2,
                                       "content": "\\"\\"",
-                                      "left": 0,
-                                      "outline": "1px solid #666666",
+                                      "left": 2,
+                                      "outline": "1px solid #605e5c",
                                       "position": "absolute",
-                                      "right": 0,
+                                      "right": 2,
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
                                           "border": "none",
@@ -1177,7 +1232,7 @@ exports[`test render renders with filters 1`] = `
                                           "top": -2,
                                         },
                                       },
-                                      "top": 0,
+                                      "top": 2,
                                       "zIndex": 1,
                                     },
                                     "::-moz-focus-inner": Object {
@@ -1186,8 +1241,9 @@ exports[`test render renders with filters 1`] = `
                                   },
                                 },
                                 Object {
-                                  "backgroundColor": "#f4f4f4",
-                                  "color": "#a6a6a6",
+                                  "backgroundColor": "#f3f2f1",
+                                  "borderColor": "#f3f2f1",
+                                  "color": "#a19f9d",
                                   "cursor": "default",
                                   "pointerEvents": "none",
                                   "selectors": Object {
@@ -1198,8 +1254,17 @@ exports[`test render renders with filters 1`] = `
                                       "outline": 0,
                                     },
                                     "@media screen and (-ms-high-contrast: active)": Object {
-                                      "bordercolor": "grayText",
+                                      "borderColor": "grayText",
                                       "color": "grayText",
+                                    },
+                                  },
+                                },
+                                Object {
+                                  "selectors": Object {
+                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                      "backgroundColor": "Window",
+                                      "borderColor": "GrayText",
+                                      "color": "GrayText",
                                     },
                                   },
                                 },
@@ -1208,13 +1273,13 @@ exports[`test render renders with filters 1`] = `
                                 },
                               ],
                               "rootExpanded": Object {
-                                "backgroundColor": "#c8c8c8",
-                                "color": "#212121",
+                                "backgroundColor": "#edebe9",
+                                "color": "#201f1e",
                               },
                               "rootHovered": Array [
                                 Object {
-                                  "backgroundColor": "#eaeaea",
-                                  "color": "#212121",
+                                  "backgroundColor": "#f3f2f1",
+                                  "color": "#201f1e",
                                   "selectors": Object {
                                     "@media screen and (-ms-high-contrast: active)": Object {
                                       "borderColor": "Highlight",
@@ -1227,8 +1292,8 @@ exports[`test render renders with filters 1`] = `
                                 },
                               ],
                               "rootPressed": Object {
-                                "backgroundColor": "#c8c8c8",
-                                "color": "#212121",
+                                "backgroundColor": "#edebe9",
+                                "color": "#201f1e",
                               },
                               "screenReaderText": Object {
                                 "border": 0,
@@ -1253,12 +1318,12 @@ exports[`test render renders with filters 1`] = `
                                   "selectors": Object {
                                     ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                       "border": "1px solid #ffffff",
-                                      "bottom": 1,
+                                      "bottom": 3,
                                       "content": "\\"\\"",
-                                      "left": 1,
-                                      "outline": "1px solid #666666",
+                                      "left": 3,
+                                      "outline": "1px solid #605e5c",
                                       "position": "absolute",
-                                      "right": 1,
+                                      "right": 3,
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
                                           "border": "none",
@@ -1268,7 +1333,7 @@ exports[`test render renders with filters 1`] = `
                                           "top": -2,
                                         },
                                       },
-                                      "top": 1,
+                                      "top": 3,
                                       "zIndex": 1,
                                     },
                                     "::-moz-focus-inner": Object {
@@ -1279,22 +1344,94 @@ exports[`test render renders with filters 1`] = `
                                 Object {
                                   "display": "inline-flex",
                                   "selectors": Object {
-                                    ".ms-Button--default, .ms-Button--primary": Object {
+                                    ".ms-Button--default": Object {
+                                      "borderBottomRightRadius": "0",
                                       "borderRight": "none",
+                                      "borderTopRightRadius": "0",
+                                    },
+                                    ".ms-Button--primary": Object {
+                                      "border": "none",
+                                      "borderBottomRightRadius": "0",
+                                      "borderTopRightRadius": "0",
+                                      "selectors": Object {
+                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                          "MsHighContrastAdjust": "none",
+                                          "backgroundColor": "WindowText",
+                                          "color": "Window",
+                                        },
+                                      },
+                                    },
+                                    ".ms-Button--primary + .ms-Button": Object {
+                                      "border": "none",
                                     },
                                   },
                                 },
                               ],
+                              "splitButtonContainerChecked": Object {
+                                "selectors": Object {
+                                  ".ms-Button--primary": Object {
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                        "MsHighContrastAdjust": "none",
+                                        "backgroundColor": "WindowText",
+                                        "color": "Window",
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                              "splitButtonContainerCheckedHovered": Object {
+                                "selectors": Object {
+                                  ".ms-Button--primary": Object {
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                        "MsHighContrastAdjust": "none",
+                                        "backgroundColor": "WindowText",
+                                        "color": "Window",
+                                      },
+                                    },
+                                  },
+                                },
+                              },
                               "splitButtonContainerDisabled": Object {
                                 "border": "none",
                                 "outline": "none",
+                                "selectors": Object {
+                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                    "backgroundColor": "Window",
+                                    "borderColor": "GrayText",
+                                    "color": "GrayText",
+                                  },
+                                },
                               },
                               "splitButtonContainerFocused": Object {
                                 "outline": "none!important",
                               },
+                              "splitButtonContainerHovered": Object {
+                                "selectors": Object {
+                                  ".ms-Button--primary": Object {
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                        "backgroundColor": "Highlight",
+                                        "color": "Window",
+                                      },
+                                    },
+                                  },
+                                  ".ms-Button.is-disabled": Object {
+                                    "color": "#a19f9d",
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                        "backgroundColor": "Window",
+                                        "borderColor": "GrayText",
+                                        "color": "GrayText",
+                                      },
+                                    },
+                                  },
+                                },
+                              },
                               "splitButtonDivider": Array [
                                 Object {
-                                  "backgroundColor": "#c8c8c8",
+                                  "backgroundColor": "#c8c6c4",
                                   "bottom": 8,
                                   "position": "absolute",
                                   "right": 31,
@@ -1310,13 +1447,18 @@ exports[`test render renders with filters 1`] = `
                                   "bottom": 8,
                                   "position": "absolute",
                                   "right": 31,
+                                  "selectors": Object {
+                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                      "backgroundColor": "WindowText",
+                                    },
+                                  },
                                   "top": 8,
                                   "width": 1,
                                 },
                               ],
                               "splitButtonDividerDisabled": Array [
                                 Object {
-                                  "backgroundColor": "#c8c8c8",
+                                  "backgroundColor": "#c8c6c4",
                                 },
                                 Object {
                                   "bottom": 8,
@@ -1340,11 +1482,11 @@ exports[`test render renders with filters 1`] = `
                               },
                               "splitButtonMenuButton": Array [
                                 Object {
-                                  "backgroundColor": "#f4f4f4",
+                                  "backgroundColor": "transparent",
                                   "color": "#ffffff",
                                   "selectors": Object {
                                     ":hover": Object {
-                                      "backgroundColor": "#eaeaea",
+                                      "backgroundColor": "#edebe9",
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
                                           "color": "Highlight",
@@ -1354,8 +1496,11 @@ exports[`test render renders with filters 1`] = `
                                   },
                                 },
                                 Object {
-                                  "border": 0,
+                                  "border": "1px solid #8a8886",
+                                  "borderBottomRightRadius": "2px",
+                                  "borderLeft": "none",
                                   "borderRadius": 0,
+                                  "borderTopRightRadius": "2px",
                                   "boxSizing": "border-box",
                                   "cursor": "pointer",
                                   "display": "inline-block",
@@ -1366,12 +1511,6 @@ exports[`test render renders with filters 1`] = `
                                   "marginTop": 0,
                                   "outline": "transparent",
                                   "padding": 6,
-                                  "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
-                                      "border": "1px solid white",
-                                      "borderLeft": "none",
-                                    },
-                                  },
                                   "textAlign": "center",
                                   "textDecoration": "none",
                                   "userSelect": "none",
@@ -1380,20 +1519,35 @@ exports[`test render renders with filters 1`] = `
                                 },
                               ],
                               "splitButtonMenuButtonChecked": Object {
-                                "backgroundColor": "#0078d4",
+                                "backgroundColor": "#e1dfdd",
+                                "selectors": Object {
+                                  ":hover": Object {
+                                    "backgroundColor": "#e1dfdd",
+                                  },
+                                },
                               },
                               "splitButtonMenuButtonDisabled": Array [
                                 Object {
-                                  "backgroundColor": "#f4f4f4",
+                                  "backgroundColor": "#f3f2f1",
                                   "selectors": Object {
                                     ":hover": Object {
-                                      "backgroundColor": "#f4f4f4",
+                                      "backgroundColor": "#f3f2f1",
                                     },
                                   },
                                 },
                                 Object {
+                                  "border": "none",
                                   "pointerEvents": "none",
                                   "selectors": Object {
+                                    ".ms-Button--primary": Object {
+                                      "selectors": Object {
+                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                          "backgroundColor": "Window",
+                                          "borderColor": "GrayText",
+                                          "color": "GrayText",
+                                        },
+                                      },
+                                    },
                                     ":hover": Object {
                                       "cursor": "default",
                                     },
@@ -1406,15 +1560,21 @@ exports[`test render renders with filters 1`] = `
                                 },
                               ],
                               "splitButtonMenuButtonExpanded": Object {
-                                "backgroundColor": "#eaeaea",
+                                "backgroundColor": "#e1dfdd",
+                                "selectors": Object {
+                                  ":hover": Object {
+                                    "backgroundColor": "#e1dfdd",
+                                  },
+                                },
                               },
                               "splitButtonMenuIcon": Object {
-                                "color": "#333333",
+                                "color": "#323130",
                               },
                               "splitButtonMenuIconDisabled": Object {
-                                "color": "#a6a6a6",
+                                "color": "#a19f9d",
                               },
                               "textContainer": Object {
+                                "display": "block",
                                 "flexGrow": 1,
                               },
                             }
@@ -1423,19 +1583,19 @@ exports[`test render renders with filters 1`] = `
                             Object {
                               "disableGlobalClassNames": false,
                               "effects": Object {
-                                "elevation16": "0 0 5px 0 rgba(0,0,0,.4)",
-                                "elevation4": "0 0 5px 0 rgba(0,0,0,.4)",
-                                "elevation64": "0 0 5px 0 rgba(0,0,0,.4)",
-                                "elevation8": "0 0 5px 0 rgba(0,0,0,.4)",
-                                "roundedCorner2": "0px",
+                                "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                                "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                                "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                                "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                                "roundedCorner2": "2px",
                               },
                               "fonts": Object {
                                 "large": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
-                                  "fontFamily": "'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "17px",
-                                  "fontWeight": 300,
+                                  "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                  "fontSize": "18px",
+                                  "fontWeight": 400,
                                 },
                                 "medium": Object {
                                   "MozOsxFontSmoothing": "grayscale",
@@ -1448,15 +1608,15 @@ exports[`test render renders with filters 1`] = `
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "15px",
+                                  "fontSize": "16px",
                                   "fontWeight": 400,
                                 },
                                 "mega": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "72px",
-                                  "fontWeight": 100,
+                                  "fontSize": "68px",
+                                  "fontWeight": 600,
                                 },
                                 "small": Object {
                                   "MozOsxFontSmoothing": "grayscale",
@@ -1469,7 +1629,7 @@ exports[`test render renders with filters 1`] = `
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "13px",
+                                  "fontSize": "12px",
                                   "fontWeight": 400,
                                 },
                                 "superLarge": Object {
@@ -1477,34 +1637,34 @@ exports[`test render renders with filters 1`] = `
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "42px",
-                                  "fontWeight": 100,
+                                  "fontWeight": 600,
                                 },
                                 "tiny": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "10px",
-                                  "fontWeight": 600,
+                                  "fontWeight": 400,
                                 },
                                 "xLarge": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "21px",
-                                  "fontWeight": 100,
+                                  "fontSize": "20px",
+                                  "fontWeight": 600,
                                 },
                                 "xLargePlus": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "21px",
-                                  "fontWeight": 100,
+                                  "fontSize": "24px",
+                                  "fontWeight": 600,
                                 },
                                 "xSmall": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "11px",
+                                  "fontSize": "10px",
                                   "fontWeight": 400,
                                 },
                                 "xxLarge": Object {
@@ -1512,14 +1672,14 @@ exports[`test render renders with filters 1`] = `
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "28px",
-                                  "fontWeight": 100,
+                                  "fontWeight": 600,
                                 },
                                 "xxLargePlus": Object {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                  "fontSize": "28px",
-                                  "fontWeight": 100,
+                                  "fontSize": "32px",
+                                  "fontWeight": 600,
                                 },
                               },
                               "isInverted": false,
@@ -1537,18 +1697,18 @@ exports[`test render renders with filters 1`] = `
                                 "magenta": "#b4009e",
                                 "magentaDark": "#5c005c",
                                 "magentaLight": "#e3008c",
-                                "neutralDark": "#212121",
-                                "neutralLight": "#eaeaea",
-                                "neutralLighter": "#f4f4f4",
-                                "neutralLighterAlt": "#f8f8f8",
-                                "neutralPrimary": "#333333",
-                                "neutralPrimaryAlt": "#3c3c3c",
-                                "neutralQuaternary": "#d0d0d0",
-                                "neutralQuaternaryAlt": "#dadada",
-                                "neutralSecondary": "#666666",
-                                "neutralSecondaryAlt": "#767676",
-                                "neutralTertiary": "#a6a6a6",
-                                "neutralTertiaryAlt": "#c8c8c8",
+                                "neutralDark": "#201f1e",
+                                "neutralLight": "#edebe9",
+                                "neutralLighter": "#f3f2f1",
+                                "neutralLighterAlt": "#faf9f8",
+                                "neutralPrimary": "#323130",
+                                "neutralPrimaryAlt": "#3b3a39",
+                                "neutralQuaternary": "#d2d0ce",
+                                "neutralQuaternaryAlt": "#e1dfdd",
+                                "neutralSecondary": "#605e5c",
+                                "neutralSecondaryAlt": "#8a8886",
+                                "neutralTertiary": "#a19f9d",
+                                "neutralTertiaryAlt": "#c8c6c4",
                                 "orange": "#d83b01",
                                 "orangeLight": "#ea4300",
                                 "orangeLighter": "#ff8c00",
@@ -1556,7 +1716,7 @@ exports[`test render renders with filters 1`] = `
                                 "purpleDark": "#32145a",
                                 "purpleLight": "#b4a0ff",
                                 "red": "#e81123",
-                                "redDark": "#a80000",
+                                "redDark": "#a4262c",
                                 "teal": "#008272",
                                 "tealDark": "#004b50",
                                 "tealLight": "#00b294",
@@ -1575,89 +1735,108 @@ exports[`test render renders with filters 1`] = `
                                 "yellowDark": "#d29200",
                                 "yellowLight": "#fff100",
                               },
+                              "rtl": undefined,
                               "semanticColors": Object {
                                 "accentButtonBackground": "#0078d4",
                                 "accentButtonText": "#ffffff",
-                                "actionLink": "#333333",
-                                "actionLinkHovered": "#212121",
-                                "blockingBackground": "rgba(234, 67, 0, .2)",
+                                "actionLink": "#323130",
+                                "actionLinkHovered": "#201f1e",
+                                "blockingBackground": "#FDE7E9",
+                                "blockingIcon": "#FDE7E9",
                                 "bodyBackground": "#ffffff",
-                                "bodyDivider": "#eaeaea",
+                                "bodyBackgroundChecked": "#edebe9",
+                                "bodyBackgroundHovered": "#f3f2f1",
+                                "bodyDivider": "#edebe9",
                                 "bodyFrameBackground": "#ffffff",
-                                "bodyFrameDivider": "#eaeaea",
-                                "bodyStandoutBackground": "#f8f8f8",
-                                "bodySubtext": "#666666",
-                                "bodyText": "#333333",
+                                "bodyFrameDivider": "#edebe9",
+                                "bodyStandoutBackground": "#faf9f8",
+                                "bodySubtext": "#605e5c",
+                                "bodyText": "#323130",
                                 "bodyTextChecked": "#000000",
-                                "buttonBackground": "#f4f4f4",
-                                "buttonBackgroundChecked": "#c8c8c8",
-                                "buttonBackgroundCheckedHovered": "#eaeaea",
-                                "buttonBackgroundDisabled": "#f4f4f4",
-                                "buttonBackgroundHovered": "#eaeaea",
-                                "buttonBackgroundPressed": "#eaeaea",
-                                "buttonBorder": "transparent",
-                                "buttonBorderDisabled": "transparent",
-                                "buttonText": "#333333",
-                                "buttonTextChecked": "#212121",
+                                "buttonBackground": "#ffffff",
+                                "buttonBackgroundChecked": "#c8c6c4",
+                                "buttonBackgroundCheckedHovered": "#edebe9",
+                                "buttonBackgroundDisabled": "#f3f2f1",
+                                "buttonBackgroundHovered": "#f3f2f1",
+                                "buttonBackgroundPressed": "#edebe9",
+                                "buttonBorder": "#8a8886",
+                                "buttonBorderDisabled": "#f3f2f1",
+                                "buttonText": "#323130",
+                                "buttonTextChecked": "#201f1e",
                                 "buttonTextCheckedHovered": "#000000",
-                                "buttonTextDisabled": "#a6a6a6",
-                                "buttonTextHovered": "#212121",
-                                "buttonTextPressed": "#212121",
-                                "defaultStateBackground": "#f8f8f8",
-                                "disabledBackground": "#f4f4f4",
-                                "disabledBodySubtext": "#c8c8c8",
-                                "disabledBodyText": "#a6a6a6",
-                                "disabledSubtext": "#d0d0d0",
-                                "disabledText": "#a6a6a6",
-                                "errorBackground": "rgba(232, 17, 35, .2)",
-                                "errorText": "#a80000",
-                                "focusBorder": "#666666",
+                                "buttonTextDisabled": "#a19f9d",
+                                "buttonTextHovered": "#201f1e",
+                                "buttonTextPressed": "#201f1e",
+                                "defaultStateBackground": "#faf9f8",
+                                "disabledBackground": "#f3f2f1",
+                                "disabledBodySubtext": "#c8c6c4",
+                                "disabledBodyText": "#a19f9d",
+                                "disabledBorder": "#c8c6c4",
+                                "disabledSubtext": "#d2d0ce",
+                                "disabledText": "#a19f9d",
+                                "errorBackground": "#FDE7E9",
+                                "errorIcon": "#A80000",
+                                "errorText": "#a4262c",
+                                "focusBorder": "#605e5c",
+                                "infoBackground": "#f3f2f1",
+                                "infoIcon": "#605e5c",
                                 "inputBackground": "#ffffff",
                                 "inputBackgroundChecked": "#0078d4",
-                                "inputBackgroundCheckedHovered": "#106ebe",
-                                "inputBorder": "#a6a6a6",
-                                "inputBorderHovered": "#333333",
+                                "inputBackgroundCheckedHovered": "#005a9e",
+                                "inputBorder": "#605e5c",
+                                "inputBorderHovered": "#323130",
                                 "inputFocusBorderAlt": "#0078d4",
                                 "inputForegroundChecked": "#ffffff",
-                                "inputPlaceholderText": "#666666",
-                                "inputText": "#333333",
-                                "inputTextHovered": "#212121",
+                                "inputIcon": "#0078d4",
+                                "inputIconDisabled": "#a19f9d",
+                                "inputIconHovered": "#005a9e",
+                                "inputPlaceholderBackgroundChecked": "#deecf9",
+                                "inputPlaceholderText": "#605e5c",
+                                "inputText": "#323130",
+                                "inputTextHovered": "#201f1e",
                                 "link": "#0078d4",
                                 "linkHovered": "#004578",
                                 "listBackground": "#ffffff",
-                                "listHeaderBackgroundHovered": "#f4f4f4",
-                                "listHeaderBackgroundPressed": "#eaeaea",
-                                "listItemBackgroundChecked": "#eaeaea",
-                                "listItemBackgroundCheckedHovered": "#dadada",
-                                "listItemBackgroundHovered": "#f4f4f4",
-                                "listText": "#333333",
-                                "listTextColor": "#333333",
+                                "listHeaderBackgroundHovered": "#f3f2f1",
+                                "listHeaderBackgroundPressed": "#edebe9",
+                                "listItemBackgroundChecked": "#edebe9",
+                                "listItemBackgroundCheckedHovered": "#e1dfdd",
+                                "listItemBackgroundHovered": "#f3f2f1",
+                                "listText": "#323130",
+                                "listTextColor": "#323130",
                                 "menuBackground": "#ffffff",
-                                "menuDivider": "#c8c8c8",
+                                "menuDivider": "#c8c6c4",
                                 "menuHeader": "#0078d4",
                                 "menuIcon": "#0078d4",
-                                "menuItemBackgroundChecked": "#eaeaea",
-                                "menuItemBackgroundHovered": "#f4f4f4",
-                                "menuItemBackgroundPressed": "#eaeaea",
-                                "menuItemText": "#333333",
-                                "menuItemTextHovered": "#212121",
+                                "menuItemBackgroundChecked": "#edebe9",
+                                "menuItemBackgroundHovered": "#f3f2f1",
+                                "menuItemBackgroundPressed": "#edebe9",
+                                "menuItemText": "#323130",
+                                "menuItemTextHovered": "#201f1e",
+                                "messageLink": "#005A9E",
+                                "messageLinkHovered": "#004578",
+                                "messageText": "#323130",
                                 "primaryButtonBackground": "#0078d4",
-                                "primaryButtonBackgroundDisabled": "#f4f4f4",
+                                "primaryButtonBackgroundDisabled": "#f3f2f1",
                                 "primaryButtonBackgroundHovered": "#106ebe",
                                 "primaryButtonBackgroundPressed": "#005a9e",
                                 "primaryButtonBorder": "transparent",
                                 "primaryButtonText": "#ffffff",
-                                "primaryButtonTextDisabled": "#d0d0d0",
+                                "primaryButtonTextDisabled": "#d2d0ce",
                                 "primaryButtonTextHovered": "#ffffff",
                                 "primaryButtonTextPressed": "#ffffff",
-                                "smallInputBorder": "#666666",
-                                "successBackground": "rgba(186, 216, 10, .2)",
+                                "severeWarningBackground": "#FED9CC",
+                                "severeWarningIcon": "#D83B01",
+                                "smallInputBorder": "#605e5c",
+                                "successBackground": "#DFF6DD",
+                                "successIcon": "#107C10",
                                 "successText": "#107C10",
-                                "variantBorder": "#eaeaea",
-                                "variantBorderHovered": "#a6a6a6",
-                                "warningBackground": "rgba(255, 185, 0, .2)",
+                                "variantBorder": "#edebe9",
+                                "variantBorderHovered": "#a19f9d",
+                                "warningBackground": "#FFF4CE",
                                 "warningHighlight": "#ffb900",
-                                "warningText": "#333333",
+                                "warningIcon": "#797775",
+                                "warningText": "#323130",
                               },
                               "spacing": Object {
                                 "l1": "20px",
@@ -1670,43 +1849,41 @@ exports[`test render renders with filters 1`] = `
                           }
                           variantClassName="ms-Button--default"
                         >
-                          <KeytipData
+                          <button
+                            aria-disabled={true}
+                            className="ms-Button ms-Button--default is-disabled directoryListButton root-54"
+                            data-is-focusable={false}
                             disabled={true}
+                            onClick={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyPress={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseUp={[Function]}
+                            type="button"
                           >
-                            <button
-                              aria-disabled={true}
-                              className="ms-Button ms-Button--default is-disabled directoryListButton root-55"
-                              data-is-focusable={false}
-                              disabled={true}
-                              onClick={[Function]}
-                              onKeyDown={[Function]}
-                              onKeyPress={[Function]}
-                              onKeyUp={[Function]}
-                              onMouseDown={[Function]}
-                              onMouseUp={[Function]}
-                              type="button"
+                            <span
+                              className="ms-Button-flexContainer flexContainer-55"
+                              data-automationid="splitbuttonprimary"
                             >
                               <div
-                                className="ms-Button-flexContainer flexContainer-56"
+                                className="directoryListItem"
+                                data-is-focusable={true}
                               >
                                 <div
-                                  className="directoryListItem"
-                                  data-is-focusable={true}
+                                  className="directoryListItemName"
                                 >
-                                  <div
-                                    className="directoryListItemName"
-                                  >
-                                    Macrohard
-                                  </div>
-                                  <div
-                                    className="directoryListItemId"
-                                  >
-                                    9876543210
-                                  </div>
+                                  Macrohard
+                                </div>
+                                <div
+                                  className="directoryListItemId"
+                                >
+                                  9876543210
                                 </div>
                               </div>
-                            </button>
-                          </KeytipData>
+                            </span>
+                          </button>
+                          <Component />
                         </BaseButton>
                       </DefaultButton>
                     </CustomizedDefaultButton>
@@ -1717,17 +1894,7 @@ exports[`test render renders with filters 1`] = `
           </List>
         </div>
         <div
-          className="stickyAbove-42"
-          style={
-            Object {
-              "height": 0,
-              "left": "0",
-              "right": "0px",
-              "top": "0",
-            }
-          }
-        />
-        <div
+          aria-hidden="true"
           className="stickyBelow-43"
           style={
             Object {
@@ -1759,7 +1926,7 @@ exports[`test render renders with no directories 1`] = `
     <StyledTextFieldBase
       ariaLabel="Directory filter text box"
       className="directoryListFilterTextBox"
-      onBeforeChange={[Function]}
+      onChange={[Function]}
       placeholder="Filter by directory name"
     />
   </Sticky>

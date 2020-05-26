@@ -11,7 +11,6 @@ import { MessageHandler } from "../Common/MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
-import { SubscriptionType } from "../Contracts/ViewModels";
 
 export class CreateSqlCollectionUtilities {
   public static createSqlCollection(
@@ -243,61 +242,43 @@ export class Utilities {
     }
   }
 
-  public static getDefaultStorage(flight: string, subscriptionType: SubscriptionType): string {
-    const flightDefaults: string = Utilities._getDefaults(flight, subscriptionType).storage;
-    return flightDefaults;
-  }
-
-  public static getDefaultThroughput(flight: string, subscriptionType: SubscriptionType): ThroughputDefaults {
-    const flightDefaults: ThroughputDefaults = Utilities._getDefaults(flight, subscriptionType).throughput;
-    return flightDefaults;
-  }
-
   public static getMaxRUForStorageOption(
-    subscriptionType = SharedConstants.CollectionCreation.DefaultSubscriptionType,
-    flight = SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight,
+    defaults: ViewModels.CollectionCreationDefaults,
     storageOption: string
   ): number {
     if (storageOption === SharedConstants.CollectionCreation.storage10Gb) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs10K;
     }
 
-    const defaults = Utilities._getDefaults(flight, subscriptionType);
     return defaults.throughput.unlimitedmax;
   }
 
   public static getMinRUForStorageOption(
-    subscriptionType = SharedConstants.CollectionCreation.DefaultSubscriptionType,
-    flight = SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight,
+    defaults: ViewModels.CollectionCreationDefaults,
     storageOption: string
   ): number {
     if (storageOption === SharedConstants.CollectionCreation.storage10Gb) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
 
-    const collectionDefaults = Utilities._getCollectionDefaults(subscriptionType, flight);
-
-    return collectionDefaults.throughput.unlimitedmin;
+    return defaults.throughput.unlimitedmin;
   }
 
-  public static _getDefaults(flight: string, subscriptionType: SubscriptionType): CollectionDefaults {
-    return Utilities._getCollectionDefaults(subscriptionType, flight);
-  }
-
-  private static _getCollectionDefaults(
-    subscriptionType = SharedConstants.CollectionCreation.DefaultSubscriptionType,
-    flight = SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
-  ): CollectionDefaults {
-    if (!(flight in Utilities._defaultsMap)) {
-      flight = SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight;
+  public static getMaxThroughput(
+    defaults: ViewModels.CollectionCreationDefaults,
+    container: ViewModels.Explorer
+  ): number {
+    const throughput = defaults.throughput.unlimited;
+    if (typeof throughput === "number") {
+      return throughput;
+    } else {
+      return this._exceedsThreshold(throughput.collectionThreshold, container)
+        ? throughput.greatThanThreshold
+        : throughput.lessThanOrEqualToThreshold;
     }
-
-    return Utilities._defaultsMap[flight][SubscriptionType[subscriptionType]];
   }
 
-  private static _exceedsThreshold(container: ViewModels.Explorer): boolean {
-    const unlimitedThreshold: number = 5;
-
+  private static _exceedsThreshold(unlimitedThreshold: number, container: ViewModels.Explorer): boolean {
     const databases = (container && container.databases && container.databases()) || [];
     return _.any(
       databases,
@@ -306,340 +287,9 @@ export class Utilities {
     );
   }
 
-  private static _defaultsMap: { [flight: string]: { [subscriptionType: string]: CollectionDefaults } } = {
-    "0": {
-      Benefits: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Free: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      EA: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Internal: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      PAYG: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      }
-    },
-    "1": {
-      Benefits: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Free: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      EA: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Internal: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      PAYG: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      }
-    },
-    "2": {
-      Benefits: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Free: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      EA: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Internal: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      PAYG: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      }
-    },
-    "3": {
-      Benefits: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Free: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      EA: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Internal: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      PAYG: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      }
-    },
-    "20190618.1": {
-      Benefits: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Free: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      EA: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: container =>
-            Utilities._exceedsThreshold(container)
-              ? SharedConstants.CollectionCreation.DefaultCollectionRUs1000
-              : SharedConstants.CollectionCreation.DefaultCollectionRUs10K,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs20000
-        }
-      },
-      Internal: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      PAYG: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      }
-    },
-    "20190618.2": {
-      Benefits: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      Free: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      EA: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs1000,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs5000
-        }
-      },
-      Internal: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs100K,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      },
-      PAYG: {
-        storage: SharedConstants.CollectionCreation.storage100Gb,
-        throughput: {
-          fixed: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimited: () => SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          unlimitedmax: SharedConstants.CollectionCreation.DefaultCollectionRUs1Million,
-          unlimitedmin: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-          shared: SharedConstants.CollectionCreation.DefaultCollectionRUs400
-        }
-      }
-    }
-  };
-
   private static _getAzureTableUri(params: DataModels.CreateDatabaseAndCollectionRequest): string {
     return `subscriptions/${CosmosClient.subscriptionId()}/resourceGroups/${CosmosClient.resourceGroup()}/providers/Microsoft.DocumentDB/databaseAccounts/${
       CosmosClient.databaseAccount().name
     }/tables/${params.collectionId}`;
   }
-}
-
-export interface CollectionDefaults {
-  storage: string;
-  throughput: ThroughputDefaults;
-}
-
-export interface ThroughputDefaults {
-  fixed: number;
-  unlimited: (explorer: ViewModels.Explorer) => number;
-  unlimitedmax: number;
-  unlimitedmin: number;
-  shared: number;
 }

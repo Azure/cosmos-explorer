@@ -2,6 +2,7 @@ import path from "path";
 import { ImmutableNotebook } from "@nteract/commutable";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
+import { GitHubUtils } from "../../Utils/GitHubUtils";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";
@@ -11,7 +12,8 @@ export class NotebookUtil {
    * It's a notebook file if the filename ends with .ipynb.
    */
   public static isNotebookFile(notebookPath: string): boolean {
-    return StringUtils.endsWith(notebookPath, ".ipynb");
+    const fileName = NotebookUtil.getName(notebookPath);
+    return !!fileName && StringUtils.endsWith(fileName, ".ipynb");
   }
 
   /**
@@ -68,8 +70,34 @@ export class NotebookUtil {
     };
   }
 
-  public static getContentName(uri: string): string | undefined {
-    const parts = uri.split("/");
-    return parts.pop() || parts.pop(); // handle potential trailing slash
+  public static getName(path: string): undefined | string {
+    let relativePath: string = path;
+    const contentInfo = GitHubUtils.fromContentUri(path);
+    if (contentInfo) {
+      relativePath = contentInfo.path;
+    }
+
+    return relativePath.split("/").pop();
+  }
+
+  public static replaceName(path: string, newName: string): string {
+    const contentInfo = GitHubUtils.fromContentUri(path);
+    if (contentInfo) {
+      const contentName = contentInfo.path.split("/").pop();
+      if (!contentName) {
+        throw new Error(`Failed to extract name from github path ${contentInfo.path}`);
+      }
+
+      const basePath = contentInfo.path.split(contentName).shift();
+      return GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, `${basePath}${newName}`);
+    }
+
+    const contentName = path.split("/").pop();
+    if (!contentName) {
+      throw new Error(`Failed to extract name from path ${path}`);
+    }
+
+    const basePath = path.split(contentName).shift();
+    return `${basePath}${newName}`;
   }
 }

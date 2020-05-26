@@ -13,13 +13,13 @@ import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import Q from "q";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { config, Platform } from "../../Config";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { createMongoCollectionWithARM, createMongoCollectionWithProxy } from "../../Common/MongoProxyClient";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { HashMap } from "../../Common/HashMap";
 import { PlatformType } from "../../PlatformType";
-import { config, Platform } from "../../Config";
 
 export default class AddCollectionPane extends ContextualPaneBase implements ViewModels.AddCollectionPane {
   public defaultExperience: ko.Computed<string>;
@@ -832,7 +832,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
       const isAadUser = EnvironmentUtility.isAadUser();
 
       // note: v3 autopilot not supported yet for Mongo fixed collections (only tier supported)
-      if (!isAadUser || isFixedCollectionWithSharedThroughputBeingCreated) {
+      if (!isAadUser) {
         createCollectionFunc = () =>
           Q(
             createMongoCollectionWithProxy(
@@ -853,6 +853,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
               this.container.armEndpoint(),
               databaseId,
               this._getAnalyticalStorageTtl(),
+              isFixedCollectionWithSharedThroughputBeingCreated,
               collectionId,
               offerThroughput,
               partitionKeyPath,
@@ -1007,14 +1008,14 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     this.uniqueKeys([]);
     this.useIndexingForSharedThroughput(true);
 
-    const subscriptionType = this.container.subscriptionType();
-    const flight = this.container.flight();
-    const defaultStorage = AddCollectionUtility.Utilities.getDefaultStorage(flight, subscriptionType);
+    const defaultStorage = this.container.collectionCreationDefaults.storage;
     this.storage(defaultStorage);
 
-    const defaultThroughput = AddCollectionUtility.Utilities.getDefaultThroughput(flight, subscriptionType);
+    const defaultThroughput = this.container.collectionCreationDefaults.throughput;
     this.throughputSinglePartition(defaultThroughput.fixed);
-    this.throughputMultiPartition(defaultThroughput.unlimited(this.container));
+    this.throughputMultiPartition(
+      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
+    );
 
     this.throughputDatabase(defaultThroughput.shared);
     this.databaseCreateNew(true);
@@ -1211,7 +1212,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: `{ "maxThroughput": ${this.sharedAutoPilotThroughput() * 1} }`
+            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.sharedAutoPilotThroughput() * 1 }
           }
         : { [Constants.HttpHeaders.autoPilotTier]: this.selectedSharedAutoPilotTier().toString() };
     }
@@ -1221,7 +1222,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: `{ "maxThroughput": ${this.autoPilotThroughput() * 1} }`
+            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.autoPilotThroughput() * 1 }
           }
         : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
     }
@@ -1268,12 +1269,16 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
   }
 
   private _updateThroughputLimitByCollectionStorage() {
-    const subscriptionType = this.container.subscriptionType();
-    const flight = this.container.flight();
     const storage = this.storage();
-    const minThroughputRU = AddCollectionUtility.Utilities.getMinRUForStorageOption(subscriptionType, flight, storage);
+    const minThroughputRU = AddCollectionUtility.Utilities.getMinRUForStorageOption(
+      this.container.collectionCreationDefaults,
+      storage
+    );
 
-    let maxThroughputRU = AddCollectionUtility.Utilities.getMaxRUForStorageOption(subscriptionType, flight, storage);
+    let maxThroughputRU = AddCollectionUtility.Utilities.getMaxRUForStorageOption(
+      this.container.collectionCreationDefaults,
+      storage
+    );
     if (this.isTryCosmosDBSubscription()) {
       maxThroughputRU = Constants.TryCosmosExperience.maxRU;
     }
@@ -1283,10 +1288,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
   }
 
   private _updateThroughputLimitByDatabase() {
-    const subscriptionType = this.container.subscriptionType();
-    const flight = this.container.flight();
-    const defaultThruoghput = AddCollectionUtility.Utilities.getDefaultThroughput(flight, subscriptionType);
-
+    const defaultThruoghput = this.container.collectionCreationDefaults.throughput;
     this.maxThroughputRU(defaultThruoghput.unlimitedmax);
     this.minThroughputRU(defaultThruoghput.unlimitedmin);
   }

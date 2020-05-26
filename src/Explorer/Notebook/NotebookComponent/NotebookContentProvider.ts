@@ -60,7 +60,7 @@ export class NotebookContentProvider implements IContentProvider {
   }
 
   private getContentProvider(path: string): IContentProvider {
-    if (GitHubUtils.fromGitHubUri(path)) {
+    if (GitHubUtils.fromContentUri(path)) {
       return this.gitHubContentProvider;
     }
 

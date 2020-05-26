@@ -13,6 +13,7 @@ import { GitHubReposComponentAdapter } from "../Controls/GitHub/GitHubReposCompo
 import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../Controls/GitHub/ReposListComponent";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
+import { JunoUtils } from "../../Utils/JunoUtils";
 
 export class GitHubReposPane extends ContextualPaneBase {
   private static readonly PageSize = 30;
@@ -84,7 +85,7 @@ export class GitHubReposPane extends ContextualPaneBase {
 
   public async submit(): Promise<void> {
     const pinnedReposUpdated = this.pinnedReposUpdated;
-    const reposToPin: IPinnedRepo[] = this.pinnedReposProps.repos.map(repo => GitHubUtils.toPinnedRepo(repo));
+    const reposToPin: IPinnedRepo[] = this.pinnedReposProps.repos.map(repo => JunoUtils.toPinnedRepo(repo));
 
     // Submit resets data too
     super.submit();
@@ -298,7 +299,7 @@ export class GitHubReposPane extends ContextualPaneBase {
             ({
               key: GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name),
               branches: pinnedRepo.branches,
-              repo: GitHubUtils.toGitHubRepo(pinnedRepo)
+              repo: JunoUtils.toGitHubRepo(pinnedRepo)
             } as RepoListItem)
         );
 

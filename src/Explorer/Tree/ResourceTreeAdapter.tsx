@@ -103,10 +103,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.sampleNotebooksContentRoot = {
       name: "Sample Notebooks (View Only)",
-      path: GitHubUtils.toGitHubUriForRepoAndBranch(
+      path: GitHubUtils.toContentUri(
         ResourceTreeAdapter.SamplesRepo.owner.login,
         ResourceTreeAdapter.SamplesRepo.name,
-        ResourceTreeAdapter.SamplesBranch.name
+        ResourceTreeAdapter.SamplesBranch.name,
+        ""
       ),
       type: NotebookContentItemType.Directory
     };
@@ -157,7 +158,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         pinnedRepo.branches.forEach(branch => {
           repoTreeItem.children.push({
             name: branch.name,
-            path: GitHubUtils.toGitHubUriForRepoAndBranch(pinnedRepo.owner, pinnedRepo.name, branch.name),
+            path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
             type: NotebookContentItemType.Directory
           });
         });
@@ -620,7 +621,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     ];
 
     // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
-    if (GitHubUtils.fromGitHubUri(item.path)) {
+    if (GitHubUtils.fromContentUri(item.path)) {
       items = items.filter(
         item =>
           item.label !== "Delete" &&

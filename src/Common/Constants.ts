@@ -41,7 +41,7 @@ export class ArmApiVersions {
   public static readonly arcadiaLivy: string = "2019-11-01-preview";
   public static readonly arm: string = "2015-11-01";
   public static readonly armFeatures: string = "2014-08-01-preview";
-  public static readonly publicVersion = "2020-03-01";
+  public static readonly publicVersion = "2020-04-01";
 }
 
 export class ArmResourceTypes {
@@ -334,11 +334,13 @@ export class HttpHeaders {
   public static populateCollectionThroughputInfo = "x-ms-documentdb-populatecollectionthroughputinfo";
   public static supportSpatialLegacyCoordinates = "x-ms-documentdb-supportspatiallegacycoordinates";
   public static usePolygonsSmallerThanAHemisphere = "x-ms-documentdb-usepolygonssmallerthanahemisphere";
-  public static autoPilotThroughput = "ProvisionedThroughputSettings";
+  public static autoPilotThroughput = "autoscaleSettings";
+  public static autoPilotThroughputSDK = "x-ms-cosmos-offer-autopilot-settings";
   public static autoPilotTier = "x-ms-cosmos-offer-autopilot-tier";
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static mongoFixedCollectionWithSharedThroughput: string = "InsertSystemPartitionKey";
 }
 
 export class ApiType {

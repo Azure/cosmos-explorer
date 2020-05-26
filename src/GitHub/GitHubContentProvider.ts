@@ -7,6 +7,7 @@ import { Logger } from "../Common/Logger";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { GitHubClient, IGitHubFile, IGitHubResponse, IGitHubCommit } from "./GitHubClient";
 import { GitHubUtils } from "../Utils/GitHubUtils";
+import UrlUtility from "../Common/UrlUtility";
 
 export interface GitHubContentProviderParams {
   gitHubClient: GitHubClient;
@@ -53,12 +54,12 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError("Failed to get content", content.status);
           }
 
-          const gitHubInfo = GitHubUtils.fromGitHubUri(uri);
+          const contentInfo = GitHubUtils.fromContentUri(uri);
           const commitResponse = await this.params.gitHubClient.getCommitsAsync(
-            gitHubInfo.owner,
-            gitHubInfo.repo,
-            gitHubInfo.branch,
-            gitHubInfo.path,
+            contentInfo.owner,
+            contentInfo.repo,
+            contentInfo.branch,
+            contentInfo.path,
             1,
             1
           );
@@ -95,7 +96,7 @@ export class GitHubContentProvider implements IContentProvider {
             gitHubFile.branch.name,
             commitMsg,
             gitHubFile.path,
-            GitHubUtils.fromGitHubUri(newUri).path
+            GitHubUtils.fromContentUri(newUri).path
           );
           if (response.status !== HttpStatusCodes.OK) {
             throw new GitHubContentProviderError("Failed to rename", response.status);
@@ -134,8 +135,8 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError("Unsupported content type");
           }
 
-          const gitHubInfo = GitHubUtils.fromGitHubUri(uri);
-          if (!gitHubInfo) {
+          const contentInfo = GitHubUtils.fromContentUri(uri);
+          if (!contentInfo) {
             throw new GitHubContentProviderError(`Failed to parse ${uri}`);
           }
 
@@ -151,14 +152,14 @@ export class GitHubContentProvider implements IContentProvider {
           };
           const name = `Untitled-${new Date().toLocaleString("default", options)}.ipynb`;
           let path = name;
-          if (gitHubInfo.path) {
-            path = `${gitHubInfo.path}/${name}`;
+          if (contentInfo.path) {
+            path = UrlUtility.createUri(contentInfo.path, name);
           }
 
           const response = await this.params.gitHubClient.createOrUpdateFileAsync(
-            gitHubInfo.owner,
-            gitHubInfo.repo,
-            gitHubInfo.branch,
+            contentInfo.owner,
+            contentInfo.repo,
+            contentInfo.branch,
             path,
             commitMsg,
             content
@@ -167,12 +168,7 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError("Failed to create", response.status);
           }
 
-          const newUri = GitHubUtils.toGitHubUriForRepoAndBranch(
-            gitHubInfo.owner,
-            gitHubInfo.repo,
-            gitHubInfo.branch,
-            path
-          );
+          const newUri = GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, path);
           const newContentResponse = await this.getContent(newUri);
           if (newContentResponse.status !== HttpStatusCodes.OK) {
             throw new GitHubContentProviderError("Failed to get content after creating", newContentResponse.status);
@@ -288,9 +284,9 @@ export class GitHubContentProvider implements IContentProvider {
   }
 
   private getContent(uri: string): Promise<IGitHubResponse<IGitHubFile | IGitHubFile[]>> {
-    const gitHubInfo = GitHubUtils.fromGitHubUri(uri);
-    if (gitHubInfo) {
-      const { owner, repo, branch, path } = gitHubInfo;
+    const contentInfo = GitHubUtils.fromContentUri(uri);
+    if (contentInfo) {
+      const { owner, repo, branch, path } = contentInfo;
       return this.params.gitHubClient.getContentsAsync(owner, repo, branch, path);
     }
 
@@ -324,7 +320,7 @@ export class GitHubContentProvider implements IContentProvider {
     commit: IGitHubCommit
   ): IContent<"directory"> {
     return {
-      name: NotebookUtil.getContentName(uri),
+      name: GitHubUtils.fromContentUri(uri).path,
       path: uri,
       type: "directory",
       writable: true, // TODO: tamitta: we don't know this info here
@@ -333,9 +329,14 @@ export class GitHubContentProvider implements IContentProvider {
       mimetype: undefined,
       content: gitHubFiles?.map(
         (file: IGitHubFile) =>
-          this.createContentModel(GitHubUtils.toGitHubUriForFile(file), file, commit, {
-            content: 0
-          }) as IEmptyContent<FileType>
+          this.createContentModel(
+            GitHubUtils.toContentUri(file.repo.owner.login, file.repo.name, file.branch.name, file.path),
+            file,
+            commit,
+            {
+              content: 0
+            }
+          ) as IEmptyContent<FileType>
       ),
       format: "json"
     };
@@ -350,7 +351,12 @@ export class GitHubContentProvider implements IContentProvider {
       gitHubFile.content && params.content !== 0 ? JSON.parse(atob(gitHubFile.content)) : undefined;
     return {
       name: gitHubFile.name,
-      path: GitHubUtils.toGitHubUriForFile(gitHubFile),
+      path: GitHubUtils.toContentUri(
+        gitHubFile.repo.owner.login,
+        gitHubFile.repo.name,
+        gitHubFile.branch.name,
+        gitHubFile.path
+      ),
       type: "notebook",
       writable: true, // TODO: tamitta: we don't know this info here
       created: "", // TODO: tamitta: we don't know this info here
@@ -369,7 +375,12 @@ export class GitHubContentProvider implements IContentProvider {
     const content: string = gitHubFile.content && params.content !== 0 ? atob(gitHubFile.content) : undefined;
     return {
       name: gitHubFile.name,
-      path: GitHubUtils.toGitHubUriForFile(gitHubFile),
+      path: GitHubUtils.toContentUri(
+        gitHubFile.repo.owner.login,
+        gitHubFile.repo.name,
+        gitHubFile.branch.name,
+        gitHubFile.path
+      ),
       type: "file",
       writable: true, // TODO: tamitta: we don't know this info here
       created: "", // TODO: tamitta: we don't know this info here

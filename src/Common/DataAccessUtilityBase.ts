@@ -544,7 +544,7 @@ export abstract class DataAccessUtilityBase {
     const initialHeaders = request.autoPilot
       ? !hasAutoPilotV2FeatureFlag
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: JSON.stringify({
+            [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({
               maxThroughput: request.autoPilot.maxThroughput
             })
           }
@@ -654,7 +654,7 @@ export abstract class DataAccessUtilityBase {
     const initialHeaders = autoPilot
       ? !hasAutoPilotV2FeatureFlag
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: JSON.stringify({ maxThroughput: autoPilot.maxThroughput })
+            [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({ maxThroughput: autoPilot.maxThroughput })
           }
         : {
             [Constants.HttpHeaders.autoPilotTier]: autoPilot.autopilotTier

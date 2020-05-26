@@ -51,7 +51,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     const textFieldProps: ITextFieldProps = {
       className: "directoryListFilterTextBox",
       placeholder: "Filter by directory name",
-      onBeforeChange: this._onFilterChanged,
+      onChange: this._onFilterChanged,
       ariaLabel: "Directory filter text box"
     };
 
@@ -66,7 +66,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     );
   }
 
-  private _onFilterChanged = (text: string): void => {
+  private _onFilterChanged = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text?: string): void => {
     this.setState({
       filterText: text
     });

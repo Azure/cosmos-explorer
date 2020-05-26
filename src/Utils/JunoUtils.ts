@@ -1,5 +1,8 @@
 import * as DataModels from "../Contracts/DataModels";
 import { config } from "../Config";
+import { RepoListItem } from "../Explorer/Controls/GitHub/GitHubReposComponent";
+import { IPinnedRepo } from "../Juno/JunoClient";
+import { IGitHubRepo } from "../GitHub/GitHubClient";
 
 export class JunoUtils {
   public static async getLikedNotebooks(authorizationToken: string): Promise<DataModels.LikedNotebooksJunoResponse> {
@@ -40,5 +43,24 @@ export class JunoUtils {
   ): Promise<DataModels.NotebookMetadata> {
     return undefined;
     //TODO: add notebookMetadata updation code
+  }
+
+  public static toPinnedRepo(item: RepoListItem): IPinnedRepo {
+    return {
+      owner: item.repo.owner.login,
+      name: item.repo.name,
+      private: item.repo.private,
+      branches: item.branches.map(element => ({ name: element.name }))
+    };
+  }
+
+  public static toGitHubRepo(pinnedRepo: IPinnedRepo): IGitHubRepo {
+    return {
+      owner: {
+        login: pinnedRepo.owner
+      },
+      name: pinnedRepo.name,
+      private: pinnedRepo.private
+    };
   }
 }

@@ -259,15 +259,19 @@ describe("MongoProxyClient", () => {
         sid: "a2",
         rg: "c1",
         dba: "main",
-        is: false
+        is: false,
+        isFixedCollectionWithSharedThroughputBeingCreated: true
       };
       _createMongoCollectionWithARM("management.azure.com", properties, { "x-ms-cosmos-offer-autopilot-tier": "1" });
-      expect(
-        resourceProviderClientPutAsyncSpy
-      ).toHaveBeenCalledWith(
+      expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
         "subscriptions/a2/resourceGroups/c1/providers/Microsoft.DocumentDB/databaseAccounts/foo/mongodbDatabases/a1-db/collections/abc-collection",
-        "2020-03-01",
-        { properties: { options: { "x-ms-cosmos-offer-autopilot-tier": "1" }, resource: { id: "abc-collection" } } }
+        "2020-04-01",
+        {
+          properties: {
+            options: { "x-ms-cosmos-offer-autopilot-tier": "1", InsertSystemPartitionKey: "true" },
+            resource: { id: "abc-collection" }
+          }
+        }
       );
     });
     it("should create a collection with provisioned throughput when provisioned throughput is selected + shared throughput is false", () => {
@@ -282,15 +286,19 @@ describe("MongoProxyClient", () => {
         rg: "c1",
         dba: "main",
         is: false,
-        offerThroughput: 400
+        offerThroughput: 400,
+        isFixedCollectionWithSharedThroughputBeingCreated: true
       };
       _createMongoCollectionWithARM("management.azure.com", properties, undefined);
-      expect(
-        resourceProviderClientPutAsyncSpy
-      ).toHaveBeenCalledWith(
+      expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
         "subscriptions/a2/resourceGroups/c1/providers/Microsoft.DocumentDB/databaseAccounts/foo/mongodbDatabases/a1-db/collections/abc-collection",
-        "2020-03-01",
-        { properties: { options: { throughput: "400" }, resource: { id: "abc-collection" } } }
+        "2020-04-01",
+        {
+          properties: {
+            options: { throughput: "400", InsertSystemPartitionKey: "true" },
+            resource: { id: "abc-collection" }
+          }
+        }
       );
     });
   });

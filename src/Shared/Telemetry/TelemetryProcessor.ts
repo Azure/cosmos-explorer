@@ -1,6 +1,8 @@
 ﻿import { Action, ActionModifiers } from "./TelemetryConstants";
 import { MessageHandler } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
+import { appInsights } from "../appInsights";
+import { config } from "../../Config";
 
 /**
  * Class that persists telemetry data to the portal tables.
@@ -18,11 +20,7 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (!appInsights) {
-      return;
-    }
-    appInsights.trackEvent(Action[action], data);
+    appInsights.trackEvent({ name: Action[action] }, TelemetryProcessor.getData(data));
   }
 
   public static traceStart(action: Action, data?: any): number {
@@ -37,10 +35,7 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (appInsights) {
-      appInsights.startTrackEvent(Action[action]);
-    }
+    appInsights.startTrackEvent(Action[action]);
     return timestamp;
   }
 
@@ -55,11 +50,7 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (!appInsights) {
-      return;
-    }
-    appInsights.stopTrackEvent(Action[action], data);
+    appInsights.stopTrackEvent(Action[action], TelemetryProcessor.getData(data));
   }
 
   public static traceFailure(action: Action, data?: any, timestamp?: number): void {
@@ -73,11 +64,7 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (!appInsights) {
-      return;
-    }
-    appInsights.stopTrackEvent(Action[action], data);
+    appInsights.stopTrackEvent(Action[action], TelemetryProcessor.getData(data));
   }
 
   public static traceCancel(action: Action, data?: any, timestamp?: number): void {
@@ -91,11 +78,7 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (!appInsights) {
-      return;
-    }
-    appInsights.stopTrackEvent(Action[action], data);
+    appInsights.stopTrackEvent(Action[action], TelemetryProcessor.getData(data));
   }
 
   public static traceOpen(action: Action, data?: any, timestamp?: number): number {
@@ -109,10 +92,7 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (appInsights) {
-      appInsights.startTrackEvent(Action[action]);
-    }
+    appInsights.startTrackEvent(Action[action]);
     return timestamp;
   }
 
@@ -127,10 +107,14 @@ export default class TelemetryProcessor {
       }
     });
 
-    const appInsights: Microsoft.ApplicationInsights.IAppInsights = (<any>window).appInsights;
-    if (appInsights) {
-      appInsights.startTrackEvent(Action[action]);
-    }
+    appInsights.startTrackEvent(Action[action]);
     return timestamp;
+  }
+
+  private static getData(data?: any): any {
+    return {
+      platform: config.platform,
+      ...(data ? data : [])
+    };
   }
 }

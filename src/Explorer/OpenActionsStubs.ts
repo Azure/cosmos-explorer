@@ -20,6 +20,7 @@ import { TextFieldProps } from "./Controls/DialogReactComponent/DialogComponent"
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { Versions } from "../../src/Contracts/ExplorerContracts";
+import { CollectionCreationDefaults } from "../Shared/Constants";
 
 export class ExplorerStub implements ViewModels.Explorer {
   public flight: ko.Observable<string>;
@@ -32,6 +33,7 @@ export class ExplorerStub implements ViewModels.Explorer {
   public collectionTreeNodeAltText: ko.Observable<string>;
   public refreshTreeTitle: ko.Observable<string>;
   public collapsedResourceTreeWidth: number;
+  public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = CollectionCreationDefaults;
   public hasWriteAccess: ko.Observable<boolean> = ko.observable<boolean>(false);
   public databaseAccount: ko.Observable<ViewModels.DatabaseAccount>;
   public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;

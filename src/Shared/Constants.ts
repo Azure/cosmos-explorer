@@ -183,6 +183,17 @@ export class CollectionCreation {
   public static readonly TablesAPIDefaultDatabase: string = "TablesDB";
 }
 
+export const CollectionCreationDefaults = {
+  storage: CollectionCreation.storage100Gb,
+  throughput: {
+    fixed: CollectionCreation.DefaultCollectionRUs400,
+    unlimited: CollectionCreation.DefaultCollectionRUs400,
+    unlimitedmax: CollectionCreation.DefaultCollectionRUs1Million,
+    unlimitedmin: CollectionCreation.DefaultCollectionRUs400,
+    shared: CollectionCreation.DefaultCollectionRUs400
+  }
+} as const;
+
 export class IndexingPolicies {
   public static SharedDatabaseDefault = {
     indexingMode: "consistent",

@@ -3,13 +3,13 @@ import { fixture } from "@nteract/fixtures";
 import { HttpStatusCodes } from "../Common/Constants";
 import { GitHubClient, IGitHubCommit, IGitHubFile } from "./GitHubClient";
 import { GitHubContentProvider } from "./GitHubContentProvider";
+import { GitHubUtils } from "../Utils/GitHubUtils";
 
 const gitHubClient = new GitHubClient("token", () => {});
 const gitHubContentProvider = new GitHubContentProvider({
   gitHubClient,
   promptForCommitMsg: () => Promise.resolve("commit msg")
 });
-const sampleGitHubUri = `https://github.com/login/repo/blob/branch/dir/name.ipynb`;
 const sampleFile: IGitHubFile = {
   type: "file",
   encoding: "encoding",
@@ -18,8 +18,6 @@ const sampleFile: IGitHubFile = {
   path: "dir/name.ipynb",
   content: btoa(fixture),
   sha: "sha",
-  url: "url",
-  html_url: sampleGitHubUri,
   repo: {
     owner: {
       login: "login"
@@ -31,9 +29,15 @@ const sampleFile: IGitHubFile = {
     name: "branch"
   }
 };
+const sampleGitHubUri = GitHubUtils.toContentUri(
+  sampleFile.repo.owner.login,
+  sampleFile.repo.name,
+  sampleFile.branch.name,
+  sampleFile.path
+);
 const sampleNotebookModel: IContent<"notebook"> = {
   name: sampleFile.name,
-  path: sampleFile.html_url,
+  path: sampleGitHubUri,
   type: "notebook",
   writable: true,
   created: "",

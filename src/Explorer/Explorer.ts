@@ -112,6 +112,7 @@ export default class Explorer implements ViewModels.Explorer {
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   public databaseAccount: ko.Observable<ViewModels.DatabaseAccount>;
+  public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;
   public quotaId: ko.Observable<string>;
   public defaultExperience: ko.Observable<string>;
@@ -2161,6 +2162,9 @@ export default class Explorer implements ViewModels.Explorer {
       const authorizationToken = inputs.authorizationToken || "";
       const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
+      if (inputs.defaultCollectionThroughput) {
+        this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
+      }
       this.features(inputs.features);
       this.serverId(inputs.serverId);
       this.extensionEndpoint(inputs.extensionEndpoint || "");
@@ -2575,7 +2579,7 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public async importAndOpen(path: string): Promise<boolean> {
-    const name = NotebookUtil.getContentName(path);
+    const name = NotebookUtil.getName(path);
     const item = NotebookUtil.createNotebookContentItem(name, path, "file");
     const parent = this.resourceTree.myNotebooksContentRoot;
 
@@ -3106,14 +3110,15 @@ export default class Explorer implements ViewModels.Explorer {
       })
       .then(() => this.resourceTree.triggerRender())
       .catch(reason => {
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, reason);
+        const error = `Failed to create a new notebook: ${reason}`;
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
-            error: JSON.stringify(reason)
+            error
           },
           startKey
         );

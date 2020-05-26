@@ -141,8 +141,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
         targetName += extension;
       }
     }
-    const parsedPath = NotebookContentClient.parsePath(sourcePath);
-    const targetPath = `${parsedPath.dirpath}${targetName}`;
+    const targetPath = NotebookUtil.replaceName(sourcePath, targetName);
     return this.contentProvider
       .update<"file" | "notebook" | "directory">(this.getServerConfig(), sourcePath, { path: targetPath })
       .toPromise()
@@ -212,21 +211,6 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
         }
         return stringifyNotebook(content);
       });
-  }
-
-  /**
-   *
-   * @param path
-   * @returns basename and dirpath. Note: dirpath has trailing / already
-   */
-  private static parsePath(path: string): { dirpath: string; basename: string } {
-    const basename = path.split("/").pop();
-    const dirpath = path.split(basename).shift();
-
-    return {
-      dirpath,
-      basename
-    };
   }
 
   private deleteNotebookFile(path: string): Promise<string> {

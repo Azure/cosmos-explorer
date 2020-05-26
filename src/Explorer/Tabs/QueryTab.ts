@@ -329,7 +329,6 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
           this.requestChargeDisplayText(`${queryResults.requestCharge} RUs`);
 
           if (!this.queryResults() && !results) {
-            const appInsights: any = (<any>window).appInsights;
             const errorMessage: string = JSON.stringify({
               error: `Returned no results after query execution`,
               accountName: this.collection && this.collection.container.databaseAccount(),
@@ -341,7 +340,6 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
               responseHeaders: queryResults && queryResults.headers
             });
             Logger.logError(errorMessage, "QueryTab");
-            appInsights && appInsights.trackTrace(errorMessage);
           }
 
           this.queryResults(results);

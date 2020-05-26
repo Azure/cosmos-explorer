@@ -77,6 +77,7 @@ export interface Explorer {
 
   isAccountReady: ko.Observable<boolean>;
 
+  collectionCreationDefaults: CollectionCreationDefaults;
   isEmulator: boolean;
   features: ko.Observable<any>;
   serverId: ko.Observable<string>;
@@ -1257,6 +1258,26 @@ export interface DataExplorerInputsFrame {
   sharedThroughputDefault?: number;
   dataExplorerVersion?: string;
   isAuthWithresourceToken?: boolean;
+  defaultCollectionThroughput?: CollectionCreationDefaults;
+}
+
+export interface CollectionCreationDefaults {
+  storage: string;
+  throughput: ThroughputDefaults;
+}
+
+export interface ThroughputDefaults {
+  fixed: number;
+  unlimited:
+    | number
+    | {
+        collectionThreshold: number;
+        lessThanOrEqualToThreshold: number;
+        greatThanThreshold: number;
+      };
+  unlimitedmax: number;
+  unlimitedmin: number;
+  shared: number;
 }
 
 export enum SubscriptionType {

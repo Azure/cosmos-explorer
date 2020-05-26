@@ -2,13 +2,13 @@ import { DefaultButton, IButtonProps, ITextFieldProps, TextField } from "office-
 import * as React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as Constants from "../../../Common/Constants";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { Areas } from "../../../Common/Constants";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RepoListItem } from "./GitHubReposComponent";
 import { ChildrenMargin } from "./GitHubStyleConstants";
 import { GitHubUtils } from "../../../Utils/GitHubUtils";
 import { IGitHubRepo } from "../../../GitHub/GitHubClient";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import UrlUtility from "../../../Common/UrlUtility";
 
 export interface AddRepoComponentProps {
   container: ViewModels.Explorer;
@@ -80,24 +80,24 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     });
     let enteredUrl = this.state.textFieldValue;
     if (enteredUrl.indexOf("/tree/") === -1) {
-      enteredUrl = `${enteredUrl}/tree/${AddRepoComponent.DefaultBranchName}`;
+      enteredUrl = UrlUtility.createUri(enteredUrl, `tree/${AddRepoComponent.DefaultBranchName}`);
     }
 
-    const gitHubInfo = GitHubUtils.fromGitHubUri(enteredUrl);
-    if (gitHubInfo) {
+    const repoInfo = GitHubUtils.fromRepoUri(enteredUrl);
+    if (repoInfo) {
       this.setState({
         textFieldValue: "",
         textFieldErrorMessage: undefined
       });
 
-      const repo = await this.props.getRepo(gitHubInfo.owner, gitHubInfo.repo);
+      const repo = await this.props.getRepo(repoInfo.owner, repoInfo.repo);
       if (repo) {
         const item: RepoListItem = {
           key: GitHubUtils.toRepoFullName(repo.owner.login, repo.name),
           repo,
           branches: [
             {
-              name: gitHubInfo.branch
+              name: repoInfo.branch
             }
           ]
         };

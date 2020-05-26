@@ -74,10 +74,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase
     });
     this.keyspaceId.extend({ rateLimit: 100 });
     this.dedicateTableThroughput = ko.observable<boolean>(false);
-
-    const flight = this.container.flight();
-    const subscriptionType = this.container.subscriptionType();
-    const throughputDefaults = AddCollectionUtility.Utilities.getDefaultThroughput(flight, subscriptionType);
+    const throughputDefaults = this.container.collectionCreationDefaults.throughput;
     this.maxThroughputRU = ko.observable<number>(throughputDefaults.unlimitedmax);
     this.minThroughputRU = ko.observable<number>(throughputDefaults.unlimitedmin);
 
@@ -489,17 +486,16 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase
 
   public resetData() {
     super.resetData();
-    const throughputDefaults = AddCollectionUtility.Utilities.getDefaultThroughput(
-      this.container.flight(),
-      this.container.subscriptionType()
-    );
+    const throughputDefaults = this.container.collectionCreationDefaults.throughput;
     this.isAutoPilotSelected(false);
     this.isSharedAutoPilotSelected(false);
     this.selectedAutoPilotTier(null);
     this.selectedSharedAutoPilotTier(null);
     this.selectedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    this.throughput(throughputDefaults.unlimited(this.container));
+    this.throughput(
+      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
+    );
     this.keyspaceThroughput(throughputDefaults.shared);
     this.maxThroughputRU(throughputDefaults.unlimitedmax);
     this.minThroughputRU(throughputDefaults.unlimitedmin);

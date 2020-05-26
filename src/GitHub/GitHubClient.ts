@@ -28,8 +28,6 @@ export interface IGitHubFile {
   path: string;
   content?: string;
   sha: string;
-  url: string;
-  html_url: string;
 
   // Custom properties
   children?: IGitHubFile[];
@@ -68,6 +66,10 @@ export class GitHubClient {
     }
   };
 
+  private static readonly samplesBranch: IGitHubBranch = {
+    name: "master"
+  };
+
   private static readonly samplesTopCommit: IGitHubCommit = {
     sha: "41b964f442b638097a75a3f3b6a6451db05a12bf",
     committer: {
@@ -82,8 +84,6 @@ export class GitHubClient {
       path: ".github",
       sha: "5e6794a8177a0c07a8719f6e1d7b41cce6f92e1e",
       size: 0,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/.github?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/tree/master/.github",
       type: "dir"
     },
     {
@@ -91,8 +91,6 @@ export class GitHubClient {
       path: ".gitignore",
       sha: "3e759b75bf455ac809d0987d369aab89137b5689",
       size: 5582,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/.gitignore?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/.gitignore",
       type: "file"
     },
     {
@@ -100,8 +98,6 @@ export class GitHubClient {
       path: "1. GettingStarted.ipynb",
       sha: "0732ff5366e4aefdc4c378c61cbd968664f0acec",
       size: 3933,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/1.%20GettingStarted.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/1.%20GettingStarted.ipynb",
       type: "file"
     },
     {
@@ -109,8 +105,6 @@ export class GitHubClient {
       path: "2. Visualization.ipynb",
       sha: "f480134ac4adf2f50ce5fe66836c6966749d3ca1",
       size: 814261,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/2.%20Visualization.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/2.%20Visualization.ipynb",
       type: "file"
     },
     {
@@ -118,8 +112,6 @@ export class GitHubClient {
       path: "3. RequestUnits.ipynb",
       sha: "252b79a4adc81e9f2ffde453231b695d75e270e8",
       size: 9490,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/3.%20RequestUnits.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/3.%20RequestUnits.ipynb",
       type: "file"
     },
     {
@@ -127,8 +119,6 @@ export class GitHubClient {
       path: "4. Indexing.ipynb",
       sha: "e10dd67bd1c55c345226769e4f80e43659ef9cd5",
       size: 10394,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/4.%20Indexing.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/4.%20Indexing.ipynb",
       type: "file"
     },
     {
@@ -136,9 +126,6 @@ export class GitHubClient {
       path: "5. StoredProcedures.ipynb",
       sha: "949941949920de4d2d111149e2182e9657cc8134",
       size: 11818,
-      url:
-        "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/5.%20StoredProcedures.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/5.%20StoredProcedures.ipynb",
       type: "file"
     },
     {
@@ -146,9 +133,6 @@ export class GitHubClient {
       path: "6. GlobalDistribution.ipynb",
       sha: "b91c31dacacbc9e35750d9054063dda4a5309f3b",
       size: 11375,
-      url:
-        "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/6.%20GlobalDistribution.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/6.%20GlobalDistribution.ipynb",
       type: "file"
     },
     {
@@ -156,9 +140,6 @@ export class GitHubClient {
       path: "7. IoTAnomalyDetection.ipynb",
       sha: "82057ae52a67721a5966e2361317f5dfbd0ee595",
       size: 377939,
-      url:
-        "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/7.%20IoTAnomalyDetection.ipynb?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/blob/master/7.%20IoTAnomalyDetection.ipynb",
       type: "file"
     },
     {
@@ -166,8 +147,6 @@ export class GitHubClient {
       path: "All_API_quickstarts",
       sha: "07054293e6c8fc00771fccd0cde207f5c8053978",
       size: 0,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/All_API_quickstarts?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/tree/master/All_API_quickstarts",
       type: "dir"
     },
     {
@@ -175,8 +154,6 @@ export class GitHubClient {
       path: "CSharp_quickstarts",
       sha: "10e7f5704e6b56a40cac74bc39f15b7708954f52",
       size: 0,
-      url: "https://api.github.com/repos/Azure-Samples/cosmos-notebooks/contents/CSharp_quickstarts?ref=master",
-      html_url: "https://github.com/Azure-Samples/cosmos-notebooks/tree/master/CSharp_quickstarts",
       type: "dir"
     }
   ];
@@ -315,7 +292,9 @@ export class GitHubClient {
     if (GitHubClient.isSamplesCall(owner, repo, branch) && path === "") {
       return {
         status: HttpStatusCodes.OK,
-        data: GitHubClient.samplesFiles
+        data: GitHubClient.samplesFiles.map(file =>
+          GitHubClient.toGitHubFile(file, GitHubClient.samplesRepo, GitHubClient.samplesBranch)
+        )
       };
     }
 
@@ -515,8 +494,6 @@ export class GitHubClient {
       path: element.path,
       content: element.content,
       sha: element.sha,
-      url: element.url,
-      html_url: element.html_url,
       repo,
       branch
     };

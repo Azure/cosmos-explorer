@@ -301,6 +301,7 @@ export enum AutopilotTier {
 }
 
 export interface RpOptions {
+  // tier is sent as string, autoscale as object (AutoPilotCreationSettings)
   [key: string]: string | AutoPilotCreationSettings;
 }
 
@@ -546,6 +547,7 @@ export interface MongoParameters extends RpParameters {
   autoPilotTier?: string;
   autoPilotThroughput?: string;
   analyticalStorageTtl?: number;
+  isFixedCollectionWithSharedThroughputBeingCreated?: boolean;
 }
 
 export interface GraphParameters extends RpParameters {

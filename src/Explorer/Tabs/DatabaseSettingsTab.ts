@@ -245,11 +245,7 @@ export default class DatabaseSettingsTab extends TabsBase
       if (collectionThroughputInfo && !!collectionThroughputInfo.minimumRUForCollection) {
         return collectionThroughputInfo.minimumRUForCollection;
       }
-
-      const flight = this.container.flight();
-      const subscriptionType = this.container.subscriptionType();
-      const throughputDefaults = AddCollectionUtility.Utilities.getDefaultThroughput(flight, subscriptionType);
-
+      const throughputDefaults = this.container.collectionCreationDefaults.throughput;
       return throughputDefaults.unlimitedmin;
     });
 
@@ -269,10 +265,7 @@ export default class DatabaseSettingsTab extends TabsBase
         return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
       }
 
-      const flight = this.container.flight();
-      const subscriptionType = this.container.subscriptionType();
-      const throughputDefaults = AddCollectionUtility.Utilities.getDefaultThroughput(flight, subscriptionType);
-
+      const throughputDefaults = this.container.collectionCreationDefaults.throughput;
       return throughputDefaults.unlimitedmax;
     });
 

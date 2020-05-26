@@ -90,7 +90,10 @@ describe("test function", () => {
 
     const wrapper = mount(<DefaultDirectoryDropdownComponent {...props} />);
 
-    wrapper.find("div.defaultDirectoryDropdown").simulate("click");
+    wrapper
+      .find("div.defaultDirectoryDropdown")
+      .find("div.ms-Dropdown")
+      .simulate("click");
     expect(wrapper.exists("div.ms-Callout-main")).toBe(true);
     wrapper
       .find("button.ms-Dropdown-item")
@@ -99,7 +102,10 @@ describe("test function", () => {
     expect(props.onDefaultDirectoryChange).toBeCalled();
     expect(props.onDefaultDirectoryChange).toHaveBeenCalled();
 
-    wrapper.find("div.defaultDirectoryDropdown").simulate("click");
+    wrapper
+      .find("div.defaultDirectoryDropdown")
+      .find("div.ms-Dropdown")
+      .simulate("click");
     expect(wrapper.exists("div.ms-Callout-main")).toBe(true);
     wrapper
       .find("button.ms-Dropdown-item")

@@ -28,6 +28,7 @@ exports[`test render renders signed in with full info 1`] = `
 <FocusZone
   direction={2}
   isCircularNavigation={false}
+  preventDefaultWhenHandled={true}
 >
   <CustomizedDefaultButton
     className="mecontrolHeaderButton"
