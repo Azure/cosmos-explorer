@@ -1,0 +1,425 @@
+﻿<div class="pointerCursor">
+  <div
+    role="treeitem"
+    data-test="collectionList"
+    tabindex="0"
+    class="collectionMenu treeHovermargin highlight"
+    data-bind="
+        click: $data.expandCollapseCollection,
+        clickBubble: false,
+        contextmenuBubble: false,
+        css:{
+            collectionNodeSelected: isCollectionNodeSelected(),
+            contextmenushowing: $data.contextMenu.visible
+        },
+        event: {
+            keydown: onKeyDown,
+            keypress: onKeyPress,
+            contextmenu: $data.contextMenu.show,
+            drop: $data.onDrop,
+            dragover: $data.onDragOver
+        },
+        attr:{
+            'aria-expanded': $data.isCollectionExpanded,
+            'aria-selected': isCollectionNodeSelected()
+        }"
+  >
+    <span
+      class="collectionList databaseCollChildTextOverflow"
+      data-bind="
+            attr: {
+                title: $data.id()
+            }"
+    >
+      <img
+        class="imgiconwidth collectionsTreeCollapseExpand"
+        src="/Triangle-right.svg"
+        alt="Show collection properties"
+        data-bind="visible: !$data.isCollectionExpanded()"
+      />
+      <img
+        class="imgiconwidth collectionsTreeCollapseExpand"
+        src="/Triangle-down.svg"
+        alt="Hide collection properties"
+        data-bind="visible: $data.isCollectionExpanded()"
+      />
+      <img
+        src="/tree-collection.svg"
+        data-bind="
+                attr: {
+                    alt: container.addCollectionText
+                }"
+      />
+      <!--ko text: $data.id-->
+      <!--/ko-->
+    </span>
+    <span
+      class="menuEllipsis"
+      data-test="collectionEllipsisMenu"
+      name="context menu"
+      role="button"
+      data-bind="click: $data.contextMenu.show, clickBubble: false"
+      >&hellip;</span
+    >
+  </div>
+
+  <!-- Collection node children - Start -->
+  <div
+    class="collectionChildList"
+    role="group"
+    data-bind="
+        visible: $data.isCollectionExpanded,
+        clickBubble: false"
+  >
+    <!-- Documents Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="documentsMenu"
+        data-bind="
+                visible: $root.isPreferredApiDocumentDB(),
+                click: $data.onDocumentDBDocumentsClick,
+                event: {
+                    keydown: onDocumentDBDocumentsKeyDown,
+                    keypress: onDocumentDBDocumentsKeyPress
+                },
+                clickBubble: false,
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: isSubNodeSelected(0)
+                },
+                attr:{
+                    'aria-selected': isSubNodeSelected(0)
+                }"
+      >
+        <span class="databaseDocuments">Items</span>
+      </div>
+    </div>
+    <!-- Documents Node - End -->
+
+    <!-- Entitites Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="documentsMenu"
+        data-bind="
+                visible: $root.isPreferredApiTable(),
+                click: $data.onTableEntitiesClick,
+                event: {
+                    keydown: onTableEntitiesKeyDown,
+                    keypress: onTableEntitiesKeyPress
+                },
+                clickBubble: false,
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 9
+                },
+                attr:{
+                    'aria-selected': $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 9
+                }"
+      >
+        <span class="databaseDocuments">Entities</span>
+      </div>
+    </div>
+    <!-- Entitites Node - End -->
+
+    <!-- Rows Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="documentsMenu"
+        data-bind="
+                visible: $root.isPreferredApiCassandra(),
+                click: $data.onTableEntitiesClick,
+                event: {
+                    keydown: onTableEntitiesKeyDown,
+                    keypress: onTableEntitiesKeyPress
+                },
+                clickBubble: false,
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 9
+                },
+                attr:{
+                    'aria-selected': $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 9
+                }"
+      >
+        <span class="databaseDocuments">Rows</span>
+      </div>
+    </div>
+    <!-- Rows Node - End -->
+
+    <!-- Graph Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="documentsMenu"
+        data-bind="
+                visible: $root.isPreferredApiGraph,
+                click: $data.onGraphDocumentsClick,
+                event: {
+                    keydown: onGraphDocumentsKeyDown,
+                    keypress: onGraphDocumentsKeyPress
+                },
+                clickBubble: false,
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 6
+                },
+                attr:{
+                    'aria-selected': $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 6
+                }"
+      >
+        <span class="databaseDocuments">Graph</span>
+      </div>
+    </div>
+    <!-- Graph Node - End -->
+
+    <!-- MongoDB Documents Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="documentsMenu"
+        data-bind="
+                visible: $root.isPreferredApiMongoDB,
+                click: $data.onMongoDBDocumentsClick,
+                event: {
+                    keydown: onMongoDBDocumentsKeyDown,
+                    keypress: onMongoDBDocumentsKeyPress
+                },
+                clickBubble: false,
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 0
+                },
+                attr:{
+                    'aria-selected': $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 0
+                }"
+      >
+        <span class="databaseDocuments">Documents</span>
+      </div>
+    </div>
+    <!-- MongoDB Documents Node - End -->
+
+    <!-- Scale & Setings Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        data-bind="
+                click: $data.onSettingsClick,
+                event: {
+                    keydown: onSettingsKeyDown,
+                    keypress: onSettingsKeyPress
+                },
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 1
+                },
+                attr:{
+                    'aria-selected': $root.selectedNode && $root.selectedNode() && $root.selectedNode().rid === $data.rid && $data.selectedSubnodeKind() === 1
+                }"
+      >
+        <span class="databaseDocuments">
+          <!-- ko if: !$data.database.isDatabaseShared() -->
+          Scale & Settings
+          <!-- /ko -->
+          <!-- ko if: $data.database.isDatabaseShared() -->
+          Settings
+          <!-- /ko -->
+        </span>
+      </div>
+    </div>
+    <!-- Scale & Setings Node - End -->
+
+    <!-- Stored Procedures Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="storedProcedureMenu highlight"
+        data-bind="
+                click: $data.expandCollapseStoredProcedures,
+                event: {
+                    keydown: onStoredProceduresKeyDown,
+                    keypress: onStoredProceduresKeyPress
+                },
+                css: {
+                    collectionNodeSelected: !isStoredProceduresExpanded() && isSubNodeSelected(2)
+                },
+                attr:{
+                    'aria-expanded': $data.isStoredProceduresExpanded(),
+                    'aria-selected': !isStoredProceduresExpanded() && isSubNodeSelected(2)
+                },
+                visible: showStoredProcedures"
+      >
+        <span
+          class="collectionMenuChildren"
+          data-bind="
+                    attr: {
+                        title: $data.id()
+                    }"
+        >
+          <img
+            class="imgiconwidth collectionsTreeCollapseExpand"
+            src="/Triangle-right.svg"
+            alt="Show storedprocedures properties"
+            data-bind="visible: !$data.isStoredProceduresExpanded()"
+          />
+          <img
+            class="imgiconwidth collectionsTreeCollapseExpand"
+            src="/Triangle-down.svg"
+            alt="Hide storedprocedures properties"
+            data-bind="visible: $data.isStoredProceduresExpanded()"
+          />
+          Stored Procedures
+        </span>
+      </div>
+
+      <div
+        class="storedUdfTriggerMenu"
+        data-bind=" visible: $data.isStoredProceduresExpanded(), foreach: $data.storedProcedures"
+      >
+        <stored-procedure-node params="{data: $data}"></stored-procedure-node>
+      </div>
+    </div>
+    <!-- Stored Procedures Node - End -->
+
+    <!-- User Defined Functions Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="userDefinedMenu highlight"
+        data-bind="
+                click: $data.expandCollapseUserDefinedFunctions,
+                event: {
+                    keydown: onUserDefinedFunctionsKeyDown,
+                    keypress: onUserDefinedFunctionsKeyPress
+                },
+                css: {
+                    collectionNodeSelected: !isUserDefinedFunctionsExpanded() && isSubNodeSelected(3)
+                },
+                attr:{
+                    'aria-expanded': $data.isUserDefinedFunctionsExpanded(),
+                    'aria-selected': !isUserDefinedFunctionsExpanded() && isSubNodeSelected(3)
+                },
+                visible: showUserDefinedFunctions"
+      >
+        <div>
+          <span
+            class="collectionMenuChildren"
+            data-bind="
+                       attr: {
+                           title: $data.id()
+                        }"
+          >
+            <img
+              class="imgiconwidth collectionsTreeCollapseExpand"
+              src="/Triangle-right.svg"
+              alt="Show userdefinedfunctions properties"
+              data-bind="visible: !$data.isUserDefinedFunctionsExpanded()"
+            />
+            <img
+              class="imgiconwidth collectionsTreeCollapseExpand"
+              src="/Triangle-down.svg"
+              alt="Hide userdefinedfunctions properties"
+              data-bind="visible: $data.isUserDefinedFunctionsExpanded()"
+            />
+            User Defined Functions
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="storedUdfTriggerMenu"
+        data-bind="visible: $data.isUserDefinedFunctionsExpanded(), foreach: $data.userDefinedFunctions"
+      >
+        <user-defined-function-node params="{data: $data}"></user-defined-function-node>
+      </div>
+    </div>
+    <!-- User Defined Functions Node - End -->
+
+    <!-- Triggers Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        class="triggersMenu highlight"
+        data-bind="
+                click: $data.expandCollapseTriggers,
+                event: {
+                    keydown: onTriggersKeyDown,
+                    keypress: onTriggersKeyPress
+                },
+                css: {
+                    collectionNodeSelected: !isTriggersExpanded() && isSubNodeSelected(4)
+                },
+                attr:{
+                    'aria-expanded': $data.isTriggersExpanded(),
+                    'aria-selected': !isTriggersExpanded() && isSubNodeSelected(4)
+                },
+                visible: showTriggers"
+      >
+        <div>
+          <span
+            class="collectionMenuChildren"
+            data-bind="
+                        attr: {
+                            title: $data.id()
+                        }"
+          >
+            <img
+              class="imgiconwidth collectionsTreeCollapseExpand"
+              src="/Triangle-right.svg"
+              alt="Show Triggers properties"
+              data-bind="visible: !$data.isTriggersExpanded()"
+            />
+            <img
+              class="imgiconwidth collectionsTreeCollapseExpand"
+              src="/Triangle-down.svg"
+              alt="Hide Triggers properties"
+              data-bind="visible: $data.isTriggersExpanded()"
+            />
+            Triggers
+          </span>
+        </div>
+      </div>
+
+      <div class="storedUdfTriggerMenu" data-bind="visible: $data.isTriggersExpanded(), foreach: $data.triggers">
+        <trigger-node params="{data: $data}"></trigger-node>
+      </div>
+    </div>
+    <!-- Triggers Node - End -->
+
+    <!-- Conflicts Node - Start -->
+    <div>
+      <div
+        role="treeitem"
+        tabindex="0"
+        data-bind="
+                click: $data.onConflictsClick,
+                event: {
+                    keypress: onConflictsKeyPress
+                },
+                css: {
+                    highlight: true,
+                    collectionNodeSelected: isSubNodeSelected(12)
+                },
+                attr:{
+                    'aria-selected': isSubNodeSelected(12)
+                },
+                visible: showConflicts"
+      >
+        <span class=" databaseDocuments"> Conflicts </span>
+      </div>
+    </div>
+    <!-- Conflicts Node - End -->
+  </div>
+  <!-- Collection node children - End -->
+</div>

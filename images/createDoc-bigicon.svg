@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" enable-background="new 0 0 19 19">
+    <style type="text/css">
+        .icon-asx-blue {
+            fill:#0081E4;
+        }
+    </style>
+    <path class="icon-asx-blue" d="M19 10h-9v9h-1v-9h-9v-1h9v-9h1v9h9v1z"/>
+</svg>

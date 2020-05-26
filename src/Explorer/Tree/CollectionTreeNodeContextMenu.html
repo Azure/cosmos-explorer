@@ -1,0 +1,16 @@
+﻿<div data-bind="event: { keydown: onMenuKeyDown }">
+  <div
+    class="context-menu-background"
+    data-bind="
+                    visible: $data.contextMenu.visible,
+                    click: $data.contextMenu.hide"
+  ></div>
+
+  <div
+    class="context-menu"
+    data-test="collectionContextMenu"
+    data-bind="attr:{ tabindex: $data.contextMenu.tabIndex, id: $data.contextMenu.elementId }, visible: $data.contextMenu.visible, foreach: $data.contextMenu.options"
+  >
+    <command-button class="context-menu-option" params="{buttonProps: $data}"></command-button>
+  </div>
+</div>

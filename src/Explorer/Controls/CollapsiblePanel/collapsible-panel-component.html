@@ -1,0 +1,44 @@
+<div class="collapsiblePanel" data-bind="css: { paneCollapsed:isCollapsed() }">
+  <div class="panelHeader" data-bind="visible: !isCollapsed()">
+    <span
+      class="collapsedIconContainer collapseExpandButton"
+      data-bind="click:toggleCollapse, css: { 'pull-right':params.collapseToLeft }"
+    >
+      <img
+        class="collapsedIcon imgVerticalAlignment"
+        src="/imgarrowlefticon.svg"
+        alt="Collapse"
+        data-bind="css: { expanded:!isCollapsed(), iconMirror:params.collapseToLeft }"
+      />
+    </span>
+    <span
+      class="expandedTitle"
+      data-bind="text: params.expandedTitle, css:{ iconSpacer:!params.collapseToLeft }"
+    ></span>
+  </div>
+
+  <div class="collapsibleNav nav" data-bind="visible:isCollapsed">
+    <ul class="nav">
+      <li class="collapsedBtn collapseExpandButton">
+        <span class="collapsedIconContainer" data-bind="click: toggleCollapse">
+          <img
+            class="collapsedIcon"
+            src="/imgarrowlefticon.svg"
+            data-bind="css: { expanded:!isCollapsed(), iconMirror:params.collapseToLeft }"
+            alt="Expand"
+          />
+        </span>
+        <span class="rotatedInner" data-bind="click: toggleCollapse">
+          <span data-bind="text: params.collapsedTitle"></span>
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="panelContent" data-bind="visible:!isCollapsed()">
+    <!-- ko with:$parent -->
+    <!-- ko template: { nodes: $componentTemplateNodes } -->
+    <!-- /ko -->
+    <!-- /ko -->
+  </div>
+</div>

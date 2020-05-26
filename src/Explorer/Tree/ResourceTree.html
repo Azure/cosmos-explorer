@@ -1,0 +1,11 @@
+﻿<div
+  class="collectionstree"
+  data-test="resoureTree-collectionsTree"
+  tabindex="0"
+  role="tree"
+  data-bind="attr: { 'aria-label': collectionTitle }"
+>
+  <div class="databaseList" data-bind="foreach: nonSystemDatabases">
+    <database-node params="{data: $data}"></database-node>
+  </div>
+</div>

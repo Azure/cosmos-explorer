@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test render renders auth aad, with all information 1`] = `
+<CustomizedDefaultButton
+  className="accountSwitchButton"
+  id="accountSwitchButton"
+  menuProps={
+    Object {
+      "className": "accountSwitchContextualMenu",
+      "directionalHintFixed": true,
+      "items": Array [
+        Object {
+          "key": "switchSubscription",
+          "onRender": [Function],
+        },
+        Object {
+          "key": "switchAccount",
+          "onRender": [Function],
+        },
+      ],
+    }
+  }
+  styles={
+    Object {
+      "root": Object {
+        "backgroundColor": undefined,
+        "color": undefined,
+        "fontSize": undefined,
+        "height": 40,
+        "marginRight": 5,
+        "padding": 0,
+        "paddingLeft": 10,
+      },
+      "rootExpanded": Object {
+        "backgroundColor": undefined,
+        "color": undefined,
+      },
+      "rootFocused": Object {
+        "backgroundColor": undefined,
+        "color": undefined,
+      },
+      "rootHovered": Object {
+        "backgroundColor": undefined,
+        "color": undefined,
+      },
+      "rootPressed": Object {
+        "backgroundColor": undefined,
+        "color": undefined,
+      },
+      "textContainer": Object {
+        "flexGrow": "initial",
+      },
+    }
+  }
+  text="account2"
+/>
+`;
+
+exports[`test render renders auth security token, with selected account name 1`] = `
+<span
+  className="accountNameHeader"
+>
+  testaccount
+</span>
+`;
+
+exports[`test render renders no auth type -> handle error in code 1`] = `
+<span
+  className="accountNameHeader"
+/>
+`;

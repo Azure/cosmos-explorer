@@ -1,0 +1,203 @@
+@import "./Common/Constants";
+
+.dirty {
+    border: 1px solid #9b4f96;
+}
+
+.dirty:focus {
+    outline: 1px solid #9b4f96;
+}
+
+.tabForm {
+    padding: 12px 20px 20px 20px;
+    margin-left: 3px;
+}
+
+.storedTabForm {
+    padding-top: @LargeSpace;
+}
+
+.scaleSettingScrollable {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height:100%;
+}
+
+.disableFocusDefaults[tabindex] {
+    &:focus {
+        outline: none;
+    }
+
+    &:active {
+        outline: none;
+    }
+}
+
+.indexingPolicyEditor {
+    width: 100%;
+    height: calc(~"100vh - 400px");
+}
+
+.scaleDivison {
+    padding: @MediumSpace 0px @DefaultSpace 0px;
+}
+
+.scaleSettingTitle {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.autoScaleThroughputTitle {
+    margin-bottom: @SmallSpace;
+}
+
+.autoScaleDescription {
+    margin-top: 6px;
+    margin-bottom: @SmallSpace;
+}
+
+.ssExpandCollapseIcon {
+    width: 10px;
+    height: 10px;
+}
+
+.ssCollapseIcon {
+    margin-bottom: 5px;
+}
+
+.ssTextAllignment {
+    padding-left: 19px;
+}
+
+.throughputStorageBlock {
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+    background-color: #ccc;
+    padding-left: 10px;
+    width: 315px;
+}
+
+.storageCapacityTitle {
+    padding: @LargeSpace 0px;
+
+}
+.throughputStorageValue {
+    font-size: 12px;
+}
+
+.estimatedCost, .largePartitionKeyEnabled {
+    padding: @SmallSpace 0px @LargeSpace;
+}
+
+.storagePadding {
+    padding-top: 6px;
+    padding-bottom: 14px;
+}
+
+.dirtyTextbox {
+    width: 176px;
+    margin-top: 7px;
+    padding-left: 5px;
+}
+
+.formTitleFirst {
+    padding: @DefaultSpace (2 * @MediumSpace);
+}
+
+.formTitleTextbox {
+    padding: 0px 0px @DefaultSpace (2 * @MediumSpace);
+}
+
+.formTree {
+    border: 1px solid #969696;
+    color: #393939;
+    padding: 0px 12px 1px 8px;
+}
+
+.formTree:hover {
+    border: 1px solid #969696;
+    background-color: #e6f8fe;
+}
+
+.formTree:active {
+    border: 1px solid #1ebbee;
+}
+
+.scaleForm {
+    padding-left: 8px;
+    color: @BaseDark;
+    border: 1px solid #969696;
+    min-width: @ScaleFormWidth;
+
+    &:hover {
+        background-color: #e6f8fe;
+    }    
+}
+
+.formTitle {
+    margin-top: 16px;
+    margin-bottom: 4px; 
+}
+
+
+.spUdfTriggerHeader {
+    padding: @DefaultSpace 0px @SmallSpace (2 * @MediumSpace); 
+}
+
+.storedUdfTriggerEditor {
+    width: 100%;
+    height: 100%;
+}
+
+.unselectedRadio {
+    background-color: white;
+    border-color: #EEE!important;
+    color: black!important;
+}
+
+.disabledRadio {
+    background-color: #A19F9D;
+    border-color: #EEE!important;
+    color: white!important;
+}
+
+.selectedRadio {
+    background-color: @AccentMediumHigh;
+    border-color: #EEE!important;
+    color: white!important;
+    cursor: pointer;
+}
+
+.selectedRadio:hover {
+    background-color: @AccentMediumHigh;
+    border-color: #EEE!important;
+    color: white!important;
+    cursor: pointer;
+}
+
+.selectedRadio:active {
+    background-color: #0072c6;
+    border-color: #EEE!important;
+    color: white!important;
+    cursor: pointer;
+    border: 1px solid #0072c6;
+}
+
+.selectedRadio.dirty {
+    background-color: #9b4f96;
+}
+
+.tabs {
+    margin: 0;
+}
+
+.formReadOnly {
+    background-color: #ddd;
+    border: 1px solid #969696;
+    min-width: 184px;
+    padding-left: 8px;
+}
+
+.migration:disabled {
+    background-color: #ccc;
+}

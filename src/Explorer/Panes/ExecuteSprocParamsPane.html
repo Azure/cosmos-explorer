@@ -1,0 +1,165 @@
+<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
+  <div
+    class="contextual-pane-out"
+    data-bind="
+                    click: cancel,
+                    clickBubble: false"
+  ></div>
+  <div class="contextual-pane" id="executesprocparamspane">
+    <!-- Input params form  -- Start -->
+    <div class="contextual-pane-in">
+      <form class="paneContentContainer" data-bind="submit: execute">
+        <!-- Input params header - Start -->
+        <div class="firstdivbg headerline">
+          <span data-bind="text: title"></span>
+          <div
+            class="closeImg"
+            role="button"
+            aria-label="Close pane"
+            tabindex="0"
+            data-bind="
+                                    click: cancel, event: { keypress: onCloseKeyPress }"
+          >
+            <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+          </div>
+        </div>
+        <!-- Input params header - End -->
+
+        <!-- Input params errors - Start -->
+        <div
+          class="warningErrorContainer"
+          aria-live="assertive"
+          data-bind="visible: formErrors() && formErrors() !== ''"
+        >
+          <div class="warningErrorContent">
+            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"/></span>
+            <span class="warningErrorDetailsLinkContainer">
+              <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
+              <a
+                class="errorLink"
+                role="link"
+                data-bind="
+                            visible: formErrorsDetails() && formErrorsDetails() !== '',
+                            click: showErrorDetails"
+                >More details</a
+              >
+            </span>
+          </div>
+        </div>
+        <!-- Input params errors - End -->
+
+        <!-- Script for each param clause to be used for executing a stored procedure -->
+        <script type="text/html" id="param-template">
+          <tr>
+              <td class="paramTemplateRow">
+                  <select class="dataTypeSelector" data-bind="value: type, attr: { 'aria-label': type }">
+                      <option value="custom">Custom</option>
+                      <option value="string">String</option>
+                  </select>
+              </td>
+              <td class="paramTemplateRow">
+                  <input class="valueTextBox" aria-label="Param" data-bind="textInput: value" />
+                  <span class="spEntityAddCancel" data-bind="click: $parent.deleteParam.bind($parent, $index()), event: { keypress: $parent.onDeleteParamKeyPress.bind($parent, $index()) }" role="button" tabindex="0">
+                      <img src="/Entity_cancel.svg" alt="Delete param">
+                  </span>
+                  <span class="spEntityAddCancel" data-bind="click: $parent.addNewParamAtIndex.bind($parent, $index()), event: { keypress: $parent.onAddNewParamAtIndexKeyPress.bind($parent, $index()) }" role="button" tabindex="0">
+                      <img src="/Add-property.svg" alt="Add param">
+                  </span>
+              </td>
+          </tr>
+        </script>
+
+        <!-- Input params input - Start -->
+        <div class="paneMainContent">
+          <div>
+            <!-- Partition key input - Start -->
+            <div class="partitionKeyContainer" data-bind="visible: collectionHasPartitionKey">
+              <div class="inputHeader">Partition key value</div>
+              <div class="scrollBox">
+                <table class="paramsClauseTable">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="paramTemplateRow">
+                        <select
+                          class="dataTypeSelector"
+                          data-bind="value: partitionKeyType, attr: { 'aria-label': partitionKeyType }"
+                        >
+                          <option value="custom">Custom</option>
+                          <option value="string">String</option>
+                        </select>
+                      </td>
+                      <td class="paramTemplateRow">
+                        <input
+                          class="partitionKeyValue"
+                          id="partitionKeyValue"
+                          role="textbox"
+                          tabindex="0"
+                          aria-label="Partition key value"
+                          data-bind="textInput: partitionKeyValue"
+                          autofocus
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Partition key input - End -->
+
+            <!-- Input params table - Start -->
+            <div class="paramsTable">
+              <div class="enterInputParams">Enter input parameters (if any)</div>
+              <div class="scrollBox" id="executeSprocParamsScroll">
+                <table class="paramsClauseTable">
+                  <thead>
+                    <tr>
+                      <th class="paramTableTypeHead">Type</th>
+                      <th>Param</th>
+                    </tr>
+                  </thead>
+                  <tbody data-bind="template: { name: 'param-template', foreach: params }"></tbody>
+                </table>
+              </div>
+              <div
+                id="addNewParamLink"
+                class="addNewParam"
+                data-bind="click: addNewParam, event: { keypress: onAddNewParamKeyPress }, attr:{ title: addNewParamLabel }"
+                role="button"
+                tabindex="0"
+              >
+                <span>
+                  <img src="/Add-property.svg" alt="Add new param" />
+                  <span class="addNewParamLabel" data-bind="text: addNewParamLabel" />
+                </span>
+              </div>
+            </div>
+            <!-- Input params table - End -->
+          </div>
+        </div>
+        <div class="paneFooter">
+          <div class="leftpanel-okbut">
+            <input
+              type="submit"
+              value="Execute"
+              class="btncreatecoll1"
+              data-bind="{ css: { btnDisabled: !executeButtonEnabled() }}"
+            />
+          </div>
+        </div>
+        <!-- Input param input - End -->
+      </form>
+    </div>
+    <!-- Input params form - End -->
+    <!-- Loader - Start -->
+    <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
+      <img class="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" />
+    </div>
+    <!-- Loader - End -->
+  </div>
+</div>

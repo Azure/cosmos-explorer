@@ -1,0 +1,126 @@
+@import "../Common/Constants";
+
+.column-options {
+    margin: 15px 0 0 0;
+    .flex-display();
+    .flex-direction();
+    height:100%;
+    overflow: hidden; //this is to fit the layout in all browsers
+}
+
+.column-options>.content {
+    width: 100%;
+    margin-top: 0px;
+    height:100%;
+    overflow: hidden; //this is to fit the layout in all browsers
+}
+
+.column-options>.content>section {
+    width: 100%;
+    height: 300px;
+    float: left;
+    height:100%;
+    /*border: 1px solid #eeeeee;
+  [1px solid {plugin-treeview-content-selected-border-color}]*/
+}
+
+.column-options>.content>aside {
+    line-height: 30px;
+    height: 300px;
+    width: 25%;
+    float: right;
+    padding-right: 8px;
+    text-align: right;
+}
+
+.column-options>.content>aside>input[type="button"] {
+    width: 76px;
+    margin-bottom: 20px;
+}
+
+div.column-options ul {
+    list-style: none;
+    max-width: inherit;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    white-space: nowrap;
+    color: #000000;
+    margin-left: -45px;
+    outline: none;
+    /*[{plugin-treeview-content-color}]*/
+    /*background-color: #F1F2F5;*/
+    /*[{plugin-treeview-content-background-color}]*/
+}
+
+div.column-options ul>.list-item {
+    margin: 0px 0px 0 6px;
+}
+
+.list-item.selected {
+    /*[{plugin-treeview-content-selected-color}]*/
+    background-color: #DEF;
+    /*[{plugin-treeview-content-selected-background-color}]*/
+}
+
+.list-item:hover {
+    background-color: #e6f8fe;
+}
+
+div.column-options ul>.list-item>input[type="checkbox"] {
+    vertical-align: sub;
+    margin-right: 8px;
+}
+
+div.column-options ul>.list-item>span {
+    display: inline-block;
+    width: calc(~"80%");
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+}
+
+div.column-options label {
+    padding: 0px;
+}
+
+.buttons {
+    margin-top: 15px;
+}
+
+.row-label {
+    display: block;
+    margin-top: 10px;
+}
+
+.all-select-check {
+    vertical-align: sub;
+    margin-right: 10px !important;
+}
+
+.columns-border {
+    border-bottom: 1px solid #ddd;
+    width: 85%;
+    line-height: 28px;
+}
+
+.column-opt-arrow-Img {
+    float: right;
+    margin-top: 6px;
+    width: 14px;
+    height: 14px;
+}
+
+.column-arrows-svg {
+    padding: 0px 6px 5px 6px;
+    cursor: pointer;
+    float: right;
+}
+
+.column-arrows-svg:hover {
+    background-color: @BaseLow;
+}
+
+.column-arrows-svg:active {
+    background-color: @AccentMediumLow;
+}

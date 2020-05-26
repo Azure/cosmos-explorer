@@ -1,0 +1,755 @@
+﻿<div
+  class="tab-pane flexContainer"
+  data-bind="
+    attr:{
+        id: tabId
+    },
+    visible: isActive"
+  role="tabpanel"
+>
+  <div class="warningErrorContainer scaleWarningContainer" data-bind="visible: shouldShowStatusBar">
+    <div>
+      <div class="warningErrorContent" data-bind="visible: shouldShowNotificationStatusPrompt">
+        <span><img src="/info_color.svg" alt="Info"/></span>
+        <span class="warningErrorDetailsLinkContainer" data-bind="html: notificationStatusInfo"></span>
+      </div>
+      <div class="warningErrorContent" data-bind="visible: !shouldShowNotificationStatusPrompt()">
+        <span><img src="/warning.svg" alt="Warning"/></span>
+        <span class="warningErrorDetailsLinkContainer" data-bind="html: warningMessage"></span>
+      </div>
+    </div>
+  </div>
+  <div class="tabForm scaleSettingScrollable">
+    <!-- ko if: shouldShowKeyspaceSharedThroughputMessage -->
+    <div>This table shared throughput is configured at the keyspace</div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: hasDatabaseSharedThroughput -->
+    <div>
+      <div
+        class="scaleDivison"
+        data-bind="click:toggleScale, event: { keypress: onScaleKeyPress }, attr:{ 'aria-expanded': scaleExpanded() ? 'true' : 'false' }"
+        role="button"
+        tabindex="0"
+        aria-label="Scale"
+        aria-controls="scaleRegion"
+      >
+        <span class="themed-images" type="text/html" id="ExpandChevronRightScale" data-bind="visible: !scaleExpanded()">
+          <img
+            class="imgiconwidth ssExpandCollapseIcon ssCollapseIcon "
+            src="/Triangle-right.svg"
+            alt="Show scale properties"
+          />
+        </span>
+
+        <span class="themed-images" type="text/html" id="ExpandChevronDownScale" data-bind="visible: scaleExpanded">
+          <img class="imgiconwidth ssExpandCollapseIcon " src="/Triangle-down.svg" alt="Hide scale properties" />
+        </span>
+
+        <span class="scaleSettingTitle">Scale</span>
+      </div>
+
+      <div class="ssTextAllignment" data-bind="visible: scaleExpanded" id="scaleRegion">
+        <!-- ko ifnot: isAutoScaleEnabled -->
+        <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
+        <throughput-input-autopilot-v3
+          params="{
+                        testId: testId,
+                        class: 'scaleForm dirty',
+                        value: throughput,
+                        minimum: minRUs,
+                        maximum: maxRUThroughputInputLimit,
+                        isEnabled: !hasDatabaseSharedThroughput(),
+                        canExceedMaximumValue: canThroughputExceedMaximumValue,
+                        label: throughputTitle,
+                        ariaLabel: throughputAriaLabel,
+                        costsVisible: costsVisible,
+                        requestUnitsUsageCost: requestUnitsUsageCost,
+                        throughputAutoPilotRadioId: throughputAutoPilotRadioId,
+                        throughputProvisionedRadioId: throughputProvisionedRadioId,
+                        throughputModeRadioName: throughputModeRadioName,
+                        showAutoPilot: userCanChangeProvisioningTypes,
+                        isAutoPilotSelected: isAutoPilotSelected,
+                        maxAutoPilotThroughputSet: autoPilotThroughput,
+                        autoPilotUsageCost: autoPilotUsageCost,
+                        overrideWithAutoPilotSettings: overrideWithAutoPilotSettings,
+                        overrideWithProvisionedThroughputSettings: overrideWithProvisionedThroughputSettings
+                    }"
+        >
+        </throughput-input-autopilot-v3>
+        <!-- /ko -->
+        <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
+        <throughput-input
+          params="{
+                        testId: testId,
+                        class: 'scaleForm dirty',
+                        value: throughput,
+                        minimum: minRUs,
+                        maximum: maxRUThroughputInputLimit,
+                        isEnabled: !hasDatabaseSharedThroughput(),
+                        canExceedMaximumValue: canThroughputExceedMaximumValue,
+                        label: throughputTitle,
+                        ariaLabel: throughputAriaLabel,
+                        costsVisible: costsVisible,
+                        requestUnitsUsageCost: requestUnitsUsageCost,
+                        throughputAutoPilotRadioId: throughputAutoPilotRadioId,
+                        throughputProvisionedRadioId: throughputProvisionedRadioId,
+                        throughputModeRadioName: throughputModeRadioName,
+                        showAutoPilot: userCanChangeProvisioningTypes,
+                        isAutoPilotSelected: isAutoPilotSelected,
+                        autoPilotTiersList: autoPilotTiersList,
+                        selectedAutoPilotTier: selectedAutoPilotTier,
+                        autoPilotUsageCost: autoPilotUsageCost,
+                        canExceedMaximumValue: canExceedMaximumValue
+                    }"
+        >
+        </throughput-input>
+        <!-- /ko -->
+
+        <div
+          class="storageCapacityTitle throughputStorageValue"
+          data-bind="html: storageCapacityTitle, visible: !isAutoPilotSelected()"
+        ></div>
+        <!-- /ko -->
+
+        <div data-bind="visible: rupmVisible">
+          <div class="formTitle">RU/m</div>
+          <div class="tabs" aria-label="RU/m">
+            <div class="tab">
+              <label
+                data-bind="
+                                attr:{
+                                    for: rupmOnId
+                                },
+                                css: {
+                                    dirty: rupm.editableIsDirty,
+                                    selectedRadio: rupm() === 'on',
+                                    unselectedRadio: rupm() !== 'on'
+                                }"
+                >On</label
+              >
+              <input
+                type="radio"
+                name="rupm"
+                value="on"
+                class="radio"
+                data-bind="
+                                attr:{
+                                    id: rupmOnId
+                                },
+                                checked: rupm"
+              />
+            </div>
+            <div class="tab">
+              <label
+                data-bind="
+                                attr:{
+                                    for: rupmOffId
+                                },
+                                css:  {
+                                    dirty: rupm.editableIsDirty,
+                                    selectedRadio: rupm() === 'off',
+                                    unselectedRadio: rupm() !== 'off'
+                                }"
+                >Off</label
+              >
+              <input
+                type="radio"
+                name="rupm"
+                value="off"
+                class="radio"
+                data-bind="
+                                    attr:{
+                                        id: rupmOffId
+                                    },
+                                    checked: rupm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- TODO: Replace link with call to the Azure Support blade -->
+        <div data-bind="visible: isAutoScaleEnabled">
+          <div class="autoScaleThroughputTitle">Throughput (RU/s)</div>
+          <input
+            class="formReadOnly collid-white"
+            readonly
+            aria-label="Throughput input"
+            data-bind="textInput: throughput"
+          />
+          <div class="autoScaleDescription">
+            Your account has custom settings that prevents setting throughput at the container level. Please work with
+            your Cosmos DB engineering team point of contact to make changes.
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
+
+    <div data-bind="visible: hasConflictResolution">
+      <div
+        class="formTitle"
+        data-bind="click:toggleConflictResolution, event: { keypress: onConflictResolutionKeyPress }, attr:{ 'aria-expanded': conflictResolutionExpanded() ? 'true' : 'false' }"
+        role="button"
+        tabindex="0"
+        aria-label="Conflict Resolution"
+        aria-controls="conflictResolutionRegion"
+      >
+        <span
+          class="themed-images"
+          type="text/html"
+          id="ExpandChevronRightConflictResolution"
+          data-bind="visible: !conflictResolutionExpanded()"
+        >
+          <img
+            class="imgiconwidth ssExpandCollapseIcon ssCollapseIcon"
+            src="/Triangle-right.svg"
+            alt="Show conflict resolution"
+          />
+        </span>
+
+        <span
+          class="themed-images"
+          type="text/html"
+          id="ExpandChevronDownConflictResolution"
+          data-bind="visible: conflictResolutionExpanded"
+        >
+          <img class="imgiconwidth ssExpandCollapseIcon" src="/Triangle-down.svg" alt="Show conflict resolution" />
+        </span>
+        <span class="scaleSettingTitle">Conflict resolution</span>
+      </div>
+      <div id="conflictResolutionRegion" class="ssTextAllignment" data-bind="visible: conflictResolutionExpanded">
+        <div class="formTitle">Mode</div>
+        <div class="tabs" aria-label="Mode" role="radiogroup">
+          <div class="tab">
+            <label
+              tabindex="0"
+              role="radio"
+              data-bind="
+                            attr:{
+                                for: conflictResolutionPolicyModeLWW,
+                                'aria-checked': conflictResolutionPolicyMode() !== 'Custom' ? 'true' : 'false'
+                            },
+                            css:  {
+                                dirty: conflictResolutionPolicyMode.editableIsDirty,
+                                selectedRadio: conflictResolutionPolicyMode() === 'LastWriterWins',
+                                unselectedRadio: conflictResolutionPolicyMode() !== 'LastWriterWins'
+                            },
+                            event: {
+                                keypress: onConflictResolutionLWWKeyPress
+                            }"
+              >Last Write Wins (default)</label
+            >
+            <input
+              type="radio"
+              name="conflictresolution"
+              value="LastWriterWins"
+              class="radio"
+              data-bind="
+                            attr:{
+                                id: conflictResolutionPolicyModeLWW
+                            },
+                            checked: conflictResolutionPolicyMode"
+            />
+          </div>
+
+          <div class="tab">
+            <label
+              tabindex="0"
+              role="radio"
+              data-bind="
+                            attr:{
+                                for: conflictResolutionPolicyModeCustom,
+                                'aria-checked': conflictResolutionPolicyMode() === 'Custom' ? 'true' : 'false'
+                            },
+                            css: {
+                                dirty: conflictResolutionPolicyMode.editableIsDirty,
+                                selectedRadio: conflictResolutionPolicyMode() === 'Custom',
+                                unselectedRadio: conflictResolutionPolicyMode() !== 'Custom'
+                            },
+                            event: {
+                                keypress: onConflictResolutionCustomKeyPress
+                            }"
+              >Merge Procedure (custom)</label
+            >
+            <input
+              type="radio"
+              name="conflictresolution"
+              value="Custom"
+              class="radio"
+              data-bind="
+                            attr:{
+                                id: conflictResolutionPolicyModeCustom
+                            },
+                            checked: conflictResolutionPolicyMode"
+            />
+          </div>
+        </div>
+        <div data-bind="visible: conflictResolutionPolicyMode() === 'LastWriterWins'">
+          <p class="formTitle">
+            Conflict Resolver Property
+            <span class="infoTooltip" role="tooltip" tabindex="0">
+              <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+              <span class="tooltiptext infoTooltipWidth"
+                >Gets or sets the name of a integer property in your documents which is used for the Last Write Wins
+                (LWW) based conflict resolution scheme. By default, the system uses the system defined timestamp
+                property, _ts to decide the winner for the conflicting versions of the document. Specify your own
+                integer property if you want to override the default timestamp based conflict resolution.</span
+              >
+            </span>
+          </p>
+          <p>
+            <input
+              type="text"
+              aria-label="Document path for conflict resolution"
+              data-bind="
+                            css: {
+                                dirty: conflictResolutionPolicyPath.editableIsDirty
+                            },
+                            textInput: conflictResolutionPolicyPath,
+                            enable: conflictResolutionPolicyMode() === 'LastWriterWins'"
+            />
+          </p>
+        </div>
+        <div data-bind="visible: conflictResolutionPolicyMode() === 'Custom'">
+          <p class="formTitle">
+            Stored procedure
+            <span class="infoTooltip" role="tooltip" tabindex="0">
+              <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+              <span class="tooltiptext infoTooltipWidth"
+                >Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can
+                write application defined logic to determine the winner of the conflicting versions of a document. The
+                stored procedure will get executed transactionally, exactly once, on the server side. If you do not
+                provide a stored procedure, the conflicts will be populated in the
+                <a class="linkDarkBackground" href="https://aka.ms/dataexplorerconflics" target="_blank"
+                  >conflicts feed</a
+                >. You can update/re-register the stored procedure at any time.</span
+              >
+            </span>
+          </p>
+          <p>
+            <input
+              type="text"
+              aria-label="Stored procedure name for conflict resolution"
+              data-bind="
+                            css: {
+                                dirty: conflictResolutionPolicyProcedure.editableIsDirty
+                            },
+                            textInput: conflictResolutionPolicyProcedure,
+                            enable: conflictResolutionPolicyMode() === 'Custom'"
+            />
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="formTitle"
+      data-bind="click:toggleSettings, event: { keypress: onSettingsKeyPress }, attr:{ 'aria-expanded': settingsExpanded() ? 'true' : 'false' }, visible: shouldShowIndexingPolicyEditor() || ttlVisible()"
+      role="button"
+      tabindex="0"
+      aria-label="Settings"
+      aria-controls="settingsRegion"
+    >
+      <span
+        class="themed-images"
+        type="text/html"
+        id="ExpandChevronRightSettings"
+        data-bind="visible: !settingsExpanded() && !hasDatabaseSharedThroughput()"
+      >
+        <img class="imgiconwidth ssExpandCollapseIcon ssCollapseIcon" src="/Triangle-right.svg" alt="Show settings" />
+      </span>
+
+      <span
+        class="themed-images"
+        type="text/html"
+        id="ExpandChevronDownSettings"
+        data-bind="visible: settingsExpanded()  && !hasDatabaseSharedThroughput()"
+      >
+        <img class="imgiconwidth ssExpandCollapseIcon" src="/Triangle-down.svg" alt="Show settings" />
+      </span>
+      <span class="scaleSettingTitle">Settings</span>
+    </div>
+    <div class="ssTextAllignment" data-bind="visible: settingsExpanded" id="settingsRegion">
+      <div data-bind="visible: ttlVisible">
+        <div class="formTitle">Time to Live</div>
+        <div class="tabs disableFocusDefaults" aria-label="Time to Live" role="radiogroup">
+          <div class="tab">
+            <label
+              class="ttlIndexingPolicyFocusElement"
+              tabindex="0"
+              role="radio"
+              data-bind="
+                            attr:{
+                                for: ttlOffId,
+                                'aria-checked': timeToLive() === 'off' ? 'true' : 'false'
+                            },
+                            css: {
+                                dirty: timeToLive.editableIsDirty,
+                                selectedRadio: timeToLive() === 'off',
+                                unselectedRadio: timeToLive() !== 'off'
+                            },
+                            event: {
+                                keypress: onTtlOffKeyPress
+                            },
+                            hasFocus: ttlOffFocused"
+              >Off</label
+            >
+            <input
+              type="radio"
+              name="ttl"
+              value="off"
+              class="radio"
+              data-bind="
+                            attr:{
+                                id: ttlOffId
+                            },
+                            checked: timeToLive"
+            />
+          </div>
+
+          <div class="tab">
+            <label
+              class="ttlIndexingPolicyFocusElement"
+              tabindex="0"
+              role="radio"
+              data-bind="
+                            attr:{
+                                for: ttlOnNoDefaultId,
+                                'aria-checked': timeToLive() === 'on-nodefault' ? 'true' : 'false'
+                            },
+                            css:  {
+                                dirty: timeToLive.editableIsDirty,
+                                selectedRadio: timeToLive() === 'on-nodefault',
+                                unselectedRadio: timeToLive() !== 'on-nodefault'
+                            },
+                            event: {
+                                keypress: onTtlOnNoDefaultKeyPress
+                            },
+                            hasFocus: ttlOnDefaultFocused"
+              >On (no default)</label
+            >
+            <input
+              type="radio"
+              name="ttl"
+              value="on-nodefault"
+              class="radio"
+              data-bind="
+                            attr:{
+                                id: ttlOnNoDefaultId
+                            },
+                            checked: timeToLive"
+            />
+          </div>
+
+          <div class="tab">
+            <label
+              class="ttlIndexingPolicyFocusElement"
+              tabindex="0"
+              role="radio"
+              for="ttl3"
+              data-bind="
+                            attr:{
+                                for: ttlOnId,
+                                'aria-checked': timeToLive() === 'on' ? 'true' : 'false'
+                            },
+                            css:  {
+                                dirty: timeToLive.editableIsDirty,
+                                selectedRadio: timeToLive() === 'on',
+                                unselectedRadio: timeToLive() !== 'on'
+                            },
+                            event: {
+                                keypress: onTtlOnKeyPress
+                            },
+                            hasFocus: ttlOnFocused"
+              >On</label
+            >
+            <input
+              type="radio"
+              name="ttl"
+              value="on"
+              class="radio"
+              data-bind="
+                                attr:{
+                                    id: ttlOnId
+                                },
+                                checked: timeToLive"
+            />
+          </div>
+        </div>
+        <div data-bind="visible: timeToLive() === 'on'">
+          <input
+            class="dirtyTextbox"
+            type="number"
+            required
+            min="1"
+            max="2147483647"
+            aria-label="Time to live in seconds"
+            data-bind="
+                            css: {
+                                dirty: timeToLive.editableIsDirty
+                            },
+                            textInput: timeToLiveSeconds,
+                            enable: timeToLive() === 'on'"
+          />
+          second(s)
+        </div>
+      </div>
+
+      <!--  Geospatial - start -->
+      <div data-bind="visible: geospatialVisible">
+        <div class="formTitle">Geospatial Configuration</div>
+
+        <div class="tabs disableFocusDefaults" aria-label="Geospatial Configuration" role="radiogroup">
+          <div class="tab">
+            <label
+              for="geography"
+              tabindex="0"
+              role="radio"
+              data-bind="
+                attr:{
+                  'aria-checked': geospatialConfigType().toLowerCase() !== GEOMETRY.toLowerCase() ? 'true' : 'false'
+                },
+                css: {
+                  dirty: geospatialConfigType.editableIsDirty,
+                  selectedRadio: geospatialConfigType().toLowerCase() !== GEOMETRY.toLowerCase(),
+                  unselectedRadio: geospatialConfigType().toLowerCase() === GEOMETRY.toLowerCase()
+                },
+                event: {
+                  keypress: onGeographyKeyPress
+                }"
+              >Geography</label
+            >
+            <input
+              type="radio"
+              name="geospatial"
+              id="geography"
+              class="radio"
+              data-bind="
+                attr: {
+                  value: GEOGRAPHY
+                },
+                checked: geospatialConfigType"
+            />
+          </div>
+
+          <div class="tab">
+            <label
+              for="geometry"
+              tabindex="0"
+              role="radio"
+              data-bind="
+                attr:{
+                  'aria-checked': geospatialConfigType().toLowerCase() === GEOMETRY.toLowerCase() ? 'true' : 'false'
+                },
+                css: {
+                  dirty: geospatialConfigType.editableIsDirty,
+                  selectedRadio: geospatialConfigType().toLowerCase() === GEOMETRY.toLowerCase(),
+                  unselectedRadio: geospatialConfigType().toLowerCase() !== GEOMETRY.toLowerCase()
+                },
+                event: {
+                  keypress: onGeometryKeyPress
+                }"
+              >Geometry</label
+            >
+            <input
+              type="radio"
+              name="geospatial"
+              id="geometry"
+              class="radio"
+              data-bind="
+              attr: {
+                value: GEOMETRY
+              },
+              checked: geospatialConfigType"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- Geospatial - end -->
+
+      <div data-bind="visible: isAnalyticalStorageEnabled">
+        <div class="formTitle">Analytical Storage Time to Live</div>
+        <div class="tabs disableFocusDefaults" aria-label="Analytical Storage Time to Live" role="radiogroup">
+          <div class="tab">
+            <label tabindex="0" role="radio" class="disabledRadio">Off </label>
+          </div>
+          <div class="tab">
+            <label
+              tabindex="0"
+              role="radio"
+              data-bind="
+                    attr:{
+                        for: 'analyticalStorageTtlOnNoDefaultId',
+                        'aria-checked': analyticalStorageTtlSelection() === 'on-nodefault' ? 'true' : 'false'
+                    },
+                    css:  {
+                        dirty: analyticalStorageTtlSelection.editableIsDirty,
+                        selectedRadio: analyticalStorageTtlSelection() === 'on-nodefault',
+                        unselectedRadio: analyticalStorageTtlSelection() !== 'on-nodefault'
+                    },
+                    event: {
+                        keypress: onAnalyticalStorageTtlOnNoDefaultKeyPress
+                    }"
+              >On (no default)
+            </label>
+            <input
+              type="radio"
+              name="analyticalStorageTtl"
+              value="on-nodefault"
+              class="radio"
+              data-bind="
+                    attr:{
+                        id: 'analyticalStorageTtlOnNoDefaultId'
+                    },
+                    checked: analyticalStorageTtlSelection"
+            />
+          </div>
+
+          <div class="tab">
+            <label
+              tabindex="0"
+              role="radio"
+              for="ttl3"
+              data-bind="
+                    attr:{
+                        for: 'analyticalStorageTtlOnId',
+                        'aria-checked': analyticalStorageTtlSelection() === 'on' ? 'true' : 'false'
+                    },
+                    css:  {
+                        dirty: analyticalStorageTtlSelection.editableIsDirty,
+                        selectedRadio: analyticalStorageTtlSelection() === 'on',
+                        unselectedRadio: analyticalStorageTtlSelection() !== 'on'
+                    },
+                    event: {
+                        keypress: onAnalyticalStorageTtlOnKeyPress
+                    }"
+              >On</label
+            >
+            <input
+              type="radio"
+              name="analyticalStorageTtl"
+              value="on"
+              class="radio"
+              data-bind="
+                        attr:{
+                            id: 'analyticalStorageTtlOnId'
+                        },
+                        checked: analyticalStorageTtlSelection"
+            />
+          </div>
+        </div>
+        <div data-bind="visible: analyticalStorageTtlSelection() === 'on'">
+          <input
+            class="dirtyTextbox"
+            type="number"
+            required
+            min="1"
+            max="2147483647"
+            aria-label="Time to live in seconds"
+            data-bind="
+                    css: {
+                        dirty: analyticalStorageTtlSelection.editableIsDirty
+                    },
+                    textInput: analyticalStorageTtlSeconds,
+                    enable: analyticalStorageTtlSelection() === 'on'"
+          />
+          second(s)
+        </div>
+      </div>
+      <div data-bind="visible: changeFeedPolicyVisible">
+        <div class="formTitle">
+          <span>Change feed log retention policy</span>
+          <span class="infoTooltip" role="tooltip" tabindex="0">
+            <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+            <span class="tooltiptext infoTooltipWidth"
+              >Enable change feed log retention policy to retain last 10 minutes of history for items in the container
+              by default. To support this, the request unit (RU) charge for this container will be multiplied by a
+              factor of two for writes. Reads are unaffected.</span
+            >
+          </span>
+        </div>
+        <div class="tabs disableFocusDefaults" aria-label="Change feed selection tabs">
+          <div class="tab">
+            <label
+              tabindex="0"
+              data-bind="
+                            attr:{
+                                for: changeFeedPolicyOffId
+                            },
+                            css: {
+                                dirty: changeFeedPolicyToggled.editableIsDirty,
+                                selectedRadio: changeFeedPolicyToggled() === 'Off',
+                                unselectedRadio: changeFeedPolicyToggled() === 'On'
+                            },
+                            event: {
+                                keypress: onChangeFeedPolicyOffKeyPress
+                            }"
+              >Off</label
+            >
+            <input
+              type="radio"
+              name="changeFeedPolicy"
+              value="Off"
+              class="radio"
+              data-bind="
+                            attr:{
+                                id: changeFeedPolicyOffId
+                            },
+                            checked: changeFeedPolicyToggled"
+            />
+          </div>
+          <div class="tab">
+            <label
+              tabindex="0"
+              data-bind="
+                            attr:{
+                                for: changeFeedPolicyOnId
+                            },
+                            css:  {
+                                dirty: changeFeedPolicyToggled.editableIsDirty,
+                                selectedRadio: changeFeedPolicyToggled() === 'On',
+                                unselectedRadio: changeFeedPolicyToggled() === 'Off'
+                            },
+                            event: {
+                                keypress: onChangeFeedPolicyOnKeyPress
+                            }"
+              >On</label
+            >
+            <input
+              type="radio"
+              name="changeFeedPolicy"
+              value="On"
+              class="radio"
+              data-bind="
+                            attr:{
+                                id: changeFeedPolicyOnId
+                            },
+                            checked: changeFeedPolicyToggled"
+            />
+          </div>
+        </div>
+      </div>
+      <div data-bind="visible: partitionKeyVisible">
+        <div class="formTitle" data-bind="text: partitionKeyName">Partition Key</div>
+        <input
+          class="formReadOnly collid-white"
+          data-bind="textInput: partitionKeyValue, attr: { 'aria-label':partitionKeyName }"
+          readonly
+        />
+      </div>
+      <div class="largePartitionKeyEnabled" data-bind="visible: isLargePartitionKeyEnabled">
+        <p data-bind="visible: isLargePartitionKeyEnabled">
+          Large <span data-bind="text:lowerCasePartitionKeyName"></span> has been enabled
+        </p>
+      </div>
+      <div data-bind="visible: shouldShowIndexingPolicyEditor">
+        <div class="formTitle">Indexing Policy</div>
+        <div
+          class="indexingPolicyEditor ttlIndexingPolicyFocusElement"
+          tabindex="0"
+          data-bind="setTemplateReady: true, attr:{ id: indexingPolicyEditorId }"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>

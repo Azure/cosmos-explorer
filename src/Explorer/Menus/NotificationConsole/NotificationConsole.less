@@ -1,0 +1,160 @@
+@import "../../../../less/Common/Constants";
+
+@ConsoleHeaderHeight: 32px;
+@ConsoleContentsPaneHeight: 220px;
+@ConsoleStatusMaxWidth: 672px;
+
+@ConsoleIconSize: 12px;
+@ExpandCollapseIconSize: 20px;
+
+.notificationConsoleContainer {
+    width: 100%;
+    .flex-display();
+    .flex-direction();
+
+    img {
+        width: @ConsoleIconSize;
+        height: @ConsoleIconSize;
+    }
+
+    .notificationConsoleHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+        height: @ConsoleHeaderHeight;
+        width: 100%;
+        background-color: @NotificationLow;
+        border-top: @ButtonBorderWidth @BaseMedium solid;
+        cursor: pointer;
+        flex-shrink:0;
+
+        &:hover {
+                background-color:@NotificationHigh;
+        }
+
+        &:active {
+                background-color:@NotificationHigh;
+        }
+
+        .statusBar {
+            .dataTypeIcons {
+                cursor: pointer;
+                margin: 0px @DefaultSpace 0px @MediumSpace;
+                padding-left: @DefaultSpace;
+
+                .notificationConsoleHeaderIconWithData{
+                    &:not(:last-child) {
+                        padding-right: @LargeSpace;
+                    }
+
+                    img {
+                    margin-bottom: @SmallSpace;
+                    margin-right: @DefaultSpace;
+                    }
+
+                    .numInProgress, .numErroredItems, .numInfoItems {
+                        padding-left: 2px;
+                        margin-right: 5px;
+                    }
+                }
+            }
+
+            .consoleSplitter {
+                border-left: 1px solid @BaseMedium;
+                margin-right: @LargeSpace;
+                padding: 0px 0px 2px;
+            }
+
+            .headerStatus {
+                display: inline-flex;
+
+                .headerStatusEllipsis {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    max-width: @ConsoleStatusMaxWidth;
+                }
+            }
+        }
+
+        .expandCollapseButton {
+            cursor: pointer;
+            padding-right: 5px;
+
+            img {
+                width: @ExpandCollapseIconSize;
+                height: @ExpandCollapseIconSize;
+            }
+        }
+    }
+
+    .notificationConsoleContents {
+        width: 100%;
+        height: @ConsoleContentsPaneHeight;
+        display: flex;
+        flex-direction: column;
+        background-color: @BaseLow;
+
+        .notificationConsoleControls {
+            padding: @MediumSpace;
+            margin-left:@DefaultSpace;
+
+            #consoleFilterLabel {
+                padding: 4px;
+            }
+            
+            .consoleSplitter {
+                border-left: 1px solid @BaseMedium;
+                margin: @MediumSpace;
+            }
+
+            .clearNotificationsButton {
+                cursor: pointer;
+                padding:@SmallSpace;
+                border:@ButtonBorderWidth solid @BaseLow;
+
+                &:hover {
+                    background-color:@BaseMediumLow;
+                }
+
+                &:active {
+                    border: @ButtonBorderWidth dashed @AccentMedium;
+                    background-color: @AccentMediumLow;
+                }
+
+                img{
+                    margin-bottom:@SmallSpace;
+                    margin-right:2px;
+                }
+            }
+        }
+
+        .notificationConsoleData {
+            overflow-y: auto;
+            overflow-x:hidden;
+            margin-left:@LargeSpace;
+
+            .rowData {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                padding: @SmallSpace;
+
+                img {
+                    margin-top:@SmallSpace;
+                }
+
+                .date {
+                    margin: 0px @LargeSpace;
+                    white-space: nowrap;
+                }
+
+                .message {
+                    flex-grow: 1;
+                    white-space:pre-wrap;
+                }
+            }
+        }
+    }
+}

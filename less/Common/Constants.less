@@ -1,0 +1,270 @@
+/******************************************************************************
+                                FONTS
+/******************************************************************************/
+
+@font-face {
+    font-family: wf_segoe-ui_normal;
+    src: url('../../fonts/segoe-ui/west-european/normal/latest.woff');
+}
+
+@DataExplorerFont: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+@SemiboldFont: "Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+
+@xSmallFontSize: 4px;
+@smallFontSize: 8px;
+@mediumFontSize: 12px;
+@DefaultFontSize: 14px;
+@largeFontSize: 16px;
+
+/******************************************************************************
+                                COLORS
+/******************************************************************************/
+
+@AccentMediumHigh: #0058AD;
+@AccentMedium: #004E87;
+@AccentHigh: #1EBAED;
+@AccentExtraHigh: #55B3FF;
+@AccentLow: #EDF6FF;
+@AccentMediumLow: #DDEEFE;
+@AccentLight: #EEF7FF;
+@AccentExtra: #DDF0FF;
+
+@SelectionHigh: #B91F26;
+@BaseLight: #FFFFFF;
+@BaseDark: #000000;
+@NotificationLow: #FFF4CE;
+@NotificationHigh: #F9E9B0;
+@Purple1: #8A2DA5;
+
+@BaseLow: #F2F2F2;
+@BaseMediumLow: #E6E6E6;
+@BaseMedium: #CCCCCC;
+@BaseMediumHigh: #767676;
+@BaseHigh: #393939;
+
+@BoxShadow: rgba(118, 118, 118, 0.65);
+@GreyOutOpacity: 0.65;
+
+@DefaultFontColor: @BaseHigh;
+@DividerColor: @BaseMedium;
+
+@InfoPointerColor: #3b3b3b;
+
+@ErrorColor: @SelectionHigh;
+
+@SelectionColor: #3074B0;
+
+/******************************************************************************
+                                METRICS
+/******************************************************************************/
+
+@SmallSpace: 4px;
+@DefaultSpace: 8px;
+@MediumSpace: 12px;
+@LargeSpace: 16px;
+
+@ButtonBorderWidth: 1px;
+@RightPaneWidth: 440px;
+@RightPaneMinHeight: 565px;
+
+@PaneLoaderWidth: 110px;
+@PaneLoaderHeight: 10px;
+
+@ButtonIconHeight: 18px;
+
+@ScaleFormWidth: 280px;
+
+@ImgWidth: 14px;
+@ImgHeight: 14px;
+
+@toggleFontWeight:700;
+
+//Resource Tree
+@TreeLineHeight: 17px;
+
+//top command bar height
+@topcommandbarheight: 36px;
+
+//Global Loader
+@LoaderHeight: 6px;
+@LoaderWidth: 24px;
+
+//HDE constants
+@HdeAccountSplitterHeight: 20px;
+@AccountNavigationImgWidth: 350px;
+@AccountNavigationImgHeight: 190px;
+@AccountNavigationExpandCollapseSize: 12px;
+
+// Query Stats
+@IETableDataWidth: 650px;
+
+//New Colleciton Pane textbox width
+@newCollectionPaneInputWidth: 300px;
+@tooltipTextWidth: 280px;
+@sharedCollectionThroughputTooltipTextWidth: 150px;
+@addContainerPaneThroughputInfoWidth: 370px;
+@optionsInfoWidth: 210px;
+@noFixedCollectionsTooltipWidth: 196px;
+@ThroughputInfoWidth: 215px;
+@ThroughputRuInfoWidth: 175px;
+@RenewAccessInfoWidth: 115px;
+@ErrorDetailsInfowidth: 145px;
+@AccessKeyInputWidth: 370px;
+@provisionDatabaseThroughputInfo: 200px;
+
+//tabs container
+@ActiveTabHeight: 31px;
+@ActiveTabWidth: 141px;
+@TabsHeight: 30px;
+@TabsWidth: 140px;
+@StatusIconContainerSize: 18px;
+@LoadingErrorIconSize: 14px;
+@ErrorIconContainer: 16px;
+@ErrorIconWidth: 3px;
+
+//form errors
+@FormErrorWidth: 320px;
+@WarningErrorIconSize: 32px;
+
+// z-index
+@Loader_z-index: 5; //this should be higher than that of the splitter to disable it
+@NotificationConsole_z-index: 2;
+
+@screen: screen\0;
+
+// CommandBar
+@CommandBarButtonHeight: 40px;
+
+/**********************************************************************************
+                              Common Flex Property
+/**********************************************************************************/
+
+.flex-display(@display: flex) {
+	display: ~"-webkit-@{display}";
+	display: ~"-ms-@{display}box"; // IE10 uses -ms-flexbox
+	display: ~"-ms-@{display}"; // IE11
+	display: @display;
+}
+
+.flex-direction(@direction: column) {
+  -webkit-flex-direction: @direction;
+      -ms-flex-direction: @direction;
+          flex-direction: @direction;
+}
+
+/*************************************************************************************
+                                 High contrast mode active
+**************************************************************************************/
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .selectedRadio,
+    .selectedRadio:hover,
+    .selectedRadio:active,
+    .selectedRadio.dirty,
+    .tab [type=radio]:checked ~ label,
+    .tab [type=radio]:checked ~ label:hover {
+        -ms-high-contrast-adjust: none;
+        -webkit-text-fill-color: HighlightText;
+        color: HighlightText;
+        border-color: HighlightText;
+        background-color: Highlight;
+    }
+
+    .queryMetricsSummaryTuple {
+
+        th, td {
+
+            &:nth-child(2) {
+                width: @IETableDataWidth;
+            }
+
+            &:nth-child(3) {
+                width: 50%;
+            }
+        }
+    }
+}
+
+/********************************************************************************************
+                            Common Hover and Active color
+*********************************************************************************************/
+
+.hover() {
+    background-color: @AccentLight;
+}
+
+.active() {
+    background-color: @AccentExtra;
+}
+
+.focus() {
+    outline: 1px dashed @AccentMedium;
+}
+
+/************************************************************************************************
+                               Common Toggle Switch
+*************************************************************************************************/
+@ToggleHeight: 30px;
+@ToggleWidth: 180px;
+
+.toggleSwitch() {
+    max-width: 100%;
+    margin-bottom: @SmallSpace;
+    padding: @SmallSpace;
+    cursor: pointer;
+    color: @BaseHigh;
+    font-weight: 400;
+    font-size: @mediumFontSize;
+    font-family: @DataExplorerFont;
+}
+
+.selectedToggle() {
+    border-bottom: 2px solid @BaseHigh;
+}
+
+.unselectedToggle() {
+    color: @AccentMediumHigh;
+}
+
+/********************************************************************************************************
+                             Common Data Explorer Icons
+*********************************************************************************************************/
+.dataExplorerIcons() {
+    cursor: pointer;
+    width: @ImgWidth;
+    height: @ImgHeight;
+}
+
+/*********************************************************************************************************
+                            Info Tooltip
+**********************************************************************************************************/
+.infoTooltip() {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltipText(@textColor: @BaseLight, @backgroundColor: @BaseHigh) {
+    visibility: hidden;
+    background-color: @backgroundColor;
+    color: @textColor;
+    position: absolute;
+    z-index: 1;
+    left: @MediumSpace;
+    padding: @MediumSpace;
+}
+
+.tooltipTextAfter(@color: @BaseDark) {
+    content: "";
+    position: absolute;
+    right: 100%;
+    border-style: solid;
+    border-color: transparent @color transparent transparent;
+    left: 0px;
+    width: 0;
+    height: 0;
+    border-color: @InfoPointerColor transparent;
+}
+
+.tooltipVisible() {
+    visibility: visible;
+}

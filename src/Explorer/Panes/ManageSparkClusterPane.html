@@ -1,0 +1,37 @@
+<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
+  <div class="contextual-pane-out" data-bind="click: cancel, clickBubble: false"></div>
+  <div class="contextual-pane" id="managesparkclusterpane">
+    <!-- Setup spark form -- Start -->
+    <div class="contextual-pane-in">
+      <div class="paneContentContainer">
+        <form class="paneContentContainer" data-bind="submit: submit">
+          <!-- Setup spark header - Start -->
+          <div class="firstdivbg headerline">
+            <span data-bind="text: title"></span>
+            <div
+              class="closeImg"
+              role="button"
+              aria-label="Close pane"
+              tabindex="0"
+              data-bind="click: cancel, event: { keypress: onCloseKeyPress }"
+            >
+              <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+            </div>
+          </div>
+          <!-- Setup spark header - End -->
+
+          <div class="paneMainContent"><div data-bind="react: clusterSettingsComponentAdapter"></div></div>
+          <div class="paneFooter">
+            <div class="leftpanel-okbut"><input type="submit" value="Save" class="btncreatecoll1" /></div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Setup spark form - Start -->
+    <!-- Loader - Start -->
+    <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
+      <img class="dataExplorerLoader" alt="loading indicator image" src="/LoadingIndicator_3Squares.gif" />
+    </div>
+    <!-- Loader - End -->
+  </div>
+</div>

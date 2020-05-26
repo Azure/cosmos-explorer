@@ -1,0 +1,15 @@
+{
+  "integrationFolder": "./integration",
+  "pluginsFile": false,
+  "fixturesFolder": false,
+  "supportFile": "./support/index.js",
+  "defaultCommandTimeout": 60000,
+  "chromeWebSecurity": false,
+  "reporter": "mochawesome",
+  "reporterOptions": {
+    "reportDir": "cypress/report",
+    "json": true,
+    "overwrite": false,
+    "html": false
+  }
+}

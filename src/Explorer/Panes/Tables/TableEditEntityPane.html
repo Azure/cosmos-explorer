@@ -1,0 +1,188 @@
+<div data-bind="visible: visible">
+  <div
+    class="contextual-pane-out"
+    data-bind="
+    click: cancel,
+    clickBubble: false"
+  ></div>
+  <div class="contextual-pane" style="width:700px;" id="edittableentitypane">
+    <!-- Edit table entity form - Start -->
+    <div
+      class="contextual-pane-in"
+      data-bind="
+            visible: !isEditing()"
+    >
+      <form
+        class="paneContentContainer"
+        data-bind="
+            submit: submit"
+      >
+        <!-- Edit table entity header - Start -->
+        <div class="firstdivbg headerline">
+          <span data-bind="text: title"></span>
+          <div
+            class="closeImg"
+            role="button"
+            aria-label="Close pane"
+            tabindex="0"
+            data-bind="
+                    click: cancel, event: { keydown: onCloseKeyPress }"
+          >
+            <img src="../../../../images/close-black.svg" title="Close" alt="Close" />
+          </div>
+        </div>
+        <!-- Edit table entity header - End -->
+        <div class="tableParamContent paneContentContainer">
+          <div class="entity-table">
+            <div class="entity-table-row">
+              <div class="entity-table-cell entity-table-property-header" data-bind="text: attributeNameLabel"></div>
+              <div class="entity-table-cell entity-table-type-header" data-bind="text: dataTypeLabel"></div>
+              <div class="entity-table-cell entity-table-value-header" data-bind="text: attributeValueLabel"></div>
+            </div>
+          </div>
+          <div class="entity-table-scroll-box" id="editEntityScroll">
+            <div class="entity-table" data-bind="foreach: displayedAttributes">
+              <div class="entity-table-row">
+                <div class="entity-table-cell entity-table-property-column">
+                  <input
+                    type="text"
+                    class="entity-table-field entity-table-property-column"
+                    required
+                    data-bind="
+                                textInput: name,
+                                attr: { title: nameTooltip, placeholder: namePlaceholder, 'aria-label': 'property name' },
+                                css: { 'invalid-field': isInvalidName },
+                                readOnly: !editable,
+                                hasFocus: hasFocus"
+                  />
+                </div>
+                <div class="entity-table-cell entity-table-type-column">
+                  <select
+                    class="entity-table-field"
+                    data-bind="
+                                options: $parent.edmTypes,
+                                optionsAfterRender: $parent.setOptionDisable,
+                                value: type,
+                                attr: { 'aria-label': 'type' },
+                                enable: editable,
+                                readOnly: !editable"
+                  >
+                  </select>
+                </div>
+                <!-- ko ifnot: isDateType -->
+                <div class="entity-table-cell entity-table-value-column">
+                  <input
+                    class="entity-table-field"
+                    step="1"
+                    data-bind="
+                                textInput: value,
+                                attr: { title: valueTooltip, placeholder: valuePlaceholder, type: inputType, 'aria-label': 'value' },
+                                css: { 'invalid-field': isInvalidValue },
+                                readOnly: !valueEditable"
+                  />
+                </div>
+                <!-- /ko -->
+                <!-- ko if: isDateType -->
+                <div class="entity-table-cell entity-table-value-column">
+                  <input
+                    class="entity-table-field"
+                    step="1"
+                    data-bind="
+                                value: value,
+                                attr: { title: valueTooltip, placeholder: valuePlaceholder, type: inputType, 'aria-label': 'value' },
+                                css: { 'invalid-field': isInvalidValue },
+                                readOnly: !valueEditable,
+                                hasFocus: valueHasFocus"
+                    autocomplete="off"
+                  />
+                </div>
+                <!-- /ko -->
+                <div class="entity-table-cell entity-table-action-column" data-bind="if: removable || valueEditable">
+                  <span
+                    class="entity-Edit-Cancel"
+                    role="button"
+                    aria-label="Edit property"
+                    tabindex="0"
+                    data-bind="click: $parent.editAttribute.bind($data, $index()), visible: valueEditable, event: { keydown: $parent.onEditPropertyKeyDown.bind($data, $index()) }"
+                    title="Edit property"
+                  >
+                    <img class="entity-Editor-Cancel-Img" src="/Edit_entity.svg" alt="Edit attribute" />
+                  </span>
+                  <span
+                    class="entity-Edit-Cancel"
+                    role="button"
+                    aria-label="Delete property"
+                    tabindex="0"
+                    data-bind="click: $parent.removeAttribute.bind($data, $index()), visible: removable, event: { keydown: $parent.onDeletePropertyKeyDown.bind($data, $index()) }"
+                    title="Delete property"
+                  >
+                    <img class="entity-Editor-Cancel-Img" src="/delete.svg" alt="Remove attribute" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="entity-table addProperty">
+              <div class="entity-table-row">
+                <div class="entity-table-cell">
+                  <span
+                    class="commandButton"
+                    role="button"
+                    aria-label="Add property"
+                    tabindex="0"
+                    data-bind="visible: canAdd, click: insertAttribute, event: { keydown: onAddPropertyKeyDown }"
+                    autofocus
+                  >
+                    <img class="addPropertyImg" src="/Add-property.svg" alt="Add attribute" />
+                    <span data-bind="text: addButtonLabel"> </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="paneFooter">
+          <div class="leftpanel-okbut">
+            <input
+              type="submit"
+              value="Update Entity"
+              class="btncreatecoll1"
+              data-bind="value: submitButtonText, event: { keydown: onSubmitKeyPress }"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- Edit table entity form - End -->
+    <!-- Edit table entity editor - Start -->
+    <div id="editor-panel-editEntity" data-bind="visible: isEditing()" style="display: none">
+      <div data-bind="with: editingProperty()">
+        <!-- Edit table entity editor header - Start -->
+        <div class="firstdivbg headerline">
+          <span
+            class="backBtn"
+            aria-label="Back"
+            role="button"
+            tabindex="0"
+            data-bind="
+                    click: $parent.finishEditingAttribute, event: { keydown: $parent.onBackButtonKeyDown }"
+          >
+            <img src="/RevertBack.svg" alt="BackIcon" />
+          </span>
+          <span class="edit-value-text" data-bind="text: name"></span>
+        </div>
+        <!-- Edit table entity editor header - End -->
+        <div class="seconddivbg paddingspan2">
+          <textarea
+            class="entity-editor-expanded"
+            id="editor-area"
+            tabindex="0"
+            rows="21"
+            data-bind="value: value, attr: { 'aria-label': name }"
+            autofocus
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <!-- Edit table entity editor - End -->
+  </div>
+</div>

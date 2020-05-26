@@ -1,0 +1,35 @@
+@import "../../../../less/Common/Constants";
+
+.accordion {
+  overflow: hidden;
+  height: 100%;
+  .flex-display();
+  .flex-direction();
+
+  .accordionItemContainer {
+    overflow: hidden;
+    margin-bottom: @DefaultSpace;
+    .flex-display();
+    .flex-direction();
+
+    .accordionItemHeader {
+      padding: @SmallSpace @MediumSpace;
+      cursor: pointer;
+      background-color: @BaseMediumLow;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .accordionItemContent {
+      overflow: auto;
+    }
+
+    .expandCollapseIcon {
+      width: 10px;
+      height: 10px;
+      vertical-align: middle;
+      margin-bottom: 5px;
+      margin-right: @MediumSpace;
+    }
+  }
+}

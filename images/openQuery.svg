@@ -1,0 +1,16 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.5 1.69995H15.3" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M5.5 4.09985H13.5" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M5.5 6.3999H15.3" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M5.5 8.80005H13.9" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M14.2001 11.5999V11.0999H13.7001" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M13.2 11.0999H6.40002" stroke="#0078D4" stroke-miterlimit="10" stroke-dasharray="4 2"/>
+<path d="M6.20007 11.0999H5.70007V11.5999" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M5.70007 11.9998V12.6998" stroke="#0078D4" stroke-miterlimit="10" stroke-dasharray="3 2"/>
+<path d="M5.70007 12.9998V13.3998H6.20007" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M6.70007 13.3999H13.5001" stroke="#0078D4" stroke-miterlimit="10" stroke-dasharray="4 2"/>
+<path d="M13.7001 13.3998H14.2001V12.9998" stroke="#0078D4" stroke-miterlimit="10"/>
+<path d="M14.2001 12.6998V11.7998" stroke="#0078D4" stroke-miterlimit="10" stroke-dasharray="3 2"/>
+<path d="M2.70007 13.8999L4.30007 12.2999L2.70007 10.5999" stroke="#0078D4" stroke-miterlimit="10" stroke-linejoin="bevel"/>
+<path d="M4.30005 12.2998H0.300049" stroke="#0078D4" stroke-miterlimit="10"/>
+</svg>

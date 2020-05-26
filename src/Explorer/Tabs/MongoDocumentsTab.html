@@ -1,0 +1,417 @@
+﻿<div
+  class="tab-pane active tabdocuments flexContainer"
+  data-bind="
+    attr:{
+        id: tabId
+    },
+    visible: isActive"
+  role="tabpanel"
+>
+  <!-- Documents Tab Command Bar - Start -->
+  <div class="contentdiv">
+    <div class="tabCommandButton documentMenu">
+      <!-- New Document - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    click: onNewDocumentClick,
+                    visible: newDocumentButton.visible() && newDocumentButton.enabled()"
+      >
+        <img class="commandIcon" src="/createDoc.svg" />New Document
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                    visible: newDocumentButton.visible() && !newDocumentButton.enabled()"
+      >
+        <img class="commandIcon" src="/createDoc-disabled.svg" />New Document
+      </span>
+      <!-- New Document - End -->
+
+      <!-- New Query - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    visible: !$root.isPreferredApiMongoDB,
+                click: collection.onNewQueryClick"
+      >
+        <img class="commandIcon" src="/AddSqlQuery_16x16.svg" /> New SQL Query
+      </span>
+      <span
+        class="commandButton"
+        data-bind="
+                visible: $root.isPreferredApiMongoDB,
+                click: collection.onNewMongoQueryClick"
+      >
+        <img class="commandIcon" src="/AddSqlQuery_16x16.svg" /> New Query
+      </span>
+      <!-- New Query - End -->
+
+      <!-- Save New - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    click: onSaveNewDocumentClick,
+                    visible: saveNewDocumentButton.visible() && saveNewDocumentButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/save-cosmos.svg" />Save
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                    visible: saveNewDocumentButton.visible() && !saveNewDocumentButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/save-disabled.svg" />Save
+      </span>
+      <!-- Save New - End -->
+
+      <!-- Discard New - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    click: onRevertNewDocumentClick,
+                    visible: discardNewDocumentChangesButton.visible() && discardNewDocumentChangesButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/discard.svg" />Discard
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                    visible: discardNewDocumentChangesButton.visible() && !discardNewDocumentChangesButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/discard-disabled.svg" />Discard
+      </span>
+      <!-- Discard New - End -->
+
+      <!-- Save Exisiting - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    click: onSaveExisitingDocumentClick,
+                    visible: saveExisitingDocumentButton.visible() && saveExisitingDocumentButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/save-cosmos.svg" />Update
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                    visible: saveExisitingDocumentButton.visible() && !saveExisitingDocumentButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/save-disabled.svg" />Update
+      </span>
+      <!-- Save Exisiting - End -->
+
+      <!-- Discard Exisiting - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    click: onRevertExisitingDocumentClick,
+                    visible: discardExisitingDocumentChangesButton.visible() && discardExisitingDocumentChangesButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/discard.svg" />Discard
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                    visible: discardExisitingDocumentChangesButton.visible() && !discardExisitingDocumentChangesButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/discard-disabled.svg" />Discard
+      </span>
+      <!-- Discard Exisiting - End -->
+
+      <!-- Delete Exisiting - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                    click: onDeleteExisitingDocumentClick,
+                    visible: deleteExisitingDocumentButton.visible() && deleteExisitingDocumentButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/delete.svg" />Delete
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                    visible: deleteExisitingDocumentButton.visible() && !deleteExisitingDocumentButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/delete-disabled.svg" />Delete
+      </span>
+      <!-- Delete Exisiting - End -->
+    </div>
+  </div>
+  <script type="text/html" id="toolbarItemTemplate">
+    <!-- ko if: type === "action" -->
+    <div class="toolbar-group" data-bind="visible: visible">
+        <button class="toolbar-group-button" data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
+                <div class="toolbar-group-button-icon">
+                    <div class="toolbar_icon" data-bind="icon: icon"></div>
+                </div>
+                <span data-bind="text: displayName"></span>
+            </button>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: type === "toggle" -->
+    <div class="toolbar-group" data-bind="visible: visible">
+        <button class="toolbar-group-button toggle-button" data-bind="hasFocus: focused, attr: {id: id, title: title}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
+                <div class="toolbar-group-button-icon" data-bind="css: { 'toggle-checked': checked }">
+                    <div class="toolbar_icon"  data-bind="icon: icon"></div>
+                </div>
+                <span data-bind="text: displayName"></span>
+            </button>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: type === "dropdown" -->
+    <div class="toolbar-group" data-bind="visible: visible">
+        <div class="dropdown" data-bind="attr: {id: (id + '-dropdown')}">
+            <button role="menu" class="toolbar-group-button" data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName},  event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
+                    <div class="toolbar-group-button-icon">
+                        <div class="toolbar_icon" data-bind="icon: icon"></div>
+                    </div>
+                    <span data-bind="text: displayName"></span>
+                </button>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: type === "separator" -->
+    <div class="toolbar-group vertical-separator" data-bind="visible: visible"></div>
+    <!-- /ko -->
+  </script>
+  <!-- Documents Tab Command Bar - End -->
+  <!-- ko if: false -->
+  <!-- Messagebox Ok Cancel- Start -->
+  <div class="messagebox-background">
+    <div class="messagebox">
+      <h2 class="messagebox-title">Title</h2>
+      <div class="messagebox-text" tabindex="0">Text</div>
+      <div class="messagebox-buttons">
+        <div class="messagebox-buttons-container">
+          <button value="ok" class="messagebox-button-primary">Ok</button>
+          <button value="cancel" class="messagebox-button-default">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Messagebox OK Cancel - End -->
+  <!-- /ko -->
+
+  <!-- Filter - Start -->
+  <div class="filterdivs">
+    <!-- Read-only Filter - Start -->
+    <div
+      class="filterDocCollapsed"
+      data-bind="
+                visible: !isFilterExpanded() && !$root.isPreferredApiMongoDB()"
+    >
+      SELECT * FROM c
+      <span
+        data-bind="
+                    text: appliedFilter"
+      ></span>
+      <button
+        class="filterbtnstyle queryButton"
+        data-bind="
+                    click: onShowFilterClick"
+      >
+        Edit Filter
+      </button>
+    </div>
+    <div
+      class="filterDocCollapsed"
+      data-bind="
+                visible: !isFilterExpanded() && $root.isPreferredApiMongoDB()"
+    >
+      <span
+        data-bind="
+                visible: appliedFilter().length > 0"
+        >Filter :
+      </span>
+      <span
+        data-bind="
+                visible: !appliedFilter().length > 0"
+        >No filter applied</span
+      >
+      <span
+        data-bind="
+                text: appliedFilter"
+      ></span>
+      <button
+        class="filterbtnstyle queryButton"
+        data-bind="
+                    click: onShowFilterClick"
+      >
+        Edit Filter
+      </button>
+    </div>
+    <!-- Read-only Filter - End -->
+
+    <!-- Editable Filter - start -->
+    <div
+      class="filterDocExpanded"
+      data-bind="
+                visible: isFilterExpanded"
+    >
+      <div>
+        <div>
+          <span
+            class="filterspan"
+            data-bind="
+                        visible: !$root.isPreferredApiMongoDB()"
+          >
+            SELECT * FROM c
+          </span>
+
+          <input
+            type="text"
+            list="filtersList"
+            class="querydropdown"
+            title="Type a query predicate or choose one from the list."
+            data-bind="
+                                attr:{
+                                    placeholder:$root.isPreferredApiMongoDB()?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+                                },
+                                textInput: filterContent"
+          />
+
+          <datalist
+            id="filtersList"
+            data-bind="
+                            foreach: lastFilterContents"
+          >
+            <option
+              data-bind="
+                                value: $data"
+            >
+            </option>
+          </datalist>
+
+          <span class="filterbuttonpad">
+            <button
+              class="filterbtnstyle queryButton"
+              data-bind="
+                                click: onApplyFilterClick,
+                                enable: applyFilterButton.enabled"
+            >
+              Apply Filter
+            </button>
+          </span>
+          <span
+            class="filterclose"
+            data-bind="
+                            click: onHideFilterClick"
+          >
+            <img src="/close-black.svg" style="height: 14px; width: 14px;" />
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- Editable Filter - End -->
+  </div>
+  <!-- Filter - End -->
+
+  <!-- Ids and Editor - Start -->
+  <div>
+    <div class="row rowoverride documentsTabGridAndEditor">
+      <div class="documentsGridHeaderContainer documentsContainer">
+        <!-- ko if: !partitionKeyProperty -->
+        <table>
+          <tbody>
+            <tr>
+              <!-- ko if: $root.isPreferredApiMongoDB -->
+              <td class="documentsGridHeader">_id</td>
+              <!-- /ko -->
+              <!-- ko if: !$root.isPreferredApiMongoDB() -->
+              <td class="documentsGridHeader">id</td>
+              <!-- /ko -->
+              <td class="refreshColHeader">
+                <img class="refreshcol" src="/refresh-cosmos.svg" data-bind="click: refreshDocumentsGrid" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- /ko -->
+
+        <!-- ko if: partitionKeyProperty -->
+        <table>
+          <tbody>
+            <tr>
+              <td class="documentsGridHeader fixedWidthHeader">_id</td>
+              <td
+                class="documentsGridHeader documentsGridPartition"
+                data-bind="
+                                attr: {
+                                    title: partitionKeyPropertyHeader
+                                },
+                                text: partitionKeyPropertyHeader"
+              ></td>
+              <td class="refreshColHeader">
+                <img class="refreshcol" src="/refresh-cosmos.svg" data-bind="click: refreshDocumentsGrid" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- /ko -->
+      </div>
+      <!-- Document Ids - Start -->
+      <div
+        class="tabdocuments scrollable"
+        data-bind="
+                attr: { 
+                    id: documentContentsGridId,
+                    tabindex: collection.documentIds().length <= 0 ? -1 : 0
+                },
+                style: { height: dataContentsGridScrollHeight },
+                event: { keydown: accessibleDocumentList.onKeyDown }"
+      >
+        <table class="table can-select table-hover dataTable">
+          <tbody id="tbodycontent">
+            <!-- ko foreach: documentIds -->
+            <tr
+              class="pointer accessibleListElement"
+              data-bind="
+                                click: $data.click,
+                                css: {
+                                    gridRowSelected: $parent.selectedDocumentId && $parent.selectedDocumentId() && $parent.selectedDocumentId().rid === $data.rid,
+                                    gridRowHighlighted: $parent.accessibleDocumentList.currentItem() && $parent.accessibleDocumentList.currentItem().rid === $data.rid
+                                }"
+            >
+              <td style="width:82px;">
+                <a
+                  data-bind="
+                                    text: $data.id, attr: { title: $data.id }"
+                ></a>
+              </td>
+              <!-- ko if: $data.partitionKeyProperty -->
+              <td><a data-bind="text: $data.partitionKeyValue, attr: { title: $data.partitionKeyValue }"></a></td>
+              <!-- /ko -->
+            </tr>
+            <!-- /ko -->
+          </tbody>
+        </table>
+
+        <div class="loadMore">
+          <a role="link" data-bind="click: loadNextPage, event: { keypress: onLoadMoreKeyInput }" tabindex="0"
+            >Load more</a
+          >
+        </div>
+      </div>
+      <!-- Document Ids - End -->
+
+      <!-- Editor - Start -->
+      <div id="divcontent" style="float: left; width: calc(100% - 200px);">
+        <div
+          style="height:100vh;border-left :1px solid #d6d7d8; float: initial; display: flow-root!important;"
+          data-bind="
+                    attr: {
+                        id: documentEditorId
+                    },
+                    css: {
+                        mongoDocumentEditor:$root.isPreferredApiMongoDB()
+                    }"
+        ></div>
+      </div>
+      <!-- Editor - End -->
+    </div>
+  </div>
+  <!-- Ids and Editor - End -->
+</div>

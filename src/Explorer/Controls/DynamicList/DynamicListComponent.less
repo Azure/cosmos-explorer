@@ -1,0 +1,59 @@
+@import "../../../../less/Common/Constants";
+
+.dynamicList {
+    width: 100%;
+
+    .dynamicListContainer {
+        .dynamicListItem {
+            justify-content: space-around;
+            margin-bottom: @MediumSpace;
+
+            input {
+                width: @newCollectionPaneInputWidth;
+                margin: auto;
+                font-size: @mediumFontSize;
+                padding: @SmallSpace @DefaultSpace;
+                color: @BaseDark;
+            }
+
+            .dynamicListItemDelete {
+                padding: @SmallSpace @SmallSpace @DefaultSpace;
+                margin-left: @SmallSpace;
+
+                &:hover {
+                    .hover();
+                }
+
+                &:active {
+                    .active();
+                }
+
+                img {
+                    .dataExplorerIcons();
+                }
+            }
+        }
+    }
+
+    .dynamicListItemNew {
+        margin-top: @LargeSpace;
+
+        .dynamicListItemAdd {
+            padding: @DefaultSpace;
+            cursor: pointer;
+
+            &:hover {
+                .hover();
+            }
+
+            &:active {
+                .active();
+            }
+
+            img {
+                .dataExplorerIcons();
+                margin: 0px @SmallSpace @SmallSpace 0px; 
+            }
+        }
+    }
+}

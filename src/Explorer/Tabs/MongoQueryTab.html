@@ -1,0 +1,120 @@
+﻿<div
+  class="tab-pane"
+  data-bind="
+                            attr:{
+                                id: tabId
+                            }"
+  role="tabpanel"
+>
+  <!-- Query Tab Command Bar - Start -->
+  <div class="contentdiv">
+    <div class="tabCommandButton">
+      <!-- Execute Query - Start -->
+      <span
+        class="commandButton"
+        data-bind="
+                                            click: onExecuteQueryClick,
+                                            visible: executeQueryButton.visible() && executeQueryButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/ExecuteQuery.svg" />Run
+      </span>
+      <span
+        class="commandButton tabCommandDisabled"
+        data-bind="
+                                            visible: executeQueryButton.visible() && !executeQueryButton.enabled()"
+      >
+        <img class="imgiconwidth" src="/ExecuteQuery-disabled.svg" />Run
+      </span>
+      <!-- Execute Query - End -->
+    </div>
+  </div>
+  <!-- Query Tab Command Bar - End -->
+
+  <div
+    class="queryEditor"
+    data-bind="
+                                    attr: {
+                                        id: queryEditorId
+                                    },
+                                    css: {
+                                        mongoQueryEditor:$root.isPreferredApiMongoDB()
+                                    }"
+  ></div>
+  <div
+    style="margin-left:50px; margin-top:-75px;"
+    data-bind="
+                                visible: $root.isPreferredApiMongoDB() && sqlQueryEditorContent().length == 0"
+  >
+    Start by writing a Mongo query, for example: <strong>{'id':'foo'}</strong> or <strong>{ }</strong> to get all the
+    documents.
+  </div>
+  <!-- Query Errors Tab - Start-->
+  <div class="active queryErrorsHeaderContainer" data-bind="visible: errors().length > 0">
+    <span
+      class="queryErrors"
+      data-toggle="tab"
+      data-bind="
+                                    attr: {
+                                        href: '#queryerrors' + tabId
+                                    }"
+      >Errors</span
+    >
+  </div>
+  <!-- Query Errors Tab - End -->
+
+  <!-- Query Results & Errors Content Container - Start-->
+  <div class="queryResultErrorContentContainer">
+    <!-- Query Results Content - Start-->
+    <div
+      class="tab-pane active"
+      data-bind="
+                                    id: {
+                                        href: 'queryresults' + tabId
+                                    },
+                                    visible: allResultsMetadata().length > 0 && !errors().length > 0"
+    >
+      <div class="queryResultsValue">
+        <span class="queryResults"> Results: </span> <span data-bind="text: showingDocumentsDisplayText"></span>
+        <span class="queryResultDivider"> | </span> <span> Request Charge: </span>
+        <span data-bind="text: requestChargeDisplayText"></span> <span class="queryResultDivider"> | </span>
+        <span class="queryResultNextEnable" data-bind="visible: fetchNextPageButton.enabled">
+          <a
+            data-bind="
+                        click: onFetchNextPageClick"
+          >
+            <span>Next</span> <img class="queryResultnextImg" src="/Query-Editor-Next.svg" />
+          </a>
+        </span>
+        <span class="queryResultNextDisable" data-bind="visible: !fetchNextPageButton.enabled()">
+          <span>Next</span> <img class="queryResultnextImg" src="/Query-Editor-Next-Disabled.svg" />
+        </span>
+      </div>
+      <div
+        style="height: 600px;"
+        data-bind="
+                                            attr: {
+                                                id: resultsEditorId
+                                            }"
+      ></div>
+    </div>
+    <!-- Query Results Content - Start-->
+
+    <!-- Query Errors Content - Start-->
+    <div
+      class="tab-pane active"
+      data-bind="
+                                    id: {
+                                        href: 'queryerrors' + tabId
+                                    },
+                                    visible: errors().length > 0"
+    >
+      <!-- ko foreach: errors -->
+      <div style="margin-left:17px; font-size: 12px;">
+        <span data-bind="text: $data.code"></span> : <span data-bind="text: $data.message"></span>
+      </div>
+      <!-- /ko -->
+    </div>
+    <!-- Query Errors Content - End-->
+  </div>
+  <!-- Results & Errors Content Container - Endt-->
+</div>

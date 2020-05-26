@@ -1,0 +1,143 @@
+.nteract-cell-prompt {
+  font-size: 12px;
+  line-height: 22px;
+  /* For creating a buffer area for <Prompt blank /> */
+  min-height: 22px;
+  width: var(--prompt-width, 50px);
+  padding: 2px 0;
+  text-align: center;
+}
+
+.nteract-cell-outputs {
+  padding: 10px 10px 10px calc(var(--prompt-width, 50px) + 10px);
+  word-wrap: break-word;
+  overflow-y: hidden;
+  outline: none;
+  /* When expanded, this is overtaken to 100% */
+  text-overflow: ellipsis;
+}
+
+.nteract-cell-outputs:empty {
+  display: none;
+}
+
+.nteract-cell-outputs code {
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.nteract-cell-outputs pre {
+  white-space: pre-wrap;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.nteract-cell-outputs img {
+  display: block;
+  max-width: 100%;
+}
+
+.nteract-cell {
+  position: relative;
+  transition: all 0.1s ease-in-out;
+}
+
+.nteract-cells {
+  padding-bottom: 10px;
+  padding: var(--nt-spacing-m, 10px);
+}
+
+.nteract-cell-input .nteract-cell-source {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+/** Adaptation for the R kernel's inline lists **/
+.nteract-cell-outputs .list-inline li {
+  display: inline;
+  padding-right: 20px;
+  text-align: center;
+}
+
+.nteract-cell-input {
+  display: flex;
+  flex-direction: row;
+}
+.nteract-cell-input.invisible {
+  height: 34px;
+}
+.nteract-cell-input .nteract-cell-prompt {
+  flex: 0 0 auto;
+}
+
+/* for nested paragraphs in block quotes */
+.nteract-cell-outputs blockquote p {
+  display: inline;
+}
+.nteract-cell-outputs dd {
+  display: block;
+  -webkit-margin-start: 40px;
+}
+.nteract-cell-outputs dl {
+  display: block;
+  -webkit-margin-before: 1__qem;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0;
+  -webkit-margin-end: 0;
+}
+.nteract-cell-outputs dt {
+  display: block;
+}
+.nteract-cell-outputs dl {
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+.nteract-cell-outputs dt {
+  font-weight: bold;
+  float: left;
+  width: 20%;
+  /* adjust the width; make sure the total of both is 100% */
+  padding: 0;
+  margin: 0;
+}
+.nteract-cell-outputs dd {
+  float: left;
+  width: 80%;
+  /* adjust the width; make sure the total of both is 100% */
+  padding: 0;
+  margin: 0;
+}
+
+.nteract-cell-outputs kbd {
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  margin: 0 0.2em;
+}
+
+.nteract-cell-outputs table {
+  border-collapse: collapse;
+}
+
+.nteract-cell-outputs th {
+  text-align: left;
+}
+
+.nteract-cell-outputs th,
+    .nteract-cell-outputs td,
+    /* for legacy output handling */
+    .nteract-cell-outputs .th,
+    .nteract-cell-outputs .td {
+  padding: 0.5em 1em;
+}
+
+.nteract-cell-outputs blockquote {
+  padding: 0.75em 0.5em 0.75em 1em;
+}
+
+.nteract-cell-outputs blockquote::before {
+  display: block;
+  height: 0;
+  margin-left: -0.95em;
+}

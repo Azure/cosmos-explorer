@@ -1,0 +1,30 @@
+@import "../../../../less/Common/Constants";
+
+.runCellButton {
+    max-height: 100%;
+    width: 100%;
+    position: sticky;
+    z-index: 300;
+    left: 0;
+    top: 0;
+
+    .ms-Button-flexContainer {
+        align-items: start;
+        padding-top: 11px;
+
+        .ms-Button-icon {
+            color: #0078D4;
+            font-size: 20px;
+        }
+    }
+}
+
+.greyStopButton {
+    .runCellButton .ms-Button-flexContainer .ms-Button-icon {
+        color: @BaseMediumHigh;
+    }
+
+    .ms-Spinner .ms-Spinner-circle {
+        border-top-color: @BaseMediumHigh;
+    }
+}

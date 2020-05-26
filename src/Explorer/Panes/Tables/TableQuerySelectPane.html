@@ -1,0 +1,79 @@
+<div data-bind="visible: visible">
+  <div
+    class="contextual-pane-out"
+    data-bind="
+        click: cancel,
+        clickBubble: false"
+  ></div>
+  <div class="contextual-pane" id="queryselectpane">
+    <!-- Query Select form - Start -->
+    <div class="contextual-pane-in">
+      <form
+        class="paneContentContainer"
+        data-bind="
+                submit: submit"
+      >
+        <!-- Query Select header - Start -->
+        <div class="firstdivbg headerline">
+          Select Column
+          <div
+            class="closeImg"
+            role="button"
+            aria-label="Close pane"
+            tabindex="0"
+            data-bind="
+                        click: cancel, event: { keydown: onCloseKeyPress }"
+          >
+            <img src="../../../../images/close-black.svg" title="Close" alt="Close" />
+          </div>
+        </div>
+        <!-- Query Select header - End -->
+        <div class="paneMainContent paneContentContainer">
+          <!--<div class="row">
+                        <label id="instructionLabel" data-bind="text: instructionLabel"></label>
+                    </div>-->
+          <div><span>Select the columns that you want to query.</span></div>
+          <div class="column-options">
+            <div class="columns-border">
+              <input class="all-select-check" type="checkbox" data-bind="checked: allSelected" />
+              <label
+                style="font-weight:700;"
+                id="availableColumnsTableQueryLabel"
+                data-bind="text: availableColumnsTableQueryLabel"
+              ></label>
+            </div>
+            <div class="content">
+              <section>
+                <ul data-bind="foreach: columnOptions" aria-labelledby="availableColumnsTableQueryLabel" tabindex="0">
+                  <!-- ko template: {if: editable} -->
+                  <li
+                    class="list-item columns-border"
+                    data-bind="attr: { title: columnName }, click: $parent.handleClick "
+                  >
+                    <input type="checkbox" data-bind="attr: { title: columnName }, checked: selected" />
+                    <span data-bind="text: columnName"></span>
+                  </li>
+                  <!--/ko-->
+                  <!-- ko template: {ifnot: editable} -->
+                  <li class="list-item columns-border" data-bind="attr: { title: columnName } ">
+                    <input type="checkbox" disabled data-bind="checked: selected" />
+                    <span data-bind="text: columnName"></span>
+                  </li>
+                  <!--/ko-->
+                </ul>
+              </section>
+            </div>
+          </div>
+
+          <div class="row-label" data-bind="style: { visibility: anyColumnSelected() ? 'hidden': 'visible' }">
+            <label class="warning" role="alert" aria-atomic="true" data-bind="text: noColumnSelectedWarning"></label>
+          </div>
+        </div>
+        <div class="paneFooter">
+          <div class="leftpanel-okbut"><input type="submit" value="OK" class="btncreatecoll1" /></div>
+        </div>
+      </form>
+    </div>
+    <!-- Query Select form - End -->
+  </div>
+</div>

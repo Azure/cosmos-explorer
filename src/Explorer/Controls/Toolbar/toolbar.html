@@ -1,0 +1,44 @@
+<div class="toolbar">
+  <!-- ko template: { name: 'toolbarItemTemplate', foreach: toolbarItems } -->
+  <!-- /ko -->
+</div>
+
+<script type="text/html" id="toolbarItemTemplate">
+  <!-- ko if: type === "action" -->
+  <div class="toolbar-group" data-bind="visible: visible">
+      <button class="toolbar-group-button" data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
+              <div class="toolbar-group-button-icon">
+                  <div class="toolbar_icon" data-bind="icon: icon"></div>
+              </div>
+              <span data-bind="text: displayName"></span>
+          </button>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: type === "toggle" -->
+  <div class="toolbar-group" data-bind="visible: visible">
+      <button class="toolbar-group-button toggle-button" data-bind="hasFocus: focused, attr: {id: id, title: title}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
+              <div class="toolbar-group-button-icon" data-bind="css: { 'toggle-checked': checked }">
+                  <div class="toolbar_icon"  data-bind="icon: icon"></div>
+              </div>
+              <span data-bind="text: displayName"></span>
+          </button>
+  </div>
+  <!-- /ko -->
+  <!-- ko if: type === "dropdown" -->
+  <div class="toolbar-group" data-bind="visible: visible">
+      <div class="dropdown" data-bind="attr: {id: (id + '-dropdown')}">
+          <button role="menu" class="toolbar-group-button" data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName},  event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
+                  <div class="toolbar-group-button-icon">
+                      <div class="toolbar_icon" data-bind="icon: icon"></div>
+                  </div>
+                  <span data-bind="text: displayName"></span>
+              </button>
+      </div>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: type === "separator" -->
+  <div class="toolbar-group vertical-separator" data-bind="visible: visible"></div>
+  <!-- /ko -->
+</script>

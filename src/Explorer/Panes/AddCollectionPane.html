@@ -1,0 +1,602 @@
+﻿<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
+  <div class="contextual-pane-out" data-bind="setTemplateReady: true, click: cancel, clickBubble: false"></div>
+  <div class="contextual-pane" data-bind="attr: { id: id }">
+    <!-- Add collection form  -- Start -->
+    <div class="contextual-pane-in">
+      <form data-bind="submit: submit" style="height: 100%">
+        <div
+          class="paneContentContainer"
+          role="dialog"
+          aria-labelledby="containerTitle"
+          data-bind="template: { name: 'add-collection-inputs' }"
+        ></div>
+      </form>
+    </div>
+    <!-- Add collection form  -- End -->
+    <!-- Loader - Start -->
+    <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
+      <img class="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" />
+    </div>
+    <!-- Loader - End -->
+  </div>
+</div>
+
+<script type="text/html" id="add-collection-inputs">
+                                                    <!-- Add collection header - Start -->
+  <div class="firstdivbg headerline">
+      <span id="containerTitle" data-bind="text: title"></span>
+      <div class="closeImg" id="closeBtnAddCollection" role="button" aria-label="Close pane"
+          data-bind="click: cancel, event: { keypress: onCloseKeyPress }" tabindex="0">
+          <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+      </div>
+  </div>
+  <!-- Add collection header - End -->
+
+  <!-- Add collection errors - Start -->
+  <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: formErrors() && formErrors() !== ''">
+      <div class="warningErrorContent">
+          <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"></span>
+          <span class="warningErrorDetailsLinkContainer">
+              <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
+              <a class="errorLink" role="link"
+                  data-bind="visible: formErrorsDetails() && formErrorsDetails() !== '' , click: showErrorDetails, event: { keypress: onMoreDetailsKeyPress }"
+                  tabindex="0">
+                  More details</a>
+          </span>
+      </div>
+  </div>
+  <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: formWarnings() && formWarnings() !== ''">
+      <div class="warningErrorContent">
+          <span><img class="paneErrorIcon" src="/warning.svg" alt="Warning"></span>
+          <span class="warningErrorDetailsLinkContainer">
+              <span class="formErrors" data-bind="text: formWarnings, attr: { title: formWarnings }"></span>
+          </span>
+      </div>
+  </div>
+  <!-- Add collection errors - End -->
+
+  <!-- upsell message - start -->
+  <div class="infoBoxContainer" aria-live="assertive" data-bind="visible: formErrors && !formErrors()">
+      <div class="infoBoxContent">
+          <span><img class="infoBoxIcon" src="/info_color.svg" alt="Promo"></span>
+          <span class="infoBoxDetails">
+              <span class="infoBoxMessage" data-bind="text: upsellMessage, attr: { title: upsellMessage }"></span>
+              <a class="underlinedLink" id="linkAddCollection" data-bind="attr: { 'aria-label': upsellMessageAriaLabel }"
+                  target="_blank" href="https://aka.ms/azure-cosmos-db-pricing" tabindex="0">
+                  More details</a>
+          </span>
+      </div>
+  </div>
+  <!-- upsell message - end -->
+
+  <!-- Add collection inputs - Start -->
+  <div class="paneMainContent" data-bind="visible: !maxCollectionsReached()">
+      <div data-bind="visible: !isPreferredApiTable()">
+          <p>
+              <span class="mandatoryStar">*</span>
+              <span class="addCollectionLabel">Database id</span>
+              <span class="infoTooltip" role="tooltip" tabindex="0">
+                  <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                  <span class="tooltiptext infoTooltipWidth">A database is analogous to a namespace. It is the unit of
+                      management for a set of containers.</span>
+              </span>
+          </p>
+
+          <div class="createNewDatabaseOrUseExisting">
+              <input class="createNewDatabaseOrUseExistingRadio" aria-label="Create new database" name="databaseType"
+                  type="radio" role="radio" id="databaseCreateNew" data-test="addCollection-createNewDatabase"
+                  tabindex="0"
+                  data-bind="checked: databaseCreateNew, checkedValue: true, attr: { 'aria-checked': databaseCreateNew() ? 'true' : 'false' }" />
+              <span class="createNewDatabaseOrUseExistingSpace" for="databaseCreateNew">Create new</span>
+
+              <input class="createNewDatabaseOrUseExistingRadio" aria-label="Use existing database" name="databaseType"
+                  type="radio" role="radio" id="databaseUseExisting" data-test="addCollection-existingDatabase"
+                  tabindex="0"
+                  data-bind="checked: databaseCreateNew, checkedValue: false, attr: { 'aria-checked': !databaseCreateNew() ? 'true' : 'false' }" />
+              <span class="createNewDatabaseOrUseExistingSpace" for="databaseUseExisting">Use existing</span>
+          </div>
+
+          <input name="newDatabaseId" id="databaseId" data-test="addCollection-newDatabaseId" aria-required="true"
+              type="text" autocomplete="off" pattern="[^/?#\\]*[^/?# \\]"
+              title="May not end with space nor contain characters '\' '/' '#' '?'" placeholder="Type a new database id"
+              size="40" class="collid"
+              data-bind="visible: databaseCreateNew, textInput: databaseId, hasFocus: firstFieldHasFocus"
+              aria-label="Database id" autofocus>
+
+          <input name="existingDatabaseId" id="existingDatabaseId" data-test="addCollection-existingDatabaseId"
+              aria-required="true" type="text" autocomplete="off" pattern="[^/?#\\]*[^/?# \\]"
+              title="May not end with space nor contain characters '\' '/' '#' '?'" list="databasesList"
+              placeholder="Choose an existing database" size="40" class="collid"
+              data-bind="visible: !databaseCreateNew(), textInput: databaseId, hasFocus: firstFieldHasFocus"
+              aria-label="Database id">
+
+          <datalist id="databasesList" data-bind="foreach: databaseIds" data-bind="visible: databaseCreateNew">
+              <option data-bind="value: $data">
+          </datalist>
+          <!-- Database provisioned throughput - Start -->
+          <div class="databaseProvision" aria-label="New database provision support"
+              data-bind="visible: databaseCreateNew">
+              <input tabindex="0" type="checkbox" data-test="addCollectionPane-databaseSharedThroughput"
+                  id="addCollection-databaseSharedThroughput" title="Provision shared throughput"
+                  data-bind="checked: databaseCreateNewShared" />
+              <span class="databaseProvisionText" for="databaseSharedThroughput">Provision database throughput</span>
+              <span class="infoTooltip" role="tooltip" tabindex="0">
+                  <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                  <span class="tooltiptext provisionDatabaseThroughput">Provisioned throughput at the database level will
+                      be shared across all containers within the database.</span>
+              </span>
+          </div>
+          <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
+          <div data-bind="visible: databaseCreateNewShared() && databaseCreateNew()">
+              <!-- 1 -->
+              <throughput-input-autopilot-v3 params="{
+                                                                                                      testId: 'databaseThroughputValue',
+                                                                                                      value: throughputDatabase,
+                                                                                                      minimum: minThroughputRU,
+                                                                                                      maximum: maxThroughputRU,
+                                                                                                      isEnabled: databaseCreateNewShared,
+                                                                                                      label: sharedThroughputRangeText,
+                                                                                                      ariaLabel: sharedThroughputRangeText,
+                                                                                                      costsVisible: costsVisible,
+                                                                                                      requestUnitsUsageCost: requestUnitsUsageCost,
+                                                                                                      spendAckChecked: throughputSpendAck,
+                                                                                                      spendAckId: 'throughputSpendAck',
+                                                                                                      spendAckText: throughputSpendAckText,
+                                                                                                      spendAckVisible: throughputSpendAckVisible,
+                                                                                                      showAsMandatory: true,
+                                                                                                      infoBubbleText: ruToolTipText,
+                                                                                                      throughputAutoPilotRadioId: 'newContainer-databaseThroughput-autoPilotRadio',
+                                                                                                      throughputProvisionedRadioId: 'newContainer-databaseThroughput-manualRadio',
+                                                                                                      throughputModeRadioName: 'sharedThroughputModeRadio',
+                                                                                                      isAutoPilotSelected: isSharedAutoPilotSelected,
+                                                                                                      maxAutoPilotThroughputSet: sharedAutoPilotThroughput,
+                                                                                                      autoPilotUsageCost: autoPilotUsageCost,
+                                                                                                      canExceedMaximumValue: canExceedMaximumValue,
+                                                                                                      showAutoPilot: !isFreeTierAccount()
+                                                                                                  }">
+              </throughput-input-autopilot-v3>
+          </div>
+          <!-- /ko -->
+          <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
+          <div data-bind="visible: databaseCreateNewShared() && databaseCreateNew()">
+              <!-- 1 -->
+              <throughput-input params="{
+                                                                                                    testId: 'databaseThroughputValue',
+                                                                                                    value: throughputDatabase,
+                                                                                                    minimum: minThroughputRU,
+                                                                                                    maximum: maxThroughputRU,
+                                                                                                    isEnabled: databaseCreateNewShared,
+                                                                                                    label: sharedThroughputRangeText,
+                                                                                                    ariaLabel: sharedThroughputRangeText,
+                                                                                                    costsVisible: costsVisible,
+                                                                                                    requestUnitsUsageCost: requestUnitsUsageCost,
+                                                                                                    spendAckChecked: throughputSpendAck,
+                                                                                                    spendAckId: 'throughputSpendAck',
+                                                                                                    spendAckText: throughputSpendAckText,
+                                                                                                    spendAckVisible: throughputSpendAckVisible,
+                                                                                                    showAsMandatory: true,
+                                                                                                    infoBubbleText: ruToolTipText,
+                                                                                                    throughputAutoPilotRadioId: 'newContainer-databaseThroughput-autoPilotRadio',
+                                                                                                    throughputProvisionedRadioId: 'newContainer-databaseThroughput-manualRadio',
+                                                                                                    throughputModeRadioName: 'sharedThroughputModeRadio',
+                                                                                                    isAutoPilotSelected: isSharedAutoPilotSelected,
+                                                                                                    autoPilotUsageCost: autoPilotUsageCost,
+                                                                                                    canExceedMaximumValue: canExceedMaximumValue,
+                                                                                                    autoPilotTiersList: sharedAutoPilotTiersList,
+                                                                                                    selectedAutoPilotTier: selectedSharedAutoPilotTier
+                                                                                                }">
+              </throughput-input>
+          </div>
+          <!-- /ko -->
+          <!-- Database provisioned throughput - End -->
+      </div>
+
+      <div class="seconddivpadding">
+          <p>
+              <span class="mandatoryStar">*</span>
+              <span class="addCollectionLabel" data-bind="text: collectionIdTitle"></span>
+              <span class="infoTooltip" role="tooltip" tabindex="0">
+                  <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                  <span class="tooltiptext infoTooltipWidth">Unique identifier for the container and used for
+                      id-based
+                      routing through REST and all SDKs</span>
+              </span>
+          </p>
+          <input name="collectionId" id="containerId" data-test="addCollection-collectionId" type="text"
+              aria-required="true" autocomplete="off" pattern="[^/?#\\]*[^/?# \\]"
+              title="May not end with space nor contain characters '\' '/' '#' '?'" placeholder="e.g., Container1"
+              size="40" class="textfontclr collid"
+              data-bind="value: collectionId, attr: { 'aria-label': collectionIdTitle }">
+      </div>
+
+      <!-- <p class="seconddivpadding" data-bind="visible:(container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) && !databaseHasSharedOffer()">
+                                                                                              Where did 'fixed' containers go?
+                                                                                              <span class="infoTooltip" role="tooltip" tabindex="0">
+                                                                                                  <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                                                                                                  <span class="tooltiptext noFixedCollectionsTooltipWidth">
+                                                                                                      We lowered the minimum throughput for partitioned containers to 400 RU/s, removing the only drawback partitioned containers had. <br/><br/>
+                                                                                                      We are planning to deprecate ability to create non-partitioned containers, as they do not allow you to scale elastically.
+                                                                                                      If for some reason you still need a container without partition key, you can use our SDKs to create one. <br/><br/>
+                                                                                                      Please <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Hosted%20Data%20Explorer%20Feedback">contact us</a> if you have questions or concerns.
+                                                                                                  </span>
+                                                                                              </span>
+                                                                                          </p> -->
+
+      <!-- Indexing For Shared Throughput - start -->
+      <div class="seconddivpadding"
+          data-bind="visible: showIndexingOptionsForSharedThroughput() && !container.isPreferredApiMongoDB()">
+          <div class="useIndexingForSharedThroughput createNewDatabaseOrUseExisting"
+              aria-label="Indexing For Shared Throughput">
+              <p>
+                  <span class="mandatoryStar">*</span>
+                  <span class="addCollectionLabel">Indexing</span>
+              </p>
+              <div>
+                  <input type="radio" id="useIndexingForSharedThroughputOn" name="useIndexingForSharedThroughput"
+                      value="on" class="createNewDatabaseOrUseExistingRadio"
+                      data-bind="checked: useIndexingForSharedThroughput, checkedValue: true">
+                  <span class="createNewDatabaseOrUseExistingSpace"
+                      for="useIndexingForSharedThroughputOn">Automatic</span>
+                  <input type="radio" id="useIndexingForSharedThroughputOff" name="useIndexingForSharedThroughput"
+                      value="off" class="createNewDatabaseOrUseExistingRadio"
+                      data-bind="checked: useIndexingForSharedThroughput, checkedValue: false">
+                  <span class="createNewDatabaseOrUseExistingSpace" for="useIndexingForSharedThroughputOff">Off</span>
+              </div>
+              <p data-bind="visible: useIndexingForSharedThroughput">
+                  All properties in your documents will be indexed by default for flexible and efficient queries.
+                  <a class="errorLink" href="https://aka.ms/cosmos-indexing-policy" target="_blank">Learn
+                      more</a>
+              </p>
+              <p data-bind="visible: useIndexingForSharedThroughput() === false">Indexing will be turned off.
+                  Recommended
+                  if you don't need to run queries or only have key value operations. <a class="errorLink"
+                      href="https://aka.ms/cosmos-indexing-policy" target="_blank">Learn
+                      more</a></p>
+          </div>
+      </div>
+      <!-- Indexing For Shared Throughput - end -->
+
+      <p class="seconddivpadding"
+          data-bind="visible: container.isPreferredApiMongoDB() && !databaseHasSharedOffer() || container.isFixedCollectionWithSharedThroughputSupported">
+          <span class="mandatoryStar">*</span>
+          <span class="addCollectionLabel">Storage capacity</span>
+          <span class="infoTooltip" role="tooltip" tabindex="0">
+              <img class="infoImg" src="/info-bubble.svg" alt="More information">
+              <span class="tooltiptext infoTooltipWidth">This is the maximum storage size of the container. Storage is
+                  billed per GB based on consumption.</span>
+          </span>
+      </p>
+
+      <div class="tabs">
+          <div tabindex="0"
+              data-bind="event: { keydown: onStorageOptionsKeyDown }, visible: container.isPreferredApiMongoDB() && !databaseHasSharedOffer() || container.isFixedCollectionWithSharedThroughputSupported"
+              aria-label="Storage capacity">
+              <!-- Fixed option button - Start -->
+              <div class="tab">
+                  <input type="radio" id="tab1" name="storage" value="10" class="radio" data-bind="checked: storage">
+                  <label for="tab1">Fixed (10 GB)</label>
+              </div>
+              <!-- Fixed option button - End -->
+
+              <!-- Unlimited option button - Start -->
+              <div class="tab">
+                  <input type="radio" id="tab2" name="storage" value="100" class="radio" data-bind="checked: storage">
+                  <label for="tab2">Unlimited</label>
+              </div>
+              <!-- Unlimited option button - End -->
+          </div>
+
+          <!-- Fixed Button Content - Start -->
+          <div class="tabcontent" data-bind="visible: isFixedStorageSelected() && !databaseHasSharedOffer()">
+              <!-- 2 -->
+              <throughput-input params="{
+                                                                                                  testId: 'fixedThroughputValue',
+                                                                                                  value: throughputSinglePartition,
+                                                                                                  minimum: minThroughputRU,
+                                                                                                  maximum: maxThroughputRU,
+                                                                                                  isEnabled: isFixedStorageSelected() && !databaseHasSharedOffer(),
+                                                                                                  label: throughputRangeText,
+                                                                                                  ariaLabel: throughputRangeText,
+                                                                                                  costsVisible: costsVisible,
+                                                                                                  requestUnitsUsageCost: requestUnitsUsageCost
+                                                                                                  showAsMandatory: true,
+                                                                                                  isFixed: true,
+                                                                                                  infoBubbleText: ruToolTipText,
+                                                                                                  canExceedMaximumValue: canExceedMaximumValue
+                                                                                              }">
+              </throughput-input>
+              <div data-bind="visible: rupmVisible">
+                  <div class="tabs">
+                      <p class="pkPadding">
+                          <span class="mandatoryStar">*</span>
+                          <span class="addCollectionLabel">RU/m</span>
+                          <span class="infoTooltip" role="tooltip" tabindex="0">
+                              <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                              <span class="tooltiptext throughputRuInfo">
+                                  For each 100 Request Units per second (RU/s) provisioned, 1,000 Request Units
+                                  per
+                                  minute
+                                  (RU/m) can be provisioned. E.g.: for a container with 5,000 RU/s provisioned
+                                  with
+                                  RU/m
+                                  enabled, the RU/m budget will be 50,000 RU/m.
+                              </span>
+                          </span>
+                      </p>
+                      <div tabindex="0" data-bind="event: { keydown: onRupmOptionsKeyDown }" aria-label="RU/m">
+                          <div class="tab">
+                              <input type="radio" id="rupmOn" name="rupmcoll" value="on" class="radio"
+                                  data-bind="checked: rupm">
+                              <label for="rupmOn">ON</label>
+                          </div>
+                          <div class="tab">
+                              <input type="radio" id="rupmOff" name="rupmcoll" value="off" class="radio"
+                                  data-bind="checked: rupm">
+                              <label for="rupmOff">OFF</label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Fixed Button Content - End -->
+
+          <!-- Unlimited Button Content - Start -->
+          <div class="tabcontent" data-bind="visible: isUnlimitedStorageSelected() || databaseHasSharedOffer()">
+              <div data-bind="visible: rupmVisible">
+                  <div class="tabs">
+                      <p>
+                          <span class="mandatoryStar">*</span>
+                          <span class="addCollectionLabel">RU/m</span>
+                          <span class="infoTooltip" role="tooltip" tabindex="0">
+                              <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                              <span class="tooltiptext throughputRuInfo">
+                                  For each 100 Request Units per second (RU/s) provisioned, 1,000 Request Units
+                                  per
+                                  minute
+                                  (RU/m) can be provisioned. E.g.: for a container with 5,000 RU/s provisioned
+                                  with
+                                  RU/m
+                                  enabled, the RU/m budget will be 50,000 RU/m.
+                              </span>
+                          </span>
+                      </p>
+                      <div tabindex="0" data-bind="event: { keydown: onRupmOptionsKeyDown }" aria-label="RU/m">
+                          <div class="tab">
+                              <input type="radio" id="rupmOn2" name="rupmcoll2" value="on" class="radio"
+                                  data-bind="checked: rupm">
+                              <label for="rupmOn2">ON</label>
+                          </div>
+                          <div class="tab">
+                              <input type="radio" id="rupmOff2" name="rupmcoll2" value="off" class="radio"
+                                  data-bind="checked: rupm">
+                              <label for="rupmOff2">OFF</label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div data-bind="visible: partitionKeyVisible">
+                  <p>
+                      <span class="mandatoryStar">*</span>
+                      <span class="addCollectionLabel" data-bind="text: partitionKeyName"></span>
+                      <span class="infoTooltip" role="tooltip" tabindex="0">
+                          <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                          <span class="tooltiptext infoTooltipWidth">The <span data-bind="text: partitionKeyName"></span>
+                              is used to automatically partition
+                              data among multiple servers for scalability. Choose a JSON property name that has a
+                              wide
+                              range of values and is likely to have evenly distributed access patterns.</span>
+                      </span>
+                  </p>
+                  <input type="text" data-test="addCollection-partitionKeyValue" aria-required="true" size="40"
+                      class="textfontclr collid" data-bind="textInput: partitionKey,
+                                    attr: {
+                                        placeholder: partitionKeyPlaceholder,
+                                        required: partitionKeyVisible(),
+                                        'aria-label': partitionKeyName,
+                                        pattern: partitionKeyPattern,
+                                        title: partitionKeyTitle
+                                    }">
+              </div>
+              <!-- large parition key - start -->
+              <div class="largePartitionKey" aria-label="Large Partition Key" data-bind="visible: partitionKeyVisible">
+                  <input tabindex="0" type="checkbox" id="largePartitionKey" data-test="addCollection-largePartitionKey"
+                      title="Large Partition Key" data-bind="checked: largePartitionKey" />
+                  <span for="largePartitionKey">My <span data-bind="text: lowerCasePartitionKeyName"></span> is
+                      larger
+                      than 100 bytes</span>
+                  <p data-bind="visible: largePartitionKey" class="largePartitionKeyDescription"
+                      data-test="addCollection-largePartitionKeyDescription">Old SDKs do not work with containers
+                      that
+                      support large <span data-bind="text: lowerCasePartitionKeyName"></span>s, ensure you are
+                      using
+                      the
+                      right SDK version. <a class="errorLink" href="https://aka.ms/cosmosdb/pkv2" target="_blank">Learn
+                          more</a></p>
+              </div>
+              <!-- large parition key - end -->
+              <!-- Provision collection throughput checkox - start -->
+              <div class="pkPadding" data-bind="visible: databaseHasSharedOffer() && !databaseCreateNew()">
+                  <input type="checkbox" id="collectionSharedThroughput"
+                      data-bind="checked: collectionWithThroughputInShared, attr: {title:collectionWithThroughputInSharedTitle}" />
+                  <span for="collectionSharedThroughput" data-bind="text: collectionWithThroughputInSharedTitle"></span>
+                  <span class="leftAlignInfoTooltip" role="tooltip" tabindex="0">
+                      <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                      <span class="tooltiptext sharedCollectionThroughputTooltipWidth">You can optionally
+                          provision
+                          dedicated throughput for a container within a database that has throughput provisioned.
+                          This
+                          dedicated throughput amount will not be shared with other containers in the database and
+                          does
+                          not count towards the throughput you provisioned for the database. This throughput
+                          amount
+                          will
+                          be billed in addition to the throughput amount you provisioned at the database
+                          level.</span>
+                  </span>
+              </div>
+              <!-- Provision collection throughput checkox - end -->
+              <!-- Provision collection throughput spinner - start -->
+              <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
+              <div data-bind="visible: displayCollectionThroughput" data-test="addCollection-displayCollectionThroughput">
+                  <!-- 3 -->
+                  <throughput-input-autopilot-v3 params="{
+                                  testId: 'collectionThroughputValue',
+                                  value: throughputMultiPartition,
+                                  minimum: minThroughputRU,
+                                  maximum: maxThroughputRU,
+                                  isEnabled: !databaseHasSharedOffer() || collectionWithThroughputInShared(),
+                                  label: throughputRangeText,
+                                  ariaLabel: throughputRangeText,
+                                  costsVisible: costsVisible,
+                                  requestUnitsUsageCost: dedicatedRequestUnitsUsageCost,
+                                  spendAckChecked: throughputSpendAck,
+                                  spendAckId: 'throughputSpendAckCollection',
+                                  spendAckText: throughputSpendAckText,
+                                  spendAckVisible: throughputSpendAckVisible,
+                                  showAsMandatory: true,
+                                  infoBubbleText: ruToolTipText,
+                                  throughputAutoPilotRadioId: 'newContainer-containerThroughput-autoPilotRadio',
+                                  throughputProvisionedRadioId: 'newContainer-containerThroughput-manualRadio',
+                                  throughputModeRadioName: 'throughputModeRadioName',
+                                  isAutoPilotSelected: isAutoPilotSelected,
+                                  maxAutoPilotThroughputSet: autoPilotThroughput,
+                                  autoPilotUsageCost: autoPilotUsageCost,
+                                  canExceedMaximumValue: canExceedMaximumValue,
+                                  showAutoPilot: !isFixedStorageSelected()
+                                }">
+                  </throughput-input-autopilot-v3>
+              </div>
+              <!-- /ko -->
+              <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
+              <div data-bind="visible: displayCollectionThroughput" data-test="addCollection-displayCollectionThroughput">
+                  <!-- 3 -->
+                  <throughput-input params="{
+                                  testId: 'collectionThroughputValue',
+                                  value: throughputMultiPartition,
+                                  minimum: minThroughputRU,
+                                  maximum: maxThroughputRU,
+                                  isEnabled: !databaseHasSharedOffer() || collectionWithThroughputInShared(),
+                                  label: throughputRangeText,
+                                  ariaLabel: throughputRangeText,
+                                  costsVisible: costsVisible,
+                                  requestUnitsUsageCost: dedicatedRequestUnitsUsageCost,
+                                  spendAckChecked: throughputSpendAck,
+                                  spendAckId: 'throughputSpendAckCollection',
+                                  spendAckText: throughputSpendAckText,
+                                  spendAckVisible: throughputSpendAckVisible,
+                                  showAsMandatory: true,
+                                  infoBubbleText: ruToolTipText,
+                                  throughputAutoPilotRadioId: 'newContainer-containerThroughput-autoPilotRadio',
+                                  throughputProvisionedRadioId: 'newContainer-containerThroughput-manualRadio',
+                                  throughputModeRadioName: 'throughputModeRadioName',
+                                  isAutoPilotSelected: isAutoPilotSelected,
+                                  autoPilotUsageCost: autoPilotUsageCost,
+                                  canExceedMaximumValue: canExceedMaximumValue,
+                                  autoPilotTiersList: autoPilotTiersList,
+                                  selectedAutoPilotTier: selectedAutoPilotTier,
+                                  showAutoPilot: !isFixedStorageSelected()
+                                  }">
+                  </throughput-input>
+              </div>
+              <!-- /ko -->
+
+              <!-- Provision collection throughput spinner - end -->
+              <!-- Enable analytical storage - start -->
+              <div class="enableAnalyticalStorage pkPadding" aria-label="Enable Analytical Store"
+                  data-bind="visible: isSynapseLinkSupported">
+                  <div>
+                      <span class="mandatoryStar">*</span>
+                      <span class="addCollectionLabel">Analytical store</span>
+                      <span class="infoTooltip" role="tooltip" tabindex="0">
+                          <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                          <span class="tooltiptext infoTooltipWidth">
+                              Enable analytical store capability to perform near real-time analytics on your operational
+                              data, without impacting the performance of transactional workloads.
+                              Learn more <a class="errorLink" href="https://aka.ms/analytical-store-overview"
+                                  target="_blank">here</a>
+                          </span>
+                      </span>
+                  </div>
+
+                  <div class="paragraph">
+                      <input class="enableAnalyticalStorageRadio" id="enableAnalyticalStorageRadioOn"
+                          name="analyticalStore" type="radio" role="radio" tabindex="0" data-bind="
+                                              disable: showEnableSynapseLink,
+                                              checked: isAnalyticalStorageOn,
+                                              checkedValue: true,
+                                              attr: {
+                                                  'aria-checked': isAnalyticalStorageOn() ? 'true' : 'false'
+                                              }" />
+                      <span for="enableAnalyticalStorageRadioOn" data-bind="disable: showEnableSynapseLink">
+                          On
+                      </span>
+
+                      <input class="enableAnalyticalStorageRadio" id="enableAnalyticalStorageRadioOff"
+                          name="analyticalStore" type="radio" role="radio" tabindex="0" data-bind="
+                                              disable: showEnableSynapseLink,
+                                              checked: isAnalyticalStorageOn,
+                                              checkedValue: false,
+                                              attr: {
+                                                  'aria-checked': isAnalyticalStorageOn() ? 'false' : 'true'
+                                              }" />
+                      <span for="enableAnalyticalStorageRadioOff" data-bind="disable: showEnableSynapseLink">
+                          Off
+                      </span>
+                  </div>
+
+                  <div class="paragraph italic" data-bind="visible: ttl90DaysEnabled() && isAnalyticalStorageOn()">
+                      By default, Analytical Time-to-Live will be configured to retain 90 days of data in the analytical
+                      store. You can configure a custom retention policy in the 'Settings' tab.
+                      <span><a class="errorLink" href="https://aka.ms/cosmosdb-analytical-ttl" target="_blank">Learn
+                              more</a></span>
+                  </div>
+
+                  <div class="paragraph" data-bind="visible: showEnableSynapseLink">
+                      Azure Synapse Link is required for creating an analytical
+                      store container. Enable Synapse Link for this
+                      Cosmos DB account.
+                      <span><a class="errorLink" href="https://aka.ms/cosmosdb-synapselink" target="_blank">Learn
+                              more</a></span>
+                  </div>
+
+                  <div class="paragraph" data-bind="visible: showEnableSynapseLink">
+                      <button class="button" type="button" data-bind="
+                                              click: onEnableSynapseLinkButtonClicked,
+                                              disable: isSynapseLinkUpdating,
+                                              css: {
+                                                  enabled: !isSynapseLinkUpdating(),
+                                                  disabled: isSynapseLinkUpdating
+                                              }
+                                          ">Enable</button>
+                  </div>
+              </div>
+              <!-- Enable analytical storage - end -->
+          </div>
+          <!-- Unlimited Button Content - End -->
+      </div>
+      <div class="uniqueIndexesContainer" data-bind="visible: uniqueKeysVisible">
+          <p class="uniqueKeys">
+              <span class="addCollectionLabel">Unique keys</span>
+              <span class="uniqueInfoTooltip" role="tooltip" tabindex="0">
+                  <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                  <span class="uniqueTooltiptext infoTooltipWidth">Unique keys provide developers with the
+                      ability to add a layer of data integrity to their database. By creating a unique key policy when a
+                      container is created, you ensure the uniqueness of one or more values per partition key.</span>
+              </span>
+          </p>
+          <dynamic-list
+              params="{ listItems: uniqueKeys, placeholder: uniqueKeysPlaceholder(),  ariaLabel: 'Write a comma separated path list of unique keys', buttonText: 'Add unique key' }">
+          </dynamic-list>
+      </div>
+  </div>
+  <div class="paneFooter">
+      <div class="leftpanel-okbut">
+          <input name="createCollection" id="submitBtnAddCollection" data-test="addCollection-createCollection"
+              type="submit" value="OK" class="btncreatecoll1">
+      </div>
+  </div>
+  <div data-bind="visible: maxCollectionsReached">
+      <error-display params="{ errorMsg: maxCollectionsReachedMessage }"></error-display>
+  </div>
+  <!-- Add collection inputs - End -->
+</script>

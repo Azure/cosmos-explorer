@@ -1,0 +1,153 @@
+﻿<div
+  class="tab-pane active tabdocuments flexContainer"
+  data-bind="
+    setTemplateReady: true,
+    attr:{
+        id: tabId
+    },
+    visible: isActive"
+  role="tabpanel"
+>
+  <!-- Ids and Editor - Start -->
+  <div class="documentsTabGridAndEditor documentsTabGridAndEditorUpperPadding">
+    <div class="documentsContainerWithSplitter" , data-bind="attr: { id: documentContentsContainerId }">
+      <div class="flexContainer">
+        <div class="documentsGridHeaderContainer">
+          <!-- ko if: !partitionKeyProperty -->
+          <table>
+            <tbody>
+              <tr>
+                <td class="documentsGridHeader">id</td>
+                <td class="refreshColHeader">
+                  <img
+                    class="refreshcol"
+                    src="/refresh-cosmos.svg"
+                    data-bind="click: refreshDocumentsGrid"
+                    alt="Refresh documents"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- /ko -->
+
+          <!-- ko if: partitionKeyProperty -->
+          <table>
+            <tbody>
+              <tr>
+                <td class="documentsGridHeader evenlySpacedHeader">id</td>
+                <td
+                  class="documentsGridHeader documentsGridPartition evenlySpacedHeader"
+                  data-bind="
+                                attr: {
+                                    title: partitionKeyPropertyHeader
+                                },
+                                text: partitionKeyPropertyHeader"
+                ></td>
+                <td
+                  class="refreshColHeader"
+                  role="button"
+                  aria-label="Refresh documents"
+                  tabindex="0"
+                  data-bind="event: { keydown: onRefreshButtonKeyDown }"
+                >
+                  <img
+                    class="refreshcol"
+                    src="/refresh-cosmos.svg"
+                    data-bind="click: refreshDocumentsGrid"
+                    alt="Refresh documents"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- /ko -->
+        </div>
+        <!-- Document Ids - Start -->
+        <div
+          class="tabdocuments scrollable"
+          data-bind="
+                attr: {
+                    id: documentContentsGridId,
+                    tabindex: conflictIds().length <= 0 ? -1 : 0
+                },
+                style: { height: dataContentsGridScrollHeight },
+                event: { keydown: accessibleDocumentList.onKeyDown }"
+        >
+          <table class="table table-hover" data-bind="css: { 'can-select': false, 'dataTable': false }">
+            <tbody id="tbodycontent">
+              <!-- ko foreach: conflictIds -->
+              <tr
+                class="pointer accessibleListElement"
+                data-bind="
+                                click: $data.click,
+                                css: {
+                                    gridRowSelected: $parent.selectedConflictId && $parent.selectedConflictId() && $parent.selectedConflictId().rid === $data.rid,
+                                    gridRowHighlighted: $parent.accessibleDocumentList.currentItem() && $parent.accessibleDocumentList.currentItem().rid === $data.rid
+                                }"
+              >
+                <td class="tabdocumentsGridElement"><a data-bind="text: $data.id, attr: { title: $data.id }"></a></td>
+                <!-- ko if: $data.partitionKeyProperty -->
+                <td class="tabdocumentsGridElement">
+                  <a
+                    data-bind="text: $data.stringPartitionKeyValue, attr: { title: $data.stringPartitionKeyValue }"
+                  ></a>
+                </td>
+                <!-- /ko -->
+              </tr>
+              <!-- /ko -->
+            </tbody>
+          </table>
+        </div>
+        <div class="loadMore">
+          <a role="link" data-bind="click: loadNextPage, event: { keypress: onLoadMoreKeyInput }" tabindex="0"
+            >Load more</a
+          >
+        </div>
+        <!-- Document Ids - End -->
+        <!-- Splitter -->
+      </div>
+      <div class="splitter ui-resizable-handle ui-resizable-e colResizePointer" id="h_splitter2"></div>
+    </div>
+    <div class="documentWaterMark" data-bind="visible: shouldShowWatermark">
+      <p><img src="/DocumentWaterMark.svg" alt="Document WaterMark" /></p>
+      <p class="documentWaterMarkText">View and resolve conflicts</p>
+    </div>
+    <!-- Editor - Start -->
+    <div class="conflictEditorContainer" data-bind="visible: !shouldShowWatermark()">
+      <div class="conflictEditorHeader">
+        <div data-bind="visible: conflictOperation() === 'replace'">
+          <div class="conflictEditorHeaderLabel">Current document</div>
+          <div class="conflictEditorHeaderLabel">Conflict update</div>
+        </div>
+        <div data-bind="visible: conflictOperation() === 'create'">
+          <div class="conflictEditorHeaderLabel">Conflict insert</div>
+        </div>
+        <div data-bind="visible: conflictOperation() === 'delete'">
+          <div class="conflictEditorHeaderLabel">Conflict delete</div>
+        </div>
+      </div>
+      <diff-editor
+        class="editorDivContent"
+        data-bind="visible: shouldShowDiffEditor"
+        params="{
+                originalContent: selectedConflictCurrent,
+                modifiedContent: selectedConflictContent,
+                lineNumbers: 'on',
+                ariaLabel: 'Conflict editor',
+                updatedContent: selectedConflictContent}"
+      ></diff-editor>
+      <json-editor
+        class="editorDivContent"
+        data-bind="visible: shouldShowEditor"
+        params="{
+                content: selectedConflictContent,
+                lineNumbers: 'on',
+                ariaLabel: 'Conflict editor',
+                updatedContent: selectedConflictContent}"
+      ></json-editor>
+    </div>
+    <!-- Editor - End -->
+  </div>
+  <!-- Ids and Editor - End -->
+</div>

@@ -1,0 +1,101 @@
+<div
+  class="tab-pane flexContainer"
+  data-bind="
+    attr:{
+        id: tabId
+    },
+    visible: isActive"
+  role="tabpanel"
+>
+  <div class="warningErrorContainer scaleWarningContainer" data-bind="visible: shouldShowStatusBar">
+    <div>
+      <div class="warningErrorContent" data-bind="visible: shouldShowNotificationStatusPrompt">
+        <span><img src="/info_color.svg" alt="Info"/></span>
+        <span class="warningErrorDetailsLinkContainer" data-bind="html: notificationStatusInfo"></span>
+      </div>
+      <div class="warningErrorContent" data-bind="visible: !shouldShowNotificationStatusPrompt()">
+        <span><img src="/warning.svg" alt="Warning"/></span>
+        <span class="warningErrorDetailsLinkContainer" data-bind="html: warningMessage"></span>
+      </div>
+    </div>
+  </div>
+  <div class="tabForm scaleSettingScrollable">
+    <div class="scaleDivison" aria-label="Scale" aria-controls="scaleRegion">
+      <span class="scaleSettingTitle">Scale</span>
+    </div>
+    <div class="ssTextAllignment" id="scaleRegion">
+      <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
+      <throughput-input-autopilot-v3
+        params="{ 
+                    testId: testId,
+                    class: 'scaleForm dirty',
+                    value: throughput,
+                    minimum: minRUs,
+                    maximum: maxRUThroughputInputLimit,
+                    canExceedMaximumValue: canThroughputExceedMaximumValue,
+                    step: throughputIncreaseFactor,
+                    label: throughputTitle,
+                    ariaLabel: throughputAriaLabel,
+                    costsVisible: costsVisible,
+                    requestUnitsUsageCost: requestUnitsUsageCost,
+                    throughputAutoPilotRadioId: throughputAutoPilotRadioId,
+                    throughputProvisionedRadioId: throughputProvisionedRadioId,
+                    throughputModeRadioName: throughputModeRadioName,
+                    showAutoPilot: userCanChangeProvisioningTypes,
+                    isAutoPilotSelected: isAutoPilotSelected,
+                    maxAutoPilotThroughputSet: autoPilotThroughput,
+                    autoPilotUsageCost: autoPilotUsageCost,
+                    canExceedMaximumValue: canExceedMaximumValue,
+                    overrideWithAutoPilotSettings: overrideWithAutoPilotSettings,
+                    overrideWithProvisionedThroughputSettings: overrideWithProvisionedThroughputSettings
+                 }"
+      >
+      </throughput-input-autopilot-v3>
+      <!-- /ko -->
+      <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
+      <throughput-input
+        params="{ 
+                    testId: testId,
+                    class: 'scaleForm dirty',
+                    value: throughput,
+                    minimum: minRUs,
+                    maximum: maxRUThroughputInputLimit,
+                    canExceedMaximumValue: canThroughputExceedMaximumValue,
+                    step: throughputIncreaseFactor,
+                    label: throughputTitle,
+                    ariaLabel: throughputAriaLabel,
+                    costsVisible: costsVisible,
+                    requestUnitsUsageCost: requestUnitsUsageCost,
+                    throughputAutoPilotRadioId: throughputAutoPilotRadioId,
+                    throughputProvisionedRadioId: throughputProvisionedRadioId,
+                    throughputModeRadioName: throughputModeRadioName,
+                    showAutoPilot: userCanChangeProvisioningTypes,
+                    isAutoPilotSelected: isAutoPilotSelected,
+                    autoPilotTiersList: autoPilotTiersList,
+                    selectedAutoPilotTier: selectedAutoPilotTier,
+                    autoPilotUsageCost: autoPilotUsageCost,
+                    canExceedMaximumValue: canExceedMaximumValue
+                 }"
+      >
+      </throughput-input>
+      <!-- /ko -->
+
+      <div class="estimatedCost" data-bind="visible: costsVisible">
+        <p data-bind="visible: minRUAnotationVisible">
+          <span>Learn more about minimum throughput </span>
+          <a href="https://docs.microsoft.com/azure/cosmos-db/set-throughput" target="_blank">here.</a>
+        </p>
+        <p data-bind="visible: canRequestSupport">
+          <!-- TODO: Replace link with call to the Azure Support blade -->
+          <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request"
+            >Contact support</a
+          >
+          for more than <span data-bind="text: maxRUsText"></span> RU/s
+        </p>
+        <p data-bind="visible: shouldDisplayPortalUsePrompt">
+          Use Data Explorer from Azure Portal to request more than <span data-bind="text: maxRUsText"></span> RU/s
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

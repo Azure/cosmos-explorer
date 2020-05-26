@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+      "outDir": "./Contracts/",
+      "strict": true,
+      "declaration": true,
+      "module": "amd",
+      "types": []
+  },
+  "files": [
+      "./src/Contracts/ActionContracts.ts",
+      "./src/Contracts/Diagnostics.ts",
+      "./src/Contracts/ExplorerContracts.ts",
+      "./src/Contracts/Versions.ts"
+  ],
+}

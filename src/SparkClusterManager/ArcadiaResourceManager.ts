@@ -1,0 +1,79 @@
+import * as ViewModels from "../Contracts/ViewModels";
+import {
+  ArcadiaWorkspace,
+  ArcadiaWorkspaceFeedResponse,
+  SparkPool,
+  SparkPoolFeedResponse
+} from "../Contracts/DataModels";
+import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
+import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
+import { Logger } from "../Common/Logger";
+import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
+import { config } from "../Config";
+
+export class ArcadiaResourceManager implements ViewModels.ArcadiaResourceManager {
+  private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
+
+  constructor(private armEndpoint = config.ARM_ENDPOINT) {
+    this.resourceProviderClientFactory = new ResourceProviderClientFactory(this.armEndpoint);
+  }
+
+  public async getWorkspacesAsync(arcadiaResourceId: string): Promise<ArcadiaWorkspace[]> {
+    const uri = `${arcadiaResourceId}/workspaces`;
+    try {
+      const response = (await this._rpClient(uri).getAsync(
+        uri,
+        ArmApiVersions.arcadia
+      )) as ArcadiaWorkspaceFeedResponse;
+      return response && response.value;
+    } catch (error) {
+      Logger.logError(error, "ArcadiaResourceManager/getWorkspaceAsync");
+      throw error;
+    }
+  }
+
+  public async getWorkspaceAsync(arcadiaResourceId: string, workspaceId: string): Promise<ArcadiaWorkspace> {
+    const uri = `${arcadiaResourceId}/workspaces/${workspaceId}`;
+    try {
+      return (await this._rpClient(uri).getAsync(uri, ArmApiVersions.arcadia)) as ArcadiaWorkspace;
+    } catch (error) {
+      Logger.logError(error, "ArcadiaResourceManager/getWorkspaceAsync");
+      throw error;
+    }
+  }
+
+  public async listWorkspacesAsync(subscriptionIds: string[]): Promise<ArcadiaWorkspace[]> {
+    let uriFilter = `$filter=(resourceType eq '${ArmResourceTypes.synapseWorkspaces.toLowerCase()}')`;
+    if (subscriptionIds && subscriptionIds.length) {
+      uriFilter += ` and (${"subscriptionId eq '" + subscriptionIds.join("' or subscriptionId eq '") + "'"})`;
+    }
+    const uri = "/resources";
+    try {
+      const response = (await this._rpClient(uri + uriFilter).getAsync(
+        uri,
+        ArmApiVersions.arm,
+        uriFilter
+      )) as ArcadiaWorkspaceFeedResponse;
+      return response && response.value;
+    } catch (error) {
+      Logger.logError(error, "ArcadiaManager/listWorkspacesAsync");
+      throw error;
+    }
+  }
+
+  public async listSparkPoolsAsync(resourceId: string): Promise<SparkPool[]> {
+    let uri = `${resourceId}/bigDataPools`;
+
+    try {
+      const response = (await this._rpClient(uri).getAsync(uri, ArmApiVersions.arcadia)) as SparkPoolFeedResponse;
+      return response && response.value;
+    } catch (error) {
+      Logger.logError(error, "ArcadiaManager/listSparkPoolsAsync");
+      throw error;
+    }
+  }
+
+  private _rpClient<TResource>(uri: string): IResourceProviderClient<TResource> {
+    return this.resourceProviderClientFactory.getOrCreate(uri);
+  }
+}

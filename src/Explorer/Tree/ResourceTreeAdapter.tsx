@@ -1,0 +1,803 @@
+import * as ko from "knockout";
+import * as React from "react";
+import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
+import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
+import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
+import NotebookTab from "../Tabs/NotebookTab";
+import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { CosmosClient } from "../../Common/CosmosClient";
+import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
+import CollectionIcon from "../../../images/tree-collection.svg";
+import DeleteIcon from "../../../images/delete.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import RefreshIcon from "../../../images/refresh-cosmos.svg";
+import { IGitHubRepo, IGitHubBranch } from "../../GitHub/GitHubClient";
+import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
+import FileIcon from "../../../images/notebook/file-cosmos.svg";
+import { ArrayHashMap } from "../../Common/ArrayHashMap";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
+import _ from "underscore";
+import { StringUtils } from "../../Utils/StringUtils";
+import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
+import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { Areas } from "../../Common/Constants";
+import { GitHubUtils } from "../../Utils/GitHubUtils";
+
+export class ResourceTreeAdapter implements ReactAdapter {
+  private static readonly DataTitle = "DATA";
+  private static readonly NotebooksTitle = "NOTEBOOKS";
+
+  private static readonly SamplesRepo: IGitHubRepo = {
+    name: "cosmos-notebooks",
+    owner: {
+      login: "Azure-Samples"
+    },
+    private: false
+  };
+  private static readonly SamplesBranch: IGitHubBranch = {
+    name: "master"
+  };
+  private static readonly PseudoDirPath = "PsuedoDir";
+
+  public parameters: ko.Observable<number>;
+
+  public sampleNotebooksContentRoot: NotebookContentItem;
+  public myNotebooksContentRoot: NotebookContentItem;
+  public gitHubNotebooksContentRoot: NotebookContentItem;
+
+  private pinnedReposSubscription: ko.Subscription;
+
+  private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
+  private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
+  private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
+
+  public constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
+    this.parameters = ko.observable(Date.now());
+
+    this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
+    this.container.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.isNotebookEnabled.subscribe(newValue => this.triggerRender());
+
+    this.koSubsDatabaseIdMap = new ArrayHashMap();
+    this.koSubsCollectionIdMap = new ArrayHashMap();
+    this.databaseCollectionIdMap = new ArrayHashMap();
+
+    this.container.nonSystemDatabases.subscribe((databases: ViewModels.Database[]) => {
+      // Clean up old databases
+      this.cleanupDatabasesKoSubs(databases.map((database: ViewModels.Database) => database.id()));
+
+      databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
+      this.triggerRender();
+    });
+
+    this.container.nonSystemDatabases().forEach((database: ViewModels.Database) => this.watchDatabase(database));
+    this.triggerRender();
+  }
+
+  public renderComponent(): JSX.Element {
+    const dataRootNode = this.buildDataTree();
+    const notebooksRootNode = this.buildNotebooksTrees();
+
+    if (this.container.isNotebookEnabled()) {
+      return (
+        <AccordionComponent>
+          <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
+            <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+          </AccordionItemComponent>
+          <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
+            <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
+          </AccordionItemComponent>
+        </AccordionComponent>
+      );
+    } else {
+      return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
+    }
+  }
+
+  public async initialize(): Promise<void[]> {
+    const refreshTasks: Promise<void>[] = [];
+
+    this.sampleNotebooksContentRoot = {
+      name: "Sample Notebooks (View Only)",
+      path: GitHubUtils.toGitHubUriForRepoAndBranch(
+        ResourceTreeAdapter.SamplesRepo.owner.login,
+        ResourceTreeAdapter.SamplesRepo.name,
+        ResourceTreeAdapter.SamplesBranch.name
+      ),
+      type: NotebookContentItemType.Directory
+    };
+    refreshTasks.push(
+      this.container.refreshContentItem(this.sampleNotebooksContentRoot).then(() => this.triggerRender())
+    );
+
+    this.myNotebooksContentRoot = {
+      name: "My Notebooks",
+      path: this.container.getNotebookBasePath(),
+      type: NotebookContentItemType.Directory
+    };
+
+    // Only if notebook server is available we can refresh
+    if (this.container.notebookServerInfo().notebookServerEndpoint) {
+      refreshTasks.push(
+        this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => this.triggerRender())
+      );
+    }
+
+    if (this.container.gitHubOAuthService?.isLoggedIn()) {
+      this.gitHubNotebooksContentRoot = {
+        name: "GitHub repos",
+        path: ResourceTreeAdapter.PseudoDirPath,
+        type: NotebookContentItemType.Directory
+      };
+
+      refreshTasks.push(this.refreshGitHubReposAndTriggerRender(this.gitHubNotebooksContentRoot));
+    } else {
+      this.gitHubNotebooksContentRoot = undefined;
+    }
+
+    return Promise.all(refreshTasks);
+  }
+
+  private async refreshGitHubReposAndTriggerRender(item: NotebookContentItem): Promise<void> {
+    const updateGitHubReposAndRender = (pinnedRepos: IPinnedRepo[]) => {
+      item.children = [];
+      pinnedRepos.forEach(pinnedRepo => {
+        const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
+        const repoTreeItem: NotebookContentItem = {
+          name: repoFullName,
+          path: ResourceTreeAdapter.PseudoDirPath,
+          type: NotebookContentItemType.Directory,
+          children: []
+        };
+
+        pinnedRepo.branches.forEach(branch => {
+          repoTreeItem.children.push({
+            name: branch.name,
+            path: GitHubUtils.toGitHubUriForRepoAndBranch(pinnedRepo.owner, pinnedRepo.name, branch.name),
+            type: NotebookContentItemType.Directory
+          });
+        });
+
+        item.children.push(repoTreeItem);
+      });
+
+      this.triggerRender();
+    };
+
+    if (this.pinnedReposSubscription) {
+      this.pinnedReposSubscription.dispose();
+    }
+    this.pinnedReposSubscription = this.junoClient.subscribeToPinnedRepos(pinnedRepos =>
+      updateGitHubReposAndRender(pinnedRepos)
+    );
+
+    await this.junoClient.getPinnedRepos(this.container.gitHubOAuthService?.getTokenObservable()()?.scope);
+  }
+
+  private buildDataTree(): TreeNode {
+    const databaseTreeNodes: TreeNode[] = this.container.nonSystemDatabases().map((database: ViewModels.Database) => {
+      const databaseNode: TreeNode = {
+        label: database.id(),
+        iconSrc: CosmosDBIcon,
+        isExpanded: false,
+        className: "databaseHeader",
+        children: [],
+        isSelected: () => this.isDataNodeSelected(database.rid, "Database", undefined),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database),
+        onClick: isExpanded => {
+          // Rewritten version of expandCollapseDatabase():
+          if (!isExpanded) {
+            database.expandDatabase();
+            database.loadCollections();
+          } else {
+            database.collapseDatabase();
+          }
+          database.selectDatabase();
+          this.container.onUpdateTabsButtons([]);
+          database.refreshTabSelectedState();
+        },
+        onContextMenuOpen: () => this.container.selectedNode(database)
+      };
+
+      if (database.isDatabaseShared()) {
+        databaseNode.children.push({
+          label: "Scale",
+          isSelected: () =>
+            this.isDataNodeSelected(database.rid, "Database", ViewModels.CollectionTabKind.DatabaseSettings),
+          onClick: database.onSettingsClick.bind(database)
+        });
+      }
+
+      // Find collections
+      database
+        .collections()
+        .forEach((collection: ViewModels.Collection) =>
+          databaseNode.children.push(this.buildCollectionNode(database, collection))
+        );
+
+      return databaseNode;
+    });
+
+    return {
+      label: undefined,
+      isExpanded: true,
+      children: databaseTreeNodes
+    };
+  }
+
+  /**
+   * This is a rewrite of Collection.ts : showScriptsMenu, showStoredProcedures, showTriggers, showUserDefinedFunctions
+   * @param container
+   */
+  private static showScriptNodes(container: ViewModels.Explorer): boolean {
+    return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+  }
+
+  private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {
+    const children: TreeNode[] = [];
+    children.push({
+      label: collection.getLabel(),
+      onClick: () => {
+        collection.openTab();
+        // push to most recent
+        this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+          type: MostRecentActivity.Type.OpenCollection,
+          title: collection.id(),
+          description: "Data",
+          data: collection.rid
+        });
+      },
+      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Documents),
+      contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection)
+    });
+
+    children.push({
+      label: database.isDatabaseShared() ? "Settings" : "Scale & Settings",
+      onClick: collection.onSettingsClick.bind(collection),
+      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Settings)
+    });
+
+    if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+      children.push(this.buildStoredProcedureNode(collection));
+      children.push(this.buildUserDefinedFunctionsNode(collection));
+      children.push(this.buildTriggerNode(collection));
+    }
+
+    // This is a rewrite of showConflicts
+    const showConflicts =
+      this.container.databaseAccount &&
+      this.container.databaseAccount() &&
+      this.container.databaseAccount().properties &&
+      this.container.databaseAccount().properties.enableMultipleWriteLocations &&
+      collection.rawDataModel &&
+      !!collection.rawDataModel.conflictResolutionPolicy;
+
+    if (showConflicts) {
+      children.push({
+        label: "Conflicts",
+        onClick: collection.onConflictsClick.bind(collection),
+        isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Conflicts)
+      });
+    }
+
+    return {
+      label: collection.id(),
+      iconSrc: CollectionIcon,
+      isExpanded: false,
+      children: children,
+      className: "collectionHeader",
+      contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
+      onClick: () => {
+        // Rewritten version of expandCollapseCollection
+        this.container.selectedNode(collection);
+        this.container.onUpdateTabsButtons([]);
+        collection.refreshActiveTab();
+      },
+      onExpanded: () => {
+        if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+          collection.loadStoredProcedures();
+          collection.loadUserDefinedFunctions();
+          collection.loadTriggers();
+        }
+      },
+      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined),
+      onContextMenuOpen: () => this.container.selectedNode(collection)
+    };
+  }
+
+  private buildStoredProcedureNode(collection: ViewModels.Collection): TreeNode {
+    return {
+      label: "Stored Procedures",
+      children: collection.storedProcedures().map((sp: ViewModels.StoredProcedure) => ({
+        label: sp.id(),
+        onClick: sp.open.bind(sp),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.StoredProcedures),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container)
+      })),
+      onClick: () => {
+        collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
+        collection.refreshActiveTab();
+      }
+    };
+  }
+
+  private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): TreeNode {
+    return {
+      label: "User Defined Functions",
+      children: collection.userDefinedFunctions().map((udf: ViewModels.UserDefinedFunction) => ({
+        label: udf.id(),
+        onClick: udf.open.bind(udf),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.UserDefinedFunctions),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container)
+      })),
+      onClick: () => {
+        collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
+        collection.refreshActiveTab();
+      }
+    };
+  }
+
+  private buildTriggerNode(collection: ViewModels.Collection): TreeNode {
+    return {
+      label: "Triggers",
+      children: collection.triggers().map((trigger: ViewModels.Trigger) => ({
+        label: trigger.id(),
+        onClick: trigger.open.bind(trigger),
+        isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container)
+      })),
+      onClick: () => {
+        collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
+        collection.refreshActiveTab();
+      }
+    };
+  }
+
+  private buildNotebooksTrees(): TreeNode {
+    let notebooksTree: TreeNode = {
+      label: undefined,
+      isExpanded: true,
+      isLeavesParentsSeparate: true,
+      children: []
+    };
+
+    if (this.sampleNotebooksContentRoot) {
+      notebooksTree.children.push(this.buildSampleNotebooksTree());
+    }
+
+    if (this.myNotebooksContentRoot) {
+      notebooksTree.children.push(this.buildMyNotebooksTree());
+    }
+
+    if (this.gitHubNotebooksContentRoot) {
+      // collapse all other notebook nodes
+      notebooksTree.children.forEach(node => (node.isExpanded = false));
+      notebooksTree.children.push(this.buildGitHubNotebooksTree());
+    }
+
+    return notebooksTree;
+  }
+
+  private buildSampleNotebooksTree(): TreeNode {
+    const sampleNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
+      this.sampleNotebooksContentRoot,
+      (item: NotebookContentItem) => {
+        const databaseAccountName: string = this.container.databaseAccount() && this.container.databaseAccount().name;
+        const defaultExperience: string = this.container.defaultExperience && this.container.defaultExperience();
+        const dataExplorerArea: string = Areas.ResourceTree;
+
+        const startKey: number = TelemetryProcessor.traceStart(Action.OpenSampleNotebook, {
+          databaseAccountName,
+          defaultExperience,
+          dataExplorerArea
+        });
+
+        this.container.importAndOpen(item.path).then(hasOpened => {
+          if (hasOpened) {
+            this.pushItemToMostRecent(item);
+            TelemetryProcessor.traceSuccess(
+              Action.OpenSampleNotebook,
+              {
+                databaseAccountName,
+                defaultExperience,
+                dataExplorerArea
+              },
+              startKey
+            );
+          } else {
+            TelemetryProcessor.traceFailure(
+              Action.OpenSampleNotebook,
+              {
+                databaseAccountName,
+                defaultExperience,
+                dataExplorerArea
+              },
+              startKey
+            );
+          }
+        });
+      },
+      false,
+      false
+    );
+
+    sampleNotebooksTree.isExpanded = true;
+    // Remove children starting with "."
+    sampleNotebooksTree.children = sampleNotebooksTree.children.filter(
+      node => !StringUtils.startsWith(node.label, ".")
+    );
+    return sampleNotebooksTree;
+  }
+
+  private buildMyNotebooksTree(): TreeNode {
+    const myNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
+      this.myNotebooksContentRoot,
+      (item: NotebookContentItem) => {
+        this.container.openNotebook(item).then(hasOpened => {
+          if (hasOpened) {
+            this.pushItemToMostRecent(item);
+          }
+        });
+      },
+      true,
+      true
+    );
+
+    myNotebooksTree.isExpanded = true;
+    myNotebooksTree.isAlphaSorted = true;
+    // Remove "Delete" menu item from context menu
+    myNotebooksTree.contextMenu = myNotebooksTree.contextMenu.filter(menuItem => menuItem.label !== "Delete");
+    return myNotebooksTree;
+  }
+
+  private buildGitHubNotebooksTree(): TreeNode {
+    const gitHubNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
+      this.gitHubNotebooksContentRoot,
+      (item: NotebookContentItem) => {
+        this.container.openNotebook(item).then(hasOpened => {
+          if (hasOpened) {
+            this.pushItemToMostRecent(item);
+          }
+        });
+      },
+      true,
+      true
+    );
+
+    gitHubNotebooksTree.contextMenu = [
+      {
+        label: "Manage GitHub settings",
+        onClick: () => this.container.gitHubReposPane.open()
+      },
+      {
+        label: "Disconnect from GitHub",
+        onClick: () => {
+          TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
+            databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
+            defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
+            dataExplorerArea: Areas.Notebook
+          });
+          this.container.gitHubOAuthService.logout();
+        }
+      }
+    ];
+
+    gitHubNotebooksTree.isExpanded = true;
+    gitHubNotebooksTree.isAlphaSorted = true;
+
+    return gitHubNotebooksTree;
+  }
+
+  private pushItemToMostRecent(item: NotebookContentItem) {
+    this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+      type: MostRecentActivity.Type.OpenNotebook,
+      title: item.name,
+      description: "Notebook",
+      data: {
+        name: item.name,
+        path: item.path
+      }
+    });
+  }
+
+  private buildChildNodes(
+    item: NotebookContentItem,
+    onFileClick: (item: NotebookContentItem) => void,
+    createDirectoryContextMenu: boolean,
+    createFileContextMenu: boolean
+  ): TreeNode[] {
+    if (!item || !item.children) {
+      return [];
+    } else {
+      return item.children.map(item => {
+        const result =
+          item.type === NotebookContentItemType.Directory
+            ? this.buildNotebookDirectoryNode(item, onFileClick, createDirectoryContextMenu, createFileContextMenu)
+            : this.buildNotebookFileNode(item, onFileClick, createFileContextMenu);
+        result.timestamp = item.timestamp;
+        return result;
+      });
+    }
+  }
+
+  private buildNotebookFileNode(
+    item: NotebookContentItem,
+    onFileClick: (item: NotebookContentItem) => void,
+    createFileContextMenu: boolean
+  ): TreeNode {
+    return {
+      label: item.name,
+      iconSrc: NotebookUtil.isNotebookFile(item.path) ? NotebookIcon : FileIcon,
+      className: "notebookHeader",
+      onClick: () => onFileClick(item),
+      isSelected: () => {
+        const activeTab = this.container.findActiveTab();
+        return (
+          activeTab &&
+          activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
+          (activeTab as NotebookTab).notebookPath() === item.path
+        );
+      },
+      contextMenu: createFileContextMenu
+        ? [
+            {
+              label: "Rename",
+              iconSrc: NotebookIcon,
+              onClick: () => this.container.renameNotebook(item)
+            },
+            {
+              label: "Delete",
+              iconSrc: DeleteIcon,
+              onClick: () => {
+                this.container.showOkCancelModalDialog(
+                  "Confirm delete",
+                  `Are you sure you want to delete "${item.name}"`,
+                  "Delete",
+                  () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+                  "Cancel",
+                  undefined
+                );
+              }
+            },
+            {
+              label: "Download",
+              iconSrc: NotebookIcon,
+              onClick: () => this.container.downloadFile(item)
+            }
+          ]
+        : undefined,
+      data: item
+    };
+  }
+
+  private createDirectoryContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
+    let items: TreeNodeMenuItem[] = [
+      {
+        label: "Refresh",
+        iconSrc: RefreshIcon,
+        onClick: () => this.container.refreshContentItem(item).then(() => this.triggerRender())
+      },
+      {
+        label: "Delete",
+        iconSrc: DeleteIcon,
+        onClick: () => {
+          this.container.showOkCancelModalDialog(
+            "Confirm delete",
+            `Are you sure you want to delete "${item.name}?"`,
+            "Delete",
+            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+            "Cancel",
+            undefined
+          );
+        }
+      },
+      {
+        label: "Rename",
+        iconSrc: NotebookIcon,
+        onClick: () => this.container.renameNotebook(item).then(() => this.triggerRender())
+      },
+      {
+        label: "New Directory",
+        iconSrc: NewNotebookIcon,
+        onClick: () => this.container.onCreateDirectory(item)
+      },
+      {
+        label: "New Notebook",
+        iconSrc: NewNotebookIcon,
+        onClick: () => this.container.onNewNotebookClicked(item)
+      },
+      {
+        label: "Upload File",
+        iconSrc: NewNotebookIcon,
+        onClick: () => this.container.onUploadToNotebookServerClicked(item)
+      }
+    ];
+
+    // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
+    if (GitHubUtils.fromGitHubUri(item.path)) {
+      items = items.filter(
+        item =>
+          item.label !== "Delete" &&
+          item.label !== "Rename" &&
+          item.label !== "New Directory" &&
+          item.label !== "Upload File"
+      );
+    }
+
+    return items;
+  }
+
+  private buildNotebookDirectoryNode(
+    item: NotebookContentItem,
+    onFileClick: (item: NotebookContentItem) => void,
+    createDirectoryContextMenu: boolean,
+    createFileContextMenu: boolean
+  ): TreeNode {
+    return {
+      label: item.name,
+      iconSrc: undefined,
+      className: "notebookHeader",
+      isAlphaSorted: true,
+      isLeavesParentsSeparate: true,
+      onClick: () => {
+        if (!item.children) {
+          this.container.refreshContentItem(item).then(() => this.triggerRender());
+        }
+      },
+      isSelected: () => {
+        const activeTab = this.container.findActiveTab();
+        return (
+          activeTab &&
+          activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
+          (activeTab as NotebookTab).notebookPath() === item.path
+        );
+      },
+      contextMenu:
+        createDirectoryContextMenu && item.path !== ResourceTreeAdapter.PseudoDirPath
+          ? this.createDirectoryContextMenu(item)
+          : undefined,
+      data: item,
+      children: this.buildChildNodes(item, onFileClick, createDirectoryContextMenu, createFileContextMenu)
+    };
+  }
+
+  public triggerRender() {
+    window.requestAnimationFrame(() => this.parameters(Date.now()));
+  }
+
+  private getActiveTab(): ViewModels.Tab {
+    const activeTabs: ViewModels.Tab[] = this.container.openedTabs().filter((tab: ViewModels.Tab) => tab.isActive());
+    if (activeTabs.length) {
+      return activeTabs[0];
+    }
+    return undefined;
+  }
+
+  private isDataNodeSelected(rid: string, nodeKind: string, subnodeKind: ViewModels.CollectionTabKind): boolean {
+    if (!this.container.selectedNode || !this.container.selectedNode()) {
+      return false;
+    }
+    const selectedNode = this.container.selectedNode();
+
+    if (subnodeKind === undefined) {
+      return selectedNode.rid === rid && selectedNode.nodeKind === nodeKind;
+    } else {
+      const activeTab = this.getActiveTab();
+      let selectedSubnodeKind;
+      if (nodeKind === "Database" && (selectedNode as ViewModels.Database).selectedSubnodeKind) {
+        selectedSubnodeKind = (selectedNode as ViewModels.Database).selectedSubnodeKind();
+      } else if (nodeKind === "Collection" && (selectedNode as ViewModels.Collection).selectedSubnodeKind) {
+        selectedSubnodeKind = (selectedNode as ViewModels.Collection).selectedSubnodeKind();
+      }
+
+      return (
+        activeTab &&
+        activeTab.tabKind === subnodeKind &&
+        selectedNode.rid === rid &&
+        selectedSubnodeKind !== undefined &&
+        selectedSubnodeKind === subnodeKind
+      );
+    }
+  }
+
+  // ***************  watch all nested ko's inside database
+  // TODO Simplify so we don't have to do this
+
+  private watchCollection(databaseId: string, collection: ViewModels.Collection) {
+    this.addKoSubToCollectionId(
+      databaseId,
+      collection.id(),
+      collection.storedProcedures.subscribe(() => {
+        this.triggerRender();
+      })
+    );
+
+    this.addKoSubToCollectionId(
+      databaseId,
+      collection.id(),
+      collection.isCollectionExpanded.subscribe(() => {
+        this.triggerRender();
+      })
+    );
+
+    this.addKoSubToCollectionId(
+      databaseId,
+      collection.id(),
+      collection.isStoredProceduresExpanded.subscribe(() => {
+        this.triggerRender();
+      })
+    );
+  }
+
+  private watchDatabase(database: ViewModels.Database) {
+    const databaseId = database.id();
+    const koSub = database.collections.subscribe((collections: ViewModels.Collection[]) => {
+      this.cleanupCollectionsKoSubs(
+        databaseId,
+        collections.map((collection: ViewModels.Collection) => collection.id())
+      );
+
+      collections.forEach((collection: ViewModels.Collection) => this.watchCollection(databaseId, collection));
+      this.triggerRender();
+    });
+    this.addKoSubToDatabaseId(databaseId, koSub);
+
+    database.collections().forEach((collection: ViewModels.Collection) => this.watchCollection(databaseId, collection));
+  }
+
+  private addKoSubToDatabaseId(databaseId: string, sub: ko.Subscription): void {
+    this.koSubsDatabaseIdMap.push(databaseId, sub);
+  }
+
+  private addKoSubToCollectionId(databaseId: string, collectionId: string, sub: ko.Subscription): void {
+    this.databaseCollectionIdMap.push(databaseId, collectionId);
+    this.koSubsCollectionIdMap.push(collectionId, sub);
+  }
+
+  private cleanupDatabasesKoSubs(existingDatabaseIds: string[]): void {
+    const databaseIdsToRemove = this.databaseCollectionIdMap
+      .keys()
+      .filter((id: string) => existingDatabaseIds.indexOf(id) === -1);
+
+    databaseIdsToRemove.forEach((databaseId: string) => {
+      if (this.koSubsDatabaseIdMap.has(databaseId)) {
+        this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
+        this.koSubsDatabaseIdMap.delete(databaseId);
+      }
+
+      if (this.databaseCollectionIdMap.has(databaseId)) {
+        this.databaseCollectionIdMap
+          .get(databaseId)
+          .forEach((collectionId: string) => this.cleanupKoSubsForCollection(databaseId, collectionId));
+      }
+    });
+  }
+
+  private cleanupCollectionsKoSubs(databaseId: string, existingCollectionIds: string[]): void {
+    if (!this.databaseCollectionIdMap.has(databaseId)) {
+      return;
+    }
+
+    const collectionIdsToRemove = this.databaseCollectionIdMap
+      .get(databaseId)
+      .filter((id: string) => existingCollectionIds.indexOf(id) === -1);
+
+    collectionIdsToRemove.forEach((id: string) => this.cleanupKoSubsForCollection(databaseId, id));
+  }
+
+  private cleanupKoSubsForCollection(databaseId: string, collectionId: string) {
+    if (!this.koSubsCollectionIdMap.has(collectionId)) {
+      return;
+    }
+
+    this.koSubsCollectionIdMap.get(collectionId).forEach((sub: ko.Subscription) => sub.dispose());
+    this.koSubsCollectionIdMap.delete(collectionId);
+    this.databaseCollectionIdMap.remove(databaseId, collectionId);
+  }
+}

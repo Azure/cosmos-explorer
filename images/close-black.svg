@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+    width="16" 
+    height="16"
+     version="1.1" 
+    viewBox="0 0 16 16" 
+    xmlns="http://www.w3.org/2000/svg" 
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <path 
+        d="M14,2.691l-5.301,5.309l5.301,5.309l-0.691,0.691l-5.309,-5.301l-5.309,5.301l-0.691,-0.691l5.301,-5.309l-5.301,-5.309l0.691,-0.691l5.309,5.301l5.309,-5.301l0.691,0.691Z" 
+        transform="scale(0.5)" 
+        fill="#000"
+        stroke="#CCC" 
+        >
+    </path>
+</svg>

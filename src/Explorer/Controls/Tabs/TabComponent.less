@@ -1,0 +1,27 @@
+@import "../../../../less/Common/Constants";
+
+.tabSwitch {
+  margin-left: @LargeSpace;
+  margin-bottom: 20px;
+
+  .tab {
+      margin-right: @MediumSpace;
+  }
+
+  .toggleSwitch {
+      .toggleSwitch();
+  }
+
+  .selectedToggle {
+      .selectedToggle();
+  }
+
+  .unselectedToggle {
+      .unselectedToggle();
+  }
+}
+
+.tabComponentContent {
+    height: calc(100% - 20px);
+    .flex-display();
+}

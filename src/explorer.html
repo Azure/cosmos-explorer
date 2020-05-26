@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html public "-//W3C//DTD HTML 4.0//en">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Azure Cosmos DB</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <div class="flexContainer">
+      <div id="divExplorer" class="flexContainer hideOverflows" style="display: none">
+        <!-- Main Command Bar - Start -->
+        <div data-bind="react: commandBarComponentAdapter"></div>
+        <!-- Main Command Bar - End -->
+        <!-- Share url flyout - Start -->
+        <div
+          id="shareDataAccessFlyout"
+          class="shareDataAccessFlyout"
+          data-bind="visible: shouldShowShareDialogContents"
+        >
+          <div class="shareDataAccessFlyoutContent">
+            <div class="urlContainer">
+              <span class="urlContentText"
+                >Open this database account in a new browser tab with Cosmos DB Explorer. Or copy the read-write or read
+                only access urls below to share with others. For security purposes, the URLs grant time-bound access to
+                the account. When access expires, you can reconnect, using a valid connection string for the
+                account.</span
+              >
+              <br />
+              <div
+                class="toggles"
+                data-bind="event: { keydown: onToggleKeyDown }, visible: shareAccessData().readWriteUrl != null"
+                tabindex="0"
+                aria-label="Read-Write and Read toggle"
+              >
+                <div class="tab">
+                  <input type="radio" class="radio" value="readwrite" />
+                  <span
+                    class="toggleSwitch"
+                    role="presentation"
+                    data-bind="click: toggleReadWrite, css:{ selectedToggle: isReadWriteToggled(), unselectedToggle: !isReadWriteToggled() }"
+                    >Read-Write</span
+                  >
+                </div>
+                <div class="tab">
+                  <input type="radio" class="radio" value="read" />
+                  <span
+                    class="toggleSwitch"
+                    role="presentation"
+                    data-bind="click: toggleRead, css:{ selectedToggle: isReadToggled(), unselectedToggle: !isReadToggled() }"
+                    >Read</span
+                  >
+                </div>
+              </div>
+              <div class="urlSpace">
+                <input
+                  id="shareUrlLink"
+                  aria-label="Share url link"
+                  class="shareLink"
+                  type="text"
+                  read-only
+                  data-bind="value: shareAccessUrl"
+                />
+                <span
+                  class="urlTokenCopyInfoTooltip"
+                  data-bind="click: copyUrlLink, event: { keypress: onCopyUrlLinkKeyPress }"
+                  aria-label="Copy url link"
+                  role="button"
+                  tabindex="0"
+                >
+                  <img src="/Copy.svg" alt="Copy link" />
+                  <span class="urlTokenCopyTooltiptext" data-bind="text: shareUrlCopyHelperText"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Share url flyout - End -->
+
+        <!-- Collections Tree and Tabs - Begin -->
+        <div class="resourceTreeAndTabs">
+          <!-- Collections Tree - Start -->
+          <div id="resourcetree" data-test="resourceTreeId" class="resourceTree">
+            <div class="collectionsTreeWithSplitter">
+              <!-- Collections Tree Expanded - Start -->
+              <div
+                id="main"
+                class="main"
+                data-bind="
+                            visible: isLeftPaneExpanded()"
+              >
+                <!-- Collections Window - - Start -->
+                <div id="mainslide" class="flexContainer">
+                  <!-- Collections Window Title/Command Bar - Start -->
+                  <div class="collectiontitle">
+                    <div class="coltitle">
+                      <span class="titlepadcol" data-bind="text: collectionTitle"></span>
+                      <div class="float-right">
+                        <span
+                          class="padimgcolrefresh"
+                          data-test="refreshTree"
+                          role="button"
+                          data-bind="
+                                                click: onRefreshResourcesClick, clickBubble: false, event: { keypress: onRefreshDatabasesKeyPress }"
+                          tabindex="0"
+                          aria-label="Refresh tree"
+                        >
+                          <img
+                            class="refreshcol"
+                            src="/refresh-cosmos.svg"
+                            data-bind="attr: { alt: refreshTreeTitle }"
+                          />
+                        </span>
+                        <span
+                          class="padimgcolrefresh1"
+                          id="expandToggleLeftPaneButton"
+                          role="button"
+                          data-bind="
+                                                click: toggleLeftPaneExpanded, event: { keypress: toggleLeftPaneExpandedKeyPress }"
+                          tabindex="0"
+                          aria-label="Collapse Tree"
+                        >
+                          <img class="refreshcol1" src="/imgarrowlefticon.svg" alt="Hide" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Collections Window Title/Command Bar - End  -->
+                  <!-- ko if: !enableLegacyResourceTree() && !isAuthWithResourceToken() -->
+                  <div style="overflow-y: auto" data-bind="react:resourceTree"></div>
+                  <!-- /ko -->
+                  <!-- ko if: !enableLegacyResourceTree() && isAuthWithResourceToken() -->
+                  <div style="overflow-y: auto" data-bind="react:resourceTreeForResourceToken"></div>
+                  <!-- /ko -->
+                  <!-- ko if: enableLegacyResourceTree -->
+                  <resource-tree class="resourceTreeScroll" params="{data: $data}"></resource-tree>
+                  <!-- /ko -->
+                </div>
+                <!--  Collections Window - End -->
+              </div>
+              <!-- Collections Tree Expanded - End -->
+
+              <!-- Collections Tree Collapsed - Start -->
+              <div
+                id="mini"
+                class="mini toggle-mini"
+                data-bind="visible: !isLeftPaneExpanded()
+                            attr: { style: { width: collapsedResourceTreeWidth }}"
+              >
+                <div class="main-nav nav">
+                  <ul class="nav">
+                    <li
+                      class="resourceTreeCollapse"
+                      id="collapseToggleLeftPaneButton"
+                      role="button"
+                      data-bind="event: { keypress: toggleLeftPaneExpandedKeyPress }"
+                      tabindex="0"
+                      aria-label="Expand Tree"
+                    >
+                      <span
+                        class="leftarrowCollapsed"
+                        data-bind="
+                                            click: toggleLeftPaneExpanded"
+                      >
+                        <img class="arrowCollapsed" src="/imgarrowlefticon.svg" alt="Expand" />
+                      </span>
+                      <span
+                        class="collectionCollapsed"
+                        data-bind="
+                                            click: toggleLeftPaneExpanded"
+                      >
+                        <span
+                          data-bind="
+                                                text: collectionTitle"
+                        ></span>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Collections Tree Collapsed - End -->
+            </div>
+            <!-- Splitter - Start -->
+            <div class="splitter ui-resizable-handle ui-resizable-e" id="h_splitter1"></div>
+            <!-- Splitter - End -->
+          </div>
+          <!-- Collections Tree - End -->
+
+          <div
+            class="connectExplorerContainer"
+            data-bind="visible: !isRefreshingExplorer() && (openedTabs == null || openedTabs().length === 0)"
+          >
+            <form class="connectExplorerFormContainer">
+              <div class="connectExplorer" data-bind="react: splashScreenAdapter, visible: isNotebookEnabled"></div>
+              <div class="connectExplorer" data-bind="visible: !isNotebookEnabled()">
+                <p class="connectExplorerContent"><img src="/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" /></p>
+                <p class="welcomeText">Welcome to Azure Cosmos DB</p>
+                <p class="connectExplorerContent" data-bind="visible: !isAuthWithResourceToken">
+                  Create new or work with existing container(s).
+                </p>
+              </div>
+            </form>
+          </div>
+
+          <!-- Tabs and Tabs Panes - Start -->
+          <div
+            id="content"
+            class="flexContainer hideOverflows"
+            data-bind="
+                        visible: openedTabs && openedTabs().length > 0"
+          >
+            <!-- Tabs - Start -->
+            <div class="nav-tabs-margin" data-bind="visible:!isTabsContentExpanded()">
+              <ul class="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
+                <!-- ko foreach: openedTabs -->
+                <li
+                  class="tabList"
+                  data-bind="
+                                    attr: {
+                                        title: $data.tabPath,
+                                        'aria-selected': $data.isActive,
+                                        'aria-expanded': $data.isActive,
+                                        'aria-controls': $data.tabId
+                                    },
+                                    css:{
+                                        active: $data.isActive
+                                    },
+                                    hasFocus: $data.hasFocus,
+                                    event: { keypress: onKeyPressActivate },
+                                    click: $data.onTabClick,"
+                  tabindex="0"
+                  role="tab"
+                >
+                  <span class="tabNavContentContainer">
+                    <a data-toggle="tab" data-bind="attr: { href: '#' + $data.tabId }" tabindex="-1">
+                      <div class="tab_Content">
+                        <span class="statusIconContainer">
+                          <div
+                            class="errorIconContainer"
+                            id="errorStatusIcon"
+                            title="Click to view more details"
+                            role="button"
+                            data-bind="
+                                                    click: onErrorDetailsClick,
+                                                    event: { keypress: onErrorDetailsKeyPress },
+                                                    attr: { tabindex: errorDetailsTabIndex },
+                                                    css: { actionsEnabled: isActive },
+                                                    visible: isExecutionError"
+                          >
+                            <span class="errorIcon"></span>
+                          </div>
+                          <img
+                            class="loadingIcon"
+                            title="Loading"
+                            src="/circular_loader_black_16x16.gif"
+                            data-bind="visible: $data.isExecuting"
+                            alt="Loading"
+                          />
+                        </span>
+                        <span class="tabNavText" data-bind="text: $data.tabTitle"></span>
+                        <span class="tabIconSection">
+                          <span
+                            aria-label="Close Tab"
+                            role="button"
+                            class="cancelButton"
+                            data-bind="
+                                                    click: $data.onCloseTabButtonClick,
+                                                    event: { keypress: onKeyPressClose },
+                                                    attr: { tabindex: $data.closeButtonTabIndex },
+                                                    visible: $data.isActive() || $data.isMouseOver()"
+                            title="Close"
+                          >
+                            <span
+                              class="tabIcon close-Icon"
+                              data-bind="visible: $data.isActive() || $data.isMouseOver()"
+                            >
+                              <img src="../images/close-black.svg" title="Close" alt="Close" />
+                            </span>
+                          </span>
+                        </span>
+                      </div>
+                    </a>
+                  </span>
+                </li>
+                <!-- /ko -->
+              </ul>
+            </div>
+            <!-- Tabs -- End -->
+
+            <!-- Tabs Panes -- Start -->
+            <div class="tabPanesContainer">
+              <!-- ko foreach: openedTabs -->
+              <div class="tabs-container" data-bind="visible: $data.isActive">
+                <!-- ko if: $data.tabKind === 0 -->
+                <documents-tab params="{data: $data}"></documents-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 1 -->
+                <settings-tab params="{data: $data}"></settings-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 2 -->
+                <stored-procedure-tab params="{data: $data}"></stored-procedure-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 3 -->
+                <user-defined-function-tab params="{data: $data}"></user-defined-function-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 4 -->
+                <trigger-tab params="{data: $data}"></trigger-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 5 -->
+                <query-tab params="{data: $data}"></query-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 6 -->
+                <graph-tab params="{data: $data}"></graph-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 9 -->
+                <tables-query-tab class="flexContainer" params="{data: $data}"></tables-query-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 10 -->
+                <mongo-shell-tab params="{data: $data}"></mongo-shell-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 11 -->
+                <database-settings-tab params="{data: $data}"></database-settings-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 12 -->
+                <conflicts-tab params="{data: $data}"></conflicts-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 13 -->
+                <notebook-tab params="{data: $data}"></notebook-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 14 -->
+                <terminal-tab params="{data: $data}"></terminal-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 15 -->
+                <notebookv2-tab params="{data: $data}"></notebookv2-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 16 -->
+                <spark-master-tab params="{data: $data}"></spark-master-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 17 -->
+                <gallery-tab params="{data: $data}"></gallery-tab>
+                <!-- /ko -->
+
+                <!-- ko if: $data.tabKind === 18 -->
+                <notebook-viewer-tab params="{data: $data}"></notebook-viewer-tab>
+                <!-- /ko -->
+              </div>
+              <!-- /ko -->
+            </div>
+            <!-- Tabs Panes - End -->
+          </div>
+          <!-- Tabs and Tabs Panes - End -->
+        </div>
+        <!-- Collections Tree and Tabs - End -->
+        <div
+          class="dataExplorerErrorConsoleContainer"
+          role="contentinfo"
+          aria-label="Notification console"
+          id="explorerNotificationConsole"
+          data-bind="react: notificationConsoleComponentAdapter"
+        ></div>
+      </div>
+
+      <!-- Explorer Connection - Encryption Token / AAD - Start -->
+      <div id="connectExplorer" class="connectExplorerContainer" style="display: none;">
+        <div class="connectExplorerFormContainer">
+          <div class="connectExplorer">
+            <p class="connectExplorerContent"><img src="/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" /></p>
+            <p class="welcomeText">Welcome to Azure Cosmos DB</p>
+            <div id="connectWithAad">
+              <input
+                class="filterbtnstyle"
+                data-test="cosmosdb-signinBtn"
+                type="button"
+                value="Sign In"
+                data-bind="click: $data.signInAad"
+              />
+              <p
+                class="switchConnectTypeText"
+                data-test="cosmosdb-connectionString"
+                data-bind="click: $data.onSwitchToConnectionString"
+              >
+                Connect to your account with connection string
+              </p>
+            </div>
+            <form id="connectWithConnectionString" data-bind="submit: renewToken" style="display: none;">
+              <p class="connectExplorerContent connectStringText">Connect to your account with connection string</p>
+              <p class="connectExplorerContent">
+                <input
+                  class="inputToken"
+                  type="text"
+                  required
+                  placeholder="Please enter a connection string"
+                  data-bind="value: tokenForRenewal"
+                />
+                <span class="errorDetailsInfoTooltip" data-bind="visible: renewTokenError().length > 0">
+                  <img class="errorImg" src="/error.svg" alt="Error notification" />
+                  <span class="errorDetails" data-bind="text: renewTokenError"></span>
+                </span>
+              </p>
+              <p class="connectExplorerContent"><input class="filterbtnstyle" type="submit" value="Connect" /></p>
+              <p class="switchConnectTypeText" data-bind="click: $data.signInAad">Sign In with Azure Account</p>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Explorer Connection - Encryption Token / AAD - End -->
+
+      <!-- Global loader - Start -->
+      <div class="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
+        <div class="splashLoaderContentContainer">
+          <p class="connectExplorerContent"><img src="/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" /></p>
+          <p class="splashLoaderTitle" id="explorerLoadingStatusTitle">Welcome to Azure Cosmos DB</p>
+          <p class="splashLoaderText" id="explorerLoadingStatusText">Connecting...</p>
+        </div>
+      </div>
+      <!-- Global loader - End -->
+
+      <add-database-pane params="{data: addDatabasePane}"></add-database-pane>
+      <add-collection-pane params="{data: addCollectionPane}"></add-collection-pane>
+      <delete-collection-confirmation-pane params="{data: deleteCollectionConfirmationPane}">
+      </delete-collection-confirmation-pane>
+      <delete-database-confirmation-pane params="{data: deleteDatabaseConfirmationPane}">
+      </delete-database-confirmation-pane>
+      <graph-new-vertex-pane params="{data: newVertexPane}"></graph-new-vertex-pane>
+      <graph-styling-pane params="{data: graphStylingPane}"></graph-styling-pane>
+      <table-add-entity-pane params="{data: addTableEntityPane}"></table-add-entity-pane>
+      <table-edit-entity-pane params="{data: editTableEntityPane}"></table-edit-entity-pane>
+      <table-column-options-pane params="{data: tableColumnOptionsPane}"></table-column-options-pane>
+      <table-query-select-pane params="{data: querySelectPane}"></table-query-select-pane>
+      <cassandra-add-collection-pane params="{data: cassandraAddCollectionPane}"></cassandra-add-collection-pane>
+      <settings-pane params="{data: settingsPane}"></settings-pane>
+      <upload-items-pane params="{data: uploadItemsPane}"></upload-items-pane>
+      <load-query-pane params="{data: loadQueryPane}"></load-query-pane>
+      <execute-sproc-params-pane params="{data: executeSprocParamsPane}"></execute-sproc-params-pane>
+      <renew-adhoc-access-pane params="{data: renewAdHocAccessPane}"></renew-adhoc-access-pane>
+      <save-query-pane params="{data: saveQueryPane}"></save-query-pane>
+      <browse-queries-pane params="{data: browseQueriesPane}"></browse-queries-pane>
+      <upload-file-pane params="{data: uploadFilePane}"></upload-file-pane>
+      <string-input-pane params="{data: stringInputPane}"></string-input-pane>
+      <setup-notebooks-pane params="{data: setupNotebooksPane}"></setup-notebooks-pane>
+      <setup-spark-cluster-pane params="{data: setupSparkClusterPane}"></setup-spark-cluster-pane>
+      <manage-spark-cluster-pane params="{data: manageSparkClusterPane}"></manage-spark-cluster-pane>
+      <library-manage-pane params="{data: libraryManagePane}"></library-manage-pane>
+      <cluster-library-pane params="{data: clusterLibraryPane}"></cluster-library-pane>
+
+      <!-- ko if: isGitHubPaneEnabled -->
+      <github-repos-pane params="{data: gitHubReposPane}"></github-repos-pane>
+      <!-- /ko -->
+
+      <!-- Global access token expiration dialog - Start -->
+      <div
+        id="dataAccessTokenModal"
+        class="dataAccessTokenModal"
+        style="display: none"
+        data-bind="visible: shouldShowDataAccessExpiryDialog"
+      >
+        <div class="dataAccessTokenModalContent">
+          <p class="dataAccessTokenExpireText">Please reconnect to the account using the connection string.</p>
+        </div>
+      </div>
+      <!-- Global access token expiration dialog - End -->
+      <!-- Context switch prompt - Start -->
+      <div
+        id="contextSwitchPrompt"
+        class="dataAccessTokenModal"
+        style="display: none"
+        data-bind="visible: shouldShowContextSwitchPrompt"
+      >
+        <div class="dataAccessTokenModalContent">
+          <p class="dataAccessTokenExpireText">
+            Please save your work before you switch! When you switch to a different Azure Cosmos DB account, current
+            Data Explorer tabs will be closed.
+          </p>
+          <p class="dataAccessTokenExpireText">Proceed anyway?</p>
+        </div>
+      </div>
+      <div data-bind="react: dialogComponentAdapter"></div>
+      <div data-bind="react: addSynapseLinkDialog"></div>
+    </div>
+  </body>
+</html>

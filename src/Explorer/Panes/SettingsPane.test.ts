@@ -1,0 +1,40 @@
+import * as Constants from "../../Common/Constants";
+import * as ViewModels from "../../Contracts/ViewModels";
+import Explorer from "../Explorer";
+
+jest.mock("../Tabs/NotebookTab");
+
+describe("Settings Pane", () => {
+  describe("shouldShowQueryPageOptions()", () => {
+    let explorer: ViewModels.Explorer;
+
+    beforeEach(() => {
+      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+    });
+
+    it("should be true for SQL API", () => {
+      explorer.defaultExperience(Constants.DefaultAccountExperience.DocumentDB.toLowerCase());
+      expect(explorer.settingsPane.shouldShowQueryPageOptions()).toBe(true);
+    });
+
+    it("should be false for Cassandra API", () => {
+      explorer.defaultExperience(Constants.DefaultAccountExperience.Cassandra.toLowerCase());
+      expect(explorer.settingsPane.shouldShowQueryPageOptions()).toBe(false);
+    });
+
+    it("should be false for Tables API", () => {
+      explorer.defaultExperience(Constants.DefaultAccountExperience.Table.toLowerCase());
+      expect(explorer.settingsPane.shouldShowQueryPageOptions()).toBe(false);
+    });
+
+    it("should be false for Graph API", () => {
+      explorer.defaultExperience(Constants.DefaultAccountExperience.Graph.toLowerCase());
+      expect(explorer.settingsPane.shouldShowQueryPageOptions()).toBe(false);
+    });
+
+    it("should be false for Mongo API", () => {
+      explorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB.toLowerCase());
+      expect(explorer.settingsPane.shouldShowQueryPageOptions()).toBe(false);
+    });
+  });
+});

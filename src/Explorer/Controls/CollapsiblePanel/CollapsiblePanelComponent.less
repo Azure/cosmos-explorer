@@ -1,0 +1,116 @@
+@import "../../../../less/Common/Constants";
+
+.collapsiblePanel {
+    width: 100%;
+    height: 100%;
+}
+
+.collapsiblePanel.paneCollapsed {
+    width: 39px !important;
+}
+
+.collapsiblePanel .collapsedIcon {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.collapsiblePanel .imgVerticalAlignment {
+    vertical-align: top;
+}
+
+.collapsiblePanel .collapsedIcon.iconMirror:not(.expanded) {
+    transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+}
+
+.collapsiblePanel .collapsedIcon.expanded:not(.iconMirror) {
+    transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+}
+
+.collapsiblePanel .panelHeader {
+    padding: 5px 0px 12px 0px;
+}
+
+.collapsiblePanel .panelHeader .collapsedIconContainer {
+    padding: 4px 0px 4px 6px;
+    margin-left: 0px;
+}
+
+.collapsiblePanel .panelHeader .expandedTitle {
+    color: #000;
+    font-weight: bold;
+}
+
+.collapsiblePanel .panelHeader .expandedTitle.iconSpacer {
+    padding-left: 0px;
+    margin-left: 3px;
+}
+
+.collapsiblePanel .panelContent {
+    margin-top: 10px;
+}
+
+.collapsiblePanel .collapsibleNav .rotatedInner {
+    color: black;
+    font-weight: 400;
+    font-size: 14px;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    margin: 3px 10px;
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    float: right;
+}
+
+.collapsiblePanel .collapsibleNav .collapsedBtn {
+    padding: 5px 5px 0px 0px;
+    cursor: pointer;
+    margin: 0px 0px;
+}
+
+.collapsiblePanel .panelHeader .collapseExpandButton:hover,
+.collapsiblePanel .collapsibleNav .collapseExpandButton:hover {
+    background: @BaseLow;
+}
+
+.collapsiblePanel .panelHeader .collapseExpandButton:active,
+.collapsiblePanel .collapsibleNav .collapseExpandButton:active {
+    background-color: @AccentMediumLow;
+}
+
+.collapsiblePanel .collapsibleNav ul.nav {
+    margin: 0 auto;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.collapsiblePanel .collapsibleNav ul.nav li {
+    float: right;
+    line-height: 25px;
+    height: auto;
+}
+
+.collapsiblePanel .collapsibleNav {
+    width: 100vh;
+    height: 45px;
+    background: white;
+    transform-origin: left top;
+    -webkit-transform-origin: left top;
+    -ms-transform-origin: left top;
+    transform: rotate(-90deg) translateX(-100%);
+    -webkit-transform: rotate(-90deg) translateX(-100%);
+    -ms-transform: rotate(-90deg) translateX(-100%);
+}
+
+.collapsiblePanel .collapsibleNav .collapsedIconContainer {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    float: right;
+}

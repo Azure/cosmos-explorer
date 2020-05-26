@@ -1,0 +1,108 @@
+// CommandBar
+@HoverColor: #d7d7d7;
+@HighlightColor: #0078d4;
+
+.NotebookRendererContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.NotebookRenderer {
+    overflow: auto;
+    flex-grow: 1;
+
+    .nteract-cells {
+        padding-top: 0px;
+    }
+
+    .nteract-cell-container {
+        margin-bottom: 10px;
+
+        .nteract-cell {
+            padding: 0.5px;
+            border: 1px solid #ffffff;
+            border-left: 3px solid #ffffff;
+
+            .CellContextMenuButton {
+                position: sticky;
+                z-index: 1;
+                top: 0px;
+                right: 0px;
+                margin: 0px 0px 0px -100%;
+                float: right;
+                visibility: hidden;
+            }
+        }
+
+        .CodeMirror-scroll, .CodeMirror-linenumber, .CodeMirror-gutters {
+            background-color: #f5f5f5;
+        }
+
+        .nteract-cell:hover {
+            border: 1px solid @HoverColor;
+            border-left: 3px solid @HoverColor;
+
+            .CellContextMenuButton {
+                visibility: visible;
+            }
+        }
+    }
+
+    .nteract-cell-container.selected {
+        .nteract-cell {
+            border: 1px solid @HighlightColor;
+            border-left: 3px solid @HighlightColor;
+        }
+    }
+
+    // White background when hovered or selected
+    .nteract-cell:hover, .nteract-cell-container.selected .nteract-cell {
+        .CodeMirror-scroll, .CodeMirror-linenumber, .CodeMirror-gutters {
+            background-color: #ffffff;
+        }
+
+        .CodeMirror-linenumber {
+            color: #015CDA;
+        }
+
+        .nteract-cell-outputs {
+            border-top: 1px solid @HoverColor;
+        }
+
+        .nteract-md-cell {
+            background-color: #ffffff;
+        }
+    }
+
+    .nteract-cell-outputs {
+        padding:  10px;
+        border-top: 1px solid #ffffff;
+
+        pre {
+            background-color: #ffffff;
+            border: none;
+            padding: 0px;
+            margin: 0px;
+        }
+    }
+
+    .nteract-md-cell {
+        background-color: #f5f5f5;
+    }
+
+    .nteract-cell:hover.nteract-md-cell {
+        background-color: #ffffff;
+    }
+
+    .nteract-md-cell .ntreact-cell-source {
+        width: 100%;
+    }
+}
+
+
+// Undo tree.less
+.expanded::before {
+    content: '';
+}

@@ -1,0 +1,16 @@
+{
+  "databaseId": "SampleDB",
+  "offerThroughput": 400,
+  "databaseLevelThroughput": false,
+  "collectionId": "Persons",
+  "rupmEnabled": false,
+  "partitionKey": { "kind": "Hash", "paths": ["/name"] },
+  "data": [
+    "g.addV('person').property(id, '1').property('name', 'Eva').property('age', 44)",
+    "g.addV('person').property(id, '2').property('name', 'Véronique').property('age', 50)",
+    "g.addV('person').property(id, '3').property('name', '亜妃子').property('age', 5)",
+    "g.addV('person').property(id, '4').property('name', 'John').property('age', 23)",
+    "g.V('1').addE('knows').to(g.V('2')).outV().addE('knows').to(g.V('3'))",
+    "g.V('3').addE('knows').to(g.V('4'))"
+  ]
+}

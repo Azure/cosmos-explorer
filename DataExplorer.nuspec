@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Azure.Cosmos.DB.Data.Explorer</id>
+    <version>0.0.1-preview</version>
+    <title>Azure Cosmos DB Data Explorer</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=848760</licenseUrl>
+    <projectUrl>http://go.microsoft.com/fwlink/?LinkId=848761</projectUrl>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288890</iconUrl>
+    <description>Cosmos DB Data Explorer</description>
+    <summary>Cosmos DB Data Explorer</summary>
+    <tags>Cosmos DB Data Explorer</tags>
+    <dependencies>
+    </dependencies>
+    <frameworkAssemblies>
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="**\*" target="content"/>
+  </files>
+</package>

@@ -1,0 +1,26 @@
+{
+  "databaseId": "SampleDB",
+  "offerThroughput": 400,
+  "databaseLevelThroughput": false,
+  "collectionId": "Persons",
+  "rupmEnabled": false,
+  "partitionKey": { "kind": "Hash", "paths": ["/firstname"] },
+  "data": [
+    {
+      "firstname": "Eva",
+      "age": 44
+    },
+    {
+      "firstname": "Véronique",
+      "age": 50
+    },
+    {
+      "firstname": "亜妃子",
+      "age": 5
+    },
+    {
+      "firstname": "John",
+      "age": 23
+    }
+  ]
+}

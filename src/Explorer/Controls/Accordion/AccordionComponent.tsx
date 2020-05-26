@@ -1,0 +1,92 @@
+/**
+ * Accordion top class
+ */
+
+import * as React from "react";
+import * as Constants from "../../../Common/Constants";
+import AnimateHeight from "react-animate-height";
+
+import TriangleDownIcon from "../../../../images/Triangle-down.svg";
+import TriangleRightIcon from "../../../../images/Triangle-right.svg";
+
+export interface AccordionComponentProps {}
+
+export class AccordionComponent extends React.Component<AccordionComponentProps> {
+  public render(): JSX.Element {
+    return <div className="accordion">{this.props.children}</div>;
+  }
+}
+
+/**
+ * AccordionItem is the section inside the accordion
+ */
+
+export interface AccordionItemComponentProps {
+  title: string;
+  isExpanded?: boolean;
+}
+
+interface AccordionItemComponentState {
+  isExpanded: boolean;
+}
+
+export class AccordionItemComponent extends React.Component<AccordionItemComponentProps, AccordionItemComponentState> {
+  private static readonly durationMS = 500;
+  private isExpanded: boolean;
+
+  constructor(props: AccordionItemComponentProps) {
+    super(props);
+    this.isExpanded = props.isExpanded;
+    this.state = {
+      isExpanded: true
+    };
+  }
+
+  componentDidUpdate() {
+    if (this.props.isExpanded !== this.isExpanded) {
+      this.isExpanded = this.props.isExpanded;
+      this.setState({
+        isExpanded: this.props.isExpanded
+      });
+    }
+  }
+
+  public render(): JSX.Element {
+    return (
+      <div className="accordionItemContainer">
+        <div className="accordionItemHeader" onClick={this.onHeaderClick} onKeyPress={this.onHeaderKeyPress}>
+          {this.renderCollapseExpandIcon()}
+          {this.props.title}
+        </div>
+        <div className="accordionItemContent">
+          <AnimateHeight duration={AccordionItemComponent.durationMS} height={this.state.isExpanded ? "auto" : 0}>
+            {this.props.children}
+          </AnimateHeight>
+        </div>
+      </div>
+    );
+  }
+
+  private renderCollapseExpandIcon(): JSX.Element {
+    return (
+      <img
+        className="expandCollapseIcon"
+        src={this.state.isExpanded ? TriangleDownIcon : TriangleRightIcon}
+        alt="Hide"
+        tabIndex={0}
+        role="button"
+      />
+    );
+  }
+
+  private onHeaderClick = (event: React.MouseEvent<HTMLDivElement>): void => {
+    this.setState({ isExpanded: !this.state.isExpanded });
+  };
+
+  private onHeaderKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      this.setState({ isExpanded: !this.state.isExpanded });
+      event.stopPropagation();
+    }
+  };
+}

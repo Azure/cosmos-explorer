@@ -1,0 +1,44 @@
+@import "./Common/Constants";
+
+.context-menu-background {
+    z-index: 1000;
+    position: fixed;
+    cursor: default;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.context-menu {
+    .flex-display();
+    .flex-direction();
+    z-index: 1001;
+    position: fixed;
+    background: white;
+    border: solid 1px gainsboro;
+    box-shadow: 4px 4px 4px -2px #888888;
+    line-height: 25px;
+    padding: @DefaultSpace 0px;
+
+    .context-menu-option .commandContent {
+        padding: 0px @DefaultSpace;
+    }
+}
+
+.context-menu:hover {
+    padding-left: 0px;
+}
+
+.context-menu-option .commandButton{
+    display: block;
+}
+
+.context-menu-option:hover .commandButton {
+    background-color: #EEE;
+}
+
+.context-menu-option .commandButton span{
+    /* Reset the padding indent caused by being a TreeNode child*/
+    padding-left: 0px;
+}

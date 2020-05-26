@@ -1,0 +1,95 @@
+# CosmosDB Explorer
+
+## Getting Started
+
+- `npm install`
+- `npm run build`
+
+## Developing
+
+### Watch mode
+
+Run `npm run watch` to start the development server and automatically rebuild on changes
+
+### Specifying Development Platform
+
+Setting the environment variable `PLATFORM` during the build process will force the explorer to load the specified platform. By default in development it will run in `Hosted` mode. Valid options:
+
+- Hosted
+- Emulator
+- Portal
+
+`PLATFORM=Emulator npm run watch`
+
+### Hosted Development
+
+The default webpack dev server configuration will proxy requests to the production portal backend: `https://main.documentdb.ext.azure.com`. This will allow you to use production connection strings on your local machine.
+
+To run pure hosted mode, in `webpack.config.js` change index HtmlWebpackPlugin to use hostedExplorer.html and change entry for index to use HostedExplorer.ts.
+
+### Emulator Development
+
+In a window environment, running `npm run build` will automatically copy the built files from `/dist` over to the default emulator install paths. In a non-windows enironment you can specify an alternate endpoint using `EMULATOR_ENDPOINT` and webpack dev server will proxy requests for you.
+
+`PLATFORM=Emulator EMULATOR_ENDPOINT=https://my-vm.azure.com:8081 npm run watch`
+
+#### Setting up a Remote Emulator
+
+The Cosmos emulator currently only runs in Windows environments. You can still develop on a non-Windows machine by setting up an emulator on a windows box and exposing its ports publicly:
+
+1. Expose these ports publicly: 8081, 8900, 8979, 10250, 10251, 10252, 10253, 10254, 10255, 10256
+
+2. Download and install the emulator: https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator
+
+3. Start the emulator from PowerShell:
+
+```
+> cd C:/
+
+> .\CosmosDB.Emulator.exe -AllowNetworkAccess -Key="<EMULATOR MASTER KEY>"
+```
+
+### Portal Development
+
+The Cosmos Portal that consumes this repo is not currently open source. If you have access to this project, `npm run build` will copy the built files over to the portal where they will be loaded by the portal development environment
+
+You can however load a local running instance of data explorer in the production portal.
+
+1. Turn off browser SSL validation for localhost: chrome://flags/#allow-insecure-localhost OR Install valid SSL certs for localhost (on IE, follow these [instructions](https://www.technipages.com/ie-bypass-problem-with-this-websites-security-certificate) to install the localhost certificate in the right place)
+2. Whitelist `https://localhost:1234` domain for CORS in the Azure Cosmos DB portal
+3. Start the project in portal mode: `PLATFORM=Portal npm run watch`
+4. Load the portal using the following link: https://ms.portal.azure.com/?dataExplorerSource=https%3A%2F%2Flocalhost%3A1234%2Fexplorer.html
+
+Live reload will occur, but data explorer will not properly integrate again with the parent iframe. You will have to manually reload the page.
+
+### Testing
+
+#### Unit Tests
+
+Unit tests are located adjacent to the code under test and run with [Jest](https://jestjs.io/):
+
+`npm run test`
+
+#### End to End Tests
+
+[Cypress](https://www.cypress.io/) is used for end to end tests and are contained in `cypress/`. Currently, it operates as sub project with its own typescript config and dependencies. It also only operates against the emulator. To run cypress tests:
+
+1. Ensure the emulator is running
+2. Start cosmos explorer in emulator mode: `PLATFORM=Emulator npm run watch`
+3. Move into `cypress/` folder: `cd cypress`
+4. Install dependencies: `npm install`
+5. Run cypress headless(`npm run test`) or in interactive mode(`npm run test:debug`)
+
+# Contributing
+
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.microsoft.com.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

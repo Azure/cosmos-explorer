@@ -1,0 +1,718 @@
+@import "./Common/Constants";
+
+@HeaderHeight: 40px;
+@LeftPaneWidth: 48px;
+
+@LeftPaneIconSize: 24px;
+
+@TitleButtonsSize: 16px;
+
+@CosmosDBTitleFontSize: 14px;
+
+@NavSmallSpace: 5px;
+@NavMediumSpace: 10px;
+@NavLargeSpace: 15px;
+
+html {
+    font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    overflow: hidden;
+
+    header {
+        font-size: @CosmosDBTitleFontSize;
+        background-color: @BaseDark;
+        height: @HeaderHeight;
+        width: 100%;
+        white-space: nowrap;
+
+        .items {
+            .flex-display();
+            align-items: stretch;
+            height: 100%;
+
+            .cosmosDBTitle {
+                .flex-display();
+                
+                line-height: @HeaderHeight;
+
+                img {
+                    width: 24px;
+                    height: 24px;
+                    margin-top: 2px;
+                }
+
+                .title {
+                    font-family: @SemiboldFont;
+                    font-size: 15px;
+                    color: @BaseLight;
+                    padding: 0 @NavLargeSpace;
+
+                    &:hover {
+                        background-color: @BaseHigh;
+                        cursor: pointer;
+                    }
+                }
+
+                .accontSplitter {
+                    border-right: 1px solid @BaseLight;
+                    height: calc(@HeaderHeight / 2);
+                    margin: auto 0;
+                }
+
+                .serviceTitle {
+                    color: @BaseLight;
+                    font-size: 14px;
+                    margin: 0 @NavMediumSpace 0 @NavLargeSpace;
+                }
+
+                .chevronRight {
+                    width: 6px;
+                    height: 10px;
+                    margin: auto 0;
+                }
+
+                .accountSwitchComponentContainer {
+                    
+                    .accountNameHeader {
+                        font-size: 14px;
+                        color: @BaseLight;
+                        margin-left: @NavLargeSpace;
+                    }
+                }                
+            }
+
+            .feedbackConnectSettingIcons {
+                margin: 0px 0px 0px auto;
+                display: flex;
+
+                .commandButtonReact {
+                    cursor: pointer;
+                    padding: @MediumSpace @LargeSpace;
+
+                    &:hover {
+                        background-color: @BaseHigh;
+                    }
+
+                    img {
+                        width: @TitleButtonsSize;
+                        height: @TitleButtonsSize;
+                    }
+                }
+            }
+        }
+    }
+
+    .accountSwitchContextualMenu {
+        margin: @LargeSpace;
+        width: 280;
+
+        .ms-ContextualMenu-item {
+            margin-bottom: @LargeSpace;
+        }
+    }
+
+    .fixedleftpane {
+        background: @BaseLow;
+        height: 100vh;
+        width: @LeftPaneWidth;
+        float: left;
+
+        .fixedLeftPaneIcons {
+            padding: @MediumSpace @DefaultSpace;
+            text-align: center;
+            cursor: pointer;
+
+            &:hover {
+                background-color: @BaseMediumLow;
+            }
+
+            &:active {
+                background-color: @BaseMediumLow;
+            }
+
+            img {
+                width: @LeftPaneIconSize;
+                height: @LeftPaneIconSize;
+            }
+        }
+
+        .topSelected {
+            background: @BaseMediumLow;
+
+            &:hover {
+                color: @BaseDark;
+                background: @BaseMediumLow;
+                cursor: default;
+            }
+        }
+
+        .feedbackstyle,
+        .settingstyle {
+            text-align: center;
+            display: inline-block;
+            width: @LeftPaneIconSize;
+            height: @LeftPaneIconSize;
+            margin: 0 auto;
+            box-sizing: border-box;
+
+            &:hover {
+                color: @BaseDark;
+                background: @BaseMediumLow;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .contextual-pane-out {
+        width: 100%;
+        height: 100vh;
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    .contextual-pane {
+        top: 0px;
+        right: 0 !important;
+        left: auto;
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        right: auto;
+        z-index: 1000 !important;
+        -webkit-align-self: auto !important;
+        -ms-flex-item-align: auto !important;
+        align-self: auto !important;
+        height: 100%;
+        position: absolute;
+        width: 440px;
+        margin: 0;
+        margin-top: @HeaderHeight;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+        outline: none;
+        background-color: #fff;
+        -webkit-animation: mymove 0.2s;
+        -webkit-animation-timing-function: cubic-bezier(0.47, 0, 0.75, 0.72);
+        animation: mymove 0.2s;
+        animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+        box-shadow: -5px 0px 7px 0px #cbcbcb;
+
+        .contextual-pane-in {
+            width: 100%;
+            height: 100%;
+
+            .firstdivbg {
+                padding: @MediumSpace 0px @DefaultSpace (2 * @LargeSpace);
+                background-color: @BaseLight;
+            }
+            .headerline {
+                color: @BaseDark;
+                font-size: 16px;
+                border-bottom: 1px solid @BaseMedium;
+                height: 20px;
+    
+                .closeImg {
+                    float: right;
+                    margin: @SmallSpace (2 * @MediumSpace) 0px 0px;
+                    cursor: pointer;
+                    padding: @SmallSpace @LargeSpace @LargeSpace @SmallSpace;
+                    background-image: url(../images/cancel.svg);
+                    background-repeat: no-repeat;
+                    width: 16px;
+                    height: 16px;
+                
+                    &:hover {
+                        background-image: url(../images/cancel-hover.svg);
+                        background-repeat: no-repeat;
+                    }
+                }
+            }
+            .paneMainContent {
+                flex: 1;
+                padding-left: 34px;
+                padding-right: 34px;
+                color: @BaseDark;
+                overflow-y: auto;
+                overflow-x: hidden;
+                margin: (2 * @MediumSpace) 0px;
+            }
+        }        
+    }    
+    
+    switch-directory-pane {
+        .directoryDropdownContainer {
+            margin-bottom: @LargeSpace;
+        }
+
+        .directoryListContainer {
+            position: relative;
+            height: calc(100vh - (3 * @HeaderHeight) - 120px);
+        }
+
+        .directoryListComponentContainer {
+            overflow-y: auto;
+        }
+
+        .directoryListItem {
+            padding: @SmallSpace @DefaultSpace;
+            text-align: left;
+            color: @BaseDark;
+        }
+
+        .directoryListItem .directoryListItemName {
+            font-weight: 500;
+        }
+
+        .directoryDivider {
+            border-bottom: 1px solid @DividerColor;
+            margin-bottom: @LargeSpace
+        }
+    }
+
+    img {
+        vertical-align: middle;
+    }
+
+    .iframe {
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+        overflow: hidden;
+        width: 100%;
+        height: calc(~"100vh -" @HeaderHeight);
+
+        .main {
+            width: 100%;
+            transition: all .0s ease-in-out;
+            -ms-transition: all 0s ease-in-out;
+            -webkit-transition: all 0s ease-in-out;
+            -moz-transition: all .0s ease-in-out;
+            height: 100vh;
+            background-color: @BaseLight;
+        }
+    }
+
+    /************* Refactor below styles to avoid redundancy ****************/
+
+    .mini {
+        width: 0%;
+        float: left;
+        transition: all .4s ease-in-out;
+        -webkit-transition: all .4s ease-in-out;
+        -moz-transition: all .4s ease-in-out;
+        height: 100vh;
+        background-color: white;
+        border-right: solid 1px lightgray;
+    }
+
+    #sidebar-wrapper {
+        z-index: 1000;
+        position: fixed;
+        left: 250px;
+        width: 0;
+        height: 100%;
+        margin-left: -250px;
+        overflow-y: auto;
+        background: white;
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+    }
+
+    .toggle-left {
+        width: 0%;
+        overflow: hidden;
+    }
+
+    .toggle-minicontent {
+        width: 100%;
+    }
+
+    .toggle-maincontent {
+        width: 100%;
+    }
+
+    .toggle-mini {
+        width: 50px;
+    }
+
+    .toggle-main {
+        width: 100%;
+    }
+
+    .activepartitionmode {
+        background-color: @AccentMediumHigh;
+    }
+
+    .paddingpartition {
+        color: white;
+        padding-left: 15px;
+        padding-top: 25px;
+    }
+
+    .paddingspan2 {
+        padding-top: 20px;
+        color: white;
+        padding-left: 15px;
+    }
+
+    .paddingspan4 {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        color: white;
+        padding-left: 15px;
+    }
+
+    .whitegroove {
+        width: 344px;
+        border: groove;
+    }
+
+    .dropdownbtn {
+        color: white;
+        width: 340px;
+        background: #262626;
+    }
+
+    .queryclr {
+        color: white;
+        background: #262626;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .gridRowSelected {
+        background-color: #c5e5f5;
+    }
+
+    .gridRowSelected:hover {
+        background-color: #c5e5f5!important;
+        cursor: initial;
+    }
+
+    .collectionNodeSelected {
+        background-color: #c5e5f5;
+    }
+
+    .collectionNodeSelected:hover {
+        background-color: #c5e5f5!important;
+        cursor: default!important;
+    }
+
+    .btncreatecoll1 {
+        border-color: #969696;
+        background-color: #1ebbee;
+        color: white;
+        padding: 2px 30px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnpricepad {
+        margin-left: 24px;
+    }
+
+    .collid {
+        color: white;
+        background: #000000;
+        width: calc(~"100% - 20px");
+    }
+
+    .textfontclr {
+        color: white;
+    }
+
+    .firstdivbg {
+        height: 90px;
+        padding-left: 20px;
+        padding-top: 40px;
+    }
+
+    .seconddivbg {
+        height: 100vh;
+    }
+
+    .pricingtierimg {
+        padding-left: 20px;
+        padding-top: 10px;
+        padding-bottom: 20px;
+    }
+
+    .headerline {
+        color: @BaseDark;
+        font-size: 16px;
+        border-bottom: 1px solid @BaseMedium;
+        padding-bottom: 20px;
+    }
+
+    .partitionkeystyle {
+        font-size: 10px;
+    }
+
+    .arrowprice {
+        margin-left: 230px;
+    }
+
+    .paddingspan {
+        padding: 20px;
+        color: white;
+        font-size: 14px;
+    }
+
+    input::-webkit-calendar-picker-indicator {
+        opacity: 100;
+    }
+
+    .paddingspan3 {
+        padding-top: 20px;
+        padding-left: 20px;
+        color: white;
+        font-size: 14px;
+        position: absolute;
+        width: 100%;
+        height: 100px;
+        bottom: 150px;
+    }
+
+    .paddingspan4 {
+        padding-top: 20px;
+        padding-left: 20px;
+        color: white;
+        font-size: 14px;
+    }
+
+    .closebtnn {
+        float: right;
+        padding: 0 10px;
+        cursor: pointer;
+    }
+
+    label {
+        white-space: nowrap;
+        font: 12px "Segoe UI";
+    }
+
+    .Introlines {
+        padding-top: 27px;
+        padding-left: 40px;
+    }
+
+    .Introline1 {
+        font-size: 16px;
+    }
+
+    .Introline2 {
+        font-size: 14px;
+        padding-top: 10px;
+    }
+
+    .datalist-arrow {
+        position: relative;
+    }
+
+    .datalist-arrow:hover:after {
+        background: #969696;
+    }
+
+    .datalist-arrow:focus:after,
+    .datalist-arrow:active:after {
+        background: #1EBBEE;
+    }
+
+    input::-webkit-calendar-picker-indicator::after {
+        content: '\276F';
+        right: 0;
+        top: -8%;
+        display: block;
+        width: 27px;
+        height: 25px;
+        line-height: 25px;
+        color: #fff;
+        text-align: center;
+        pointer-events: none;
+        transform: rotate(90deg);
+    }
+
+    .datalist-arrow:after:hover {
+        content: '\276F';
+        position: absolute;
+        right: 1px;
+        top: 6%;
+        transform: rotate(90deg);
+        display: block;
+        width: 27px;
+        height: 25px;
+        line-height: 25px;
+        color: #fff;
+        text-align: center;
+        pointer-events: none;
+        background-color: #1EBBEE;
+    }
+
+    .Introline3 {
+        padding-top: 10px;
+        font-size: 14px;
+        font-weight: 1000;
+    }
+
+    .nav>li>a {
+        color: black;
+        font-weight: 400;
+    }
+
+    .qslevel {
+        padding-top: 10px;
+        border: none;
+    }
+
+    .qslevel>li>a {
+        border: none !important;
+    }
+
+    .qslevel>li.active {
+        border-bottom: 4px solid #767676;
+    }
+
+    .qslevel>li.active>a,
+    .qslevel>li>a:focus,
+    .nav.nav-tabs.qslevel>li>a:hover {
+        border: none;
+        border-radius: 0;
+        background-color: transparent !important;
+        border-color: transparent;
+    }
+
+    .numbersize {
+        font-size: 60px;
+        display: inline;
+    }
+
+    .numberheading {
+        display: inline;
+        position: absolute;
+        padding-top: 20px;
+        font-size: 16px;
+        padding-left: 20px;
+    }
+
+    .numberheading>p {
+        padding-top: 10px;
+        font-size: 12px !important;
+    }
+
+    .numberheading>ul {
+        padding-top: 10px;
+    }
+
+    .numberheading>ul>li>a {
+        font-size: 12px !important;
+    }
+
+    .step1 {
+        padding-bottom: 60px;
+    }
+
+    .step1>input {
+        font-size: 12px;
+    }
+
+    .btncreatecoll {
+        background: @AccentMediumHigh;
+        color: #fff;
+        padding: 0 20px;
+        cursor: pointer;
+        font-size: 12px;
+        border: 1px solid @AccentMediumHigh;
+    }
+
+    .btncreatecoll:active {
+        background: #0072c6;
+        border: 1px solid #0072c6;
+    }
+
+    .btncreatecoll:hover {
+        background: @AccentMediumHigh;
+        color: #fff;
+        border-color: @AccentMediumHigh;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .hrline {
+        color: #d6d7d8;
+    }
+
+    .atags:focus {
+        color: @AccentMediumHigh;
+    }
+
+    .atags {
+        color: @AccentMediumHigh;
+        font-weight: 400;
+        cursor: pointer
+    }
+
+    ul {
+        list-style-type: none;
+        padding-left: 0px;
+    }
+
+    .qsmenuicons {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+    }
+
+    .HeaderBg {
+        background-color: @BaseDark;
+        height: @HeaderHeight;
+        width: 100%;
+        min-width: 960px;
+        white-space: nowrap;
+    }
+
+    .DocDBicon {
+        padding-bottom: 10px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .divmenuquickstartpadding {
+        padding-left: 24px;
+        padding-bottom: 8px;
+    }
+
+    .rightarrowimg {
+        padding-left: 5px;
+        padding-bottom: 2px;
+    }
+
+    a:hover,
+    a:visited,
+    a:active,
+    a:link {
+        text-decoration: none;
+    }
+}

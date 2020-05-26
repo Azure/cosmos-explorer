@@ -1,0 +1,145 @@
+<div>
+  <div>
+    <p class="pkPadding">
+      <!-- ko if: showAsMandatory -->
+      <span class="mandatoryStar">*</span>
+      <!-- /ko -->
+
+      <span class="addCollectionLabel" data-bind="text: label"></span>
+
+      <!-- ko if: infoBubbleText -->
+      <span class="infoTooltip" role="tooltip" tabindex="0">
+        <img class="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
+        <span data-bind="text: infoBubbleText" class="tooltiptext throughputRuInfo"></span>
+      </span>
+      <!-- /ko -->
+    </p>
+  </div>
+
+  <!-- ko if: !isFixed -->
+  <div data-bind="visible: showAutoPilot" class="throughputModeContainer">
+    <input
+      class="throughputModeRadio"
+      aria-label="Autopilot mode"
+      data-test="throughput-autoPilot"
+      type="radio"
+      role="radio"
+      tabindex="0"
+      data-bind="
+      checked: isAutoPilotSelected,
+      checkedValue: true,
+      attr: {
+        id: throughputAutoPilotRadioId,
+        name: throughputModeRadioName,
+        'aria-checked': isAutoPilotSelected() ? 'true' : 'false'
+      }"
+    />
+    <span
+      class="throughputModeSpace"
+      data-bind="
+      attr: {
+        for: throughputAutoPilotRadioId
+      }"
+      >Autopilot (preview)
+    </span>
+
+    <input
+      class="throughputModeRadio nonFirstRadio"
+      aria-label="Provisioned Throughput mode"
+      type="radio"
+      role="radio"
+      tabindex="0"
+      data-bind="
+      checked: isAutoPilotSelected,
+      checkedValue: false,
+      attr: {
+        id:  throughputProvisionedRadioId,
+        name: throughputModeRadioName,
+        'aria-checked': !isAutoPilotSelected() ? 'true' : 'false'
+      }"
+    />
+    <span
+      class="throughputModeSpace"
+      data-bind="
+      attr: {
+        for: throughputProvisionedRadioId
+      }"
+      >Manual
+    </span>
+  </div>
+  <!-- /ko -->
+
+  <div data-bind="visible: isAutoPilotSelected">
+    <select
+      name="autoPilotTiers"
+      class="collid select-font-size"
+      aria-label="Autopilot Max RU/s"
+      data-bind="
+          options: autoPilotTiersList,
+          optionsText: 'text',
+          optionsValue: 'value',
+          value: selectedAutoPilotTier,
+          optionsCaption: 'Choose Max RU/s'"
+    >
+    </select>
+    <p>
+      <span
+        data-bind="
+        html: autoPilotUsageCost,
+        visible: selectedAutoPilotTier"
+      >
+      </span>
+    </p>
+  </div>
+
+  <div data-bind="visible: !isAutoPilotSelected()">
+    <div data-bind="setTemplateReady: true">
+      <p class="addContainerThroughputInput">
+        <input
+          type="number"
+          required
+          data-bind="
+          textInput: value,
+          css: {
+              dirty: value.editableIsDirty
+          },
+          enable: isEnabled,
+          attr:{
+              'data-test': testId,
+              'class': cssClass,
+              step: step,
+              min: minimum,
+              max: canExceedMaximumValue() ? null : maximum,
+              'aria-label': ariaLabel
+          }"
+        />
+      </p>
+    </div>
+
+    <p data-bind="visible: costsVisible">
+      <span data-bind="html: requestUnitsUsageCost"></span>
+    </p>
+
+    <!-- ko if: spendAckVisible -->
+    <p class="pkPadding">
+      <input
+        type="checkbox"
+        aria-label="acknowledge spend throughput"
+        data-bind="
+        attr: {
+          title: spendAckText,
+          id: spendAckId
+        },
+        checked: spendAckChecked"
+      />
+      <span data-bind="text: spendAckText, attr: { for: spendAckId }"></span>
+    </p>
+    <!-- /ko -->
+
+    <!-- ko if: isFixed -->
+    <p>
+      Choose unlimited storage capacity for more than 10,000 RU/s.
+    </p>
+    <!-- /ko -->
+  </div>
+</div>

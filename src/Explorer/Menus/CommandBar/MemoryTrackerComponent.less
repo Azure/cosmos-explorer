@@ -1,0 +1,24 @@
+@import "../../../../less/Common/Constants";
+
+.memoryTrackerContainer {
+    cursor: default;
+    align-items: center;
+    margin: 0 9px;
+    border: 1px;
+
+    > span {
+        padding-right: 12px;
+        font-size: 13px;
+        font-family: @DataExplorerFont;
+        color: @DefaultFontColor;
+    }
+
+    > .lowMemory {
+        .ms-ProgressIndicator-progressBar {
+            background-color: @SelectionHigh;
+        }
+        .ms-ProgressIndicator-itemDescription {
+            color: @SelectionHigh;
+        }
+    }
+}

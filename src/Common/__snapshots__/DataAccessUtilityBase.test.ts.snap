@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getCommonQueryOptions builds the correct default options objects 1`] = `
+Object {
+  "enableScanInQuery": true,
+  "forceQueryPlan": true,
+  "maxDegreeOfParallelism": 0,
+  "maxItemCount": 100,
+  "populateQueryMetrics": true,
+}
+`;
+
+exports[`getCommonQueryOptions reads from localStorage 1`] = `
+Object {
+  "enableScanInQuery": true,
+  "forceQueryPlan": true,
+  "maxDegreeOfParallelism": 17,
+  "maxItemCount": 37,
+  "populateQueryMetrics": true,
+}
+`;

@@ -1,0 +1,57 @@
+@import "../../../../less/Common/Constants";
+
+@ErrorDisplayImageHeight: 14px;
+
+.warningErrorContainer {
+    padding: 24px 34px 0px 34px;
+
+    .warningErrorContent {
+        background-color: @BaseLow;
+        padding: @DefaultSpace;
+        display: inline-flex;
+    
+        Img {
+            width: @WarningErrorIconSize;
+            height: @WarningErrorIconSize;
+            margin-left: @SmallSpace;
+        }
+    
+        .warningErrorDetailsLinkContainer {
+            padding-left: @MediumSpace;
+            margin: auto 0px auto 0px;
+    
+            .formErrors {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: @FormErrorWidth;
+                padding-top: 2px;
+                color: @BaseHigh;
+                display: block;
+            }
+    
+            .errorLink {
+                cursor: pointer;
+            }
+        }
+
+        .paneErrorIcon {
+            margin-top: 2px;
+        }
+
+        .paneWarningIcon {
+            margin-top: @DefaultSpace;
+        }
+
+        .settingErrorMsg {
+            padding-top: @DefaultSpace;
+        }
+    }
+}
+
+.scaleWarningContainer {
+    padding: 24px 20px 0px 20px;
+
+    .warningErrorContent {
+        width: 100%;
+    }
+}

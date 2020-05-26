@@ -1,0 +1,30 @@
+﻿<div class="tab-pane flexContainer" data-bind="attr:{ id: tabId }" role="tabpanel">
+  <!-- User Defined Function Tab Form - Start -->
+  <div class="storedTabForm flexContainer">
+    <div class="formTitleFirst">User Defined Function Id</div>
+    <span class="formTitleTextbox">
+      <input
+        class="formTree"
+        type="text"
+        required
+        pattern="[^/?#\\]*[^/?# \\]"
+        title="May not end with space nor contain characters '\' '/' '#' '?'"
+        aria-label="User defined function id"
+        placeholder="Enter the new user defined function id"
+        size="40"
+        data-bind="
+                                    textInput: id"
+      />
+    </span>
+    <div class="spUdfTriggerHeader">User Defined Function Body</div>
+    <div
+      class="storedUdfTriggerEditor"
+      data-bind="
+            setTemplateReady: true,
+            attr: {
+                id: editorId
+            }"
+    ></div>
+  </div>
+  <!-- User Defined Function Tab Form - End -->
+</div>

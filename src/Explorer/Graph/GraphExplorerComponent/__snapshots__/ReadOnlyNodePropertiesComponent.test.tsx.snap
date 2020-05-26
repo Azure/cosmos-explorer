@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReadOnlyNodePropertiesComponent /> renders properties (single value) 1`] = `
+<table
+  className="roPropertyTable propertyTable"
+>
+  <tbody>
+    <tr>
+      <td
+        className="labelCol"
+      >
+        id
+      </td>
+      <td>
+        <span
+          className="vertexId"
+        >
+          myId
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td
+        className="labelCol"
+      >
+        label
+      </td>
+      <td>
+        <span
+          className="vertexLabel"
+        >
+          myLabel
+        </span>
+      </td>
+    </tr>
+    <tr
+      key="key1"
+    >
+      <td
+        className="labelCol propertyId"
+        title="key1"
+      >
+        key1
+      </td>
+      <td
+        className="valueCol"
+        title="value1"
+      >
+        <div
+          className="propertyValue"
+          key="value1"
+        >
+          value1
+        </div>
+      </td>
+    </tr>
+    <tr
+      key="key2"
+    >
+      <td
+        className="labelCol propertyId"
+        title="key2"
+      >
+        key2
+      </td>
+      <td
+        className="valueCol"
+        title="value2"
+      >
+        <div
+          className="propertyValue"
+          key="value2"
+        >
+          value2
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`<ReadOnlyNodePropertiesComponent /> renders properties (with multiple values) 1`] = `
+<table
+  className="roPropertyTable propertyTable"
+>
+  <tbody>
+    <tr>
+      <td
+        className="labelCol"
+      >
+        id
+      </td>
+      <td>
+        <span
+          className="vertexId"
+        >
+          myId
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td
+        className="labelCol"
+      >
+        label
+      </td>
+      <td>
+        <span
+          className="vertexLabel"
+        >
+          myLabel
+        </span>
+      </td>
+    </tr>
+    <tr
+      key="key3"
+    >
+      <td
+        className="labelCol propertyId"
+        title="key3"
+      >
+        key3
+      </td>
+      <td
+        className="valueCol"
+        title="abcd, 1234, true, false, undefined, null"
+      >
+        <div
+          className="propertyValue"
+          key="abcd"
+        >
+          abcd
+        </div>
+        <div
+          className="propertyValue"
+          key="1234"
+        >
+          1234
+        </div>
+        <div
+          className="propertyValue"
+          key="true"
+        >
+          true
+        </div>
+        <div
+          className="propertyValue"
+          key="false"
+        >
+          false
+        </div>
+        <div
+          className="propertyValue"
+          key="undefined"
+        >
+          undefined
+        </div>
+        <div
+          className="propertyValue isNull"
+          key="null"
+        >
+          null
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`<ReadOnlyNodePropertiesComponent /> renders unicode 1`] = `
+<table
+  className="roPropertyTable propertyTable"
+>
+  <tbody>
+    <tr>
+      <td
+        className="labelCol"
+      >
+        id
+      </td>
+      <td>
+        <span
+          className="vertexId"
+        >
+          myId
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td
+        className="labelCol"
+      >
+        label
+      </td>
+      <td>
+        <span
+          className="vertexLabel"
+        >
+          myLabel
+        </span>
+      </td>
+    </tr>
+    <tr
+      key="key4"
+    >
+      <td
+        className="labelCol propertyId"
+        title="key4"
+      >
+        key4
+      </td>
+      <td
+        className="valueCol"
+        title="あきら, アキラ,安喜良"
+      >
+        <div
+          className="propertyValue"
+          key="あきら, アキラ,安喜良"
+        >
+          あきら, アキラ,安喜良
+        </div>
+      </td>
+    </tr>
+    <tr
+      key="key5"
+    >
+      <td
+        className="labelCol propertyId"
+        title="key5"
+      >
+        key5
+      </td>
+      <td
+        className="valueCol"
+        title="Véronique"
+      >
+        <div
+          className="propertyValue"
+          key="Véronique"
+        >
+          Véronique
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;

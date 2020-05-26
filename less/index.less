@@ -1,0 +1,611 @@
+@import "./Common/Constants";
+
+html {
+    font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    overflow: hidden;
+}
+
+header {
+    font-size: 14px;
+}
+
+img {
+    vertical-align: middle;
+}
+
+.iframe {
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    width: calc(~"100% - 80px");
+    height: calc(~"100vh - 60px");
+}
+
+.fixedleftpane {
+    background: #2f2d2d;
+    height: 100vh;
+    width: 80px;
+    float: left;
+}
+
+#imgiconwidth1 {
+    width: 72%;
+}
+
+#Quickstart,
+#Explorer {
+    text-align: center;
+    width: 80px;
+    height: 60px;
+    margin: 0 auto;
+    padding-top: 9px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.feedbackstyle,
+.settingstyle {
+    text-align: center;
+    display: inline-block;
+    width: 80px;
+    height: 60px;
+    margin: 0 auto;
+    padding-top: 9px;
+    position: absolute;
+    box-sizing: border-box;
+}
+
+#Quickstart:active,
+#Explorer:active {
+    color: #fff;
+    background: #666666;
+    box-sizing: border-box;
+}
+
+#Quickstart:hover,
+#Explorer:hover {
+    color: #fff;
+    background: #444444;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.feedbackstyle:hover,
+.settingstyle:hover {
+    color: #fff;
+    background: #444444;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#Quickstart #imgiconwidth1,
+#Explorer #imgiconwidth1,
+.feedbackstyle #imgiconwidth1,
+.settingstyle #imgiconwidth1 {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: 30px;
+}
+
+#Explorer:hover span.menuExplorer,
+#Explorer:active span.menuExplorer {
+    color: #fff;
+}
+
+#Quickstart span.menuQuickStart {
+    margin-left: 0;
+    padding-left: 0;
+    display: block;
+    right: 12px;
+    top: 30px;
+    position: absolute;
+}
+
+#Explorer span.menuExplorer {
+    margin-left: 0;
+    padding-left: 0;
+    display: block;
+    right: 19px;
+    top: 33px;
+    position: absolute;
+}
+
+.feedbackstyle span.menuExplorer {
+    margin-left: 0;
+    padding-left: 0;
+    display: block;
+    right: 19px;
+    top: 33px;
+    position: absolute;
+}
+
+.settingstyle span.menuExplorer {
+    margin-left: 0;
+    padding-left: 0;
+    display: block;
+    right: 19px;
+    top: 33px;
+    position: absolute;
+}
+
+.topSelected {
+    border-left: 4px solid @AccentMediumHigh;
+    background: #666666;
+}
+
+.topSelected:hover {
+    border-left: 4px solid @AccentMediumHigh;
+    background: #666666!important;
+    cursor: default!important;
+}
+
+.main {
+    width: 100%;
+    float: left;
+    transition: all .0s ease-in-out;
+    -ms-transition: all 0s ease-in-out;
+    -webkit-transition: all 0s ease-in-out;
+    -moz-transition: all .0s ease-in-out;
+    height: 100vh;
+    background-color: white;
+}
+
+.content {
+    display: inline-block;
+    width: 100%;
+    transition: all .4s ease-in-out;
+    -ms-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    -moz-transition: all .4s ease-in-out;
+    height: 100vh;
+}
+
+.mini {
+    width: 0%;
+    float: left;
+    transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    -moz-transition: all .4s ease-in-out;
+    height: 100vh;
+    background-color: white;
+    border-right: solid 1px lightgray;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: white;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.toggle-left {
+    width: 0%;
+    overflow: hidden;
+}
+
+.toggle-minicontent {
+    width: 100%;
+}
+
+.toggle-maincontent {
+    width: 100%;
+}
+
+.toggle-mini {
+    width: 50px;
+}
+
+.toggle-main {
+    width: 100%;
+}
+
+.activepartitionmode {
+    background-color: @AccentMediumHigh;
+}
+
+.paddingpartition {
+    color: white;
+    padding-left: 15px;
+    padding-top: 25px;
+}
+
+.paddingspan2 {
+    padding-top: 20px;
+    color: white;
+    padding-left: 15px;
+}
+
+.paddingspan4 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: white;
+    padding-left: 15px;
+}
+
+.whitegroove {
+    width: 344px;
+    border: groove;
+}
+
+.dropdownbtn {
+    color: white;
+    width: 340px;
+    background: #262626;
+}
+
+.queryclr {
+    color: white;
+    background: #262626;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.gridRowSelected {
+    background-color: #c5e5f5;
+}
+
+.gridRowSelected:hover {
+    background-color: #c5e5f5!important;
+    cursor: initial;
+}
+
+.collectionNodeSelected {
+    background-color: #c5e5f5;
+}
+
+.collectionNodeSelected:hover {
+    background-color: #c5e5f5!important;
+    cursor: default!important;
+}
+
+.btncreatecoll1 {
+    border-color: #969696;
+    background-color: #1ebbee;
+    color: white;
+    padding: 2px 30px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btnpricepad {
+    margin-left: 24px;
+}
+
+.collid {
+    color: white;
+    background: #000000;
+    width: calc(~"100% - 20px");
+}
+
+.textfontclr {
+    color: white;
+}
+
+.firstdivbg {
+    height: 90px;
+    padding-left: 20px;
+    padding-top: 40px;
+}
+
+.seconddivbg {
+    height: 100vh;
+}
+
+.pricingtierimg {
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.headerline {
+    color: @BaseDark;
+    font-size: 16px;
+    border-bottom: 1px solid @BaseMedium; 
+    padding-bottom: 20px;
+}
+
+.partitionkeystyle {
+    font-size: 10px;
+}
+
+.arrowprice {
+    margin-left: 230px;
+}
+
+.paddingspan {
+    padding: 20px;
+    color: white;
+    font-size: 14px;
+}
+
+input::-webkit-calendar-picker-indicator {
+    opacity: 100;
+}
+
+.paddingspan3 {
+    padding-top: 20px;
+    padding-left: 20px;
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    bottom: 150px;
+}
+
+.paddingspan4 {
+    padding-top: 20px;
+    padding-left: 20px;
+    color: white;
+    font-size: 14px;
+}
+
+.closebtnn {
+    float: right;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+label {
+    white-space: nowrap;
+    font: 12px "Segoe UI";
+}
+
+.Introlines {
+    padding-top: 27px;
+    padding-left: 40px;
+}
+
+.Introline1 {
+    font-size: 16px;
+}
+
+.Introline2 {
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+.datalist-arrow {
+    position: relative;
+}
+
+.datalist-arrow:hover:after {
+    background: #969696;
+}
+
+.datalist-arrow:focus:after,
+.datalist-arrow:active:after {
+    background: #1EBBEE;
+}
+
+input::-webkit-calendar-picker-indicator::after {
+    content: '\276F';
+    right: 0;
+    top: -8%;
+    display: block;
+    width: 27px;
+    height: 25px;
+    line-height: 25px;
+    color: #fff;
+    text-align: center;
+    pointer-events: none;
+    transform: rotate(90deg);
+}
+
+.datalist-arrow:after:hover {
+    content: '\276F';
+    position: absolute;
+    right: 1px;
+    top: 6%;
+    transform: rotate(90deg);
+    display: block;
+    width: 27px;
+    height: 25px;
+    line-height: 25px;
+    color: #fff;
+    text-align: center;
+    pointer-events: none;
+    background-color: #1EBBEE;
+}
+
+.Introline3 {
+    padding-top: 10px;
+    font-size: 14px;
+    font-weight: 1000;
+}
+
+.nav>li>a {
+    color: black;
+    font-weight: 400;
+}
+
+.qslevel {
+    padding-top: 10px;
+    border: none;
+}
+
+.qslevel>li>a {
+    border: none !important;
+}
+
+.qslevel>li.active {
+    border-bottom: 4px solid #767676;
+}
+
+.qslevel>li.active>a,
+.qslevel>li>a:focus,
+.nav.nav-tabs.qslevel>li>a:hover {
+    border: none;
+    border-radius: 0;
+    background-color: transparent !important;
+    border-color: transparent;
+}
+
+.numbersize {
+    font-size: 60px;
+    display: inline;
+}
+
+.numberheading {
+    display: inline;
+    position: absolute;
+    padding-top: 20px;
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+.numberheading>p {
+    padding-top: 10px;
+    font-size: 12px !important;
+}
+
+.numberheading>ul {
+    padding-top: 10px;
+}
+
+.numberheading>ul>li>a {
+    font-size: 12px !important;
+}
+
+.step1 {
+    padding-bottom: 60px;
+}
+
+.step1>input {
+    font-size: 12px;
+}
+
+.btncreatecoll {
+    background: @AccentMediumHigh;
+    color: #fff;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 12px;
+    border: 1px solid @AccentMediumHigh;
+}
+
+.btncreatecoll:active {
+    background: #0072c6;
+    border: 1px solid #0072c6;
+}
+
+.btncreatecoll:hover {
+    background: @AccentMediumHigh;
+    color: #fff;
+    border-color: @AccentMediumHigh;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.hrline {
+    color: #d6d7d8;
+}
+
+.atags:focus {
+    color: @AccentMediumHigh;
+}
+
+.atags {
+    color: @AccentMediumHigh;
+    font-weight: 400;
+    cursor: pointer
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.qsmenuicons {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.HeaderBg {
+    background-color: #202428;
+    height: 60px;
+    width: 100%;
+    min-width: 960px;
+}
+
+.title {
+    color: @AccentMediumHigh;
+    font-size: 20px;
+    padding-left: 10px;
+}
+
+.DocDBicon {
+    padding-bottom: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.items {
+    padding-left: 24px;
+    padding-top: 15px;
+}
+
+.divmenuquickstartpadding {
+    padding-left: 24px;
+    padding-bottom: 8px;
+}
+
+.menuQuickStart {
+    font-size: 12px;
+    color: white;
+    padding-left: 10px;
+}
+
+.menuExplorer {
+    font-size: 12px;
+    color: white;
+    padding-left: 20px;
+}
+
+.rightarrowimg {
+    padding-left: 5px;
+    padding-bottom: 2px;
+}
+
+.createdocdbacnt {
+    text-transform: uppercase;
+    color: #a5ce00;
+    float: right;
+    font-size: 18px;
+    padding-top: 10px;
+    text-decoration: none;
+}
+
+a:hover,
+a:visited,
+a:active,
+a:link {
+    text-decoration: none;
+}

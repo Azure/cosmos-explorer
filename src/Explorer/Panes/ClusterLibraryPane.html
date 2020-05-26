@@ -1,0 +1,59 @@
+<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
+  <div class="contextual-pane-out" data-bind="click: cancel, clickBubble: false"></div>
+  <div class="contextual-pane" id="clusterLibraryPane">
+    <!-- Cluster Library  -- Start -->
+    <div class="contextual-pane-in">
+      <form class="paneContentContainer" data-bind="submit: submit">
+        <!-- Cluster Library header - Start -->
+        <div class="firstdivbg headerline">
+          <span data-bind="text: title"></span>
+          <div
+            class="closeImg"
+            role="button"
+            aria-label="Close pane"
+            tabindex="0"
+            data-bind="click: cancel, event: { keypress: onCloseKeyPress }"
+          >
+            <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+          </div>
+        </div>
+        <!-- Cluster Library header - End -->
+
+        <!-- Cluster Library errors - Start -->
+        <div
+          class="warningErrorContainer"
+          aria-live="assertive"
+          data-bind="visible: formErrors() && formErrors() !== ''"
+        >
+          <div class="warningErrorContent">
+            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"/></span>
+            <span class="warningErrorDetailsLinkContainer">
+              <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
+              <a
+                class="errorLink"
+                role="link"
+                data-bind="visible: formErrorsDetails() && formErrorsDetails() !== '', click: showErrorDetails"
+                >More details</a
+              >
+            </span>
+          </div>
+        </div>
+        <!-- Cluster Library errors - End -->
+
+        <!-- Cluster Library inputs - Start -->
+        <div class="paneMainContent"><div data-bind="react: clusterLibraryGridAdapter"></div></div>
+        <!-- Cluster Library inputs - End -->
+
+        <div class="paneFooter">
+          <div class="leftpanel-okbut"><input type="submit" value="Save" class="btncreatecoll1" /></div>
+        </div>
+      </form>
+    </div>
+    <!-- Cluster Library - End -->
+    <!-- Loader - Start -->
+    <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
+      <img class="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" />
+    </div>
+    <!-- Loader - End -->
+  </div>
+</div>

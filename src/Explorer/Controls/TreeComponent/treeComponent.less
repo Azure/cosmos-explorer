@@ -1,0 +1,80 @@
+@import "../../../../less/Common/Constants";
+
+.treeComponent {
+  .nodeItem {
+    &:focus {
+      outline: 1px dashed @AccentMedium;
+    }
+
+    .treeNodeHeader {
+      padding: @SmallSpace 2px;
+      cursor: pointer;
+      display: flex;
+
+      &:hover {
+        background-color: @AccentLight;
+
+        .treeMenuEllipsis {
+          opacity: 1;
+        }
+      }
+
+      &.showingMenu {
+        background-color: #EEE;
+      }
+
+      .treeMenuEllipsis {
+        max-height: 17px;
+        padding-right: 6px;
+        position: relative;
+        left: 0px;
+        float: right;
+        padding-left: 6px;
+        opacity: 0;
+        &:focus {
+          opacity: 1;
+        }
+      }
+
+      .nodeIcon {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-top;
+        margin-right: @SmallSpace;
+      }
+
+      .expandCollapseIcon {
+        width: 10px;
+        height: 10px;
+        vertical-align: middle;
+        margin: 2px @DefaultSpace 2px @SmallSpace;
+      }
+
+      .nodeLabel {
+        line-height: 18px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        flex-grow: 1;
+      }
+    }
+
+    .selected {
+      & > .treeNodeHeader {
+        background-color: @AccentExtra;
+      }
+    }
+  }
+}
+
+.treeComponentMenuItemContainer {
+  font-size: @mediumFontSize;
+
+  .treeComponentMenuItemLabel {
+    margin-left: @SmallSpace;
+  }
+
+  img {
+    vertical-align: text-bottom;
+  }
+}

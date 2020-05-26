@@ -1,0 +1,181 @@
+.nteract-cell-prompt {
+  font-family: monospace;
+  color: var(--theme-cell-prompt-fg, black);
+  background-color: var(--theme-cell-prompt-bg, #fafafa);
+}
+
+.nteract-cell-pagers {
+  background-color: var(--theme-pager-bg, #fafafa);
+}
+
+.nteract-cell-outputs a {
+  color: var(--link-color-unvisited, blue);
+}
+
+.nteract-cell-outputs a:visited {
+  color: var(--link-color-visited, blue);
+}
+
+.nteract-cell-outputs code {
+  font-family: "Source Code Pro", monospace;
+}
+
+.nteract-cell-outputs kbd {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+  background-color: #f7f7f7;
+}
+
+.nteract-cell-outputs th,
+    .nteract-cell-outputs td,
+    /* for legacy output handling */
+    .nteract-cell-outputs .th,
+    .nteract-cell-outputs .td {
+  border: 1px solid var(--theme-app-border, #cbcbcb);
+}
+
+.nteract-cell-outputs blockquote {
+  padding: 0.75em 0.5em 0.75em 1em;
+}
+
+.nteract-cell-outputs blockquote::before {
+  display: block;
+  height: 0;
+  margin-left: -0.95em;
+}
+
+.nteract-cell-input .nteract-cell-source {
+  background-color: var(--theme-cell-input-bg, #fafafa);
+}
+
+.nteract-cells {
+  font-family: "Source Sans Pro", Helvetica Neue, Helvetica, sans-serif;
+  font-size: 16px;
+  background-color: var(--theme-app-bg);
+  color: var(--theme-app-fg);
+}
+
+.nteract-cell {
+  background: var(--theme-cell-bg, white);
+}
+
+.nteract-cell-container.selected .nteract-cell-prompt {
+  background-color: var(--theme-cell-prompt-bg-focus, hsl(0, 0%, 90%));
+  color: var(--theme-cell-prompt-fg-focus, hsl(0, 0%, 51%));
+}
+
+.nteract-cell-container:hover:not(.selected) .nteract-cell-prompt,
+.nteract-cell-container:active:not(.selected) .nteract-cell-prompt {
+  background-color: var(--theme-cell-prompt-bg-hover, hsl(0, 0%, 94%));
+  color: var(--theme-cell-prompt-fg-hover, hsl(0, 0%, 15%));
+}
+
+.nteract-cell-outputs {
+  background-color: var(--theme-cell-output-bg);
+}
+
+.nteract-cell-container.selected .nteract-cell-outputs {
+  background-color: var(--theme-cell-output-bg-focus);
+}
+
+.nteract-cell-container:hover:not(.selected) .nteract-cell-outputs,
+.nteract-cell-container:active:not(.selected) .nteract-cell-outputs {
+  background-color: var(--theme-cell-output-bg-hover);
+}
+
+.nteract-cell:focus .nteract-cell-prompt {
+  background-color: var(--theme-cell-prompt-bg-focus, hsl(0, 0%, 90%));
+  color: var(--theme-cell-prompt-fg-focus, hsl(0, 0%, 51%));
+}
+
+@media print {
+  /* make sure all cells look the same in print regarless of focus */
+  .nteract-cell-container .nteract-cell-prompt,
+  .nteract-cell-container.selected .nteract-cell-prompt,
+  .nteract-cell-container:focus .nteract-cell-prompt,
+  .nteract-cell-container:hover:not(.selected) .nteract-cell-prompt {
+    background-color: var(--theme-cell-prompt-bg, white);
+    color: var(--theme-cell-prompt-fg, black);
+  }
+}
+
+.nteract-cell-toolbar {
+  opacity: 0.4;
+  transition: opacity 0.4s;
+}
+
+.nteract-cell-container:not(.selected) .nteract-cell-toolbar {
+  display: none;
+}
+
+.nteract-cell-container:hover:not(.selected) .nteract-cell-toolbar,
+.nteract-cell-container.selected .nteract-cell-toolbar {
+  display: inline-block;
+}
+
+.nteract-cell-toolbar > div {
+  display: inline-block;
+}
+
+.nteract-cell-toolbar:hover {
+  opacity: 1;
+}
+
+@media print {
+  .nteract-cell-toolbar {
+    display: none;
+  }
+}
+
+.nteract-cell-toolbar button {
+  display: inline-block;
+
+  width: 22px;
+  height: 20px;
+  padding: 0px 4px;
+
+  text-align: center;
+
+  border: none;
+  outline: none;
+  background: none;
+}
+
+.nteract-cell-toolbar span {
+  font-size: 15px;
+  line-height: 1;
+  color: var(--theme-cell-toolbar-fg);
+}
+
+.nteract-cell-toolbar button span:hover {
+  color: var(--theme-cell-toolbar-fg-hover);
+}
+
+.nteract-cell-toolbar .octicon {
+  transition: color 0.5s;
+}
+
+.nteract-cell-toolbar span.spacer {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 1px 5px 3px 5px;
+  height: 11px;
+}
+
+.nteract-cell-toolbar {
+  z-index: 9;
+  position: sticky; /* keep visible with large code cells that need scrolling */
+  float: right;
+  top: 0;
+  right: 0;
+  height: 34px;
+  margin: 0 0 0 -100%; /* allow code cell to completely overlap (underlap?) */
+  padding: 0 0 0 50px; /* give users extra room to move their mouse to the
+                          toolbar without causing the cell to go out of
+                          focus/hide the toolbar before they get there */
+}
+
+.nteract-cell.hidden .nteract-cell-toolbar {
+  display: none;
+}
