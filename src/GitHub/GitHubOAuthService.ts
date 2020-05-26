@@ -7,6 +7,7 @@ import { JunoClient } from "../Juno/JunoClient";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { GitHubConnectorMsgType, IGitHubConnectorParams } from "./GitHubConnector";
+import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 
 window.addEventListener("message", (event: MessageEvent) => {
   if (isInvalidParentFrameOrigin(event)) {
@@ -16,7 +17,7 @@ window.addEventListener("message", (event: MessageEvent) => {
   const msg = event.data;
   if (msg.type === GitHubConnectorMsgType) {
     const params = msg.data as IGitHubConnectorParams;
-    window.dataExplorer.gitHubOAuthService.finishOAuth(params);
+    window.dataExplorer?.gitHubOAuthService?.finishOAuth(params);
   }
 });
 
@@ -39,16 +40,31 @@ export class GitHubOAuthService {
     this.token = ko.observable<IGitHubOAuthToken>();
   }
 
-  public startOAuth(scope: string): string {
-    const params = {
-      scope,
+  public async startOAuth(open: (url: string) => void, scope?: string): Promise<string> {
+    // If attempting to change scope from "Public & private repos" to "Public only" we need to delete app authorization.
+    // Otherwise OAuth app still retains the "public & private repos" permissions.
+    if (
+      this.token()?.scope === AuthorizeAccessComponent.Scopes.PublicAndPrivate.key &&
+      scope === AuthorizeAccessComponent.Scopes.Public.key
+    ) {
+      const logoutSuccessful = await this.logout();
+      if (!logoutSuccessful) {
+        return undefined;
+      }
+    }
+
+    const newState: string = this.resetState();
+    const searchParams = new URLSearchParams({
       client_id: config.GITHUB_CLIENT_ID,
       redirect_uri: new URL("./connectToGitHub.html", window.location.href).href,
-      state: this.resetState()
-    };
+      state: newState
+    });
+    if (scope) {
+      searchParams.append("scope", scope);
+    }
 
-    window.open(`${GitHubOAuthService.OAuthEndpoint}?${new URLSearchParams(params).toString()}`);
-    return params.state;
+    open(`${GitHubOAuthService.OAuthEndpoint}?${searchParams.toString()}`);
+    return newState;
   }
 
   public async finishOAuth(params: IGitHubConnectorParams) {
@@ -76,7 +92,7 @@ export class GitHubOAuthService {
     return this.token;
   }
 
-  public async logout() {
+  public async logout(): Promise<boolean> {
     try {
       const response = await this.junoClient.deleteAppAuthorization(this.token()?.access_token);
       if (response.status !== HttpStatusCodes.NoContent) {
@@ -84,10 +100,12 @@ export class GitHubOAuthService {
       }
 
       this.resetToken();
+      return true;
     } catch (error) {
       const message = `Failed to delete app authorization: ${error}`;
       Logger.logError(message, "GitHubOAuthService/logout");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      return false;
     }
   }
 

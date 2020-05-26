@@ -45,6 +45,9 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
     ) : (
       <>
         <p>{GitHubReposComponent.ManageGitHubRepoDescription}</p>
+        <Link style={{ marginTop: ChildrenMargin }} onClick={this.props.resetConnection}>
+          {GitHubReposComponent.ManageGitHubRepoResetConnection}
+        </Link>
         <ReposListComponent {...this.props.reposListProps} />
       </>
     );

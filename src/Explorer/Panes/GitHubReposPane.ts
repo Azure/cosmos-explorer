@@ -341,7 +341,7 @@ export class GitHubReposPane extends ContextualPaneBase {
       dataExplorerArea: Areas.Notebook,
       scopesSelected: scope
     });
-    this.container.gitHubOAuthService.startOAuth(scope);
+    this.container.gitHubOAuthService.startOAuth(window.open, scope);
   }
 
   private triggerRender(): void {

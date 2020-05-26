@@ -45,6 +45,7 @@ export interface DatabaseAccount extends DataModels.DatabaseAccount {}
 export interface Explorer {
   flight: ko.Observable<string>;
   handleMessage(event: MessageEvent): void;
+  onReady(): void;
   isRefreshingExplorer: ko.Observable<boolean>;
 
   databaseAccount: ko.Observable<DatabaseAccount>;
@@ -85,7 +86,6 @@ export interface Explorer {
   armEndpoint: ko.Observable<string>;
   isFeatureEnabled: (feature: string) => boolean;
   isGalleryEnabled: ko.Computed<boolean>;
-  isGitHubPaneEnabled: ko.Observable<boolean>;
   isGraphsEnabled: ko.Computed<boolean>;
   canExceedMaximumValue: ko.Computed<boolean>;
   hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;

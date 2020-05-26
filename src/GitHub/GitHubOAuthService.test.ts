@@ -62,19 +62,19 @@ describe("GitHubOAuthService", () => {
 
   it("startOAuth resets OAuth state", () => {
     let url: string;
-    const windowOpenCallback = jest.fn().mockImplementation((value: string) => {
+    const openCallback = jest.fn().mockImplementation((value: string) => {
+      console.log(`open called with ${value}`);
       url = value;
     });
-    window.open = windowOpenCallback;
 
-    gitHubOAuthService.startOAuth("scope");
-    expect(windowOpenCallback).toBeCalled();
+    gitHubOAuthService.startOAuth(openCallback, "scope");
+    expect(openCallback).toBeCalled();
 
     const initialParams = new URLSearchParams(new URL(url).search);
     expect(initialParams.get("state")).toBeDefined();
 
-    gitHubOAuthService.startOAuth("another scope");
-    expect(windowOpenCallback).toBeCalled();
+    gitHubOAuthService.startOAuth(openCallback, "another scope");
+    expect(openCallback).toBeCalled();
 
     const newParams = new URLSearchParams(new URL(url).search);
     expect(newParams.get("state")).toBeDefined();
@@ -106,7 +106,7 @@ describe("GitHubOAuthService", () => {
     junoClient.getGitHubToken = getGitHubTokenCallback;
 
     const initialToken = gitHubOAuthService.getTokenObservable()();
-    const state = gitHubOAuthService.startOAuth("scope");
+    const state = await gitHubOAuthService.startOAuth(url => console.log(`open called with ${url}`), "scope");
 
     const params: IGitHubConnectorParams = {
       state,
@@ -120,7 +120,7 @@ describe("GitHubOAuthService", () => {
   });
 
   it("finishOAuth updates token to error if state doesn't match", async () => {
-    gitHubOAuthService.startOAuth("scope");
+    gitHubOAuthService.startOAuth(url => console.log(`open called with ${url}`), "scope");
 
     const params: IGitHubConnectorParams = {
       state: "state",
@@ -135,7 +135,7 @@ describe("GitHubOAuthService", () => {
     const getGitHubTokenCallback = jest.fn().mockReturnValue({ status: HttpStatusCodes.NotFound });
     junoClient.getGitHubToken = getGitHubTokenCallback;
 
-    const state = gitHubOAuthService.startOAuth("scope");
+    const state = await gitHubOAuthService.startOAuth(url => console.log(`open called with ${url}`), "scope");
 
     const params: IGitHubConnectorParams = {
       state,

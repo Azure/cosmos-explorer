@@ -86,6 +86,8 @@ import { StringInputPane } from "./Panes/StringInputPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import { GitHubAutoConnectAdapter } from "./Controls/GitHub/GitHubAutoConnectAdapter";
+import { GitHubAutoConnectComponentProps } from "./Controls/GitHub/GitHubAutoConnectComponent";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -202,12 +204,14 @@ export default class Explorer implements ViewModels.Explorer {
 
   // features
   public isGalleryEnabled: ko.Computed<boolean>;
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isGraphsEnabled: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
+  public shouldLoadGitHubReposPane: ko.Observable<boolean>;
+  public shouldLoadGitHubAutoConnectComponent: ko.Observable<boolean>;
+  private gitHubAutoLoginAttempted: boolean;
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<ViewModels.AdHocAccessData>;
   public renewExplorerShareAccess: (explorer: ViewModels.Explorer, token: string) => Q.Promise<void>;
@@ -257,6 +261,7 @@ export default class Explorer implements ViewModels.Explorer {
   private _dialogProps: ko.Observable<DialogProps>;
   private addSynapseLinkDialog: DialogComponentAdapter;
   private _addSynapseLinkDialogProps: ko.Observable<DialogProps>;
+  private gitHubAutoConnectAdapter: GitHubAutoConnectAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -406,11 +411,12 @@ export default class Explorer implements ViewModels.Explorer {
         this.shareAccessUrl(this.shareAccessData && this.shareAccessData().readUrl);
       }
     });
+    this.shouldLoadGitHubReposPane = ko.observable<boolean>(false);
+    this.shouldLoadGitHubAutoConnectComponent = ko.observable<boolean>(false);
     this.shouldShowShareDialogContents = ko.observable<boolean>(false);
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableGallery));
-    this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isGraphsEnabled = ko.computed<boolean>(() => {
       return this.isFeatureEnabled(Constants.Features.graphs);
     });
@@ -962,6 +968,10 @@ export default class Explorer implements ViewModels.Explorer {
         }
       });
 
+      const gitHubAutoConnectProps: GitHubAutoConnectComponentProps = { oauthUrl: undefined };
+      await this.gitHubOAuthService.startOAuth((url: string) => (gitHubAutoConnectProps.oauthUrl = url));
+      this.gitHubAutoConnectAdapter = new GitHubAutoConnectAdapter(gitHubAutoConnectProps);
+
       this.gitHubReposPane = new GitHubReposPane({
         documentClientUtility: this.documentClientUtility,
         id: "gitHubReposPane",
@@ -970,8 +980,9 @@ export default class Explorer implements ViewModels.Explorer {
         junoClient,
         gitHubClient
       });
+      this.shouldLoadGitHubReposPane(true);
 
-      this.isGitHubPaneEnabled(true);
+      this.tryAutoConnectingGitHub();
 
       this.gitHubOAuthService.getTokenObservable().subscribe(token => {
         gitHubClient.setToken(token?.access_token ? token.access_token : config.AZURESAMPLESCOSMOSDBPAT);
@@ -1132,6 +1143,22 @@ export default class Explorer implements ViewModels.Explorer {
     });
     this.addSynapseLinkDialog = new DialogComponentAdapter();
     this.addSynapseLinkDialog.parameters = this._addSynapseLinkDialogProps;
+  }
+
+  private async tryAutoConnectingGitHub() {
+    if (!this.gitHubAutoLoginAttempted && window.dataExplorer.gitHubOAuthService && window.dataExplorer) {
+      this.gitHubAutoLoginAttempted = true;
+
+      const gitHubAutoConnectProps: GitHubAutoConnectComponentProps = { oauthUrl: undefined };
+      await this.gitHubOAuthService.startOAuth((url: string) => (gitHubAutoConnectProps.oauthUrl = url));
+      this.gitHubAutoConnectAdapter = new GitHubAutoConnectAdapter(gitHubAutoConnectProps);
+      this.shouldLoadGitHubAutoConnectComponent(true);
+
+      setTimeout(() => {
+        this.shouldLoadGitHubAutoConnectComponent(false);
+        this.gitHubAutoConnectAdapter = undefined;
+      }, 5 * 1000);
+    }
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -2121,6 +2148,10 @@ export default class Explorer implements ViewModels.Explorer {
 
       this.splashScreenAdapter.forceRender();
     });
+  }
+
+  public onReady() {
+    this.tryAutoConnectingGitHub();
   }
 
   public findSelectedDatabase(): ViewModels.Database {

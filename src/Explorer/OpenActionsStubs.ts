@@ -95,7 +95,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public setupSparkClusterPane: ViewModels.ContextualPane;
   public manageSparkClusterPane: ViewModels.ContextualPane;
   public isGalleryEnabled: ko.Computed<boolean>;
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isGraphsEnabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -212,6 +211,10 @@ export class ExplorerStub implements ViewModels.Explorer {
   };
 
   public handleMessage(event: MessageEvent) {
+    throw new Error("Not implemented");
+  }
+
+  public onReady() {
     throw new Error("Not implemented");
   }
 

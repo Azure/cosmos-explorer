@@ -93,6 +93,7 @@ initializeConfiguration().then(config => {
         (explorer: ViewModels.Explorer) => {
           applyExplorerBindings(explorer);
           Hosted.configureTokenValidationDisplayPrompt(explorer);
+          explorer.onReady();
         },
         (error: any) => {
           try {
@@ -119,6 +120,7 @@ initializeConfiguration().then(config => {
     window.authType = AuthType.MasterKey;
     const explorer = Emulator.initializeExplorer();
     applyExplorerBindings(explorer);
+    explorer.onReady();
   } else if (config.platform === Platform.Portal) {
     // TODO Remove. All window variables should move to src/Config file
     window.dataExplorerPlatform = PlatformType.Portal;
@@ -126,5 +128,6 @@ initializeConfiguration().then(config => {
     const explorer = Portal.initializeExplorer();
     TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.IFrameReady, {});
     applyExplorerBindings(explorer);
+    explorer.onReady();
   }
 });

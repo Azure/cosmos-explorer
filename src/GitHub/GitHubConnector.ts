@@ -6,8 +6,10 @@ export interface IGitHubConnectorParams {
 export const GitHubConnectorMsgType = "GitHubConnectorMsgType";
 
 export class GitHubConnector {
-  public start(params: URLSearchParams, window: Window & typeof globalThis) {
-    window.postMessage(
+  public start(params: URLSearchParams, mainWindow: Window) {
+    console.log(`Posting message to ${mainWindow.location}`);
+
+    mainWindow.postMessage(
       {
         type: GitHubConnectorMsgType,
         data: {
@@ -15,16 +17,16 @@ export class GitHubConnector {
           code: params.get("code")
         } as IGitHubConnectorParams
       },
-      window.location.origin
+      mainWindow.location.origin
     );
   }
 }
 
 var connector = new GitHubConnector();
 window.addEventListener("load", () => {
-  const openerWindow = window.opener;
-  if (openerWindow) {
-    connector.start(new URLSearchParams(document.location.search), openerWindow);
+  const mainWindow = window.opener || window;
+  if (mainWindow) {
+    connector.start(new URLSearchParams(document.location.search), mainWindow);
     window.close();
   }
 });

@@ -460,8 +460,12 @@
       <library-manage-pane params="{data: libraryManagePane}"></library-manage-pane>
       <cluster-library-pane params="{data: clusterLibraryPane}"></cluster-library-pane>
 
-      <!-- ko if: isGitHubPaneEnabled -->
+      <!-- ko if: shouldLoadGitHubReposPane -->
       <github-repos-pane params="{data: gitHubReposPane}"></github-repos-pane>
+      <!-- /ko -->
+
+      <!-- ko if: shouldLoadGitHubAutoConnectComponent -->
+      <div data-bind="{react: gitHubAutoConnectAdapter}"></div>
       <!-- /ko -->
 
       <!-- Global access token expiration dialog - Start -->
