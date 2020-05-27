@@ -77,12 +77,21 @@
     <p>
       <span>Max RU/s</span>
     </p>
-    <input
-      type="number"
-      data-bind="textInput: overrideWithProvisionedThroughputSettings() ? '' : maxAutoPilotThroughputSet, attr:{disabled: overrideWithProvisionedThroughputSettings(), step: step, 'class':'migration collid select-font-size', min: minAutoPilotThroughput, css: {
+    <div data-bind="setTemplateReady: true">
+      <input
+        data-bind="textInput: overrideWithProvisionedThroughputSettings() ? '' : maxAutoPilotThroughputSet, attr:{
+        disabled: overrideWithProvisionedThroughputSettings(),
+        step: step,
+        'class':'migration collid select-font-size',
+        min: minAutoPilotThroughput,
+        'aria-label': ariaLabel,
+        type: isAutoscaleThroughputInputFieldRequired() ? 'number' : 'hidden',
+        css: {
           dirty: maxAutoPilotThroughputSet.editableIsDirty
-      }}"
-    />
+      }
+    }"
+      />
+    </div>
     <p data-bind="visible: overrideWithProvisionedThroughputSettings && !overrideWithProvisionedThroughputSettings()">
       <span
         data-bind="
@@ -114,27 +123,25 @@
 
   <div data-bind="visible: !isAutoPilotSelected()">
     <div data-bind="setTemplateReady: true">
-      <p class="addContainerThroughputInput">
-        <input
-          type="number"
-          required
-          data-bind="
+      <input
+        data-bind="
             textInput: overrideWithAutoPilotSettings() ? maxAutoPilotThroughputSet : value,
             css: {
                 dirty: value.editableIsDirty
             },
             enable: isEnabled,
             attr:{
+                type: isManualThroughputInputFieldRequired() ? 'number' : 'hidden',
                 'data-test': testId,
                 'class': cssClass,
                 step: step,
                 min: minimum,
                 max: canExceedMaximumValue() ? null : maximum,
                 'aria-label': ariaLabel,
-                disabled: overrideWithAutoPilotSettings()
+                disabled: overrideWithAutoPilotSettings(),
+                required: isManualThroughputInputFieldRequired()
             }"
-        />
-      </p>
+      />
     </div>
 
     <p data-bind="visible: costsVisible">
