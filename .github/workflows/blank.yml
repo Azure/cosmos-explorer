@@ -10,6 +10,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    name: "Unit Tests"
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
@@ -17,10 +18,11 @@ jobs:
         with:
           node-version: 12.x
       - run: npm ci
-      - run: npm run build:ci --if-present
+      - run: npm run test --if-present
       - run: npm test
   build:
     runs-on: ubuntu-latest
+    name: "Build"
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
