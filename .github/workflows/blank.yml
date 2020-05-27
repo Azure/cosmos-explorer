@@ -31,6 +31,7 @@ jobs:
       - run: npm run build:ci --if-present
   endtoend:
     name: "End to End Tests"
+    runs-on: windows-latest
     steps:
       - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: Use Node.js 12.x
