@@ -38,13 +38,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: End to End Tests
-        run: |
-          npm ci
-          npm start &
-          npm ci --prefix ./cypress
-          npm run test:ci --prefix ./cypress -- --spec ./integration/dataexplorer/ci-tests/createDatabase.spec.ts
-        shell: bash
+      - run: npm ci
+      - run: npm start &
+        env:
+          EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+      - run: npm ci --prefix ./cypress
+      - run: npm run test:ci --prefix ./cypress -- --spec ./integration/dataexplorer/ci-tests/createDatabase.spec.ts
         env:
           EMULATOR_ENDPOINT: https://0.0.0.0:8081/
           NODE_TLS_REJECT_UNAUTHORIZED: 0
