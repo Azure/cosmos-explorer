@@ -143,7 +143,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
 
   const onReset = (): void => {
     booleanFeatures.forEach(f => f.reactState[1](false));
-    stringFeatures.forEach(f => f.reactState[1](undefined));
+    stringFeatures.forEach(f => f.reactState[1](""));
   };
 
   const stackTokens = { childrenGap: 10 };
@@ -198,7 +198,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
               <Checkbox
                 key={f.key}
                 label={f.label}
-                defaultChecked={f.reactState[0]}
+                checked={f.reactState[0]}
                 onChange={f.onChange}
                 disabled={f.disabled && f.disabled()}
               />
@@ -209,7 +209,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
               <Checkbox
                 key={f.key}
                 label={f.label}
-                defaultChecked={f.reactState[0]}
+                checked={f.reactState[0]}
                 onChange={f.onChange}
                 disabled={f.disabled && f.disabled()}
               />

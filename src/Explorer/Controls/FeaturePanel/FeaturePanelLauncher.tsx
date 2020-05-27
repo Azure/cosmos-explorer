@@ -8,17 +8,11 @@ export const FeaturePanelLauncher: React.FunctionComponent = (): JSX.Element => 
   const [isModalOpen, showModal] = React.useState<boolean>(false);
 
   const onActivate = (event: React.MouseEvent<HTMLSpanElement>): void => {
+    if (!event.shiftKey || !event.ctrlKey) {
+      return;
+    }
     event.stopPropagation();
     showModal(true);
-  };
-
-  // Small square top-left
-  const style: React.CSSProperties = {
-    position: "absolute",
-    height: 40,
-    width: 45,
-    top: 20,
-    left: 0
   };
 
   const theme = getTheme();
@@ -65,7 +59,7 @@ export const FeaturePanelLauncher: React.FunctionComponent = (): JSX.Element => 
   const hideModal = (): void => showModal(false);
 
   return (
-    <span style={style} onDoubleClick={onActivate}>
+    <span className="activePatch" onDoubleClick={onActivate}>
       <Modal
         className="featurePanelLauncherContainer"
         titleAriaId="Features"
