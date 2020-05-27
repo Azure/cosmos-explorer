@@ -35,6 +35,7 @@ jobs:
     name: "End to End Tests"
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
