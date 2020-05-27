@@ -15,7 +15,6 @@ import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
-import "./Explorer/Controls/Tabs/TabComponent.less";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../externals/jquery.dataTables.min.css";

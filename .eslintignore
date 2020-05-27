@@ -343,7 +343,7 @@ src/Explorer/Controls/LibraryManagement/LibraryManageComponentAdapter.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookMetadataComponent.tsx
-src/Explorer/Controls/NotebookViewer/NotebookViewer.tsx
+src/NotebookViewer/NotebookViewer.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
 src/Explorer/Controls/QueriesGridReactComponent/QueriesGridComponent.tsx
 src/Explorer/Controls/QueriesGridReactComponent/QueriesGridComponentAdapter.tsx

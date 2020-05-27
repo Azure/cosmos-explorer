@@ -144,7 +144,7 @@ module.exports = function(env = {}, argv = {}) {
     }),
     new HtmlWebpackPlugin({
       filename: "notebookViewer.html",
-      template: "src/Explorer/Controls/NotebookViewer/notebookViewer.html",
+      template: "src/NotebookViewer/notebookViewer.html",
       chunks: ["notebookViewer"]
     }),
     new HtmlWebpackPlugin({
@@ -175,7 +175,7 @@ module.exports = function(env = {}, argv = {}) {
       hostedExplorer: "./src/HostedExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
-      notebookViewer: "./src/Explorer/Controls/NotebookViewer/NotebookViewer.tsx",
+      notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
       connectToGitHub: "./src/GitHub/GitHubConnector.ts"
     },

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GalleryCardComponent renders 1`] = `
+<Card
+  aria-label="Notebook Card"
+  onClick={[Function]}
+  tokens={
+    Object {
+      "childrenMargin": 12,
+    }
+  }
+>
+  <CardSection>
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#333333",
+            "fontWeight": 600,
+          },
+        }
+      }
+    >
+      mycard
+    </Text>
+  </CardSection>
+</Card>
+`;

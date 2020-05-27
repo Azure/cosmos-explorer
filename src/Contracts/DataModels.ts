@@ -739,6 +739,8 @@ export interface GitHubInfoJunoResponse {
   gitUrl: string;
   htmlUrl: string;
   metadata?: NotebookMetadata;
+  officialSamplesIndex?: number;
+  isLikedNotebook?: boolean;
 }
 
 export interface LikedNotebooksJunoResponse {

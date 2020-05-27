@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as DataModels from "../../Contracts/DataModels";
+import * as DataModels from "../../../../Contracts/DataModels";
 import { Card, ICardTokens, ICardSectionTokens } from "@uifabric/react-cards";
 import { Icon, Image, Persona, Text } from "office-ui-fabric-react";
 import {
@@ -10,7 +10,7 @@ import {
   subtleIconStyles
 } from "./CardStyleConstants";
 
-interface GalleryCardComponentProps {
+export interface GalleryCardComponentProps {
   name: string;
   url: string;
   notebookMetadata: DataModels.NotebookMetadata;

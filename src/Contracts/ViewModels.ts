@@ -229,7 +229,12 @@ export interface Explorer {
   importAndOpenFromGallery: (path: string, newName: string, content: any) => Promise<boolean>;
   openNotebookTerminal: (kind: TerminalKind) => void;
   openGallery: () => void;
-  openNotebookViewer: (notebookUrl: string, notebookMetadata: DataModels.NotebookMetadata) => void;
+  openNotebookViewer: (
+    notebookUrl: string,
+    notebookMetadata: DataModels.NotebookMetadata,
+    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
+    isLikedNotebook: boolean
+  ) => void;
   notebookWorkspaceManager: NotebookWorkspaceManager;
   sparkClusterManager: SparkClusterManager;
   notebookContentProvider: IContentProvider;
@@ -887,6 +892,8 @@ export interface NotebookViewerTabOptions extends TabOptions {
   notebookUrl: string;
   notebookName: string;
   notebookMetadata: DataModels.NotebookMetadata;
+  onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>;
+  isLikedNotebook: boolean;
 }
 
 export interface DocumentsTabOptions extends TabOptions {

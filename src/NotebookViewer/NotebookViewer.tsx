@@ -1,9 +1,9 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import { NotebookMetadata } from "../../../Contracts/DataModels";
-import { NotebookViewerComponent } from "./NotebookViewerComponent";
-import { SessionStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
+import { NotebookMetadata } from "../Contracts/DataModels";
+import { NotebookViewerComponent } from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
+import { SessionStorageUtility, StorageKey } from "../Shared/StorageUtility";
 
 const getNotebookUrl = (): string => {
   const regex: RegExp = new RegExp("[?&]notebookurl=([^&#]*)|&|#|$");
@@ -26,12 +26,14 @@ const onInit = async () => {
     SessionStorageUtility.removeEntry(StorageKey.NotebookName);
   }
 
+  const urlParams = new URLSearchParams(window.location.search);
+
   const notebookViewerComponent = (
     <NotebookViewerComponent
       notebookMetadata={notebookMetadata}
       notebookName={notebookName}
       notebookUrl={getNotebookUrl()}
-      container={null}
+      hideInputs={urlParams.get("hideinputs") === "true"}
     />
   );
   ReactDOM.render(notebookViewerComponent, document.getElementById("notebookContent"));
