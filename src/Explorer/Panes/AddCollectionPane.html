@@ -22,7 +22,7 @@
 </div>
 
 <script type="text/html" id="add-collection-inputs">
-                                                    <!-- Add collection header - Start -->
+                                                                <!-- Add collection header - Start -->
   <div class="firstdivbg headerline">
       <span id="containerTitle" data-bind="text: title"></span>
       <div class="closeImg" id="closeBtnAddCollection" role="button" aria-label="Close pane"
@@ -130,30 +130,30 @@
           <div data-bind="visible: databaseCreateNewShared() && databaseCreateNew()">
               <!-- 1 -->
               <throughput-input-autopilot-v3 params="{
-                                                                                                      testId: 'databaseThroughputValue',
-                                                                                                      value: throughputDatabase,
-                                                                                                      minimum: minThroughputRU,
-                                                                                                      maximum: maxThroughputRU,
-                                                                                                      isEnabled: databaseCreateNewShared,
-                                                                                                      label: sharedThroughputRangeText,
-                                                                                                      ariaLabel: sharedThroughputRangeText,
-                                                                                                      costsVisible: costsVisible,
-                                                                                                      requestUnitsUsageCost: requestUnitsUsageCost,
-                                                                                                      spendAckChecked: throughputSpendAck,
-                                                                                                      spendAckId: 'throughputSpendAck',
-                                                                                                      spendAckText: throughputSpendAckText,
-                                                                                                      spendAckVisible: throughputSpendAckVisible,
-                                                                                                      showAsMandatory: true,
-                                                                                                      infoBubbleText: ruToolTipText,
-                                                                                                      throughputAutoPilotRadioId: 'newContainer-databaseThroughput-autoPilotRadio',
-                                                                                                      throughputProvisionedRadioId: 'newContainer-databaseThroughput-manualRadio',
-                                                                                                      throughputModeRadioName: 'sharedThroughputModeRadio',
-                                                                                                      isAutoPilotSelected: isSharedAutoPilotSelected,
-                                                                                                      maxAutoPilotThroughputSet: sharedAutoPilotThroughput,
-                                                                                                      autoPilotUsageCost: autoPilotUsageCost,
-                                                                                                      canExceedMaximumValue: canExceedMaximumValue,
-                                                                                                      showAutoPilot: !isFreeTierAccount()
-                                                                                                  }">
+                                                                                                                  testId: 'databaseThroughputValue',
+                                                                                                                  value: throughputDatabase,
+                                                                                                                  minimum: minThroughputRU,
+                                                                                                                  maximum: maxThroughputRU,
+                                                                                                                  isEnabled: databaseCreateNewShared() && databaseCreateNew(),
+                                                                                                                  label: sharedThroughputRangeText,
+                                                                                                                  ariaLabel: sharedThroughputRangeText,
+                                                                                                                  costsVisible: costsVisible,
+                                                                                                                  requestUnitsUsageCost: requestUnitsUsageCost,
+                                                                                                                  spendAckChecked: throughputSpendAck,
+                                                                                                                  spendAckId: 'throughputSpendAck',
+                                                                                                                  spendAckText: throughputSpendAckText,
+                                                                                                                  spendAckVisible: throughputSpendAckVisible,
+                                                                                                                  showAsMandatory: true,
+                                                                                                                  infoBubbleText: ruToolTipText,
+                                                                                                                  throughputAutoPilotRadioId: 'newContainer-databaseThroughput-autoPilotRadio',
+                                                                                                                  throughputProvisionedRadioId: 'newContainer-databaseThroughput-manualRadio',
+                                                                                                                  throughputModeRadioName: 'sharedThroughputModeRadio',
+                                                                                                                  isAutoPilotSelected: isSharedAutoPilotSelected,
+                                                                                                                  maxAutoPilotThroughputSet: sharedAutoPilotThroughput,
+                                                                                                                  autoPilotUsageCost: autoPilotUsageCost,
+                                                                                                                  canExceedMaximumValue: canExceedMaximumValue,
+                                                                                                                  showAutoPilot: !isFreeTierAccount()
+                                                                                                              }">
               </throughput-input-autopilot-v3>
           </div>
           <!-- /ko -->
@@ -161,30 +161,30 @@
           <div data-bind="visible: databaseCreateNewShared() && databaseCreateNew()">
               <!-- 1 -->
               <throughput-input params="{
-                                                                                                    testId: 'databaseThroughputValue',
-                                                                                                    value: throughputDatabase,
-                                                                                                    minimum: minThroughputRU,
-                                                                                                    maximum: maxThroughputRU,
-                                                                                                    isEnabled: databaseCreateNewShared,
-                                                                                                    label: sharedThroughputRangeText,
-                                                                                                    ariaLabel: sharedThroughputRangeText,
-                                                                                                    costsVisible: costsVisible,
-                                                                                                    requestUnitsUsageCost: requestUnitsUsageCost,
-                                                                                                    spendAckChecked: throughputSpendAck,
-                                                                                                    spendAckId: 'throughputSpendAck',
-                                                                                                    spendAckText: throughputSpendAckText,
-                                                                                                    spendAckVisible: throughputSpendAckVisible,
-                                                                                                    showAsMandatory: true,
-                                                                                                    infoBubbleText: ruToolTipText,
-                                                                                                    throughputAutoPilotRadioId: 'newContainer-databaseThroughput-autoPilotRadio',
-                                                                                                    throughputProvisionedRadioId: 'newContainer-databaseThroughput-manualRadio',
-                                                                                                    throughputModeRadioName: 'sharedThroughputModeRadio',
-                                                                                                    isAutoPilotSelected: isSharedAutoPilotSelected,
-                                                                                                    autoPilotUsageCost: autoPilotUsageCost,
-                                                                                                    canExceedMaximumValue: canExceedMaximumValue,
-                                                                                                    autoPilotTiersList: sharedAutoPilotTiersList,
-                                                                                                    selectedAutoPilotTier: selectedSharedAutoPilotTier
-                                                                                                }">
+                                                                                                                testId: 'databaseThroughputValue',
+                                                                                                                value: throughputDatabase,
+                                                                                                                minimum: minThroughputRU,
+                                                                                                                maximum: maxThroughputRU,
+                                                                                                                isEnabled: databaseCreateNewShared() && databaseCreateNew(),
+                                                                                                                label: sharedThroughputRangeText,
+                                                                                                                ariaLabel: sharedThroughputRangeText,
+                                                                                                                costsVisible: costsVisible,
+                                                                                                                requestUnitsUsageCost: requestUnitsUsageCost,
+                                                                                                                spendAckChecked: throughputSpendAck,
+                                                                                                                spendAckId: 'throughputSpendAck',
+                                                                                                                spendAckText: throughputSpendAckText,
+                                                                                                                spendAckVisible: throughputSpendAckVisible,
+                                                                                                                showAsMandatory: true,
+                                                                                                                infoBubbleText: ruToolTipText,
+                                                                                                                throughputAutoPilotRadioId: 'newContainer-databaseThroughput-autoPilotRadio',
+                                                                                                                throughputProvisionedRadioId: 'newContainer-databaseThroughput-manualRadio',
+                                                                                                                throughputModeRadioName: 'sharedThroughputModeRadio',
+                                                                                                                isAutoPilotSelected: isSharedAutoPilotSelected,
+                                                                                                                autoPilotUsageCost: autoPilotUsageCost,
+                                                                                                                canExceedMaximumValue: canExceedMaximumValue,
+                                                                                                                autoPilotTiersList: sharedAutoPilotTiersList,
+                                                                                                                selectedAutoPilotTier: selectedSharedAutoPilotTier
+                                                                                                            }">
               </throughput-input>
           </div>
           <!-- /ko -->
@@ -210,17 +210,17 @@
       </div>
 
       <!-- <p class="seconddivpadding" data-bind="visible:(container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) && !databaseHasSharedOffer()">
-                                                                                              Where did 'fixed' containers go?
-                                                                                              <span class="infoTooltip" role="tooltip" tabindex="0">
-                                                                                                  <img class="infoImg" src="/info-bubble.svg" alt="More information">
-                                                                                                  <span class="tooltiptext noFixedCollectionsTooltipWidth">
-                                                                                                      We lowered the minimum throughput for partitioned containers to 400 RU/s, removing the only drawback partitioned containers had. <br/><br/>
-                                                                                                      We are planning to deprecate ability to create non-partitioned containers, as they do not allow you to scale elastically.
-                                                                                                      If for some reason you still need a container without partition key, you can use our SDKs to create one. <br/><br/>
-                                                                                                      Please <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Hosted%20Data%20Explorer%20Feedback">contact us</a> if you have questions or concerns.
-                                                                                                  </span>
-                                                                                              </span>
-                                                                                          </p> -->
+                                                                                                          Where did 'fixed' containers go?
+                                                                                                          <span class="infoTooltip" role="tooltip" tabindex="0">
+                                                                                                              <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                                                                                                              <span class="tooltiptext noFixedCollectionsTooltipWidth">
+                                                                                                                  We lowered the minimum throughput for partitioned containers to 400 RU/s, removing the only drawback partitioned containers had. <br/><br/>
+                                                                                                                  We are planning to deprecate ability to create non-partitioned containers, as they do not allow you to scale elastically.
+                                                                                                                  If for some reason you still need a container without partition key, you can use our SDKs to create one. <br/><br/>
+                                                                                                                  Please <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Hosted%20Data%20Explorer%20Feedback">contact us</a> if you have questions or concerns.
+                                                                                                              </span>
+                                                                                                          </span>
+                                                                                                      </p> -->
 
       <!-- Indexing For Shared Throughput - start -->
       <div class="seconddivpadding"
@@ -289,21 +289,22 @@
           <!-- Fixed Button Content - Start -->
           <div class="tabcontent" data-bind="visible: isFixedStorageSelected() && !databaseHasSharedOffer()">
               <!-- 2 -->
+              <!-- note: this is used when creating a fixed collection without shared throughput. only manual throughput is available. -->
               <throughput-input params="{
-                                                                                                  testId: 'fixedThroughputValue',
-                                                                                                  value: throughputSinglePartition,
-                                                                                                  minimum: minThroughputRU,
-                                                                                                  maximum: maxThroughputRU,
-                                                                                                  isEnabled: isFixedStorageSelected() && !databaseHasSharedOffer(),
-                                                                                                  label: throughputRangeText,
-                                                                                                  ariaLabel: throughputRangeText,
-                                                                                                  costsVisible: costsVisible,
-                                                                                                  requestUnitsUsageCost: requestUnitsUsageCost
-                                                                                                  showAsMandatory: true,
-                                                                                                  isFixed: true,
-                                                                                                  infoBubbleText: ruToolTipText,
-                                                                                                  canExceedMaximumValue: canExceedMaximumValue
-                                                                                              }">
+                                                                                                              testId: 'fixedThroughputValue',
+                                                                                                              value: throughputSinglePartition,
+                                                                                                              minimum: minThroughputRU,
+                                                                                                              maximum: maxThroughputRU,
+                                                                                                              isEnabled: isFixedStorageSelected() && !databaseHasSharedOffer(),
+                                                                                                              label: throughputRangeText,
+                                                                                                              ariaLabel: throughputRangeText,
+                                                                                                              costsVisible: costsVisible,
+                                                                                                              requestUnitsUsageCost: requestUnitsUsageCost
+                                                                                                              showAsMandatory: true,
+                                                                                                              isFixed: true,
+                                                                                                              infoBubbleText: ruToolTipText,
+                                                                                                              canExceedMaximumValue: canExceedMaximumValue
+                                                                                                          }">
               </throughput-input>
               <div data-bind="visible: rupmVisible">
                   <div class="tabs">
@@ -389,13 +390,13 @@
                   </p>
                   <input type="text" data-test="addCollection-partitionKeyValue" aria-required="true" size="40"
                       class="textfontclr collid" data-bind="textInput: partitionKey,
-                                    attr: {
-                                        placeholder: partitionKeyPlaceholder,
-                                        required: partitionKeyVisible(),
-                                        'aria-label': partitionKeyName,
-                                        pattern: partitionKeyPattern,
-                                        title: partitionKeyTitle
-                                    }">
+                                                attr: {
+                                                    placeholder: partitionKeyPlaceholder,
+                                                    required: partitionKeyVisible(),
+                                                    'aria-label': partitionKeyName,
+                                                    pattern: partitionKeyPattern,
+                                                    title: partitionKeyTitle
+                                                }">
               </div>
               <!-- large parition key - start -->
               <div class="largePartitionKey" aria-label="Large Partition Key" data-bind="visible: partitionKeyVisible">
@@ -440,30 +441,30 @@
               <div data-bind="visible: displayCollectionThroughput" data-test="addCollection-displayCollectionThroughput">
                   <!-- 3 -->
                   <throughput-input-autopilot-v3 params="{
-                                  testId: 'collectionThroughputValue',
-                                  value: throughputMultiPartition,
-                                  minimum: minThroughputRU,
-                                  maximum: maxThroughputRU,
-                                  isEnabled: !databaseHasSharedOffer() || collectionWithThroughputInShared(),
-                                  label: throughputRangeText,
-                                  ariaLabel: throughputRangeText,
-                                  costsVisible: costsVisible,
-                                  requestUnitsUsageCost: dedicatedRequestUnitsUsageCost,
-                                  spendAckChecked: throughputSpendAck,
-                                  spendAckId: 'throughputSpendAckCollection',
-                                  spendAckText: throughputSpendAckText,
-                                  spendAckVisible: throughputSpendAckVisible,
-                                  showAsMandatory: true,
-                                  infoBubbleText: ruToolTipText,
-                                  throughputAutoPilotRadioId: 'newContainer-containerThroughput-autoPilotRadio',
-                                  throughputProvisionedRadioId: 'newContainer-containerThroughput-manualRadio',
-                                  throughputModeRadioName: 'throughputModeRadioName',
-                                  isAutoPilotSelected: isAutoPilotSelected,
-                                  maxAutoPilotThroughputSet: autoPilotThroughput,
-                                  autoPilotUsageCost: autoPilotUsageCost,
-                                  canExceedMaximumValue: canExceedMaximumValue,
-                                  showAutoPilot: !isFixedStorageSelected()
-                                }">
+                                              testId: 'collectionThroughputValue',
+                                              value: throughputMultiPartition,
+                                              minimum: minThroughputRU,
+                                              maximum: maxThroughputRU,
+                                              isEnabled: displayCollectionThroughput,
+                                              label: throughputRangeText,
+                                              ariaLabel: throughputRangeText,
+                                              costsVisible: costsVisible,
+                                              requestUnitsUsageCost: dedicatedRequestUnitsUsageCost,
+                                              spendAckChecked: throughputSpendAck,
+                                              spendAckId: 'throughputSpendAckCollection',
+                                              spendAckText: throughputSpendAckText,
+                                              spendAckVisible: throughputSpendAckVisible,
+                                              showAsMandatory: true,
+                                              infoBubbleText: ruToolTipText,
+                                              throughputAutoPilotRadioId: 'newContainer-containerThroughput-autoPilotRadio',
+                                              throughputProvisionedRadioId: 'newContainer-containerThroughput-manualRadio',
+                                              throughputModeRadioName: 'throughputModeRadioName',
+                                              isAutoPilotSelected: isAutoPilotSelected,
+                                              maxAutoPilotThroughputSet: autoPilotThroughput,
+                                              autoPilotUsageCost: autoPilotUsageCost,
+                                              canExceedMaximumValue: canExceedMaximumValue,
+                                              showAutoPilot: !isFixedStorageSelected()
+                                            }">
                   </throughput-input-autopilot-v3>
               </div>
               <!-- /ko -->
@@ -471,31 +472,31 @@
               <div data-bind="visible: displayCollectionThroughput" data-test="addCollection-displayCollectionThroughput">
                   <!-- 3 -->
                   <throughput-input params="{
-                                  testId: 'collectionThroughputValue',
-                                  value: throughputMultiPartition,
-                                  minimum: minThroughputRU,
-                                  maximum: maxThroughputRU,
-                                  isEnabled: !databaseHasSharedOffer() || collectionWithThroughputInShared(),
-                                  label: throughputRangeText,
-                                  ariaLabel: throughputRangeText,
-                                  costsVisible: costsVisible,
-                                  requestUnitsUsageCost: dedicatedRequestUnitsUsageCost,
-                                  spendAckChecked: throughputSpendAck,
-                                  spendAckId: 'throughputSpendAckCollection',
-                                  spendAckText: throughputSpendAckText,
-                                  spendAckVisible: throughputSpendAckVisible,
-                                  showAsMandatory: true,
-                                  infoBubbleText: ruToolTipText,
-                                  throughputAutoPilotRadioId: 'newContainer-containerThroughput-autoPilotRadio',
-                                  throughputProvisionedRadioId: 'newContainer-containerThroughput-manualRadio',
-                                  throughputModeRadioName: 'throughputModeRadioName',
-                                  isAutoPilotSelected: isAutoPilotSelected,
-                                  autoPilotUsageCost: autoPilotUsageCost,
-                                  canExceedMaximumValue: canExceedMaximumValue,
-                                  autoPilotTiersList: autoPilotTiersList,
-                                  selectedAutoPilotTier: selectedAutoPilotTier,
-                                  showAutoPilot: !isFixedStorageSelected()
-                                  }">
+                                              testId: 'collectionThroughputValue',
+                                              value: throughputMultiPartition,
+                                              minimum: minThroughputRU,
+                                              maximum: maxThroughputRU,
+                                              isEnabled: displayCollectionThroughput,
+                                              label: throughputRangeText,
+                                              ariaLabel: throughputRangeText,
+                                              costsVisible: costsVisible,
+                                              requestUnitsUsageCost: dedicatedRequestUnitsUsageCost,
+                                              spendAckChecked: throughputSpendAck,
+                                              spendAckId: 'throughputSpendAckCollection',
+                                              spendAckText: throughputSpendAckText,
+                                              spendAckVisible: throughputSpendAckVisible,
+                                              showAsMandatory: true,
+                                              infoBubbleText: ruToolTipText,
+                                              throughputAutoPilotRadioId: 'newContainer-containerThroughput-autoPilotRadio',
+                                              throughputProvisionedRadioId: 'newContainer-containerThroughput-manualRadio',
+                                              throughputModeRadioName: 'throughputModeRadioName',
+                                              isAutoPilotSelected: isAutoPilotSelected,
+                                              autoPilotUsageCost: autoPilotUsageCost,
+                                              canExceedMaximumValue: canExceedMaximumValue,
+                                              autoPilotTiersList: autoPilotTiersList,
+                                              selectedAutoPilotTier: selectedAutoPilotTier,
+                                              showAutoPilot: !isFixedStorageSelected()
+                                              }">
                   </throughput-input>
               </div>
               <!-- /ko -->
@@ -521,24 +522,24 @@
                   <div class="paragraph">
                       <input class="enableAnalyticalStorageRadio" id="enableAnalyticalStorageRadioOn"
                           name="analyticalStore" type="radio" role="radio" tabindex="0" data-bind="
-                                              disable: showEnableSynapseLink,
-                                              checked: isAnalyticalStorageOn,
-                                              checkedValue: true,
-                                              attr: {
-                                                  'aria-checked': isAnalyticalStorageOn() ? 'true' : 'false'
-                                              }" />
+                                                          disable: showEnableSynapseLink,
+                                                          checked: isAnalyticalStorageOn,
+                                                          checkedValue: true,
+                                                          attr: {
+                                                              'aria-checked': isAnalyticalStorageOn() ? 'true' : 'false'
+                                                          }" />
                       <span for="enableAnalyticalStorageRadioOn" data-bind="disable: showEnableSynapseLink">
                           On
                       </span>
 
                       <input class="enableAnalyticalStorageRadio" id="enableAnalyticalStorageRadioOff"
                           name="analyticalStore" type="radio" role="radio" tabindex="0" data-bind="
-                                              disable: showEnableSynapseLink,
-                                              checked: isAnalyticalStorageOn,
-                                              checkedValue: false,
-                                              attr: {
-                                                  'aria-checked': isAnalyticalStorageOn() ? 'false' : 'true'
-                                              }" />
+                                                          disable: showEnableSynapseLink,
+                                                          checked: isAnalyticalStorageOn,
+                                                          checkedValue: false,
+                                                          attr: {
+                                                              'aria-checked': isAnalyticalStorageOn() ? 'false' : 'true'
+                                                          }" />
                       <span for="enableAnalyticalStorageRadioOff" data-bind="disable: showEnableSynapseLink">
                           Off
                       </span>
@@ -561,13 +562,13 @@
 
                   <div class="paragraph" data-bind="visible: showEnableSynapseLink">
                       <button class="button" type="button" data-bind="
-                                              click: onEnableSynapseLinkButtonClicked,
-                                              disable: isSynapseLinkUpdating,
-                                              css: {
-                                                  enabled: !isSynapseLinkUpdating(),
-                                                  disabled: isSynapseLinkUpdating
-                                              }
-                                          ">Enable</button>
+                                                          click: onEnableSynapseLinkButtonClicked,
+                                                          disable: isSynapseLinkUpdating,
+                                                          css: {
+                                                              enabled: !isSynapseLinkUpdating(),
+                                                              disabled: isSynapseLinkUpdating
+                                                          }
+                                                      ">Enable</button>
                   </div>
               </div>
               <!-- Enable analytical storage - end -->
