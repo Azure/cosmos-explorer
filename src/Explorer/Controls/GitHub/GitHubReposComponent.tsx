@@ -1,9 +1,9 @@
-import { DefaultButton, IButtonProps, PrimaryButton } from "office-ui-fabric-react";
+import { DefaultButton, IButtonProps, Link, PrimaryButton } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGitHubBranch, IGitHubRepo } from "../../../GitHub/GitHubClient";
 import { AddRepoComponent, AddRepoComponentProps } from "./AddRepoComponent";
 import { AuthorizeAccessComponent, AuthorizeAccessComponentProps } from "./AuthorizeAccessComponent";
-import { ChildrenMargin, ButtonsFooterStyle, ContentFooterStyle } from "./GitHubStyleConstants";
+import { ButtonsFooterStyle, ChildrenMargin, ContentFooterStyle } from "./GitHubStyleConstants";
 import { ReposListComponent, ReposListComponentProps } from "./ReposListComponent";
 
 export interface GitHubReposComponentProps {
@@ -45,6 +45,9 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
     ) : (
       <>
         <p>{GitHubReposComponent.ManageGitHubRepoDescription}</p>
+        <Link style={{ marginTop: ChildrenMargin }} onClick={this.props.resetConnection}>
+          {GitHubReposComponent.ManageGitHubRepoResetConnection}
+        </Link>
         <ReposListComponent {...this.props.reposListProps} />
       </>
     );
