@@ -1,3 +1,6 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
 name: CI
 on:
   push:
@@ -28,14 +31,17 @@ jobs:
       - run: npm run build:ci --if-present
   endtoend:
     name: "End to End Tests"
-    runs-on: windows-latest
     steps:
       - uses: southpolesteve/cosmos-emulator-github-action@v1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
       - name: End to End Tests
         run: |
           npm ci
           npm start &
-          npm ci --prefix .//cypress
+          npm ci --prefix ./cypress
           npm run test:ci --prefix ./cypress -- --spec ./integration/dataexplorer/ci-tests/createDatabase.spec.ts
         shell: bash
         env:
