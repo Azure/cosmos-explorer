@@ -18,8 +18,7 @@ jobs:
         with:
           node-version: 12.x
       - run: npm ci
-      - run: npm run test --if-present
-      - run: npm test
+      - run: npm run test
   build:
     runs-on: ubuntu-latest
     name: "Build"
@@ -30,7 +29,7 @@ jobs:
         with:
           node-version: 12.x
       - run: npm ci
-      - run: npm run build:ci --if-present
+      - run: npm run build:ci
   endtoend:
     name: "End to End Tests"
     runs-on: windows-latest
