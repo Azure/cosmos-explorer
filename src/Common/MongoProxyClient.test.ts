@@ -259,8 +259,7 @@ describe("MongoProxyClient", () => {
         sid: "a2",
         rg: "c1",
         dba: "main",
-        is: false,
-        isFixedCollectionWithSharedThroughputBeingCreated: true
+        is: false
       };
       _createMongoCollectionWithARM("management.azure.com", properties, { "x-ms-cosmos-offer-autopilot-tier": "1" });
       expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
@@ -268,7 +267,7 @@ describe("MongoProxyClient", () => {
         "2020-04-01",
         {
           properties: {
-            options: { "x-ms-cosmos-offer-autopilot-tier": "1", InsertSystemPartitionKey: "true" },
+            options: { "x-ms-cosmos-offer-autopilot-tier": "1" },
             resource: { id: "abc-collection" }
           }
         }
@@ -286,8 +285,7 @@ describe("MongoProxyClient", () => {
         rg: "c1",
         dba: "main",
         is: false,
-        offerThroughput: 400,
-        isFixedCollectionWithSharedThroughputBeingCreated: true
+        offerThroughput: 400
       };
       _createMongoCollectionWithARM("management.azure.com", properties, undefined);
       expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
@@ -295,7 +293,7 @@ describe("MongoProxyClient", () => {
         "2020-04-01",
         {
           properties: {
-            options: { throughput: "400", InsertSystemPartitionKey: "true" },
+            options: { throughput: "400" },
             resource: { id: "abc-collection" }
           }
         }

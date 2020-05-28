@@ -356,7 +356,6 @@ export function createMongoCollectionWithARM(
   armEndpoint: string,
   databaseId: string,
   analyticalStorageTtl: number,
-  isFixedCollectionWithSharedThroughputBeingCreated: boolean,
   collectionId: string,
   offerThroughput: number,
   shardKey: string,
@@ -380,8 +379,7 @@ export function createMongoCollectionWithARM(
     sid: CosmosClient.subscriptionId(),
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
-    analyticalStorageTtl,
-    isFixedCollectionWithSharedThroughputBeingCreated
+    analyticalStorageTtl
   };
 
   if (createDatabase) {
@@ -451,11 +449,6 @@ export async function _createMongoCollectionWithARM(
       rpPayloadToCreateCollection.properties.options["throughput"] =
         params.offerThroughput && params.offerThroughput.toString();
     }
-  }
-
-  if (params.isFixedCollectionWithSharedThroughputBeingCreated) {
-    rpPayloadToCreateCollection.properties.options[Constants.HttpHeaders.mongoFixedCollectionWithSharedThroughput] =
-      "true";
   }
 
   if (params.analyticalStorageTtl) {

@@ -547,7 +547,6 @@ export interface MongoParameters extends RpParameters {
   autoPilotTier?: string;
   autoPilotThroughput?: string;
   analyticalStorageTtl?: number;
-  isFixedCollectionWithSharedThroughputBeingCreated?: boolean;
 }
 
 export interface GraphParameters extends RpParameters {
