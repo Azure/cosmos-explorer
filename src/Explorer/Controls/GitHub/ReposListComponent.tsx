@@ -18,7 +18,7 @@ import {
   Text
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { IGitHubBranch } from "../../../GitHub/GitHubClient";
+import { IGitHubBranch, IGitHubPageInfo } from "../../../GitHub/GitHubClient";
 import { GitHubUtils } from "../../../Utils/GitHubUtils";
 import { RepoListItem } from "./GitHubReposComponent";
 import {
@@ -41,6 +41,7 @@ export interface ReposListComponentProps {
 
 export interface BranchesProps {
   branches: IGitHubBranch[];
+  lastPageInfo?: IGitHubPageInfo;
   hasMore: boolean;
   isLoading: boolean;
   loadMore: () => void;
@@ -139,7 +140,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     }
 
     const checkboxProps: ICheckboxProps = {
-      ...ReposListComponent.getCheckboxPropsForLabel(GitHubUtils.toRepoFullName(item.repo.owner.login, item.repo.name)),
+      ...ReposListComponent.getCheckboxPropsForLabel(GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)),
       styles: ReposListCheckboxStyles,
       defaultChecked: true,
       onChange: () => this.props.unpinRepo(item)
@@ -153,7 +154,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
       return <></>;
     }
 
-    const branchesProps = this.props.branchesProps[GitHubUtils.toRepoFullName(item.repo.owner.login, item.repo.name)];
+    const branchesProps = this.props.branchesProps[GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)];
     const options: IDropdownOption[] = branchesProps.branches.map(branch => ({
       key: branch.name,
       text: branch.name,
@@ -222,7 +223,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
 
   private onRenderPinnedReposBranchesDropdownOption(option: IDropdownOption): JSX.Element {
     const item: RepoListItem = option.data;
-    const branchesProps = this.props.branchesProps[GitHubUtils.toRepoFullName(item.repo.owner.login, item.repo.name)];
+    const branchesProps = this.props.branchesProps[GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)];
 
     if (option.index === ReposListComponent.FooterIndex) {
       const linkProps: ILinkProps = {
@@ -267,7 +268,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     }
 
     const checkboxProps: ICheckboxProps = {
-      ...ReposListComponent.getCheckboxPropsForLabel(GitHubUtils.toRepoFullName(item.repo.owner.login, item.repo.name)),
+      ...ReposListComponent.getCheckboxPropsForLabel(GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)),
       styles: ReposListCheckboxStyles,
       onChange: () => {
         const repoListItem = { ...item };

@@ -17,25 +17,6 @@ export const closeNotebook = (payload: { contentRef: ContentRef }): CloseNoteboo
   };
 };
 
-export const UPDATE_LAST_MODIFIED = "UPDATE_LAST_MODIFIED";
-export interface UpdateLastModifiedAction {
-  type: "UPDATE_LAST_MODIFIED";
-  payload: {
-    contentRef: ContentRef;
-    lastModified: string;
-  };
-}
-
-export const updateLastModified = (payload: {
-  contentRef: ContentRef;
-  lastModified: string;
-}): UpdateLastModifiedAction => {
-  return {
-    type: UPDATE_LAST_MODIFIED,
-    payload
-  };
-};
-
 export const EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT = "EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT";
 export interface ExecuteFocusedCellAndFocusNextAction {
   type: "EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT";

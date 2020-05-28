@@ -51,11 +51,6 @@ export const coreReducer = (state: CoreRecord, action: Action) => {
         .setIn(path.concat("displayName"), kernelspecs.displayName)
         .setIn(path.concat("language"), kernelspecs.language);
     }
-    case cdbActions.UPDATE_LAST_MODIFIED: {
-      typedAction = action as cdbActions.UpdateLastModifiedAction;
-      const path = ["entities", "contents", "byRef", typedAction.payload.contentRef, "lastSaved"];
-      return state.setIn(path, typedAction.payload.lastModified);
-    }
     default:
       return nteractReducers.core(state as any, action as any);
   }

@@ -54,7 +54,8 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         styles: {
           title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
           subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE }
-        }
+        },
+        showCloseButton: false
       },
       modalProps: { isBlocking: this.props.isModal },
       minWidth: DIALOG_MIN_WIDTH,

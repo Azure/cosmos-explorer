@@ -1,4 +1,4 @@
-import { empty, merge, of, timer, interval, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
+import { empty, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
 import { ActionsObservable, StateObservable } from "redux-observable";
 import { ofType } from "redux-observable";
@@ -10,7 +10,6 @@ import {
   map,
   switchMap,
   take,
-  distinctUntilChanged,
   filter,
   catchError,
   first,
@@ -21,7 +20,6 @@ import {
   AppState,
   ServerConfig as JupyterServerConfig,
   JupyterHostRecordProps,
-  JupyterHostRecord,
   RemoteKernelProps,
   castToSessionId,
   createKernelRef,
@@ -29,8 +27,7 @@ import {
   ContentRef,
   KernelInfo,
   actions,
-  selectors,
-  IContentProvider
+  selectors
 } from "@nteract/core";
 import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
 import { sessions, kernels } from "rx-jupyter";
@@ -753,69 +750,6 @@ export const cleanKernelOnConnectionLostEpic = (
 };
 
 /**
- * Workaround for issue: https://github.com/nteract/nteract/issues/4583
- * We reajust the property
- * @param action$
- * @param state$
- */
-const adjustLastModifiedOnSaveEpic = (
-  action$: ActionsObservable<actions.SaveFulfilled>,
-  state$: StateObservable<AppState>,
-  dependencies: { contentProvider: IContentProvider }
-): Observable<{} | CdbActions.UpdateLastModifiedAction> => {
-  return action$.pipe(
-    ofType(actions.SAVE_FULFILLED),
-    mergeMap(action => {
-      const pollDelayMs = 500;
-      const nbAttempts = 4;
-
-      // Retry updating last modified
-      const currentHost = selectors.currentHost(state$.value);
-      const serverConfig = selectors.serverConfig(currentHost as JupyterHostRecord);
-      const filepath = selectors.filepath(state$.value, { contentRef: action.payload.contentRef });
-      const content = selectors.content(state$.value, { contentRef: action.payload.contentRef });
-      const lastSaved = (content.lastSaved as any) as string;
-      const contentProvider = dependencies.contentProvider;
-
-      // Query until value is stable
-      return interval(pollDelayMs)
-        .pipe(take(nbAttempts))
-        .pipe(
-          mergeMap(x =>
-            contentProvider.get(serverConfig, filepath, { content: 0 }).pipe(
-              map(xhr => {
-                if (xhr.status !== 200 || typeof xhr.response === "string") {
-                  return undefined;
-                }
-                const model = xhr.response;
-                const lastModified = model.last_modified;
-                if (lastModified === lastSaved) {
-                  return undefined;
-                }
-                // Return last modified
-                return lastModified;
-              })
-            )
-          ),
-          distinctUntilChanged(),
-          mergeMap(lastModified => {
-            if (!lastModified) {
-              return empty();
-            }
-
-            return of(
-              CdbActions.updateLastModified({
-                contentRef: action.payload.contentRef,
-                lastModified
-              })
-            );
-          })
-        );
-    })
-  );
-};
-
-/**
  * Execute focused cell and focus next cell
  * @param action$
  * @param state$
@@ -917,7 +851,6 @@ export const allEpics = [
   acquireKernelInfoEpic,
   handleKernelConnectionLostEpic,
   cleanKernelOnConnectionLostEpic,
-  adjustLastModifiedOnSaveEpic,
   executeFocusedCellAndFocusNextEpic,
   closeUnsupportedMimetypesEpic,
   closeContentFailedToFetchEpic,

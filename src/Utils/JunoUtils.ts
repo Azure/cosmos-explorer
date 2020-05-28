@@ -54,7 +54,7 @@ export class JunoUtils {
 
   public static toPinnedRepo(item: RepoListItem): IPinnedRepo {
     return {
-      owner: item.repo.owner.login,
+      owner: item.repo.owner,
       name: item.repo.name,
       private: item.repo.private,
       branches: item.branches.map(element => ({ name: element.name }))
@@ -63,9 +63,7 @@ export class JunoUtils {
 
   public static toGitHubRepo(pinnedRepo: IPinnedRepo): IGitHubRepo {
     return {
-      owner: {
-        login: pinnedRepo.owner
-      },
+      owner: pinnedRepo.owner,
       name: pinnedRepo.name,
       private: pinnedRepo.private
     };

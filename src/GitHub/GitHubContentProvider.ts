@@ -5,7 +5,7 @@ import { AjaxResponse } from "rxjs/ajax";
 import { HttpStatusCodes } from "../Common/Constants";
 import { Logger } from "../Common/Logger";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
-import { GitHubClient, IGitHubFile, IGitHubResponse, IGitHubCommit } from "./GitHubClient";
+import { GitHubClient, IGitHubFile, IGitHubResponse, IGitHubCommit, IGitHubBranch } from "./GitHubClient";
 import { GitHubUtils } from "../Utils/GitHubUtils";
 import UrlUtility from "../Common/UrlUtility";
 
@@ -54,23 +54,14 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError("Failed to get content", content.status);
           }
 
-          const contentInfo = GitHubUtils.fromContentUri(uri);
-          const commitResponse = await this.params.gitHubClient.getCommitsAsync(
-            contentInfo.owner,
-            contentInfo.repo,
-            contentInfo.branch,
-            contentInfo.path,
-            1,
-            1
-          );
-          if (commitResponse.status !== HttpStatusCodes.OK) {
-            throw new GitHubContentProviderError("Failed to get commit", commitResponse.status);
+          if (!Array.isArray(content.data) && !content.data.content && params.content !== 0) {
+            const file = content.data;
+            file.content = (
+              await this.params.gitHubClient.getBlobAsync(file.repo.owner, file.repo.name, file.sha)
+            ).data;
           }
 
-          return this.createSuccessAjaxResponse(
-            HttpStatusCodes.OK,
-            this.createContentModel(uri, content.data, commitResponse.data[0], params)
-          );
+          return this.createSuccessAjaxResponse(HttpStatusCodes.OK, this.createContentModel(uri, content.data, params));
         } catch (error) {
           Logger.logError(error, "GitHubContentProvider/get", error.errno);
           return this.createErrorAjaxResponse(error);
@@ -90,26 +81,26 @@ export class GitHubContentProvider implements IContentProvider {
           const gitHubFile = content.data as IGitHubFile;
           const commitMsg = await this.validateContentAndGetCommitMsg(content, "Rename", "Rename");
           const newUri = model.path;
+          const newPath = GitHubUtils.fromContentUri(newUri).path;
           const response = await this.params.gitHubClient.renameFileAsync(
-            gitHubFile.repo.owner.login,
+            gitHubFile.repo.owner,
             gitHubFile.repo.name,
             gitHubFile.branch.name,
             commitMsg,
             gitHubFile.path,
-            GitHubUtils.fromContentUri(newUri).path
+            newPath
           );
           if (response.status !== HttpStatusCodes.OK) {
             throw new GitHubContentProviderError("Failed to rename", response.status);
           }
 
-          const updatedContentResponse = await this.getContent(model.path);
-          if (updatedContentResponse.status !== HttpStatusCodes.OK) {
-            throw new GitHubContentProviderError("Failed to get content after renaming", updatedContentResponse.status);
-          }
+          gitHubFile.commit = response.data;
+          gitHubFile.path = newPath;
+          gitHubFile.name = NotebookUtil.getName(gitHubFile.path);
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.OK,
-            this.createContentModel(newUri, updatedContentResponse.data, response.data, { content: 0 })
+            this.createContentModel(newUri, gitHubFile, { content: 0 })
           );
         } catch (error) {
           Logger.logError(error, "GitHubContentProvider/update", error.errno);
@@ -169,14 +160,24 @@ export class GitHubContentProvider implements IContentProvider {
           }
 
           const newUri = GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, path);
-          const newContentResponse = await this.getContent(newUri);
-          if (newContentResponse.status !== HttpStatusCodes.OK) {
-            throw new GitHubContentProviderError("Failed to get content after creating", newContentResponse.status);
-          }
+          const newGitHubFile: IGitHubFile = {
+            type: "blob",
+            name: NotebookUtil.getName(newUri),
+            path,
+            repo: {
+              owner: contentInfo.owner,
+              name: contentInfo.repo,
+              private: undefined
+            },
+            branch: {
+              name: contentInfo.branch
+            },
+            commit: response.data
+          };
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.Created,
-            this.createContentModel(newUri, newContentResponse.data, response.data, { content: 0 })
+            this.createContentModel(newUri, newGitHubFile, { content: 0 })
           );
         } catch (error) {
           Logger.logError(error, "GitHubContentProvider/create", error.errno);
@@ -209,7 +210,7 @@ export class GitHubContentProvider implements IContentProvider {
 
           const gitHubFile = content.data as IGitHubFile;
           const response = await this.params.gitHubClient.createOrUpdateFileAsync(
-            gitHubFile.repo.owner.login,
+            gitHubFile.repo.owner,
             gitHubFile.repo.name,
             gitHubFile.branch.name,
             gitHubFile.path,
@@ -221,14 +222,11 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError("Failed to update", response.status);
           }
 
-          const savedContentResponse = await this.getContent(uri);
-          if (savedContentResponse.status !== HttpStatusCodes.OK) {
-            throw new GitHubContentProviderError("Failed to get content after updating", savedContentResponse.status);
-          }
+          gitHubFile.commit = response.data;
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.OK,
-            this.createContentModel(uri, savedContentResponse.data, response.data, { content: 0 })
+            this.createContentModel(uri, gitHubFile, { content: 0 })
           );
         } catch (error) {
           Logger.logError(error, "GitHubContentProvider/update", error.errno);
@@ -283,7 +281,7 @@ export class GitHubContentProvider implements IContentProvider {
     return commitMsg;
   }
 
-  private getContent(uri: string): Promise<IGitHubResponse<IGitHubFile | IGitHubFile[]>> {
+  private async getContent(uri: string): Promise<IGitHubResponse<IGitHubFile | IGitHubFile[]>> {
     const contentInfo = GitHubUtils.fromContentUri(uri);
     if (contentInfo) {
       const { owner, repo, branch, path } = contentInfo;
@@ -296,43 +294,37 @@ export class GitHubContentProvider implements IContentProvider {
   private createContentModel(
     uri: string,
     content: IGitHubFile | IGitHubFile[],
-    commit: IGitHubCommit,
     params: Partial<IGetParams>
   ): IContent<FileType> {
     if (Array.isArray(content)) {
-      return this.createDirectoryModel(uri, content, commit);
+      return this.createDirectoryModel(uri, content);
     }
 
-    if (content.type !== "file") {
-      return this.createDirectoryModel(uri, undefined, commit);
+    if (content.type === "tree") {
+      return this.createDirectoryModel(uri, undefined);
     }
 
     if (NotebookUtil.isNotebookFile(uri)) {
-      return this.createNotebookModel(content, commit, params);
+      return this.createNotebookModel(content, params);
     }
 
-    return this.createFileModel(content, commit, params);
+    return this.createFileModel(content, params);
   }
 
-  private createDirectoryModel(
-    uri: string,
-    gitHubFiles: IGitHubFile[] | undefined,
-    commit: IGitHubCommit
-  ): IContent<"directory"> {
+  private createDirectoryModel(uri: string, gitHubFiles: IGitHubFile[] | undefined): IContent<"directory"> {
     return {
-      name: GitHubUtils.fromContentUri(uri).path,
+      name: NotebookUtil.getName(uri),
       path: uri,
       type: "directory",
       writable: true, // TODO: tamitta: we don't know this info here
       created: "", // TODO: tamitta: we don't know this info here
-      last_modified: commit.committer.date,
+      last_modified: "", // TODO: tamitta: we don't know this info here
       mimetype: undefined,
       content: gitHubFiles?.map(
         (file: IGitHubFile) =>
           this.createContentModel(
-            GitHubUtils.toContentUri(file.repo.owner.login, file.repo.name, file.branch.name, file.path),
+            GitHubUtils.toContentUri(file.repo.owner, file.repo.name, file.branch.name, file.path),
             file,
-            commit,
             {
               content: 0
             }
@@ -342,17 +334,12 @@ export class GitHubContentProvider implements IContentProvider {
     };
   }
 
-  private createNotebookModel(
-    gitHubFile: IGitHubFile,
-    commit: IGitHubCommit,
-    params: Partial<IGetParams>
-  ): IContent<"notebook"> {
-    const content: Notebook =
-      gitHubFile.content && params.content !== 0 ? JSON.parse(atob(gitHubFile.content)) : undefined;
+  private createNotebookModel(gitHubFile: IGitHubFile, params: Partial<IGetParams>): IContent<"notebook"> {
+    const content: Notebook = gitHubFile.content && params.content !== 0 ? JSON.parse(gitHubFile.content) : undefined;
     return {
       name: gitHubFile.name,
       path: GitHubUtils.toContentUri(
-        gitHubFile.repo.owner.login,
+        gitHubFile.repo.owner,
         gitHubFile.repo.name,
         gitHubFile.branch.name,
         gitHubFile.path
@@ -360,23 +347,19 @@ export class GitHubContentProvider implements IContentProvider {
       type: "notebook",
       writable: true, // TODO: tamitta: we don't know this info here
       created: "", // TODO: tamitta: we don't know this info here
-      last_modified: commit.committer.date,
+      last_modified: gitHubFile.commit.commitDate,
       mimetype: content ? "application/x-ipynb+json" : undefined,
       content,
       format: content ? "json" : undefined
     };
   }
 
-  private createFileModel(
-    gitHubFile: IGitHubFile,
-    commit: IGitHubCommit,
-    params: Partial<IGetParams>
-  ): IContent<"file"> {
-    const content: string = gitHubFile.content && params.content !== 0 ? atob(gitHubFile.content) : undefined;
+  private createFileModel(gitHubFile: IGitHubFile, params: Partial<IGetParams>): IContent<"file"> {
+    const content: string = gitHubFile.content && params.content !== 0 ? gitHubFile.content : undefined;
     return {
       name: gitHubFile.name,
       path: GitHubUtils.toContentUri(
-        gitHubFile.repo.owner.login,
+        gitHubFile.repo.owner,
         gitHubFile.repo.name,
         gitHubFile.branch.name,
         gitHubFile.path
@@ -384,7 +367,7 @@ export class GitHubContentProvider implements IContentProvider {
       type: "file",
       writable: true, // TODO: tamitta: we don't know this info here
       created: "", // TODO: tamitta: we don't know this info here
-      last_modified: commit.committer.date,
+      last_modified: gitHubFile.commit.commitDate,
       mimetype: content ? "text/plain" : undefined,
       content,
       format: content ? "text" : undefined
