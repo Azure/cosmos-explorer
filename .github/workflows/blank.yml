@@ -82,7 +82,6 @@ jobs:
           name: dist
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: ls ./
-      - run: ls ./dist/
       - uses: actions/upload-artifact@v2
         with:
           name: pkg
