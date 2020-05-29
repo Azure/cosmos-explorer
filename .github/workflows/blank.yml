@@ -72,6 +72,9 @@ jobs:
     name: Publish Nuget Packages
     needs: [build, test, endtoend]
     runs-on: ubuntu-latest
+    env:
+      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
       - uses: nuget/setup-nuget@v1
         with:
@@ -80,12 +83,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
-      - run: nuget sources Add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
+      - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
-        env:
-          NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
-          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
       - uses: actions/upload-artifact@v2
         with:
           path: "*.nupkg"
