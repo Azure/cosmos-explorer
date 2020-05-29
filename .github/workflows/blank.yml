@@ -60,7 +60,7 @@ jobs:
   nuget:
     name: Publish Nuget Packages
     needs: [build, test, endtoend]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: nuget/setup-nuget@v1
         with:
@@ -69,8 +69,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: dist
-      - shell: powershell
-        run: cd dist && nuget pack -Version ${GITHUB_SHA}
+      - run: cd dist && nuget pack -Version "github-${GITHUB_SHA}"
       - uses: actions/upload-artifact@v1
         with:
           name: pkg
