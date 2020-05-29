@@ -65,10 +65,13 @@ jobs:
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-      - run: nuget help
-      # - name: Download Dist Folder
-      #   uses: actions/download-artifact@v1
-      #   with:
-      #     name: dist
-      # - shell: powershell
-      #   run: nuget help
+      - name: Download Dist Folder
+        uses: actions/download-artifact@v1
+        with:
+          name: dist
+      - shell: powershell
+        run: cd dist && nuget pack
+      - uses: actions/upload-artifact@v1
+        with:
+          name: pkg
+          path: "**/*.nupkg"
