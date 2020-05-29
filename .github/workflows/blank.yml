@@ -31,8 +31,8 @@ jobs:
           node-version: 12.x
       - run: npm ci
       - run: npm run build:contracts
-      - name: Cache multiple paths
-      - uses: actions/cache@v2
+      - name: Restore Build Cache
+        uses: actions/cache@v2
         with:
           path: .cache
           key: ${{ runner.os }}-build-cache
@@ -52,6 +52,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+      - name: Restore Cypress Binary Cache
+        uses: actions/cache@v2
+        with:
+          path: /AppData/Local/Cypress/Cache
+          key: ${{ runner.os }}-cypress-binary-cache
       - name: End to End Tests
         run: |
           npm ci
