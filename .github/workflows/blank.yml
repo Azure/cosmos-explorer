@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
       - run: npm run copyToConsumers
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
           name: dist
           path: dist/
@@ -76,11 +76,13 @@ jobs:
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       - name: Download Dist Folder
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: dist
       - run: cd dist && nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-      - uses: actions/upload-artifact@v1
+      - run: ls ./
+      - run: ls ./dist/
+      - uses: actions/upload-artifact@v2
         with:
           name: pkg
-          path: "**/*.nupkg"
+          path: "./dist/*.nupkg"

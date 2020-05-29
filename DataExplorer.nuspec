@@ -19,6 +19,6 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**\*" target="content"/>
+    <file src=".\dist\**\*" target="content"/>
   </files>
 </package>
