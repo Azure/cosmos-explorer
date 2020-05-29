@@ -81,7 +81,9 @@ jobs:
         with:
           name: dist
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-      - run: nuget push -Source "${NUGET_SOURCE}" *.nupkg
+      - run: nuget push -Source "$NUGET_SOURCE" *.nupkg
+        env:
+          NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       - uses: actions/upload-artifact@v2
         with:
           path: "*.nupkg"
