@@ -62,9 +62,13 @@ jobs:
     needs: build
     runs-on: windows-latest
     steps:
-      - name: Download Dist Folder
-        uses: actions/download-artifact@v1
+      - uses: nuget/setup-nuget@v1
         with:
-          name: dist
-      - shell: powershell
-        run: nuget help
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      - run: nuget help
+      # - name: Download Dist Folder
+      #   uses: actions/download-artifact@v1
+      #   with:
+      #     name: dist
+      # - shell: powershell
+      #   run: nuget help
