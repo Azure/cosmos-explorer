@@ -24,12 +24,19 @@ jobs:
     name: "Build"
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
       - run: npm ci
-      - run: npm run build:ci
+      - run: npm run build:contracts
+      - run: npm run pack:prod
+      - run: npm run copyToConsumers
+      - uses: actions/upload-artifact@v1
+        with:
+          name: dist
+          path: dist/
   endtoend:
     name: "End to End Tests"
     runs-on: windows-latest
