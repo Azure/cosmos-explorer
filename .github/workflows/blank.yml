@@ -55,7 +55,7 @@ jobs:
       - name: Restore Cypress Binary Cache
         uses: actions/cache@v2
         with:
-          path: /AppData/Local/Cypress/Cache
+          path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-binary-cache
       - name: End to End Tests
         run: |
@@ -67,6 +67,7 @@ jobs:
         env:
           EMULATOR_ENDPOINT: https://0.0.0.0:8081/
           NODE_TLS_REJECT_UNAUTHORIZED: 0
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
   nuget:
     name: Publish Nuget Packages
     needs: [build, test, endtoend]
