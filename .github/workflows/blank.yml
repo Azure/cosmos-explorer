@@ -59,7 +59,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
   nuget:
     name: Publish Nuget Packages
-    needs: build
+    needs: [build, test, endtoend]
     runs-on: windows-latest
     steps:
       - uses: nuget/setup-nuget@v1
