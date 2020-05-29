@@ -86,6 +86,7 @@ export enum Action {
   CreateNewNotebook,
   OpenSampleNotebook,
   ExecuteCell,
+  ExecuteCellPromptBtn,
   ExecuteAllCells,
   NotebookEnabled,
   NotebooksGitHubConnect,
