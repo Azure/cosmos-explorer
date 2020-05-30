@@ -60,20 +60,20 @@ describe("GitHubOAuthService", () => {
     expect(gitHubOAuthService.getTokenObservable()()).toBeUndefined();
   });
 
-  it("startOAuth resets OAuth state", () => {
+  it("startOAuth resets OAuth state", async () => {
     let url: string;
     const windowOpenCallback = jest.fn().mockImplementation((value: string) => {
       url = value;
     });
     window.open = windowOpenCallback;
 
-    gitHubOAuthService.startOAuth("scope");
+    await gitHubOAuthService.startOAuth("scope");
     expect(windowOpenCallback).toBeCalled();
 
     const initialParams = new URLSearchParams(new URL(url).search);
     expect(initialParams.get("state")).toBeDefined();
 
-    gitHubOAuthService.startOAuth("another scope");
+    await gitHubOAuthService.startOAuth("another scope");
     expect(windowOpenCallback).toBeCalled();
 
     const newParams = new URLSearchParams(new URL(url).search);
@@ -106,7 +106,7 @@ describe("GitHubOAuthService", () => {
     junoClient.getGitHubToken = getGitHubTokenCallback;
 
     const initialToken = gitHubOAuthService.getTokenObservable()();
-    const state = gitHubOAuthService.startOAuth("scope");
+    const state = await gitHubOAuthService.startOAuth("scope");
 
     const params: IGitHubConnectorParams = {
       state,
@@ -120,7 +120,7 @@ describe("GitHubOAuthService", () => {
   });
 
   it("finishOAuth updates token to error if state doesn't match", async () => {
-    gitHubOAuthService.startOAuth("scope");
+    await gitHubOAuthService.startOAuth("scope");
 
     const params: IGitHubConnectorParams = {
       state: "state",
@@ -135,7 +135,7 @@ describe("GitHubOAuthService", () => {
     const getGitHubTokenCallback = jest.fn().mockReturnValue({ status: HttpStatusCodes.NotFound });
     junoClient.getGitHubToken = getGitHubTokenCallback;
 
-    const state = gitHubOAuthService.startOAuth("scope");
+    const state = await gitHubOAuthService.startOAuth("scope");
 
     const params: IGitHubConnectorParams = {
       state,

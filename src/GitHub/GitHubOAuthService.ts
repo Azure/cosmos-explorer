@@ -2,6 +2,7 @@ import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import { Logger } from "../Common/Logger";
 import { config } from "../Config";
+import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
@@ -39,7 +40,19 @@ export class GitHubOAuthService {
     this.token = ko.observable<IGitHubOAuthToken>();
   }
 
-  public startOAuth(scope: string): string {
+  public async startOAuth(scope: string): Promise<string> {
+    // If attempting to change scope from "Public & private repos" to "Public only" we need to delete app authorization.
+    // Otherwise OAuth app still retains the "public & private repos" permissions.
+    if (
+      this.token()?.scope === AuthorizeAccessComponent.Scopes.PublicAndPrivate.key &&
+      scope === AuthorizeAccessComponent.Scopes.Public.key
+    ) {
+      const logoutSuccessful = await this.logout();
+      if (!logoutSuccessful) {
+        return undefined;
+      }
+    }
+
     const params = {
       scope,
       client_id: config.GITHUB_CLIENT_ID,
@@ -76,7 +89,7 @@ export class GitHubOAuthService {
     return this.token;
   }
 
-  public async logout() {
+  public async logout(): Promise<boolean> {
     try {
       const response = await this.junoClient.deleteAppAuthorization(this.token()?.access_token);
       if (response.status !== HttpStatusCodes.NoContent) {
@@ -84,10 +97,12 @@ export class GitHubOAuthService {
       }
 
       this.resetToken();
+      return true;
     } catch (error) {
       const message = `Failed to delete app authorization: ${error}`;
       Logger.logError(message, "GitHubOAuthService/logout");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      return false;
     }
   }
 
