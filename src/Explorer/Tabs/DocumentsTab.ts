@@ -965,7 +965,10 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
         const focusElement = document.getElementById("itemImportLink");
-        selectedCollection && container.uploadItemsPane.open();
+        const uploadItemsPane = container.isReactPanelEnabled()
+          ? container.uploadItemsPaneAdapter
+          : container.uploadItemsPane;
+        selectedCollection && uploadItemsPane.open();
         focusElement && focusElement.focus();
       },
       commandButtonLabel: label,

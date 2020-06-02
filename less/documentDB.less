@@ -570,6 +570,12 @@ body {
     }
 }
 
+.fileImportButton {
+    height: 24px;
+    border: @ButtonBorderWidth solid transparent;
+    vertical-align: top;
+}
+
 .fileUploadSummaryContainer {
     margin-top: 40px;
 
@@ -1016,6 +1022,18 @@ menuQuickStart {
     background: #262626;
 }
 
+.panelContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.panelContentWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .contextual-pane {
     top: 0px;
     right: 0 !important;
@@ -1232,23 +1250,25 @@ menuQuickStart {
     padding: 2px 30px;
     cursor: pointer;
     font-size: 12px;
+
+    &:active {
+        border-color: #0072c6;
+        background-color: #0072c6;
+    }
 }
 
-.btncreatecoll1:hover {
-    background: @AccentMediumHigh;
+.leftpanel-okbut .genericPaneSubmitBtn {
+    border: 1px solid @AccentMediumHigh;
+    background-color: @AccentMediumHigh;
     color: #fff;
-    border-color: @AccentMediumHigh;
     cursor: pointer;
     font-size: 12px;
-}
+    height: 24px;
 
-.btncreatecoll1:active {
-    border: 1px solid #0072c6;
-    background-color: #0072c6;
-    color: white;
-    padding: 2px 30px;
-    cursor: pointer;
-    font-size: 12px;
+    &:active {
+        border-color: #0072c6;
+        background-color: #0072c6;
+    }
 }
 
 .btncreatecoll1-off {
@@ -1359,6 +1379,14 @@ menuQuickStart {
 p {
     margin: 0 0 4px;
     color: #000;
+}
+
+.headerline .closePaneBtn {
+    float: right;
+    cursor: pointer;
+    width: 16px;
+    height: 100%;
+    margin-right: 4px;
 }
 
 .closeImg {
@@ -1707,6 +1735,13 @@ input::-webkit-calendar-picker-indicator {
     color: @BaseDark;
     overflow-y: auto;
     overflow-x: hidden;
+    margin: (2 * @MediumSpace) 0px;
+}
+
+.contextual-pane .panelMainContent {
+    padding-left: 34px;
+    padding-right: 34px;
+    color: @BaseDark;
     margin: (2 * @MediumSpace) 0px;
 }
 

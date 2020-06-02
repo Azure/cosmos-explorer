@@ -19,6 +19,7 @@ import { TableColumnOptionsPane } from "../../src/Explorer/Panes/Tables/TableCol
 import { TextFieldProps } from "./Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadFilePane } from "./Panes/UploadFilePane";
+import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { Versions } from "../../src/Contracts/ExplorerContracts";
 import { CollectionCreationDefaults } from "../Shared/Constants";
 
@@ -86,6 +87,7 @@ export class ExplorerStub implements ViewModels.Explorer {
   public settingsPane: ViewModels.SettingsPane;
   public executeSprocParamsPane: ViewModels.ExecuteSprocParamsPane;
   public uploadItemsPane: ViewModels.UploadItemsPane;
+  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: ViewModels.LoadQueryPane;
   public saveQueryPane: ViewModels.ContextualPane;
   public browseQueriesPane: ViewModels.BrowseQueriesPane;
@@ -97,6 +99,7 @@ export class ExplorerStub implements ViewModels.Explorer {
   public isGalleryEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isGraphsEnabled: ko.Computed<boolean>;
+  public isReactPanelEnabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public parentFrameDataExplorerVersion: ko.Observable<string> = ko.observable<string>(Versions.DataExplorer);

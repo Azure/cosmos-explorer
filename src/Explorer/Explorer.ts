@@ -86,6 +86,7 @@ import { StringInputPane } from "./Panes/StringInputPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -188,6 +189,7 @@ export default class Explorer implements ViewModels.Explorer {
   public executeSprocParamsPane: ViewModels.ExecuteSprocParamsPane;
   public renewAdHocAccessPane: ViewModels.RenewAdHocAccessPane;
   public uploadItemsPane: ViewModels.UploadItemsPane;
+  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: ViewModels.LoadQueryPane;
   public saveQueryPane: ViewModels.ContextualPane;
   public browseQueriesPane: ViewModels.BrowseQueriesPane;
@@ -205,6 +207,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isGraphsEnabled: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
+  public isReactPanelEnabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
@@ -551,6 +554,7 @@ export default class Explorer implements ViewModels.Explorer {
         !this.isRunningOnNationalCloud() &&
         !this.isPreferredApiGraph()
     );
+    this.isReactPanelEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableReactPanel));
     this.defaultExperience.subscribe((defaultExperience: string) => {
       if (
         defaultExperience &&
@@ -706,6 +710,8 @@ export default class Explorer implements ViewModels.Explorer {
 
       container: this
     });
+
+    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
       documentClientUtility: this.documentClientUtility,
