@@ -25,38 +25,56 @@ export class GenericPaneComponent extends React.Component<GenericPaneProps> {
         <div className="contextual-pane-out" onClick={this.props.onClose}></div>
         <div className="contextual-pane" id={this.props.id} style={{ height: panelHeight }} onKeyDown={this.onKeyDown}>
           <div className="panelContentWrapper">
-            <div className="firstdivbg headerline">
-              <span id="databaseTitle">{this.props.title}</span>
-              <IconButton
-                ariaLabel="Close pane"
-                title="Close pane"
-                onClick={this.props.onClose}
-                tabIndex={0}
-                className="closePaneBtn"
-                iconProps={{ iconName: "Cancel" }}
-              />
-            </div>
+            {this.createPanelHeader()}
             {this.props.content}
-            <div className="paneFooter">
-              <div className="leftpanel-okbut">
-                <PrimaryButton
-                  ariaLabel="Submit"
-                  title="Submit"
-                  onClick={this.props.onSubmit}
-                  tabIndex={0}
-                  className="genericPaneSubmitBtn"
-                  text={this.props.submitButtonText}
-                />
-              </div>
-            </div>
+            {this.createPanelFooter()}
           </div>
-          <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.props.isExecuting}>
-            <img className="dataExplorerLoader" src={LoadingIndicatorIcon} />
-          </div>
+          {this.createLoadingScreen()}
         </div>
       </div>
     );
   }
+
+  private createPanelHeader = (): JSX.Element => {
+    return (
+      <div className="firstdivbg headerline">
+        <span id="databaseTitle">{this.props.title}</span>
+        <IconButton
+          ariaLabel="Close pane"
+          title="Close pane"
+          onClick={this.props.onClose}
+          tabIndex={0}
+          className="closePaneBtn"
+          iconProps={{ iconName: "Cancel" }}
+        />
+      </div>
+    );
+  };
+
+  private createPanelFooter = (): JSX.Element => {
+    return (
+      <div className="paneFooter">
+        <div className="leftpanel-okbut">
+          <PrimaryButton
+            ariaLabel="Submit"
+            title="Submit"
+            onClick={this.props.onSubmit}
+            tabIndex={0}
+            className="genericPaneSubmitBtn"
+            text={this.props.submitButtonText}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  private createLoadingScreen = (): JSX.Element => {
+    return (
+      <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.props.isExecuting}>
+        <img className="dataExplorerLoader" src={LoadingIndicatorIcon} />
+      </div>
+    );
+  };
 
   private onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
     if (event.keyCode === KeyCodes.Escape) {
