@@ -1,8 +1,9 @@
+import { actions, ContentRef, selectors } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { ContentRef, selectors, actions } from "@nteract/core";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as cdbActions from "../NotebookComponent/actions";
 import { CdbAppState } from "../NotebookComponent/types";
 
 export interface PassedPromptProps {
@@ -83,7 +84,15 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   { id, contentRef }: { id: string; contentRef: ContentRef }
 ): DispatchProps => ({
-  executeCell: () => dispatch(actions.executeCell({ id, contentRef })),
+  executeCell: () => {
+    dispatch(actions.executeCell({ id, contentRef }));
+    dispatch(
+      cdbActions.traceNotebookTelemetry({
+        action: Action.ExecuteCellPromptBtn,
+        actionModifier: ActionModifiers.Mark
+      })
+    );
+  },
   stopExecution: () => dispatch(actions.interruptKernel({}))
 });
 
