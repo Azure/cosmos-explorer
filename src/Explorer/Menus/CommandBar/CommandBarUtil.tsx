@@ -1,3 +1,4 @@
+import _ from "underscore";
 import * as React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Observable } from "knockout";
@@ -126,7 +127,7 @@ export class CommandBarUtil {
           }
 
           if (btn.isDropdown) {
-            const selectedChild = btn.children.find(child => child.dropdownItemKey === btn.dropdownSelectedKey);
+            const selectedChild = _.find(btn.children, child => child.dropdownItemKey === btn.dropdownSelectedKey);
             result.name = selectedChild?.commandButtonLabel || btn.dropdownPlaceholder;
 
             const dropdownStyles: Partial<IDropdownStyles> = {

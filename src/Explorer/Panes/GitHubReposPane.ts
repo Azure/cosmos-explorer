@@ -1,19 +1,20 @@
+import _ from "underscore";
 import { Areas, HttpStatusCodes } from "../../Common/Constants";
 import { Logger } from "../../Common/Logger";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { GitHubClient, IGitHubRepo, IGitHubPageInfo } from "../../GitHub/GitHubClient";
+import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../GitHub/GitHubClient";
 import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { GitHubUtils } from "../../Utils/GitHubUtils";
+import { JunoUtils } from "../../Utils/JunoUtils";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { AuthorizeAccessComponent } from "../Controls/GitHub/AuthorizeAccessComponent";
-import { GitHubReposComponentProps, RepoListItem, GitHubReposComponent } from "../Controls/GitHub/GitHubReposComponent";
+import { GitHubReposComponent, GitHubReposComponentProps, RepoListItem } from "../Controls/GitHub/GitHubReposComponent";
 import { GitHubReposComponentAdapter } from "../Controls/GitHub/GitHubReposComponentAdapter";
 import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../Controls/GitHub/ReposListComponent";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { JunoUtils } from "../../Utils/JunoUtils";
 
 export class GitHubReposPane extends ContextualPaneBase {
   private static readonly PageSize = 30;
@@ -259,7 +260,7 @@ export class GitHubReposPane extends ContextualPaneBase {
     this.pinnedReposUpdated = true;
     const initialReposLength = this.pinnedReposProps.repos.length;
 
-    const existingRepo = this.pinnedReposProps.repos.find(repo => repo.key === item.key);
+    const existingRepo = _.find(this.pinnedReposProps.repos, repo => repo.key === item.key);
     if (existingRepo) {
       existingRepo.branches = item.branches;
     } else {

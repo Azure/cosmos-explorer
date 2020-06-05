@@ -1,3 +1,4 @@
+import _ from "underscore";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -81,7 +82,7 @@ export class ClusterLibraryPane extends ContextualPaneBase {
 
   private _onInstalledChanged = (libraryName: string, installed: boolean): void => {
     const items = this._clusterLibraryProps().libraryItems;
-    const library = items.find(item => item.name === libraryName);
+    const library = _.find(items, item => item.name === libraryName);
     library.installed = installed;
     this._clusterLibraryProps.valueHasMutated();
   };
