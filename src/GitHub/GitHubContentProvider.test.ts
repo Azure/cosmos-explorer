@@ -10,27 +10,30 @@ const gitHubContentProvider = new GitHubContentProvider({
   gitHubClient,
   promptForCommitMsg: () => Promise.resolve("commit msg")
 });
+const gitHubCommit: IGitHubCommit = {
+  sha: "sha",
+  message: "message",
+  commitDate: "date"
+};
 const sampleFile: IGitHubFile = {
-  type: "file",
-  encoding: "encoding",
+  type: "blob",
   size: 0,
   name: "name.ipynb",
   path: "dir/name.ipynb",
-  content: btoa(fixture),
+  content: fixture,
   sha: "sha",
   repo: {
-    owner: {
-      login: "login"
-    },
+    owner: "owner",
     name: "repo",
     private: false
   },
   branch: {
     name: "branch"
-  }
+  },
+  commit: gitHubCommit
 };
 const sampleGitHubUri = GitHubUtils.toContentUri(
-  sampleFile.repo.owner.login,
+  sampleFile.repo.owner,
   sampleFile.repo.name,
   sampleFile.branch.name,
   sampleFile.path
@@ -43,15 +46,8 @@ const sampleNotebookModel: IContent<"notebook"> = {
   created: "",
   last_modified: "date",
   mimetype: "application/x-ipynb+json",
-  content: sampleFile.content ? JSON.parse(atob(sampleFile.content)) : null,
+  content: sampleFile.content ? JSON.parse(sampleFile.content) : null,
   format: "json"
-};
-const gitHubCommit: IGitHubCommit = {
-  sha: "sha",
-  message: "message",
-  committer: {
-    date: "date"
-  }
 };
 
 describe("GitHubContentProvider remove", () => {
@@ -125,9 +121,6 @@ describe("GitHubContentProvider get", () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
       Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
     );
-    spyOn(GitHubClient.prototype, "getCommitsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: [gitHubCommit] })
-    );
 
     const response = await gitHubContentProvider.get(null, sampleGitHubUri, {}).toPromise();
     expect(response).toBeDefined();
@@ -176,9 +169,6 @@ describe("GitHubContentProvider update", () => {
     spyOn(GitHubClient.prototype, "renameFileAsync").and.returnValue(
       Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
     );
-    spyOn(GitHubClient.prototype, "getCommitsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: [gitHubCommit] })
-    );
 
     const response = await gitHubContentProvider.update(null, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
@@ -215,18 +205,14 @@ describe("GitHubContentProvider create", () => {
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(
       Promise.resolve({ status: HttpStatusCodes.Created, data: gitHubCommit })
     );
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
-    );
 
     const response = await gitHubContentProvider.create(null, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.Created);
     expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
-    expect(gitHubClient.getContentsAsync).toBeCalled();
     expect(response.response.type).toEqual(sampleNotebookModel.type);
-    expect(response.response.name).toEqual(sampleNotebookModel.name);
-    expect(response.response.path).toEqual(sampleNotebookModel.path);
+    expect(response.response.name).toBeDefined();
+    expect(response.response.path).toBeDefined();
     expect(response.response.content).toBeUndefined();
   });
 });

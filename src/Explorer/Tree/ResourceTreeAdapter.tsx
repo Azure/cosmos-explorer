@@ -14,7 +14,6 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import DeleteIcon from "../../../images/delete.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
-import { IGitHubRepo, IGitHubBranch } from "../../GitHub/GitHubClient";
 import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
 import FileIcon from "../../../images/notebook/file-cosmos.svg";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
@@ -26,21 +25,11 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
 import { GitHubUtils } from "../../Utils/GitHubUtils";
+import { SamplesRepo, SamplesBranch } from "../Notebook/NotebookSamples";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
   private static readonly NotebooksTitle = "NOTEBOOKS";
-
-  private static readonly SamplesRepo: IGitHubRepo = {
-    name: "cosmos-notebooks",
-    owner: {
-      login: "Azure-Samples"
-    },
-    private: false
-  };
-  private static readonly SamplesBranch: IGitHubBranch = {
-    name: "master"
-  };
   private static readonly PseudoDirPath = "PsuedoDir";
 
   public parameters: ko.Observable<number>;
@@ -103,12 +92,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.sampleNotebooksContentRoot = {
       name: "Sample Notebooks (View Only)",
-      path: GitHubUtils.toContentUri(
-        ResourceTreeAdapter.SamplesRepo.owner.login,
-        ResourceTreeAdapter.SamplesRepo.name,
-        ResourceTreeAdapter.SamplesBranch.name,
-        ""
-      ),
+      path: GitHubUtils.toContentUri(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name, ""),
       type: NotebookContentItemType.Directory
     };
     refreshTasks.push(

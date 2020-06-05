@@ -2583,7 +2583,7 @@ export default class Explorer implements ViewModels.Explorer {
     const item = NotebookUtil.createNotebookContentItem(name, path, "file");
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && this.isNotebookEnabled() && this.notebookClient) {
+    if (parent && parent.children && this.isNotebookEnabled() && this.notebookClient) {
       if (this._filePathToImportAndOpen === path) {
         this._filePathToImportAndOpen = null; // we don't want to try opening this path again
       }

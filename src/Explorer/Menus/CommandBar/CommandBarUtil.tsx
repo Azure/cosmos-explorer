@@ -1,3 +1,4 @@
+import _ from "underscore";
 import * as React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Observable } from "knockout";
@@ -46,7 +47,7 @@ export class CommandBarUtil {
             text: btn.commandButtonLabel || btn.tooltipText,
             "data-test": btn.commandButtonLabel || btn.tooltipText,
             title: btn.tooltipText,
-            name: "menuitem",
+            name: btn.commandButtonLabel || btn.tooltipText,
             disabled: btn.disabled,
             ariaLabel: btn.ariaLabel,
             buttonStyles: {
@@ -126,6 +127,9 @@ export class CommandBarUtil {
           }
 
           if (btn.isDropdown) {
+            const selectedChild = _.find(btn.children, child => child.dropdownItemKey === btn.dropdownSelectedKey);
+            result.name = selectedChild?.commandButtonLabel || btn.dropdownPlaceholder;
+
             const dropdownStyles: Partial<IDropdownStyles> = {
               root: { margin: 5 },
               dropdown: { width: btn.dropdownWidth },

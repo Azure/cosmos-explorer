@@ -32,7 +32,7 @@
     "@nteract/transform-plotly": "6.1.6",
     "@nteract/transform-vdom": "4.0.11",
     "@nteract/transform-vega": "7.0.6",
-    "@octokit/rest": "17.5.1",
+    "@octokit/rest": "17.9.2",
     "@phosphor/widgets": "1.9.3",
     "@uifabric/react-cards": "0.109.53",
     "@uifabric/styling": "7.11.2",

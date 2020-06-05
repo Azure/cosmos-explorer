@@ -2,6 +2,7 @@
  * React component for Switch Directory
  */
 
+import _ from "underscore";
 import * as React from "react";
 import { Dropdown, IDropdownOption, IDropdownProps } from "office-ui-fabric-react/lib/Dropdown";
 import { Tenant } from "../../../Contracts/DataModels";
@@ -60,7 +61,7 @@ export class DefaultDirectoryDropdownComponent extends React.Component<DefaultDi
       return;
     }
 
-    const selectedDirectory = this.props.directories.find(d => d.tenantId === option.key);
+    const selectedDirectory = _.find(this.props.directories, d => d.tenantId === option.key);
     if (!selectedDirectory) {
       return;
     }

@@ -1,3 +1,4 @@
+import _ from "underscore";
 import * as React from "react";
 
 import { DefaultButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
@@ -114,7 +115,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     }
     const buttonElement = e.currentTarget;
     const selectedDirectoryId = buttonElement.getElementsByClassName("directoryListItemId")[0].textContent;
-    const selectedDirectory = this.props.directories.find(d => d.tenantId === selectedDirectoryId);
+    const selectedDirectory = _.find(this.props.directories, d => d.tenantId === selectedDirectoryId);
 
     this.props.onNewDirectorySelected(selectedDirectory);
   };

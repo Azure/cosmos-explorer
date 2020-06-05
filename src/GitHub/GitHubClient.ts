@@ -1,163 +1,228 @@
 import { Octokit } from "@octokit/rest";
-import { RequestHeaders } from "@octokit/types";
 import { HttpStatusCodes } from "../Common/Constants";
+import { Logger } from "../Common/Logger";
+import UrlUtility from "../Common/UrlUtility";
+import { isSamplesCall, SamplesContentsQueryResponse } from "../Explorer/Notebook/NotebookSamples";
+import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
+
+export interface IGitHubPageInfo {
+  endCursor: string;
+  hasNextPage: boolean;
+}
 
 export interface IGitHubResponse<T> {
   status: number;
   data: T;
+  pageInfo?: IGitHubPageInfo;
 }
 
 export interface IGitHubRepo {
-  // API properties
   name: string;
-  owner: {
-    login: string;
-  };
+  owner: string;
   private: boolean;
-
-  // Custom properties
   children?: IGitHubFile[];
 }
 
 export interface IGitHubFile {
-  // API properties
-  type: "file" | "dir" | "symlink" | "submodule";
-  encoding?: string;
-  size: number;
+  type: "blob" | "tree";
+  size?: number;
   name: string;
   path: string;
   content?: string;
-  sha: string;
-
-  // Custom properties
+  sha?: string;
   children?: IGitHubFile[];
-  repo?: IGitHubRepo;
-  branch?: IGitHubBranch;
+  repo: IGitHubRepo;
+  branch: IGitHubBranch;
+  commit: IGitHubCommit;
 }
 
 export interface IGitHubCommit {
-  // API properties
   sha: string;
   message: string;
-  committer: {
-    date: string;
-  };
+  commitDate: string;
 }
 
 export interface IGitHubBranch {
-  // API properties
   name: string;
 }
 
-export interface IGitHubUser {
-  // API properties
-  login: string;
+// graphql schema
+interface Collection<T> {
+  pageInfo?: PageInfo;
+  nodes: T[];
+}
+
+interface Repository {
+  isPrivate: boolean;
+  name: string;
+  owner: {
+    login: string;
+  };
+}
+
+interface Ref {
   name: string;
 }
+
+interface History {
+  history: Collection<Commit>;
+}
+
+interface Commit {
+  committer: {
+    date: string;
+  };
+  message: string;
+  oid: string;
+}
+
+interface Tree extends Blob {
+  entries: TreeEntry[];
+}
+
+interface TreeEntry {
+  name: string;
+  type: string;
+  object: Blob;
+}
+
+interface Blob {
+  byteSize?: number;
+  oid?: string;
+}
+
+interface PageInfo {
+  endCursor: string;
+  hasNextPage: boolean;
+}
+
+// graphql queries and types
+const repositoryQuery = `query($owner: String!, $repo: String!) {
+  repository(owner: $owner, name: $repo) {
+    owner {
+      login
+    }
+    name
+    isPrivate
+  }
+}`;
+type RepositoryQueryParams = {
+  owner: string;
+  repo: string;
+};
+type RepositoryQueryResponse = {
+  repository: Repository;
+};
+
+const repositoriesQuery = `query($pageSize: Int!, $endCursor: String) {
+  viewer {
+    repositories(first: $pageSize, after: $endCursor) {
+      pageInfo {
+        endCursor,
+        hasNextPage
+      }
+      nodes {
+        owner {
+          login
+        }
+        name
+        isPrivate
+      }
+    }
+  }
+}`;
+type RepositoriesQueryParams = {
+  pageSize: number;
+  endCursor?: string;
+};
+type RepositoriesQueryResponse = {
+  viewer: {
+    repositories: Collection<Repository>;
+  };
+};
+
+const branchesQuery = `query($owner: String!, $repo: String!, $refPrefix: String!, $pageSize: Int!, $endCursor: String) {
+  repository(owner: $owner, name: $repo) {
+    refs(refPrefix: $refPrefix, first: $pageSize, after: $endCursor) {
+      pageInfo {
+        endCursor,
+        hasNextPage
+      }
+      nodes {
+        name
+      }
+    }
+  }
+}`;
+type BranchesQueryParams = {
+  owner: string;
+  repo: string;
+  refPrefix: string;
+  pageSize: number;
+  endCursor?: string;
+};
+type BranchesQueryResponse = {
+  repository: {
+    refs: Collection<Ref>;
+  };
+};
+
+const contentsQuery = `query($owner: String!, $repo: String!, $ref: String!, $path: String, $objectExpression: String!) {
+  repository(owner: $owner, name: $repo) {
+    owner {
+      login
+    }
+    name
+    isPrivate
+    ref(qualifiedName: $ref) {
+      name
+      target {
+        ... on Commit {
+          history(first: 1, path: $path) {
+            nodes {
+              oid
+              message
+              committer {
+                date
+              }
+            }
+          }
+        }
+      }
+    }
+    object(expression: $objectExpression) {
+      ... on Blob {
+        oid
+        byteSize
+      }
+      ... on Tree {
+        entries {
+          name
+          type
+          object {
+            ... on Blob {
+              oid
+              byteSize
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+type ContentsQueryParams = {
+  owner: string;
+  repo: string;
+  ref: string;
+  path?: string;
+  objectExpression: string;
+};
+type ContentsQueryResponse = {
+  repository: Repository & { ref: Ref & { target: History } } & { object: Tree };
+};
 
 export class GitHubClient {
-  private static readonly gitHubApiEndpoint = "https://api.github.com";
-
-  private static readonly samplesRepo: IGitHubRepo = {
-    name: "cosmos-notebooks",
-    private: false,
-    owner: {
-      login: "Azure-Samples"
-    }
-  };
-
-  private static readonly samplesBranch: IGitHubBranch = {
-    name: "master"
-  };
-
-  private static readonly samplesTopCommit: IGitHubCommit = {
-    sha: "41b964f442b638097a75a3f3b6a6451db05a12bf",
-    committer: {
-      date: "2020-05-19T05:03:30Z"
-    },
-    message: "Fixing formatting"
-  };
-
-  private static readonly samplesFiles: IGitHubFile[] = [
-    {
-      name: ".github",
-      path: ".github",
-      sha: "5e6794a8177a0c07a8719f6e1d7b41cce6f92e1e",
-      size: 0,
-      type: "dir"
-    },
-    {
-      name: ".gitignore",
-      path: ".gitignore",
-      sha: "3e759b75bf455ac809d0987d369aab89137b5689",
-      size: 5582,
-      type: "file"
-    },
-    {
-      name: "1. GettingStarted.ipynb",
-      path: "1. GettingStarted.ipynb",
-      sha: "0732ff5366e4aefdc4c378c61cbd968664f0acec",
-      size: 3933,
-      type: "file"
-    },
-    {
-      name: "2. Visualization.ipynb",
-      path: "2. Visualization.ipynb",
-      sha: "f480134ac4adf2f50ce5fe66836c6966749d3ca1",
-      size: 814261,
-      type: "file"
-    },
-    {
-      name: "3. RequestUnits.ipynb",
-      path: "3. RequestUnits.ipynb",
-      sha: "252b79a4adc81e9f2ffde453231b695d75e270e8",
-      size: 9490,
-      type: "file"
-    },
-    {
-      name: "4. Indexing.ipynb",
-      path: "4. Indexing.ipynb",
-      sha: "e10dd67bd1c55c345226769e4f80e43659ef9cd5",
-      size: 10394,
-      type: "file"
-    },
-    {
-      name: "5. StoredProcedures.ipynb",
-      path: "5. StoredProcedures.ipynb",
-      sha: "949941949920de4d2d111149e2182e9657cc8134",
-      size: 11818,
-      type: "file"
-    },
-    {
-      name: "6. GlobalDistribution.ipynb",
-      path: "6. GlobalDistribution.ipynb",
-      sha: "b91c31dacacbc9e35750d9054063dda4a5309f3b",
-      size: 11375,
-      type: "file"
-    },
-    {
-      name: "7. IoTAnomalyDetection.ipynb",
-      path: "7. IoTAnomalyDetection.ipynb",
-      sha: "82057ae52a67721a5966e2361317f5dfbd0ee595",
-      size: 377939,
-      type: "file"
-    },
-    {
-      name: "All_API_quickstarts",
-      path: "All_API_quickstarts",
-      sha: "07054293e6c8fc00771fccd0cde207f5c8053978",
-      size: 0,
-      type: "dir"
-    },
-    {
-      name: "CSharp_quickstarts",
-      path: "CSharp_quickstarts",
-      sha: "10e7f5704e6b56a40cac74bc39f15b7708954f52",
-      size: 0,
-      type: "dir"
-    }
-  ];
-
+  private static readonly SelfErrorCode = 599;
   private ocktokit: Octokit;
 
   constructor(token: string, private errorCallback: (error: any) => void) {
@@ -169,167 +234,136 @@ export class GitHubClient {
   }
 
   public async getRepoAsync(owner: string, repo: string): Promise<IGitHubResponse<IGitHubRepo>> {
-    if (GitHubClient.isSamplesCall(owner, repo)) {
+    try {
+      const response = (await this.ocktokit.graphql(repositoryQuery, {
+        owner,
+        repo
+      } as RepositoryQueryParams)) as RepositoryQueryResponse;
+
       return {
         status: HttpStatusCodes.OK,
-        data: GitHubClient.samplesRepo
+        data: GitHubClient.toGitHubRepo(response.repository)
+      };
+    } catch (error) {
+      GitHubClient.log(Logger.logError, `GitHubClient.getRepoAsync failed: ${error}`);
+      return {
+        status: GitHubClient.SelfErrorCode,
+        data: undefined
       };
     }
-
-    const response = await this.ocktokit.repos.get({
-      owner,
-      repo,
-      headers: GitHubClient.getDisableCacheHeaders()
-    });
-
-    let data: IGitHubRepo;
-    if (response.data) {
-      data = GitHubClient.toGitHubRepo(response.data);
-    }
-
-    return { status: response.status, data };
   }
 
-  public async getReposAsync(page: number, perPage: number): Promise<IGitHubResponse<IGitHubRepo[]>> {
-    const response = await this.ocktokit.repos.listForAuthenticatedUser({
-      page,
-      per_page: perPage,
-      headers: GitHubClient.getDisableCacheHeaders()
-    });
+  public async getReposAsync(pageSize: number, endCursor?: string): Promise<IGitHubResponse<IGitHubRepo[]>> {
+    try {
+      const response = (await this.ocktokit.graphql(repositoriesQuery, {
+        pageSize,
+        endCursor
+      } as RepositoriesQueryParams)) as RepositoriesQueryResponse;
 
-    let data: IGitHubRepo[];
-    if (response.data) {
-      data = [];
-      response.data?.forEach((element: any) => data.push(GitHubClient.toGitHubRepo(element)));
+      return {
+        status: HttpStatusCodes.OK,
+        data: response.viewer.repositories.nodes.map(repo => GitHubClient.toGitHubRepo(repo)),
+        pageInfo: GitHubClient.toGitHubPageInfo(response.viewer.repositories.pageInfo)
+      };
+    } catch (error) {
+      GitHubClient.log(Logger.logError, `GitHubClient.getReposAsync failed: ${error}`);
+      return {
+        status: GitHubClient.SelfErrorCode,
+        data: undefined
+      };
     }
-
-    return { status: response.status, data };
   }
 
   public async getBranchesAsync(
     owner: string,
     repo: string,
-    page: number,
-    perPage: number
+    pageSize: number,
+    endCursor?: string
   ): Promise<IGitHubResponse<IGitHubBranch[]>> {
-    const response = await this.ocktokit.repos.listBranches({
-      owner,
-      repo,
-      page,
-      per_page: perPage,
-      headers: GitHubClient.getDisableCacheHeaders()
-    });
+    try {
+      const response = (await this.ocktokit.graphql(branchesQuery, {
+        owner,
+        repo,
+        refPrefix: "refs/heads/",
+        pageSize,
+        endCursor
+      } as BranchesQueryParams)) as BranchesQueryResponse;
 
-    let data: IGitHubBranch[];
-    if (response.data) {
-      data = [];
-      response.data?.forEach(element => data.push(GitHubClient.toGitHubBranch(element)));
-    }
-
-    return { status: response.status, data };
-  }
-
-  public async getCommitsAsync(
-    owner: string,
-    repo: string,
-    branch: string,
-    path: string,
-    page: number,
-    perPage: number
-  ): Promise<IGitHubResponse<IGitHubCommit[]>> {
-    if (GitHubClient.isSamplesCall(owner, repo, branch) && path === "" && page === 1 && perPage === 1) {
       return {
         status: HttpStatusCodes.OK,
-        data: [GitHubClient.samplesTopCommit]
+        data: response.repository.refs.nodes.map(ref => GitHubClient.toGitHubBranch(ref)),
+        pageInfo: GitHubClient.toGitHubPageInfo(response.repository.refs.pageInfo)
+      };
+    } catch (error) {
+      GitHubClient.log(Logger.logError, `GitHubClient.getBranchesAsync failed: ${error}`);
+      return {
+        status: GitHubClient.SelfErrorCode,
+        data: undefined
       };
     }
-
-    const response = await this.ocktokit.repos.listCommits({
-      owner,
-      repo,
-      sha: branch,
-      path,
-      page,
-      per_page: perPage,
-      headers: GitHubClient.getDisableCacheHeaders()
-    });
-
-    let data: IGitHubCommit[];
-    if (response.data) {
-      data = [];
-      response.data?.forEach(element =>
-        data.push(GitHubClient.toGitHubCommit({ ...element.commit, sha: element.sha }))
-      );
-    }
-
-    return { status: response.status, data };
-  }
-
-  public async getDirContentsAsync(
-    owner: string,
-    repo: string,
-    branch: string,
-    path: string
-  ): Promise<IGitHubResponse<IGitHubFile[]>> {
-    return (await this.getContentsAsync(owner, repo, branch, path)) as IGitHubResponse<IGitHubFile[]>;
-  }
-
-  public async getFileContentsAsync(
-    owner: string,
-    repo: string,
-    branch: string,
-    path: string
-  ): Promise<IGitHubResponse<IGitHubFile>> {
-    return (await this.getContentsAsync(owner, repo, branch, path)) as IGitHubResponse<IGitHubFile>;
   }
 
   public async getContentsAsync(
     owner: string,
     repo: string,
     branch: string,
-    path: string
+    path?: string
   ): Promise<IGitHubResponse<IGitHubFile | IGitHubFile[]>> {
-    if (GitHubClient.isSamplesCall(owner, repo, branch) && path === "") {
+    try {
+      let response: ContentsQueryResponse;
+      if (isSamplesCall(owner, repo, branch) && !path) {
+        response = SamplesContentsQueryResponse;
+      } else {
+        response = (await this.ocktokit.graphql(contentsQuery, {
+          owner,
+          repo,
+          ref: `refs/heads/${branch}`,
+          path: path || undefined,
+          objectExpression: `refs/heads/${branch}:${path || ""}`
+        } as ContentsQueryParams)) as ContentsQueryResponse;
+      }
+
+      let data: IGitHubFile | IGitHubFile[];
+      const entries = response.repository.object.entries;
+      const gitHubRepo = GitHubClient.toGitHubRepo(response.repository);
+      const gitHubBranch = GitHubClient.toGitHubBranch(response.repository.ref);
+      const gitHubCommit = GitHubClient.toGitHubCommit(response.repository.ref.target.history.nodes[0]);
+
+      if (Array.isArray(entries)) {
+        data = entries.map(entry =>
+          GitHubClient.toGitHubFile(
+            entry,
+            (path && UrlUtility.createUri(path, entry.name)) || entry.name,
+            gitHubRepo,
+            gitHubBranch,
+            gitHubCommit
+          )
+        );
+      } else {
+        data = GitHubClient.toGitHubFile(
+          {
+            name: NotebookUtil.getName(path),
+            type: "blob",
+            object: response.repository.object
+          },
+          path,
+          gitHubRepo,
+          gitHubBranch,
+          gitHubCommit
+        );
+      }
+
       return {
         status: HttpStatusCodes.OK,
-        data: GitHubClient.samplesFiles.map(file =>
-          GitHubClient.toGitHubFile(file, GitHubClient.samplesRepo, GitHubClient.samplesBranch)
-        )
+        data
+      };
+    } catch (error) {
+      GitHubClient.log(Logger.logError, `GitHubClient.getContentsAsync failed: ${error}`);
+      return {
+        status: GitHubClient.SelfErrorCode,
+        data: undefined
       };
     }
-
-    const response = await this.ocktokit.repos.getContents({
-      owner,
-      repo,
-      path,
-      ref: branch,
-      headers: GitHubClient.getDisableCacheHeaders()
-    });
-
-    let data: IGitHubFile | IGitHubFile[];
-    if (response.data) {
-      const repoResponse = await this.getRepoAsync(owner, repo);
-      if (repoResponse.data) {
-        const fileRepo: IGitHubRepo = GitHubClient.toGitHubRepo(repoResponse.data);
-        const fileBranch: IGitHubBranch = { name: branch };
-
-        if (Array.isArray(response.data)) {
-          const contents: IGitHubFile[] = [];
-          response.data.forEach((element: any) =>
-            contents.push(GitHubClient.toGitHubFile(element, fileRepo, fileBranch))
-          );
-          data = contents;
-        } else {
-          data = GitHubClient.toGitHubFile(
-            { ...response.data, type: response.data.type as "file" | "dir" | "symlink" | "submodule" },
-            fileRepo,
-            fileBranch
-          );
-        }
-      }
-    }
-
-    return { status: response.status, data };
   }
 
   public async createOrUpdateFileAsync(
@@ -372,7 +406,9 @@ export class GitHubClient {
       owner,
       repo,
       ref,
-      headers: GitHubClient.getDisableCacheHeaders()
+      headers: {
+        "If-None-Match": "" // disable 60s cache
+      }
     });
 
     const currentTree = await this.ocktokit.git.getTree({
@@ -380,7 +416,9 @@ export class GitHubClient {
       repo,
       tree_sha: currentRef.data.object.sha,
       recursive: "1",
-      headers: GitHubClient.getDisableCacheHeaders()
+      headers: {
+        "If-None-Match": "" // disable 60s cache
+      }
     });
 
     // API infers tree from paths so we need to filter them out
@@ -425,7 +463,7 @@ export class GitHubClient {
 
   public async deleteFileAsync(file: IGitHubFile, message: string): Promise<IGitHubResponse<IGitHubCommit>> {
     const response = await this.ocktokit.repos.deleteFile({
-      owner: file.repo.owner.login,
+      owner: file.repo.owner,
       repo: file.repo.name,
       path: file.path,
       message,
@@ -441,10 +479,31 @@ export class GitHubClient {
     return { status: response.status, data };
   }
 
-  private initOctokit(token: string) {
+  public async getBlobAsync(owner: string, repo: string, sha: string): Promise<IGitHubResponse<string>> {
+    const response = await this.ocktokit.git.getBlob({
+      owner,
+      repo,
+      file_sha: sha,
+      mediaType: {
+        format: "raw"
+      },
+      headers: {
+        "If-None-Match": "" // disable 60s cache
+      }
+    });
+
+    return { status: response.status, data: <string>(<unknown>response.data) };
+  }
+
+  private async initOctokit(token: string) {
     this.ocktokit = new Octokit({
       auth: token,
-      baseUrl: GitHubClient.gitHubApiEndpoint
+      log: {
+        debug: () => {},
+        info: (message?: any) => GitHubClient.log(Logger.logInfo, message),
+        warn: (message?: any) => GitHubClient.log(Logger.logWarning, message),
+        error: (message?: any) => GitHubClient.log(Logger.logError, message)
+      }
     });
 
     this.ocktokit.hook.error("request", error => {
@@ -453,53 +512,69 @@ export class GitHubClient {
     });
   }
 
-  private static getDisableCacheHeaders(): RequestHeaders {
+  private static log(logger: (message: string, area: string) => void, message?: any) {
+    if (message) {
+      message = typeof message === "string" ? message : JSON.stringify(message);
+      logger(message, "GitHubClient.Octokit");
+    }
+  }
+
+  private static toGitHubRepo(object: Repository): IGitHubRepo {
     return {
-      "If-None-Match": ""
+      owner: object.owner.login,
+      name: object.name,
+      private: object.isPrivate
     };
   }
 
-  private static toGitHubRepo(element: IGitHubRepo): IGitHubRepo {
+  private static toGitHubBranch(object: Ref): IGitHubBranch {
     return {
-      name: element.name,
-      owner: {
-        login: element.owner.login
-      },
-      private: element.private
+      name: object.name
     };
   }
 
-  private static toGitHubBranch(element: IGitHubBranch): IGitHubBranch {
+  private static toGitHubCommit(object: {
+    message: string;
+    committer: {
+      date: string;
+    };
+    sha?: string;
+    oid?: string;
+  }): IGitHubCommit {
     return {
-      name: element.name
+      sha: object.sha || object.oid,
+      message: object.message,
+      commitDate: object.committer.date
     };
   }
 
-  private static toGitHubCommit(element: IGitHubCommit): IGitHubCommit {
+  private static toGitHubPageInfo(object: PageInfo): IGitHubPageInfo {
     return {
-      sha: element.sha,
-      message: element.message,
-      committer: {
-        date: element.committer.date
-      }
+      endCursor: object.endCursor,
+      hasNextPage: object.hasNextPage
     };
   }
 
-  private static toGitHubFile(element: IGitHubFile, repo: IGitHubRepo, branch: IGitHubBranch): IGitHubFile {
+  private static toGitHubFile(
+    entry: TreeEntry,
+    path: string,
+    repo: IGitHubRepo,
+    branch: IGitHubBranch,
+    commit: IGitHubCommit
+  ): IGitHubFile {
+    if (entry.type !== "blob" && entry.type !== "tree") {
+      throw new Error(`Unsupported file type: ${entry.type}`);
+    }
+
     return {
-      type: element.type,
-      encoding: element.encoding,
-      size: element.size,
-      name: element.name,
-      path: element.path,
-      content: element.content,
-      sha: element.sha,
+      type: entry.type,
+      name: entry.name,
+      path,
       repo,
-      branch
+      branch,
+      commit,
+      size: entry.object?.byteSize,
+      sha: entry.object?.oid
     };
-  }
-
-  private static isSamplesCall(owner: string, repo: string, branch?: string): boolean {
-    return owner === "Azure-Samples" && repo === "cosmos-notebooks" && (!branch || branch === "master");
   }
 }
