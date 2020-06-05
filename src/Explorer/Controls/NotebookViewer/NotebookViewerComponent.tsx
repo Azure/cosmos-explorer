@@ -16,12 +16,14 @@ import "./NotebookViewerComponent.less";
 export interface NotebookViewerComponentProps {
   notebookName: string;
   notebookUrl: string;
-  container: ViewModels.Explorer;
+  container?: ViewModels.Explorer;
   notebookMetadata: NotebookMetadata;
+  onNotebookMetadataChange?: (newNotebookMetadata: NotebookMetadata) => Promise<void>;
+  isLikedNotebook?: boolean;
+  hideInputs?: boolean;
 }
 
 interface NotebookViewerComponentState {
-  element: JSX.Element;
   content: any;
 }
 
@@ -50,7 +52,7 @@ export class NotebookViewerComponent extends React.Component<
       contentRef: createContentRef()
     });
 
-    this.state = { element: undefined, content: undefined };
+    this.state = { content: undefined };
   }
 
   private async getJsonNotebookContent(): Promise<any> {
@@ -65,24 +67,25 @@ export class NotebookViewerComponent extends React.Component<
   componentDidMount() {
     this.getJsonNotebookContent().then((jsonContent: any) => {
       this.notebookComponentBootstrapper.setContent("json", jsonContent);
-      const notebookReadonlyComponent = this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer);
-      this.setState({ element: notebookReadonlyComponent, content: jsonContent });
+      this.setState({ content: jsonContent });
     });
   }
 
   public render(): JSX.Element {
-    return this.state != null ? (
+    return (
       <div className="notebookViewerContainer">
         <NotebookMetadataComponent
           notebookMetadata={this.props.notebookMetadata}
           notebookName={this.props.notebookName}
           container={this.props.container}
           notebookContent={this.state.content}
+          onNotebookMetadataChange={this.props.onNotebookMetadataChange}
+          isLikedNotebook={this.props.isLikedNotebook}
         />
-        {this.state.element}
+        {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
+          hideInputs: this.props.hideInputs
+        })}
       </div>
-    ) : (
-      <></>
     );
   }
 }

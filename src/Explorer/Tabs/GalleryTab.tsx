@@ -3,7 +3,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "./TabsBase";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { GalleryViewerContainerComponent } from "../../GalleryViewer/GalleryViewerComponent";
+import { GalleryViewerContainerComponent } from "../Controls/NotebookGallery/GalleryViewerComponent";
 
 /**
  * Notebook gallery tab

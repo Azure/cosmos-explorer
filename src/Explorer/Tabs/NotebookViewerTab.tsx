@@ -16,7 +16,9 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
     private notebookUrl: string,
     private notebookName: string,
     private container: ViewModels.Explorer,
-    private notebookMetadata: DataModels.NotebookMetadata
+    private notebookMetadata: DataModels.NotebookMetadata,
+    private onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
+    private isLikedNotebook: boolean
   ) {}
 
   public renderComponent(): JSX.Element {
@@ -26,6 +28,8 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
         notebookMetadata={this.notebookMetadata}
         notebookName={this.notebookName}
         container={this.container}
+        onNotebookMetadataChange={this.onNotebookMetadataChange}
+        isLikedNotebook={this.isLikedNotebook}
       />
     ) : (
       <></>
@@ -46,7 +50,9 @@ export default class NotebookViewerTab extends TabsBase implements ViewModels.Ta
       options.notebookUrl,
       options.notebookName,
       options.container,
-      options.notebookMetadata
+      options.notebookMetadata,
+      options.onNotebookMetadataChange,
+      options.isLikedNotebook
     );
 
     this.notebookViewerComponentAdapter.parameters = ko.computed<boolean>(() => {

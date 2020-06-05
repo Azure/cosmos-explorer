@@ -9,11 +9,12 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { actions, ContentRef } from "@nteract/core";
 import loadTransform from "../NotebookComponent/loadTransform";
-import CodeMirrorEditor from "@nteract/editor";
+import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
 import "./NotebookReadOnlyRenderer.less";
 
 export interface NotebookRendererProps {
   contentRef: any;
+  hideInputs?: boolean;
 }
 
 interface PassedEditorProps {
@@ -46,7 +47,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <CodeCell id={id} contentRef={contentRef}>
                 {{
                   editor: {
-                    codemirror: (props: PassedEditorProps) => <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                    codemirror: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
                   },
                   prompt: ({ id, contentRef }) => <></>
                 }}
@@ -63,7 +65,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <RawCell id={id} contentRef={contentRef} cell_type="raw">
                 {{
                   editor: {
-                    codemirror: (props: PassedEditorProps) => <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                    codemirror: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
                   }
                 }}
               </RawCell>
