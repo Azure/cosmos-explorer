@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cypress run",
-    "test:ci": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/ https-get://0.0.0.0:8081/_explorer/index.html && cypress run --browser chrome --headless",
+    "test:ci": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/ https-get://0.0.0.0:8081/_explorer/index.html && cypress run --browser firefox --headless",
     "test:debug": "cypress open"
   },
   "devDependencies": {
