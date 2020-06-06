@@ -67,6 +67,136 @@ jobs:
           EMULATOR_ENDPOINT: https://0.0.0.0:8081/
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+  endtoendprodsql:
+      name: "End to End Tests Prod"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Use Node.js 12.x
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12.x
+        - name: Restore Cypress Binary Cache
+          uses: actions/cache@v2
+          with:
+            path: ~/.cache/Cypress
+            key: ${{ runner.os }}-cypress-binary-cache
+        - name: End to End Tests
+          run: |
+            npm ci
+            npm start &
+            npm ci --prefix ./cypress
+            npm run test --prefix ./cypress
+          shell: bash
+          env:
+            EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
+  endtoendprodmongo:
+      name: "End to End Tests Prod"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Use Node.js 12.x
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12.x
+        - name: Restore Cypress Binary Cache
+          uses: actions/cache@v2
+          with:
+            path: ~/.cache/Cypress
+            key: ${{ runner.os }}-cypress-binary-cache
+        - name: End to End Tests
+          run: |
+            npm ci
+            npm start &
+            npm ci --prefix ./cypress
+            npm run test --prefix ./cypress
+          shell: bash
+          env:
+            EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
+  endtoendprodtable:
+      name: "End to End Tests Prod"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Use Node.js 12.x
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12.x
+        - name: Restore Cypress Binary Cache
+          uses: actions/cache@v2
+          with:
+            path: ~/.cache/Cypress
+            key: ${{ runner.os }}-cypress-binary-cache
+        - name: End to End Tests
+          run: |
+            npm ci
+            npm start &
+            npm ci --prefix ./cypress
+            npm run test --prefix ./cypress
+          shell: bash
+          env:
+            EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
+  endtoendprodgraph:
+      name: "End to End Tests Prod"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Use Node.js 12.x
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12.x
+        - name: Restore Cypress Binary Cache
+          uses: actions/cache@v2
+          with:
+            path: ~/.cache/Cypress
+            key: ${{ runner.os }}-cypress-binary-cache
+        - name: End to End Tests
+          run: |
+            npm ci
+            npm start &
+            npm ci --prefix ./cypress
+            npm run test --prefix ./cypress
+          shell: bash
+          env:
+            EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_GRAPH }}
+  endtoendprodcassandra:
+      name: "End to End Tests Prod"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Use Node.js 12.x
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12.x
+        - name: Restore Cypress Binary Cache
+          uses: actions/cache@v2
+          with:
+            path: ~/.cache/Cypress
+            key: ${{ runner.os }}-cypress-binary-cache
+        - name: End to End Tests
+          run: |
+            npm ci
+            npm start &
+            npm ci --prefix ./cypress
+            npm run test --prefix ./cypress
+          shell: bash
+          env:
+            EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
   nuget:
     name: Publish Nuget
     needs: [build, test, endtoend]
