@@ -22,11 +22,28 @@ export const subtleHelpfulTextStyles: ITextStyles = {
   }
 };
 
+export const iconButtonStyles: IIconStyles = {
+  root: {
+    marginLeft: "10px",
+    color: "#0078D4",
+    backgroundColor: "#FFF",
+    fontSize: 16,
+    fontWeight: FontWeights.regular,
+    display: "inline-block",
+    selectors: {
+      ":hover .ms-Button-icon": {
+        color: "#ccc"
+      }
+    }
+  }
+};
+
 export const iconStyles: IIconStyles = {
   root: {
     marginLeft: "10px",
     color: "#0078D4",
-    fontSize: 12,
+    backgroundColor: "#FFF",
+    fontSize: 16,
     fontWeight: FontWeights.regular,
     display: "inline-block"
   }

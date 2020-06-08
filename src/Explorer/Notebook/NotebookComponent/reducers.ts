@@ -1,8 +1,9 @@
+import { actions, CoreRecord, reducers as nteractReducers } from "@nteract/core";
+import { Action } from "redux";
+import { Areas } from "../../../Common/Constants";
+import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as cdbActions from "./actions";
 import { CdbRecord } from "./types";
-
-import { Action } from "redux";
-import { actions, CoreRecord, reducers as nteractReducers } from "@nteract/core";
 
 export const coreReducer = (state: CoreRecord, action: Action) => {
   let typedAction;
@@ -50,11 +51,6 @@ export const coreReducer = (state: CoreRecord, action: Action) => {
         .setIn(path.concat("displayName"), kernelspecs.displayName)
         .setIn(path.concat("language"), kernelspecs.language);
     }
-    case cdbActions.UPDATE_LAST_MODIFIED: {
-      typedAction = action as cdbActions.UpdateLastModifiedAction;
-      const path = ["entities", "contents", "byRef", typedAction.payload.contentRef, "lastSaved"];
-      return state.setIn(path, typedAction.payload.lastModified);
-    }
     default:
       return nteractReducers.core(state as any, action as any);
   }
@@ -74,6 +70,17 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
     case cdbActions.SET_HOVERED_CELL: {
       const typedAction = action as cdbActions.SetHoveredCellAction;
       return state.set("hoveredCellId", typedAction.payload.cellId);
+    }
+
+    case cdbActions.TRACE_NOTEBOOK_TELEMETRY: {
+      const typedAction = action as cdbActions.TraceNotebookTelemetryAction;
+      TelemetryProcessor.trace(typedAction.payload.action, typedAction.payload.actionModifier, {
+        ...typedAction.payload.data,
+        databaseAccountName: state.databaseAccountName,
+        defaultExperience: state.defaultExperience,
+        dataExplorerArea: Areas.Notebook
+      });
+      return state;
     }
   }
   return state;

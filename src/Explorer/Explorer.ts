@@ -1143,7 +1143,7 @@ export default class Explorer implements ViewModels.Explorer {
       isModal: true,
       visible: true,
       title: `Enable Azure Synapse Link on your Cosmos DB account`,
-      subText: `Enable Azure Synapse Link to perform near real time analytical analytics on this account, without impacting the performance of your transactional workloads. 
+      subText: `Enable Azure Synapse Link to perform near real time analytical analytics on this account, without impacting the performance of your transactional workloads.
       Azure Synapse Link brings together Cosmos Db Analytical Store and Synapse Analytics`,
       primaryButtonText: "Enable Azure Synapse Link",
       secondaryButtonText: "Cancel",
@@ -2583,7 +2583,7 @@ export default class Explorer implements ViewModels.Explorer {
     const item = NotebookUtil.createNotebookContentItem(name, path, "file");
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && this.isNotebookEnabled() && this.notebookClient) {
+    if (parent && parent.children && this.isNotebookEnabled() && this.notebookClient) {
       if (this._filePathToImportAndOpen === path) {
         this._filePathToImportAndOpen = null; // we don't want to try opening this path again
       }
@@ -3278,7 +3278,12 @@ export default class Explorer implements ViewModels.Explorer {
     newTab.onTabClick();
   }
 
-  public openNotebookViewer(notebookUrl: string, notebookMetadata: DataModels.NotebookMetadata) {
+  public openNotebookViewer(
+    notebookUrl: string,
+    notebookMetadata: DataModels.NotebookMetadata,
+    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
+    isLikedNotebook: boolean
+  ) {
     const notebookName = path.basename(notebookUrl);
     const title = notebookName;
     const hashLocation = notebookUrl;
@@ -3320,7 +3325,9 @@ export default class Explorer implements ViewModels.Explorer {
       openedTabs: this.openedTabs(),
       notebookUrl: notebookUrl,
       notebookName: notebookName,
-      notebookMetadata: notebookMetadata
+      notebookMetadata: notebookMetadata,
+      onNotebookMetadataChange: onNotebookMetadataChange,
+      isLikedNotebook: isLikedNotebook
     });
 
     this.openedTabs.push(newTab);

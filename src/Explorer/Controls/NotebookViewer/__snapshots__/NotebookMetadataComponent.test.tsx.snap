@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotebookMetadataComponent renders liked notebook 1`] = `
+<div
+  className="notebookViewerMetadataContainer"
+>
+  <h3
+    className="title"
+  >
+    My notebook
+  </h3>
+</div>
+`;
+
+exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
+<div
+  className="notebookViewerMetadataContainer"
+>
+  <h3
+    className="title"
+  >
+    My notebook
+  </h3>
+</div>
+`;

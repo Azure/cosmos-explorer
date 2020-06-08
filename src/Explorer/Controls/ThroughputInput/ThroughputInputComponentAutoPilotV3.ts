@@ -163,6 +163,8 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
   public minAutoPilotThroughput: ko.Observable<number>;
   public overrideWithAutoPilotSettings: ko.Observable<boolean>;
   public overrideWithProvisionedThroughputSettings: ko.Observable<boolean>;
+  public isManualThroughputInputFieldRequired: ko.Computed<boolean>;
+  public isAutoscaleThroughputInputFieldRequired: ko.Computed<boolean>;
 
   public constructor(options: ThroughputInputParams) {
     super();
@@ -213,6 +215,10 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     });
     this.decreaseButtonAriaLabel = "Decrease throughput by " + this.step().toString();
     this.increaseButtonAriaLabel = "Increase throughput by " + this.step().toString();
+    this.isManualThroughputInputFieldRequired = ko.pureComputed(() => this.isEnabled() && !this.isAutoPilotSelected());
+    this.isAutoscaleThroughputInputFieldRequired = ko.pureComputed(
+      () => this.isEnabled() && this.isAutoPilotSelected()
+    );
   }
 
   public decreaseThroughput() {

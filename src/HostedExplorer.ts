@@ -713,7 +713,7 @@ class HostedExplorer {
       ? storedDefaultTenantId.substring(DefaultDirectoryDropdownComponent.lastVisitedKey.length)
       : storedDefaultTenantId;
 
-    let defaultTenant: Tenant = tenants.find(t => t.tenantId === storedDefaultTenantId);
+    let defaultTenant: Tenant = _.find(tenants, t => t.tenantId === storedDefaultTenantId);
     if (!defaultTenant) {
       defaultTenant = tenants[0];
       LocalStorageUtility.setEntryString(
@@ -830,7 +830,7 @@ class HostedExplorer {
     const storedAccountId = LocalStorageUtility.getEntryString(StorageKey.DatabaseAccountId);
     const storedSubId = storedAccountId && storedAccountId.split("subscriptions/")[1].split("/")[0];
 
-    let defaultSub = subscriptions.find(s => s.subscriptionId === storedSubId);
+    let defaultSub = _.find(subscriptions, s => s.subscriptionId === storedSubId);
     if (!defaultSub) {
       defaultSub = subscriptions[0];
     }
@@ -932,7 +932,7 @@ class HostedExplorer {
     }
 
     let storedDefaultAccountId = LocalStorageUtility.getEntryString(StorageKey.DatabaseAccountId);
-    let defaultAccount = accounts.find(a => a.id === storedDefaultAccountId);
+    let defaultAccount = _.find(accounts, a => a.id === storedDefaultAccountId);
 
     if (!defaultAccount) {
       defaultAccount = accounts[0];

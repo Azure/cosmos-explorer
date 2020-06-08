@@ -1,5 +1,6 @@
-import { ContentRef } from "@nteract/core";
 import { CellId } from "@nteract/commutable";
+import { ContentRef } from "@nteract/core";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export const CLOSE_NOTEBOOK = "CLOSE_NOTEBOOK";
 export interface CloseNotebookAction {
@@ -12,25 +13,6 @@ export interface CloseNotebookAction {
 export const closeNotebook = (payload: { contentRef: ContentRef }): CloseNotebookAction => {
   return {
     type: CLOSE_NOTEBOOK,
-    payload
-  };
-};
-
-export const UPDATE_LAST_MODIFIED = "UPDATE_LAST_MODIFIED";
-export interface UpdateLastModifiedAction {
-  type: "UPDATE_LAST_MODIFIED";
-  payload: {
-    contentRef: ContentRef;
-    lastModified: string;
-  };
-}
-
-export const updateLastModified = (payload: {
-  contentRef: ContentRef;
-  lastModified: string;
-}): UpdateLastModifiedAction => {
-  return {
-    type: UPDATE_LAST_MODIFIED,
     payload
   };
 };
@@ -78,6 +60,27 @@ export interface SetHoveredCellAction {
 export const setHoveredCell = (payload: { cellId: CellId }): SetHoveredCellAction => {
   return {
     type: SET_HOVERED_CELL,
+    payload
+  };
+};
+
+export const TRACE_NOTEBOOK_TELEMETRY = "TRACE_NOTEBOOK_TELEMETRY";
+export interface TraceNotebookTelemetryAction {
+  type: "TRACE_NOTEBOOK_TELEMETRY";
+  payload: {
+    action: Action;
+    actionModifier?: string;
+    data?: any;
+  };
+}
+
+export const traceNotebookTelemetry = (payload: {
+  action: Action;
+  actionModifier?: string;
+  data?: any;
+}): TraceNotebookTelemetryAction => {
+  return {
+    type: TRACE_NOTEBOOK_TELEMETRY,
     payload
   };
 };

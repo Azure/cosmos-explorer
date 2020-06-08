@@ -1,92 +1,110 @@
-import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import { GitHubClient, IGitHubBranch, IGitHubRepo } from "./GitHubClient";
+import { GitHubClient, IGitHubFile } from "./GitHubClient";
+import { SamplesRepo, SamplesBranch, SamplesContentsQueryResponse } from "../Explorer/Notebook/NotebookSamples";
 
 const invalidTokenCallback = jest.fn();
-// Use a dummy token to get around API rate limit (same as AZURESAMPLESCOSMOSDBPAT in webpack.config.js)
-const gitHubClient = new GitHubClient("99e38770e29b4a61d7c49f188780504efd35cc86", invalidTokenCallback);
-const samplesRepo: IGitHubRepo = {
-  name: "cosmos-notebooks",
-  owner: {
-    login: "Azure-Samples"
-  },
-  private: false
-};
-const samplesBranch: IGitHubBranch = {
-  name: "master"
-};
-const sampleFilePath = ".gitignore";
-const sampleDirPath = ".github";
+// Use a dummy token to get around API rate limit (something which doesn't affect the API quota for AZURESAMPLESCOSMOSDBPAT in Config.ts)
+const gitHubClient = new GitHubClient("cd1906b9534362fab6ce45d6db6c76b59e55bc50", invalidTokenCallback);
 
-describe.skip("GitHubClient", () => {
+const validateGitHubFile = (file: IGitHubFile) => {
+  expect(file.branch).toEqual(SamplesBranch);
+  expect(file.commit).toBeDefined();
+  expect(file.name).toBeDefined();
+  expect(file.path).toBeDefined();
+  expect(file.repo).toEqual(SamplesRepo);
+  expect(file.type).toBeDefined();
+
+  switch (file.type) {
+    case "blob":
+      expect(file.sha).toBeDefined();
+      expect(file.size).toBeDefined();
+      break;
+
+    case "tree":
+      expect(file.sha).toBeUndefined();
+      expect(file.size).toBeUndefined();
+      break;
+
+    default:
+      throw new Error(`Unsupported github file type: ${file.type}`);
+  }
+};
+
+describe("GitHubClient", () => {
   it("getRepoAsync returns valid repo", async () => {
-    const response = await gitHubClient.getRepoAsync(samplesRepo.owner.login, samplesRepo.name);
-    expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(response.data.name).toBe(samplesRepo.name);
-    expect(response.data.owner.login).toBe(samplesRepo.owner.login);
+    const response = await gitHubClient.getRepoAsync(SamplesRepo.owner, SamplesRepo.name);
+    expect(response).toEqual({
+      status: HttpStatusCodes.OK,
+      data: SamplesRepo
+    });
   });
 
   it("getReposAsync returns repos for authenticated user", async () => {
-    const response = await gitHubClient.getReposAsync(1, 1);
+    const response = await gitHubClient.getReposAsync(1);
     expect(response.status).toBe(HttpStatusCodes.OK);
+    expect(response.data).toBeDefined();
     expect(response.data.length).toBe(1);
+    expect(response.pageInfo).toBeDefined();
   });
 
   it("getBranchesAsync returns branches for a repo", async () => {
-    const response = await gitHubClient.getBranchesAsync(samplesRepo.owner.login, samplesRepo.name, 1, 1);
+    const response = await gitHubClient.getBranchesAsync(SamplesRepo.owner, SamplesRepo.name, 1);
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(response.data.length).toBe(1);
+    expect(response.data).toEqual([SamplesBranch]);
+    expect(response.pageInfo).toBeDefined();
   });
 
-  it("getCommitsAsync returns commits for a file", async () => {
-    const response = await gitHubClient.getCommitsAsync(
-      samplesRepo.owner.login,
-      samplesRepo.name,
-      samplesBranch.name,
-      sampleFilePath,
-      1,
-      1
-    );
+  it("getContentsAsync returns files in the repo", async () => {
+    const response = await gitHubClient.getContentsAsync(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name);
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(response.data.length).toBe(1);
+    expect(response.data).toBeDefined();
+
+    const data = response.data as IGitHubFile[];
+    expect(data.length).toBeGreaterThan(0);
+    data.forEach(content => validateGitHubFile(content));
   });
 
-  it("getDirContentsAsync returns files in the repo", async () => {
-    const response = await gitHubClient.getDirContentsAsync(
-      samplesRepo.owner.login,
-      samplesRepo.name,
-      samplesBranch.name,
-      ""
+  it("getContentsAsync returns files in a dir", async () => {
+    const samplesDir = SamplesContentsQueryResponse.repository.object.entries.find(file => file.type === "tree");
+    const response = await gitHubClient.getContentsAsync(
+      SamplesRepo.owner,
+      SamplesRepo.name,
+      SamplesBranch.name,
+      samplesDir.name
     );
+
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(response.data.length).toBeGreaterThan(0);
-    expect(response.data[0].repo).toEqual(samplesRepo);
-    expect(response.data[0].branch).toEqual(samplesBranch);
+    expect(response.data).toBeDefined();
+
+    const data = response.data as IGitHubFile[];
+    expect(data.length).toBeGreaterThan(0);
+    data.forEach(content => validateGitHubFile(content));
   });
 
-  it("getDirContentsAsync returns files in a dir", async () => {
-    const response = await gitHubClient.getDirContentsAsync(
-      samplesRepo.owner.login,
-      samplesRepo.name,
-      samplesBranch.name,
-      sampleDirPath
+  it("getContentsAsync returns a file", async () => {
+    const samplesFile = SamplesContentsQueryResponse.repository.object.entries.find(file => file.type === "blob");
+    const response = await gitHubClient.getContentsAsync(
+      SamplesRepo.owner,
+      SamplesRepo.name,
+      SamplesBranch.name,
+      samplesFile.name
     );
+
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(response.data.length).toBeGreaterThan(0);
-    expect(response.data[0].repo).toEqual(samplesRepo);
-    expect(response.data[0].branch).toEqual(samplesBranch);
+    expect(response.data).toBeDefined();
+
+    const file = response.data as IGitHubFile;
+    expect(file.type).toBe("blob");
+    validateGitHubFile(file);
+    expect(file.content).toBeUndefined();
   });
 
-  it("getFileContentsAsync returns a file", async () => {
-    const response = await gitHubClient.getFileContentsAsync(
-      samplesRepo.owner.login,
-      samplesRepo.name,
-      samplesBranch.name,
-      sampleFilePath
-    );
+  it("getBlobAsync returns file content", async () => {
+    const samplesFile = SamplesContentsQueryResponse.repository.object.entries.find(file => file.type === "blob");
+    const response = await gitHubClient.getBlobAsync(SamplesRepo.owner, SamplesRepo.name, samplesFile.object.oid);
+
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(response.data.path).toBe(sampleFilePath);
-    expect(response.data.repo).toEqual(samplesRepo);
-    expect(response.data.branch).toEqual(samplesBranch);
+    expect(response.data).toBeDefined();
+    expect(typeof response.data).toBe("string");
   });
 });

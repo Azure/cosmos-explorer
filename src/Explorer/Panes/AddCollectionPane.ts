@@ -832,7 +832,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
       const isAadUser = EnvironmentUtility.isAadUser();
 
       // note: v3 autopilot not supported yet for Mongo fixed collections (only tier supported)
-      if (!isAadUser) {
+      if (!isAadUser || isFixedCollectionWithSharedThroughputBeingCreated) {
         createCollectionFunc = () =>
           Q(
             createMongoCollectionWithProxy(
@@ -853,7 +853,6 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
               this.container.armEndpoint(),
               databaseId,
               this._getAnalyticalStorageTtl(),
-              isFixedCollectionWithSharedThroughputBeingCreated,
               collectionId,
               offerThroughput,
               partitionKeyPath,

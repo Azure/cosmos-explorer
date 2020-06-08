@@ -155,19 +155,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: ViewModels.Explore
 }
 
 function openFile(action: ActionContracts.OpenSampleNotebook, explorer: ViewModels.Explorer) {
-  let path: string;
-  if (action.hasOwnProperty("file")) {
-    // This is deprecated
-    const downloadUrl: string = (action as any).file.download_url;
-    path = downloadUrl.replace(
-      "raw.githubusercontent.com/Azure-Samples/cosmos-notebooks",
-      "github.com/Azure-Samples/cosmos-notebooks/blob"
-    ); // convert raw download url to something which GitHubContentProvider understands
-  } else {
-    path = action.path;
-  }
-
-  explorer.handleOpenFileAction(path);
+  explorer.handleOpenFileAction(decodeURIComponent(action.path));
 }
 
 function generateQueryText(action: ActionContracts.OpenQueryTab, partitionKeyProperty: string): string {

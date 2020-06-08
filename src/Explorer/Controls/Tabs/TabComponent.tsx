@@ -1,5 +1,6 @@
 import * as React from "react";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import "./TabComponent.less";
 
 export interface TabContent {
   render: () => JSX.Element;
@@ -75,10 +76,10 @@ export class TabComponent extends React.Component<TabComponentProps> {
     }
 
     return (
-      <React.Fragment>
+      <div className="tabComponentContainer">
         {!this.props.hideHeader && <div className="tabs tabSwitch">{this.renderTabTitles()}</div>}
         <div className={className}>{currentTabContent.render()}</div>
-      </React.Fragment>
+      </div>
     );
   }
 }

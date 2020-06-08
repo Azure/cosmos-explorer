@@ -93,7 +93,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
       const repo = await this.props.getRepo(repoInfo.owner, repoInfo.repo);
       if (repo) {
         const item: RepoListItem = {
-          key: GitHubUtils.toRepoFullName(repo.owner.login, repo.name),
+          key: GitHubUtils.toRepoFullName(repo.owner, repo.name),
           repo,
           branches: [
             {

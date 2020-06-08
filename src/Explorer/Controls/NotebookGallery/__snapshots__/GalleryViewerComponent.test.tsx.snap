@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FullWidthTabs renders 1`] = `
+<TabComponent
+  currentTabIndex={0}
+  hideHeader={false}
+  onTabIndexChange={[Function]}
+  tabs={
+    Array [
+      Object {
+        "content": Object {
+          "className": "",
+          "render": [Function],
+        },
+        "isVisible": [Function],
+        "title": "Official Samples",
+      },
+      Object {
+        "content": Object {
+          "className": "",
+          "render": [Function],
+        },
+        "isVisible": [Function],
+        "title": "Liked Notebooks",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`GalleryCardComponent renders 1`] = `
+<div
+  className="galleryContainer"
+>
+  <GalleryCardsComponent
+    data={Array []}
+    onClick={[Function]}
+  />
+</div>
+`;
+
+exports[`GalleryCardsComponent renders 1`] = `
+<Stack
+  horizontal={true}
+  tokens={
+    Object {
+      "childrenGap": 30,
+    }
+  }
+  wrap={true}
+/>
+`;
+
+exports[`GalleryViewerContainerComponent renders 1`] = `<Fragment />`;

@@ -547,7 +547,6 @@ export interface MongoParameters extends RpParameters {
   autoPilotTier?: string;
   autoPilotThroughput?: string;
   analyticalStorageTtl?: number;
-  isFixedCollectionWithSharedThroughputBeingCreated?: boolean;
 }
 
 export interface GraphParameters extends RpParameters {
@@ -739,6 +738,8 @@ export interface GitHubInfoJunoResponse {
   gitUrl: string;
   htmlUrl: string;
   metadata?: NotebookMetadata;
+  officialSamplesIndex?: number;
+  isLikedNotebook?: boolean;
 }
 
 export interface LikedNotebooksJunoResponse {

@@ -8,17 +8,22 @@ export class JunoUtils {
   public static async getLikedNotebooks(authorizationToken: string): Promise<DataModels.LikedNotebooksJunoResponse> {
     //TODO: Add Get method once juno has it implemented
     return {
-      likedNotebooksContent: await JunoUtils.getOfficialSampleNotebooks(),
+      likedNotebooksContent: [],
       userMetadata: {
         likedNotebooks: []
       }
     };
   }
 
-  public static async getOfficialSampleNotebooks(): Promise<DataModels.GitHubInfoJunoResponse[]> {
+  public static async getOfficialSampleNotebooks(
+    authorizationToken: string
+  ): Promise<DataModels.GitHubInfoJunoResponse[]> {
     try {
-      const response = await window.fetch(config.JUNO_ENDPOINT + "/api/galleries/notebooks", {
-        method: "GET"
+      const response = await window.fetch(config.JUNO_ENDPOINT + "/api/notebooks/galleries", {
+        method: "GET",
+        headers: {
+          authorization: authorizationToken
+        }
       });
       if (!response.ok) {
         throw new Error("Status code:" + response.status);
@@ -35,19 +40,21 @@ export class JunoUtils {
   ): Promise<DataModels.UserMetadata> {
     return undefined;
     //TODO: add userMetadata updation code
+    // TODO: Make sure to throw error if failed
   }
 
   public static async updateNotebookMetadata(
     authorizationToken: string,
-    userMetadata: DataModels.NotebookMetadata
+    notebookMetadata: DataModels.NotebookMetadata
   ): Promise<DataModels.NotebookMetadata> {
     return undefined;
     //TODO: add notebookMetadata updation code
+    // TODO: Make sure to throw error if failed
   }
 
   public static toPinnedRepo(item: RepoListItem): IPinnedRepo {
     return {
-      owner: item.repo.owner.login,
+      owner: item.repo.owner,
       name: item.repo.name,
       private: item.repo.private,
       branches: item.branches.map(element => ({ name: element.name }))
@@ -56,9 +63,7 @@ export class JunoUtils {
 
   public static toGitHubRepo(pinnedRepo: IPinnedRepo): IGitHubRepo {
     return {
-      owner: {
-        login: pinnedRepo.owner
-      },
+      owner: pinnedRepo.owner,
       name: pinnedRepo.name,
       private: pinnedRepo.private
     };
