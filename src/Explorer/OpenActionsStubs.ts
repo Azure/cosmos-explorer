@@ -99,7 +99,7 @@ export class ExplorerStub implements ViewModels.Explorer {
   public isGalleryEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isGraphsEnabled: ko.Computed<boolean>;
-  public isReactPanelEnabled: ko.Computed<boolean>;
+  public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public parentFrameDataExplorerVersion: ko.Observable<string> = ko.observable<string>(Versions.DataExplorer);

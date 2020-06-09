@@ -207,7 +207,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isGraphsEnabled: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  public isReactPanelEnabled: ko.Computed<boolean>;
+  public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
@@ -554,7 +554,7 @@ export default class Explorer implements ViewModels.Explorer {
         !this.isRunningOnNationalCloud() &&
         !this.isPreferredApiGraph()
     );
-    this.isReactPanelEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableReactPanel));
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableRightPanelV2));
     this.defaultExperience.subscribe((defaultExperience: string) => {
       if (
         defaultExperience &&

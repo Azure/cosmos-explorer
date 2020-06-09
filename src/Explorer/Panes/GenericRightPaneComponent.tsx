@@ -2,11 +2,14 @@ import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IconButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import { KeyCodes } from "../../Common/Constants";
+import ErrorRedIcon from "../../../images/error_red.svg";
 import LoadingIndicatorIcon from "../../../images/LoadingIndicator_3Squares.gif";
 
-export interface GenericPaneProps {
+export interface GenericRightPaneProps {
   container: ViewModels.Explorer;
   content: JSX.Element;
+  formError: string;
+  formErrorDetail: string;
   id: string;
   isExecuting: boolean;
   onClose: () => void;
@@ -15,17 +18,34 @@ export interface GenericPaneProps {
   title: string;
 }
 
-export class GenericPaneComponent extends React.Component<GenericPaneProps> {
-  public render(): JSX.Element {
-    const notificationConsoleElement: HTMLElement = document.getElementById("explorerNotificationConsole");
-    const panelHeight: number = window.innerHeight - $(notificationConsoleElement).height();
+export interface GenericRightPaneState {
+  panelHeight: number;
+}
 
+export class GenericRightPaneComponent extends React.Component<GenericRightPaneProps, GenericRightPaneState> {
+  constructor(props: GenericRightPaneProps) {
+    super(props);
+
+    this.state = {
+      panelHeight: this.getPanelHeight()
+    };
+  }
+
+  public componentDidMount(): void {
+    this.props.container.isNotificationConsoleExpanded.subscribe(() => {
+      this.setState({ panelHeight: this.getPanelHeight() });
+    });
+    this.props.container.isNotificationConsoleExpanded.extend({ rateLimit: 10 });
+  }
+
+  public render(): JSX.Element {
     return (
       <div tabIndex={-1} onKeyDown={this.onKeyDown}>
         <div className="contextual-pane-out" onClick={this.props.onClose}></div>
-        <div className="contextual-pane" id={this.props.id} style={{ height: panelHeight }} onKeyDown={this.onKeyDown}>
+        <div className="contextual-pane" id={this.props.id} style={{ height: this.state.panelHeight }} onKeyDown={this.onKeyDown}>
           <div className="panelContentWrapper">
             {this.createPanelHeader()}
+            {this.createErrorSection()}
             {this.props.content}
             {this.createPanelFooter()}
           </div>
@@ -47,6 +67,26 @@ export class GenericPaneComponent extends React.Component<GenericPaneProps> {
           className="closePaneBtn"
           iconProps={{ iconName: "Cancel" }}
         />
+      </div>
+    );
+  };
+
+  private createErrorSection = (): JSX.Element => {
+    return (
+      <div className="warningErrorContainer" aria-live="assertive" hidden={!this.props.formError}>
+        <div className="warningErrorContent">
+          <span>
+            <img className="paneErrorIcon" src={ErrorRedIcon} alt="Error" />
+          </span>
+          <span className="warningErrorDetailsLinkContainer">
+            <span className="formErrors" title={this.props.formError}>
+              {this.props.formError}
+            </span>
+            <a className="errorLink" role="link" hidden={!this.props.formErrorDetail} onClick={this.showErrorDetail}>
+              More details
+            </a>
+          </span>
+        </div>
       </div>
     );
   };
@@ -82,4 +122,13 @@ export class GenericPaneComponent extends React.Component<GenericPaneProps> {
       event.stopPropagation();
     }
   };
+
+  private showErrorDetail = (): void => {
+    this.props.container.expandConsole();
+  };
+
+  private getPanelHeight = (): number => {
+    const notificationConsoleElement: HTMLElement = document.getElementById("explorerNotificationConsole");
+    return window.innerHeight - $(notificationConsoleElement).height();
+  }
 }

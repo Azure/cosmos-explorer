@@ -5,11 +5,10 @@ import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { IconButton } from "office-ui-fabric-react/lib/Button";
-import { GenericPaneComponent, GenericPaneProps } from "./GenericPaneComponent";
+import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
-import ErrorRedIcon from "../../../images/error_red.svg";
 import InfoBubbleIcon from "../../../images/info-bubble.svg";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
@@ -35,9 +34,11 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const props: GenericPaneProps = {
+    const props: GenericRightPaneProps = {
       container: this.container,
       content: this.createContent(),
+      formError: this.formError,
+      formErrorDetail: this.formErrorDetail,
       id: "uploaditemspane",
       isExecuting: this.isExecuting,
       title: "Upload Items",
@@ -45,7 +46,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       onClose: () => this.close(),
       onSubmit: () => this.submit()
     };
-    return <GenericPaneComponent {...props} />;
+    return <GenericRightPaneComponent {...props} />;
   }
 
   public triggerRender(): void {
@@ -63,6 +64,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
   }
 
   public submit(): void {
+    this.formError = "";
     if (!this.selectedFiles || this.selectedFiles.length === 0) {
       this.formError = "No files specified";
       this.formErrorDetail = "No files were specified. Please input at least one file.";
@@ -110,28 +112,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
   private createContent = (): JSX.Element => {
     return (
       <div className="panelContent">
-        {this.createErrorSection()}
         {this.createMainContentSection()}
-      </div>
-    );
-  };
-
-  private createErrorSection = (): JSX.Element => {
-    return (
-      <div className="warningErrorContainer" aria-live="assertive" hidden={!this.formError}>
-        <div className="warningErrorContent">
-          <span>
-            <img className="paneErrorIcon" src={ErrorRedIcon} alt="Error" />
-          </span>
-          <span className="warningErrorDetailsLinkContainer">
-            <span className="formErrors" title={this.formError}>
-              {this.formError}
-            </span>
-            <a className="errorLink" role="link" hidden={!this.formErrorDetail} onClick={this.showErrorDetail}>
-              More details
-            </a>
-          </span>
-        </div>
       </div>
     );
   };
@@ -201,10 +182,6 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
         </div>
       </div>
     );
-  };
-
-  private showErrorDetail = (): void => {
-    this.container.expandConsole();
   };
 
   private updateSelectedFiles = (event: React.ChangeEvent<HTMLInputElement>): void => {
