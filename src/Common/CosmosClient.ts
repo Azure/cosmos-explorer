@@ -21,13 +21,15 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
   if (config.platform === Platform.Emulator) {
-    // TODO Remove any. SDK expects a return value for tokenProvider, but we are mutating the header object instead.
-    return setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey) as any;
+    // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
+    await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
+    return decodeURIComponent(headers.authorization);
   }
 
   if (_masterKey) {
-    // TODO Remove any. SDK expects a return value for tokenProvider, but we are mutating the header object instead.
-    return setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, _masterKey) as any;
+    // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
+    await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
+    return decodeURIComponent(headers.authorization);
   }
 
   if (_resourceToken) {
