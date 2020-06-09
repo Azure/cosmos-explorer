@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IconButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import { KeyCodes } from "../../Common/Constants";
+import { Subscription } from "knockout";
 import ErrorRedIcon from "../../../images/error_red.svg";
 import LoadingIndicatorIcon from "../../../images/LoadingIndicator_3Squares.gif";
 
@@ -23,6 +24,8 @@ export interface GenericRightPaneState {
 }
 
 export class GenericRightPaneComponent extends React.Component<GenericRightPaneProps, GenericRightPaneState> {
+  private notificationConsoleSubscription: Subscription;
+
   constructor(props: GenericRightPaneProps) {
     super(props);
 
@@ -32,10 +35,14 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
   }
 
   public componentDidMount(): void {
-    this.props.container.isNotificationConsoleExpanded.subscribe(() => {
+    this.notificationConsoleSubscription = this.props.container.isNotificationConsoleExpanded.subscribe(() => {
       this.setState({ panelHeight: this.getPanelHeight() });
     });
     this.props.container.isNotificationConsoleExpanded.extend({ rateLimit: 10 });
+  }
+
+  public componentWillUnmount(): void {
+    this.notificationConsoleSubscription && this.notificationConsoleSubscription.dispose();
   }
 
   public render(): JSX.Element {
