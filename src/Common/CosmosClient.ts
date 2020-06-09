@@ -49,7 +49,9 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) =>
 
 export const endpoint = () => {
   if (config.platform === Platform.Emulator) {
-    return config.EMULATOR_ENDPOINT || window.parent.location.origin;
+    // In worker scope, _global(self).parent does not exist
+    const location = _global.parent ? _global.parent.location : _global.location;
+    return config.EMULATOR_ENDPOINT || location.origin;
   }
   return _endpoint || (_databaseAccount && _databaseAccount.properties && _databaseAccount.properties.documentEndpoint);
 };

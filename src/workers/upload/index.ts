@@ -106,6 +106,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
       triggerCreateDocument(content);
     }
   } catch (e) {
+    console.log(e);
     recordUploadDetailErrorForFile(fileName, e.message);
     transmitResultIfUploadComplete();
   }
