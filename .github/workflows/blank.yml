@@ -86,9 +86,8 @@ jobs:
           npm ci
           npm start &
           cd cypress
-          npm ci
-          wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/
-          cypress run --browser chrome --headless --spec ./integration/dataexplorer/SQL/*
+          npx wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/
+          npx cypress run --browser chrome --headless --spec ./integration/dataexplorer/SQL/*
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
