@@ -93,7 +93,6 @@ jobs:
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
-          CONNECTION_STRING_SQL: ${{ secrets.CONNECTION_STRING_SQL }}
   # endtoendprodmongo:
   #     name: "End to End Tests Prod"
   #     runs-on: ubuntu-latest
