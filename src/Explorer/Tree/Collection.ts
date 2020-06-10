@@ -32,6 +32,7 @@ import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
+import { config } from "../../Config";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -1416,7 +1417,7 @@ export default class Collection implements ViewModels.Collection {
         masterKey: CosmosClient.masterKey(),
         endpoint: CosmosClient.endpoint(),
         accessToken: CosmosClient.accessToken(),
-        platform: window.dataExplorerPlatform,
+        platform: config.platform,
         databaseAccount: CosmosClient.databaseAccount()
       }
     };
