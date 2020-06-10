@@ -554,7 +554,9 @@ export default class Explorer implements ViewModels.Explorer {
         !this.isRunningOnNationalCloud() &&
         !this.isPreferredApiGraph()
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableRightPanelV2));
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
+    );
     this.defaultExperience.subscribe((defaultExperience: string) => {
       if (
         defaultExperience &&
