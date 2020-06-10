@@ -87,7 +87,7 @@ jobs:
           npm start &
           cd cypress
           npm ci
-          node run utilities/cleanup
+          node run cleanup
           npm run wait-for-server
           npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/SQL/*"
         shell: bash
