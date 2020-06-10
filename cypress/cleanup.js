@@ -1,9 +1,8 @@
 // Cleans up old databases from previous test runs
 const { CosmosClient } = require("@azure/cosmos");
 
-// TODO: Add support for other APIs
+// TODO: Add support for other API connection strings
 const mongoRegex = RegExp("mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com");
-const sqlRegex = RegExp("AccountEndpoint=https://(.*).documents.azure.com");
 
 async function cleanup() {
   const connectionString = process.env.CYPRESS_CONNECTION_STRING;
@@ -12,16 +11,20 @@ async function cleanup() {
   }
 
   let client;
-  switch (connectionString) {
-    case sqlRegex.test(sqlRegex):
+  switch (true) {
+    case connectionString.includes("mongodb://"): {
+      const [, key, accountName] = connectionString.match(mongoRegex);
+      client = new CosmosClient({
+        key,
+        endpoint: `https://${accountName}.documents.azure.com:443/`
+      });
       break;
-
+    }
+    // TODO: Add support for other API connection strings
     default:
-      throw new Error("Unable to extract account name and key from connection string");
+      client = new CosmosClient(connectionString);
       break;
   }
-
-  const client = new CosmosClient(connectionString);
 
   const response = await client.databases.readAll().fetchAll();
   return Promise.all(
