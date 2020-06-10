@@ -23,6 +23,8 @@ module.exports = {
         .click({ force: true });
 
       const secret = Cypress.env(`CONNECTION_STRING_${api && api.toUpperCase()}`);
+      cy.log(secret && secret.length);
+      cy.log(secret);
 
       cy.wrap($body)
         .find("input[class='inputToken']")
