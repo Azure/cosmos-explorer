@@ -1,6 +1,6 @@
 module.exports = {
-  loginUsingConnectionString: function(api) {
-    const prodUrl = Cypress.env("TEST_ENDPOINT");
+  loginUsingConnectionString: function() {
+    const prodUrl = Cypress.env("TEST_ENDPOINT") || "https://localhost:1234/hostedExplorer.html";
     const timeout = 15000;
 
     cy.visit(prodUrl);
@@ -22,7 +22,7 @@ module.exports = {
         .last()
         .click({ force: true });
 
-      const secret = Cypress.env("CONNECTION_STRING_SQL");
+      const secret = Cypress.env("CONNECTION_STRING");
       console.log(secret && secret.length);
       console.log(secret);
 
@@ -39,12 +39,5 @@ module.exports = {
 
       cy.wait(15000);
     });
-  },
-  constants: {
-    sql: "sql",
-    mongo: "mongo",
-    table: "table",
-    graph: "graph",
-    cassandra: "cassandra"
   }
 };

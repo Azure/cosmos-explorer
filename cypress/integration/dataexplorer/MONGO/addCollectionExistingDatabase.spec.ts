@@ -4,10 +4,10 @@ let crypt = require("crypto");
 
 context("Mongo API Test", () => {
   beforeEach(() => {
-    connectionString.loginUsingConnectionString(connectionString.constants.mongo);
+    connectionString.loginUsingConnectionString();
   });
 
-  it("Create a new collection in existing database in Mongo API", () => {
+  it.skip("Create a new collection in existing database in Mongo API", () => {
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
     const sharedKey = `SharedKey${crypt.randomBytes(8).toString("hex")}`;
 

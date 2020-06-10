@@ -15,13 +15,15 @@ const connectionString = require("../../../utilities/connectionString");
 let crypt = require("crypto");
 
 context("SQL API Test", () => {
-  beforeEach(() => {});
+  beforeEach(() => {
+    connectionString.loginUsingConnectionString();
+  });
 
   it("Create a new container in SQL API", () => {
     const dbId = `TestDatabase${crypt.randomBytes(8).toString("hex")}`;
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
     const sharedKey = `SharedKey${crypt.randomBytes(8).toString("hex")}`;
-    connectionString.loginUsingConnectionString("SQL");
+    connectionString.loginUsingConnectionString();
 
     cy.get("iframe").then($element => {
       const $body = $element.contents().find("body");
