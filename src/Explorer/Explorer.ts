@@ -155,7 +155,6 @@ export default class Explorer implements ViewModels.Explorer {
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
-  private enableLegacyResourceTree: ko.Observable<boolean>;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -384,7 +383,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.armEndpoint = ko.observable<string>(undefined);
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
-    this.enableLegacyResourceTree = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
@@ -1105,8 +1103,6 @@ export default class Explorer implements ViewModels.Explorer {
         });
         this.sparkClusterConnectionInfo.valueHasMutated();
       }
-
-      this.enableLegacyResourceTree(this.isFeatureEnabled(Constants.Features.enableLegacyResourceTree));
 
       featureSubcription.dispose();
     });

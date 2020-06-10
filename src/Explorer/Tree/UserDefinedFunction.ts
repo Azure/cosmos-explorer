@@ -4,9 +4,7 @@ import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
-import ContextMenu from "../Menus/ContextMenu";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { ContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 import Collection from "./Collection";
 
 export default class UserDefinedFunction implements ViewModels.UserDefinedFunction {
@@ -17,7 +15,6 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
   public rid: string;
   public id: ko.Observable<string>;
   public body: ko.Observable<string>;
-  public contextMenu: ViewModels.ContextMenu;
 
   constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.UserDefinedFunction) {
     this.nodeKind = "UserDefinedFunction";
@@ -28,9 +25,6 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
     this.rid = data._rid;
     this.id = ko.observable(data.id);
     this.body = ko.observable(data.body);
-
-    this.contextMenu = new ContextMenu(this.container, this.rid);
-    this.contextMenu.options(ContextMenuButtonFactory.createUserDefinedFunctionContextMenuButton(container));
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
@@ -61,9 +55,6 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
 
     // Activate
     userDefinedFunctionTab.onTabClick();
-
-    // Hide Context Menu (if necessary)
-    source.contextMenu.hide(source, event);
   }
 
   public open = () => {
@@ -116,9 +107,6 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
   }
 
   public delete(source: Collection, event: MouseEvent | KeyboardEvent) {
-    // Hide Context Menu (if necessary)
-    this.contextMenu.hide(source, event);
-
     if (!window.confirm("Are you sure you want to delete the user defined function?")) {
       return;
     }
@@ -141,15 +129,6 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
   public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
     if (event.key === "Delete") {
       this.delete(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Escape") {
-      this.contextMenu.hide(source, event);
       return false;
     }
 

@@ -340,17 +340,6 @@ export interface Button {
   isSelected?: ko.Computed<boolean>;
 }
 
-export interface CommandButton {
-  disabled: ko.Subscribable<boolean>;
-  visible: ko.Subscribable<boolean>;
-  iconSrc: string;
-  commandButtonLabel: string | ko.Observable<string>;
-  tooltipText: string | ko.Observable<string>;
-  children: ko.ObservableArray<CommandButtonOptions>;
-
-  commandClickCallback: () => void;
-}
-
 export interface NotificationConsole {
   filteredConsoleData: ko.ObservableArray<ConsoleData>;
   isConsoleExpanded: ko.Observable<boolean>;
@@ -374,7 +363,6 @@ export interface TreeNode {
   id: ko.Observable<string>;
   database?: Database;
   collection?: Collection;
-  contextMenu?: ContextMenu;
 
   onNewQueryClick?(source: any, event: MouseEvent): void;
   onNewStoredProcedureClick?(source: Collection, event: MouseEvent): void;
@@ -1233,17 +1221,6 @@ export enum TerminalKind {
   Default = 0,
   Mongo = 1,
   Cassandra = 2
-}
-
-export interface ContextMenu {
-  container: Explorer;
-  visible: ko.Observable<boolean>;
-  elementId: string;
-  options: ko.ObservableArray<CommandButtonOptions>;
-  tabIndex: ko.Observable<number>;
-
-  show(source: any, event: MouseEvent | KeyboardEvent): void;
-  hide(source: any, event: MouseEvent | KeyboardEvent): void;
 }
 
 export interface DataExplorerInputsFrame {

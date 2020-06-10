@@ -450,7 +450,6 @@ export class DatabaseStub implements ViewModels.Database {
   public collections: ko.ObservableArray<ViewModels.Collection>;
   public isDatabaseExpanded: ko.Observable<boolean>;
   public isDatabaseShared: ko.Computed<boolean>;
-  public contextMenu: ViewModels.ContextMenu;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public offer: ko.Observable<DataModels.Offer>;
 
@@ -462,7 +461,6 @@ export class DatabaseStub implements ViewModels.Database {
     this.id = options.id;
     this.collections = options.collections;
     this.isDatabaseExpanded = options.isDatabaseExpanded;
-    this.contextMenu = options.contextMenu;
     this.offer = options.offer;
     this.selectedSubnodeKind = options.selectedSubnodeKind;
   }
@@ -565,8 +563,6 @@ export class CollectionStub implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
-  public contextMenu: ViewModels.ContextMenu;
-  public documentsContextMenu: ViewModels.ContextMenu;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
   public changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   public geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
@@ -611,8 +607,6 @@ export class CollectionStub implements ViewModels.Collection {
     this.storedProceduresFocused = options.storedProceduresFocused;
     this.userDefinedFunctionsFocused = options.userDefinedFunctionsFocused;
     this.triggersFocused = options.triggersFocused;
-    this.contextMenu = options.contextMenu;
-    this.documentsContextMenu = options.documentsContextMenu;
   }
 
   public onKeyPress = (source: any, event: KeyboardEvent): boolean => {

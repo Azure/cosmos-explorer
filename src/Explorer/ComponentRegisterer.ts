@@ -1,9 +1,7 @@
 import * as ko from "knockout";
 import * as PaneComponents from "./Panes/PaneComponents";
 import * as TabComponents from "./Tabs/TabComponents";
-import * as TreeComponents from "./Tree/TreeComponents";
 import { CollapsiblePanelComponent } from "./Controls/CollapsiblePanel/CollapsiblePanelComponent";
-import { CommandButtonComponent } from "./Controls/CommandButton/CommandButton";
 import { DiffEditorComponent } from "./Controls/DiffEditor/DiffEditorComponent";
 import { DynamicListComponent } from "./Controls/DynamicList/DynamicListComponent";
 import { EditorComponent } from "./Controls/Editor/EditorComponent";
@@ -16,7 +14,6 @@ import { ThroughputInputComponent } from "./Controls/ThroughputInput/ThroughputI
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
 import { ToolbarComponent } from "./Controls/Toolbar/Toolbar";
 
-ko.components.register("command-button", CommandButtonComponent);
 ko.components.register("toolbar", new ToolbarComponent());
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
@@ -52,14 +49,6 @@ ko.components.register("notebook-viewer-tab", new TabComponents.NotebookViewerTa
 // Database Tabs
 ko.components.register("database-settings-tab", new TabComponents.DatabaseSettingsTab());
 
-// Resource Tree nodes
-ko.components.register("resource-tree", new TreeComponents.ResourceTree());
-ko.components.register("database-node", new TreeComponents.DatabaseTreeNode());
-ko.components.register("collection-node", new TreeComponents.CollectionTreeNode());
-ko.components.register("stored-procedure-node", new TreeComponents.StoredProcedureTreeNode());
-ko.components.register("trigger-node", new TreeComponents.TriggerTreeNode());
-ko.components.register("user-defined-function-node", new TreeComponents.UserDefinedFunctionTreeNode());
-
 // Panes
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
 ko.components.register("add-collection-pane", new PaneComponents.AddCollectionPaneComponent());
@@ -93,6 +82,3 @@ ko.components.register("manage-spark-cluster-pane", new PaneComponents.ManageSpa
 ko.components.register("library-manage-pane", new PaneComponents.LibraryManagePaneComponent());
 ko.components.register("cluster-library-pane", new PaneComponents.ClusterLibraryPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());
-
-// Menus
-ko.components.register("collection-node-context-menu", new TreeComponents.CollectionTreeNodeContextMenu());

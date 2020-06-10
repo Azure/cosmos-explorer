@@ -128,14 +128,11 @@
                     </div>
                   </div>
                   <!-- Collections Window Title/Command Bar - End  -->
-                  <!-- ko if: !enableLegacyResourceTree() && !isAuthWithResourceToken() -->
+                  <!-- ko if: !isAuthWithResourceToken() -->
                   <div style="overflow-y: auto" data-bind="react:resourceTree"></div>
                   <!-- /ko -->
-                  <!-- ko if: !enableLegacyResourceTree() && isAuthWithResourceToken() -->
+                  <!-- ko if: isAuthWithResourceToken() -->
                   <div style="overflow-y: auto" data-bind="react:resourceTreeForResourceToken"></div>
-                  <!-- /ko -->
-                  <!-- ko if: enableLegacyResourceTree -->
-                  <resource-tree class="resourceTreeScroll" params="{data: $data}"></resource-tree>
                   <!-- /ko -->
                 </div>
                 <!--  Collections Window - End -->

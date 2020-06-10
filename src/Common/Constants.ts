@@ -122,7 +122,6 @@ export class Features {
   public static readonly notebookServerUrl = "notebookserverurl";
   public static readonly notebookServerToken = "notebookservertoken";
   public static readonly notebookBasePath = "notebookbasepath";
-  public static readonly enableLegacyResourceTree = "enablelegacyresourcetree";
   public static readonly canExceedMaximumValue = "canexceedmaximumvalue";
   public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
   public static readonly enableAutoPilotV2 = "enableautopilotv2";
