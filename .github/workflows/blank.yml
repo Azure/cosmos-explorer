@@ -94,6 +94,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING_SQL: ${{ secrets.CONNECTION_STRING_SQL }}
+          CYPRESS_TEST_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
   # endtoendprodmongo:
   #     name: "End to End Tests Prod"
   #     runs-on: ubuntu-latest
