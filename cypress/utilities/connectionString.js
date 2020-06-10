@@ -22,7 +22,7 @@ module.exports = {
         .last()
         .click({ force: true });
 
-      const secret = Cypress.env(`CONNECTION_STRING_${api && api.toUpperCase()}`);
+      const secret = Cypress.env("CONNECTION_STRING_SQL");
       console.log(secret && secret.length);
       console.log(secret);
 
