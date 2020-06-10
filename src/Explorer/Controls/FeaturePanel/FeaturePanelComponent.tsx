@@ -63,7 +63,9 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       label: "Force Production portal (portal only)",
       value: "false",
       disabled: (): boolean => baseUrl.key !== "https://portal.azure.com"
-    }
+    },
+    { key: "feature.enablespark", label: "Enable Synapse", value: "true" },
+    { key: "feature.enableautopilotv2", label: "Enable Auto-pilot V2", value: "true" },
   ];
 
   const stringFeatures: {
@@ -83,7 +85,8 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       label: "Data Explorer Source (portal only)",
       placeholder: "https://localhost:1234/explorer.html",
       disabled: (): boolean => baseUrl.key !== "https://portal.azure.com"
-    }
+    },
+    { key: "feature.livyendpoint", label: "Livy endpoint", placeholder: "" }
   ];
 
   booleanFeatures.forEach(
