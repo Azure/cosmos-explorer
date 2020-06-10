@@ -106,7 +106,7 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
     });
   }
 
-  public delete(source: Collection, event: MouseEvent | KeyboardEvent) {
+  public delete() {
     if (!window.confirm("Are you sure you want to delete the user defined function?")) {
       return;
     }
@@ -125,22 +125,4 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
       reason => {}
     );
   }
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.delete(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.open();
-      return false;
-    }
-
-    return true;
-  };
 }

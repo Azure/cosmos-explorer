@@ -139,7 +139,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
     storedProcedureTab.onTabClick();
   };
 
-  public delete(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
+  public delete() {
     if (!window.confirm("Are you sure you want to delete the stored procedure?")) {
       return;
     }
@@ -179,24 +179,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
           this.onFocusAfterExecute();
         });
   }
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.delete(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.open();
-      return false;
-    }
-
-    return true;
-  };
 
   public onFocusAfterExecute(): void {
     const focusElement = document.getElementById("execute-storedproc-toggles");

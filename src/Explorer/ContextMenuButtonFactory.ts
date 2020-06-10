@@ -115,7 +115,7 @@ export class ResourceTreeContextMenuButtonFactory {
     return items;
   }
 
-  public static createStoreProcedureContextMenuItems(container: ViewModels.Explorer): TreeNodeMenuItem[] {
+  public static createStoreProcedureContextMenuItems(container: ViewModels.Explorer, storedProcedure: ViewModels.StoredProcedure): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -123,16 +123,13 @@ export class ResourceTreeContextMenuButtonFactory {
     return [
       {
         iconSrc: DeleteSprocIcon,
-        onClick: () => {
-          const selectedStoreProcedure: ViewModels.StoredProcedure = container.findSelectedStoredProcedure();
-          selectedStoreProcedure && selectedStoreProcedure.delete(selectedStoreProcedure, null);
-        },
+        onClick: () => storedProcedure.delete(),
         label: "Delete Store Procedure"
       }
     ];
   }
 
-  public static createTriggerContextMenuItems(container: ViewModels.Explorer): TreeNodeMenuItem[] {
+  public static createTriggerContextMenuItems(container: ViewModels.Explorer, trigger: ViewModels.Trigger): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -140,16 +137,13 @@ export class ResourceTreeContextMenuButtonFactory {
     return [
       {
         iconSrc: DeleteTriggerIcon,
-        onClick: () => {
-          const selectedTrigger: ViewModels.Trigger = container.findSelectedTrigger();
-          selectedTrigger && selectedTrigger.delete(selectedTrigger, null);
-        },
+        onClick: () => trigger.delete(),
         label: "Delete Trigger"
       }
     ];
   }
 
-  public static createUserDefinedFunctionContextMenuItems(container: ViewModels.Explorer): TreeNodeMenuItem[] {
+  public static createUserDefinedFunctionContextMenuItems(container: ViewModels.Explorer, userDefinedFunction: ViewModels.UserDefinedFunction): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -157,10 +151,7 @@ export class ResourceTreeContextMenuButtonFactory {
     return [
       {
         iconSrc: DeleteUDFIcon,
-        onClick: () => {
-          const selectedUDF: ViewModels.UserDefinedFunction = container.findSelectedUDF();
-          selectedUDF && selectedUDF.delete(selectedUDF, null);
-        },
+        onClick: () => userDefinedFunction.delete(),
         label: "Delete User Defined Function"
       }
     ];

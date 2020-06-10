@@ -527,7 +527,7 @@ export interface StoredProcedure extends TreeNode {
   id: ko.Observable<string>;
   body: ko.Observable<string>;
 
-  delete(source: TreeNode, event: MouseEvent | KeyboardEvent): void;
+  delete(): void;
   open: () => void;
   select(): void;
   execute(params: string[], partitionKeyValue?: string): void;
@@ -541,7 +541,7 @@ export interface UserDefinedFunction extends TreeNode {
   id: ko.Observable<string>;
   body: ko.Observable<string>;
 
-  delete(source: TreeNode, event: MouseEvent | KeyboardEvent): void;
+  delete(): void;
   open: () => void;
   select(): void;
 }
@@ -556,7 +556,7 @@ export interface Trigger extends TreeNode {
   triggerType: ko.Observable<string>;
   triggerOperation: ko.Observable<string>;
 
-  delete(source: TreeNode, event: MouseEvent | KeyboardEvent): void;
+  delete(): void;
   open: () => void;
   select(): void;
 }

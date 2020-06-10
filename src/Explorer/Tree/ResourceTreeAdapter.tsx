@@ -302,7 +302,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: sp.open.bind(sp),
         isSelected: () =>
           this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.StoredProcedures),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container)
+        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container, sp)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
@@ -319,7 +319,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: udf.open.bind(udf),
         isSelected: () =>
           this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.UserDefinedFunctions),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container)
+        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container, udf)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
@@ -335,7 +335,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
         isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container)
+        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container, trigger)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);

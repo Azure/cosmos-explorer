@@ -116,7 +116,7 @@ export default class Trigger implements ViewModels.Trigger {
     triggerTab.onTabClick();
   };
 
-  public delete(source: Collection, event: MouseEvent | KeyboardEvent) {
+  public delete() {
     if (!window.confirm("Are you sure you want to delete the trigger?")) {
       return;
     }
@@ -138,22 +138,4 @@ export default class Trigger implements ViewModels.Trigger {
       reason => {}
     );
   }
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.delete(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.open();
-      return false;
-    }
-
-    return true;
-  };
 }
