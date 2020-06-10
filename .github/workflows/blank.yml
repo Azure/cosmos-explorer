@@ -88,7 +88,7 @@ jobs:
           cd cypress
           npm ci
           npm run wait-for-server
-          npm run test:sql
+          CONNECTION_STRING_SQL=foo npm run test:sql
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
