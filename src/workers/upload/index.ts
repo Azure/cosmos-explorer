@@ -87,7 +87,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
           numUploadsSuccessful++;
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
           recordUploadDetailErrorForFile(fileName, JSON.stringify(error));
           numUploadsFailed++;
         })
