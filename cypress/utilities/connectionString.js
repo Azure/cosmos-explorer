@@ -1,6 +1,6 @@
 module.exports = {
   loginUsingConnectionString: function(api) {
-    const prodUrl = "https://cosmos.azure.com/";
+    const prodUrl = "https://0.0.0.0:1234/hostedExplorer.html";
     const timeout = 15000;
 
     cy.visit(prodUrl);
