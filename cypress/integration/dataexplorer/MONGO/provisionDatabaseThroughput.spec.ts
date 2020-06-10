@@ -2,12 +2,12 @@ const connectionString = require("../../../utilities/connectionString");
 
 let crypt = require("crypto");
 
-context("Mongo API Test", () => {
+context.skip("Mongo API Test", () => {
   beforeEach(() => {
     connectionString.loginUsingConnectionString();
   });
 
-  it.skip("Create a new collection in Mongo API - Provision database throughput", () => {
+  it("Create a new collection in Mongo API - Provision database throughput", () => {
     const dbId = `TestDatabase${crypt.randomBytes(8).toString("hex")}`;
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
     const sharedKey = `SharedKey${crypt.randomBytes(8).toString("hex")}`;
