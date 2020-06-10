@@ -16,7 +16,7 @@ let crypt = require("crypto");
 
 context("SQL API Test", () => {
   beforeEach(() => {
-    connectionString.loginUsingConnectionString(connectionString.constants.sql);
+    connectionString.loginUsingConnectionString("SQL");
   });
 
   it("Create a new container in SQL API", () => {
