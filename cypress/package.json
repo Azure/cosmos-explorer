@@ -11,7 +11,7 @@
     "test:debug": "cypress open"
   },
   "devDependencies": {
-    "cypress": "^4.5.0",
+    "cypress": "^4.8.0",
     "mocha": "^7.0.1",
     "mochawesome": "^4.1.0",
     "mochawesome-merge": "^4.0.1",

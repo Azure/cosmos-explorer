@@ -62,7 +62,7 @@ context("SQL API Test", () => {
         .type(sharedKey);
 
       cy.wrap($body)
-        .find('input[data-test="addCollection-createCollection"]')
+        .find("#submitBtnAddCollection")
         .click();
 
       cy.wait(10000);

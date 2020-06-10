@@ -38,10 +38,6 @@ module.exports = {
         .click({ force: true });
 
       cy.wait(15000);
-
-      cy.wrap($body)
-        .find(".connectExplorer > p:nth-child(3)")
-        .should("be.visible");
     });
   },
   constants: {
