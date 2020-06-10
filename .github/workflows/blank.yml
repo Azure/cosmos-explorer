@@ -115,6 +115,7 @@ jobs:
           npm start &
           cd cypress
           npm ci
+          node cleanup.js
           npm run wait-for-server
           npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/MONGO/*"
         shell: bash
