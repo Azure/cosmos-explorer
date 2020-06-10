@@ -110,11 +110,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
   }
 
   private createContent = (): JSX.Element => {
-    return (
-      <div className="panelContent">
-        {this.createMainContentSection()}
-      </div>
-    );
+    return <div className="panelContent">{this.createMainContentSection()}</div>;
   };
 
   private createMainContentSection = (): JSX.Element => {

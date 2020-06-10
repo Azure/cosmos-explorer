@@ -39,28 +39,6 @@ export default class Database implements ViewModels.Database {
     });
   }
 
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.expandCollapseDatabase();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onSettingsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onSettingsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.onSettingsClick();
-      return false;
-    }
-
-    return true;
-  };
-
   public onSettingsClick = () => {
     this.container.selectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);

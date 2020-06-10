@@ -609,65 +609,6 @@ export class CollectionStub implements ViewModels.Collection {
     this.triggersFocused = options.triggersFocused;
   }
 
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onDocumentDBDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onDocumentDBDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMongoDBDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMongoDBDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onSettingsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onSettingsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onStoredProceduresKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onStoredProceduresKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onUserDefinedFunctionsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onUserDefinedFunctionsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onTriggersKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onTriggersKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
   public expandCollapseCollection() {
     throw new Error("Not implemented");
   }

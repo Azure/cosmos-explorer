@@ -115,7 +115,10 @@ export class ResourceTreeContextMenuButtonFactory {
     return items;
   }
 
-  public static createStoreProcedureContextMenuItems(container: ViewModels.Explorer, storedProcedure: ViewModels.StoredProcedure): TreeNodeMenuItem[] {
+  public static createStoreProcedureContextMenuItems(
+    container: ViewModels.Explorer,
+    storedProcedure: ViewModels.StoredProcedure
+  ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -129,7 +132,10 @@ export class ResourceTreeContextMenuButtonFactory {
     ];
   }
 
-  public static createTriggerContextMenuItems(container: ViewModels.Explorer, trigger: ViewModels.Trigger): TreeNodeMenuItem[] {
+  public static createTriggerContextMenuItems(
+    container: ViewModels.Explorer,
+    trigger: ViewModels.Trigger
+  ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -143,7 +149,10 @@ export class ResourceTreeContextMenuButtonFactory {
     ];
   }
 
-  public static createUserDefinedFunctionContextMenuItems(container: ViewModels.Explorer, userDefinedFunction: ViewModels.UserDefinedFunction): TreeNodeMenuItem[] {
+  public static createUserDefinedFunctionContextMenuItems(
+    container: ViewModels.Explorer,
+    userDefinedFunction: ViewModels.UserDefinedFunction
+  ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }

@@ -1,7 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { NotebookMetadataComponentProps, NotebookMetadataComponent } from "./NotebookMetadataComponent";
-import { NotebookMetadata } from "../../../Contracts/DataModels";
 
 describe("NotebookMetadataComponent", () => {
   it("renders un-liked notebook", () => {
@@ -10,7 +9,7 @@ describe("NotebookMetadataComponent", () => {
       container: undefined,
       notebookMetadata: undefined,
       notebookContent: {},
-      onNotebookMetadataChange: (newNotebookMetadata: NotebookMetadata) => Promise.resolve(),
+      onNotebookMetadataChange: () => Promise.resolve(),
       isLikedNotebook: false
     };
 
@@ -24,7 +23,7 @@ describe("NotebookMetadataComponent", () => {
       container: undefined,
       notebookMetadata: undefined,
       notebookContent: {},
-      onNotebookMetadataChange: (newNotebookMetadata: NotebookMetadata) => Promise.resolve(),
+      onNotebookMetadataChange: () => Promise.resolve(),
       isLikedNotebook: true
     };
 
