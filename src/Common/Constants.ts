@@ -127,6 +127,7 @@ export class Features {
   public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
   public static readonly enableAutoPilotV2 = "enableautopilotv2";
   public static readonly ttl90Days = "ttl90days";
+  public static readonly enableRightPanelV2 = "enablerightpanelv2";
 }
 
 export class AfecFeatures {

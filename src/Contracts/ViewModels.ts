@@ -27,6 +27,7 @@ import { Splitter } from "../Common/Splitter";
 import { StringInputPane } from "../Explorer/Panes/StringInputPane";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
+import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -87,6 +88,7 @@ export interface Explorer {
   isGalleryEnabled: ko.Computed<boolean>;
   isGitHubPaneEnabled: ko.Observable<boolean>;
   isGraphsEnabled: ko.Computed<boolean>;
+  isRightPanelV2Enabled: ko.Computed<boolean>;
   canExceedMaximumValue: ko.Computed<boolean>;
   hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
   isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -141,6 +143,7 @@ export interface Explorer {
   executeSprocParamsPane: ExecuteSprocParamsPane;
   renewAdHocAccessPane: RenewAdHocAccessPane;
   uploadItemsPane: UploadItemsPane;
+  uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   loadQueryPane: LoadQueryPane;
   saveQueryPane: ContextualPane;
   browseQueriesPane: BrowseQueriesPane;
