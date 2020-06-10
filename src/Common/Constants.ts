@@ -104,11 +104,9 @@ export class CapabilityNames {
 }
 
 export class Features {
-  public static readonly graphs = "graphs";
   public static readonly cosmosdb = "cosmosdb";
   public static readonly enableChangeFeedPolicy = "enablechangefeedpolicy";
   public static readonly enableRupm = "enablerupm";
-  public static readonly cacheOptimizations = "dataexplorercacheoptimizations";
   public static readonly executeSproc = "dataexplorerexecutesproc";
   public static readonly hostedDataExplorer = "hosteddataexplorerenabled";
   public static readonly enableTtl = "enablettl";
@@ -116,9 +114,6 @@ export class Features {
   public static readonly enableGallery = "enablegallery";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
-  public static readonly settingsPane = "dataexplorersettingspane";
-  public static readonly throughputOverview = "throughputOverview";
-  public static readonly enableNteract = "enablenteract";
   public static readonly notebookServerUrl = "notebookserverurl";
   public static readonly notebookServerToken = "notebookservertoken";
   public static readonly notebookBasePath = "notebookbasepath";
