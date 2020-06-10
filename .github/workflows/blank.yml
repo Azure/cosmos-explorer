@@ -81,13 +81,13 @@ jobs:
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-binary-cache
+      - run: npm ci
       - name: End to End Tests
         run: |
-          npm ci
           npm start &
           cd cypress
           npm ci
-          node run cleanup
+          node cleanup.js
           npm run wait-for-server
           npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/SQL/*"
         shell: bash
