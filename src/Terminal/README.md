@@ -66,8 +66,6 @@ c.NotebookApp.disable_check_xsrf = True
 * There is a "New Cell" button in the CommandBar outside the jupyter iframe which will add a cell inside the notebook.
 
 # Notes
-* The iframe in the Data Explorer Tab loads jupyter with the server and notebook pathname passed in the query parameters (they're hardcoded right now):
-cosmosdb-dataexplorer/Product/Portal/DataExplorer/src/Explorer/Tabs/NotebookTab.html
 * The Emulator is located in: C:\Program Files\Azure Cosmos DB Emulator\Packages\DataExplorer
 * Running "jupyter notebook" serves the jupyter traditional frontend. There is an alternate frontend also developed by jupyter which is modular and customizable called: JupyterLab. We use their "notebook" example in this project slightly modified to pass the server and notebook pathname via iframe url's parameters:
 https://github.com/jupyterlab/jupyterlab/tree/master/examples/notebook

@@ -25,7 +25,6 @@
 		"./src/Contracts/Versions.ts",
 		"./src/Controls/Heatmap/HeatmapDatatypes.ts",
 		"./src/Definitions/plotly.js-cartesian-dist.d-min.ts",
-		"./src/Explorer/Controls/Notebook/NotebookAppMessageHandler.ts",
 		"./src/Explorer/Controls/Toolbar/IToolbarAction.ts",
 		"./src/Explorer/Controls/Toolbar/IToolbarDisplayable.ts",
 		"./src/Explorer/Controls/Toolbar/IToolbarDropDown.ts",

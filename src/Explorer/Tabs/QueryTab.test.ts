@@ -5,8 +5,6 @@ import Explorer from "../Explorer";
 import { CollectionStub, DatabaseStub } from "../../Explorer/OpenActionsStubs";
 import QueryTab from "./QueryTab";
 
-jest.mock("./NotebookTab");
-
 describe("Query Tab", () => {
   function getNewQueryTabForContainer(container: ViewModels.Explorer): ViewModels.QueryTab {
     const database: ViewModels.Database = new DatabaseStub({

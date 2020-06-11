@@ -1176,7 +1176,6 @@ export interface TriggerTab extends ScriptTab {
 }
 
 export interface GraphTab extends Tab {}
-export interface NotebookTab extends Tab {}
 export interface EditorPosition {
   line: number;
   column: number;
@@ -1220,7 +1219,7 @@ export enum CollectionTabKind {
   MongoShell = 10,
   DatabaseSettings = 11,
   Conflicts = 12,
-  Notebook = 13,
+  Notebook = 13 /* Deprecated */,
   Terminal = 14,
   NotebookV2 = 15,
   SparkMasterTab = 16,

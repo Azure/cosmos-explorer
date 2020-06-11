@@ -1,7 +1,6 @@
 ﻿import DocumentsTabTemplate from "./DocumentsTab.html";
 import ConflictsTabTemplate from "./ConflictsTab.html";
 import GraphTabTemplate from "./GraphTab.html";
-import NotebookTabTemplate from "./NotebookTab.html";
 import SparkMasterTabTemplate from "./SparkMasterTab.html";
 import NotebookV2TabTemplate from "./NotebookV2Tab.html";
 import TerminalTabTemplate from "./TerminalTab.html";
@@ -47,15 +46,6 @@ export class GraphTab {
     return {
       viewModel: TabComponent,
       template: GraphTabTemplate
-    };
-  }
-}
-
-export class NotebookTab {
-  constructor() {
-    return {
-      viewModel: TabComponent,
-      template: NotebookTabTemplate
     };
   }
 }

@@ -2,8 +2,6 @@ import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
 
-jest.mock("../Tabs/NotebookTab");
-
 describe("Settings Pane", () => {
   describe("shouldShowQueryPageOptions()", () => {
     let explorer: ViewModels.Explorer;
