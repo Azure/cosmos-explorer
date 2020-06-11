@@ -98,7 +98,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public manageSparkClusterPane: ViewModels.ContextualPane;
   public isGalleryEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
-  public isGraphsEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;

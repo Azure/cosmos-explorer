@@ -87,7 +87,6 @@ export interface Explorer {
   isFeatureEnabled: (feature: string) => boolean;
   isGalleryEnabled: ko.Computed<boolean>;
   isGitHubPaneEnabled: ko.Observable<boolean>;
-  isGraphsEnabled: ko.Computed<boolean>;
   isRightPanelV2Enabled: ko.Computed<boolean>;
   canExceedMaximumValue: ko.Computed<boolean>;
   hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;

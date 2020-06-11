@@ -205,7 +205,6 @@ export default class Explorer implements ViewModels.Explorer {
   // features
   public isGalleryEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
-  public isGraphsEnabled: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
@@ -414,9 +413,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableGallery));
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
-    this.isGraphsEnabled = ko.computed<boolean>(() => {
-      return this.isFeatureEnabled(Constants.Features.graphs);
-    });
 
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
@@ -554,7 +550,9 @@ export default class Explorer implements ViewModels.Explorer {
         !this.isRunningOnNationalCloud() &&
         !this.isPreferredApiGraph()
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableRightPanelV2));
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
+    );
     this.defaultExperience.subscribe((defaultExperience: string) => {
       if (
         defaultExperience &&
