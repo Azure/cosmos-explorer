@@ -42,7 +42,6 @@ ko.components.register("tables-query-tab", new TabComponents.QueryTablesTab());
 ko.components.register("graph-tab", new TabComponents.GraphTab());
 ko.components.register("mongo-shell-tab", new TabComponents.MongoShellTab());
 ko.components.register("conflicts-tab", new TabComponents.ConflictsTab());
-ko.components.register("notebook-tab", new TabComponents.NotebookTab());
 ko.components.register("notebookv2-tab", new TabComponents.NotebookV2Tab());
 ko.components.register("terminal-tab", new TabComponents.TerminalTab());
 ko.components.register("spark-master-tab", new TabComponents.SparkMasterTab());

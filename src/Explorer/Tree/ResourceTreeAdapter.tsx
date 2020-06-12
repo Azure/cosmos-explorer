@@ -6,7 +6,6 @@ import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeCompo
 import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
-import NotebookTab from "../Tabs/NotebookTab";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { CosmosClient } from "../../Common/CosmosClient";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
@@ -526,7 +525,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-          (activeTab as NotebookTab).notebookPath() === item.path
+          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
+             NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
+           */
+          (activeTab as any).notebookPath() === item.path
         );
       },
       contextMenu: createFileContextMenu
@@ -640,7 +642,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-          (activeTab as NotebookTab).notebookPath() === item.path
+          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
+             NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
+           */
+          (activeTab as any).notebookPath() === item.path
         );
       },
       contextMenu:

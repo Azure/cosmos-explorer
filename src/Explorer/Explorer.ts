@@ -21,7 +21,6 @@ import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import hasher from "hasher";
 import NewVertexPane from "./Panes/NewVertexPane";
-import NotebookTab from "./Tabs/NotebookTab";
 import NotebookV2Tab from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
@@ -305,7 +304,7 @@ export default class Explorer implements ViewModels.Explorer {
         this.openedTabs &&
           this.openedTabs().forEach(tab => {
             if (tab.tabKind === ViewModels.CollectionTabKind.Notebook) {
-              (tab as NotebookTab).reconfigureServiceEndpoints();
+              throw new Error("NotebookTab is deprecated. Use NotebookV2Tab");
             } else if (tab.tabKind === ViewModels.CollectionTabKind.NotebookV2) {
               (tab as NotebookV2Tab).reconfigureServiceEndpoints();
             }
@@ -2772,7 +2771,7 @@ export default class Explorer implements ViewModels.Explorer {
     const openedNotebookTabs = this.openedTabs().filter(
       (tab: ViewModels.Tab) =>
         tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-        (tab as NotebookTab).notebookPath() === notebookFile.path
+        (tab as NotebookV2Tab).notebookPath() === notebookFile.path
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
@@ -2796,12 +2795,12 @@ export default class Explorer implements ViewModels.Explorer {
           .filter(
             (tab: ViewModels.Tab) =>
               tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-              FileSystemUtil.isPathEqual((tab as NotebookTab).notebookPath(), originalPath)
+              FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), originalPath)
           )
           .forEach(tab => {
             tab.tabTitle(newNotebookFile.name);
             tab.tabPath(newNotebookFile.path);
-            (tab as NotebookTab).notebookPath(newNotebookFile.path);
+            (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
           });
 
         return newNotebookFile;
@@ -3039,7 +3038,7 @@ export default class Explorer implements ViewModels.Explorer {
     // Don't delete if tab is open to avoid accidental deletion
     const openedNotebookTabs = this.openedTabs().filter(
       (tab: ViewModels.Tab) =>
-        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 && (tab as NotebookTab).notebookPath() === item.path
+        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 && (tab as NotebookV2Tab).notebookPath() === item.path
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
