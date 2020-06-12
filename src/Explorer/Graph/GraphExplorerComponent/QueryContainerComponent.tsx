@@ -40,6 +40,7 @@ export class QueryContainerComponent extends React.Component<
           submitFct={(inputValue: string, selection: InputTypeaheadComponent.Item) =>
             this.onSubmit(inputValue, selection)
           }
+          useTextarea={true}
         />
         {this.renderQueryInputButton()}
       </div>

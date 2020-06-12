@@ -7,6 +7,8 @@
  *
  */
 import * as React from "react";
+import "../../../../externals/jquery.typeahead.min.js";
+import "./InputTypeahead.less";
 import { KeyCodes } from "../../../Common/Constants";
 
 export interface Item {
@@ -17,7 +19,7 @@ export interface Item {
 /**
  * Parameters for this component
  */
-interface InputTypeaheadComponentProps {
+export interface InputTypeaheadComponentProps {
   /**
    * List of choices available in the dropdown.
    */
@@ -66,6 +68,11 @@ interface InputTypeaheadComponentProps {
    * true: show (X) button that clears the text inside the textbox when typing
    */
   showCancelButton?: boolean;
+
+  /**
+   * true: use <textarea /> instead of <input />
+   */
+  useTextarea?: boolean;
 }
 
 interface OnClickItem {
@@ -135,14 +142,25 @@ export class InputTypeaheadComponent extends React.Component<
           <div className="typeahead__container" ref={input => (this.containerElt = input)}>
             <div className="typeahead__field">
               <span className="typeahead__query">
-                <input
-                  name="q"
-                  type="search"
-                  autoComplete="off"
-                  aria-label="Input query"
-                  ref={input => (this.inputElt = input)}
-                  defaultValue={this.props.defaultValue}
-                />
+                {this.props.useTextarea ? (
+                  <textarea
+                    rows={1}
+                    name="q"
+                    autoComplete="off"
+                    aria-label="Input query"
+                    ref={input => (this.inputElt = input)}
+                    defaultValue={this.props.defaultValue}
+                  />
+                ) : (
+                  <input
+                    name="q"
+                    type="search"
+                    autoComplete="off"
+                    aria-label="Input query"
+                    ref={input => (this.inputElt = input)}
+                    defaultValue={this.props.defaultValue}
+                  />
+                )}
               </span>
               {this.props.showSearchButton && (
                 <span className="typeahead__button">
