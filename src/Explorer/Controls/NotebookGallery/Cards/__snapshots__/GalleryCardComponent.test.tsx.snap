@@ -3,26 +3,208 @@
 exports[`GalleryCardComponent renders 1`] = `
 <Card
   aria-label="Notebook Card"
-  onClick={[Function]}
   tokens={
     Object {
-      "childrenMargin": 12,
+      "childrenGap": 8,
+      "childrenMargin": 10,
+      "height": 372,
+      "width": 256,
     }
   }
 >
+  <CardItem>
+    <StyledPersonaBase
+      secondaryText="Invalid Date"
+      text="author"
+    />
+  </CardItem>
+  <CardItem
+    fill={true}
+  >
+    <StyledImageBase
+      alt="Notebook cover image"
+      height={144}
+      imageFit={2}
+      src="thumbnailUrl"
+      width={256}
+    />
+  </CardItem>
   <CardSection>
     <Text
+      nowrap={true}
+      variant="small"
+    >
+      <span
+        key="tag"
+      >
+        <StyledLinkBase
+          onClick={[Function]}
+        >
+          tag
+        </StyledLinkBase>
+      </span>
+    </Text>
+    <Text
+      nowrap={true}
       styles={
         Object {
           "root": Object {
-            "color": "#333333",
             "fontWeight": 600,
           },
         }
       }
     >
-      mycard
+      name
     </Text>
+    <Text
+      variant="small"
+    >
+      description
+    </Text>
+  </CardSection>
+  <CardSection
+    grow={true}
+    horizontal={true}
+    styles={
+      Object {
+        "root": Object {
+          "alignItems": "flex-end",
+        },
+      }
+    }
+  >
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#ccc",
+          },
+        }
+      }
+      variant="tiny"
+    >
+      <StyledIconBase
+        iconName="RedEye"
+        styles={
+          Object {
+            "root": Object {
+              "verticalAlign": "middle",
+            },
+          }
+        }
+      />
+       
+      0
+    </Text>
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#ccc",
+          },
+        }
+      }
+      variant="tiny"
+    >
+      <StyledIconBase
+        iconName="Download"
+        styles={
+          Object {
+            "root": Object {
+              "verticalAlign": "middle",
+            },
+          }
+        }
+      />
+       
+      0
+    </Text>
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#ccc",
+          },
+        }
+      }
+      variant="tiny"
+    >
+      <StyledIconBase
+        iconName="Heart"
+        styles={
+          Object {
+            "root": Object {
+              "verticalAlign": "middle",
+            },
+          }
+        }
+      />
+       
+      0
+    </Text>
+  </CardSection>
+  <CardSection
+    fill={true}
+    horizontal={true}
+    styles={
+      Object {
+        "root": Object {
+          "borderTop": "1px solid #F3F2F1",
+          "marginLeft": 10,
+          "marginRight": 10,
+        },
+      }
+    }
+    tokens={
+      Object {
+        "childrenGap": 0,
+      }
+    }
+  >
+    <Stack
+      horizontal={true}
+      styles={
+        Object {
+          "root": Object {
+            "display": "contents",
+          },
+        }
+      }
+    >
+      <StackItem>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Heart",
+            }
+          }
+          onClick={[Function]}
+        />
+      </StackItem>
+      <StackItem>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Download",
+            }
+          }
+          onClick={[Function]}
+        />
+      </StackItem>
+      <StackItem
+        grow={true}
+      />
+      <StackItem>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Delete",
+            }
+          }
+          onClick={[Function]}
+        />
+      </StackItem>
+    </Stack>
   </CardSection>
 </Card>
 `;

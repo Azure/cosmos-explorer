@@ -25,6 +25,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { SamplesRepo, SamplesBranch } from "../Notebook/NotebookSamples";
+import GalleryIcon from "../../../images/GalleryIcon.svg";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -33,6 +34,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public parameters: ko.Observable<number>;
 
+  public galleryContentRoot: NotebookContentItem;
   public sampleNotebooksContentRoot: NotebookContentItem;
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
@@ -89,14 +91,26 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public async initialize(): Promise<void[]> {
     const refreshTasks: Promise<void>[] = [];
 
-    this.sampleNotebooksContentRoot = {
-      name: "Sample Notebooks (View Only)",
-      path: GitHubUtils.toContentUri(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name, ""),
-      type: NotebookContentItemType.Directory
-    };
-    refreshTasks.push(
-      this.container.refreshContentItem(this.sampleNotebooksContentRoot).then(() => this.triggerRender())
-    );
+    if (this.container.isGalleryEnabled()) {
+      this.galleryContentRoot = {
+        name: "Gallery",
+        path: "Gallery",
+        type: NotebookContentItemType.File
+      };
+
+      this.sampleNotebooksContentRoot = undefined;
+    } else {
+      this.galleryContentRoot = undefined;
+
+      this.sampleNotebooksContentRoot = {
+        name: "Sample Notebooks (View Only)",
+        path: GitHubUtils.toContentUri(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name, ""),
+        type: NotebookContentItemType.Directory
+      };
+      refreshTasks.push(
+        this.container.refreshContentItem(this.sampleNotebooksContentRoot).then(() => this.triggerRender())
+      );
+    }
 
     this.myNotebooksContentRoot = {
       name: "My Notebooks",
@@ -347,9 +361,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
     let notebooksTree: TreeNode = {
       label: undefined,
       isExpanded: true,
-      isLeavesParentsSeparate: true,
       children: []
     };
+
+    if (this.galleryContentRoot) {
+      notebooksTree.children.push(this.buildGalleryNotebooksTree());
+    }
 
     if (this.sampleNotebooksContentRoot) {
       notebooksTree.children.push(this.buildSampleNotebooksTree());
@@ -366,6 +383,19 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
 
     return notebooksTree;
+  }
+
+  private buildGalleryNotebooksTree(): TreeNode {
+    return {
+      label: "Gallery",
+      iconSrc: GalleryIcon,
+      className: "notebookHeader",
+      onClick: () => this.container.openGallery(),
+      isSelected: () => {
+        const activeTab = this.container.findActiveTab();
+        return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
+      }
+    };
   }
 
   private buildSampleNotebooksTree(): TreeNode {

@@ -1,25 +1,199 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NotebookMetadataComponent renders liked notebook 1`] = `
-<div
-  className="notebookViewerMetadataContainer"
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
 >
-  <h3
-    className="title"
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 30,
+      }
+    }
+    verticalAlign="center"
   >
-    My notebook
-  </h3>
-</div>
+    <Text
+      nowrap={true}
+      variant="xxLarge"
+    >
+      name
+    </Text>
+    <Text>
+      <CustomizedIconButton
+        iconProps={
+          Object {
+            "iconName": "HeartFill",
+          }
+        }
+      />
+      0
+       likes
+    </Text>
+    <CustomizedPrimaryButton
+      text="Download"
+    />
+  </Stack>
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 10,
+      }
+    }
+    verticalAlign="center"
+  >
+    <StyledPersonaBase
+      size={11}
+      text="author"
+    />
+    <Text>
+      Invalid Date
+    </Text>
+    <Text>
+      <StyledIconBase
+        iconName="RedEye"
+      />
+       
+      0
+    </Text>
+    <Text>
+      <StyledIconBase
+        iconName="Download"
+      />
+      0
+    </Text>
+  </Stack>
+  <Text
+    nowrap={true}
+  >
+    <span
+      key="tag"
+    >
+      <StyledLinkBase
+        onClick={[Function]}
+      >
+        tag
+      </StyledLinkBase>
+    </span>
+  </Text>
+  <Text
+    styles={
+      Object {
+        "root": Object {
+          "fontWeight": 600,
+        },
+      }
+    }
+    variant="large"
+  >
+    Description
+  </Text>
+  <Text>
+    description
+  </Text>
+</Stack>
 `;
 
 exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
-<div
-  className="notebookViewerMetadataContainer"
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
 >
-  <h3
-    className="title"
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 30,
+      }
+    }
+    verticalAlign="center"
   >
-    My notebook
-  </h3>
-</div>
+    <Text
+      nowrap={true}
+      variant="xxLarge"
+    >
+      name
+    </Text>
+    <Text>
+      <CustomizedIconButton
+        iconProps={
+          Object {
+            "iconName": "Heart",
+          }
+        }
+      />
+      0
+       likes
+    </Text>
+    <CustomizedPrimaryButton
+      text="Download"
+    />
+  </Stack>
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 10,
+      }
+    }
+    verticalAlign="center"
+  >
+    <StyledPersonaBase
+      size={11}
+      text="author"
+    />
+    <Text>
+      Invalid Date
+    </Text>
+    <Text>
+      <StyledIconBase
+        iconName="RedEye"
+      />
+       
+      0
+    </Text>
+    <Text>
+      <StyledIconBase
+        iconName="Download"
+      />
+      0
+    </Text>
+  </Stack>
+  <Text
+    nowrap={true}
+  >
+    <span
+      key="tag"
+    >
+      <StyledLinkBase
+        onClick={[Function]}
+      >
+        tag
+      </StyledLinkBase>
+    </span>
+  </Text>
+  <Text
+    styles={
+      Object {
+        "root": Object {
+          "fontWeight": 600,
+        },
+      }
+    }
+    variant="large"
+  >
+    Description
+  </Text>
+  <Text>
+    description
+  </Text>
+</Stack>
 `;

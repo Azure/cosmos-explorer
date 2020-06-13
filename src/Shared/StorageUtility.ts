@@ -70,7 +70,5 @@ export enum StorageKey {
   IsGraphAutoVizDisabled,
   TenantId,
   MostRecentActivity,
-  SetPartitionKeyUndefined,
-  NotebookMetadata,
-  NotebookName
+  SetPartitionKeyUndefined
 }

@@ -54,7 +54,7 @@ import { GitHubReposPane } from "./Panes/GitHubReposPane";
 import { handleOpenAction } from "./OpenActions";
 import { IContentProvider } from "@nteract/core";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
-import { JunoClient } from "../Juno/JunoClient";
+import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
 import { LibraryManagePane } from "./Panes/LibraryManagePane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
@@ -86,6 +86,7 @@ import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
+import { PublishNotebookPane } from "./Panes/PublishNotebookPane";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -199,10 +200,13 @@ export default class Explorer implements ViewModels.Explorer {
   public libraryManagePane: ViewModels.ContextualPane;
   public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
+  public publishNotebookPane: PublishNotebookPane;
 
   // features
   public isGalleryEnabled: ko.Computed<boolean>;
+  public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
+  public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
@@ -223,6 +227,7 @@ export default class Explorer implements ViewModels.Explorer {
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
+  private junoClient: JunoClient;
   private notebookClient: ViewModels.INotebookContainerClient;
   private notebookContentClient: ViewModels.INotebookContentClient;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
@@ -409,7 +414,11 @@ export default class Explorer implements ViewModels.Explorer {
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableGallery));
+    this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
+    );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
+    this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
 
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
@@ -937,13 +946,13 @@ export default class Explorer implements ViewModels.Explorer {
       startKey
     );
 
-    const junoClient = new JunoClient(this.databaseAccount);
+    this.junoClient = new JunoClient(this.databaseAccount);
 
     this.isNotebookEnabled = ko.observable(false);
     this.isNotebookEnabled.subscribe(async (isEnabled: boolean) => {
       this.refreshCommandBarButtons();
 
-      this.gitHubOAuthService = new GitHubOAuthService(junoClient);
+      this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
 
       const GitHubClientModule = await import(/* webpackChunkName: "GitHubClient" */ "../GitHub/GitHubClient");
       const gitHubClient = new GitHubClientModule.GitHubClient(config.AZURESAMPLESCOSMOSDBPAT, error => {
@@ -968,7 +977,7 @@ export default class Explorer implements ViewModels.Explorer {
         id: "gitHubReposPane",
         visible: ko.observable<boolean>(false),
         container: this,
-        junoClient,
+        junoClient: this.junoClient,
         gitHubClient
       });
 
@@ -984,11 +993,6 @@ export default class Explorer implements ViewModels.Explorer {
         this.refreshCommandBarButtons();
         this.refreshNotebookList();
       });
-
-      if (this.isGalleryEnabled()) {
-        this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
-        this.notebookViewerTab = await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab");
-      }
 
       const promptForCommitMsg = (title: string, primaryButtonLabel: string) => {
         return new Promise<string>((resolve, reject) => {
@@ -1057,7 +1061,7 @@ export default class Explorer implements ViewModels.Explorer {
 
     this.isSparkEnabled = ko.observable(false);
     this.isSparkEnabled.subscribe((isEnabled: boolean) => this.refreshCommandBarButtons());
-    this.resourceTree = new ResourceTreeAdapter(this, junoClient);
+    this.resourceTree = new ResourceTreeAdapter(this, this.junoClient);
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
     this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
       notebookServerEndpoint: undefined,
@@ -2601,15 +2605,10 @@ export default class Explorer implements ViewModels.Explorer {
     return Promise.resolve(false);
   }
 
-  public async importAndOpenFromGallery(path: string, newName: string, content: any): Promise<boolean> {
-    const name = newName;
+  public async importAndOpenFromGallery(name: string, content: string): Promise<boolean> {
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && this.isNotebookEnabled() && this.notebookClient) {
-      if (this._filePathToImportAndOpen === path) {
-        this._filePathToImportAndOpen = undefined; // we don't want to try opening this path again
-      }
-
+    if (parent && parent.children && this.isNotebookEnabled() && this.notebookClient) {
       const existingItem = _.find(parent.children, node => node.name === name);
       if (existingItem) {
         this.showOkModalDialog("Download failed", "Notebook with the same name already exists.");
@@ -2620,8 +2619,36 @@ export default class Explorer implements ViewModels.Explorer {
       return this.openNotebook(uploadedItem);
     }
 
-    this._filePathToImportAndOpen = path; // we'll try opening this path later on
     return Promise.resolve(false);
+  }
+
+  public publishNotebook(name: string, content: string): void {
+    let author: string;
+    const user = AuthHeadersUtil.getCachedUser();
+    if (user) {
+      author = user.profile.name;
+    } else {
+      const authToken = CosmosClient.authorizationToken();
+      const props = decryptJWTToken(authToken);
+      author = props.name;
+    }
+
+    if (!this.publishNotebookPane) {
+      this.publishNotebookPane = new PublishNotebookPane({
+        documentClientUtility: this.documentClientUtility,
+        id: "publishNotebookPane",
+        visible: ko.observable<boolean>(false),
+        container: this,
+        junoClient: this.junoClient
+      });
+    }
+
+    this.isPublishNotebookPaneEnabled(true);
+    this.publishNotebookPane.openWithOptions({
+      name,
+      author,
+      content
+    });
   }
 
   public showOkModalDialog(title: string, msg: string): void {
@@ -2737,6 +2764,7 @@ export default class Explorer implements ViewModels.Explorer {
       onLoadStartKey: null,
       onUpdateTabsButtons: this.onUpdateTabsButtons,
       container: this,
+      junoClient: this.junoClient,
       notebookContentItem,
       openedTabs: this.openedTabs()
     };
@@ -3234,7 +3262,7 @@ export default class Explorer implements ViewModels.Explorer {
     newTab.onTabClick();
   }
 
-  public openGallery() {
+  public async openGallery(notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) {
     let title: string;
     let hashLocation: string;
 
@@ -3249,25 +3277,34 @@ export default class Explorer implements ViewModels.Explorer {
       if (openedTabs[i].hashLocation() == hashLocation) {
         openedTabs[i].onTabClick();
         openedTabs[i].onActivate();
+        (openedTabs[i] as any).updateGalleryParams(notebookUrl, galleryItem, isFavorite);
         return;
       }
     }
 
+    if (!this.galleryTab) {
+      this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
+    }
+
     const newTab = new this.galleryTab.default({
+      // GalleryTabOptions
       account: CosmosClient.databaseAccount(),
+      container: this,
+      junoClient: this.junoClient,
+      notebookUrl,
+      galleryItem,
+      isFavorite,
+      // TabOptions
       tabKind: ViewModels.CollectionTabKind.Gallery,
-      node: null,
       title: title,
       tabPath: title,
       documentClientUtility: null,
-      collection: null,
       selfLink: null,
-      hashLocation: hashLocation,
       isActive: ko.observable(false),
+      hashLocation: hashLocation,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      container: this,
       openedTabs: this.openedTabs()
     });
 
@@ -3277,15 +3314,13 @@ export default class Explorer implements ViewModels.Explorer {
     newTab.onTabClick();
   }
 
-  public openNotebookViewer(
-    notebookUrl: string,
-    notebookMetadata: DataModels.NotebookMetadata,
-    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-    isLikedNotebook: boolean
-  ) {
-    const notebookName = path.basename(notebookUrl);
-    const title = notebookName;
+  public async openNotebookViewer(notebookUrl: string) {
+    const title = path.basename(notebookUrl);
     const hashLocation = notebookUrl;
+
+    if (!this.notebookViewerTab) {
+      this.notebookViewerTab = await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab");
+    }
 
     const notebookViewerTabModule = this.notebookViewerTab;
 
@@ -3322,11 +3357,7 @@ export default class Explorer implements ViewModels.Explorer {
       onUpdateTabsButtons: this.onUpdateTabsButtons,
       container: this,
       openedTabs: this.openedTabs(),
-      notebookUrl: notebookUrl,
-      notebookName: notebookName,
-      notebookMetadata: notebookMetadata,
-      onNotebookMetadataChange: onNotebookMetadataChange,
-      isLikedNotebook: isLikedNotebook
+      notebookUrl
     });
 
     this.openedTabs.push(newTab);

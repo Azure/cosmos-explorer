@@ -19,6 +19,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
+      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
     });
@@ -81,6 +82,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
+      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
     });
@@ -161,6 +163,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
+      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
     });
@@ -247,6 +250,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
       mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
+      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.gitHubOAuthService = new GitHubOAuthService(undefined);
     });
 

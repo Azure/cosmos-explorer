@@ -24,6 +24,7 @@ import ManageSparkClusterPaneTemplate from "./ManageSparkClusterPane.html";
 import LibraryManagePaneTemplate from "./LibraryManagePane.html";
 import ClusterLibraryPaneTemplate from "./ClusterLibraryPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
+import PublishNotebookPaneTemplate from "./PublishNotebookPane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -261,6 +262,15 @@ export class GitHubReposPaneComponent {
     return {
       viewModel: PaneComponent,
       template: GitHubReposPaneTemplate
+    };
+  }
+}
+
+export class PublishNotebookPaneComponent {
+  constructor() {
+    return {
+      viewModel: PaneComponent,
+      template: PublishNotebookPaneTemplate
     };
   }
 }

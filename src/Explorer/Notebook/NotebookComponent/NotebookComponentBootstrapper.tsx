@@ -17,7 +17,7 @@ import {
 } from "@nteract/core";
 import * as Immutable from "immutable";
 import { Provider } from "react-redux";
-import { CellType, CellId } from "@nteract/commutable";
+import { CellType, CellId, toJS } from "@nteract/commutable";
 import { Store, AnyAction } from "redux";
 
 import "./NotebookComponent.less";
@@ -69,6 +69,28 @@ export class NotebookComponentBootstrapper {
         {React.createElement<{ contentRef: ContentRef }>(NotebookComponent, { contentRef: this.contentRef, ...props })}
       </>
     );
+  }
+
+  public getContent(): { name: string; content: string } {
+    const record = this.getStore()
+      .getState()
+      .core.entities.contents.byRef.get(this.contentRef);
+    let content: string;
+    switch (record.model.type) {
+      case "notebook":
+        content = JSON.stringify(toJS(record.model.notebook));
+        break;
+      case "file":
+        content = record.model.text;
+        break;
+      default:
+        throw new Error(`Unsupported model type ${record.model.type}`);
+    }
+
+    return {
+      name: NotebookUtil.getName(record.filepath),
+      content
+    };
   }
 
   public setContent(name: string, content: any): void {

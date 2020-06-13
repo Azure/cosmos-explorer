@@ -27,10 +27,12 @@ import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/Notebook
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { config } from "../../Config";
+import { JunoClient } from "../../Juno/JunoClient";
 
 export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
   private static clientManager: NotebookClientV2;
   private container: ViewModels.Explorer;
+  private junoClient: JunoClient;
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
@@ -39,6 +41,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     super(options);
 
     this.container = options.container;
+    this.junoClient = options.junoClient;
 
     if (!NotebookTabV2.clientManager) {
       NotebookTabV2.clientManager = new NotebookClientV2({
@@ -112,6 +115,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
 
     const saveLabel = "Save";
+    const publishLabel = "Publish to gallery";
     const workspaceLabel = "No Workspace";
     const kernelLabel = "No Kernel";
     const runLabel = "Run";
@@ -142,7 +146,27 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
         commandButtonLabel: saveLabel,
         hasPopup: false,
         disabled: false,
-        ariaLabel: saveLabel
+        ariaLabel: saveLabel,
+        children: this.container.isGalleryPublishEnabled()
+          ? [
+              {
+                iconName: "Save",
+                onCommandClick: () => this.notebookComponentAdapter.notebookSave(),
+                commandButtonLabel: saveLabel,
+                hasPopup: false,
+                disabled: false,
+                ariaLabel: saveLabel
+              },
+              {
+                iconName: "PublishContent",
+                onCommandClick: () => this.publishToGallery(),
+                commandButtonLabel: publishLabel,
+                hasPopup: false,
+                disabled: false,
+                ariaLabel: publishLabel
+              }
+            ]
+          : undefined
       },
       {
         iconSrc: null,
@@ -424,6 +448,11 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
       sparkClusterConnectionInfo
     );
   }
+
+  private publishToGallery = () => {
+    const notebookContent = this.notebookComponentAdapter.getContent();
+    this.container.publishNotebook(notebookContent.name, notebookContent.content);
+  };
 
   private traceTelemetry(actionType: number) {
     TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {

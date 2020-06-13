@@ -112,6 +112,7 @@ export class Features {
   public static readonly enableTtl = "enablettl";
   public static readonly enableNotebooks = "enablenotebooks";
   public static readonly enableGallery = "enablegallery";
+  public static readonly enableGalleryPublish = "enablegallerypublish";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
   public static readonly notebookServerUrl = "notebookserverurl";

@@ -36,11 +36,12 @@ export class CommandBarUtil {
 
           const result: ICommandBarItemProps = {
             iconProps: {
-              iconType: IconType.image,
               style: {
-                width: StyleConstants.CommandBarIconWidth // 16
+                width: StyleConstants.CommandBarIconWidth, // 16
+                alignSelf: btn.iconName ? "baseline" : undefined
               },
-              imageProps: { src: btn.iconSrc, alt: btn.iconAlt }
+              imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
+              iconName: btn.iconName
             },
             onClick: btn.onCommandClick,
             key: `${btn.commandButtonLabel}${index}`,

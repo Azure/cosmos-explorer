@@ -1,0 +1,14 @@
+<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
+  <div class="contextual-pane-out" data-bind="click: cancel, clickBubble: false"></div>
+  <div class="contextual-pane" id="publishNotebookPane">
+    <div class="contextual-pane-in">
+      <div class="paneContentContainer" data-bind="react: publishNotebookComponentAdapter" />
+    </div>
+
+    <!-- Loader - Start -->
+    <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
+      <img class="dataExplorerLoader" alt="loading indicator image" src="/LoadingIndicator_3Squares.gif" />
+    </div>
+    <!-- Loader - End -->
+  </div>
+</div>

@@ -81,3 +81,4 @@ ko.components.register("manage-spark-cluster-pane", new PaneComponents.ManageSpa
 ko.components.register("library-manage-pane", new PaneComponents.LibraryManagePaneComponent());
 ko.components.register("cluster-library-pane", new PaneComponents.ClusterLibraryPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());
+ko.components.register("publish-notebook-pane", new PaneComponents.PublishNotebookPaneComponent());

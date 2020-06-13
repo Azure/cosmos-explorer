@@ -16,14 +16,19 @@ import { ArcadiaMenuPickerProps } from "../Arcadia/ArcadiaMenuPicker";
  */
 export interface CommandButtonComponentProps {
   /**
+   * font icon name for the button
+   */
+  iconName?: string;
+
+  /**
    * image source for the button icon
    */
-  iconSrc: string;
+  iconSrc?: string;
 
   /**
    * image alt for accessibility
    */
-  iconAlt: string;
+  iconAlt?: string;
 
   /**
    * Click handler for command button click
