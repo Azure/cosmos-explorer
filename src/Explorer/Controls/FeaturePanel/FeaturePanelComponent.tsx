@@ -4,13 +4,12 @@ import { Dropdown, IDropdownOption, IDropdownStyles } from "office-ui-fabric-rea
 import { Checkbox } from "office-ui-fabric-react/lib/Checkbox";
 import { TextField, ITextFieldStyles } from "office-ui-fabric-react/lib/TextField";
 import { DefaultButton } from "office-ui-fabric-react";
-import { HashMap } from "../../../Common/HashMap";
 import "./FeaturePanelComponent.less";
 
 export const FeaturePanelComponent: React.FunctionComponent = () => {
   // Initial conditions
   const originalParams = new URLSearchParams(window.location.search);
-  const urlParams: HashMap<string> = new HashMap(); // Params with lowercase keys
+  const urlParams = new Map(); // Params with lowercase keys
   originalParams.forEach((value: string, key: string) => urlParams.set(key.toLocaleLowerCase(), value));
 
   const baseUrlOptions = [
@@ -65,7 +64,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       disabled: (): boolean => baseUrl.key !== "https://portal.azure.com"
     },
     { key: "feature.enablespark", label: "Enable Synapse", value: "true" },
-    { key: "feature.enableautopilotv2", label: "Enable Auto-pilot V2", value: "true" },
+    { key: "feature.enableautopilotv2", label: "Enable Auto-pilot V2", value: "true" }
   ];
 
   const stringFeatures: {
