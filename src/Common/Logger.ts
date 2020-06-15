@@ -5,6 +5,7 @@ import { SeverityLevel } from "@microsoft/applicationinsights-web";
 
 // TODO: Move to a separate Diagnostics folder
 export class Logger {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static logInfo(message: string | Record<string, any>, area: string, code?: number): void {
     let logMessage: string;
     if (typeof message === "string") {

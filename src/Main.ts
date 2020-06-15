@@ -7,7 +7,6 @@ import "../less/menus.less";
 import "../less/infobox.less";
 import "../less/messagebox.less";
 import "./Explorer/Controls/InputTypeahead/InputTypeahead.less";
-import "./Explorer/Controls/CommandButton/CommandButton.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";

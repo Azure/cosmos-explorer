@@ -5,9 +5,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
-import ContextMenu from "../Menus/ContextMenu";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { ContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -44,7 +42,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   public rid: string;
   public id: ko.Observable<string>;
   public body: ko.Observable<string>;
-  public contextMenu: ViewModels.ContextMenu;
   public isExecuteEnabled: boolean;
 
   constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
@@ -56,9 +53,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
     this.id = ko.observable(data.id);
     this.body = ko.observable(data.body);
     this.isExecuteEnabled = this.container.isFeatureEnabled(Constants.Features.executeSproc);
-
-    this.contextMenu = new ContextMenu(this.container, this.rid);
-    this.contextMenu.options(ContextMenuButtonFactory.createStoreProcedureContextMenuButton(container));
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
@@ -89,9 +83,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
 
     // Activate
     storedProcedureTab.onTabClick();
-
-    // Hide Context Menu (if necessary)
-    source.contextMenu.hide(source, event);
   }
 
   public select() {
@@ -148,10 +139,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
     storedProcedureTab.onTabClick();
   };
 
-  public delete(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
-    // Hide Context Menu (if necessary)
-    this.contextMenu.hide(source, event);
-
+  public delete() {
     if (!window.confirm("Are you sure you want to delete the stored procedure?")) {
       return;
     }
@@ -191,33 +179,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
           this.onFocusAfterExecute();
         });
   }
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.delete(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Escape") {
-      this.contextMenu.hide(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.open();
-      return false;
-    }
-
-    return true;
-  };
 
   public onFocusAfterExecute(): void {
     const focusElement = document.getElementById("execute-storedproc-toggles");

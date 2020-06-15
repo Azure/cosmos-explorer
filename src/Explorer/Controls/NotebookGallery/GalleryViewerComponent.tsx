@@ -39,7 +39,7 @@ export class GalleryCardsComponent extends React.Component<GalleryCardsComponent
   public render(): JSX.Element {
     return (
       <Stack horizontal wrap tokens={this.sectionStackTokens}>
-        {this.props.data.map((githubInfo: DataModels.GitHubInfoJunoResponse, index: any) => {
+        {this.props.data.map((githubInfo: DataModels.GitHubInfoJunoResponse) => {
           const name = githubInfo.name;
           const url = githubInfo.downloadUrl;
           const notebookMetadata = githubInfo.metadata || {
@@ -56,7 +56,7 @@ export class GalleryCardsComponent extends React.Component<GalleryCardsComponent
           const officialSamplesIndex = githubInfo.officialSamplesIndex;
           const isLikedNotebook = githubInfo.isLikedNotebook;
           const updateTabsStatePerNotebook = this.props.onNotebookMetadataChange
-            ? (notebookMetadata: DataModels.NotebookMetadata) =>
+            ? (notebookMetadata: DataModels.NotebookMetadata): Promise<void> =>
                 this.props.onNotebookMetadataChange(officialSamplesIndex, notebookMetadata)
             : undefined;
 
@@ -68,7 +68,9 @@ export class GalleryCardsComponent extends React.Component<GalleryCardsComponent
                 name={name}
                 url={url}
                 notebookMetadata={notebookMetadata}
-                onClick={() => this.props.onClick(url, notebookMetadata, updateTabsStatePerNotebook, isLikedNotebook)}
+                onClick={(): Promise<void> =>
+                  this.props.onClick(url, notebookMetadata, updateTabsStatePerNotebook, isLikedNotebook)
+                }
               />
             )
           );
@@ -115,7 +117,7 @@ export class FullWidthTabs extends React.Component<FullWidthTabsProps, FullWidth
         title: "Official Samples",
         content: {
           className: "",
-          render: () => (
+          render: (): JSX.Element => (
             <GalleryCardsComponent
               data={this.state.officialSamplesContent}
               onClick={this.props.onClick}
@@ -124,13 +126,13 @@ export class FullWidthTabs extends React.Component<FullWidthTabsProps, FullWidth
             />
           )
         },
-        isVisible: () => true
+        isVisible: (): boolean => true
       },
       {
         title: "Liked Notebooks",
         content: {
           className: "",
-          render: () => (
+          render: (): JSX.Element => (
             <GalleryCardsComponent
               data={this.state.likedNotebooksContent}
               onClick={this.props.onClick}
@@ -139,12 +141,15 @@ export class FullWidthTabs extends React.Component<FullWidthTabsProps, FullWidth
             />
           )
         },
-        isVisible: () => true
+        isVisible: (): boolean => true
       }
     ];
   }
 
-  public updateTabsState = async (officialSamplesIndex: number, notebookMetadata: DataModels.NotebookMetadata) => {
+  public updateTabsState = async (
+    officialSamplesIndex: number,
+    notebookMetadata: DataModels.NotebookMetadata
+  ): Promise<void> => {
     let currentLikedNotebooksContent = [...this.state.likedNotebooksContent];
     let currentUserMetadata = { ...this.state.userMetadata };
     let currentLikedNotebooks = [...currentUserMetadata.likedNotebooks];
@@ -187,7 +192,7 @@ export class FullWidthTabs extends React.Component<FullWidthTabsProps, FullWidth
     });
 
     JunoUtils.updateNotebookMetadata(this.authorizationToken, notebookMetadata).then(
-      async returnedNotebookMetadata => {
+      async () => {
         if (metadataLikesUpdates !== 0) {
           JunoUtils.updateUserMetadata(this.authorizationToken, currentUserMetadata);
           // TODO: update state here?
@@ -203,9 +208,9 @@ export class FullWidthTabs extends React.Component<FullWidthTabsProps, FullWidth
     );
   };
 
-  private onTabIndexChange = (activeTabIndex: number) => this.setState({ activeTabIndex });
+  private onTabIndexChange = (activeTabIndex: number): void => this.setState({ activeTabIndex });
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <TabComponent.TabComponent
         tabs={this.appTabs}
@@ -238,7 +243,7 @@ export class GalleryViewerContainerComponent extends React.Component<
     };
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     const authToken = CosmosClient.authorizationToken();
     JunoUtils.getOfficialSampleNotebooks(authToken).then(
       (data1: DataModels.GitHubInfoJunoResponse[]) => {
@@ -341,7 +346,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     notebookMetadata: DataModels.NotebookMetadata,
     onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
     isLikedNotebook: boolean
-  ) => {
+  ): Promise<void> => {
     if (!this.props.container) {
       SessionStorageUtility.setEntryString(
         StorageKey.NotebookMetadata,

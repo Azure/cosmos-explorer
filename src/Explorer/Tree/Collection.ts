@@ -14,8 +14,6 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { OfferUtils } from "../../Utils/OfferUtils";
 import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
-import { ContextMenuButtonFactory } from "../ContextMenuButtonFactory";
-import ContextMenu from "../Menus/ContextMenu";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import { ConflictsTab } from "../Tabs/ConflictsTab";
@@ -85,9 +83,6 @@ export default class Collection implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
-
-  public contextMenu: ViewModels.ContextMenu;
-  public documentsContextMenu: ViewModels.ContextMenu;
 
   constructor(
     container: ViewModels.Explorer,
@@ -216,217 +211,8 @@ export default class Collection implements ViewModels.Collection {
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
     this.isUserDefinedFunctionsExpanded = ko.observable<boolean>(false);
     this.isTriggersExpanded = ko.observable<boolean>(false);
-    this.contextMenu = new ContextMenu(this.container, this.rid);
-    this.contextMenu.options(
-      ContextMenuButtonFactory.createCollectionContextMenuButton(container, {
-        databaseId: this.databaseId,
-        collectionId: this.id()
-      })
-    );
-    this.documentsContextMenu = new ContextMenu(this.container, `${this.rid}/documents`);
   }
 
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.expandCollapseCollection();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.onDeleteCollectionContextMenuClick(source, event);
-      return false;
-    }
-
-    if (event.key === "ArrowRight" && !this.isCollectionExpanded()) {
-      this.expandCollection();
-      return false;
-    }
-
-    if (event.key === "ArrowDown" && !this.isCollectionExpanded()) {
-      this.expandCollection();
-      return false;
-    }
-
-    if (event.key === "ArrowLeft" && this.isCollectionExpanded()) {
-      this.collapseCollection();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Escape") {
-      this.contextMenu.hide(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onTableEntitiesKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onTableEntitiesKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onTableEntitiesClick();
-      event.stopPropagation();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onGraphDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onGraphDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onGraphDocumentsClick();
-      event.stopPropagation();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onDocumentDBDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onDocumentDBDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onDocumentDBDocumentsClick();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onConflictsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onConflictsClick();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onMongoDBDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onMongoDBDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onMongoDBDocumentsClick();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onSettingsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onSettingsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onSettingsClick();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onStoredProceduresKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "ArrowRight" && !this.isStoredProceduresExpanded()) {
-      this.expandStoredProcedures();
-      return false;
-    }
-
-    if (event.key === "ArrowDown" && !this.isStoredProceduresExpanded()) {
-      this.expandStoredProcedures();
-      return false;
-    }
-
-    if (event.key === "ArrowLeft" && this.isStoredProceduresExpanded()) {
-      this.collapseStoredProcedures();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onStoredProceduresKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.expandCollapseStoredProcedures();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onUserDefinedFunctionsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "ArrowRight" && !this.isUserDefinedFunctionsExpanded()) {
-      this.expandUserDefinedFunctions();
-      return false;
-    }
-
-    if (event.key === "ArrowDown" && !this.isUserDefinedFunctionsExpanded()) {
-      this.expandUserDefinedFunctions();
-      return false;
-    }
-
-    if (event.key === "ArrowLeft" && this.isUserDefinedFunctionsExpanded()) {
-      this.collapseUserDefinedFunctions();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onUserDefinedFunctionsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.expandCollapseUserDefinedFunctions();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onTriggersKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "ArrowRight" && !this.isTriggersExpanded()) {
-      this.expandTriggers();
-      return false;
-    }
-
-    if (event.key === "ArrowDown" && !this.isTriggersExpanded()) {
-      this.expandTriggers();
-      return false;
-    }
-
-    if (event.key === "ArrowLeft" && this.isTriggersExpanded()) {
-      this.collapseTriggers();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onTriggersKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.expandCollapseTriggers();
-      return false;
-    }
-
-    return true;
-  };
   public expandCollapseCollection() {
     this.container.selectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -985,9 +771,6 @@ export default class Collection implements ViewModels.Collection {
 
     // Activate
     queryTab.onTabClick();
-
-    // Hide Context Menu (if necessary)
-    collection.contextMenu.hide(this, null);
   }
 
   public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
@@ -1025,9 +808,6 @@ export default class Collection implements ViewModels.Collection {
 
     // Activate
     queryTab.onTabClick();
-
-    // Hide Context Menu (if necessary)
-    collection.contextMenu.hide(this, null);
   }
 
   public onNewGraphClick() {
@@ -1036,8 +816,6 @@ export default class Collection implements ViewModels.Collection {
     this.container.openedTabs.push(graphTab);
     // Activate
     graphTab.onTabClick();
-    // Hide Context Menu (if necessary)
-    this.contextMenu.hide(this, null);
   }
 
   public onNewMongoShellClick() {
@@ -1060,9 +838,6 @@ export default class Collection implements ViewModels.Collection {
 
     // Activate
     mongoShellTab.onTabClick();
-
-    // Hide Context Menu (if necessary)
-    this.contextMenu.hide(this, null);
   }
 
   public onNewStoredProcedureClick(source: ViewModels.Collection, event: MouseEvent) {
@@ -1357,7 +1132,6 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onDeleteCollectionContextMenuClick(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
-    this._onContextMenuClick(source, event);
     this.container.deleteCollectionConfirmationPane.open();
   }
 
@@ -1603,11 +1377,6 @@ export default class Collection implements ViewModels.Collection {
         tab.onActivate();
       }
     });
-  }
-
-  private _onContextMenuClick(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
-    this.container.selectedNode(this);
-    this.contextMenu.hide(source, event);
   }
 
   protected _getOfferForCollection(offers: DataModels.Offer[], collection: DataModels.Collection): DataModels.Offer {

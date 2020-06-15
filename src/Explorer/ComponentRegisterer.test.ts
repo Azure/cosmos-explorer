@@ -4,10 +4,6 @@ import * as ko from "knockout";
 import "./ComponentRegisterer";
 
 describe("Component Registerer", () => {
-  it("should register command-button component", () => {
-    expect(ko.components.isRegistered("command-button")).toBe(true);
-  });
-
   it("should register input-typeahead component", () => {
     expect(ko.components.isRegistered("input-typeahead")).toBe(true);
   });
@@ -80,30 +76,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("mongo-shell-tab")).toBe(true);
   });
 
-  it("should register resource-tree component", () => {
-    expect(ko.components.isRegistered("resource-tree")).toBe(true);
-  });
-
-  it("should register database-node component", () => {
-    expect(ko.components.isRegistered("database-node")).toBe(true);
-  });
-
-  it("should register collection-node component", () => {
-    expect(ko.components.isRegistered("collection-node")).toBe(true);
-  });
-
-  it("should register stored-procedure-node component", () => {
-    expect(ko.components.isRegistered("stored-procedure-node")).toBe(true);
-  });
-
-  it("should register trigger-node component", () => {
-    expect(ko.components.isRegistered("trigger-node")).toBe(true);
-  });
-
-  it("should register user-defined-function-node component", () => {
-    expect(ko.components.isRegistered("user-defined-function-node")).toBe(true);
-  });
-
   it("should registeradd-collection-pane component", () => {
     expect(ko.components.isRegistered("add-collection-pane")).toBe(true);
   });
@@ -150,10 +122,6 @@ describe("Component Registerer", () => {
 
   it("should register manage-spark-cluster-pane component", () => {
     expect(ko.components.isRegistered("manage-spark-cluster-pane")).toBe(true);
-  });
-
-  it("should register collection-node-context-menu component", () => {
-    expect(ko.components.isRegistered("collection-node-context-menu")).toBe(true);
   });
 
   it("should register dynamic-list component", () => {
