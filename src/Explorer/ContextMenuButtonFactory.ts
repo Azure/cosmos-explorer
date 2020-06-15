@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as ViewModels from "../Contracts/ViewModels";
-import { CommandButtonOptions } from "./Controls/CommandButton/CommandButton";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";

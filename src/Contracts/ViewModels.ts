@@ -9,7 +9,6 @@ import { AccessibleVerticalList } from "../Explorer/Tree/AccessibleVerticalList"
 import { ArcadiaWorkspaceItem } from "../Explorer/Controls/Arcadia/ArcadiaMenuPicker";
 import { CassandraTableKey, CassandraTableKeys, TableDataClient } from "../Explorer/Tables/TableDataClient";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
-import { CommandButtonOptions } from "../Explorer/Controls/CommandButton/CommandButton";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { ExecuteSprocParam } from "../Explorer/Panes/ExecuteSprocParamsPane";
 import { GitHubClient } from "../GitHub/GitHubClient";
