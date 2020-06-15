@@ -128,14 +128,11 @@
                     </div>
                   </div>
                   <!-- Collections Window Title/Command Bar - End  -->
-                  <!-- ko if: !enableLegacyResourceTree() && !isAuthWithResourceToken() -->
+                  <!-- ko if: !isAuthWithResourceToken() -->
                   <div style="overflow-y: auto" data-bind="react:resourceTree"></div>
                   <!-- /ko -->
-                  <!-- ko if: !enableLegacyResourceTree() && isAuthWithResourceToken() -->
+                  <!-- ko if: isAuthWithResourceToken() -->
                   <div style="overflow-y: auto" data-bind="react:resourceTreeForResourceToken"></div>
-                  <!-- /ko -->
-                  <!-- ko if: enableLegacyResourceTree -->
-                  <resource-tree class="resourceTreeScroll" params="{data: $data}"></resource-tree>
                   <!-- /ko -->
                 </div>
                 <!--  Collections Window - End -->
@@ -337,10 +334,6 @@
                 <conflicts-tab params="{data: $data}"></conflicts-tab>
                 <!-- /ko -->
 
-                <!-- ko if: $data.tabKind === 13 -->
-                <notebook-tab params="{data: $data}"></notebook-tab>
-                <!-- /ko -->
-
                 <!-- ko if: $data.tabKind === 14 -->
                 <terminal-tab params="{data: $data}"></terminal-tab>
                 <!-- /ko -->
@@ -431,7 +424,7 @@
         </div>
       </div>
       <!-- Global loader - End -->
-
+      <div data-bind="react:uploadItemsPaneAdapter"></div>
       <add-database-pane params="{data: addDatabasePane}"></add-database-pane>
       <add-collection-pane params="{data: addCollectionPane}"></add-collection-pane>
       <delete-collection-confirmation-pane params="{data: deleteCollectionConfirmationPane}">

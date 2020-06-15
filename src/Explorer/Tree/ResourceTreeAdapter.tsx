@@ -6,7 +6,6 @@ import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeCompo
 import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
-import NotebookTab from "../Tabs/NotebookTab";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { CosmosClient } from "../../Common/CosmosClient";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
@@ -302,7 +301,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: sp.open.bind(sp),
         isSelected: () =>
           this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.StoredProcedures),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container)
+        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container, sp)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
@@ -319,7 +318,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: udf.open.bind(udf),
         isSelected: () =>
           this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.UserDefinedFunctions),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container)
+        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container, udf)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
@@ -335,7 +334,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
         isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container)
+        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container, trigger)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
@@ -526,7 +525,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-          (activeTab as NotebookTab).notebookPath() === item.path
+          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
+             NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
+           */
+          (activeTab as any).notebookPath() === item.path
         );
       },
       contextMenu: createFileContextMenu
@@ -640,7 +642,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-          (activeTab as NotebookTab).notebookPath() === item.path
+          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
+             NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
+           */
+          (activeTab as any).notebookPath() === item.path
         );
       },
       contextMenu:

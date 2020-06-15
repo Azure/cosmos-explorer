@@ -1,0 +1,312 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Feature panel renders all flags 1`] = `
+<div
+  className="featurePanelComponentContainer"
+>
+  <div
+    className="urlContainer"
+  >
+    <a
+      href="https://localhost:1234/explorer.html?platform=Hosted"
+      rel="noopener"
+      target="_blank"
+    >
+      https://localhost:1234/explorer.html?platform=Hosted
+    </a>
+  </div>
+  <Stack
+    className="options"
+    tokens={
+      Object {
+        "childrenGap": 10,
+      }
+    }
+  >
+    <Stack
+      horizontal={true}
+      horizontalAlign="space-between"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+      >
+        Notebooks on localhost
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+      >
+        Portal points to local DE
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+      >
+        Reset
+      </CustomizedDefaultButton>
+    </Stack>
+    <Stack
+      horizontal={true}
+      horizontalAlign="start"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StyledWithResponsiveMode
+        label="Base Url"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "https://localhost:1234/explorer.html",
+              "text": "localhost:1234",
+            },
+            Object {
+              "key": "https://cosmos.azure.com/explorer.html",
+              "text": "cosmos.azure.com",
+            },
+            Object {
+              "key": "https://portal.azure.com",
+              "text": "portal",
+            },
+          ]
+        }
+        selectedKey="https://localhost:1234/explorer.html"
+        styles={
+          Object {
+            "dropdown": Object {
+              "width": 200,
+            },
+          }
+        }
+      />
+      <StyledWithResponsiveMode
+        label="Platform"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "Hosted",
+              "text": "Hosted",
+            },
+            Object {
+              "key": "Portal",
+              "text": "Portal",
+            },
+            Object {
+              "key": "Emulator",
+              "text": "Emulator",
+            },
+            Object {
+              "key": "",
+              "text": "None",
+            },
+          ]
+        }
+        selectedKey="Hosted"
+        styles={
+          Object {
+            "dropdown": Object {
+              "width": 200,
+            },
+          }
+        }
+      />
+    </Stack>
+    <Stack
+      horizontal={true}
+    >
+      <Stack
+        className="checkboxRow"
+        horizontalAlign="space-between"
+      >
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablechangefeedpolicy"
+          label="Enable change feed policy"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablerupm"
+          label="Enable RUPM"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.dataexplorerexecutesproc"
+          label="Execute stored procedure"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.hosteddataexplorerenabled"
+          label="Hosted Data Explorer (deprecated?)"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablettl"
+          label="Enable TTL"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablegallery"
+          label="Enable Notebook Gallery"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.canexceedmaximumvalue"
+          label="Can exceed max value"
+          onChange={[Function]}
+        />
+      </Stack>
+      <Stack
+        className="checkboxRow"
+        horizontalAlign="space-between"
+      >
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablefixedcollectionwithsharedthroughput"
+          label="Enable fixed collection with shared throughput"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.ttl90days"
+          label="TTL 90 days"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablenotebooks"
+          label="Enable notebooks"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          disabled={true}
+          key="feature.customportal"
+          label="Force Production portal (portal only)"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enablespark"
+          label="Enable Synapse"
+          onChange={[Function]}
+        />
+        <StyledCheckboxBase
+          checked={false}
+          key="feature.enableautopilotv2"
+          label="Enable Auto-pilot V2"
+          onChange={[Function]}
+        />
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <Stack
+        horizontalAlign="space-between"
+      >
+        <StyledTextFieldBase
+          key="feature.notebookserverurl"
+          label="Notebook server URL"
+          onChange={[Function]}
+          placeholder="https://notebookserver"
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+        />
+        <StyledTextFieldBase
+          key="feature.notebookservertoken"
+          label="Notebook server token"
+          onChange={[Function]}
+          placeholder=""
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+        />
+        <StyledTextFieldBase
+          key="feature.notebookbasepath"
+          label="Notebook base path"
+          onChange={[Function]}
+          placeholder=""
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+        />
+      </Stack>
+      <Stack
+        horizontalAlign="space-between"
+      >
+        <StyledTextFieldBase
+          key="key"
+          label="Auth key"
+          onChange={[Function]}
+          placeholder=""
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+        />
+        <StyledTextFieldBase
+          disabled={true}
+          key="dataExplorerSource"
+          label="Data Explorer Source (portal only)"
+          onChange={[Function]}
+          placeholder="https://localhost:1234/explorer.html"
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+        />
+        <StyledTextFieldBase
+          key="feature.livyendpoint"
+          label="Livy endpoint"
+          onChange={[Function]}
+          placeholder=""
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+        />
+      </Stack>
+    </Stack>
+  </Stack>
+</div>
+`;

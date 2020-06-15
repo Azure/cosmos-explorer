@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import { DocumentClientParams, UploadDetailsRecord, UploadDetails } from "./definitions";
 import { CosmosClient } from "../../Common/CosmosClient";
+import { config } from "../../Config";
 
 let numUploadsSuccessful = 0;
 let numUploadsFailed = 0;
@@ -33,8 +34,7 @@ onmessage = (event: MessageEvent) => {
   CosmosClient.endpoint(clientParams.endpoint);
   CosmosClient.accessToken(clientParams.accessToken);
   CosmosClient.databaseAccount(clientParams.databaseAccount);
-  self.dataExplorerPlatform = clientParams.platform;
-  console.log(event);
+  config.platform = clientParams.platform;
   if (!!files && files.length > 0) {
     numFiles = files.length;
     for (let i = 0; i < numFiles; i++) {
@@ -87,7 +87,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
           numUploadsSuccessful++;
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
           recordUploadDetailErrorForFile(fileName, JSON.stringify(error));
           numUploadsFailed++;
         })
@@ -106,6 +106,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
       triggerCreateDocument(content);
     }
   } catch (e) {
+    console.log(e);
     recordUploadDetailErrorForFile(fileName, e.message);
     transmitResultIfUploadComplete();
   }

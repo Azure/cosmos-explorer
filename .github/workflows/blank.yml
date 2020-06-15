@@ -8,6 +8,40 @@ on:
   pull_request:
     branches: [master]
 jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: "Compile TypeScript"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run compile
+      - run: npm run compile:strict
+  format:
+    runs-on: ubuntu-latest
+    name: "Check Format"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run format:check
+  lint:
+    runs-on: ubuntu-latest
+    name: "Lint"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run lint
   unittest:
     runs-on: ubuntu-latest
     name: "Unit Tests"
@@ -36,7 +70,7 @@ jobs:
           path: .cache
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
-      - run: npm run copyToConsumers
+      - run: cp -r ./Contracts ./dist/contracts
       - uses: actions/upload-artifact@v2
         with:
           name: dist
@@ -125,7 +159,7 @@ jobs:
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
   nuget:
     name: Publish Nuget
-    needs: [build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    needs: [lint, format, compile build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -146,7 +180,7 @@ jobs:
           path: "*.nupkg"
   nugetmpac:
     name: Publish Nuget MPAC
-    needs: [build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}

@@ -7,11 +7,9 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
 import Collection from "./Collection";
-import ContextMenu from "../Menus/ContextMenu";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { ContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 import { Logger } from "../../Common/Logger";
 
 export default class Database implements ViewModels.Database {
@@ -25,7 +23,6 @@ export default class Database implements ViewModels.Database {
   public isDatabaseExpanded: ko.Observable<boolean>;
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
-  public contextMenu: ViewModels.ContextMenu;
 
   constructor(container: ViewModels.Explorer, data: any, offer: DataModels.Offer) {
     this.nodeKind = "Database";
@@ -36,70 +33,11 @@ export default class Database implements ViewModels.Database {
     this.offer = ko.observable(offer);
     this.collections = ko.observableArray<Collection>();
     this.isDatabaseExpanded = ko.observable<boolean>(false);
-    this.contextMenu = new ContextMenu(this.container, this.rid);
-    this.contextMenu.options(
-      ContextMenuButtonFactory.createDatabaseContextMenuButton(container, { databaseId: this.id() })
-    );
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
     this.isDatabaseShared = ko.pureComputed(() => {
       return this.offer && !!this.offer();
     });
   }
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.expandCollapseDatabase();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.onDeleteDatabaseContextMenuClick(source, event);
-      return false;
-    }
-
-    if (event.key === "ArrowRight") {
-      this.expandDatabase();
-      return false;
-    }
-
-    if (event.key === "ArrowLeft") {
-      this.collapseDatabase();
-      return false;
-    }
-
-    if (event.key === "Enter") {
-      this.expandCollapseDatabase();
-      return false;
-    }
-
-    return true;
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Escape") {
-      this.contextMenu.hide(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onSettingsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    return true;
-  };
-
-  public onSettingsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.onSettingsClick();
-      return false;
-    }
-
-    return true;
-  };
 
   public onSettingsClick = () => {
     this.container.selectedNode(this);
@@ -262,8 +200,6 @@ export default class Database implements ViewModels.Database {
   }
 
   public onDeleteDatabaseContextMenuClick(source: ViewModels.Database, event: MouseEvent | KeyboardEvent) {
-    source.container.selectedNode(source);
-    source.contextMenu.hide(source, event);
     this.container.deleteDatabaseConfirmationPane.open();
   }
 
@@ -346,7 +282,6 @@ export default class Database implements ViewModels.Database {
   }
 
   public openAddCollection(database: Database, event: MouseEvent) {
-    database.contextMenu.hide(database, event);
     database.container.addCollectionPane.databaseId(database.id());
     database.container.addCollectionPane.open();
   }

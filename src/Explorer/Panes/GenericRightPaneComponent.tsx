@@ -1,0 +1,146 @@
+import * as React from "react";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { IconButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
+import { KeyCodes } from "../../Common/Constants";
+import { Subscription } from "knockout";
+import ErrorRedIcon from "../../../images/error_red.svg";
+import LoadingIndicatorIcon from "../../../images/LoadingIndicator_3Squares.gif";
+
+export interface GenericRightPaneProps {
+  container: ViewModels.Explorer;
+  content: JSX.Element;
+  formError: string;
+  formErrorDetail: string;
+  id: string;
+  isExecuting: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  submitButtonText: string;
+  title: string;
+}
+
+export interface GenericRightPaneState {
+  panelHeight: number;
+}
+
+export class GenericRightPaneComponent extends React.Component<GenericRightPaneProps, GenericRightPaneState> {
+  private notificationConsoleSubscription: Subscription;
+
+  constructor(props: GenericRightPaneProps) {
+    super(props);
+
+    this.state = {
+      panelHeight: this.getPanelHeight()
+    };
+  }
+
+  public componentDidMount(): void {
+    this.notificationConsoleSubscription = this.props.container.isNotificationConsoleExpanded.subscribe(() => {
+      this.setState({ panelHeight: this.getPanelHeight() });
+    });
+    this.props.container.isNotificationConsoleExpanded.extend({ rateLimit: 10 });
+  }
+
+  public componentWillUnmount(): void {
+    this.notificationConsoleSubscription && this.notificationConsoleSubscription.dispose();
+  }
+
+  public render(): JSX.Element {
+    return (
+      <div tabIndex={-1} onKeyDown={this.onKeyDown}>
+        <div className="contextual-pane-out" onClick={this.props.onClose}></div>
+        <div
+          className="contextual-pane"
+          id={this.props.id}
+          style={{ height: this.state.panelHeight }}
+          onKeyDown={this.onKeyDown}
+        >
+          <div className="panelContentWrapper">
+            {this.createPanelHeader()}
+            {this.createErrorSection()}
+            {this.props.content}
+            {this.createPanelFooter()}
+          </div>
+          {this.createLoadingScreen()}
+        </div>
+      </div>
+    );
+  }
+
+  private createPanelHeader = (): JSX.Element => {
+    return (
+      <div className="firstdivbg headerline">
+        <span id="databaseTitle">{this.props.title}</span>
+        <IconButton
+          ariaLabel="Close pane"
+          title="Close pane"
+          onClick={this.props.onClose}
+          tabIndex={0}
+          className="closePaneBtn"
+          iconProps={{ iconName: "Cancel" }}
+        />
+      </div>
+    );
+  };
+
+  private createErrorSection = (): JSX.Element => {
+    return (
+      <div className="warningErrorContainer" aria-live="assertive" hidden={!this.props.formError}>
+        <div className="warningErrorContent">
+          <span>
+            <img className="paneErrorIcon" src={ErrorRedIcon} alt="Error" />
+          </span>
+          <span className="warningErrorDetailsLinkContainer">
+            <span className="formErrors" title={this.props.formError}>
+              {this.props.formError}
+            </span>
+            <a className="errorLink" role="link" hidden={!this.props.formErrorDetail} onClick={this.showErrorDetail}>
+              More details
+            </a>
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  private createPanelFooter = (): JSX.Element => {
+    return (
+      <div className="paneFooter">
+        <div className="leftpanel-okbut">
+          <PrimaryButton
+            ariaLabel="Submit"
+            title="Submit"
+            onClick={this.props.onSubmit}
+            tabIndex={0}
+            className="genericPaneSubmitBtn"
+            text={this.props.submitButtonText}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  private createLoadingScreen = (): JSX.Element => {
+    return (
+      <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.props.isExecuting}>
+        <img className="dataExplorerLoader" src={LoadingIndicatorIcon} />
+      </div>
+    );
+  };
+
+  private onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.keyCode === KeyCodes.Escape) {
+      this.props.onClose();
+      event.stopPropagation();
+    }
+  };
+
+  private showErrorDetail = (): void => {
+    this.props.container.expandConsole();
+  };
+
+  private getPanelHeight = (): number => {
+    const notificationConsoleElement: HTMLElement = document.getElementById("explorerNotificationConsole");
+    return window.innerHeight - $(notificationConsoleElement).height();
+  };
+}
