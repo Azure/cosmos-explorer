@@ -4,11 +4,7 @@ module.exports = {
     es6: true
   },
   plugins: ["@typescript-eslint"],
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly"
@@ -40,6 +36,7 @@ module.exports = {
     }
   ],
   rules: {
-    curly: "error"
+    curly: "error",
+    "@typescript-eslint/no-unused-vars": "error"
   }
 };
