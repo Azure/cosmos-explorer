@@ -4,7 +4,7 @@
   "description": "Cosmos Explorer",
   "main": "index.js",
   "dependencies": {
-    "@azure/cosmos": "3.6.3",
+    "@azure/cosmos": "3.7.1",
     "@azure/cosmos-language-service": "0.0.4",
     "@jupyterlab/services": "4.2.0",
     "@jupyterlab/terminal": "1.2.1",
@@ -155,7 +155,7 @@
     "webpack": "4.41.2",
     "webpack-bundle-analyzer": "3.6.1",
     "webpack-cli": "3.3.10",
-    "webpack-dev-server": "3.9.0",
+    "webpack-dev-server": "3.11.0",
     "worker-loader": "2.0.0"
   },
   "scripts": {

@@ -5,8 +5,6 @@ import * as Constants from "../Common/Constants";
 import Explorer from "../Explorer/Explorer";
 import { TabRouteHandler } from "./TabRouteHandler";
 
-jest.mock("../Explorer/Tabs/NotebookTab");
-
 describe("TabRouteHandler", () => {
   let tabRouteHandler: TabRouteHandler;
 

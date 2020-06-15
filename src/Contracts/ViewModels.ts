@@ -27,6 +27,7 @@ import { Splitter } from "../Common/Splitter";
 import { StringInputPane } from "../Explorer/Panes/StringInputPane";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
+import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -86,7 +87,7 @@ export interface Explorer {
   isFeatureEnabled: (feature: string) => boolean;
   isGalleryEnabled: ko.Computed<boolean>;
   isGitHubPaneEnabled: ko.Observable<boolean>;
-  isGraphsEnabled: ko.Computed<boolean>;
+  isRightPanelV2Enabled: ko.Computed<boolean>;
   canExceedMaximumValue: ko.Computed<boolean>;
   hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
   isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -141,6 +142,7 @@ export interface Explorer {
   executeSprocParamsPane: ExecuteSprocParamsPane;
   renewAdHocAccessPane: RenewAdHocAccessPane;
   uploadItemsPane: UploadItemsPane;
+  uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   loadQueryPane: LoadQueryPane;
   saveQueryPane: ContextualPane;
   browseQueriesPane: BrowseQueriesPane;
@@ -1174,7 +1176,6 @@ export interface TriggerTab extends ScriptTab {
 }
 
 export interface GraphTab extends Tab {}
-export interface NotebookTab extends Tab {}
 export interface EditorPosition {
   line: number;
   column: number;
@@ -1218,7 +1219,7 @@ export enum CollectionTabKind {
   MongoShell = 10,
   DatabaseSettings = 11,
   Conflicts = 12,
-  Notebook = 13,
+  Notebook = 13 /* Deprecated */,
   Terminal = 14,
   NotebookV2 = 15,
   SparkMasterTab = 16,

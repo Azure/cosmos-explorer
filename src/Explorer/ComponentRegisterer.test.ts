@@ -64,10 +64,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("graph-tab")).toBe(true);
   });
 
-  it("should register notebook-tab component", () => {
-    expect(ko.components.isRegistered("notebook-tab")).toBe(true);
-  });
-
   it("should register notebookv2-tab component", () => {
     expect(ko.components.isRegistered("notebookv2-tab")).toBe(true);
   });
