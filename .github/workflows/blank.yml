@@ -159,7 +159,7 @@ jobs:
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
   nuget:
     name: Publish Nuget
-    needs: [lint, format, compile build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
