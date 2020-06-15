@@ -1,5 +1,5 @@
 /**
- * Defines constants related to logging telemetry.  This file should be kept in sync with the one in the portal extension code as much as possible.
+ * Defines constants related to logging telemetry. Everything except Action should be kept in sync with the one in the Portal code as much as possible.
  *
  * TODO: Move this to ExplorerContracts (265329)
  */
@@ -8,13 +8,9 @@ export class General {
   public static BladeNamePrefix: string = "Extension/Microsoft_Azure_DocumentDB/Blade/";
 }
 
-/**
- * This is to be kept in sync with the one in portal. Please update the one in the portal if you add/remove any entry.
- */
+// Data Explorer specific actions. No need to keep this in sync with the one in Portal.
 export enum Action {
   CollapseTreeNode,
-  CreateDatabaseAccount,
-  CreateAzureFunction,
   CreateCollection,
   CreateDocument,
   CreateStoredProcedure,
@@ -23,7 +19,6 @@ export enum Action {
   DeleteCollection,
   DeleteDatabase,
   DeleteDocument,
-  DownloadQuickstart,
   ExpandTreeNode,
   ExecuteQuery,
   HasFeature,
@@ -33,27 +28,18 @@ export enum Action {
   LoadDatabaseAccount,
   LoadCollections,
   LoadDatabases,
-  LoadMetrics,
   LoadOffers,
-  LoadSingleCollectionWithOfferAndStatistics,
   MongoShell,
-  OpenMetrics,
   ContextualPane,
   ScaleThroughput,
   SelectItem,
-  SwitchQuickstartPlatform,
   Tab,
   UpdateDocument,
-  UpdateRegions,
   UpdateSettings,
   UpdateStoredProcedure,
   UpdateTrigger,
   UpdateUDF,
-  ViewWarning,
-  LoadBlade,
   LoadResourceTree,
-  LoadMetricsTab,
-  AccountLevelThroughput,
   CreateDatabase,
   ResolveConflict,
   DeleteConflict,
