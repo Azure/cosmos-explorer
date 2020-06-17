@@ -158,7 +158,13 @@ module.exports = function(env = {}, argv = {}) {
       chunks: ["connectToGitHub"]
     }),
     new MonacoWebpackPlugin(),
-    new CopyWebpackPlugin(["DataExplorer.nuspec", "web.config", "quickstart/*.zip"]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: "DataExplorer.nuspec", to: "DataExplorer.nuspec" },
+        { from: "web.config", to: "web.config" },
+        { from: "quickstart/*.zip", to: "quickstart/*.zip" }
+      ]
+    }),
     new EnvironmentPlugin(envVars)
   ];
 
