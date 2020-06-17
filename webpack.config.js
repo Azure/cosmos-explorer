@@ -159,11 +159,7 @@ module.exports = function(env = {}, argv = {}) {
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
-      patterns: [
-        { from: "DataExplorer.nuspec", to: "DataExplorer.nuspec" },
-        { from: "web.config", to: "web.config" },
-        { from: "quickstart/*.zip", to: "quickstart/*.zip" }
-      ]
+      patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }]
     }),
     new EnvironmentPlugin(envVars)
   ];
