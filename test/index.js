@@ -19,7 +19,7 @@ describe("Google", () => {
     );
 
     // Wait for page to settle
-    await page.waitFor(10000);
+    await page.waitFor(20000);
 
     // Find Data Explorer iFrame
     const frames = page.frames();
