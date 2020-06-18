@@ -190,14 +190,7 @@
             data-bind="visible: !isRefreshingExplorer() && (openedTabs == null || openedTabs().length === 0)"
           >
             <form class="connectExplorerFormContainer">
-              <div class="connectExplorer" data-bind="react: splashScreenAdapter, visible: isNotebookEnabled"></div>
-              <div class="connectExplorer" data-bind="visible: !isNotebookEnabled()">
-                <p class="connectExplorerContent"><img src="/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" /></p>
-                <p class="welcomeText">Welcome to Azure Cosmos DB</p>
-                <p class="connectExplorerContent" data-bind="visible: !isAuthWithResourceToken">
-                  Create new or work with existing container(s).
-                </p>
-              </div>
+              <div class="connectExplorer" data-bind="react: splashScreenAdapter"></div>
             </form>
           </div>
 
