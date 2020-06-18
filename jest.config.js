@@ -150,7 +150,7 @@ module.exports = {
   // testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?|ts?)$",
 
   // This option allows the use of a custom results processor
-  testResultsProcessor: "./trxProcessor.js",
+  // testResultsProcessor: "./trxProcessor.js",
 
   // This option allows use of a custom test runner
   // testRunner: "jasmine2",

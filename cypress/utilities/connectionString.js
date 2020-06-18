@@ -1,6 +1,7 @@
 module.exports = {
   loginUsingConnectionString: function() {
-    const prodUrl = Cypress.env("TEST_ENDPOINT") || "https://localhost:1234/hostedExplorer.html";
+    const prodUrl = Cypress.env("TEST_ENDPOINT");
+    debugger;
     const timeout = 15000;
 
     cy.visit(prodUrl);
