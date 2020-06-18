@@ -13,13 +13,14 @@ describe("Google", () => {
     await page.waitFor("input[name=loginfmt]");
     await page.type("input[name=passwd]", process.env.PORTAL_RUNNER_PASSWORD);
     await page.click("input[type=submit]");
+    await page.waitFor(3000);
     await page.waitForNavigation();
     await page.goto(
       "https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/f398d857-6991-4b24-bae1-ad435c5ff779/resourceGroups/workspace/providers/Microsoft.DocumentDb/databaseAccounts/stfaul/dataExplorer"
     );
 
     // Wait for page to settle
-    await page.waitFor(20000);
+    await page.waitFor(10000);
 
     // Find Data Explorer iFrame
     const frames = page.frames();
