@@ -9,7 +9,7 @@ import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { CosmosClient } from "../../Common/CosmosClient";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { config } from "../../Config";
 
 export default class AuthHeadersUtil {

@@ -8,7 +8,7 @@ import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import TabsBase from "./TabsBase";
 import { HashMap } from "../../Common/HashMap";
 import * as HeadersUtility from "../../Common/HeadersUtility";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";

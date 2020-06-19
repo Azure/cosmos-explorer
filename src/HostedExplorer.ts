@@ -23,7 +23,7 @@ import { DialogProps } from "./Explorer/Controls/DialogReactComponent/DialogComp
 import { DirectoryListProps } from "./Explorer/Controls/Directory/DirectoryListComponent";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { LocalStorageUtility, StorageKey, SessionStorageUtility } from "./Shared/StorageUtility";
-import { Logger } from "./Common/Logger";
+import * as Logger from "./Common/Logger";
 import { MeControlComponentProps } from "./Explorer/Menus/NavBar/MeControlComponent";
 import { MeControlComponentAdapter } from "./Explorer/Menus/NavBar/MeControlComponentAdapter";
 import { MessageTypes } from "./Contracts/ExplorerContracts";

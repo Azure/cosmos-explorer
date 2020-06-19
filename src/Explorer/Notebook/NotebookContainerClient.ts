@@ -6,7 +6,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 
 export class NotebookContainerClient implements ViewModels.INotebookContainerClient {
   private reconnectingNotificationId: string;

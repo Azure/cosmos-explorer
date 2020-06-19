@@ -2,7 +2,7 @@ import { ServerConfig, IContentProvider, FileType, IContent, IGetParams } from "
 import { Observable } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
 import { GitHubContentProvider } from "../../../GitHub/GitHubContentProvider";
-import { GitHubUtils } from "../../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../../Utils/GitHubUtils";
 
 export class NotebookContentProvider implements IContentProvider {
   constructor(private gitHubContentProvider: GitHubContentProvider, private jupyterContentProvider: IContentProvider) {}

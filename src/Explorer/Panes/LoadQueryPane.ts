@@ -4,7 +4,7 @@ import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 
 export class LoadQueryPane extends ContextualPaneBase implements ViewModels.LoadQueryPane {

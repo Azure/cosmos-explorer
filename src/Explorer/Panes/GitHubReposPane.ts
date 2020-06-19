@@ -1,12 +1,12 @@
 import _ from "underscore";
 import { Areas, HttpStatusCodes } from "../../Common/Constants";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../GitHub/GitHubClient";
 import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { GitHubUtils } from "../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { JunoUtils } from "../../Utils/JunoUtils";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { AuthorizeAccessComponent } from "../Controls/GitHub/AuthorizeAccessComponent";

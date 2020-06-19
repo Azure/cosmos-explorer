@@ -350,7 +350,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     if (!this.props.container) {
       SessionStorageUtility.setEntryString(
         StorageKey.NotebookMetadata,
-        notebookMetadata ? JSON.stringify(notebookMetadata) : null
+        notebookMetadata ? JSON.stringify(notebookMetadata) : undefined
       );
       SessionStorageUtility.setEntryString(StorageKey.NotebookName, path.basename(url));
       window.open(`${config.hostedExplorerURL}notebookViewer.html?notebookurl=${url}`, "_blank");

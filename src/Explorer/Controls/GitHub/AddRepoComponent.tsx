@@ -5,7 +5,7 @@ import * as Constants from "../../../Common/Constants";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RepoListItem } from "./GitHubReposComponent";
 import { ChildrenMargin } from "./GitHubStyleConstants";
-import { GitHubUtils } from "../../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { IGitHubRepo } from "../../../GitHub/GitHubClient";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import UrlUtility from "../../../Common/UrlUtility";

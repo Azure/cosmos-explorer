@@ -10,7 +10,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ClusterLibraryGridAdapter } from "../Controls/LibraryManagement/ClusterLibraryGridAdapter";
 import { ClusterLibraryGridProps, ClusterLibraryItem } from "../Controls/LibraryManagement/ClusterLibraryGrid";
 import { Library, SparkCluster, SparkClusterLibrary } from "../../Contracts/DataModels";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 
 export class ClusterLibraryPane extends ContextualPaneBase {

@@ -1,4 +1,4 @@
-import { GitHubUtils } from "./GitHubUtils";
+import * as GitHubUtils from "./GitHubUtils";
 
 const owner = "owner-1";
 const repo = "repo-1";

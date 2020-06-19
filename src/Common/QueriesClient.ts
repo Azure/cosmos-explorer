@@ -7,7 +7,7 @@ import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { CosmosClient } from "./CosmosClient";
 import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Logger } from "./Logger";
+import * as Logger from "./Logger";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
 
