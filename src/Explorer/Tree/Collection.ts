@@ -1409,7 +1409,7 @@ export default class Collection implements ViewModels.Collection {
    */
   public getLabel(): string {
     if (this.container.isPreferredApiTable()) {
-      return "Entitites";
+      return "Entites";
     } else if (this.container.isPreferredApiCassandra()) {
       return "Rows";
     } else if (this.container.isPreferredApiGraph()) {
