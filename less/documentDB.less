@@ -14,6 +14,10 @@ body {
     font-family: @DataExplorerFont;
     font-size: 12px;
     height: 100%;
+
+    :focus {
+        .focus()
+    }
 }
 
 .float-right {
@@ -174,7 +178,7 @@ body {
                     &:active {
                         .active();
                     }
-                    
+
                     &:focus .urlTokenCopyTooltiptext, &:focus .urlTokenCopyTooltiptext {
                         .tooltipVisible();
                     }
@@ -362,7 +366,7 @@ body {
 }
 
 .splashLoaderContainer {
-    z-index: 5;    
+    z-index: 5;
     position: absolute;
     left: 0;
     top: 0;
@@ -1449,7 +1453,7 @@ p {
     .throughputModeRadio {
         vertical-align: text-bottom;
     }
-    
+
     .nonFirstRadio {
         margin-left: @LargeSpace;
     }
@@ -1484,7 +1488,7 @@ p {
 
     .largePartitionKeyDescription {
         margin: @DefaultSpace 0px 0px;
-    } 
+    }
 }
 
 .enableAnalyticalStorage {
@@ -2216,13 +2220,13 @@ a:link {
 
 .documentsGridHeaderContainer table thead tr {
     position: sticky;
-    top: 0;   
+    top: 0;
     th {
         position: sticky;
-        top: 0; 
+        top: 0;
         background-color: #fff !important;
         border-bottom: 1px solid #CCCCCC !important;
-    } 
+    }
 }
 
 .documentsGridHeader {

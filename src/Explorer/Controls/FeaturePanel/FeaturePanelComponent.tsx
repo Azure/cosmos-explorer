@@ -133,7 +133,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       .find(f => f.key === "feature.notebookserverurl")
       .reactState[1]("https://localhost:10001/12345/notebook/");
     stringFeatures.find(f => f.key === "feature.notebookservertoken").reactState[1]("token");
-    stringFeatures.find(f => f.key === "feature.notebookbasepath").reactState[1](".");
+    stringFeatures.find(f => f.key === "feature.notebookbasepath").reactState[1]("./notebooks");
     setPlatform(platformOptions.find(o => o.key === "Hosted"));
   };
 

@@ -6,10 +6,9 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import * as Constants from "../../../Common/Constants";
 import AnimateHeight from "react-animate-height";
-import { IconButton } from "office-ui-fabric-react/lib/Button";
+import { IconButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import {
   DirectionalHint,
   IContextualMenuItemProps,
@@ -227,6 +226,10 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
 
   private renderContextMenuButton(node: TreeNode): JSX.Element {
     const menuItemLabel = "More";
+    const buttonStyles: Partial<IButtonStyles> = {
+      rootFocused: { outline: ` 1px dashed ${Constants.StyleConstants.FocusColor}` }
+    };
+
     return (
       <div ref={this.contextMenuRef} onContextMenu={this.onRightClick} onKeyPress={this.onMoreButtonKeyPress}>
         <IconButton
@@ -264,6 +267,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />
             }))
           }}
+          styles={buttonStyles}
         />
       </div>
     );
