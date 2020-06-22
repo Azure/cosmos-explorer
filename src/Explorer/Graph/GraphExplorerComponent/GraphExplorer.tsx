@@ -327,8 +327,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param id
    */
   public static generatePkIdPair(pk: PartitionKeyValueType, id: string) {
-    const pkStr = typeof pk === "string" ? `"${pk}"` : `${pk}`;
-    return `[${pkStr}, "${GraphUtil.escapeDoubleQuotes(id)}"]`;
+    const pkStr = typeof pk === "string" ? `'${pk}'` : `${pk}`;
+    return `[${pkStr}, '${GraphUtil.escapeSingleQuotes(id)}']`;
   }
 
   public updateVertexProperties(editedProperties: EditedProperties): Q.Promise<GremlinClient.GremlinRequestResult> {
@@ -1335,7 +1335,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       const pk = v.properties[this.props.collectionPartitionKeyProperty][0].value;
       return GraphExplorer.generatePkIdPair(pk, v.id);
     } else {
-      return `"${GraphUtil.escapeDoubleQuotes(v.id)}"`;
+      return `'${GraphUtil.escapeSingleQuotes(v.id)}'`;
     }
   }
 
@@ -1369,7 +1369,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       const pk = (d as any)[this.props.collectionPartitionKeyProperty];
       return GraphExplorer.generatePkIdPair(pk, d.id);
     } else {
-      return `"${GraphUtil.escapeDoubleQuotes(d.id)}"`;
+      return `'${GraphUtil.escapeSingleQuotes(d.id)}'`;
     }
   }
 

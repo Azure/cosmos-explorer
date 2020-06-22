@@ -11,7 +11,6 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as StorageUtility from "../../../Shared/StorageUtility";
 import GraphTab from "../../Tabs/GraphTab";
-import DocumentClientUtilityBase from "../../../Common/DocumentClientUtilityBase";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 
 describe("Check whether query result is vertex array", () => {
@@ -59,10 +58,11 @@ describe("Check whether query result is edge-vertex array", () => {
 
 describe("Create proper pkid pair", () => {
   it("should enclose string pk with quotes", () => {
-    expect(GraphExplorer.generatePkIdPair("test", "id")).toEqual('["test", "id"]');
+    expect(GraphExplorer.generatePkIdPair("test", "id")).toEqual("['test', 'id']");
   });
+
   it("should not enclose non-string pk with quotes", () => {
-    expect(GraphExplorer.generatePkIdPair(2, "id")).toEqual('[2, "id"]');
+    expect(GraphExplorer.generatePkIdPair(2, "id")).toEqual("[2, 'id']");
   });
 });
 
@@ -253,11 +253,11 @@ describe("GraphExplorer", () => {
     };
 
     const createFetchOutEQuery = (vertexId: string, limit: number): string => {
-      return `g.V("${vertexId}").outE().limit(${limit}).as('e').inV().as('v').select('e', 'v')`;
+      return `g.V('${vertexId}').outE().limit(${limit}).as('e').inV().as('v').select('e', 'v')`;
     };
 
     const createFetchInEQuery = (vertexId: string, limit: number): string => {
-      return `g.V("${vertexId}").inE().limit(${limit}).as('e').outV().as('v').select('e', 'v')`;
+      return `g.V('${vertexId}').inE().limit(${limit}).as('e').outV().as('v').select('e', 'v')`;
     };
 
     const isVisible = (selector: string): boolean => {
@@ -293,7 +293,7 @@ describe("GraphExplorer", () => {
     describe("Load Graph button", () => {
       beforeEach(async done => {
         const backendResponses: BackendResponses = {};
-        backendResponses["g.V()"] = backendResponses['g.V("1")'] = {
+        backendResponses["g.V()"] = backendResponses["g.V('1')"] = {
           response: [{ id: "1", type: "vertex" }],
           isLast: false
         };
@@ -341,7 +341,7 @@ describe("GraphExplorer", () => {
     describe("Execute Gremlin Query button", () => {
       beforeEach(done => {
         const backendResponses: BackendResponses = {};
-        backendResponses["g.V()"] = backendResponses['g.V("2")'] = {
+        backendResponses["g.V()"] = backendResponses["g.V('2')"] = {
           response: [{ id: "2", type: "vertex" }],
           isLast: false
         };
@@ -411,7 +411,7 @@ describe("GraphExplorer", () => {
       beforeEach(done => {
         const backendResponses: BackendResponses = {};
         // TODO Make this less dependent on spaces, order and quotes
-        backendResponses["g.V()"] = backendResponses[`g.V("${node1Id}","${node2Id}")`] = {
+        backendResponses["g.V()"] = backendResponses[`g.V('${node1Id}','${node2Id}')`] = {
           response: [
             {
               id: node1Id,
@@ -667,7 +667,7 @@ describe("GraphExplorer", () => {
     describe("when isGraphAutoVizDisabled setting is true (autoviz disabled)", () => {
       beforeEach(done => {
         const backendResponses: BackendResponses = {};
-        backendResponses["g.V()"] = backendResponses['g.V("3")'] = {
+        backendResponses["g.V()"] = backendResponses["g.V('3')"] = {
           response: [{ id: "3", type: "vertex" }],
           isLast: true
         };
