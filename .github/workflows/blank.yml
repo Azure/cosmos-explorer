@@ -73,6 +73,9 @@ jobs:
           # Add Azure repos
           echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-${os_id}-${os_code}-prod ${os_code} main" | sudo tee /etc/apt/sources.list.d/azure.list
           echo "deb [arch=amd64] https://packages.microsoft.com/repos/azurecore ${os_code} main" | sudo tee -a /etc/apt/sources.list.d/azure.list
+          sudo apt-get update
+          sudo apt-get install -y azure-mdsd
+          sudo cat /etc/default/mdsd
       - run: npm ci
       - run: npm run test:e2e
         env:
