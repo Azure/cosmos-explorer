@@ -45,6 +45,7 @@ import "webcrypto-liner/build/webcrypto-liner.shim.min";
 import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
 import "../externals/jquery.contextMenu.js";
+import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
 import "../externals/adal.js";
 import "promise-polyfill/src/polyfill";

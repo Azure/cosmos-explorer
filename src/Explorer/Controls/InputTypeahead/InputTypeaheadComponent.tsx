@@ -7,7 +7,6 @@
  *
  */
 import * as React from "react";
-import "../../../../externals/jquery.typeahead.min.js";
 import "./InputTypeahead.less";
 import { KeyCodes } from "../../../Common/Constants";
 
