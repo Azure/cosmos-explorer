@@ -66,6 +66,69 @@ describe("Create proper pkid pair", () => {
   });
 });
 
+describe("getPkIdFromDocumentId", () => {
+  const createFakeDoc = (override: any) => ({
+    _rid: "_rid",
+    _self: "_self",
+    _etag: "_etag",
+    _ts: 1234,
+    ...override
+  });
+
+  it("should create pkid pair from non-partitioned graph", () => {
+    const doc = createFakeDoc({ id: "id" });
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, undefined)).toEqual("'id'");
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, "_partitiongKey")).toEqual("'id'");
+  });
+
+  it("should create pkid pair from partitioned graph (pk as string)", () => {
+    const doc = createFakeDoc({ id: "id", mypk: "pkvalue" });
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("['pkvalue', 'id']");
+  });
+
+  it("should create pkid pair from partitioned graph (pk as valid array value)", () => {
+    const doc = createFakeDoc({ id: "id", mypk: [{ id: "someid", _value: "pkvalue" }] });
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("['pkvalue', 'id']");
+  });
+
+  it("should error if id is not a string", () => {
+    const doc = createFakeDoc({ id: { foo: 1 } });
+    try {
+      GraphExplorer.getPkIdFromDocumentId(doc, undefined);
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(true).toBe(true);
+    }
+  });
+
+  it("should error if pk not string nor non-empty array", () => {
+    let doc = createFakeDoc({ mypk: { foo: 1 } });
+
+    try {
+      GraphExplorer.getPkIdFromDocumentId(doc, "mypk");
+    } catch (e) {
+      expect(true).toBe(true);
+    }
+
+    doc = createFakeDoc({ mypk: [] });
+    try {
+      GraphExplorer.getPkIdFromDocumentId(doc, "mypk");
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(true).toBe(true);
+    }
+
+    // Array must be [{ id: string, _value: string }]
+    doc = createFakeDoc({ mypk: [{ foo: 1 }] });
+    try {
+      GraphExplorer.getPkIdFromDocumentId(doc, "mypk");
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(true).toBe(true);
+    }
+  });
+});
+
 describe("GraphExplorer", () => {
   const COLLECTION_RID = "collectionRid";
   const COLLECTION_SELF_LINK = "collectionSelfLink";
