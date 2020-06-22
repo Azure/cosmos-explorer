@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { InputTypeaheadComponent, InputTypeaheadComponentProps, Item } from "./InputTypeaheadComponent";
+import { InputTypeaheadComponent, InputTypeaheadComponentProps } from "./InputTypeaheadComponent";
+import "../../../../externals/jquery.typeahead.min.js";
 
 describe("inputTypeahead", () => {
   it("renders <input />", () => {
