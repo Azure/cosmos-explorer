@@ -76,6 +76,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y azure-mdsd
           sudo cat /etc/default/mdsd
+          sudo systemctl start mdsd
+          tail -n 100 /var/log/mdsd.err
+          tail -n 100 /var/log/mdsd.warn
+          tail -n 100 /var/log/mdsd.info
+          tail -n 100 /var/log/mdsd.qos
       - run: npm ci
       - run: npm run test:e2e
         env:
