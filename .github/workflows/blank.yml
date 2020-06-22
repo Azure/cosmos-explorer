@@ -87,12 +87,12 @@ jobs:
         env:
           PORTAL_RUNNER_USERNAME: ${{ secrets.PORTAL_RUNNER_USERNAME }}
           PORTAL_RUNNER_PASSWORD: ${{ secrets.PORTAL_RUNNER_PASSWORD }}
-    e2erunner:
-      runs-on: windows-latest
-      name: "Test"
-      steps:
-        - run: echo %MonAgentClientLocation%
-          shell: powershell
+  test:
+    runs-on: windows-latest
+    name: "Test"
+    steps:
+      - run: echo %MonAgentClientLocation%
+        shell: powershell
   # build:
   #   runs-on: ubuntu-latest
   #   name: "Build"
