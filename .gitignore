@@ -16,3 +16,4 @@ notebookapp/*
 Contracts/*
 .DS_Store
 .cache/
+.env
