@@ -21,7 +21,6 @@ import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import hasher from "hasher";
 import NewVertexPane from "./Panes/NewVertexPane";
-import NotebookTab from "./Tabs/NotebookTab";
 import NotebookV2Tab from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
@@ -155,7 +154,6 @@ export default class Explorer implements ViewModels.Explorer {
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
-  private enableLegacyResourceTree: ko.Observable<boolean>;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -205,7 +203,6 @@ export default class Explorer implements ViewModels.Explorer {
   // features
   public isGalleryEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
-  public isGraphsEnabled: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
@@ -306,7 +303,7 @@ export default class Explorer implements ViewModels.Explorer {
         this.openedTabs &&
           this.openedTabs().forEach(tab => {
             if (tab.tabKind === ViewModels.CollectionTabKind.Notebook) {
-              (tab as NotebookTab).reconfigureServiceEndpoints();
+              throw new Error("NotebookTab is deprecated. Use NotebookV2Tab");
             } else if (tab.tabKind === ViewModels.CollectionTabKind.NotebookV2) {
               (tab as NotebookV2Tab).reconfigureServiceEndpoints();
             }
@@ -384,7 +381,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.armEndpoint = ko.observable<string>(undefined);
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
-    this.enableLegacyResourceTree = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
@@ -414,9 +410,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableGallery));
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
-    this.isGraphsEnabled = ko.computed<boolean>(() => {
-      return this.isFeatureEnabled(Constants.Features.graphs);
-    });
 
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
@@ -1107,8 +1100,6 @@ export default class Explorer implements ViewModels.Explorer {
         });
         this.sparkClusterConnectionInfo.valueHasMutated();
       }
-
-      this.enableLegacyResourceTree(this.isFeatureEnabled(Constants.Features.enableLegacyResourceTree));
 
       featureSubcription.dispose();
     });
@@ -2776,7 +2767,7 @@ export default class Explorer implements ViewModels.Explorer {
     const openedNotebookTabs = this.openedTabs().filter(
       (tab: ViewModels.Tab) =>
         tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-        (tab as NotebookTab).notebookPath() === notebookFile.path
+        (tab as NotebookV2Tab).notebookPath() === notebookFile.path
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
@@ -2800,12 +2791,12 @@ export default class Explorer implements ViewModels.Explorer {
           .filter(
             (tab: ViewModels.Tab) =>
               tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-              FileSystemUtil.isPathEqual((tab as NotebookTab).notebookPath(), originalPath)
+              FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), originalPath)
           )
           .forEach(tab => {
             tab.tabTitle(newNotebookFile.name);
             tab.tabPath(newNotebookFile.path);
-            (tab as NotebookTab).notebookPath(newNotebookFile.path);
+            (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
           });
 
         return newNotebookFile;
@@ -3043,7 +3034,7 @@ export default class Explorer implements ViewModels.Explorer {
     // Don't delete if tab is open to avoid accidental deletion
     const openedNotebookTabs = this.openedTabs().filter(
       (tab: ViewModels.Tab) =>
-        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 && (tab as NotebookTab).notebookPath() === item.path
+        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 && (tab as NotebookV2Tab).notebookPath() === item.path
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");

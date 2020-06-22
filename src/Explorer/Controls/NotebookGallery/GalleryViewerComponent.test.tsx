@@ -10,7 +10,6 @@ import {
   GalleryViewerComponent,
   GalleryViewerComponentProps
 } from "./GalleryViewerComponent";
-import * as DataModels from "../../../Contracts/DataModels";
 
 describe("GalleryCardsComponent", () => {
   it("renders", () => {
@@ -18,14 +17,8 @@ describe("GalleryCardsComponent", () => {
     const props: GalleryCardsComponentProps = {
       data: [],
       userMetadata: undefined,
-      onNotebookMetadataChange: (officialSamplesIndex: number, notebookMetadata: DataModels.NotebookMetadata) =>
-        Promise.resolve(),
-      onClick: (
-        url: string,
-        notebookMetadata: DataModels.NotebookMetadata,
-        onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-        isLikedNotebook: boolean
-      ) => Promise.resolve()
+      onNotebookMetadataChange: () => Promise.resolve(),
+      onClick: () => Promise.resolve()
     };
 
     const wrapper = shallow(<GalleryCardsComponent {...props} />);
@@ -39,12 +32,7 @@ describe("FullWidthTabs", () => {
       officialSamplesContent: [],
       likedNotebooksContent: [],
       userMetadata: undefined,
-      onClick: (
-        url: string,
-        notebookMetadata: DataModels.NotebookMetadata,
-        onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-        isLikedNotebook: boolean
-      ) => Promise.resolve()
+      onClick: () => Promise.resolve()
     };
 
     const wrapper = shallow(<FullWidthTabs {...props} />);

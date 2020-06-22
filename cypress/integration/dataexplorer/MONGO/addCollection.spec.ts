@@ -16,7 +16,7 @@ let crypt = require("crypto");
 
 context("Mongo API Test - createDatabase", () => {
   beforeEach(() => {
-    connectionString.loginUsingConnectionString(connectionString.constants.mongo);
+    connectionString.loginUsingConnectionString();
   });
 
   it("Create a new collection in Mongo API", () => {
@@ -63,7 +63,7 @@ context("Mongo API Test - createDatabase", () => {
         .type(sharedKey);
 
       cy.wrap($body)
-        .find('input[data-test="addCollection-createCollection"]')
+        .find("#submitBtnAddCollection")
         .click();
 
       cy.wait(10000);

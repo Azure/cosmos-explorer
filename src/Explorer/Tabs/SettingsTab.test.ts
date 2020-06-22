@@ -9,8 +9,6 @@ import Explorer from "../Explorer";
 import SettingsTab from "../Tabs/SettingsTab";
 import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 
-jest.mock("./NotebookTab");
-
 describe("Settings tab", () => {
   const baseCollection: DataModels.Collection = {
     defaultTtl: 200,

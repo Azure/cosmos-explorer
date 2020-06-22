@@ -49,7 +49,12 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
     return (
       <div tabIndex={-1} onKeyDown={this.onKeyDown}>
         <div className="contextual-pane-out" onClick={this.props.onClose}></div>
-        <div className="contextual-pane" id={this.props.id} style={{ height: this.state.panelHeight }} onKeyDown={this.onKeyDown}>
+        <div
+          className="contextual-pane"
+          id={this.props.id}
+          style={{ height: this.state.panelHeight }}
+          onKeyDown={this.onKeyDown}
+        >
           <div className="panelContentWrapper">
             {this.createPanelHeader()}
             {this.createErrorSection()}
@@ -137,5 +142,5 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
   private getPanelHeight = (): number => {
     const notificationConsoleElement: HTMLElement = document.getElementById("explorerNotificationConsole");
     return window.innerHeight - $(notificationConsoleElement).height();
-  }
+  };
 }

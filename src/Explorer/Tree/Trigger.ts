@@ -5,9 +5,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import Collection from "./Collection";
 import TriggerTab from "../Tabs/TriggerTab";
-import ContextMenu from "../Menus/ContextMenu";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { ContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 
 export default class Trigger implements ViewModels.Trigger {
   public nodeKind: string;
@@ -19,7 +17,6 @@ export default class Trigger implements ViewModels.Trigger {
   public body: ko.Observable<string>;
   public triggerType: ko.Observable<string>;
   public triggerOperation: ko.Observable<string>;
-  public contextMenu: ViewModels.ContextMenu;
 
   constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: any) {
     this.nodeKind = "Trigger";
@@ -31,9 +28,6 @@ export default class Trigger implements ViewModels.Trigger {
     this.body = ko.observable(data.body);
     this.triggerOperation = ko.observable(data.triggerOperation);
     this.triggerType = ko.observable(data.triggerType);
-
-    this.contextMenu = new ContextMenu(this.container, this.rid);
-    this.contextMenu.options(ContextMenuButtonFactory.createTriggerContextMenuButton(container));
   }
 
   public select() {
@@ -78,9 +72,6 @@ export default class Trigger implements ViewModels.Trigger {
 
     // Activate
     triggerTab.onTabClick();
-
-    // Hide Context Menu (if necessary)
-    source.contextMenu.hide(source, event);
   }
 
   public open = () => {
@@ -125,10 +116,7 @@ export default class Trigger implements ViewModels.Trigger {
     triggerTab.onTabClick();
   };
 
-  public delete(source: Collection, event: MouseEvent | KeyboardEvent) {
-    // Hide Context Menu (if necessary)
-    this.contextMenu.hide(source, event);
-
+  public delete() {
     if (!window.confirm("Are you sure you want to delete the trigger?")) {
       return;
     }
@@ -150,31 +138,4 @@ export default class Trigger implements ViewModels.Trigger {
       reason => {}
     );
   }
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Delete") {
-      this.delete(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === "Escape") {
-      this.contextMenu.hide(source, event);
-      return false;
-    }
-
-    return true;
-  };
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.key === " " || event.key === "Enter") {
-      this.open();
-      return false;
-    }
-
-    return true;
-  };
 }

@@ -16,13 +16,14 @@ let crypt = require("crypto");
 
 context("SQL API Test", () => {
   beforeEach(() => {
-    connectionString.loginUsingConnectionString(connectionString.constants.sql);
+    connectionString.loginUsingConnectionString();
   });
 
   it("Create a new container in SQL API", () => {
     const dbId = `TestDatabase${crypt.randomBytes(8).toString("hex")}`;
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
     const sharedKey = `SharedKey${crypt.randomBytes(8).toString("hex")}`;
+    connectionString.loginUsingConnectionString();
 
     cy.get("iframe").then($element => {
       const $body = $element.contents().find("body");
@@ -63,7 +64,7 @@ context("SQL API Test", () => {
         .type(sharedKey);
 
       cy.wrap($body)
-        .find('input[data-test="addCollection-createCollection"]')
+        .find("#submitBtnAddCollection")
         .click();
 
       cy.wait(10000);

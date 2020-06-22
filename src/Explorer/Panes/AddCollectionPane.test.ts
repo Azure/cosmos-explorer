@@ -5,8 +5,6 @@ import Explorer from "../Explorer";
 import ko from "knockout";
 import { AutopilotTier } from "../../Contracts/DataModels";
 
-jest.mock("../Tabs/NotebookTab");
-
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {
     let explorer: ViewModels.Explorer;

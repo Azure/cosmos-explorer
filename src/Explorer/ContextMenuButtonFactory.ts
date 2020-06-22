@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as ViewModels from "../Contracts/ViewModels";
-import { CommandButtonOptions } from "./Controls/CommandButton/CommandButton";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";
@@ -115,7 +114,10 @@ export class ResourceTreeContextMenuButtonFactory {
     return items;
   }
 
-  public static createStoreProcedureContextMenuItems(container: ViewModels.Explorer): TreeNodeMenuItem[] {
+  public static createStoreProcedureContextMenuItems(
+    container: ViewModels.Explorer,
+    storedProcedure: ViewModels.StoredProcedure
+  ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -123,16 +125,16 @@ export class ResourceTreeContextMenuButtonFactory {
     return [
       {
         iconSrc: DeleteSprocIcon,
-        onClick: () => {
-          const selectedStoreProcedure: ViewModels.StoredProcedure = container.findSelectedStoredProcedure();
-          selectedStoreProcedure && selectedStoreProcedure.delete(selectedStoreProcedure, null);
-        },
+        onClick: () => storedProcedure.delete(),
         label: "Delete Store Procedure"
       }
     ];
   }
 
-  public static createTriggerContextMenuItems(container: ViewModels.Explorer): TreeNodeMenuItem[] {
+  public static createTriggerContextMenuItems(
+    container: ViewModels.Explorer,
+    trigger: ViewModels.Trigger
+  ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -140,16 +142,16 @@ export class ResourceTreeContextMenuButtonFactory {
     return [
       {
         iconSrc: DeleteTriggerIcon,
-        onClick: () => {
-          const selectedTrigger: ViewModels.Trigger = container.findSelectedTrigger();
-          selectedTrigger && selectedTrigger.delete(selectedTrigger, null);
-        },
+        onClick: () => trigger.delete(),
         label: "Delete Trigger"
       }
     ];
   }
 
-  public static createUserDefinedFunctionContextMenuItems(container: ViewModels.Explorer): TreeNodeMenuItem[] {
+  public static createUserDefinedFunctionContextMenuItems(
+    container: ViewModels.Explorer,
+    userDefinedFunction: ViewModels.UserDefinedFunction
+  ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -157,266 +159,9 @@ export class ResourceTreeContextMenuButtonFactory {
     return [
       {
         iconSrc: DeleteUDFIcon,
-        onClick: () => {
-          const selectedUDF: ViewModels.UserDefinedFunction = container.findSelectedUDF();
-          selectedUDF && selectedUDF.delete(selectedUDF, null);
-        },
+        onClick: () => userDefinedFunction.delete(),
         label: "Delete User Defined Function"
       }
     ];
-  }
-}
-
-/**
- * Current resource tree (in KO)
- * TODO: Remove when switching to new resource tree
- */
-export class ContextMenuButtonFactory {
-  public static createDatabaseContextMenuButton(
-    container: ViewModels.Explorer,
-    btnParams: DatabaseContextMenuButtonParams
-  ): CommandButtonOptions[] {
-    const addCollectionId = `${btnParams.databaseId}-${container.addCollectionText()}`;
-    const deleteDatabaseId = `${btnParams.databaseId}-${container.deleteDatabaseText()}`;
-    const newCollectionButtonOptions: CommandButtonOptions = {
-      iconSrc: AddCollectionIcon,
-      id: addCollectionId,
-      onCommandClick: () => {
-        if (container.isPreferredApiCassandra()) {
-          container.cassandraAddCollectionPane.open();
-        } else {
-          container.addCollectionPane.open(container.selectedDatabaseId());
-        }
-
-        const selectedDatabase: ViewModels.Database = container.findSelectedDatabase();
-        selectedDatabase && selectedDatabase.contextMenu.hide(selectedDatabase, null);
-      },
-      commandButtonLabel: container.addCollectionText(),
-      hasPopup: true
-    };
-
-    const deleteDatabaseButtonOptions: CommandButtonOptions = {
-      iconSrc: DeleteDatabaseIcon,
-      id: deleteDatabaseId,
-      onCommandClick: () => {
-        const database: ViewModels.Database = container.findSelectedDatabase();
-        database.onDeleteDatabaseContextMenuClick(database, null);
-      },
-      commandButtonLabel: container.deleteDatabaseText(),
-      hasPopup: true,
-      disabled: ko.computed<boolean>(() => container.isNoneSelected()),
-      visible: ko.computed<boolean>(() => !container.isNoneSelected())
-    };
-
-    return [newCollectionButtonOptions, deleteDatabaseButtonOptions];
-  }
-
-  public static createCollectionContextMenuButton(
-    container: ViewModels.Explorer,
-    btnParams: CollectionContextMenuButtonParams
-  ): CommandButtonOptions[] {
-    const newSqlQueryId = `${btnParams.databaseId}-${btnParams.collectionId}-newSqlQuery`;
-    const newSqlQueryForGraphId = `${btnParams.databaseId}-${btnParams.collectionId}-newSqlQueryForGraph`;
-    const newQueryForMongoId = `${btnParams.databaseId}-${btnParams.collectionId}-newQuery`;
-    const newShellForMongoId = `${btnParams.databaseId}-${btnParams.collectionId}-newShell`;
-    const newStoredProcedureId = `${btnParams.databaseId}-${btnParams.collectionId}-newStoredProcedure`;
-    const udfId = `${btnParams.databaseId}-${btnParams.collectionId}-udf`;
-    const newTriggerId = `${btnParams.databaseId}-${btnParams.collectionId}-newTrigger`;
-    const deleteCollectionId = `${btnParams.databaseId}-${btnParams.collectionId}-${container.deleteCollectionText()}`;
-
-    const newSQLQueryButtonOptions: CommandButtonOptions = {
-      iconSrc: AddSqlQueryIcon,
-      id: newSqlQueryId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
-      },
-      commandButtonLabel: "New SQL Query",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(
-        () => container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiDocumentDB()
-      ),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiDocumentDB()
-      )
-      //TODO: Merge with add query logic below, same goes for CommandBarButtonFactory
-    };
-
-    const newSQLQueryButtonOptionsForGraph: CommandButtonOptions = {
-      iconSrc: AddSqlQueryIcon,
-      id: newSqlQueryForGraphId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
-      },
-      commandButtonLabel: "New SQL Query",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiGraph()),
-      visible: ko.computed<boolean>(() => !container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiGraph())
-    };
-
-    const newMongoQueryButtonOptions: CommandButtonOptions = {
-      iconSrc: AddSqlQueryIcon,
-      id: newQueryForMongoId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null);
-      },
-      commandButtonLabel: "New Query",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(
-        () => container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()
-      ),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()
-      )
-    };
-
-    const newMongoShellButtonOptions: CommandButtonOptions = {
-      iconSrc: HostedTerminalIcon,
-      id: newShellForMongoId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewMongoShellClick();
-      },
-      commandButtonLabel: "New Shell",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(
-        () => container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()
-      ),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()
-      )
-    };
-
-    const newStoredProcedureButtonOptions: CommandButtonOptions = {
-      iconSrc: AddStoredProcedureIcon,
-      id: newStoredProcedureId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
-      },
-      commandButtonLabel: "New Stored Procedure",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && !container.isPreferredApiCassandra()
-      )
-    };
-
-    const newUserDefinedFunctionButtonOptions: CommandButtonOptions = {
-      iconSrc: AddUdfIcon,
-      id: udfId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, null);
-      },
-      commandButtonLabel: "New UDF",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && !container.isPreferredApiCassandra()
-      )
-    };
-
-    const newTriggerButtonOptions: CommandButtonOptions = {
-      iconSrc: AddTriggerIcon,
-      id: newTriggerId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, null);
-      },
-      commandButtonLabel: "New Trigger",
-      hasPopup: true,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && !container.isPreferredApiCassandra()
-      )
-    };
-
-    const deleteCollectionButtonOptions: CommandButtonOptions = {
-      iconSrc: DeleteCollectionIcon,
-      id: deleteCollectionId,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onDeleteCollectionContextMenuClick(selectedCollection, null);
-      },
-      commandButtonLabel: container.deleteCollectionText(),
-      hasPopup: true,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(() => !container.isDatabaseNodeOrNoneSelected())
-      //TODO: Change to isCollectionNodeorNoneSelected and same in CommandBarButtonFactory
-    };
-
-    return [
-      newSQLQueryButtonOptions,
-      newSQLQueryButtonOptionsForGraph,
-      newMongoQueryButtonOptions,
-      newMongoShellButtonOptions,
-      newStoredProcedureButtonOptions,
-      newUserDefinedFunctionButtonOptions,
-      newTriggerButtonOptions,
-      deleteCollectionButtonOptions
-    ];
-  }
-
-  public static createStoreProcedureContextMenuButton(container: ViewModels.Explorer): CommandButtonOptions[] {
-    const deleteStoredProcedureId = "Context Menu - Delete Stored Procedure";
-    const deleteStoreProcedureButtonOptions: CommandButtonOptions = {
-      iconSrc: DeleteSprocIcon,
-      id: deleteStoredProcedureId,
-      onCommandClick: () => {
-        const selectedStoreProcedure: ViewModels.StoredProcedure = container.findSelectedStoredProcedure();
-        selectedStoreProcedure && selectedStoreProcedure.delete(selectedStoreProcedure, null);
-      },
-      commandButtonLabel: "Delete Stored Procedure",
-      hasPopup: false,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && !container.isPreferredApiCassandra()
-      )
-    };
-
-    return [deleteStoreProcedureButtonOptions];
-  }
-
-  public static createTriggerContextMenuButton(container: ViewModels.Explorer): CommandButtonOptions[] {
-    const deleteTriggerId = "Context Menu - Delete Trigger";
-    const deleteTriggerButtonOptions: CommandButtonOptions = {
-      iconSrc: DeleteTriggerIcon,
-      id: deleteTriggerId,
-      onCommandClick: () => {
-        const selectedTrigger: ViewModels.Trigger = container.findSelectedTrigger();
-        selectedTrigger && selectedTrigger.delete(selectedTrigger, null);
-      },
-      commandButtonLabel: "Delete Trigger",
-      hasPopup: false,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && !container.isPreferredApiCassandra()
-      )
-    };
-
-    return [deleteTriggerButtonOptions];
-  }
-
-  public static createUserDefinedFunctionContextMenuButton(container: ViewModels.Explorer): CommandButtonOptions[] {
-    const deleteUserDefinedFunctionId = "Context Menu - Delete User Defined Function";
-    const deleteUserDefinedFunctionButtonOptions: CommandButtonOptions = {
-      iconSrc: DeleteUDFIcon,
-      id: deleteUserDefinedFunctionId,
-      onCommandClick: () => {
-        const selectedUDF: ViewModels.UserDefinedFunction = container.findSelectedUDF();
-        selectedUDF && selectedUDF.delete(selectedUDF, null);
-      },
-      commandButtonLabel: "Delete User Defined Function",
-      hasPopup: false,
-      disabled: ko.computed<boolean>(() => container.isDatabaseNodeOrNoneSelected()),
-      visible: ko.computed<boolean>(
-        () => !container.isDatabaseNodeOrNoneSelected() && !container.isPreferredApiCassandra()
-      )
-    };
-
-    return [deleteUserDefinedFunctionButtonOptions];
   }
 }

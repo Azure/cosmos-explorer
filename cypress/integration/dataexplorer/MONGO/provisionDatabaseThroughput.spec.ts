@@ -2,9 +2,9 @@ const connectionString = require("../../../utilities/connectionString");
 
 let crypt = require("crypto");
 
-context("Mongo API Test", () => {
+context.skip("Mongo API Test", () => {
   beforeEach(() => {
-    connectionString.loginUsingConnectionString(connectionString.constants.mongo);
+    connectionString.loginUsingConnectionString();
   });
 
   it("Create a new collection in Mongo API - Provision database throughput", () => {

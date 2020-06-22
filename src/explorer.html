@@ -128,14 +128,11 @@
                     </div>
                   </div>
                   <!-- Collections Window Title/Command Bar - End  -->
-                  <!-- ko if: !enableLegacyResourceTree() && !isAuthWithResourceToken() -->
+                  <!-- ko if: !isAuthWithResourceToken() -->
                   <div style="overflow-y: auto" data-bind="react:resourceTree"></div>
                   <!-- /ko -->
-                  <!-- ko if: !enableLegacyResourceTree() && isAuthWithResourceToken() -->
+                  <!-- ko if: isAuthWithResourceToken() -->
                   <div style="overflow-y: auto" data-bind="react:resourceTreeForResourceToken"></div>
-                  <!-- /ko -->
-                  <!-- ko if: enableLegacyResourceTree -->
-                  <resource-tree class="resourceTreeScroll" params="{data: $data}"></resource-tree>
                   <!-- /ko -->
                 </div>
                 <!--  Collections Window - End -->
@@ -193,14 +190,7 @@
             data-bind="visible: !isRefreshingExplorer() && (openedTabs == null || openedTabs().length === 0)"
           >
             <form class="connectExplorerFormContainer">
-              <div class="connectExplorer" data-bind="react: splashScreenAdapter, visible: isNotebookEnabled"></div>
-              <div class="connectExplorer" data-bind="visible: !isNotebookEnabled()">
-                <p class="connectExplorerContent"><img src="/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" /></p>
-                <p class="welcomeText">Welcome to Azure Cosmos DB</p>
-                <p class="connectExplorerContent" data-bind="visible: !isAuthWithResourceToken">
-                  Create new or work with existing container(s).
-                </p>
-              </div>
+              <div class="connectExplorer" data-bind="react: splashScreenAdapter"></div>
             </form>
           </div>
 
@@ -335,10 +325,6 @@
 
                 <!-- ko if: $data.tabKind === 12 -->
                 <conflicts-tab params="{data: $data}"></conflicts-tab>
-                <!-- /ko -->
-
-                <!-- ko if: $data.tabKind === 13 -->
-                <notebook-tab params="{data: $data}"></notebook-tab>
                 <!-- /ko -->
 
                 <!-- ko if: $data.tabKind === 14 -->

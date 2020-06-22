@@ -2,8 +2,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
 import AddDatabasePane from "./AddDatabasePane";
 
-jest.mock("../Tabs/NotebookTab");
-
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {
     let explorer: ViewModels.Explorer;

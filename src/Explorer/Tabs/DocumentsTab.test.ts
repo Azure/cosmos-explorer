@@ -6,8 +6,6 @@ import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 import Explorer from "../Explorer";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 
-jest.mock("./NotebookTab");
-
 describe("Documents tab", () => {
   describe("buildQuery", () => {
     it("should generate the right select query for SQL API", () => {

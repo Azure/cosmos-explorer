@@ -98,7 +98,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public manageSparkClusterPane: ViewModels.ContextualPane;
   public isGalleryEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
-  public isGraphsEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -450,7 +449,6 @@ export class DatabaseStub implements ViewModels.Database {
   public collections: ko.ObservableArray<ViewModels.Collection>;
   public isDatabaseExpanded: ko.Observable<boolean>;
   public isDatabaseShared: ko.Computed<boolean>;
-  public contextMenu: ViewModels.ContextMenu;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public offer: ko.Observable<DataModels.Offer>;
 
@@ -462,7 +460,6 @@ export class DatabaseStub implements ViewModels.Database {
     this.id = options.id;
     this.collections = options.collections;
     this.isDatabaseExpanded = options.isDatabaseExpanded;
-    this.contextMenu = options.contextMenu;
     this.offer = options.offer;
     this.selectedSubnodeKind = options.selectedSubnodeKind;
   }
@@ -565,8 +562,6 @@ export class CollectionStub implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
-  public contextMenu: ViewModels.ContextMenu;
-  public documentsContextMenu: ViewModels.ContextMenu;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
   public changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   public geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
@@ -611,69 +606,8 @@ export class CollectionStub implements ViewModels.Collection {
     this.storedProceduresFocused = options.storedProceduresFocused;
     this.userDefinedFunctionsFocused = options.userDefinedFunctionsFocused;
     this.triggersFocused = options.triggersFocused;
-    this.contextMenu = options.contextMenu;
-    this.documentsContextMenu = options.documentsContextMenu;
   }
 
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onDocumentDBDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onDocumentDBDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMongoDBDocumentsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMongoDBDocumentsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onSettingsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onSettingsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onStoredProceduresKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onStoredProceduresKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onUserDefinedFunctionsKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onUserDefinedFunctionsKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onTriggersKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onTriggersKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
   public expandCollapseCollection() {
     throw new Error("Not implemented");
   }

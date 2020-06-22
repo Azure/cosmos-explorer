@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "../../Contracts/DataModels";
-import { PlatformType } from "../../PlatformType";
+import { Platform } from "../../Config";
 
 export interface StartUploadMessageParams {
   files: FileList;
@@ -12,7 +12,7 @@ export interface DocumentClientParams {
   masterKey: string;
   endpoint: string;
   accessToken: string;
-  platform: PlatformType;
+  platform: Platform;
   databaseAccount: DatabaseAccount;
 }
 

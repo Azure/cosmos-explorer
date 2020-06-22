@@ -5,6 +5,7 @@
 import * as React from "react";
 import * as Constants from "../../Common/Constants";
 import { Link } from "office-ui-fabric-react/lib/Link";
+import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -29,7 +30,10 @@ export class SplashScreenComponent extends React.Component<SplashScreenComponent
     return (
       <div className="splashScreenContainer">
         <div className="splashScreen">
-          <div className="title">Welcome to Cosmos DB</div>
+          <div className="title">
+            Welcome to Cosmos DB
+            <FeaturePanelLauncher />
+          </div>
           <div className="subtitle">Globally distributed, multi-model database service for any scale</div>
           <div className="mainButtonsContainer">
             {this.props.mainItems.map((item: SplashScreenItem) => (

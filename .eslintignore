@@ -1,4 +1,5 @@
 **/node_modules/
+dist/
 src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
@@ -202,7 +203,6 @@ src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
 src/Explorer/Tabs/MongoQueryTab.ts
 src/Explorer/Tabs/MongoShellTab.ts
-src/Explorer/Tabs/NotebookTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/QueryTab.test.ts
 src/Explorer/Tabs/QueryTab.ts
@@ -216,7 +216,6 @@ src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
 src/Explorer/Tabs/UserDefinedFunctionTab.ts
-src/Explorer/Tabs/__mocks__/NotebookTab.ts
 src/Explorer/Tree/AccessibleVerticalList.ts
 src/Explorer/Tree/Collection.test.ts
 src/Explorer/Tree/Collection.ts
