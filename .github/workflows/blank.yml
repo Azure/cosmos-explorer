@@ -60,19 +60,19 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: |
-        # Accept Microsoft public keys
-        wget -qO - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-        wget -qO - https://packages.microsoft.com/keys/msopentech.asc | sudo apt-key add -
+          # Accept Microsoft public keys
+          wget -qO - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          wget -qO - https://packages.microsoft.com/keys/msopentech.asc | sudo apt-key add -
 
-        # Determine OS distro and code name
-        os_id=$(cat /etc/os-release | grep ^ID= | cut -d '=' -f2)
-        echo ${os_id}
-        os_code=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f2)
-        echo ${os_code}
+          # Determine OS distro and code name
+          os_id=$(cat /etc/os-release | grep ^ID= | cut -d '=' -f2)
+          echo ${os_id}
+          os_code=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f2)
+          echo ${os_code}
 
-        # Add Azure repos
-        echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-${os_id}-${os_code}-prod ${os_code} main" | sudo tee /etc/apt/sources.list.d/azure.list
-        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azurecore ${os_code} main" | sudo tee -a /etc/apt/sources.list.d/azure.list
+          # Add Azure repos
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-${os_id}-${os_code}-prod ${os_code} main" | sudo tee /etc/apt/sources.list.d/azure.list
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azurecore ${os_code} main" | sudo tee -a /etc/apt/sources.list.d/azure.list
       - run: npm ci
       - run: npm run test:e2e
         env:
