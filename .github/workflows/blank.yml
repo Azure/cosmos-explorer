@@ -59,7 +59,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: |
+      - name: "Setup Geneva Monitoring Agent"
+        run: |
           # Accept Microsoft public keys
           wget -qO - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
           wget -qO - https://packages.microsoft.com/keys/msopentech.asc | sudo apt-key add -
@@ -86,6 +87,12 @@ jobs:
         env:
           PORTAL_RUNNER_USERNAME: ${{ secrets.PORTAL_RUNNER_USERNAME }}
           PORTAL_RUNNER_PASSWORD: ${{ secrets.PORTAL_RUNNER_PASSWORD }}
+    e2erunner:
+      runs-on: windows-latest
+      name: "Test"
+      steps:
+        - run: echo %MonAgentClientLocation%
+          shell: powershell
   # build:
   #   runs-on: ubuntu-latest
   #   name: "Build"
