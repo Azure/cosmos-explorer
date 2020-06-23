@@ -177,10 +177,9 @@ export default class MongoDocumentsTab extends DocumentsTab implements ViewModel
           );
         },
         reason => {
+          this.isExecutionError(true);
           const message = ErrorParserUtility.parse(reason)[0].message;
           window.alert(message);
-          this.isExecutionError(true);
-          console.error(reason);
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
