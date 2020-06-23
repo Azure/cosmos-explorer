@@ -19,7 +19,7 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGitHubBranch, IGitHubPageInfo } from "../../../GitHub/GitHubClient";
-import { GitHubUtils } from "../../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { RepoListItem } from "./GitHubReposComponent";
 import {
   BranchesDropdownCheckboxStyles,

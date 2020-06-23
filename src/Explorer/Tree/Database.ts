@@ -10,7 +10,7 @@ import Collection from "./Collection";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;

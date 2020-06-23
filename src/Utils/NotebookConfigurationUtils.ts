@@ -1,6 +1,6 @@
 import * as DataModels from "../Contracts/DataModels";
 import { Explorer, KernelConnectionMetadata } from "../Contracts/ViewModels";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 
 export class NotebookConfigurationUtils {
   private constructor() {}

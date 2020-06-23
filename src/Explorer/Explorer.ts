@@ -57,7 +57,7 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { JunoClient } from "../Juno/JunoClient";
 import { LibraryManagePane } from "./Panes/LibraryManagePane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 import { ManageSparkClusterPane } from "./Panes/ManageSparkClusterPane";
 import { MessageHandler } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";

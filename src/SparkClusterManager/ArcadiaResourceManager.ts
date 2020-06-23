@@ -7,7 +7,7 @@ import {
 } from "../Contracts/DataModels";
 import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { config } from "../Config";
 

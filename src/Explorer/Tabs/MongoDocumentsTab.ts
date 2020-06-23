@@ -18,7 +18,7 @@ import {
   updateDocument
 } from "../../Common/MongoProxyClient";
 import { extractPartitionKey } from "@azure/cosmos";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { PartitionKeyDefinition } from "@azure/cosmos";
 
 export default class MongoDocumentsTab extends DocumentsTab implements ViewModels.DocumentsTab {

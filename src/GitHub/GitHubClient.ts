@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { HttpStatusCodes } from "../Common/Constants";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 import UrlUtility from "../Common/UrlUtility";
 import { isSamplesCall, SamplesContentsQueryResponse } from "../Explorer/Notebook/NotebookSamples";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";

@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es6: true
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "no-null"],
   extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   globals: {
     Atomics: "readonly",
@@ -37,6 +37,8 @@ module.exports = {
   ],
   rules: {
     curly: "error",
-    "@typescript-eslint/no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-extraneous-class": "error",
+    "no-null/no-null": "error"
   }
 };

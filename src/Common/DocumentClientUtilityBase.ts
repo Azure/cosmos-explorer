@@ -6,7 +6,7 @@ import Q from "q";
 import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DataAccessUtilityBase } from "./DataAccessUtilityBase";
-import { Logger } from "./Logger";
+import * as Logger from "./Logger";
 import { MessageHandler } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";

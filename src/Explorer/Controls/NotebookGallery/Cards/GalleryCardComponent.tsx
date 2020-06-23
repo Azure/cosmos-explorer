@@ -22,7 +22,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   public render(): JSX.Element {
-    return this.props.notebookMetadata != null ? (
+    return this.props.notebookMetadata !== undefined ? (
       <Card aria-label="Notebook Card" onClick={this.props.onClick} tokens={this.cardTokens}>
         <Card.Item>
           <Persona text={this.props.notebookMetadata.author} secondaryText={this.props.notebookMetadata.date} />

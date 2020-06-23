@@ -2,7 +2,7 @@ import path from "path";
 import { ImmutableNotebook } from "@nteract/commutable";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
-import { GitHubUtils } from "../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";

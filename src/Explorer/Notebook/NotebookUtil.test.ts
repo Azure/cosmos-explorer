@@ -1,5 +1,5 @@
 import { NotebookUtil } from "./NotebookUtil";
-import { GitHubUtils } from "../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
 
 const fileName = "file";
 const notebookName = "file.ipynb";

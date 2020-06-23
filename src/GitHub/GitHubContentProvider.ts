@@ -3,10 +3,10 @@ import { FileType, IContent, IContentProvider, IEmptyContent, IGetParams, Server
 import { from, Observable, of } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
 import { HttpStatusCodes } from "../Common/Constants";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { GitHubClient, IGitHubFile, IGitHubResponse, IGitHubCommit, IGitHubBranch } from "./GitHubClient";
-import { GitHubUtils } from "../Utils/GitHubUtils";
+import * as GitHubUtils from "../Utils/GitHubUtils";
 import UrlUtility from "../Common/UrlUtility";
 
 export interface GitHubContentProviderParams {

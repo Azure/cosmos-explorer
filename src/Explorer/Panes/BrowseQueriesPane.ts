@@ -3,7 +3,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 

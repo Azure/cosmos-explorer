@@ -23,7 +23,7 @@ import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
-import { GitHubUtils } from "../../Utils/GitHubUtils";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { SamplesRepo, SamplesBranch } from "../Notebook/NotebookSamples";
 
 export class ResourceTreeAdapter implements ReactAdapter {

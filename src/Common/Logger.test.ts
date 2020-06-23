@@ -1,5 +1,5 @@
 import { LogEntryLevel } from "../Contracts/Diagnostics";
-import { Logger } from "./Logger";
+import * as Logger from "./Logger";
 import { MessageHandler } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 

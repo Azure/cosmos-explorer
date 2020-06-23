@@ -7,7 +7,7 @@ import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
 import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../../Common/HashMap";
-import { Logger } from "../../../Common/Logger";
+import * as Logger from "../../../Common/Logger";
 
 export interface GremlinClientParameters {
   endpoint: string;
