@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`inputTypeahead renders <input /> 1`] = `
+<span
+  className="input-typeahead-container"
+>
+  <div
+    className="input-typehead"
+    onKeyDown={[Function]}
+  >
+    <div
+      className="typeahead__container"
+    >
+      <div
+        className="typeahead__field"
+      >
+        <span
+          className="typeahead__query"
+        >
+          <input
+            aria-label="Input query"
+            autoComplete="off"
+            name="q"
+            type="search"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+</span>
+`;
+
+exports[`inputTypeahead renders <textarea /> 1`] = `
+<span
+  className="input-typeahead-container"
+>
+  <div
+    className="input-typehead"
+    onKeyDown={[Function]}
+  >
+    <div
+      className="typeahead__container"
+    >
+      <div
+        className="typeahead__field"
+      >
+        <span
+          className="typeahead__query"
+        >
+          <textarea
+            aria-label="Input query"
+            autoComplete="off"
+            name="q"
+            rows={1}
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+</span>
+`;
