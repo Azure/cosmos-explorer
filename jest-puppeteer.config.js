@@ -3,7 +3,7 @@ const isCI = require("is-ci");
 module.exports = {
   launch: {
     headless: isCI,
-    slowMo: isCI ? 20 : null,
+    slowMo: isCI ? null : 20,
     defaultViewport: null
   }
 };

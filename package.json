@@ -37,6 +37,7 @@
     "@uifabric/react-cards": "0.109.53",
     "@uifabric/styling": "7.11.2",
     "abort-controller": "3.0.0",
+    "applicationinsights": "1.8.0",
     "babel-polyfill": "6.26.0",
     "bootstrap": "3.3.7",
     "canvas": "2.6.0",
