@@ -22,9 +22,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   public render(): JSX.Element {
-    // TODO: Remove this. Should not be using explicit null anywhere
-    // eslint-disable-next-line no-null/no-null
-    return this.props.notebookMetadata != null ? (
+    return this.props.notebookMetadata !== undefined ? (
       <Card aria-label="Notebook Card" onClick={this.props.onClick} tokens={this.cardTokens}>
         <Card.Item>
           <Persona text={this.props.notebookMetadata.author} secondaryText={this.props.notebookMetadata.date} />
