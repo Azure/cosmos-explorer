@@ -82,7 +82,7 @@ Unit tests are located adjacent to the code under test and run with [Jest](https
 
 #### End to End Production Runners
 
-Jest and Puppeteer are used for end to end production runners and are contained in `runners/`. To run these tests locally:
+Jest and Puppeteer are used for end to end production runners and are contained in `test/`. To run these tests locally:
 
 1. Copy .env.example to .env and fill in all variables
 2. Run `npm run test:e2e`
