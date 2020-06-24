@@ -32,7 +32,7 @@ function authHeaders(): any {
 }
 
 export function queryIterator(databaseId: string, collection: Collection, query: string) {
-  let continuationToken: string = null;
+  let continuationToken: string = undefined;
   return {
     fetchNext: () => {
       return queryDocuments(databaseId, collection, false, query).then(response => {
@@ -280,7 +280,7 @@ export function deleteDocument(
     })
     .then(response => {
       if (response.ok) {
-        return null;
+        return undefined;
       }
       return errorHandling(response, "deleting document", params);
     });
@@ -335,7 +335,7 @@ export function createMongoCollectionWithProxy(
     )
     .then(response => {
       if (response.ok) {
-        return null;
+        return undefined;
       }
       return errorHandling(response, "creating collection", params);
     });
@@ -454,6 +454,6 @@ export async function _createMongoCollectionWithARM(
       rpPayloadToCreateCollection
     );
   } catch (response) {
-    return errorHandling(response, "creating collection", null);
+    return errorHandling(response, "creating collection", undefined);
   }
 }
