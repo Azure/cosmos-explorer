@@ -32,7 +32,7 @@ function authHeaders(): any {
 }
 
 export function queryIterator(databaseId: string, collection: Collection, query: string) {
-  let continuationToken: string = undefined;
+  let continuationToken: string;
   return {
     fetchNext: () => {
       return queryDocuments(databaseId, collection, false, query).then(response => {
