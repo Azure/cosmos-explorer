@@ -1,4 +1,5 @@
 **/node_modules/
+dist/
 src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts

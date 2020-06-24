@@ -5,7 +5,7 @@ import UploadWorker from "worker-loader!../../workers/upload";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { CosmosClient } from "../../Common/CosmosClient";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { PlatformType } from "../../PlatformType";

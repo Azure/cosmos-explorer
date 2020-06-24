@@ -6,7 +6,7 @@ import {
   IContextualMenuProps,
   ContextualMenuItemType
 } from "office-ui-fabric-react/lib/ContextualMenu";
-import { Logger } from "../../../Common/Logger";
+import * as Logger from "../../../Common/Logger";
 
 export interface ArcadiaMenuPickerProps {
   selectText?: string;

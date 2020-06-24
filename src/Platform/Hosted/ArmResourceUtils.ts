@@ -1,6 +1,6 @@
 import AuthHeadersUtil from "./Authorization";
 import * as Constants from "../../Common/Constants";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { Tenant, Subscription, DatabaseAccount, AccountKeys } from "../../Contracts/DataModels";
 import { config } from "../../Config";
 

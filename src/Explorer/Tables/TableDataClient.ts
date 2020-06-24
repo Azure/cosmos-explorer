@@ -8,7 +8,7 @@ import * as Constants from "../../Common/Constants";
 import * as Entities from "./Entities";
 import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import * as TableConstants from "./Constants";
 import * as TableEntityProcessor from "./TableEntityProcessor";

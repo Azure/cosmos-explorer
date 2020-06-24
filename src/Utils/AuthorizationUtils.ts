@@ -2,7 +2,7 @@ import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 import { PlatformType } from "../PlatformType";
 import { CosmosClient } from "../Common/CosmosClient";
 import { config } from "../Config";

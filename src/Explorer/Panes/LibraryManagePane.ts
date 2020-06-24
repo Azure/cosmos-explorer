@@ -15,7 +15,7 @@ import {
   LibraryManageGridProps
 } from "../Controls/LibraryManagement/LibraryManage";
 import { Library } from "../../Contracts/DataModels";
-import { Logger } from "../../Common/Logger";
+import * as Logger from "../../Common/Logger";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 
 export class LibraryManagePane extends ContextualPaneBase {

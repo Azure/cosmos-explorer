@@ -1,7 +1,7 @@
 import * as ViewModels from "../Contracts/ViewModels";
 import { ArmApiVersions } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
-import { Logger } from "../Common/Logger";
+import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import {
   SparkCluster,
