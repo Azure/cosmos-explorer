@@ -1,0 +1,202 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: "Compile TypeScript"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run compile
+      - run: npm run compile:strict
+  format:
+    runs-on: ubuntu-latest
+    name: "Check Format"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run format:check
+  lint:
+    runs-on: ubuntu-latest
+    name: "Lint"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run lint
+  unittest:
+    runs-on: ubuntu-latest
+    name: "Unit Tests"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    name: "Build"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run build:contracts
+      - name: Restore Build Cache
+        uses: actions/cache@v2
+        with:
+          path: .cache
+          key: ${{ runner.os }}-build-cache
+      - run: npm run pack:prod
+      - run: cp -r ./Contracts ./dist/contracts
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
+  endtoendemulator:
+    name: "End To End Tests | Emulator | SQL"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: southpolesteve/cosmos-emulator-github-action@v1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cypress Binary Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-binary-cache
+      - name: End to End Tests
+        run: |
+          npm ci
+          npm start &
+          npm ci --prefix ./cypress
+          npm run test:ci --prefix ./cypress -- --spec ./integration/dataexplorer/ci-tests/createDatabase.spec.ts
+        shell: bash
+        env:
+          EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+  endtoendsql:
+    name: "End To End Tests | SQL"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cypress Binary Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-binary-cache
+      - run: npm ci
+      - name: End to End Tests
+        run: |
+          npm start &
+          cd cypress
+          npm ci
+          node cleanup.js
+          npm run wait-for-server
+          npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/SQL/*"
+        shell: bash
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+          CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
+  endtoendmongo:
+    name: "End To End Tests | Mongo"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cypress Binary Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-binary-cache
+      - name: End to End Tests
+        run: |
+          npm ci
+          npm start &
+          cd cypress
+          npm ci
+          node cleanup.js
+          npm run wait-for-server
+          npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/MONGO/*"
+        shell: bash
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+          CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
+  nuget:
+    name: Publish Nuget
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    runs-on: ubuntu-latest
+    env:
+      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+    steps:
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      - name: Download Dist Folder
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+      - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
+      - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
+      - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
+      - uses: actions/upload-artifact@v2
+        with:
+          path: "*.nupkg"
+  nugetmpac:
+    name: Publish Nuget MPAC
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    runs-on: ubuntu-latest
+    env:
+      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+    steps:
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      - name: Download Dist Folder
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+      - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
+      - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
+      - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
+      - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
+      - uses: actions/upload-artifact@v2
+        with:
+          path: "*.nupkg"
