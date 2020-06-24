@@ -6,7 +6,7 @@ import * as React from "react";
 import * as Constants from "../../Common/Constants";
 import { Link } from "office-ui-fabric-react/lib/Link";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
-import { TestUxRendererComponent } from "../Controls/UxRenderer/UxRendererComponent";
+import { TestUxRendererComponent } from "../Controls/WidgetRenderer/WidgetRendererComponent";
 
 export interface SplashScreenItem {
   iconSrc: string;

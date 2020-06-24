@@ -1,8 +1,10 @@
 import * as React from "react";
 import { Slider } from "office-ui-fabric-react/lib/Slider";
 import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
+import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
+import * as InputUtils from "./InputUtils";
 
 /**
  * Generic UX renderer
@@ -32,6 +34,7 @@ interface BaseInput {
 export interface NumberInput extends BaseInput {
   min?: number;
   max?: number;
+  step: number;
   defaultValue: number;
   inputType: "spin" | "slider";
 }
@@ -64,22 +67,22 @@ export interface Descriptor {
   root: Node;
 }
 
-export type Callbacks = (newValues: {[dataFieldName: string]: InputType }) => void;
-
-export interface UxRendererComponentProps {
+export interface WidgetRendererComponentProps {
   descriptor: Descriptor;
-  callbacks: Callbacks;
+  onChange: (newValues: Map<string, InputType>) => void;
 }
 
-interface UxRendererComponentState {
+interface WidggetRendererComponentState {
   currentValues: Map<string, InputType>;
+  errors: Map<string, string>;
 }
 
-export class UxRendererComponent extends React.Component<UxRendererComponentProps, UxRendererComponentState> {
-  constructor(props: UxRendererComponentProps) {
+export class WidgetRendererComponent extends React.Component<WidgetRendererComponentProps, WidggetRendererComponentState> {
+  constructor(props: WidgetRendererComponentProps) {
     super(props);
     this.state = {
-      currentValues: new Map()
+      currentValues: new Map(),
+      errors: new Map()
     };
   }
 
@@ -87,11 +90,10 @@ export class UxRendererComponent extends React.Component<UxRendererComponentProp
     return <div>{info}</div>;
   }
 
-  private onInputChange = (newValue: string | number | boolean, dataFieldName: string): string | number | number => {
+  private onInputChange = (newValue: string | number | boolean, dataFieldName: string) => {
     const { currentValues } = this.state;
     currentValues.set(dataFieldName, newValue);
-    this.setState({ currentValues });
-    return newValue;
+    this.setState({ currentValues }, () => this.props.onChange(this.state.currentValues));
   };
 
   private renderStringInput(input: StringInput): JSX.Element {
@@ -107,21 +109,60 @@ export class UxRendererComponent extends React.Component<UxRendererComponentProp
     </>;
   }
 
+  private clearError(dataFieldName: string): void {
+    const { errors } = this.state;
+    errors.delete(dataFieldName);
+    this.setState({ errors });
+  }
+
+  private onValidate = (value: string, min: number, max: number, dataFieldName: string): string => {
+    const newValue = InputUtils.onValidateValueChange(value, min, max);
+    if (newValue) {
+      this.onInputChange(newValue, dataFieldName);
+      this.clearError(dataFieldName);
+      return newValue.toString();
+    } else {
+      const { errors } = this.state;
+      errors.set(dataFieldName, `Invalid value ${value}: must be between ${min} and ${max}`);
+      this.setState({ errors });
+    }
+    return undefined;
+  }
+
+  private onIncrement = (value: string, step: number, max: number, dataFieldName: string): string => {
+    const newValue = InputUtils.onIncrementValue(value, step, max);
+    if (newValue) {
+      this.onInputChange(newValue, dataFieldName);
+      this.clearError(dataFieldName);
+      return newValue.toString();
+    }
+    return undefined;
+  }
+
+  private onDecrement = (value: string, step: number, min: number, dataFieldName: string): string => {
+    const newValue = InputUtils.onDecrementValue(value, step, min);
+    if (newValue) {
+      this.onInputChange(newValue, dataFieldName);
+      this.clearError(dataFieldName);
+      return newValue.toString();
+    }
+    return undefined;
+  }
+
   private renderNumberInput(input: NumberInput): JSX.Element {
-    const { label, min, max, defaultValue, dataFieldName } = input;
-    const props = { label, min, max, ariaLabel: label };
+    const { label, min, max, defaultValue, dataFieldName, step } = input;
+    const props = { label, min, max, ariaLabel: label, step };
 
     if (input.inputType === "spin") {
-      return <SpinButton
+      return <div><SpinButton
         {...props}
         defaultValue={defaultValue.toString()}
-        // value={this.state.currentValues.has(dataFieldName) ?
-        //   (this.state.currentValues.get(dataFieldName) as number).toString() : defaultValue.toString()}
-        step={1}
-        onValidate={undefined}
-        onIncrement={newValue => this.onInputChange(Number.parseInt(newValue) + 1, dataFieldName).toString()}
-        onDecrement={newValue => this.onInputChange(Number.parseInt(newValue) - 1, dataFieldName).toString()}
-      />;
+        onValidate={newValue => this.onValidate(newValue, min, max, dataFieldName)}
+        onIncrement={newValue => this.onIncrement(newValue, step, max, dataFieldName)}
+        onDecrement={newValue => this.onDecrement(newValue, step, min, dataFieldName)}
+      />
+      {this.state.errors.has(dataFieldName) && <div style={{ color: "red" }}>Error: {this.state.errors.get(dataFieldName)}</div>}
+      </div>;
     } else if (input.inputType === "slider") {
       return <Slider
         // showValue={true}
@@ -158,14 +199,31 @@ export class UxRendererComponent extends React.Component<UxRendererComponentProp
     </>;
   }
 
+  private renderEnumInput(input: EnumInput): JSX.Element {
+    const { label, defaultKey, dataFieldName, choices, placeholder } = input;
+    return <Dropdown
+      label={label}
+      selectedKey={this.state.currentValues.has(dataFieldName) ?
+        (this.state.currentValues.get(dataFieldName) as string) : defaultKey}
+      onChange={(_, item: IDropdownOption) => this.onInputChange(item.key.toString(), dataFieldName)}
+      placeholder={placeholder}
+      options={choices.map(c => ({
+        key: c.key,
+        text: c.value
+      }))}
+    />;
+  }
+
   private renderInput(input: AnyInput): JSX.Element {
-    switch(input.type) {
+    switch (input.type) {
       case "string":
         return this.renderStringInput(input as StringInput);
       case "number":
         return this.renderNumberInput(input as NumberInput);
       case "boolean":
         return this.renderBooleanInput(input as BooleanInput);
+      case "enum":
+        return this.renderEnumInput(input as EnumInput);
       default:
         return <>Unknown type{input.type}</>
     }
@@ -200,7 +258,8 @@ export const TestUxRendererComponent: React.FunctionComponent = () => {
             dataFieldName: "throughput",
             type: "number",
             min: 400,
-            max: 1000000,
+            max: 500,
+            step: 10,
             defaultValue: 400,
             inputType: "spin"
           }
@@ -212,7 +271,8 @@ export const TestUxRendererComponent: React.FunctionComponent = () => {
             dataFieldName: "throughput2",
             type: "number",
             min: 400,
-            max: 1000000,
+            max: 500,
+            step: 10,
             defaultValue: 400,
             inputType: "slider"
           }
@@ -246,19 +306,20 @@ export const TestUxRendererComponent: React.FunctionComponent = () => {
               { label: "Database 1", key: "db1", value: "database1" },
               { label: "Database 2", key: "db2", value: "database2" },
               { label: "Database 3", key: "db3", value: "database3" }
-            ]
+            ],
+            defaultKey: "db2"
           }
         }
       ]
     }
   };
 
-  const exampleCallbacks: Callbacks = (newValues: { [dataFieldName: string]: InputType }): void => {
+  const exampleCallbacks: Callbacks = (newValues: Map<string, InputType>): void => {
     console.log("New values:", newValues);
   };
 
-  return <div style={{ padding: 20 }}>
-    <UxRendererComponent descriptor={exampleData} callbacks={exampleCallbacks} />
+  return <div style={{ padding: 20, width: 400, backgroundColor: 'pink' }}>
+    <WidgetRendererComponent descriptor={exampleData} onChange={exampleCallbacks} />
   </div>;
 }
 
