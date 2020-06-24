@@ -37,15 +37,16 @@ describe("Collection CRUD", () => {
     const partitionKeyInput = await dataExplorer.$('input[data-test="addCollection-partitionKeyValue"]');
     await partitionKeyInput.type("/partitionKey");
     trackEvent({ name: "ProductionRunnerSuccess" });
-    // // TODO: Submit and assert results
-    // //     cy.wrap($body)
-    // //       .find("#submitBtnAddCollection")
-    // //       .click();
-    // //     cy.wait(10000);
-    // //     cy.wrap($body)
-    // //       .find('div[data-test="resourceTreeId"]')
-    // //       .should("exist")
-    // //       .find('div[class="treeComponent dataResourceTree"]')
-    // //       .should("contain", dbId);
+
+    // TODO: Submit form and assert results
+    //     cy.wrap($body)
+    //       .find("#submitBtnAddCollection")
+    //       .click();
+    //     cy.wait(10000);
+    //     cy.wrap($body)
+    //       .find('div[data-test="resourceTreeId"]')
+    //       .should("exist")
+    //       .find('div[class="treeComponent dataResourceTree"]')
+    //       .should("contain", dbId);
   });
 });
