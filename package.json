@@ -173,7 +173,7 @@
     "pack:fast": "node --max_old_space_size=10196 ./node_modules/webpack/bin/webpack.js  --mode development --progress",
     "copyToConsumers": "node copyToConsumers",
     "test": "rimraf coverage && jest",
-    "test:e2e": "rimraf coverage && jest -c ./jest.config.e2e.js",
+    "test:e2e": "jest -c ./jest.config.e2e.js --detectOpenHandles",
     "watch": "npm run start",
     "build:ase": "gulp build:ase",
     "compile": "tsc",
