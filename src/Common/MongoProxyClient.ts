@@ -31,13 +31,13 @@ function authHeaders(): any {
   }
 }
 
-export function queryIterator(databaseId: string, collection: Collection, query: string) {
+export function queryIterator(databaseId: string, collection: Collection, query: string): any {
   let continuationToken: string;
   return {
     fetchNext: () => {
       return queryDocuments(databaseId, collection, false, query).then(response => {
         continuationToken = response.continuationToken;
-        let headers = {} as any;
+        const headers = {} as any;
         response.headers.forEach((value: any, key: any) => {
           headers[key] = value;
         });
