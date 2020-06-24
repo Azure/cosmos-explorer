@@ -1,7 +1,5 @@
 import "expect-puppeteer";
-import appInsights from "applicationinsights";
-appInsights.setup().start();
-const client = appInsights.defaultClient;
+import { trackEvent } from "./utils";
 
 jest.setTimeout(300000);
 
@@ -38,7 +36,7 @@ describe("Collection CRUD", () => {
     await collectionIdInput.type("foo");
     const partitionKeyInput = await dataExplorer.$('input[data-test="addCollection-partitionKeyValue"]');
     await partitionKeyInput.type("/partitionKey");
-    client.trackEvent({ name: "my custom event", properties: { customProperty: "custom property value" } });
+    trackEvent({ name: "ProductionRunnerSuccess" });
     // // TODO: Submit and assert results
     // //     cy.wrap($body)
     // //       .find("#submitBtnAddCollection")
