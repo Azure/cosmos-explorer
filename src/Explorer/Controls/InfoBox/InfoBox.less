@@ -1,0 +1,28 @@
+@import "../../../../less/Common/Constants.less";
+
+.infoBoxContent {
+    background-color: @BaseLow;
+    padding: @DefaultSpace;
+    display: inline-flex;
+
+    .infoBoxDetails {
+        padding-left: @MediumSpace;
+        margin: auto 0px;
+
+        .infoBoxMessage {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-top: 2px;
+            color: @BaseHigh;
+            display: block;
+        }
+    }
+
+    .infoBoxIcon {
+        margin-top: 2px;
+        width: 32px;
+        height: 32px;
+        margin-left: @SmallSpace;
+    }
+}

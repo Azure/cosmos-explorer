@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Slider } from "office-ui-fabric-react/lib/Slider";
 import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
-import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
+import { InfoBoxComponent, InfoBoxComponentProps } from "../InfoBox/InfoBoxComponent";
 import * as InputUtils from "./InputUtils";
 
 /**
@@ -17,7 +18,7 @@ import * as InputUtils from "./InputUtils";
 export type InputTypeValue = "number" | "string" | "boolean" | "enum";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type EnumItem = { label: string, key: string, value: any };
+export type EnumItem = { label: string; key: string; value: any };
 
 export type InputType = number | string | boolean | EnumItem;
 
@@ -58,14 +59,16 @@ export type AnyInput = NumberInput | BooleanInput | StringInput | EnumInput;
 
 export interface Node {
   id: string;
-  info?: string;
-  input? : AnyInput;
+  info?: InfoBoxComponentProps;
+  input?: AnyInput;
   children?: Node[];
 }
 
 export interface Descriptor {
   root: Node;
 }
+
+/************************** Component implementation starts here ************************************* */
 
 export interface WidgetRendererComponentProps {
   descriptor: Descriptor;
@@ -77,7 +80,10 @@ interface WidggetRendererComponentState {
   errors: Map<string, string>;
 }
 
-export class WidgetRendererComponent extends React.Component<WidgetRendererComponentProps, WidggetRendererComponentState> {
+export class WidgetRendererComponent extends React.Component<
+  WidgetRendererComponentProps,
+  WidggetRendererComponentState
+> {
   constructor(props: WidgetRendererComponentProps) {
     super(props);
     this.state = {
@@ -86,8 +92,8 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
     };
   }
 
-  private renderInfo(info: string): JSX.Element {
-    return <div>{info}</div>;
+  private renderInfo(info: InfoBoxComponentProps): JSX.Element {
+    return <InfoBoxComponent {...info} />;
   }
 
   private onInputChange = (newValue: string | number | boolean, dataFieldName: string) => {
@@ -97,16 +103,18 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
   };
 
   private renderStringInput(input: StringInput): JSX.Element {
-    return <>
-      <label htmlFor={`${input.dataFieldName}-input`}>{input.label}</label>
-      <input
-        id={`${input.dataFieldName}-input`}
-        type="text"
-        value={input.defaultValue}
-        placeholder={input.placeholder}
-        onChange={e => this.onInputChange(e.target.value, input.dataFieldName)}
-      />
-    </>;
+    return (
+      <>
+        <label htmlFor={`${input.dataFieldName}-input`}>{input.label}</label>
+        <input
+          id={`${input.dataFieldName}-input`}
+          type="text"
+          value={input.defaultValue}
+          placeholder={input.placeholder}
+          onChange={e => this.onInputChange(e.target.value, input.dataFieldName)}
+        />
+      </>
+    );
   }
 
   private clearError(dataFieldName: string): void {
@@ -127,7 +135,7 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
       this.setState({ errors });
     }
     return undefined;
-  }
+  };
 
   private onIncrement = (value: string, step: number, max: number, dataFieldName: string): string => {
     const newValue = InputUtils.onIncrementValue(value, step, max);
@@ -137,7 +145,7 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
       return newValue.toString();
     }
     return undefined;
-  }
+  };
 
   private onDecrement = (value: string, step: number, min: number, dataFieldName: string): string => {
     const newValue = InputUtils.onDecrementValue(value, step, min);
@@ -147,30 +155,37 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
       return newValue.toString();
     }
     return undefined;
-  }
+  };
 
   private renderNumberInput(input: NumberInput): JSX.Element {
     const { label, min, max, defaultValue, dataFieldName, step } = input;
     const props = { label, min, max, ariaLabel: label, step };
 
     if (input.inputType === "spin") {
-      return <div><SpinButton
-        {...props}
-        defaultValue={defaultValue.toString()}
-        onValidate={newValue => this.onValidate(newValue, min, max, dataFieldName)}
-        onIncrement={newValue => this.onIncrement(newValue, step, max, dataFieldName)}
-        onDecrement={newValue => this.onDecrement(newValue, step, min, dataFieldName)}
-      />
-      {this.state.errors.has(dataFieldName) && <div style={{ color: "red" }}>Error: {this.state.errors.get(dataFieldName)}</div>}
-      </div>;
+      return (
+        <div>
+          <SpinButton
+            {...props}
+            defaultValue={defaultValue.toString()}
+            onValidate={newValue => this.onValidate(newValue, min, max, dataFieldName)}
+            onIncrement={newValue => this.onIncrement(newValue, step, max, dataFieldName)}
+            onDecrement={newValue => this.onDecrement(newValue, step, min, dataFieldName)}
+          />
+          {this.state.errors.has(dataFieldName) && (
+            <div style={{ color: "red" }}>Error: {this.state.errors.get(dataFieldName)}</div>
+          )}
+        </div>
+      );
     } else if (input.inputType === "slider") {
-      return <Slider
-        // showValue={true}
-        // valueFormat={}
-        {...props}
-        defaultValue={defaultValue}
-        onChange={newValue => this.onInputChange(newValue, dataFieldName)}
-      />
+      return (
+        <Slider
+          // showValue={true}
+          // valueFormat={}
+          {...props}
+          defaultValue={defaultValue}
+          onChange={newValue => this.onInputChange(newValue, dataFieldName)}
+        />
+      );
     } else {
       return <>Unsupported number input type {input.inputType}</>;
     }
@@ -178,40 +193,52 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
 
   private renderBooleanInput(input: BooleanInput): JSX.Element {
     const { dataFieldName } = input;
-    return <>
-      <label>{input.label}</label>
-      <RadioSwitchComponent
-        choices={[
-          {
-            label: input.falseLabel,
-            key: "false",
-            onSelect: () => this.onInputChange(false, dataFieldName)
-          },
-          {
-            label: input.trueLabel,
-            key: "true",
-            onSelect: () => this.onInputChange(true, dataFieldName)
+    return (
+      <>
+        <label>{input.label}</label>
+        <RadioSwitchComponent
+          choices={[
+            {
+              label: input.falseLabel,
+              key: "false",
+              onSelect: () => this.onInputChange(false, dataFieldName)
+            },
+            {
+              label: input.trueLabel,
+              key: "true",
+              onSelect: () => this.onInputChange(true, dataFieldName)
+            }
+          ]}
+          selectedKey={
+            (this.state.currentValues.has(dataFieldName)
+            ? (this.state.currentValues.get(dataFieldName) as boolean)
+            : input.defaultValue)
+              ? "true"
+              : "false"
           }
-        ]}
-        selectedKey={(this.state.currentValues.has(dataFieldName) ?
-          (this.state.currentValues.get(dataFieldName) as boolean) : input.defaultValue) ? "true" : "false"}
-      />
-    </>;
+        />
+      </>
+    );
   }
 
   private renderEnumInput(input: EnumInput): JSX.Element {
     const { label, defaultKey, dataFieldName, choices, placeholder } = input;
-    return <Dropdown
-      label={label}
-      selectedKey={this.state.currentValues.has(dataFieldName) ?
-        (this.state.currentValues.get(dataFieldName) as string) : defaultKey}
-      onChange={(_, item: IDropdownOption) => this.onInputChange(item.key.toString(), dataFieldName)}
-      placeholder={placeholder}
-      options={choices.map(c => ({
-        key: c.key,
-        text: c.value
-      }))}
-    />;
+    return (
+      <Dropdown
+        label={label}
+        selectedKey={
+          this.state.currentValues.has(dataFieldName)
+            ? (this.state.currentValues.get(dataFieldName) as string)
+            : defaultKey
+        }
+        onChange={(_, item: IDropdownOption) => this.onInputChange(item.key.toString(), dataFieldName)}
+        placeholder={placeholder}
+        options={choices.map(c => ({
+          key: c.key,
+          text: c.value
+        }))}
+      />
+    );
   }
 
   private renderInput(input: AnyInput): JSX.Element {
@@ -225,16 +252,18 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
       case "enum":
         return this.renderEnumInput(input as EnumInput);
       default:
-        return <>Unknown type{input.type}</>
+        return <>Unknown type{input.type}</>;
     }
   }
 
   private renderNode(node: Node): JSX.Element {
-    return <>
-      {node.info && this.renderInfo(node.info)}
-      {node.input && this.renderInput(node.input)}
-      {node.children && node.children.map(child => (<div key={child.id}>{this.renderNode(child)}</div>))}
-    </>;
+    return (
+      <>
+        {node.info && this.renderInfo(node.info)}
+        {node.input && this.renderInput(node.input)}
+        {node.children && node.children.map(child => <div key={child.id}>{this.renderNode(child)}</div>)}
+      </>
+    );
   }
 
   render(): JSX.Element {
@@ -242,14 +271,15 @@ export class WidgetRendererComponent extends React.Component<WidgetRendererCompo
   }
 }
 
-
-
 /******************************** Test code *************************** */
 export const TestUxRendererComponent: React.FunctionComponent = () => {
   const exampleData: Descriptor = {
     root: {
       id: "root",
-      info: "Start at $24/mo per database",
+      info: {
+        message: "Start at $24/mo per database",
+        url: "https://aka.ms/azure-cosmos-db-pricing"
+      },
       children: [
         {
           id: "throughput",
@@ -314,12 +344,13 @@ export const TestUxRendererComponent: React.FunctionComponent = () => {
     }
   };
 
-  const exampleCallbacks: Callbacks = (newValues: Map<string, InputType>): void => {
+  const exampleCallbacks = (newValues: Map<string, InputType>): void => {
     console.log("New values:", newValues);
   };
 
-  return <div style={{ padding: 20, width: 400, backgroundColor: 'pink' }}>
-    <WidgetRendererComponent descriptor={exampleData} onChange={exampleCallbacks} />
-  </div>;
-}
-
+  return (
+    <div style={{ padding: 20, width: 400, backgroundColor: "pink" }}>
+      <WidgetRendererComponent descriptor={exampleData} onChange={exampleCallbacks} />
+    </div>
+  );
+};

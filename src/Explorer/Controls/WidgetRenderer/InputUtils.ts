@@ -1,10 +1,6 @@
 /* Utilities for validation */
 
-export const onValidateValueChange = (
-  newValue: string,
-  minValue?: number,
-  maxValue?: number
-): number => {
+export const onValidateValueChange = (newValue: string, minValue?: number, maxValue?: number): number => {
   let numericValue = parseInt(newValue);
   if (!isNaN(numericValue) && isFinite(numericValue)) {
     if (minValue !== undefined && numericValue < minValue) {
@@ -18,7 +14,7 @@ export const onValidateValueChange = (
   }
 
   return undefined;
-}
+};
 
 export const onIncrementValue = (newValue: string, step: number, max?: number): number => {
   const numericValue = parseInt(newValue);
