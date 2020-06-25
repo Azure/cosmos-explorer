@@ -13,3 +13,9 @@ module.exports.trackEvent = (...args) => {
     client.trackEvent(...args);
   }
 };
+
+module.exports.trackException = exception => {
+  if (client) {
+    client.trackException({ exception });
+  }
+};
