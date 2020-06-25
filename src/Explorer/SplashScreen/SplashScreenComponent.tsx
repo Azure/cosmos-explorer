@@ -6,7 +6,6 @@ import * as React from "react";
 import * as Constants from "../../Common/Constants";
 import { Link } from "office-ui-fabric-react/lib/Link";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
-import { TestUxRendererComponent } from "../Controls/WidgetRenderer/WidgetRendererComponent";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -30,7 +29,6 @@ export class SplashScreenComponent extends React.Component<SplashScreenComponent
   public render(): JSX.Element {
     return (
       <div className="splashScreenContainer">
-        <TestUxRendererComponent />
         <div className="splashScreen">
           <div className="title">
             Welcome to Cosmos DB
