@@ -1,7 +1,7 @@
 name: Runners
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/10 * * * *"
 jobs:
   sqlcreatecollection:
     runs-on: ubuntu-latest
