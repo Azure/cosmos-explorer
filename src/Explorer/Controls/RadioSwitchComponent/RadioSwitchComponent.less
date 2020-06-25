@@ -2,20 +2,15 @@
 
 .radioSwitchComponent {
   cursor: pointer;
-  padding-bottom: 10px;
   display: flex;
 
   &>span:nth-child(n+2) {
     margin-left: 10px;
   }
 
-  &>span {
-    padding: @SmallSpace;
-  }
-
-  .label {
-    vertical-align: 2px;
-    padding-left: 5px;
+  .caption {
     color: @BaseDark;
+    padding-left: @SmallSpace;
+    vertical-align: top;
   }
 }

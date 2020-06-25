@@ -22,7 +22,7 @@ export interface RadioSwitchComponentProps {
 export class RadioSwitchComponent extends React.Component<RadioSwitchComponentProps> {
   public render(): JSX.Element {
     return (
-      <div className={"radioSwitchComponent"}>
+      <div className="radioSwitchComponent">
         {this.props.choices.map((choice: Choice) => (
           <span
             tabIndex={0}
@@ -31,7 +31,7 @@ export class RadioSwitchComponent extends React.Component<RadioSwitchComponentPr
             onKeyPress={event => this.onKeyPress(event, choice)}
           >
             <Icon iconName={this.props.selectedKey === choice.key ? "RadioBtnOn" : "RadioBtnOff"} />
-            <span className="label">{choice.label}</span>
+            <span className="caption">{choice.label}</span>
           </span>
         ))}
       </div>

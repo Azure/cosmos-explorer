@@ -30,6 +30,7 @@ export class SplashScreenComponent extends React.Component<SplashScreenComponent
   public render(): JSX.Element {
     return (
       <div className="splashScreenContainer">
+        <TestUxRendererComponent />
         <div className="splashScreen">
           <div className="title">
             Welcome to Cosmos DB

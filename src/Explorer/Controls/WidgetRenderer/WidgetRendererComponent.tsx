@@ -1,11 +1,14 @@
 import * as React from "react";
+import { Position } from "office-ui-fabric-react/lib/utilities/positioning";
 import { Slider } from "office-ui-fabric-react/lib/Slider";
 import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { InfoBoxComponent, InfoBoxComponentProps } from "../InfoBox/InfoBoxComponent";
+import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
 import * as InputUtils from "./InputUtils";
+import "./WidgetRendererComponent.less";
 
 /**
  * Generic UX renderer
@@ -84,6 +87,12 @@ export class WidgetRendererComponent extends React.Component<
   WidgetRendererComponentProps,
   WidggetRendererComponentState
 > {
+  private static readonly labelStyle = {
+    color: "#393939",
+    fontFamily: "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+    fontSize: 12
+  };
+
   constructor(props: WidgetRendererComponentProps) {
     super(props);
     this.state = {
@@ -104,16 +113,20 @@ export class WidgetRendererComponent extends React.Component<
 
   private renderStringInput(input: StringInput): JSX.Element {
     return (
-      <>
-        <label htmlFor={`${input.dataFieldName}-input`}>{input.label}</label>
-        <input
-          id={`${input.dataFieldName}-input`}
-          type="text"
-          value={input.defaultValue}
-          placeholder={input.placeholder}
-          onChange={e => this.onInputChange(e.target.value, input.dataFieldName)}
-        />
-      </>
+      <div className="stringInputContainer">
+        <div>
+          <label htmlFor={`${input.dataFieldName}-input`}>{input.label}</label>
+        </div>
+        <div>
+          <input
+            id={`${input.dataFieldName}-input`}
+            type="text"
+            value={input.defaultValue}
+            placeholder={input.placeholder}
+            onChange={e => this.onInputChange(e.target.value, input.dataFieldName)}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -170,6 +183,13 @@ export class WidgetRendererComponent extends React.Component<
             onValidate={newValue => this.onValidate(newValue, min, max, dataFieldName)}
             onIncrement={newValue => this.onIncrement(newValue, step, max, dataFieldName)}
             onDecrement={newValue => this.onDecrement(newValue, step, min, dataFieldName)}
+            labelPosition={Position.top}
+            styles={{
+              label: {
+                ...WidgetRendererComponent.labelStyle,
+                fontWeight: 600
+              }
+            }}
           />
           {this.state.errors.has(dataFieldName) && (
             <div style={{ color: "red" }}>Error: {this.state.errors.get(dataFieldName)}</div>
@@ -184,6 +204,13 @@ export class WidgetRendererComponent extends React.Component<
           {...props}
           defaultValue={defaultValue}
           onChange={newValue => this.onInputChange(newValue, dataFieldName)}
+          styles={{
+            titleLabel: {
+              ...WidgetRendererComponent.labelStyle,
+              fontWeight: 600
+            },
+            valueLabel: WidgetRendererComponent.labelStyle
+          }}
         />
       );
     } else {
@@ -194,7 +221,7 @@ export class WidgetRendererComponent extends React.Component<
   private renderBooleanInput(input: BooleanInput): JSX.Element {
     const { dataFieldName } = input;
     return (
-      <>
+      <div>
         <label>{input.label}</label>
         <RadioSwitchComponent
           choices={[
@@ -217,7 +244,7 @@ export class WidgetRendererComponent extends React.Component<
               : "false"
           }
         />
-      </>
+      </div>
     );
   }
 
@@ -237,6 +264,13 @@ export class WidgetRendererComponent extends React.Component<
           key: c.key,
           text: c.value
         }))}
+        styles={{
+          label: {
+            ...WidgetRendererComponent.labelStyle,
+            fontWeight: 600
+          },
+          dropdown: WidgetRendererComponent.labelStyle
+        }}
       />
     );
   }
@@ -257,12 +291,14 @@ export class WidgetRendererComponent extends React.Component<
   }
 
   private renderNode(node: Node): JSX.Element {
+    const containerStackTokens: IStackTokens = { childrenGap: 10 };
+
     return (
-      <>
+      <Stack tokens={containerStackTokens} className="widgetRendererContainer">
         {node.info && this.renderInfo(node.info)}
         {node.input && this.renderInput(node.input)}
         {node.children && node.children.map(child => <div key={child.id}>{this.renderNode(child)}</div>)}
-      </>
+      </Stack>
     );
   }
 
