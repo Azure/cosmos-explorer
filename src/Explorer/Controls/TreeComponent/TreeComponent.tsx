@@ -227,7 +227,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   private renderContextMenuButton(node: TreeNode): JSX.Element {
     const menuItemLabel = "More";
     const buttonStyles: Partial<IButtonStyles> = {
-      rootFocused: { outline: ` 1px dashed ${Constants.StyleConstants.FocusColor}` }
+      rootFocused: { outline: `1px dashed ${Constants.StyleConstants.FocusColor}` }
     };
 
     return (
