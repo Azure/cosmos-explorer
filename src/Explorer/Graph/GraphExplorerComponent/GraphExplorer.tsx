@@ -327,8 +327,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param id
    */
   public static generatePkIdPair(pk: PartitionKeyValueType, id: string) {
-    const pkStr = typeof pk === "string" ? `"${pk}"` : `${pk}`;
-    return `[${pkStr}, "${GraphUtil.escapeDoubleQuotes(id)}"]`;
+    const pkStr = typeof pk === "string" ? `'${pk}'` : `${pk}`;
+    return `[${pkStr}, '${GraphUtil.escapeSingleQuotes(id)}']`;
   }
 
   public updateVertexProperties(editedProperties: EditedProperties): Q.Promise<GremlinClient.GremlinRequestResult> {
@@ -1335,7 +1335,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       const pk = v.properties[this.props.collectionPartitionKeyProperty][0].value;
       return GraphExplorer.generatePkIdPair(pk, v.id);
     } else {
-      return `"${GraphUtil.escapeDoubleQuotes(v.id)}"`;
+      return `'${GraphUtil.escapeSingleQuotes(v.id)}'`;
     }
   }
 
@@ -1361,15 +1361,34 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   /**
    * If collection is not partitioned, return 'id'.
    * If collection is partitioned, return pk-id pair.
+   * public for testing purposes
    * @param vertex
    * @return id
    */
-  private getPkIdFromDocumentId(d: DataModels.DocumentId): string {
-    if (this.props.collectionPartitionKeyProperty && d.hasOwnProperty(this.props.collectionPartitionKeyProperty)) {
-      const pk = (d as any)[this.props.collectionPartitionKeyProperty];
-      return GraphExplorer.generatePkIdPair(pk, d.id);
+  public static getPkIdFromDocumentId(d: DataModels.DocumentId, collectionPartitionKeyProperty: string): string {
+    let { id } = d;
+    if (typeof id !== "string") {
+      const error = `Vertex id is not a string: ${JSON.stringify(id)}.`;
+      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      throw new Error(error);
+    }
+
+    if (collectionPartitionKeyProperty && d.hasOwnProperty(collectionPartitionKeyProperty)) {
+      let pk = (d as any)[collectionPartitionKeyProperty];
+      if (typeof pk !== "string") {
+        if (Array.isArray(pk) && pk.length > 0) {
+          // pk is [{ id: 'id', _value: 'value' }]
+          pk = pk[0]["_value"];
+        } else {
+          const error = `Vertex pk is not a string nor a non-empty array: ${JSON.stringify(pk)}.`;
+          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+          throw new Error(error);
+        }
+      }
+
+      return GraphExplorer.generatePkIdPair(pk, id);
     } else {
-      return `"${GraphUtil.escapeDoubleQuotes(d.id)}"`;
+      return `'${GraphUtil.escapeSingleQuotes(id)}'`;
     }
   }
 
@@ -1769,7 +1788,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         const documents = results.documents || [];
         return documents.map(
           (item: DataModels.DocumentId) => {
-            return this.getPkIdFromDocumentId(item);
+            return GraphExplorer.getPkIdFromDocumentId(item, this.props.collectionPartitionKeyProperty);
           },
           (reason: any) => {
             // Failure
