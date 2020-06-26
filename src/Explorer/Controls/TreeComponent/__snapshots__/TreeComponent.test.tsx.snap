@@ -191,6 +191,13 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
           }
         }
         name="More"
+        styles={
+          Object {
+            "rootFocused": Object {
+              "outline": "1px dashed undefined",
+            },
+          }
+        }
       />
     </div>
   </div>
@@ -314,6 +321,13 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
           }
         }
         name="More"
+        styles={
+          Object {
+            "rootFocused": Object {
+              "outline": "1px dashed undefined",
+            },
+          }
+        }
       />
     </div>
   </div>
