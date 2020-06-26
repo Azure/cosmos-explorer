@@ -3,6 +3,8 @@ import { Position } from "office-ui-fabric-react/lib/utilities/positioning";
 import { Slider } from "office-ui-fabric-react/lib/Slider";
 import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
+import { TextField } from "office-ui-fabric-react/lib/TextField";
+import { Text } from "office-ui-fabric-react/lib/Text";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { InfoBoxComponent, InfoBoxComponentProps } from "../InfoBox/InfoBoxComponent";
@@ -114,16 +116,18 @@ export class WidgetRendererComponent extends React.Component<
   private renderStringInput(input: StringInput): JSX.Element {
     return (
       <div className="stringInputContainer">
-        <div>
-          <label htmlFor={`${input.dataFieldName}-input`}>{input.label}</label>
+        <div className="inputLabelContainer">
+          <Text variant="small" className="inputLabel" nowrap>
+            {input.label}
+          </Text>
         </div>
         <div>
-          <input
+          <TextField
             id={`${input.dataFieldName}-input`}
             type="text"
             value={input.defaultValue}
             placeholder={input.placeholder}
-            onChange={e => this.onInputChange(e.target.value, input.dataFieldName)}
+            onChange={(_, newValue) => this.onInputChange(newValue, input.dataFieldName)}
           />
         </div>
       </div>
@@ -222,7 +226,11 @@ export class WidgetRendererComponent extends React.Component<
     const { dataFieldName } = input;
     return (
       <div>
-        <label>{input.label}</label>
+        <div className="inputLabelContainer">
+          <Text variant="small" nowrap className="inputLabel">
+            {input.label}
+          </Text>
+        </div>
         <RadioSwitchComponent
           choices={[
             {

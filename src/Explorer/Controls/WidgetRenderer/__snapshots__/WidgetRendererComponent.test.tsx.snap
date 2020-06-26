@@ -113,15 +113,19 @@ exports[`WidgetRendererComponent should render 1`] = `
         <div
           className="stringInputContainer"
         >
-          <div>
-            <label
-              htmlFor="containerId-input"
+          <div
+            className="inputLabelContainer"
+          >
+            <Text
+              className="inputLabel"
+              nowrap={true}
+              variant="small"
             >
               Container id
-            </label>
+            </Text>
           </div>
           <div>
-            <input
+            <StyledTextFieldBase
               id="containerId-input"
               onChange={[Function]}
               type="text"
@@ -142,9 +146,17 @@ exports[`WidgetRendererComponent should render 1`] = `
         }
       >
         <div>
-          <label>
-            Analytical Store
-          </label>
+          <div
+            className="inputLabelContainer"
+          >
+            <Text
+              className="inputLabel"
+              nowrap={true}
+              variant="small"
+            >
+              Analytical Store
+            </Text>
+          </div>
           <RadioSwitchComponent
             choices={
               Array [
