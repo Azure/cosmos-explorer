@@ -19,7 +19,7 @@ import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import _ from "underscore";
 import { StringUtils } from "../../Utils/StringUtils";
-import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
+import { IPinnedRepo } from "../../Juno/JunoClient";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
@@ -39,13 +39,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
 
-  private pinnedReposSubscription: ko.Subscription;
-
   private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
 
-  public constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
+  public constructor(private container: ViewModels.Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
@@ -125,14 +123,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
       );
     }
 
-    if (this.container.gitHubOAuthService?.isLoggedIn()) {
+    if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       this.gitHubNotebooksContentRoot = {
         name: "GitHub repos",
         path: ResourceTreeAdapter.PseudoDirPath,
         type: NotebookContentItemType.Directory
       };
-
-      refreshTasks.push(this.refreshGitHubReposAndTriggerRender(this.gitHubNotebooksContentRoot));
     } else {
       this.gitHubNotebooksContentRoot = undefined;
     }
@@ -140,10 +136,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     return Promise.all(refreshTasks);
   }
 
-  private async refreshGitHubReposAndTriggerRender(item: NotebookContentItem): Promise<void> {
-    const updateGitHubReposAndRender = (pinnedRepos: IPinnedRepo[]) => {
-      item.children = [];
-      pinnedRepos.forEach(pinnedRepo => {
+  public initializeGitHubRepos(pinnedRepos: IPinnedRepo[]): void {
+    if (this.gitHubNotebooksContentRoot) {
+      this.gitHubNotebooksContentRoot.children = [];
+      pinnedRepos?.forEach(pinnedRepo => {
         const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
         const repoTreeItem: NotebookContentItem = {
           name: repoFullName,
@@ -160,20 +156,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
           });
         });
 
-        item.children.push(repoTreeItem);
+        this.gitHubNotebooksContentRoot.children.push(repoTreeItem);
       });
 
       this.triggerRender();
-    };
-
-    if (this.pinnedReposSubscription) {
-      this.pinnedReposSubscription.dispose();
     }
-    this.pinnedReposSubscription = this.junoClient.subscribeToPinnedRepos(pinnedRepos =>
-      updateGitHubReposAndRender(pinnedRepos)
-    );
-
-    await this.junoClient.getPinnedRepos(this.container.gitHubOAuthService?.getTokenObservable()()?.scope);
   }
 
   private buildDataTree(): TreeNode {
@@ -497,7 +484,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
             defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
             dataExplorerArea: Areas.Notebook
           });
-          this.container.gitHubOAuthService.logout();
+          this.container.notebookManager?.gitHubOAuthService.logout();
         }
       }
     ];

@@ -348,7 +348,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       ...item.tags?.map(tag => tag.toUpperCase())
     ];
 
-    for (let data of searchData) {
+    for (const data of searchData) {
       if (data?.indexOf(toSearch) !== -1) {
         return true;
       }

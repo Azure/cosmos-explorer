@@ -5,6 +5,7 @@ import { JunoClient } from "../Juno/JunoClient";
 import { GitHubConnector, IGitHubConnectorParams } from "./GitHubConnector";
 import { GitHubOAuthService } from "./GitHubOAuthService";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import NotebookManager from "../Explorer/Notebook/NotebookManager";
 
 const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
   id: "id",
@@ -32,10 +33,12 @@ describe("GitHubOAuthService", () => {
     originalDataExplorer = window.dataExplorer;
     window.dataExplorer = {
       ...originalDataExplorer,
-      gitHubOAuthService,
       logConsoleData: (data): void =>
         data.type === ConsoleDataType.Error ? console.error(data.message) : console.log(data.message)
     } as ViewModels.Explorer;
+    window.dataExplorer.notebookManager = new NotebookManager();
+    window.dataExplorer.notebookManager.junoClient = junoClient;
+    window.dataExplorer.notebookManager.gitHubOAuthService = gitHubOAuthService;
   });
 
   afterEach(() => {

@@ -63,7 +63,7 @@ export class CommandBarComponentButtonFactory {
       ];
       buttons.push(newNotebookButton);
 
-      if (container.gitHubOAuthService) {
+      if (container.notebookManager?.gitHubOAuthService) {
         buttons.push(CommandBarComponentButtonFactory.createManageGitHubAccountButton(container));
       }
     }
@@ -636,7 +636,7 @@ export class CommandBarComponentButtonFactory {
   }
 
   private static createManageGitHubAccountButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    let connectedToGitHub: boolean = container.gitHubOAuthService.isLoggedIn();
+    let connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
     const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
     return {
       iconSrc: GitHubIcon,

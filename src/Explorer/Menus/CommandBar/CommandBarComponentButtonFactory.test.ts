@@ -3,6 +3,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { CommandBarComponentButtonFactory } from "./CommandBarComponentButtonFactory";
 import { ExplorerStub } from "../../OpenActionsStubs";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
+import NotebookManager from "../../Notebook/NotebookManager";
 
 describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: ViewModels.Explorer;
@@ -251,7 +252,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
       mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
-      mockExplorer.gitHubOAuthService = new GitHubOAuthService(undefined);
+      mockExplorer.notebookManager = new NotebookManager();
+      mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
     });
 
     beforeEach(() => {
@@ -272,7 +274,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     it("Notebooks is enabled and GitHubOAuthService is logged in - manage github settings button should be visible", () => {
       mockExplorer.isNotebookEnabled = ko.observable(true);
-      mockExplorer.gitHubOAuthService.isLoggedIn = jest.fn().mockReturnValue(true);
+      mockExplorer.notebookManager.gitHubOAuthService.isLoggedIn = jest.fn().mockReturnValue(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const manageGitHubSettingsBtn = buttons.find(

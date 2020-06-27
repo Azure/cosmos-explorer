@@ -27,12 +27,10 @@ import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/Notebook
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { config } from "../../Config";
-import { JunoClient } from "../../Juno/JunoClient";
 
 export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
   private static clientManager: NotebookClientV2;
   private container: ViewModels.Explorer;
-  private junoClient: JunoClient;
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
@@ -41,14 +39,13 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     super(options);
 
     this.container = options.container;
-    this.junoClient = options.junoClient;
 
     if (!NotebookTabV2.clientManager) {
       NotebookTabV2.clientManager = new NotebookClientV2({
         connectionInfo: this.container.notebookServerInfo(),
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
-        contentProvider: this.container.notebookContentProvider
+        contentProvider: this.container.notebookManager?.notebookContentProvider
       });
     }
 

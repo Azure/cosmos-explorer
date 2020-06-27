@@ -12,9 +12,7 @@ import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { ExecuteSprocParam } from "../Explorer/Panes/ExecuteSprocParamsPane";
 import { GitHubClient } from "../GitHub/GitHubClient";
-import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { IColumnSetting } from "../Explorer/Panes/Tables/TableColumnOptionsPane";
-import { IContentProvider } from "@nteract/core";
 import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
 import { Library } from "./DataModels";
 import { MostRecentActivity } from "../Explorer/MostRecentActivity/MostRecentActivity";
@@ -27,7 +25,7 @@ import { StringInputPane } from "../Explorer/Panes/StringInputPane";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
-import { PublishNotebookPaneAdapter } from "../Explorer/Panes/PublishNotebookPaneAdapter";
+import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -156,7 +154,7 @@ export interface Explorer {
   libraryManagePane: ContextualPane;
   clusterLibraryPane: ContextualPane;
   gitHubReposPane: ContextualPane;
-  publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
+  publishNotebookPaneAdapter: ReactAdapter;
 
   // Facade
   logConsoleData(data: ConsoleData): void;
@@ -228,6 +226,7 @@ export interface Explorer {
   arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   isNotebookTabActive: ko.Computed<boolean>;
   memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
+  notebookManager?: any; // This is dynamically loaded
   openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
   resetNotebookWorkspace(): void;
   importAndOpen: (path: string) => Promise<boolean>;
@@ -238,8 +237,6 @@ export interface Explorer {
   openNotebookViewer: (notebookUrl: string) => void;
   notebookWorkspaceManager: NotebookWorkspaceManager;
   sparkClusterManager: SparkClusterManager;
-  notebookContentProvider: IContentProvider;
-  gitHubOAuthService: GitHubOAuthService;
   mostRecentActivity: MostRecentActivity;
   initNotebooks: (databaseAccount: DataModels.DatabaseAccount) => Promise<void>;
   deleteCluster(): void;
@@ -871,7 +868,6 @@ export interface NotebookTabOptions extends TabOptions {
   account: DatabaseAccount;
   masterKey: string;
   container: Explorer;
-  junoClient: JunoClient;
   notebookContentItem: NotebookContentItem;
 }
 

@@ -49,7 +49,7 @@ interface IPublishNotebookRequest {
   tags: string[];
   author: string;
   thumbnailUrl: string;
-  content: string;
+  content: any;
 }
 
 export class JunoClient {
@@ -286,7 +286,7 @@ export class JunoClient {
     };
   }
 
-  public async publishNotebookToGallery(
+  public async publishNotebook(
     name: string,
     description: string,
     tags: string[],
@@ -303,7 +303,7 @@ export class JunoClient {
         tags,
         author,
         thumbnailUrl,
-        content
+        content: JSON.parse(content)
       } as IPublishNotebookRequest)
     });
 

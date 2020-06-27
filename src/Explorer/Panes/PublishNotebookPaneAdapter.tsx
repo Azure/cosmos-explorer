@@ -1,15 +1,14 @@
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import ko from "knockout";
+import { ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
+import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import * as Logger from "../../Common/Logger";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { JunoClient } from "../../Juno/JunoClient";
-import ko from "knockout";
-import { GenericRightPaneProps, GenericRightPaneComponent } from "./GenericRightPaneComponent";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { Notebook } from "@nteract/commutable";
-import * as Logger from "../../Common/Logger";
 import { FileSystemUtil } from "../Notebook/FileSystemUtil";
-import { ITextFieldProps, Stack, TextField, Text } from "office-ui-fabric-react";
+import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -83,7 +82,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         throw new Error("Name, description, and author are required");
       }
 
-      const response = await this.junoClient.publishNotebookToGallery(
+      const response = await this.junoClient.publishNotebook(
         this.name,
         this.description,
         this.tags?.split(","),
@@ -109,7 +108,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       this.isExecuting = false;
       this.triggerRender();
     }
-    
+
     this.close();
   }
 
