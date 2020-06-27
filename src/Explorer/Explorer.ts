@@ -86,7 +86,7 @@ import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
-import { PublishNotebookPane } from "./Panes/PublishNotebookPane";
+import { PublishNotebookPaneAdapter } from "./Panes/PublishNotebookPaneAdapter";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -200,7 +200,7 @@ export default class Explorer implements ViewModels.Explorer {
   public libraryManagePane: ViewModels.ContextualPane;
   public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
-  public publishNotebookPane: PublishNotebookPane;
+  public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   // features
   public isGalleryEnabled: ko.Computed<boolean>;
@@ -2633,22 +2633,12 @@ export default class Explorer implements ViewModels.Explorer {
       author = props.name;
     }
 
-    if (!this.publishNotebookPane) {
-      this.publishNotebookPane = new PublishNotebookPane({
-        documentClientUtility: this.documentClientUtility,
-        id: "publishNotebookPane",
-        visible: ko.observable<boolean>(false),
-        container: this,
-        junoClient: this.junoClient
-      });
+    if (!this.publishNotebookPaneAdapter) {
+      this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this, this.junoClient);
     }
 
     this.isPublishNotebookPaneEnabled(true);
-    this.publishNotebookPane.openWithOptions({
-      name,
-      author,
-      content
-    });
+    this.publishNotebookPaneAdapter.open(name, author, content);
   }
 
   public showOkModalDialog(title: string, msg: string): void {

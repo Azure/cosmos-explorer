@@ -27,7 +27,7 @@ import { StringInputPane } from "../Explorer/Panes/StringInputPane";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
-import { PublishNotebookPane } from "../Explorer/Panes/PublishNotebookPane";
+import { PublishNotebookPaneAdapter } from "../Explorer/Panes/PublishNotebookPaneAdapter";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -156,7 +156,7 @@ export interface Explorer {
   libraryManagePane: ContextualPane;
   clusterLibraryPane: ContextualPane;
   gitHubReposPane: ContextualPane;
-  publishNotebookPane: PublishNotebookPane;
+  publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   // Facade
   logConsoleData(data: ConsoleData): void;

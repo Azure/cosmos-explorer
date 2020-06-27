@@ -23,7 +23,7 @@ import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { Versions } from "../../src/Contracts/ExplorerContracts";
 import { CollectionCreationDefaults } from "../Shared/Constants";
 import { IGalleryItem } from "../Juno/JunoClient";
-import { PublishNotebookPane } from "./Panes/PublishNotebookPane";
+import { PublishNotebookPaneAdapter } from "./Panes/PublishNotebookPaneAdapter";
 
 export class ExplorerStub implements ViewModels.Explorer {
   public flight: ko.Observable<string>;
@@ -122,7 +122,7 @@ export class ExplorerStub implements ViewModels.Explorer {
   public libraryManagePane: ViewModels.ContextualPane;
   public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
-  public publishNotebookPane: PublishNotebookPane;
+  public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;

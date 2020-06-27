@@ -451,7 +451,7 @@
       <!-- /ko -->
 
       <!-- ko if: isPublishNotebookPaneEnabled -->
-      <publish-notebook-pane params="{data: publishNotebookPane}"></publish-notebook-pane>
+      <div data-bind="react: publishNotebookPaneAdapter"></div>
       <!-- /ko -->
 
       <!-- Global access token expiration dialog - Start -->

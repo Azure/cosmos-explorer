@@ -91,7 +91,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
           throw new Error(`Received HTTP ${response.status} while increasing notebook views`);
         }
 
-        this.setState({ galleryItem: response.data.notebook });
+        this.setState({ galleryItem: response.data });
       }
     } catch (error) {
       const message = `Failed to load notebook content: ${error}`;
@@ -131,7 +131,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, { hideInputs: true })}
 
-        {this.state.dialogProps ? <DialogComponent {...this.state.dialogProps} /> : <></>}
+        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
       </div>
     );
   }

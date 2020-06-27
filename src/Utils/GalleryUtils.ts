@@ -91,7 +91,7 @@ export function downloadItem(
             throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
           }
 
-          await container.importAndOpenFromGallery(data.name, JSON.stringify(response.data));
+          await container.importAndOpenFromGallery(data.name, response.data);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Info,
             `Successfully downloaded ${name} to My Notebooks`
@@ -99,7 +99,7 @@ export function downloadItem(
 
           const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
           if (increaseDownloadResponse.data) {
-            onComplete(increaseDownloadResponse.data.notebook);
+            onComplete(increaseDownloadResponse.data);
           }
         } catch (error) {
           const message = `Failed to download ${data.name}: ${error}`;
@@ -146,7 +146,7 @@ export async function favoriteItem(
         throw new Error(`Received HTTP ${response.status} when favoriting ${data.name}`);
       }
 
-      onComplete(response.data.notebook);
+      onComplete(response.data);
     } catch (error) {
       const message = `Failed to favorite ${data.name}: ${error}`;
       Logger.logError(message, "GalleryUtils/favoriteItem");
@@ -168,7 +168,7 @@ export async function unfavoriteItem(
         throw new Error(`Received HTTP ${response.status} when unfavoriting ${data.name}`);
       }
 
-      onComplete(response.data.notebook);
+      onComplete(response.data);
     } catch (error) {
       const message = `Failed to unfavorite ${data.name}: ${error}`;
       Logger.logError(message, "GalleryUtils/unfavoriteItem");
@@ -202,7 +202,7 @@ export function deleteItem(
           }
 
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
-          onComplete(response.data.notebook);
+          onComplete(response.data);
         } catch (error) {
           const message = `Failed to remove ${name} from gallery: ${error}`;
           Logger.logError(message, "GalleryUtils/deleteItem");

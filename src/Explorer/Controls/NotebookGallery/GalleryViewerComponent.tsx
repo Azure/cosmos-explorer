@@ -23,6 +23,7 @@ import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationCon
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
+import { HttpStatusCodes } from "../../../Common/Constants";
 
 export interface GalleryViewerComponentProps {
   container?: ViewModels.Explorer;
@@ -96,7 +97,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
   ];
 
-  private tabs: GalleryTabInfo[];
   private sampleNotebooks: IGalleryItem[];
   private publicNotebooks: IGalleryItem[];
   private favoriteNotebooks: IGalleryItem[];
@@ -118,8 +118,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       dialogProps: undefined
     };
 
-    this.tabs = this.createTabs();
-
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
     if (this.props.container) {
       this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
@@ -131,14 +129,26 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   public render(): JSX.Element {
-    this.tabs = this.createTabs();
+    const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
+
+    if (this.props.container) {
+      if (this.props.container.isGalleryPublishEnabled()) {
+        tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
+      }
+
+      tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
+
+      if (this.props.container.isGalleryPublishEnabled()) {
+        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+      }
+    }
 
     const pivotProps: IPivotProps = {
       onLinkClick: this.onPivotChange,
       selectedKey: GalleryTab[this.state.selectedTab]
     };
 
-    const pivotItems = this.tabs.map(tab => {
+    const pivotItems = tabs.map(tab => {
       const pivotItemProps: IPivotItemProps = {
         itemKey: GalleryTab[tab.tab],
         style: { marginTop: 20 },
@@ -156,27 +166,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
 
-        {this.state.dialogProps ? <DialogComponent {...this.state.dialogProps} /> : <></>}
+        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
       </div>
     );
-  }
-
-  private createTabs(): GalleryTabInfo[] {
-    const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
-
-    if (this.props.container) {
-      if (this.props.container.isGalleryPublishEnabled()) {
-        tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
-      }
-
-      tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-
-      if (this.props.container.isGalleryPublishEnabled()) {
-        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
-      }
-    }
-
-    return tabs;
   }
 
   private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
@@ -205,11 +197,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           </Stack.Item>
         </Stack>
 
-        {data
-          ? data.length
-            ? this.createCardsTabContent(data)
-            : this.createEmptyTabContent()
-          : this.createLoadingTabContent()}
+        {data && this.createCardsTabContent(data)}
       </Stack>
     );
   }
@@ -225,14 +213,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         />
       </FocusZone>
     );
-  }
-
-  private createEmptyTabContent(): JSX.Element {
-    return <></>;
-  }
-
-  private createLoadingTabContent(): JSX.Element {
-    return <></>;
   }
 
   private loadTabContent(tab: GalleryTab, searchText: string, sortBy: SortBy, offline: boolean): void {
@@ -262,7 +242,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     if (!offline) {
       try {
         const response = await this.props.junoClient.getSampleNotebooks();
-        if (!response.data) {
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading sample notebooks`);
         }
 
@@ -283,7 +263,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     if (!offline) {
       try {
         const response = await this.props.junoClient.getPublicNotebooks();
-        if (!response.data) {
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
 
@@ -304,7 +284,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     if (!offline) {
       try {
         const response = await this.props.junoClient.getFavoriteNotebooks();
-        if (!response.data) {
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading favorite notebooks`);
         }
 
@@ -332,7 +312,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     if (!offline) {
       try {
         const response = await this.props.junoClient.getPublishedNotebooks();
-        if (!response.data) {
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading published notebooks`);
         }
 
@@ -353,13 +333,13 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private search(searchText: string, data: IGalleryItem[]): IGalleryItem[] {
     if (searchText) {
-      return data?.filter(item => this.searchGalleryItem(searchText, item));
+      return data?.filter(item => this.isGalleryItemPresent(searchText, item));
     }
 
     return data;
   }
 
-  private searchGalleryItem(searchText: string, item: IGalleryItem): boolean {
+  private isGalleryItemPresent(searchText: string, item: IGalleryItem): boolean {
     const toSearch = searchText.trim().toUpperCase();
     const searchData: string[] = [
       item.author.toUpperCase(),
@@ -368,7 +348,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       ...item.tags?.map(tag => tag.toUpperCase())
     ];
 
-    for (const data of searchData) {
+    for (let data of searchData) {
       if (data?.indexOf(toSearch) !== -1) {
         return true;
       }
@@ -470,7 +450,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private favoriteItem = async (data: IGalleryItem): Promise<void> => {
     GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, data, (item: IGalleryItem) => {
-      this.favoriteNotebooks?.push(item);
+      if (this.favoriteNotebooks) {
+        this.favoriteNotebooks.push(item);
+      } else {
+        this.favoriteNotebooks = [item];
+      }
       this.refreshSelectedTab(item);
     });
   };
