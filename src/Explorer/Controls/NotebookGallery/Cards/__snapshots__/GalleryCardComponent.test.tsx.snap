@@ -7,7 +7,7 @@ exports[`GalleryCardComponent renders 1`] = `
     Object {
       "childrenGap": 8,
       "childrenMargin": 10,
-      "height": 372,
+      "height": 384,
       "width": 256,
     }
   }
@@ -57,13 +57,19 @@ exports[`GalleryCardComponent renders 1`] = `
       name
     </Text>
     <Text
+      styles={
+        Object {
+          "root": Object {
+            "height": 36,
+          },
+        }
+      }
       variant="small"
     >
       description
     </Text>
   </CardSection>
   <CardSection
-    grow={true}
     horizontal={true}
     styles={
       Object {
@@ -143,68 +149,117 @@ exports[`GalleryCardComponent renders 1`] = `
       0
     </Text>
   </CardSection>
+  <CardItem>
+    <Styled
+      styles={
+        Object {
+          "root": Object {
+            "height": 1,
+            "padding": 0,
+          },
+        }
+      }
+    />
+  </CardItem>
   <CardSection
-    fill={true}
     horizontal={true}
     styles={
       Object {
         "root": Object {
-          "borderTop": "1px solid #F3F2F1",
-          "marginLeft": 10,
-          "marginRight": 10,
+          "marginTop": 0,
         },
       }
     }
-    tokens={
-      Object {
-        "childrenGap": 0,
-      }
-    }
   >
-    <Stack
-      horizontal={true}
+    <StyledTooltipHostBase
+      calloutProps={
+        Object {
+          "gapSpace": 0,
+        }
+      }
+      content="Like"
+      id="TooltipHost-IconButton-Heart"
       styles={
         Object {
           "root": Object {
-            "display": "contents",
+            "display": "inline-block",
           },
         }
       }
     >
-      <StackItem>
-        <CustomizedIconButton
-          iconProps={
-            Object {
-              "iconName": "Heart",
-            }
+      <CustomizedIconButton
+        ariaLabel="Like"
+        iconProps={
+          Object {
+            "iconName": "Heart",
           }
-          onClick={[Function]}
-        />
-      </StackItem>
-      <StackItem>
-        <CustomizedIconButton
-          iconProps={
-            Object {
-              "iconName": "Download",
-            }
-          }
-          onClick={[Function]}
-        />
-      </StackItem>
-      <StackItem
-        grow={true}
+        }
+        onClick={[Function]}
+        title="Like"
       />
-      <StackItem>
+    </StyledTooltipHostBase>
+    <StyledTooltipHostBase
+      calloutProps={
+        Object {
+          "gapSpace": 0,
+        }
+      }
+      content="Download"
+      id="TooltipHost-IconButton-Download"
+      styles={
+        Object {
+          "root": Object {
+            "display": "inline-block",
+          },
+        }
+      }
+    >
+      <CustomizedIconButton
+        ariaLabel="Download"
+        iconProps={
+          Object {
+            "iconName": "Download",
+          }
+        }
+        onClick={[Function]}
+        title="Download"
+      />
+    </StyledTooltipHostBase>
+    <div
+      style={
+        Object {
+          "textAlign": "right",
+          "width": "100%",
+        }
+      }
+    >
+      <StyledTooltipHostBase
+        calloutProps={
+          Object {
+            "gapSpace": 0,
+          }
+        }
+        content="Remove"
+        id="TooltipHost-IconButton-Delete"
+        styles={
+          Object {
+            "root": Object {
+              "display": "inline-block",
+            },
+          }
+        }
+      >
         <CustomizedIconButton
+          ariaLabel="Remove"
           iconProps={
             Object {
               "iconName": "Delete",
             }
           }
-          onClick={[Function]}
+          title="Remove"
         />
-      </StackItem>
-    </Stack>
+      </StyledTooltipHostBase>
+    </div>
   </CardSection>
 </Card>
 `;
