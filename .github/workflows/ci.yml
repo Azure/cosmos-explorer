@@ -186,7 +186,6 @@ jobs:
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
       - uses: actions/checkout@v2
-      - run: cp ./configs/prod.json ./dist/config.json
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
@@ -194,6 +193,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
+      - run: cp ./configs/mpac.json ./dist/config.json
       - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
