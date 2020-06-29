@@ -26,6 +26,8 @@ import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { SamplesRepo, SamplesBranch } from "../Notebook/NotebookSamples";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
+import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
+import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -72,14 +74,18 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     if (this.container.isNotebookEnabled()) {
       return (
-        <AccordionComponent>
-          <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
-            <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-          </AccordionItemComponent>
-          <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
-            <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
-          </AccordionItemComponent>
-        </AccordionComponent>
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
+              <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {this.galleryContentRoot && this.buildGalleryCallout()}
+        </>
       );
     } else {
       return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
@@ -372,11 +378,57 @@ export class ResourceTreeAdapter implements ReactAdapter {
     return notebooksTree;
   }
 
+  private buildGalleryCallout(): JSX.Element {
+    if (
+      LocalStorageUtility.hasItem(StorageKey.GalleryCalloutDismissed) &&
+      LocalStorageUtility.getEntryBoolean(StorageKey.GalleryCalloutDismissed)
+    ) {
+      return undefined;
+    }
+
+    const calloutProps: ICalloutProps = {
+      calloutMaxWidth: 350,
+      ariaLabel: "New gallery",
+      role: "alertdialog",
+      gapSpace: 0,
+      target: ".galleryHeader",
+      directionalHint: DirectionalHint.leftTopEdge,
+      onDismiss: () => {
+        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
+        this.triggerRender();
+      },
+      setInitialFocus: true
+    };
+
+    const openGalleryProps: ILinkProps = {
+      onClick: () => {
+        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
+        this.container.openGallery();
+        this.triggerRender();
+      }
+    };
+
+    return (
+      <Callout {...calloutProps}>
+        <Stack tokens={{ childrenGap: 10, padding: 20 }}>
+          <Text variant="xLarge" block>
+            New gallery
+          </Text>
+          <Text block>
+            Sample notebooks are now combined in gallery. View and try out samples provided by Microsoft and other
+            contributors.
+          </Text>
+          <Link {...openGalleryProps}>Open gallery</Link>
+        </Stack>
+      </Callout>
+    );
+  }
+
   private buildGalleryNotebooksTree(): TreeNode {
     return {
       label: "Gallery",
       iconSrc: GalleryIcon,
-      className: "notebookHeader",
+      className: "notebookHeader galleryHeader",
       onClick: () => this.container.openGallery(),
       isSelected: () => {
         const activeTab = this.container.findActiveTab();

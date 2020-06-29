@@ -70,7 +70,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   implements GalleryUtils.DialogEnabledComponent {
   public static readonly OfficialSamplesTitle = "Official samples";
   public static readonly PublicGalleryTitle = "Public gallery";
-  public static readonly FavoritesTitle = "Favorites";
+  public static readonly FavoritesTitle = "Liked";
   public static readonly PublishedTitle = "Your published work";
 
   private static readonly mostViewedText = "Most viewed";

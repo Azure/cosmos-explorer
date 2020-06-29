@@ -70,5 +70,6 @@ export enum StorageKey {
   IsGraphAutoVizDisabled,
   TenantId,
   MostRecentActivity,
-  SetPartitionKeyUndefined
+  SetPartitionKeyUndefined,
+  GalleryCalloutDismissed
 }
