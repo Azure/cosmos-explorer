@@ -26,7 +26,6 @@ src/Common/Logger.test.ts
 src/Common/MessageHandler.test.ts
 src/Common/MessageHandler.ts
 src/Common/MongoProxyClient.test.ts
-src/Common/MongoProxyClient.ts
 src/Common/MongoUtility.ts
 src/Common/NotificationsClientBase.ts
 src/Common/ObjectCache.test.ts

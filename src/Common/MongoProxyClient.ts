@@ -31,13 +31,13 @@ function authHeaders(): any {
   }
 }
 
-export function queryIterator(databaseId: string, collection: Collection, query: string) {
-  let continuationToken: string = null;
+export function queryIterator(databaseId: string, collection: Collection, query: string): any {
+  let continuationToken: string;
   return {
     fetchNext: () => {
       return queryDocuments(databaseId, collection, false, query).then(response => {
         continuationToken = response.continuationToken;
-        let headers = {} as any;
+        const headers = {} as any;
         response.headers.forEach((value: any, key: any) => {
           headers[key] = value;
         });
@@ -114,14 +114,7 @@ export function queryDocuments(
           headers: response.headers
         };
       }
-      const errorMessage = await response.text();
-      if (response.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({
-          type: MessageTypes.ForbiddenError,
-          reason: errorMessage
-        });
-      }
-      throw new Error(errorMessage);
+      return errorHandling(response, "querying documents", params);
     });
 }
 
@@ -160,11 +153,11 @@ export function readDocument(
         )
       }
     })
-    .then(async response => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
-      errorHandling(response);
+      return errorHandling(response, "reading document", params);
     });
 }
 
@@ -199,11 +192,11 @@ export function createDocument(
         ...authHeaders()
       }
     })
-    .then(async response => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
-      errorHandling(response);
+      return errorHandling(response, "creating document", params);
     });
 }
 
@@ -243,11 +236,11 @@ export function updateDocument(
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader())
       }
     })
-    .then(async response => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
-      errorHandling(response);
+      return errorHandling(response, "updating document", params);
     });
 }
 
@@ -285,11 +278,11 @@ export function deleteDocument(
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader())
       }
     })
-    .then(async response => {
+    .then(response => {
       if (response.ok) {
-        return;
+        return undefined;
       }
-      errorHandling(response);
+      return errorHandling(response, "deleting document", params);
     });
 }
 
@@ -340,15 +333,11 @@ export function createMongoCollectionWithProxy(
         }
       }
     )
-    .then(async response => {
+    .then(response => {
       if (response.ok) {
-        return;
+        return undefined;
       }
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Error creating collection: ${await response.json()}, Payload: ${params}`
-      );
-      errorHandling(response);
+      return errorHandling(response, "creating collection", params);
     });
 }
 
@@ -407,13 +396,16 @@ export function getEndpoint(databaseAccount: ViewModels.DatabaseAccount): string
   return url;
 }
 
-async function errorHandling(response: any): Promise<any> {
+async function errorHandling(response: any, action: string, params: any): Promise<any> {
   const errorMessage = await response.text();
+  // Log the error where the user can see it
+  NotificationConsoleUtils.logConsoleMessage(
+    ConsoleDataType.Error,
+    `Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`
+  );
   if (response.status === HttpStatusCodes.Forbidden) {
-    MessageHandler.sendMessage({
-      type: MessageTypes.ForbiddenError,
-      reason: errorMessage
-    });
+    MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
+    return;
   }
   throw new Error(errorMessage);
 }
@@ -462,14 +454,6 @@ export async function _createMongoCollectionWithARM(
       rpPayloadToCreateCollection
     );
   } catch (response) {
-    NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.Error,
-      `Error creating collection: ${JSON.stringify(response)}`
-    );
-    if (response.status === HttpStatusCodes.Forbidden) {
-      MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
-      return;
-    }
-    throw new Error(`Error creating collection`);
+    return errorHandling(response, "creating collection", undefined);
   }
 }
