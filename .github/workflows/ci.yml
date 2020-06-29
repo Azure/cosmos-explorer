@@ -162,6 +162,7 @@ jobs:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
+      - uses: actions/checkout@v2
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
@@ -169,6 +170,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
+      - run: cp ./configs/prod.json ./dist/config.json
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
@@ -183,6 +185,8 @@ jobs:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
+      - uses: actions/checkout@v2
+      - run: cp ./configs/prod.json ./dist/config.json
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
