@@ -5,10 +5,10 @@ import { Notebook } from "../../../Common/Constants";
 import { CellId } from "@nteract/commutable";
 
 export interface CdbRecordProps {
-  databaseAccountName: string;
-  defaultExperience: string;
+  databaseAccountName: string | undefined;
+  defaultExperience: string | undefined;
   kernelRestartDelayMs: number;
-  hoveredCellId: CellId;
+  hoveredCellId: CellId | undefined;
 }
 
 export type CdbRecord = Immutable.RecordOf<CdbRecordProps>;

@@ -30,12 +30,13 @@ For IE support, polyfill is preferred over new usage of lodash or underscore. We
 ### Typescript
 * Follow this [typescript style guide](https://github.com/excelmicro/typescript) which is based on [airbnb's style  guide](https://github.com/airbnb/javascript).
 * Conventions speficic to this project:
-  * Use double-quotes for string
-  * Don't use null, use undefined
-  * Pascal case for private static readonly fields
-  * Camel case for classnames in markup
+  - Use double-quotes for string
+  - Don't use `null`, use `undefined`
+  - Pascal case for private static readonly fields
+  - Camel case for classnames in markup
 * Don't use class unless necessary
 * Code related to notebooks should be dynamically imported so that it is loaded from a separate bundle only if the account is notebook-enabled. There are already top-level notebook components which are dynamically imported and their dependencies can be statically imported from these files.
+* Prefer using [Fluent UI controls](https://developer.microsoft.com/en-us/fluentui#/controls/web) over creating your own, in order to maintain consistency and support a11y.
 
 ### React
 * Prefer using React class components over function components and hooks unless you have a simple component and require no nested functions:

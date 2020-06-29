@@ -46,7 +46,7 @@ export interface LogEntry {
   /**
    * The message code.
    */
-  code: number;
+  code?: number;
   /**
    * Any additional data to be logged.
    */

@@ -198,7 +198,7 @@ export class Heatmap {
       let timeSelected: string = data.points[0].x;
       timeSelected = timeSelected.replace(" ", "T");
       timeSelected = `${timeSelected}Z`;
-      let xAxisIndex;
+      let xAxisIndex = 0;
       for (let i = 0; i < this._chartData.xAxisPoints.length; i++) {
         if (this._chartData.xAxisPoints[i] === timeSelected) {
           xAxisIndex = i;
@@ -234,6 +234,7 @@ export function handleMessage(event: MessageEvent) {
     return;
   }
   Plotly.purge(Heatmap.elementId);
+  // @ts-ignore: error TS2531: Object is possibly 'null'.
   document.getElementById(Heatmap.elementId).innerHTML = "";
   const data = event.data.data;
   const chartData: DataPayload = data.chartData;
@@ -259,7 +260,9 @@ export function handleMessage(event: MessageEvent) {
       noDataMessageContent.classList.add("dark-theme");
     }
 
+    // @ts-ignore: error TS2531: Object is possibly 'null'.
     document.getElementById(Heatmap.elementId).appendChild(chartTitleElement);
+    // @ts-ignore: error TS2531: Object is possibly 'null'.
     document.getElementById(Heatmap.elementId).appendChild(noDataMessageElement);
   }
 }
