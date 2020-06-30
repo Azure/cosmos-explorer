@@ -450,6 +450,10 @@
       <github-repos-pane params="{data: gitHubReposPane}"></github-repos-pane>
       <!-- /ko -->
 
+      <!-- ko if: isPublishNotebookPaneEnabled -->
+      <div data-bind="react: publishNotebookPaneAdapter"></div>
+      <!-- /ko -->
+
       <!-- Global access token expiration dialog - Start -->
       <div
         id="dataAccessTokenModal"

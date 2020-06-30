@@ -71,6 +71,5 @@ export enum StorageKey {
   TenantId,
   MostRecentActivity,
   SetPartitionKeyUndefined,
-  NotebookMetadata,
-  NotebookName
+  GalleryCalloutDismissed
 }

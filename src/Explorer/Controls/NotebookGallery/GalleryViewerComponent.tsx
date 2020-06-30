@@ -1,361 +1,513 @@
-/**
- * Gallery Viewer
- */
-
+import {
+  Dropdown,
+  FocusZone,
+  IDropdownOption,
+  IPageSpecification,
+  IPivotItemProps,
+  IPivotProps,
+  IRectangle,
+  Label,
+  List,
+  Pivot,
+  PivotItem,
+  SearchBox,
+  Stack
+} from "office-ui-fabric-react";
 import * as React from "react";
-import * as DataModels from "../../../Contracts/DataModels";
+import * as Logger from "../../../Common/Logger";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { GalleryCardComponent } from "./Cards/GalleryCardComponent";
-import { Stack, IStackTokens } from "office-ui-fabric-react";
-import { JunoUtils } from "../../../Utils/JunoUtils";
-import { CosmosClient } from "../../../Common/CosmosClient";
-import { config } from "../../../Config";
-import path from "path";
-import { SessionStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
+import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
+import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as TabComponent from "../Tabs/TabComponent";
-
+import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
+import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
+import { HttpStatusCodes } from "../../../Common/Constants";
 
-export interface GalleryCardsComponentProps {
-  data: DataModels.GitHubInfoJunoResponse[];
-  userMetadata: DataModels.UserMetadata;
-  onNotebookMetadataChange: (
-    officialSamplesIndex: number,
-    notebookMetadata: DataModels.NotebookMetadata
-  ) => Promise<void>;
-  onClick: (
-    url: string,
-    notebookMetadata: DataModels.NotebookMetadata,
-    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-    isLikedNotebook: boolean
-  ) => Promise<void>;
+export interface GalleryViewerComponentProps {
+  container?: ViewModels.Explorer;
+  junoClient: JunoClient;
+  selectedTab: GalleryTab;
+  sortBy: SortBy;
+  searchText: string;
+  onSelectedTabChange: (newTab: GalleryTab) => void;
+  onSortByChange: (sortBy: SortBy) => void;
+  onSearchTextChange: (searchText: string) => void;
 }
 
-export class GalleryCardsComponent extends React.Component<GalleryCardsComponentProps> {
-  private sectionStackTokens: IStackTokens = { childrenGap: 30 };
+export enum GalleryTab {
+  OfficialSamples,
+  PublicGallery,
+  Favorites,
+  Published
+}
+
+export enum SortBy {
+  MostViewed,
+  MostDownloaded,
+  MostFavorited,
+  MostRecent
+}
+
+interface GalleryViewerComponentState {
+  sampleNotebooks: IGalleryItem[];
+  publicNotebooks: IGalleryItem[];
+  favoriteNotebooks: IGalleryItem[];
+  publishedNotebooks: IGalleryItem[];
+  selectedTab: GalleryTab;
+  sortBy: SortBy;
+  searchText: string;
+  dialogProps: DialogProps;
+}
+
+interface GalleryTabInfo {
+  tab: GalleryTab;
+  content: JSX.Element;
+}
+
+export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps, GalleryViewerComponentState>
+  implements GalleryUtils.DialogEnabledComponent {
+  public static readonly OfficialSamplesTitle = "Official samples";
+  public static readonly PublicGalleryTitle = "Public gallery";
+  public static readonly FavoritesTitle = "Liked";
+  public static readonly PublishedTitle = "Your published work";
+
+  private static readonly mostViewedText = "Most viewed";
+  private static readonly mostDownloadedText = "Most downloaded";
+  private static readonly mostFavoritedText = "Most favorited";
+  private static readonly mostRecentText = "Most recent";
+
+  private static readonly sortingOptions: IDropdownOption[] = [
+    {
+      key: SortBy.MostViewed,
+      text: GalleryViewerComponent.mostViewedText
+    },
+    {
+      key: SortBy.MostDownloaded,
+      text: GalleryViewerComponent.mostDownloadedText
+    },
+    {
+      key: SortBy.MostFavorited,
+      text: GalleryViewerComponent.mostFavoritedText
+    },
+    {
+      key: SortBy.MostRecent,
+      text: GalleryViewerComponent.mostRecentText
+    }
+  ];
+
+  private sampleNotebooks: IGalleryItem[];
+  private publicNotebooks: IGalleryItem[];
+  private favoriteNotebooks: IGalleryItem[];
+  private publishedNotebooks: IGalleryItem[];
+  private columnCount: number;
+  private rowCount: number;
+
+  constructor(props: GalleryViewerComponentProps) {
+    super(props);
+
+    this.state = {
+      sampleNotebooks: undefined,
+      publicNotebooks: undefined,
+      favoriteNotebooks: undefined,
+      publishedNotebooks: undefined,
+      selectedTab: props.selectedTab,
+      sortBy: props.sortBy,
+      searchText: props.searchText,
+      dialogProps: undefined
+    };
+
+    this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
+    if (this.props.container) {
+      this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
+    }
+  }
+
+  setDialogProps = (dialogProps: DialogProps): void => {
+    this.setState({ dialogProps });
+  };
 
   public render(): JSX.Element {
-    return (
-      <Stack horizontal wrap tokens={this.sectionStackTokens}>
-        {this.props.data.map((githubInfo: DataModels.GitHubInfoJunoResponse) => {
-          const name = githubInfo.name;
-          const url = githubInfo.downloadUrl;
-          const notebookMetadata = githubInfo.metadata || {
-            date: "2008-12-01",
-            description: "Great notebook",
-            tags: ["favorite", "sample"],
-            author: "Laurent Nguyen",
-            views: 432,
-            likes: 123,
-            downloads: 56,
-            imageUrl:
-              "https://media.magazine.ferrari.com/images/2019/02/27/170304506-c1bcf028-b513-45f6-9f27-0cadac619c3d.jpg"
-          };
-          const officialSamplesIndex = githubInfo.officialSamplesIndex;
-          const isLikedNotebook = githubInfo.isLikedNotebook;
-          const updateTabsStatePerNotebook = this.props.onNotebookMetadataChange
-            ? (notebookMetadata: DataModels.NotebookMetadata): Promise<void> =>
-                this.props.onNotebookMetadataChange(officialSamplesIndex, notebookMetadata)
-            : undefined;
+    const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
-          return (
-            name !== ".gitignore" &&
-            url && (
-              <GalleryCardComponent
-                key={url}
-                name={name}
-                url={url}
-                notebookMetadata={notebookMetadata}
-                onClick={(): Promise<void> =>
-                  this.props.onClick(url, notebookMetadata, updateTabsStatePerNotebook, isLikedNotebook)
-                }
-              />
-            )
-          );
-        })}
+    if (this.props.container) {
+      if (this.props.container.isGalleryPublishEnabled()) {
+        tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
+      }
+
+      tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
+
+      if (this.props.container.isGalleryPublishEnabled()) {
+        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+      }
+    }
+
+    const pivotProps: IPivotProps = {
+      onLinkClick: this.onPivotChange,
+      selectedKey: GalleryTab[this.state.selectedTab]
+    };
+
+    const pivotItems = tabs.map(tab => {
+      const pivotItemProps: IPivotItemProps = {
+        itemKey: GalleryTab[tab.tab],
+        style: { marginTop: 20 },
+        headerText: GalleryUtils.getTabTitle(tab.tab)
+      };
+
+      return (
+        <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
+          {tab.content}
+        </PivotItem>
+      );
+    });
+
+    return (
+      <div className="galleryContainer">
+        <Pivot {...pivotProps}>{pivotItems}</Pivot>
+
+        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
+      </div>
+    );
+  }
+
+  private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
+    return {
+      tab,
+      content: this.createTabContent(data)
+    };
+  }
+
+  private createTabContent(data: IGalleryItem[]): JSX.Element {
+    return (
+      <Stack tokens={{ childrenGap: 20 }}>
+        <Stack horizontal tokens={{ childrenGap: 20 }}>
+          <Stack.Item grow>
+            <SearchBox value={this.state.searchText} placeholder="Search" onChange={this.onSearchBoxChange} />
+          </Stack.Item>
+          <Stack.Item>
+            <Label>Sort by</Label>
+          </Stack.Item>
+          <Stack.Item styles={{ root: { minWidth: 200 } }}>
+            <Dropdown
+              options={GalleryViewerComponent.sortingOptions}
+              selectedKey={this.state.sortBy}
+              onChange={this.onDropdownChange}
+            />
+          </Stack.Item>
+        </Stack>
+
+        {data && this.createCardsTabContent(data)}
       </Stack>
     );
   }
-}
 
-export interface FullWidthTabsProps {
-  officialSamplesContent: DataModels.GitHubInfoJunoResponse[];
-  likedNotebooksContent: DataModels.GitHubInfoJunoResponse[];
-  userMetadata: DataModels.UserMetadata;
-  onClick: (
-    url: string,
-    notebookMetadata: DataModels.NotebookMetadata,
-    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-    isLikedNotebook: boolean
-  ) => Promise<void>;
-}
-
-interface FullWidthTabsState {
-  activeTabIndex: number;
-  officialSamplesContent: DataModels.GitHubInfoJunoResponse[];
-  likedNotebooksContent: DataModels.GitHubInfoJunoResponse[];
-  userMetadata: DataModels.UserMetadata;
-}
-
-export class FullWidthTabs extends React.Component<FullWidthTabsProps, FullWidthTabsState> {
-  private authorizationToken = CosmosClient.authorizationToken();
-  private appTabs: TabComponent.Tab[];
-
-  constructor(props: FullWidthTabsProps) {
-    super(props);
-    this.state = {
-      activeTabIndex: 0,
-      officialSamplesContent: this.props.officialSamplesContent,
-      likedNotebooksContent: this.props.likedNotebooksContent,
-      userMetadata: this.props.userMetadata
-    };
-
-    this.appTabs = [
-      {
-        title: "Official Samples",
-        content: {
-          className: "",
-          render: (): JSX.Element => (
-            <GalleryCardsComponent
-              data={this.state.officialSamplesContent}
-              onClick={this.props.onClick}
-              userMetadata={this.state.userMetadata}
-              onNotebookMetadataChange={this.updateTabsState}
-            />
-          )
-        },
-        isVisible: (): boolean => true
-      },
-      {
-        title: "Liked Notebooks",
-        content: {
-          className: "",
-          render: (): JSX.Element => (
-            <GalleryCardsComponent
-              data={this.state.likedNotebooksContent}
-              onClick={this.props.onClick}
-              userMetadata={this.state.userMetadata}
-              onNotebookMetadataChange={this.updateTabsState}
-            />
-          )
-        },
-        isVisible: (): boolean => true
-      }
-    ];
+  private createCardsTabContent(data: IGalleryItem[]): JSX.Element {
+    return (
+      <FocusZone>
+        <List
+          items={data}
+          getPageSpecification={this.getPageSpecification}
+          renderedWindowsAhead={3}
+          onRenderCell={this.onRenderCell}
+        />
+      </FocusZone>
+    );
   }
 
-  public updateTabsState = async (
-    officialSamplesIndex: number,
-    notebookMetadata: DataModels.NotebookMetadata
-  ): Promise<void> => {
-    let currentLikedNotebooksContent = [...this.state.likedNotebooksContent];
-    let currentUserMetadata = { ...this.state.userMetadata };
-    let currentLikedNotebooks = [...currentUserMetadata.likedNotebooks];
+  private loadTabContent(tab: GalleryTab, searchText: string, sortBy: SortBy, offline: boolean): void {
+    switch (tab) {
+      case GalleryTab.OfficialSamples:
+        this.loadSampleNotebooks(searchText, sortBy, offline);
+        break;
 
-    const currentOfficialSamplesContent = [...this.state.officialSamplesContent];
-    const currentOfficialSamplesObject = { ...currentOfficialSamplesContent[officialSamplesIndex] };
-    const metadata = { ...currentOfficialSamplesObject.metadata };
-    const metadataLikesUpdates = metadata.likes - notebookMetadata.likes;
+      case GalleryTab.PublicGallery:
+        this.loadPublicNotebooks(searchText, sortBy, offline);
+        break;
 
-    metadata.views = notebookMetadata.views;
-    metadata.downloads = notebookMetadata.downloads;
-    metadata.likes = notebookMetadata.likes;
-    currentOfficialSamplesObject.metadata = metadata;
+      case GalleryTab.Favorites:
+        this.loadFavoriteNotebooks(searchText, sortBy, offline);
+        break;
 
-    // Notebook has been liked. Add To likedNotebooksContent, update isLikedNotebook flag
-    if (metadataLikesUpdates < 0) {
-      currentOfficialSamplesObject.isLikedNotebook = true;
-      currentLikedNotebooksContent = currentLikedNotebooksContent.concat(currentOfficialSamplesObject);
-      currentLikedNotebooks = currentLikedNotebooks.concat(currentOfficialSamplesObject.path);
-      currentUserMetadata = { likedNotebooks: currentLikedNotebooks };
-    } else if (metadataLikesUpdates > 0) {
-      // Notebook has been unliked. Remove from likedNotebooksContent after matching the path, update isLikedNotebook flag
+      case GalleryTab.Published:
+        this.loadPublishedNotebooks(searchText, sortBy, offline);
+        break;
 
-      currentOfficialSamplesObject.isLikedNotebook = false;
-      const likedNotebookIndex = currentLikedNotebooks.findIndex((path: string) => {
-        return path === currentOfficialSamplesObject.path;
-      });
-      currentLikedNotebooksContent.splice(likedNotebookIndex, 1);
-      currentLikedNotebooks.splice(likedNotebookIndex, 1);
-      currentUserMetadata = { likedNotebooks: currentLikedNotebooks };
+      default:
+        throw new Error(`Unknown tab ${tab}`);
+    }
+  }
+
+  private async loadSampleNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
+    if (!offline) {
+      try {
+        const response = await this.props.junoClient.getSampleNotebooks();
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+          throw new Error(`Received HTTP ${response.status} when loading sample notebooks`);
+        }
+
+        this.sampleNotebooks = response.data;
+      } catch (error) {
+        const message = `Failed to load sample notebooks: ${error}`;
+        Logger.logError(message, "GalleryViewerComponent/loadSampleNotebooks");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      }
     }
 
-    currentOfficialSamplesContent[officialSamplesIndex] = currentOfficialSamplesObject;
+    this.setState({
+      sampleNotebooks: this.sampleNotebooks && [...this.sort(sortBy, this.search(searchText, this.sampleNotebooks))]
+    });
+  }
+
+  private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
+    if (!offline) {
+      try {
+        const response = await this.props.junoClient.getPublicNotebooks();
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+          throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
+        }
+
+        this.publicNotebooks = response.data;
+      } catch (error) {
+        const message = `Failed to load public notebooks: ${error}`;
+        Logger.logError(message, "GalleryViewerComponent/loadPublicNotebooks");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      }
+    }
 
     this.setState({
-      activeTabIndex: 0,
-      userMetadata: currentUserMetadata,
-      likedNotebooksContent: currentLikedNotebooksContent,
-      officialSamplesContent: currentOfficialSamplesContent
+      publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))]
+    });
+  }
+
+  private async loadFavoriteNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
+    if (!offline) {
+      try {
+        const response = await this.props.junoClient.getFavoriteNotebooks();
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+          throw new Error(`Received HTTP ${response.status} when loading favorite notebooks`);
+        }
+
+        this.favoriteNotebooks = response.data;
+      } catch (error) {
+        const message = `Failed to load favorite notebooks: ${error}`;
+        Logger.logError(message, "GalleryViewerComponent/loadFavoriteNotebooks");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      }
+    }
+
+    this.setState({
+      favoriteNotebooks: this.favoriteNotebooks && [
+        ...this.sort(sortBy, this.search(searchText, this.favoriteNotebooks))
+      ]
     });
 
-    JunoUtils.updateNotebookMetadata(this.authorizationToken, notebookMetadata).then(
-      async () => {
-        if (metadataLikesUpdates !== 0) {
-          JunoUtils.updateUserMetadata(this.authorizationToken, currentUserMetadata);
-          // TODO: update state here?
+    // Refresh favorite button state
+    if (this.state.selectedTab !== GalleryTab.Favorites) {
+      this.refreshSelectedTab();
+    }
+  }
+
+  private async loadPublishedNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
+    if (!offline) {
+      try {
+        const response = await this.props.junoClient.getPublishedNotebooks();
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+          throw new Error(`Received HTTP ${response.status} when loading published notebooks`);
         }
-      },
-      error => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error updating notebook metadata: ${JSON.stringify(error)}`
-        );
-        // TODO add telemetry
+
+        this.publishedNotebooks = response.data;
+      } catch (error) {
+        const message = `Failed to load published notebooks: ${error}`;
+        Logger.logError(message, "GalleryViewerComponent/loadPublishedNotebooks");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
       }
+    }
+
+    this.setState({
+      publishedNotebooks: this.publishedNotebooks && [
+        ...this.sort(sortBy, this.search(searchText, this.publishedNotebooks))
+      ]
+    });
+  }
+
+  private search(searchText: string, data: IGalleryItem[]): IGalleryItem[] {
+    if (searchText) {
+      return data?.filter(item => this.isGalleryItemPresent(searchText, item));
+    }
+
+    return data;
+  }
+
+  private isGalleryItemPresent(searchText: string, item: IGalleryItem): boolean {
+    const toSearch = searchText.trim().toUpperCase();
+    const searchData: string[] = [
+      item.author.toUpperCase(),
+      item.description.toUpperCase(),
+      item.name.toUpperCase(),
+      ...item.tags?.map(tag => tag.toUpperCase())
+    ];
+
+    for (const data of searchData) {
+      if (data?.indexOf(toSearch) !== -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private sort(sortBy: SortBy, data: IGalleryItem[]): IGalleryItem[] {
+    return data?.sort((a, b) => {
+      switch (sortBy) {
+        case SortBy.MostViewed:
+          return b.views - a.views;
+        case SortBy.MostDownloaded:
+          return b.downloads - a.downloads;
+        case SortBy.MostFavorited:
+          return b.favorites - a.favorites;
+        case SortBy.MostRecent:
+          return Date.parse(b.created) - Date.parse(a.created);
+        default:
+          throw new Error(`Unknown sorting condition ${sortBy}`);
+      }
+    });
+  }
+
+  private refreshSelectedTab(item?: IGalleryItem): void {
+    if (item) {
+      this.updateGalleryItem(item);
+    }
+    this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, true);
+  }
+
+  private updateGalleryItem(updatedItem: IGalleryItem): void {
+    this.replaceGalleryItem(updatedItem, this.sampleNotebooks);
+    this.replaceGalleryItem(updatedItem, this.publicNotebooks);
+    this.replaceGalleryItem(updatedItem, this.favoriteNotebooks);
+    this.replaceGalleryItem(updatedItem, this.publishedNotebooks);
+  }
+
+  private replaceGalleryItem(item: IGalleryItem, items?: IGalleryItem[]): void {
+    const index = items?.findIndex(value => value.id === item.id);
+    if (index !== -1) {
+      items?.splice(index, 1, item);
+    }
+  }
+
+  private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
+    this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH);
+    this.rowCount = Math.floor(visibleRect.height / GalleryCardComponent.CARD_HEIGHT);
+
+    return {
+      height: visibleRect.height,
+      itemCount: this.columnCount * this.rowCount
+    };
+  };
+
+  private onRenderCell = (data?: IGalleryItem): JSX.Element => {
+    const isFavorite = this.favoriteNotebooks?.find(item => item.id === data.id) !== undefined;
+    const props: GalleryCardComponentProps = {
+      data,
+      isFavorite,
+      showDelete: this.state.selectedTab === GalleryTab.Published,
+      onClick: () => this.openNotebook(data, isFavorite),
+      onTagClick: this.loadTaggedItems,
+      onFavoriteClick: () => this.favoriteItem(data),
+      onUnfavoriteClick: () => this.unfavoriteItem(data),
+      onDownloadClick: () => this.downloadItem(data),
+      onDeleteClick: () => this.deleteItem(data)
+    };
+
+    return (
+      <div style={{ float: "left", padding: 10 }}>
+        <GalleryCardComponent {...props} />
+      </div>
     );
   };
 
-  private onTabIndexChange = (activeTabIndex: number): void => this.setState({ activeTabIndex });
-
-  public render(): JSX.Element {
-    return (
-      <TabComponent.TabComponent
-        tabs={this.appTabs}
-        onTabIndexChange={this.onTabIndexChange.bind(this)}
-        currentTabIndex={this.state.activeTabIndex}
-        hideHeader={false}
-      />
-    );
-  }
-}
-
-export interface GalleryViewerContainerComponentProps {
-  container: ViewModels.Explorer;
-}
-
-interface GalleryViewerContainerComponentState {
-  officialSamplesData: DataModels.GitHubInfoJunoResponse[];
-  likedNotebooksData: DataModels.LikedNotebooksJunoResponse;
-}
-
-export class GalleryViewerContainerComponent extends React.Component<
-  GalleryViewerContainerComponentProps,
-  GalleryViewerContainerComponentState
-> {
-  constructor(props: GalleryViewerContainerComponentProps) {
-    super(props);
-    this.state = {
-      officialSamplesData: undefined,
-      likedNotebooksData: undefined
-    };
-  }
-
-  componentDidMount(): void {
-    const authToken = CosmosClient.authorizationToken();
-    JunoUtils.getOfficialSampleNotebooks(authToken).then(
-      (data1: DataModels.GitHubInfoJunoResponse[]) => {
-        const officialSamplesData = data1;
-
-        JunoUtils.getLikedNotebooks(authToken).then(
-          (data2: DataModels.LikedNotebooksJunoResponse) => {
-            const likedNotebooksData = data2;
-
-            officialSamplesData.map((value: DataModels.GitHubInfoJunoResponse, index: number) => {
-              value.officialSamplesIndex = index;
-              value.isLikedNotebook = likedNotebooksData.userMetadata.likedNotebooks.includes(value.path);
-            });
-
-            likedNotebooksData.likedNotebooksContent.map((value: DataModels.GitHubInfoJunoResponse) => {
-              value.isLikedNotebook = true;
-              value.officialSamplesIndex = officialSamplesData.findIndex(
-                (officialSample: DataModels.GitHubInfoJunoResponse) => {
-                  return officialSample.path === value.path;
-                }
-              );
-            });
-
-            this.setState({
-              officialSamplesData: officialSamplesData,
-              likedNotebooksData: likedNotebooksData
-            });
-          },
-          error => {
-            NotificationConsoleUtils.logConsoleMessage(
-              ConsoleDataType.Error,
-              `Error fetching liked notebooks: ${JSON.stringify(error)}`
-            );
-            // TODO Add telemetry
-          }
-        );
-      },
-      error => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error fetching sample notebooks: ${JSON.stringify(error)}`
-        );
-        // TODO Add telemetry
-      }
-    );
-  }
-
-  public render(): JSX.Element {
-    return this.state.officialSamplesData && this.state.likedNotebooksData ? (
-      <GalleryViewerComponent
-        container={this.props.container}
-        officialSamplesData={this.state.officialSamplesData}
-        likedNotebookData={this.state.likedNotebooksData}
-      />
-    ) : (
-      <></>
-    );
-  }
-}
-
-export interface GalleryViewerComponentProps {
-  container: ViewModels.Explorer;
-  officialSamplesData: DataModels.GitHubInfoJunoResponse[];
-  likedNotebookData: DataModels.LikedNotebooksJunoResponse;
-}
-
-export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps> {
-  public render(): JSX.Element {
-    return this.props.container ? (
-      <div className="galleryContainer">
-        <FullWidthTabs
-          officialSamplesContent={this.props.officialSamplesData}
-          likedNotebooksContent={this.props.likedNotebookData.likedNotebooksContent}
-          userMetadata={this.props.likedNotebookData.userMetadata}
-          onClick={this.openNotebookViewer}
-        />
-      </div>
-    ) : (
-      <div className="galleryContainer">
-        <GalleryCardsComponent
-          data={this.props.officialSamplesData}
-          onClick={this.openNotebookViewer}
-          userMetadata={undefined}
-          onNotebookMetadataChange={undefined}
-        />
-      </div>
-    );
-  }
-
-  public getOfficialSamplesData(): DataModels.GitHubInfoJunoResponse[] {
-    return this.props.officialSamplesData;
-  }
-
-  public getLikedNotebookData(): DataModels.LikedNotebooksJunoResponse {
-    return this.props.likedNotebookData;
-  }
-
-  public openNotebookViewer = async (
-    url: string,
-    notebookMetadata: DataModels.NotebookMetadata,
-    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-    isLikedNotebook: boolean
-  ): Promise<void> => {
-    if (!this.props.container) {
-      SessionStorageUtility.setEntryString(
-        StorageKey.NotebookMetadata,
-        notebookMetadata ? JSON.stringify(notebookMetadata) : undefined
-      );
-      SessionStorageUtility.setEntryString(StorageKey.NotebookName, path.basename(url));
-      window.open(`${config.hostedExplorerURL}notebookViewer.html?notebookurl=${url}`, "_blank");
+  private openNotebook = (data: IGalleryItem, isFavorite: boolean): void => {
+    if (this.props.container && this.props.junoClient) {
+      this.props.container.openGallery(this.props.junoClient.getNotebookContentUrl(data.id), data, isFavorite);
     } else {
-      this.props.container.openNotebookViewer(url, notebookMetadata, onNotebookMetadataChange, isLikedNotebook);
+      const params = new URLSearchParams({
+        [GalleryUtils.NotebookViewerParams.NotebookUrl]: this.props.junoClient.getNotebookContentUrl(data.id),
+        [GalleryUtils.NotebookViewerParams.GalleryItemId]: data.id
+      });
+
+      window.open(`/notebookViewer.html?${params.toString()}`);
     }
+  };
+
+  private loadTaggedItems = (tag: string): void => {
+    const searchText = tag;
+    this.setState({
+      searchText
+    });
+
+    this.loadTabContent(this.state.selectedTab, searchText, this.state.sortBy, true);
+    this.props.onSearchTextChange && this.props.onSearchTextChange(searchText);
+  };
+
+  private favoriteItem = async (data: IGalleryItem): Promise<void> => {
+    GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, data, (item: IGalleryItem) => {
+      if (this.favoriteNotebooks) {
+        this.favoriteNotebooks.push(item);
+      } else {
+        this.favoriteNotebooks = [item];
+      }
+      this.refreshSelectedTab(item);
+    });
+  };
+
+  private unfavoriteItem = async (data: IGalleryItem): Promise<void> => {
+    GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, data, (item: IGalleryItem) => {
+      this.favoriteNotebooks = this.favoriteNotebooks?.filter(value => value.id !== item.id);
+      this.refreshSelectedTab(item);
+    });
+  };
+
+  private downloadItem = async (data: IGalleryItem): Promise<void> => {
+    GalleryUtils.downloadItem(this, this.props.container, this.props.junoClient, data, item =>
+      this.refreshSelectedTab(item)
+    );
+  };
+
+  private deleteItem = async (data: IGalleryItem): Promise<void> => {
+    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, item => {
+      this.publishedNotebooks = this.publishedNotebooks.filter(notebook => item.id !== notebook.id);
+      this.refreshSelectedTab(item);
+    });
+  };
+
+  private onPivotChange = (item: PivotItem): void => {
+    const selectedTab = GalleryTab[item.props.itemKey as keyof typeof GalleryTab];
+    const searchText: string = undefined;
+    this.setState({
+      selectedTab,
+      searchText
+    });
+
+    this.loadTabContent(selectedTab, searchText, this.state.sortBy, false);
+    this.props.onSelectedTabChange && this.props.onSelectedTabChange(selectedTab);
+  };
+
+  private onSearchBoxChange = (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string): void => {
+    const searchText = newValue;
+    this.setState({
+      searchText
+    });
+
+    this.loadTabContent(this.state.selectedTab, searchText, this.state.sortBy, true);
+    this.props.onSearchTextChange && this.props.onSearchTextChange(searchText);
+  };
+
+  private onDropdownChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
+    const sortBy = option.key as SortBy;
+    this.setState({
+      sortBy
+    });
+
+    this.loadTabContent(this.state.selectedTab, this.state.searchText, sortBy, true);
+    this.props.onSortByChange && this.props.onSortByChange(sortBy);
   };
 }

@@ -3,26 +3,263 @@
 exports[`GalleryCardComponent renders 1`] = `
 <Card
   aria-label="Notebook Card"
-  onClick={[Function]}
   tokens={
     Object {
-      "childrenMargin": 12,
+      "childrenGap": 8,
+      "childrenMargin": 10,
+      "height": 384,
+      "width": 256,
     }
   }
 >
+  <CardItem>
+    <StyledPersonaBase
+      secondaryText="Invalid Date"
+      text="author"
+    />
+  </CardItem>
+  <CardItem
+    fill={true}
+  >
+    <StyledImageBase
+      alt="Notebook cover image"
+      height={144}
+      imageFit={2}
+      src="thumbnailUrl"
+      width={256}
+    />
+  </CardItem>
   <CardSection>
     <Text
+      nowrap={true}
+      variant="small"
+    >
+      <span
+        key="tag"
+      >
+        <StyledLinkBase
+          onClick={[Function]}
+        >
+          tag
+        </StyledLinkBase>
+      </span>
+    </Text>
+    <Text
+      nowrap={true}
       styles={
         Object {
           "root": Object {
-            "color": "#333333",
             "fontWeight": 600,
           },
         }
       }
     >
-      mycard
+      name
     </Text>
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "height": 36,
+          },
+        }
+      }
+      variant="small"
+    >
+      description
+    </Text>
+  </CardSection>
+  <CardSection
+    horizontal={true}
+    styles={
+      Object {
+        "root": Object {
+          "alignItems": "flex-end",
+        },
+      }
+    }
+  >
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#ccc",
+          },
+        }
+      }
+      variant="tiny"
+    >
+      <StyledIconBase
+        iconName="RedEye"
+        styles={
+          Object {
+            "root": Object {
+              "verticalAlign": "middle",
+            },
+          }
+        }
+      />
+       
+      0
+    </Text>
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#ccc",
+          },
+        }
+      }
+      variant="tiny"
+    >
+      <StyledIconBase
+        iconName="Download"
+        styles={
+          Object {
+            "root": Object {
+              "verticalAlign": "middle",
+            },
+          }
+        }
+      />
+       
+      0
+    </Text>
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "color": "#ccc",
+          },
+        }
+      }
+      variant="tiny"
+    >
+      <StyledIconBase
+        iconName="Heart"
+        styles={
+          Object {
+            "root": Object {
+              "verticalAlign": "middle",
+            },
+          }
+        }
+      />
+       
+      0
+    </Text>
+  </CardSection>
+  <CardItem>
+    <Styled
+      styles={
+        Object {
+          "root": Object {
+            "height": 1,
+            "padding": 0,
+          },
+        }
+      }
+    />
+  </CardItem>
+  <CardSection
+    horizontal={true}
+    styles={
+      Object {
+        "root": Object {
+          "marginTop": 0,
+        },
+      }
+    }
+  >
+    <StyledTooltipHostBase
+      calloutProps={
+        Object {
+          "gapSpace": 0,
+        }
+      }
+      content="Like"
+      id="TooltipHost-IconButton-Heart"
+      styles={
+        Object {
+          "root": Object {
+            "display": "inline-block",
+          },
+        }
+      }
+    >
+      <CustomizedIconButton
+        ariaLabel="Like"
+        iconProps={
+          Object {
+            "iconName": "Heart",
+          }
+        }
+        onClick={[Function]}
+        title="Like"
+      />
+    </StyledTooltipHostBase>
+    <StyledTooltipHostBase
+      calloutProps={
+        Object {
+          "gapSpace": 0,
+        }
+      }
+      content="Download"
+      id="TooltipHost-IconButton-Download"
+      styles={
+        Object {
+          "root": Object {
+            "display": "inline-block",
+          },
+        }
+      }
+    >
+      <CustomizedIconButton
+        ariaLabel="Download"
+        iconProps={
+          Object {
+            "iconName": "Download",
+          }
+        }
+        onClick={[Function]}
+        title="Download"
+      />
+    </StyledTooltipHostBase>
+    <div
+      style={
+        Object {
+          "textAlign": "right",
+          "width": "100%",
+        }
+      }
+    >
+      <StyledTooltipHostBase
+        calloutProps={
+          Object {
+            "gapSpace": 0,
+          }
+        }
+        content="Remove"
+        id="TooltipHost-IconButton-Delete"
+        styles={
+          Object {
+            "root": Object {
+              "display": "inline-block",
+            },
+          }
+        }
+      >
+        <CustomizedIconButton
+          ariaLabel="Remove"
+          iconProps={
+            Object {
+              "iconName": "Delete",
+            }
+          }
+          title="Remove"
+        />
+      </StyledTooltipHostBase>
+    </div>
   </CardSection>
 </Card>
 `;

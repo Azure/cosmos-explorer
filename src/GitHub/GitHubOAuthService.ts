@@ -17,7 +17,7 @@ window.addEventListener("message", (event: MessageEvent) => {
   const msg = event.data;
   if (msg.type === GitHubConnectorMsgType) {
     const params = msg.data as IGitHubConnectorParams;
-    window.dataExplorer.gitHubOAuthService.finishOAuth(params);
+    window.dataExplorer.notebookManager?.gitHubOAuthService.finishOAuth(params);
   }
 });
 

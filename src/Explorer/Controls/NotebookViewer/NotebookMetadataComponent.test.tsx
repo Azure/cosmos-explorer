@@ -1,16 +1,30 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { NotebookMetadataComponentProps, NotebookMetadataComponent } from "./NotebookMetadataComponent";
+import React from "react";
+import { NotebookMetadataComponent, NotebookMetadataComponentProps } from "./NotebookMetadataComponent";
 
 describe("NotebookMetadataComponent", () => {
   it("renders un-liked notebook", () => {
     const props: NotebookMetadataComponentProps = {
-      notebookName: "My notebook",
-      container: undefined,
-      notebookMetadata: undefined,
-      notebookContent: {},
-      onNotebookMetadataChange: () => Promise.resolve(),
-      isLikedNotebook: false
+      data: {
+        id: "id",
+        name: "name",
+        description: "description",
+        author: "author",
+        thumbnailUrl: "thumbnailUrl",
+        created: "created",
+        gitSha: "gitSha",
+        tags: ["tag"],
+        isSample: false,
+        downloads: 0,
+        favorites: 0,
+        views: 0
+      },
+      isFavorite: false,
+      downloadButtonText: "Download",
+      onTagClick: undefined,
+      onDownloadClick: undefined,
+      onFavoriteClick: undefined,
+      onUnfavoriteClick: undefined
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);
@@ -19,12 +33,26 @@ describe("NotebookMetadataComponent", () => {
 
   it("renders liked notebook", () => {
     const props: NotebookMetadataComponentProps = {
-      notebookName: "My notebook",
-      container: undefined,
-      notebookMetadata: undefined,
-      notebookContent: {},
-      onNotebookMetadataChange: () => Promise.resolve(),
-      isLikedNotebook: true
+      data: {
+        id: "id",
+        name: "name",
+        description: "description",
+        author: "author",
+        thumbnailUrl: "thumbnailUrl",
+        created: "created",
+        gitSha: "gitSha",
+        tags: ["tag"],
+        isSample: false,
+        downloads: 0,
+        favorites: 0,
+        views: 0
+      },
+      isFavorite: true,
+      downloadButtonText: "Download",
+      onTagClick: undefined,
+      onDownloadClick: undefined,
+      onFavoriteClick: undefined,
+      onUnfavoriteClick: undefined
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);

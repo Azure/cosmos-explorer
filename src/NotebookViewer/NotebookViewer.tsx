@@ -1,42 +1,44 @@
+import "bootstrap/dist/css/bootstrap.css";
+import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React from "react";
 import * as ReactDOM from "react-dom";
-import "bootstrap/dist/css/bootstrap.css";
-import { NotebookMetadata } from "../Contracts/DataModels";
-import { NotebookViewerComponent } from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
-import { SessionStorageUtility, StorageKey } from "../Shared/StorageUtility";
-
-const getNotebookUrl = (): string => {
-  const regex: RegExp = new RegExp("[?&]notebookurl=([^&#]*)|&|#|$");
-  const results: RegExpExecArray | null = regex.exec(window.location.href);
-  if (!results || !results[1]) {
-    return "";
-  }
-
-  return decodeURIComponent(results[1]);
-};
+import { initializeConfiguration } from "../Config";
+import {
+  NotebookViewerComponent,
+  NotebookViewerComponentProps
+} from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
+import * as GalleryUtils from "../Utils/GalleryUtils";
 
 const onInit = async () => {
-  var notebookMetadata: NotebookMetadata;
-  const notebookMetadataString = SessionStorageUtility.getEntryString(StorageKey.NotebookMetadata);
-  const notebookName = SessionStorageUtility.getEntryString(StorageKey.NotebookName);
+  initializeIcons();
+  await initializeConfiguration();
+  const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window);
+  const notebookViewerProps = GalleryUtils.getNotebookViewerProps(window);
+  const backNavigationText = galleryViewerProps.selectedTab && GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
 
-  if (notebookMetadataString == "null" || notebookMetadataString != null) {
-    notebookMetadata = (await JSON.parse(notebookMetadataString)) as NotebookMetadata;
-    SessionStorageUtility.removeEntry(StorageKey.NotebookMetadata);
-    SessionStorageUtility.removeEntry(StorageKey.NotebookName);
+  const notebookUrl = decodeURIComponent(notebookViewerProps.notebookUrl);
+  render(notebookUrl, backNavigationText);
+
+  const galleryItemId = notebookViewerProps.galleryItemId;
+  if (galleryItemId) {
+    const junoClient = new JunoClient();
+    const notebook = await junoClient.getNotebook(galleryItemId);
+    render(notebookUrl, backNavigationText, notebook.data);
   }
+};
 
-  const urlParams = new URLSearchParams(window.location.search);
+const render = (notebookUrl: string, backNavigationText: string, galleryItem?: IGalleryItem) => {
+  const props: NotebookViewerComponentProps = {
+    junoClient: galleryItem ? new JunoClient() : undefined,
+    notebookUrl,
+    galleryItem,
+    backNavigationText,
+    onBackClick: undefined,
+    onTagClick: undefined
+  };
 
-  const notebookViewerComponent = (
-    <NotebookViewerComponent
-      notebookMetadata={notebookMetadata}
-      notebookName={notebookName}
-      notebookUrl={getNotebookUrl()}
-      hideInputs={urlParams.get("hideinputs") === "true"}
-    />
-  );
-  ReactDOM.render(notebookViewerComponent, document.getElementById("notebookContent"));
+  ReactDOM.render(<NotebookViewerComponent {...props} />, document.getElementById("notebookContent"));
 };
 
 // Entry point

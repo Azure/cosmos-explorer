@@ -1,19 +1,33 @@
-import * as ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import { CosmosClient } from "../Common/CosmosClient";
-import { GalleryViewerComponent } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
-import { JunoUtils } from "../Utils/JunoUtils";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { initializeConfiguration } from "../Config";
+import {
+  GalleryTab,
+  GalleryViewerComponent,
+  GalleryViewerComponentProps,
+  SortBy
+} from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+import { JunoClient } from "../Juno/JunoClient";
+import * as GalleryUtils from "../Utils/GalleryUtils";
 
 const onInit = async () => {
   initializeIcons();
-  const officialSamplesData = await JunoUtils.getOfficialSampleNotebooks(CosmosClient.authorizationToken());
-  const galleryViewerComponent = new GalleryViewerComponent({
-    officialSamplesData: officialSamplesData,
-    likedNotebookData: undefined,
-    container: undefined
-  });
-  ReactDOM.render(galleryViewerComponent.render(), document.getElementById("galleryContent"));
+  await initializeConfiguration();
+  const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window);
+
+  const props: GalleryViewerComponentProps = {
+    junoClient: new JunoClient(),
+    selectedTab: galleryViewerProps.selectedTab || GalleryTab.OfficialSamples,
+    sortBy: galleryViewerProps.sortBy || SortBy.MostViewed,
+    searchText: galleryViewerProps.searchText,
+    onSelectedTabChange: undefined,
+    onSortByChange: undefined,
+    onSearchTextChange: undefined
+  };
+
+  ReactDOM.render(<GalleryViewerComponent {...props} />, document.getElementById("galleryContent"));
 };
 
 // Entry point

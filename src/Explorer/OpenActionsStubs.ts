@@ -6,8 +6,6 @@ import Q from "q";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CassandraTableKey, CassandraTableKeys, TableDataClient } from "../../src/Explorer/Tables/TableDataClient";
 import { ConsoleData } from "../../src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
-import { IContentProvider } from "@nteract/core";
 import { MostRecentActivity } from "./MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem } from "./Notebook/NotebookContentItem";
 import { PlatformType } from "../../src/PlatformType";
@@ -22,6 +20,8 @@ import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { Versions } from "../../src/Contracts/ExplorerContracts";
 import { CollectionCreationDefaults } from "../Shared/Constants";
+import { IGalleryItem } from "../Juno/JunoClient";
+import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 
 export class ExplorerStub implements ViewModels.Explorer {
   public flight: ko.Observable<string>;
@@ -97,7 +97,9 @@ export class ExplorerStub implements ViewModels.Explorer {
   public setupSparkClusterPane: ViewModels.ContextualPane;
   public manageSparkClusterPane: ViewModels.ContextualPane;
   public isGalleryEnabled: ko.Computed<boolean>;
+  public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
+  public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -111,19 +113,19 @@ export class ExplorerStub implements ViewModels.Explorer {
   public arcadiaToken: ko.Observable<string>;
   public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
   public sparkClusterManager: ViewModels.SparkClusterManager;
-  public notebookContentProvider: IContentProvider;
-  public gitHubOAuthService: GitHubOAuthService;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public libraryManagePane: ViewModels.ContextualPane;
   public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
+  public publishNotebookPaneAdapter: ReactAdapter;
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public isNotebookTabActive: ko.Computed<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
-  public openGallery: () => void;
+  public notebookManager?: any;
+  public openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
   public openNotebookViewer: (notebookUrl: string) => void;
   public resourceTokenDatabaseId: ko.Observable<string>;
   public resourceTokenCollectionId: ko.Observable<string>;
@@ -331,7 +333,11 @@ export class ExplorerStub implements ViewModels.Explorer {
     throw new Error("Not implemented");
   }
 
-  public importAndOpenFromGallery(path: string, newName: string, content: any): Promise<boolean> {
+  public importAndOpenFromGallery(name: string, content: string): Promise<boolean> {
+    throw new Error("Not implemented");
+  }
+
+  public publishNotebook(name: string, content: string): void {
     throw new Error("Not implemented");
   }
 

@@ -704,49 +704,6 @@ export interface MemoryUsageInfo {
   totalKB: number;
 }
 
-export interface NotebookMetadata {
-  date: string;
-  description: string;
-  tags: string[];
-  author: string;
-  views: number;
-  likes: number;
-  downloads: number;
-  imageUrl: string;
-}
-
-export interface UserMetadata {
-  likedNotebooks: string[];
-}
-
-export interface GitHubInfoJunoResponse {
-  encoding: string;
-  encodedContent: string;
-  content: string;
-  target: string;
-  submoduleGitUrl: string;
-  name: string;
-  path: string;
-  sha: string;
-  size: number;
-  type: {
-    stringValue: string;
-    value: number;
-  };
-  downloadUrl: string;
-  url: string;
-  gitUrl: string;
-  htmlUrl: string;
-  metadata?: NotebookMetadata;
-  officialSamplesIndex?: number;
-  isLikedNotebook?: boolean;
-}
-
-export interface LikedNotebooksJunoResponse {
-  likedNotebooksContent: GitHubInfoJunoResponse[];
-  userMetadata: UserMetadata;
-}
-
 export interface resourceTokenConnectionStringProperties {
   accountEndpoint: string;
   collectionId: string;

@@ -132,12 +132,13 @@ export class GitHubReposPane extends ContextualPaneBase {
 
   private getOAuthScope(): string {
     return (
-      this.container.gitHubOAuthService?.getTokenObservable()()?.scope || AuthorizeAccessComponent.Scopes.Public.key
+      this.container.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope ||
+      AuthorizeAccessComponent.Scopes.Public.key
     );
   }
 
   private setup(forceShowConnectToGitHub = false): void {
-    forceShowConnectToGitHub || !this.container.gitHubOAuthService.isLoggedIn()
+    forceShowConnectToGitHub || !this.container.notebookManager?.gitHubOAuthService.isLoggedIn()
       ? this.setupForConnectToGitHub()
       : this.setupForManageRepos();
   }
@@ -294,7 +295,7 @@ export class GitHubReposPane extends ContextualPaneBase {
 
     try {
       const response = await this.junoClient.getPinnedRepos(
-        this.container.gitHubOAuthService?.getTokenObservable()()?.scope
+        this.container.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope
       );
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
         throw new Error(`Received HTTP ${response.status} when fetching pinned repos`);
@@ -350,7 +351,7 @@ export class GitHubReposPane extends ContextualPaneBase {
       dataExplorerArea: Areas.Notebook,
       scopesSelected: scope
     });
-    this.container.gitHubOAuthService.startOAuth(scope);
+    this.container.notebookManager?.gitHubOAuthService.startOAuth(scope);
   }
 
   private triggerRender(): void {

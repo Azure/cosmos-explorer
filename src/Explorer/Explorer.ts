@@ -49,19 +49,15 @@ import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { FileSystemUtil } from "./Notebook/FileSystemUtil";
-import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
-import { GitHubReposPane } from "./Panes/GitHubReposPane";
 import { handleOpenAction } from "./OpenActions";
-import { IContentProvider } from "@nteract/core";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
-import { JunoClient } from "../Juno/JunoClient";
+import { IGalleryItem } from "../Juno/JunoClient";
 import { LibraryManagePane } from "./Panes/LibraryManagePane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
 import { ManageSparkClusterPane } from "./Panes/ManageSparkClusterPane";
 import { MessageHandler } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
-import { NotebookContentProvider } from "./Notebook/NotebookComponent/NotebookContentProvider";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
@@ -86,6 +82,7 @@ import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
+import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -199,10 +196,13 @@ export default class Explorer implements ViewModels.Explorer {
   public libraryManagePane: ViewModels.ContextualPane;
   public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
+  public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGalleryEnabled: ko.Computed<boolean>;
+  public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
+  public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
@@ -223,11 +223,7 @@ export default class Explorer implements ViewModels.Explorer {
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
-  private notebookClient: ViewModels.INotebookContainerClient;
-  private notebookContentClient: ViewModels.INotebookContentClient;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public notebookContentProvider: IContentProvider;
-  public gitHubOAuthService: GitHubOAuthService;
   public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
   public sparkClusterManager: ViewModels.SparkClusterManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
@@ -239,6 +235,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public isNotebookTabActive: ko.Computed<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
+  public notebookManager?: any; // This is dynamically loaded
 
   private _panes: ViewModels.ContextualPane[] = [];
   private _importExplorerConfigComplete: boolean = false;
@@ -409,7 +406,11 @@ export default class Explorer implements ViewModels.Explorer {
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableGallery));
+    this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
+    );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
+    this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
 
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
@@ -937,127 +938,33 @@ export default class Explorer implements ViewModels.Explorer {
       startKey
     );
 
-    const junoClient = new JunoClient(this.databaseAccount);
-
     this.isNotebookEnabled = ko.observable(false);
-    this.isNotebookEnabled.subscribe(async (isEnabled: boolean) => {
-      this.refreshCommandBarButtons();
+    this.isNotebookEnabled.subscribe(async () => {
+      if (!this.notebookManager) {
+        const notebookManagerModule = await import(
+          /* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager"
+        );
+        this.notebookManager = new notebookManagerModule.default();
+        this.notebookManager.initialize({
+          container: this,
+          dialogProps: this._dialogProps,
+          notebookBasePath: this.notebookBasePath,
+          resourceTree: this.resourceTree,
+          refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
+          refreshNotebookList: () => this.refreshNotebookList()
+        });
 
-      this.gitHubOAuthService = new GitHubOAuthService(junoClient);
-
-      const GitHubClientModule = await import(/* webpackChunkName: "GitHubClient" */ "../GitHub/GitHubClient");
-      const gitHubClient = new GitHubClientModule.GitHubClient(config.AZURESAMPLESCOSMOSDBPAT, error => {
-        Logger.logError(error, "Explorer/GitHubClient errorCallback");
-
-        if (error.status === Constants.HttpStatusCodes.Unauthorized) {
-          this.gitHubOAuthService?.resetToken();
-
-          this.showOkCancelModalDialog(
-            undefined,
-            "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
-            "Connect to GitHub",
-            () => this.gitHubReposPane?.open(),
-            "Cancel",
-            undefined
-          );
-        }
-      });
-
-      this.gitHubReposPane = new GitHubReposPane({
-        documentClientUtility: this.documentClientUtility,
-        id: "gitHubReposPane",
-        visible: ko.observable<boolean>(false),
-        container: this,
-        junoClient,
-        gitHubClient
-      });
-
-      this.isGitHubPaneEnabled(true);
-
-      this.gitHubOAuthService.getTokenObservable().subscribe(token => {
-        gitHubClient.setToken(token?.access_token ? token.access_token : config.AZURESAMPLESCOSMOSDBPAT);
-
-        if (this.gitHubReposPane?.visible()) {
-          this.gitHubReposPane.open();
-        }
-
-        this.refreshCommandBarButtons();
-        this.refreshNotebookList();
-      });
-
-      if (this.isGalleryEnabled()) {
-        this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
-        this.notebookViewerTab = await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab");
+        this.gitHubReposPane = this.notebookManager.gitHubReposPane;
+        this.isGitHubPaneEnabled(true);
       }
 
-      const promptForCommitMsg = (title: string, primaryButtonLabel: string) => {
-        return new Promise<string>((resolve, reject) => {
-          let commitMsg: string = "Committed from Azure Cosmos DB Notebooks";
-          this.showOkCancelTextFieldModalDialog(
-            title || "Commit",
-            undefined,
-            primaryButtonLabel || "Commit",
-            () => {
-              TelemetryProcessor.trace(Action.NotebooksGitHubCommit, ActionModifiers.Mark, {
-                databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-                defaultExperience: this.defaultExperience && this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Notebook
-              });
-              resolve(commitMsg);
-            },
-            "Cancel",
-            () => reject(new Error("Commit dialog canceled")),
-            {
-              label: "Commit message",
-              autoAdjustHeight: true,
-              multiline: true,
-              defaultValue: commitMsg,
-              rows: 3,
-              onChange: (_, newValue: string) => {
-                commitMsg = newValue;
-                this._dialogProps().primaryButtonDisabled = !commitMsg;
-                this._dialogProps.valueHasMutated();
-              }
-            },
-            !commitMsg
-          );
-        });
-      };
-
-      const GitHubContentProviderModule = await import(
-        /* webpackChunkName: "rx-jupyter" */ "../GitHub/GitHubContentProvider"
-      );
-      const RXJupyterModule = await import(/* webpackChunkName: "rx-jupyter" */ "rx-jupyter");
-      this.notebookContentProvider = new NotebookContentProvider(
-        new GitHubContentProviderModule.GitHubContentProvider({ gitHubClient, promptForCommitMsg }),
-        RXJupyterModule.contents.JupyterContentProvider
-      );
-
-      const NotebookContainerClientModule = await import(
-        /* webpackChunkName: "NotebookContainerClient" */ "./Notebook/NotebookContainerClient"
-      );
-
-      this.notebookClient = new NotebookContainerClientModule.NotebookContainerClient(
-        this.notebookServerInfo,
-        () => this.initNotebooks(this.databaseAccount()),
-        (update: DataModels.MemoryUsageInfo) => this.memoryUsageInfo(update)
-      );
-
-      const NotebookContentClientModule = await import(
-        /* webpackChunkName: "NotebookContentClient" */ "./Notebook/NotebookContentClient"
-      );
-      this.notebookContentClient = new NotebookContentClientModule.NotebookContentClient(
-        this.notebookServerInfo,
-        this.notebookBasePath,
-        this.notebookContentProvider
-      );
-
+      this.refreshCommandBarButtons();
       this.refreshNotebookList();
     });
 
     this.isSparkEnabled = ko.observable(false);
     this.isSparkEnabled.subscribe((isEnabled: boolean) => this.refreshCommandBarButtons());
-    this.resourceTree = new ResourceTreeAdapter(this, junoClient);
+    this.resourceTree = new ResourceTreeAdapter(this);
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
     this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
       notebookServerEndpoint: undefined,
@@ -1887,7 +1794,7 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public resetNotebookWorkspace() {
-    if (!this.isNotebookEnabled() || !this.notebookClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookClient) {
       const error = "Attempt to reset notebook workspace, but notebook is not enabled";
       Logger.logError(error, "Explorer/resetNotebookWorkspace");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
@@ -1994,7 +1901,7 @@ export default class Explorer implements ViewModels.Explorer {
     this._closeModalDialog();
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Resetting notebook workspace");
     try {
-      await this.notebookClient.resetWorkspace();
+      await this.notebookManager?.notebookClient.resetWorkspace();
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully reset notebook workspace");
       TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
     } catch (error) {
@@ -2563,17 +2470,17 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   private uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
       Logger.logError(error, "Explorer/uploadFile");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
       throw new Error(error);
     }
 
-    const promise = this.notebookContentClient.uploadFileAsync(name, content, parent);
+    const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
     promise
       .then(() => this.resourceTree.triggerRender())
-      .catch(reason => this.showOkModalDialog("Unable to upload file", reason));
+      .catch((reason: any) => this.showOkModalDialog("Unable to upload file", reason));
     return promise;
   }
 
@@ -2582,7 +2489,7 @@ export default class Explorer implements ViewModels.Explorer {
     const item = NotebookUtil.createNotebookContentItem(name, path, "file");
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && parent.children && this.isNotebookEnabled() && this.notebookClient) {
+    if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
       if (this._filePathToImportAndOpen === path) {
         this._filePathToImportAndOpen = null; // we don't want to try opening this path again
       }
@@ -2601,15 +2508,10 @@ export default class Explorer implements ViewModels.Explorer {
     return Promise.resolve(false);
   }
 
-  public async importAndOpenFromGallery(path: string, newName: string, content: any): Promise<boolean> {
-    const name = newName;
+  public async importAndOpenFromGallery(name: string, content: string): Promise<boolean> {
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && this.isNotebookEnabled() && this.notebookClient) {
-      if (this._filePathToImportAndOpen === path) {
-        this._filePathToImportAndOpen = undefined; // we don't want to try opening this path again
-      }
-
+    if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
       const existingItem = _.find(parent.children, node => node.name === name);
       if (existingItem) {
         this.showOkModalDialog("Download failed", "Notebook with the same name already exists.");
@@ -2620,8 +2522,15 @@ export default class Explorer implements ViewModels.Explorer {
       return this.openNotebook(uploadedItem);
     }
 
-    this._filePathToImportAndOpen = path; // we'll try opening this path later on
     return Promise.resolve(false);
+  }
+
+  public publishNotebook(name: string, content: string): void {
+    if (this.notebookManager) {
+      this.notebookManager.openPublishNotebookPane(name, content);
+      this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
+      this.isPublishNotebookPaneEnabled(true);
+    }
   }
 
   public showOkModalDialog(title: string, msg: string): void {
@@ -2756,7 +2665,7 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public renameNotebook(notebookFile: NotebookContentItem): Q.Promise<NotebookContentItem> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
       Logger.logError(error, "Explorer/renameNotebook");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
@@ -2784,7 +2693,7 @@ export default class Explorer implements ViewModels.Explorer {
         paneTitle: "Rename Notebook",
         submitButtonLabel: "Rename",
         defaultInput: FileSystemUtil.stripExtension(notebookFile.name, "ipynb"),
-        onSubmit: (input: string) => this.notebookContentClient.renameNotebook(notebookFile, input)
+        onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
       })
       .then(newNotebookFile => {
         this.openedTabs()
@@ -2806,7 +2715,7 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
       Logger.logError(error, "Explorer/onCreateDirectory");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
@@ -2821,32 +2730,32 @@ export default class Explorer implements ViewModels.Explorer {
       paneTitle: "Create new directory",
       submitButtonLabel: "Create",
       defaultInput: "",
-      onSubmit: (input: string) => this.notebookContentClient.createDirectory(parent, input)
+      onSubmit: (input: string) => this.notebookManager?.notebookContentClient.createDirectory(parent, input)
     });
     result.then(() => this.resourceTree.triggerRender());
     return result;
   }
 
   public readFile(notebookFile: NotebookContentItem): Promise<string> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to read file, but notebook is not enabled";
       Logger.logError(error, "Explorer/downloadFile");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
       throw new Error(error);
     }
 
-    return this.notebookContentClient.readFileContent(notebookFile.path);
+    return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path);
   }
 
   public downloadFile(notebookFile: NotebookContentItem): Promise<void> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to download file, but notebook is not enabled";
       Logger.logError(error, "Explorer/downloadFile");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
       throw new Error(error);
     }
 
-    return this.notebookContentClient.readFileContent(notebookFile.path).then(
+    return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
       (content: string) => {
         const blob = new Blob([content], { type: "octet/stream" });
         if (navigator.msSaveBlob) {
@@ -2866,7 +2775,7 @@ export default class Explorer implements ViewModels.Explorer {
           downloadLink.remove();
         }
       },
-      error => {
+      (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
           `Could not download notebook ${JSON.stringify(error)}`
@@ -3013,7 +2922,7 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   private refreshNotebookList = async (): Promise<void> => {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       return;
     }
 
@@ -3024,7 +2933,7 @@ export default class Explorer implements ViewModels.Explorer {
   };
 
   public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
       Logger.logError(error, "Explorer/deleteNotebookFile");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
@@ -3055,11 +2964,11 @@ export default class Explorer implements ViewModels.Explorer {
       return Promise.reject();
     }
 
-    return this.notebookContentClient.deleteContentItem(item).then(
+    return this.notebookManager?.notebookContentClient.deleteContentItem(item).then(
       () => {
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully deleted: ${item.path}`);
       },
-      reason => {
+      (reason: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
           `Failed to delete "${item.path}": ${JSON.stringify(reason)}`
@@ -3072,7 +2981,7 @@ export default class Explorer implements ViewModels.Explorer {
    * This creates a new notebook file, then opens the notebook
    */
   public onNewNotebookClicked(parent?: NotebookContentItem): void {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
       Logger.logError(error, "Explorer/onNewNotebookClicked");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
@@ -3092,7 +3001,7 @@ export default class Explorer implements ViewModels.Explorer {
       dataExplorerArea: Constants.Areas.Notebook
     });
 
-    this.notebookContentClient
+    this.notebookManager?.notebookContentClient
       .createNewNotebookFile(parent)
       .then((newFile: NotebookContentItem) => {
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully created: ${newFile.name}`);
@@ -3108,7 +3017,7 @@ export default class Explorer implements ViewModels.Explorer {
         return this.openNotebook(newFile);
       })
       .then(() => this.resourceTree.triggerRender())
-      .catch(reason => {
+      .catch((reason: any) => {
         const error = `Failed to create a new notebook: ${reason}`;
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
         TelemetryProcessor.traceFailure(
@@ -3158,14 +3067,14 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
-    if (!this.isNotebookEnabled() || !this.notebookContentClient) {
+    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
       Logger.logError(error, "Explorer/refreshContentItem");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
       return Promise.reject(new Error(error));
     }
 
-    return this.notebookContentClient.updateItemChildren(item);
+    return this.notebookManager?.notebookContentClient.updateItemChildren(item);
   }
 
   public getNotebookBasePath(): string {
@@ -3234,7 +3143,7 @@ export default class Explorer implements ViewModels.Explorer {
     newTab.onTabClick();
   }
 
-  public openGallery() {
+  public async openGallery(notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) {
     let title: string;
     let hashLocation: string;
 
@@ -3249,25 +3158,34 @@ export default class Explorer implements ViewModels.Explorer {
       if (openedTabs[i].hashLocation() == hashLocation) {
         openedTabs[i].onTabClick();
         openedTabs[i].onActivate();
+        (openedTabs[i] as any).updateGalleryParams(notebookUrl, galleryItem, isFavorite);
         return;
       }
     }
 
+    if (!this.galleryTab) {
+      this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
+    }
+
     const newTab = new this.galleryTab.default({
+      // GalleryTabOptions
       account: CosmosClient.databaseAccount(),
+      container: this,
+      junoClient: this.notebookManager?.junoClient,
+      notebookUrl,
+      galleryItem,
+      isFavorite,
+      // TabOptions
       tabKind: ViewModels.CollectionTabKind.Gallery,
-      node: null,
       title: title,
       tabPath: title,
       documentClientUtility: null,
-      collection: null,
       selfLink: null,
-      hashLocation: hashLocation,
       isActive: ko.observable(false),
+      hashLocation: hashLocation,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      container: this,
       openedTabs: this.openedTabs()
     });
 
@@ -3277,15 +3195,13 @@ export default class Explorer implements ViewModels.Explorer {
     newTab.onTabClick();
   }
 
-  public openNotebookViewer(
-    notebookUrl: string,
-    notebookMetadata: DataModels.NotebookMetadata,
-    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-    isLikedNotebook: boolean
-  ) {
-    const notebookName = path.basename(notebookUrl);
-    const title = notebookName;
+  public async openNotebookViewer(notebookUrl: string) {
+    const title = path.basename(notebookUrl);
     const hashLocation = notebookUrl;
+
+    if (!this.notebookViewerTab) {
+      this.notebookViewerTab = await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab");
+    }
 
     const notebookViewerTabModule = this.notebookViewerTab;
 
@@ -3322,11 +3238,7 @@ export default class Explorer implements ViewModels.Explorer {
       onUpdateTabsButtons: this.onUpdateTabsButtons,
       container: this,
       openedTabs: this.openedTabs(),
-      notebookUrl: notebookUrl,
-      notebookName: notebookName,
-      notebookMetadata: notebookMetadata,
-      onNotebookMetadataChange: onNotebookMetadataChange,
-      isLikedNotebook: isLikedNotebook
+      notebookUrl
     });
 
     this.openedTabs.push(newTab);

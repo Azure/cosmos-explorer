@@ -1,54 +1,88 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FullWidthTabs renders 1`] = `
-<TabComponent
-  currentTabIndex={0}
-  hideHeader={false}
-  onTabIndexChange={[Function]}
-  tabs={
-    Array [
-      Object {
-        "content": Object {
-          "className": "",
-          "render": [Function],
-        },
-        "isVisible": [Function],
-        "title": "Official Samples",
-      },
-      Object {
-        "content": Object {
-          "className": "",
-          "render": [Function],
-        },
-        "isVisible": [Function],
-        "title": "Liked Notebooks",
-      },
-    ]
-  }
-/>
-`;
-
-exports[`GalleryCardComponent renders 1`] = `
+exports[`GalleryViewerComponent renders 1`] = `
 <div
   className="galleryContainer"
 >
-  <GalleryCardsComponent
-    data={Array []}
-    onClick={[Function]}
-  />
+  <StyledPivotBase
+    onLinkClick={[Function]}
+    selectedKey="OfficialSamples"
+  >
+    <PivotItem
+      headerText="Official samples"
+      itemKey="OfficialSamples"
+      key="OfficialSamples"
+      style={
+        Object {
+          "marginTop": 20,
+        }
+      }
+    >
+      <Stack
+        tokens={
+          Object {
+            "childrenGap": 20,
+          }
+        }
+      >
+        <Stack
+          horizontal={true}
+          tokens={
+            Object {
+              "childrenGap": 20,
+            }
+          }
+        >
+          <StackItem
+            grow={true}
+          >
+            <StyledSearchBoxBase
+              onChange={[Function]}
+              placeholder="Search"
+            />
+          </StackItem>
+          <StackItem>
+            <StyledLabelBase>
+              Sort by
+            </StyledLabelBase>
+          </StackItem>
+          <StackItem
+            styles={
+              Object {
+                "root": Object {
+                  "minWidth": 200,
+                },
+              }
+            }
+          >
+            <StyledWithResponsiveMode
+              onChange={[Function]}
+              options={
+                Array [
+                  Object {
+                    "key": 0,
+                    "text": "Most viewed",
+                  },
+                  Object {
+                    "key": 1,
+                    "text": "Most downloaded",
+                  },
+                  Object {
+                    "key": 2,
+                    "text": "Most favorited",
+                  },
+                  Object {
+                    "key": 3,
+                    "text": "Most recent",
+                  },
+                ]
+              }
+              selectedKey={0}
+            />
+          </StackItem>
+        </Stack>
+      </Stack>
+    </PivotItem>
+  </StyledPivotBase>
 </div>
 `;
-
-exports[`GalleryCardsComponent renders 1`] = `
-<Stack
-  horizontal={true}
-  tokens={
-    Object {
-      "childrenGap": 30,
-    }
-  }
-  wrap={true}
-/>
-`;
-
-exports[`GalleryViewerContainerComponent renders 1`] = `<Fragment />`;

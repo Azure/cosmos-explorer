@@ -26,7 +26,6 @@ import EnableNotebooksIcon from "../../../../images/notebook/Notebook-enable.svg
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import LibraryManageIcon from "../../../../images/notebook/Spark-library-manage.svg";
-import GalleryIcon from "../../../../images/GalleryIcon.svg";
 import GitHubIcon from "../../../../images/github.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { config, Platform } from "../../../Config";
@@ -64,7 +63,7 @@ export class CommandBarComponentButtonFactory {
       ];
       buttons.push(newNotebookButton);
 
-      if (container.gitHubOAuthService) {
+      if (container.notebookManager?.gitHubOAuthService) {
         buttons.push(CommandBarComponentButtonFactory.createManageGitHubAccountButton(container));
       }
     }
@@ -87,10 +86,6 @@ export class CommandBarComponentButtonFactory {
       buttons.push(CommandBarComponentButtonFactory.createOpenTerminalButton(container));
 
       buttons.push(CommandBarComponentButtonFactory.createNotebookWorkspaceResetButton(container));
-
-      if (container.isGalleryEnabled()) {
-        buttons.push(CommandBarComponentButtonFactory.createGalleryButton(container));
-      }
     }
 
     // TODO: Should be replaced with the create arcadia spark pool button
@@ -575,19 +570,6 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createGalleryButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "View Gallery";
-    return {
-      iconSrc: GalleryIcon,
-      iconAlt: label,
-      onCommandClick: () => container.openGallery(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
   private static createOpenMongoTerminalButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
     const label = "Open Mongo Shell";
     const tooltip =
@@ -654,7 +636,7 @@ export class CommandBarComponentButtonFactory {
   }
 
   private static createManageGitHubAccountButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    let connectedToGitHub: boolean = container.gitHubOAuthService.isLoggedIn();
+    let connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
     const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
     return {
       iconSrc: GitHubIcon,

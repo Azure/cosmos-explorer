@@ -12,10 +12,8 @@ import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { ExecuteSprocParam } from "../Explorer/Panes/ExecuteSprocParamsPane";
 import { GitHubClient } from "../GitHub/GitHubClient";
-import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { IColumnSetting } from "../Explorer/Panes/Tables/TableColumnOptionsPane";
-import { IContentProvider } from "@nteract/core";
-import { JunoClient } from "../Juno/JunoClient";
+import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
 import { Library } from "./DataModels";
 import { MostRecentActivity } from "../Explorer/MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem } from "../Explorer/Notebook/NotebookContentItem";
@@ -27,6 +25,7 @@ import { StringInputPane } from "../Explorer/Panes/StringInputPane";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
+import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -85,7 +84,9 @@ export interface Explorer {
   armEndpoint: ko.Observable<string>;
   isFeatureEnabled: (feature: string) => boolean;
   isGalleryEnabled: ko.Computed<boolean>;
+  isGalleryPublishEnabled: ko.Computed<boolean>;
   isGitHubPaneEnabled: ko.Observable<boolean>;
+  isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   isRightPanelV2Enabled: ko.Computed<boolean>;
   canExceedMaximumValue: ko.Computed<boolean>;
   hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
@@ -153,6 +154,7 @@ export interface Explorer {
   libraryManagePane: ContextualPane;
   clusterLibraryPane: ContextualPane;
   gitHubReposPane: ContextualPane;
+  publishNotebookPaneAdapter: ReactAdapter;
 
   // Facade
   logConsoleData(data: ConsoleData): void;
@@ -224,22 +226,17 @@ export interface Explorer {
   arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   isNotebookTabActive: ko.Computed<boolean>;
   memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
+  notebookManager?: any; // This is dynamically loaded
   openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
   resetNotebookWorkspace(): void;
   importAndOpen: (path: string) => Promise<boolean>;
-  importAndOpenFromGallery: (path: string, newName: string, content: any) => Promise<boolean>;
+  importAndOpenFromGallery: (name: string, content: string) => Promise<boolean>;
+  publishNotebook: (name: string, content: string) => void;
   openNotebookTerminal: (kind: TerminalKind) => void;
-  openGallery: () => void;
-  openNotebookViewer: (
-    notebookUrl: string,
-    notebookMetadata: DataModels.NotebookMetadata,
-    onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>,
-    isLikedNotebook: boolean
-  ) => void;
+  openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
+  openNotebookViewer: (notebookUrl: string) => void;
   notebookWorkspaceManager: NotebookWorkspaceManager;
   sparkClusterManager: SparkClusterManager;
-  notebookContentProvider: IContentProvider;
-  gitHubOAuthService: GitHubOAuthService;
   mostRecentActivity: MostRecentActivity;
   initNotebooks: (databaseAccount: DataModels.DatabaseAccount) => Promise<void>;
   deleteCluster(): void;
@@ -594,6 +591,16 @@ export interface GitHubReposPaneOptions extends PaneOptions {
   junoClient: JunoClient;
 }
 
+export interface PublishNotebookPaneOptions extends PaneOptions {
+  junoClient: JunoClient;
+}
+
+export interface PublishNotebookPaneOpenOptions {
+  name: string;
+  author: string;
+  content: string;
+}
+
 export interface AddCollectionPaneOptions extends PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
   databaseId?: string;
@@ -873,16 +880,16 @@ export interface TerminalTabOptions extends TabOptions {
 export interface GalleryTabOptions extends TabOptions {
   account: DatabaseAccount;
   container: Explorer;
+  junoClient: JunoClient;
+  notebookUrl?: string;
+  galleryItem?: IGalleryItem;
+  isFavorite?: boolean;
 }
 
 export interface NotebookViewerTabOptions extends TabOptions {
   account: DatabaseAccount;
   container: Explorer;
   notebookUrl: string;
-  notebookName: string;
-  notebookMetadata: DataModels.NotebookMetadata;
-  onNotebookMetadataChange: (newNotebookMetadata: DataModels.NotebookMetadata) => Promise<void>;
-  isLikedNotebook: boolean;
 }
 
 export interface DocumentsTabOptions extends TabOptions {

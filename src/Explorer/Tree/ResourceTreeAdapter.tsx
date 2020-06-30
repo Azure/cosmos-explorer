@@ -19,12 +19,15 @@ import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import _ from "underscore";
 import { StringUtils } from "../../Utils/StringUtils";
-import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
+import { IPinnedRepo } from "../../Juno/JunoClient";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { SamplesRepo, SamplesBranch } from "../Notebook/NotebookSamples";
+import GalleryIcon from "../../../images/GalleryIcon.svg";
+import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
+import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -33,17 +36,16 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public parameters: ko.Observable<number>;
 
+  public galleryContentRoot: NotebookContentItem;
   public sampleNotebooksContentRoot: NotebookContentItem;
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
-
-  private pinnedReposSubscription: ko.Subscription;
 
   private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
 
-  public constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
+  public constructor(private container: ViewModels.Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
@@ -72,14 +74,18 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     if (this.container.isNotebookEnabled()) {
       return (
-        <AccordionComponent>
-          <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
-            <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-          </AccordionItemComponent>
-          <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
-            <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
-          </AccordionItemComponent>
-        </AccordionComponent>
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
+              <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {this.galleryContentRoot && this.buildGalleryCallout()}
+        </>
       );
     } else {
       return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
@@ -89,14 +95,26 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public async initialize(): Promise<void[]> {
     const refreshTasks: Promise<void>[] = [];
 
-    this.sampleNotebooksContentRoot = {
-      name: "Sample Notebooks (View Only)",
-      path: GitHubUtils.toContentUri(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name, ""),
-      type: NotebookContentItemType.Directory
-    };
-    refreshTasks.push(
-      this.container.refreshContentItem(this.sampleNotebooksContentRoot).then(() => this.triggerRender())
-    );
+    if (this.container.isGalleryEnabled()) {
+      this.galleryContentRoot = {
+        name: "Gallery",
+        path: "Gallery",
+        type: NotebookContentItemType.File
+      };
+
+      this.sampleNotebooksContentRoot = undefined;
+    } else {
+      this.galleryContentRoot = undefined;
+
+      this.sampleNotebooksContentRoot = {
+        name: "Sample Notebooks (View Only)",
+        path: GitHubUtils.toContentUri(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name, ""),
+        type: NotebookContentItemType.Directory
+      };
+      refreshTasks.push(
+        this.container.refreshContentItem(this.sampleNotebooksContentRoot).then(() => this.triggerRender())
+      );
+    }
 
     this.myNotebooksContentRoot = {
       name: "My Notebooks",
@@ -111,14 +129,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
       );
     }
 
-    if (this.container.gitHubOAuthService?.isLoggedIn()) {
+    if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       this.gitHubNotebooksContentRoot = {
         name: "GitHub repos",
         path: ResourceTreeAdapter.PseudoDirPath,
         type: NotebookContentItemType.Directory
       };
-
-      refreshTasks.push(this.refreshGitHubReposAndTriggerRender(this.gitHubNotebooksContentRoot));
     } else {
       this.gitHubNotebooksContentRoot = undefined;
     }
@@ -126,10 +142,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     return Promise.all(refreshTasks);
   }
 
-  private async refreshGitHubReposAndTriggerRender(item: NotebookContentItem): Promise<void> {
-    const updateGitHubReposAndRender = (pinnedRepos: IPinnedRepo[]) => {
-      item.children = [];
-      pinnedRepos.forEach(pinnedRepo => {
+  public initializeGitHubRepos(pinnedRepos: IPinnedRepo[]): void {
+    if (this.gitHubNotebooksContentRoot) {
+      this.gitHubNotebooksContentRoot.children = [];
+      pinnedRepos?.forEach(pinnedRepo => {
         const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
         const repoTreeItem: NotebookContentItem = {
           name: repoFullName,
@@ -146,20 +162,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
           });
         });
 
-        item.children.push(repoTreeItem);
+        this.gitHubNotebooksContentRoot.children.push(repoTreeItem);
       });
 
       this.triggerRender();
-    };
-
-    if (this.pinnedReposSubscription) {
-      this.pinnedReposSubscription.dispose();
     }
-    this.pinnedReposSubscription = this.junoClient.subscribeToPinnedRepos(pinnedRepos =>
-      updateGitHubReposAndRender(pinnedRepos)
-    );
-
-    await this.junoClient.getPinnedRepos(this.container.gitHubOAuthService?.getTokenObservable()()?.scope);
   }
 
   private buildDataTree(): TreeNode {
@@ -347,9 +354,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
     let notebooksTree: TreeNode = {
       label: undefined,
       isExpanded: true,
-      isLeavesParentsSeparate: true,
       children: []
     };
+
+    if (this.galleryContentRoot) {
+      notebooksTree.children.push(this.buildGalleryNotebooksTree());
+    }
 
     if (this.sampleNotebooksContentRoot) {
       notebooksTree.children.push(this.buildSampleNotebooksTree());
@@ -366,6 +376,65 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
 
     return notebooksTree;
+  }
+
+  private buildGalleryCallout(): JSX.Element {
+    if (
+      LocalStorageUtility.hasItem(StorageKey.GalleryCalloutDismissed) &&
+      LocalStorageUtility.getEntryBoolean(StorageKey.GalleryCalloutDismissed)
+    ) {
+      return undefined;
+    }
+
+    const calloutProps: ICalloutProps = {
+      calloutMaxWidth: 350,
+      ariaLabel: "New gallery",
+      role: "alertdialog",
+      gapSpace: 0,
+      target: ".galleryHeader",
+      directionalHint: DirectionalHint.leftTopEdge,
+      onDismiss: () => {
+        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
+        this.triggerRender();
+      },
+      setInitialFocus: true
+    };
+
+    const openGalleryProps: ILinkProps = {
+      onClick: () => {
+        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
+        this.container.openGallery();
+        this.triggerRender();
+      }
+    };
+
+    return (
+      <Callout {...calloutProps}>
+        <Stack tokens={{ childrenGap: 10, padding: 20 }}>
+          <Text variant="xLarge" block>
+            New gallery
+          </Text>
+          <Text block>
+            Sample notebooks are now combined in gallery. View and try out samples provided by Microsoft and other
+            contributors.
+          </Text>
+          <Link {...openGalleryProps}>Open gallery</Link>
+        </Stack>
+      </Callout>
+    );
+  }
+
+  private buildGalleryNotebooksTree(): TreeNode {
+    return {
+      label: "Gallery",
+      iconSrc: GalleryIcon,
+      className: "notebookHeader galleryHeader",
+      onClick: () => this.container.openGallery(),
+      isSelected: () => {
+        const activeTab = this.container.findActiveTab();
+        return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
+      }
+    };
   }
 
   private buildSampleNotebooksTree(): TreeNode {
@@ -467,7 +536,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
             defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
             dataExplorerArea: Areas.Notebook
           });
-          this.container.gitHubOAuthService.logout();
+          this.container.notebookManager?.gitHubOAuthService.logout();
         }
       }
     ];

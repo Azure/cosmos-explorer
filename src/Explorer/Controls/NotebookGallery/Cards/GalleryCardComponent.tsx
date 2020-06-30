@@ -1,65 +1,199 @@
-import * as React from "react";
-import * as DataModels from "../../../../Contracts/DataModels";
-import { Card, ICardTokens, ICardSectionTokens } from "@uifabric/react-cards";
-import { Icon, Image, Persona, Text } from "office-ui-fabric-react";
+import { Card, ICardTokens } from "@uifabric/react-cards";
 import {
-  siteTextStyles,
-  descriptionTextStyles,
-  helpfulTextStyles,
-  subtleHelpfulTextStyles,
-  subtleIconStyles
-} from "./CardStyleConstants";
+  FontWeights,
+  Icon,
+  IconButton,
+  Image,
+  ImageFit,
+  Persona,
+  Text,
+  Link,
+  BaseButton,
+  Button,
+  LinkBase,
+  Separator,
+  TooltipHost
+} from "office-ui-fabric-react";
+import * as React from "react";
+import { IGalleryItem } from "../../../../Juno/JunoClient";
+import { FileSystemUtil } from "../../../Notebook/FileSystemUtil";
 
 export interface GalleryCardComponentProps {
-  name: string;
-  url: string;
-  notebookMetadata: DataModels.NotebookMetadata;
+  data: IGalleryItem;
+  isFavorite: boolean;
+  showDelete: boolean;
   onClick: () => void;
+  onTagClick: (tag: string) => void;
+  onFavoriteClick: () => void;
+  onUnfavoriteClick: () => void;
+  onDownloadClick: () => void;
+  onDeleteClick: () => void;
 }
 
 export class GalleryCardComponent extends React.Component<GalleryCardComponentProps> {
-  private cardTokens: ICardTokens = { childrenMargin: 12 };
-  private attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
+  public static readonly CARD_HEIGHT = 384;
+  public static readonly CARD_WIDTH = 256;
+
+  private static readonly cardImageHeight = 144;
+  private static readonly cardDescriptionMaxChars = 88;
+  private static readonly cardTokens: ICardTokens = {
+    width: GalleryCardComponent.CARD_WIDTH,
+    height: GalleryCardComponent.CARD_HEIGHT,
+    childrenGap: 8,
+    childrenMargin: 10
+  };
 
   public render(): JSX.Element {
-    return this.props.notebookMetadata !== undefined ? (
-      <Card aria-label="Notebook Card" onClick={this.props.onClick} tokens={this.cardTokens}>
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    };
+
+    const dateString = new Date(this.props.data.created).toLocaleString("default", options);
+
+    return (
+      <Card aria-label="Notebook Card" tokens={GalleryCardComponent.cardTokens} onClick={this.props.onClick}>
         <Card.Item>
-          <Persona text={this.props.notebookMetadata.author} secondaryText={this.props.notebookMetadata.date} />
+          <Persona text={this.props.data.author} secondaryText={dateString} />
         </Card.Item>
+
         <Card.Item fill>
-          <Image src={this.props.notebookMetadata.imageUrl} width="100%" alt="Notebook display image" />
+          <Image
+            src={
+              this.props.data.thumbnailUrl ||
+              `https://placehold.it/${GalleryCardComponent.CARD_WIDTH}x${GalleryCardComponent.cardImageHeight}`
+            }
+            width={GalleryCardComponent.CARD_WIDTH}
+            height={GalleryCardComponent.cardImageHeight}
+            imageFit={ImageFit.cover}
+            alt="Notebook cover image"
+          />
         </Card.Item>
+
         <Card.Section>
-          <Text variant="small" styles={siteTextStyles}>
-            {this.props.notebookMetadata.tags.join(", ")}
+          <Text variant="small" nowrap>
+            {this.props.data.tags?.map((tag, index, array) => (
+              <span key={tag}>
+                <Link onClick={(event): void => this.onTagClick(event, tag)}>{tag}</Link>
+                {index === array.length - 1 ? <></> : ", "}
+              </span>
+            ))}
           </Text>
-          <Text styles={descriptionTextStyles}>{this.props.name}</Text>
-          <Text variant="small" styles={helpfulTextStyles}>
-            {this.props.notebookMetadata.description}
+          <Text styles={{ root: { fontWeight: FontWeights.semibold } }} nowrap>
+            {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
+          </Text>
+          <Text variant="small" styles={{ root: { height: 36 } }}>
+            {this.props.data.description.substr(0, GalleryCardComponent.cardDescriptionMaxChars)}
           </Text>
         </Card.Section>
-        <Card.Section horizontal tokens={this.attendantsCardSectionTokens}>
-          <Icon iconName="RedEye" styles={subtleIconStyles} />
-          <Text variant="small" styles={subtleHelpfulTextStyles}>
-            {this.props.notebookMetadata.views}
+
+        <Card.Section horizontal styles={{ root: { alignItems: "flex-end" } }}>
+          <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
+            <Icon iconName="RedEye" styles={{ root: { verticalAlign: "middle" } }} /> {this.props.data.views}
           </Text>
-          <Icon iconName="Download" styles={subtleIconStyles} />
-          <Text variant="small" styles={subtleHelpfulTextStyles}>
-            {this.props.notebookMetadata.downloads}
+          <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
+            <Icon iconName="Download" styles={{ root: { verticalAlign: "middle" } }} /> {this.props.data.downloads}
           </Text>
-          <Icon iconName="Heart" styles={subtleIconStyles} />
-          <Text variant="small" styles={subtleHelpfulTextStyles}>
-            {this.props.notebookMetadata.likes}
+          <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
+            <Icon iconName="Heart" styles={{ root: { verticalAlign: "middle" } }} /> {this.props.data.favorites}
           </Text>
         </Card.Section>
-      </Card>
-    ) : (
-      <Card aria-label="Notebook Card" onClick={this.props.onClick} tokens={this.cardTokens}>
-        <Card.Section>
-          <Text styles={descriptionTextStyles}>{this.props.name}</Text>
+
+        <Card.Item>
+          <Separator styles={{ root: { padding: 0, height: 1 } }} />
+        </Card.Item>
+
+        <Card.Section horizontal styles={{ root: { marginTop: 0 } }}>
+          {this.generateIconButtonWithTooltip(
+            this.props.isFavorite ? "HeartFill" : "Heart",
+            this.props.isFavorite ? "Unlike" : "Like",
+            this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
+          )}
+
+          {this.generateIconButtonWithTooltip("Download", "Download", this.onDownloadClick)}
+
+          {this.props.showDelete && (
+            <div style={{ width: "100%", textAlign: "right" }}>
+              {this.generateIconButtonWithTooltip("Delete", "Remove", this.props.onDeleteClick)}
+            </div>
+          )}
         </Card.Section>
       </Card>
     );
   }
+
+  /*
+   * Fluent UI doesn't support tooltips on IconButtons out of the box. In the meantime the recommendation is
+   * to do the following (from https://developer.microsoft.com/en-us/fluentui#/controls/web/button)
+   */
+  private generateIconButtonWithTooltip = (
+    iconName: string,
+    title: string,
+    onClick: (
+      event: React.MouseEvent<
+        HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+        MouseEvent
+      >
+    ) => void
+  ): JSX.Element => {
+    return (
+      <TooltipHost
+        content={title}
+        id={`TooltipHost-IconButton-${iconName}`}
+        calloutProps={{ gapSpace: 0 }}
+        styles={{ root: { display: "inline-block" } }}
+      >
+        <IconButton iconProps={{ iconName }} title={title} ariaLabel={title} onClick={onClick} />
+      </TooltipHost>
+    );
+  };
+
+  private onTagClick = (
+    event: React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>,
+    tag: string
+  ): void => {
+    event.stopPropagation();
+    this.props.onTagClick(tag);
+  };
+
+  private onFavoriteClick = (
+    event: React.MouseEvent<
+      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+      MouseEvent
+    >
+  ): void => {
+    event.stopPropagation();
+    this.props.onFavoriteClick();
+  };
+
+  private onUnfavoriteClick = (
+    event: React.MouseEvent<
+      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+      MouseEvent
+    >
+  ): void => {
+    event.stopPropagation();
+    this.props.onUnfavoriteClick();
+  };
+
+  private onDownloadClick = (
+    event: React.MouseEvent<
+      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+      MouseEvent
+    >
+  ): void => {
+    event.stopPropagation();
+    this.props.onDownloadClick();
+  };
+
+  private onDeleteClick = (
+    event: React.MouseEvent<
+      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+      MouseEvent
+    >
+  ): void => {
+    event.stopPropagation();
+    this.props.onDeleteClick();
+  };
 }
