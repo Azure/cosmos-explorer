@@ -68,6 +68,7 @@ jobs:
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
       - run: cp -r ./Contracts ./dist/contracts
+      - run: cp -r ./configs ./dist/configs
       - uses: actions/upload-artifact@v2
         with:
           name: dist
@@ -169,6 +170,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
+      - run: cp ./configs/prod.json config.json
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
@@ -190,6 +192,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
+      - run: cp ./configs/mpac.json config.json
       - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
