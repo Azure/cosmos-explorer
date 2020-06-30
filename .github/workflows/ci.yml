@@ -68,6 +68,7 @@ jobs:
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
       - run: cp -r ./Contracts ./dist/contracts
+      - run: cp -r ./configs ./dist/configs
       - uses: actions/upload-artifact@v2
         with:
           name: dist
@@ -162,7 +163,6 @@ jobs:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
-      - uses: actions/checkout@v2
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
@@ -185,7 +185,6 @@ jobs:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
-      - uses: actions/checkout@v2
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
