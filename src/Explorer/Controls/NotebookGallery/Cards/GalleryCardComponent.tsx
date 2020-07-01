@@ -89,15 +89,9 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
         </Card.Section>
 
         <Card.Section horizontal styles={{ root: { alignItems: "flex-end" } }}>
-          <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
-            <Icon iconName="RedEye" styles={{ root: { verticalAlign: "middle" } }} /> {this.props.data.views}
-          </Text>
-          <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
-            <Icon iconName="Download" styles={{ root: { verticalAlign: "middle" } }} /> {this.props.data.downloads}
-          </Text>
-          <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
-            <Icon iconName="Heart" styles={{ root: { verticalAlign: "middle" } }} /> {this.props.data.favorites}
-          </Text>
+          {this.generateIconText("RedEye", this.props.data.views.toString())}
+          {this.generateIconText("Download", this.props.data.downloads.toString())}
+          {this.props.isFavorite !== undefined && this.generateIconText("Heart", this.props.data.favorites.toString())}
         </Card.Section>
 
         <Card.Item>
@@ -105,11 +99,12 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
         </Card.Item>
 
         <Card.Section horizontal styles={{ root: { marginTop: 0 } }}>
-          {this.generateIconButtonWithTooltip(
-            this.props.isFavorite ? "HeartFill" : "Heart",
-            this.props.isFavorite ? "Unlike" : "Like",
-            this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
-          )}
+          {this.props.isFavorite !== undefined &&
+            this.generateIconButtonWithTooltip(
+              this.props.isFavorite ? "HeartFill" : "Heart",
+              this.props.isFavorite ? "Unlike" : "Like",
+              this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
+            )}
 
           {this.generateIconButtonWithTooltip("Download", "Download", this.onDownloadClick)}
 
@@ -122,6 +117,14 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
       </Card>
     );
   }
+
+  private generateIconText = (iconName: string, text: string): JSX.Element => {
+    return (
+      <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
+        <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
+      </Text>
+    );
+  };
 
   /*
    * Fluent UI doesn't support tooltips on IconButtons out of the box. In the meantime the recommendation is
