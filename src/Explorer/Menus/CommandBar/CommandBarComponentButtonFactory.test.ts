@@ -19,7 +19,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
-      mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -82,7 +81,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
-      mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -163,7 +161,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
-      mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -250,7 +247,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
-      mockExplorer.isGalleryEnabled = ko.computed<boolean>(() => false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.notebookManager = new NotebookManager();
       mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);

@@ -91,7 +91,7 @@ export function downloadItem(
             throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
           }
 
-          await container.importAndOpenFromGallery(data.name, response.data);
+          await container.importAndOpenContent(data.name, response.data);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Info,
             `Successfully downloaded ${name} to My Notebooks`
