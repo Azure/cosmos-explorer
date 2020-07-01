@@ -13,8 +13,8 @@ import * as GalleryUtils from "../Utils/GalleryUtils";
 const onInit = async () => {
   initializeIcons();
   await initializeConfiguration();
-  const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window);
-  const notebookViewerProps = GalleryUtils.getNotebookViewerProps(window);
+  const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
+  const notebookViewerProps = GalleryUtils.getNotebookViewerProps(window.location.search);
   const backNavigationText = galleryViewerProps.selectedTab && GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
 
   const notebookUrl = decodeURIComponent(notebookViewerProps.notebookUrl);
