@@ -434,7 +434,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         [GalleryUtils.NotebookViewerParams.GalleryItemId]: data.id
       });
 
-      window.open(`/notebookViewer.html?${params.toString()}`);
+      const location = new URL("./notebookViewer.html", window.location.href).href;
+      window.open(`${location}?${params.toString()}`);
     }
   };
 

@@ -157,14 +157,14 @@ exports[`Feature panel renders all flags 1`] = `
         />
         <StyledCheckboxBase
           checked={false}
-          key="feature.enablegallery"
-          label="Enable Notebook Gallery"
+          key="feature.enablegallerypublish"
+          label="Enable Notebook Gallery Publishing"
           onChange={[Function]}
         />
         <StyledCheckboxBase
           checked={false}
-          key="feature.enablegallerypublish"
-          label="Enable Notebook Gallery Publishing"
+          key="feature.canexceedmaximumvalue"
+          label="Can exceed max value"
           onChange={[Function]}
         />
       </Stack>
@@ -172,12 +172,6 @@ exports[`Feature panel renders all flags 1`] = `
         className="checkboxRow"
         horizontalAlign="space-between"
       >
-        <StyledCheckboxBase
-          checked={false}
-          key="feature.canexceedmaximumvalue"
-          label="Can exceed max value"
-          onChange={[Function]}
-        />
         <StyledCheckboxBase
           checked={false}
           key="feature.enablefixedcollectionwithsharedthroughput"

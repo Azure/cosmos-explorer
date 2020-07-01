@@ -115,7 +115,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
           {this.props.showDelete && (
             <div style={{ width: "100%", textAlign: "right" }}>
-              {this.generateIconButtonWithTooltip("Delete", "Remove", this.props.onDeleteClick)}
+              {this.generateIconButtonWithTooltip("Delete", "Remove", this.onDeleteClick)}
             </div>
           )}
         </Card.Section>

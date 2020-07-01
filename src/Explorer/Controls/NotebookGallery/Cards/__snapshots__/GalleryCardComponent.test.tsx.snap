@@ -256,6 +256,7 @@ exports[`GalleryCardComponent renders 1`] = `
               "iconName": "Delete",
             }
           }
+          onClick={[Function]}
           title="Remove"
         />
       </StyledTooltipHostBase>
