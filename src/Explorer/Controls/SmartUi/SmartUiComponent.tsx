@@ -11,7 +11,7 @@ import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
 import { Link, MessageBar, MessageBarType } from "office-ui-fabric-react";
 
 import * as InputUtils from "./InputUtils";
-import "./WidgetRendererComponent.less";
+import "./SmartUiComponent.less";
 
 /**
  * Generic UX renderer
@@ -84,27 +84,24 @@ export interface Descriptor {
 
 /************************** Component implementation starts here ************************************* */
 
-export interface WidgetRendererComponentProps {
+export interface SmartUiComponentProps {
   descriptor: Descriptor;
   onChange: (newValues: Map<string, InputType>) => void;
 }
 
-interface WidggetRendererComponentState {
+interface SmartUiComponentState {
   currentValues: Map<string, InputType>;
   errors: Map<string, string>;
 }
 
-export class WidgetRendererComponent extends React.Component<
-  WidgetRendererComponentProps,
-  WidggetRendererComponentState
-> {
+export class SmartUiComponent extends React.Component<SmartUiComponentProps, SmartUiComponentState> {
   private static readonly labelStyle = {
     color: "#393939",
     fontFamily: "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
     fontSize: 12
   };
 
-  constructor(props: WidgetRendererComponentProps) {
+  constructor(props: SmartUiComponentProps) {
     super(props);
     this.state = {
       currentValues: new Map(),
@@ -144,7 +141,7 @@ export class WidgetRendererComponent extends React.Component<
               subComponentStyles: {
                 label: {
                   root: {
-                    ...WidgetRendererComponent.labelStyle,
+                    ...SmartUiComponent.labelStyle,
                     fontWeight: 600
                   }
                 }
@@ -212,7 +209,7 @@ export class WidgetRendererComponent extends React.Component<
             labelPosition={Position.top}
             styles={{
               label: {
-                ...WidgetRendererComponent.labelStyle,
+                ...SmartUiComponent.labelStyle,
                 fontWeight: 600
               }
             }}
@@ -232,10 +229,10 @@ export class WidgetRendererComponent extends React.Component<
           onChange={newValue => this.onInputChange(newValue, dataFieldName)}
           styles={{
             titleLabel: {
-              ...WidgetRendererComponent.labelStyle,
+              ...SmartUiComponent.labelStyle,
               fontWeight: 600
             },
-            valueLabel: WidgetRendererComponent.labelStyle
+            valueLabel: SmartUiComponent.labelStyle
           }}
         />
       );
@@ -296,10 +293,10 @@ export class WidgetRendererComponent extends React.Component<
         }))}
         styles={{
           label: {
-            ...WidgetRendererComponent.labelStyle,
+            ...SmartUiComponent.labelStyle,
             fontWeight: 600
           },
-          dropdown: WidgetRendererComponent.labelStyle
+          dropdown: SmartUiComponent.labelStyle
         }}
       />
     );

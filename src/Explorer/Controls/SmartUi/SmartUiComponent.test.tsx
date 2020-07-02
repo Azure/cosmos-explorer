@@ -1,8 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { WidgetRendererComponent, Descriptor, InputType } from "./WidgetRendererComponent";
+import { SmartUiComponent, Descriptor, InputType } from "./SmartUiComponent";
 
-describe("WidgetRendererComponent", () => {
+describe("SmartUiComponent", () => {
   const exampleData: Descriptor = {
     root: {
       id: "root",
@@ -82,7 +82,7 @@ describe("WidgetRendererComponent", () => {
   };
 
   it("should render", () => {
-    const wrapper = shallow(<WidgetRendererComponent descriptor={exampleData} onChange={exampleCallbacks} />);
+    const wrapper = shallow(<SmartUiComponent descriptor={exampleData} onChange={exampleCallbacks} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
