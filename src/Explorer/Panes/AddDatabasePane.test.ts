@@ -11,7 +11,13 @@ describe("Add Database Pane", () => {
       kind: "DocumentDB",
       location: "",
       name: "mock",
-      properties: undefined,
+      properties: {
+        documentEndpoint: "",
+        cassandraEndpoint: "",
+        gremlinEndpoint: "",
+        tableEndpoint: "",
+        enableFreeTier: false
+      },
       type: undefined,
       tags: []
     };

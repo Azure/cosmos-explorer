@@ -243,7 +243,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
 
     this.upsellAnchorText = ko.pureComputed<string>(() => {
       return this.isFreeTierAccount() ? "Learn more" : "More details";
-    })
+    });
   }
 
   public onMoreDetailsKeyPress = (source: any, event: KeyboardEvent): boolean => {

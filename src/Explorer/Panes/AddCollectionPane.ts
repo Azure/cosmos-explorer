@@ -523,7 +523,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
 
     this.upsellAnchorText = ko.pureComputed<string>(() => {
       return this.isFreeTierAccount() ? "Learn more" : "More details";
-    })
+    });
 
     this.displayCollectionThroughput = ko.computed<boolean>(() => {
       const createNewDatabase = this.databaseCreateNew();
