@@ -1,7 +1,7 @@
 name: Runners
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
 jobs:
   sqlcreatecollection:
     runs-on: ubuntu-latest
@@ -18,3 +18,8 @@ jobs:
           PORTAL_RUNNER_SUBSCRIPTION: 69e02f2d-f059-4409-9eac-97e8a276ae2c
           PORTAL_RUNNER_RESOURCE_GROUP: runners
           PORTAL_RUNNER_DATABASE_ACCOUNT: portal-sql-runner
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: screenshots
+          path: failure.png
