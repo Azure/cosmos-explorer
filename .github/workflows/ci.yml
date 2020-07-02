@@ -175,6 +175,7 @@ jobs:
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
       - uses: actions/upload-artifact@v2
+        name: packages
         with:
           path: "*.nupkg"
   nugetmpac:
@@ -198,5 +199,6 @@ jobs:
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
       - uses: actions/upload-artifact@v2
+        name: packages
         with:
           path: "*.nupkg"
