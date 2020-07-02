@@ -375,6 +375,8 @@ export class HttpStatusCodes {
 export class Urls {
   public static feedbackEmail = "https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Data%20Explorer%20Feedback";
   public static autoscaleMigration = "https://aka.ms/cosmos-autoscale-migration";
+  public static freeTierInformation = "https://aka.ms/cosmos-free-tier";
+  public static cosmosPricing = "https://aka.ms/azure-cosmos-db-pricing";
 }
 
 export class HashRoutePrefixes {

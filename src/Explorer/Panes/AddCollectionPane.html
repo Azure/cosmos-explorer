@@ -61,9 +61,8 @@
           <span><img class="infoBoxIcon" src="/info_color.svg" alt="Promo"></span>
           <span class="infoBoxDetails">
               <span class="infoBoxMessage" data-bind="text: upsellMessage, attr: { title: upsellMessage }"></span>
-              <a class="underlinedLink" id="linkAddCollection" data-bind="attr: { 'aria-label': upsellMessageAriaLabel }"
-                  target="_blank" href="https://aka.ms/azure-cosmos-db-pricing" tabindex="0">
-                  More details</a>
+              <a class="underlinedLink" id="linkAddCollection" data-bind="text: upsellAnchorText, attr: { 'href': upsellAnchorUrl, 'aria-label': upsellMessageAriaLabel }"
+                  target="_blank" href="" tabindex="0"></a>
           </span>
       </div>
   </div>

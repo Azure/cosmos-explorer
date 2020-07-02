@@ -38,6 +38,8 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
   public costsVisible: ko.PureComputed<boolean>;
   public upsellMessage: ko.PureComputed<string>;
   public upsellMessageAriaLabel: ko.PureComputed<string>;
+  public upsellAnchorUrl: ko.PureComputed<string>;
+  public upsellAnchorText: ko.PureComputed<string>;
   public isAutoPilotSelected: ko.Observable<boolean>;
   public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
   public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
@@ -228,12 +230,20 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     });
 
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId());
+      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
-      return `${this.upsellMessage()}. Click for more details`;
+      return `${this.upsellMessage()}. Click ${this.isFreeTierAccount() ? "to learn more" : "for more details"}`;
     });
+
+    this.upsellAnchorUrl = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
+    });
+
+    this.upsellAnchorText = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? "Learn more" : "More details";
+    })
   }
 
   public onMoreDetailsKeyPress = (source: any, event: KeyboardEvent): boolean => {
