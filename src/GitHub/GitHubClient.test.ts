@@ -35,7 +35,7 @@ describe("GitHubClient", () => {
     const response = await gitHubClient.getRepoAsync(SamplesRepo.owner, SamplesRepo.name);
     expect(response).toEqual({
       status: HttpStatusCodes.OK,
-      data: SamplesRepo
+      data: SamplesRepo,
     });
   });
 
@@ -61,11 +61,11 @@ describe("GitHubClient", () => {
 
     const data = response.data as IGitHubFile[];
     expect(data.length).toBeGreaterThan(0);
-    data.forEach(content => validateGitHubFile(content));
+    data.forEach((content) => validateGitHubFile(content));
   });
 
   it("getContentsAsync returns files in a dir", async () => {
-    const samplesDir = SamplesContentsQueryResponse.repository.object.entries.find(file => file.type === "tree");
+    const samplesDir = SamplesContentsQueryResponse.repository.object.entries.find((file) => file.type === "tree");
     const response = await gitHubClient.getContentsAsync(
       SamplesRepo.owner,
       SamplesRepo.name,
@@ -78,11 +78,11 @@ describe("GitHubClient", () => {
 
     const data = response.data as IGitHubFile[];
     expect(data.length).toBeGreaterThan(0);
-    data.forEach(content => validateGitHubFile(content));
+    data.forEach((content) => validateGitHubFile(content));
   });
 
   it("getContentsAsync returns a file", async () => {
-    const samplesFile = SamplesContentsQueryResponse.repository.object.entries.find(file => file.type === "blob");
+    const samplesFile = SamplesContentsQueryResponse.repository.object.entries.find((file) => file.type === "blob");
     const response = await gitHubClient.getContentsAsync(
       SamplesRepo.owner,
       SamplesRepo.name,
@@ -100,7 +100,7 @@ describe("GitHubClient", () => {
   });
 
   it("getBlobAsync returns file content", async () => {
-    const samplesFile = SamplesContentsQueryResponse.repository.object.entries.find(file => file.type === "blob");
+    const samplesFile = SamplesContentsQueryResponse.repository.object.entries.find((file) => file.type === "blob");
     const response = await gitHubClient.getBlobAsync(SamplesRepo.owner, SamplesRepo.name, samplesFile.object.oid);
 
     expect(response.status).toBe(HttpStatusCodes.OK);

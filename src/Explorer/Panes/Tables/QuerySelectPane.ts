@@ -46,14 +46,14 @@ export class QuerySelectPane extends ContextualPaneBase implements ViewModels.Qu
       read: () => {
         return !this.canSelectAll();
       },
-      write: value => {
+      write: (value) => {
         if (value) {
           this.selectAll();
         } else {
           this.clearAll();
         }
       },
-      owner: this
+      owner: this,
     });
   }
 
@@ -89,7 +89,7 @@ export class QuerySelectPane extends ContextualPaneBase implements ViewModels.Qu
       var columnOption: ISelectColumn = {
         columnName: ko.observable<string>(value),
         selected: ko.observable<boolean>(true),
-        editable: ko.observable<boolean>(this.isEntityEditable(value))
+        editable: ko.observable<boolean>(this.isEntityEditable(value)),
       };
       return columnOption;
     });
@@ -162,7 +162,7 @@ export class QuerySelectPane extends ContextualPaneBase implements ViewModels.Qu
     if (this.queryViewModel.queryTablesTab.container.isPreferredApiCassandra()) {
       const cassandraKeys = this.queryViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys
         .concat(this.queryViewModel.queryTablesTab.collection.cassandraKeys.clusteringKeys)
-        .map(key => key.property);
+        .map((key) => key.property);
       return !_.contains<string>(cassandraKeys, name);
     }
     return !(

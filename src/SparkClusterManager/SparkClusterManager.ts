@@ -8,7 +8,7 @@ import {
   SparkClusterConnectionInfo,
   SparkClusterFeedResponse,
   Library,
-  LibraryFeedResponse
+  LibraryFeedResponse,
 } from "../Contracts/DataModels";
 
 export class SparkClusterManager implements ViewModels.SparkClusterManager {

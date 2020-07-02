@@ -21,29 +21,25 @@ context("New Notebook smoke test", () => {
     cy.contains("New Notebook").click();
 
     // Check tab name
-    cy.get("li.tabList .tabNavText").should($span => {
+    cy.get("li.tabList .tabNavText").should(($span) => {
       const text = $span.text();
       expect(text).to.match(/^Untitled.*\.ipynb$/);
     });
 
     // Wait for python3 | idle status
-    cy.get('[data-test="notebookStatusBar"] [data-test="kernelStatus"]', { timeout }).should($p => {
+    cy.get('[data-test="notebookStatusBar"] [data-test="kernelStatus"]', { timeout }).should(($p) => {
       const text = $p.text();
       expect(text).to.match(/^python3.*idle$/);
     });
 
     // Click on a cell
-    cy.get(".cell-container")
-      .as("cellContainer")
-      .click();
+    cy.get(".cell-container").as("cellContainer").click();
 
     // Type in some code
     cy.get("@cellContainer").type("2+4");
 
     // Execute
-    cy.get('[data-test="Run"]')
-      .first()
-      .click();
+    cy.get('[data-test="Run"]').first().click();
 
     // Verify results
     cy.get("@cellContainer").within(() => {
@@ -51,39 +47,29 @@ context("New Notebook smoke test", () => {
     });
 
     // Restart kernel
-    cy.get('[data-test="Run"] button')
-      .eq(-1)
-      .click();
-    cy.get("li")
-      .contains("Restart Kernel")
-      .click();
+    cy.get('[data-test="Run"] button').eq(-1).click();
+    cy.get("li").contains("Restart Kernel").click();
 
     // Wait for python3 | restarting status
-    cy.get('[data-test="notebookStatusBar"] [data-test="kernelStatus"]', { timeout }).should($p => {
+    cy.get('[data-test="notebookStatusBar"] [data-test="kernelStatus"]', { timeout }).should(($p) => {
       const text = $p.text();
       expect(text).to.match(/^python3.*restarting$/);
     });
 
     // Wait for python3 | idle status
-    cy.get('[data-test="notebookStatusBar"] [data-test="kernelStatus"]', { timeout }).should($p => {
+    cy.get('[data-test="notebookStatusBar"] [data-test="kernelStatus"]', { timeout }).should(($p) => {
       const text = $p.text();
       expect(text).to.match(/^python3.*idle$/);
     });
 
     // Click on a cell
-    cy.get(".cell-container")
-      .as("cellContainer")
-      .find(".input")
-      .as("codeInput")
-      .click();
+    cy.get(".cell-container").as("cellContainer").find(".input").as("codeInput").click();
 
     // Type in some code
     cy.get("@codeInput").type("{backspace}{backspace}{backspace}4+5");
 
     // Execute
-    cy.get('[data-test="Run"]')
-      .first()
-      .click();
+    cy.get('[data-test="Run"]').first().click();
 
     // Verify results
     cy.get("@cellContainer").within(() => {

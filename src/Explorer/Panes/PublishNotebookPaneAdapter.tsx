@@ -45,7 +45,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       title: "Publish to gallery",
       submitButtonText: "Publish",
       onClose: () => this.close(),
-      onSubmit: () => this.submit()
+      onSubmit: () => this.submit(),
     };
 
     return <GenericRightPaneComponent {...props} />;
@@ -125,18 +125,18 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       multiline: true,
       rows: 3,
       required: true,
-      onChange: (event, newValue) => (this.description = newValue)
+      onChange: (event, newValue) => (this.description = newValue),
     };
     const tagsProps: ITextFieldProps = {
       label: "Tags",
       ariaLabel: "Tags",
       placeholder: "Optional tag 1, Optional tag 2",
-      onChange: (event, newValue) => (this.tags = newValue)
+      onChange: (event, newValue) => (this.tags = newValue),
     };
     const thumbnailProps: ITextFieldProps = {
       label: "Cover image url",
       ariaLabel: "Cover image url",
-      onChange: (event, newValue) => (this.thumbnailUrl = newValue)
+      onChange: (event, newValue) => (this.thumbnailUrl = newValue),
     };
 
     return (

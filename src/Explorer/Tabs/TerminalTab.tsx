@@ -83,7 +83,7 @@ export default class TerminalTab extends TabsBase implements ViewModels.Tab {
     const info: DataModels.NotebookWorkspaceConnectionInfo = options.container.notebookServerInfo();
     return {
       authToken: info.authToken,
-      notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`
+      notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
     };
   }
 }

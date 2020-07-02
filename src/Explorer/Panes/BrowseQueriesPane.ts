@@ -42,7 +42,7 @@ export class BrowseQueriesPane extends ContextualPaneBase implements ViewModels.
       databaseAccountName: this.container && this.container.databaseAccount().name,
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     try {
       this.isExecuting(true);
@@ -54,7 +54,7 @@ export class BrowseQueriesPane extends ContextualPaneBase implements ViewModels.
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
         },
         startKey
       );
@@ -65,7 +65,7 @@ export class BrowseQueriesPane extends ContextualPaneBase implements ViewModels.
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
         },
         startKey
       );
@@ -97,7 +97,7 @@ export class BrowseQueriesPane extends ContextualPaneBase implements ViewModels.
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
       queryName: savedQuery.queryName,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     this.close();
   };

@@ -10,12 +10,12 @@ describe("Query Tab", () => {
     const database: ViewModels.Database = new DatabaseStub({
       container: container,
       id: ko.observable<string>("test"),
-      isDatabaseShared: () => false
+      isDatabaseShared: () => false,
     });
     const collection: ViewModels.Collection = new CollectionStub({
       container: container,
       databaseId: "test",
-      id: ko.observable<string>("test")
+      id: ko.observable<string>("test"),
     });
 
     return new QueryTab({
@@ -29,7 +29,7 @@ describe("Query Tab", () => {
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
       onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-      openedTabs: []
+      openedTabs: [],
     });
   }
 
@@ -37,15 +37,15 @@ describe("Query Tab", () => {
     const collection: ViewModels.Collection = new CollectionStub({
       id: "withoutsystempk",
       partitionKey: {
-        systemKey: true
-      }
+        systemKey: true,
+      },
     });
 
     const collectionSystemPK: ViewModels.Collection = new CollectionStub({
       id: "withsystempk",
       partitionKey: {
-        systemKey: true
-      }
+        systemKey: true,
+      },
     });
 
     it("no container with system pk, should not set partition key option", () => {

@@ -7,7 +7,7 @@ import * as Logger from "../Common/Logger";
 import {
   GalleryTab,
   SortBy,
-  GalleryViewerComponent
+  GalleryViewerComponent,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 
 export interface DialogEnabledComponent {
@@ -16,7 +16,7 @@ export interface DialogEnabledComponent {
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
-  GalleryItemId = "galleryItemId"
+  GalleryItemId = "galleryItemId",
 }
 
 export interface NotebookViewerProps {
@@ -27,7 +27,7 @@ export interface NotebookViewerProps {
 export enum GalleryViewerParams {
   SelectedTab = "tab",
   SortBy = "sort",
-  SearchText = "q"
+  SearchText = "q",
 }
 
 export interface GalleryViewerProps {
@@ -61,7 +61,7 @@ export function showOkCancelModalDialog(
     onSecondaryButtonClick: () => {
       component.setDialogProps(undefined);
       onCancel && onCancel();
-    }
+    },
   });
 }
 
@@ -119,7 +119,7 @@ export function downloadItem(
       `In order to edit/run ${name} in Cosmos DB data explorer, a Cosmos DB account will be needed. If you do not have a Cosmos DB account yet, please create one.`,
       {
         linkText: "Learn more about Cosmos DB",
-        linkUrl: "https://azure.microsoft.com/en-us/services/cosmos-db"
+        linkUrl: "https://azure.microsoft.com/en-us/services/cosmos-db",
       },
       "Open data explorer",
       () => {
@@ -232,7 +232,7 @@ export function getGalleryViewerProps(window: Window & typeof globalThis): Galle
   return {
     selectedTab,
     sortBy,
-    searchText: params.get(GalleryViewerParams.SearchText)
+    searchText: params.get(GalleryViewerParams.SearchText),
   };
 }
 
@@ -240,7 +240,7 @@ export function getNotebookViewerProps(window: Window & typeof globalThis): Note
   const params = new URLSearchParams(window.location.search);
   return {
     notebookUrl: params.get(NotebookViewerParams.NotebookUrl),
-    galleryItemId: params.get(NotebookViewerParams.GalleryItemId)
+    galleryItemId: params.get(NotebookViewerParams.GalleryItemId),
   };
 }
 

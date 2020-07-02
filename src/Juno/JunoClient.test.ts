@@ -14,8 +14,8 @@ const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
     documentEndpoint: "documentEndpoint",
     gremlinEndpoint: "gremlinEndpoint",
     tableEndpoint: "tableEndpoint",
-    cassandraEndpoint: "cassandraEndpoint"
-  }
+    cassandraEndpoint: "cassandraEndpoint",
+  },
 };
 
 const samplePinnedRepos: IPinnedRepo[] = [
@@ -25,10 +25,10 @@ const samplePinnedRepos: IPinnedRepo[] = [
     private: false,
     branches: [
       {
-        name: "name"
-      }
-    ]
-  }
+        name: "name",
+      },
+    ],
+  },
 ];
 
 describe("Pinned repos", () => {
@@ -38,7 +38,7 @@ describe("Pinned repos", () => {
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         status: HttpStatusCodes.OK,
-        text: () => JSON.stringify(samplePinnedRepos)
+        text: () => JSON.stringify(samplePinnedRepos),
       };
     });
   });
@@ -82,7 +82,7 @@ describe("GitHub", () => {
 
       return {
         status: HttpStatusCodes.OK,
-        text: () => JSON.stringify({ access_token: "token" })
+        text: () => JSON.stringify({ access_token: "token" }),
       };
     });
 
@@ -108,7 +108,7 @@ describe("GitHub", () => {
 
       return {
         status: HttpStatusCodes.NoContent,
-        text: () => undefined as string
+        text: () => undefined as string,
       };
     });
 

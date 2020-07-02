@@ -31,7 +31,7 @@ export class ExecuteSprocParamsPane extends ContextualPaneBase implements ViewMo
     this.partitionKeyValue = ko.observable<string>();
     this.executeButtonEnabled = ko.computed<boolean>(() => this.validPartitionKeyValue());
     this.params = ko.observableArray<ExecuteSprocParam>([
-      { type: ko.observable<string>("string"), value: ko.observable<string>() }
+      { type: ko.observable<string>("string"), value: ko.observable<string>() },
     ]);
     this.collectionHasPartitionKey = ko.observable<boolean>();
     this.resetData();

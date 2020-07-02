@@ -26,7 +26,7 @@ describe("Collection", () => {
       _self: "",
       _etag: "",
       _ts: 1,
-      id: ""
+      id: "",
     };
   }
 
@@ -61,7 +61,7 @@ describe("Collection", () => {
       const collectionsDataModel = generateMockCollectionsDataModelWithPartitionKey({
         paths: ["/somePartitionKey/anotherPartitionKey"],
         kind: "Hash",
-        version: 2
+        version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
       expect(collection.partitionKeyProperty).toBe("somePartitionKey.anotherPartitionKey");
@@ -71,7 +71,7 @@ describe("Collection", () => {
       const collectionsDataModel = generateMockCollectionsDataModelWithPartitionKey({
         paths: ["/somePartitionKey"],
         kind: "Hash",
-        version: 2
+        version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
       expect(collection.partitionKeyProperty).toBe("somePartitionKey");
@@ -85,7 +85,7 @@ describe("Collection", () => {
       const collectionsDataModel = generateMockCollectionsDataModelWithPartitionKey({
         paths: ["/somePartitionKey/anotherPartitionKey"],
         kind: "Hash",
-        version: 2
+        version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
       expect(collection.partitionKeyPropertyHeader).toBe("/somePartitionKey/anotherPartitionKey");
@@ -95,7 +95,7 @@ describe("Collection", () => {
       const collectionsDataModel = generateMockCollectionsDataModelWithPartitionKey({
         paths: ["/somePartitionKey"],
         kind: "Hash",
-        version: 2
+        version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
       expect(collection.partitionKeyPropertyHeader).toBe("/somePartitionKey");
@@ -105,7 +105,7 @@ describe("Collection", () => {
       const collectionsDataModel = generateMockCollectionsDataModelWithPartitionKey({
         version: 2,
         paths: [],
-        kind: "Hash"
+        kind: "Hash",
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
       expect(collection.partitionKeyPropertyHeader).toBeNull;

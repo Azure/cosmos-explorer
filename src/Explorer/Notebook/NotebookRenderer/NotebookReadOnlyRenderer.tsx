@@ -48,16 +48,16 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 {{
                   editor: {
                     codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />,
                   },
-                  prompt: ({ id, contentRef }) => <></>
+                  prompt: ({ id, contentRef }) => <></>,
                 }}
               </CodeCell>
             ),
             markdown: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
               <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                 {{
-                  editor: {}
+                  editor: {},
                 }}
               </MarkdownCell>
             ),
@@ -66,11 +66,11 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 {{
                   editor: {
                     codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
-                  }
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />,
+                  },
                 }}
               </RawCell>
-            )
+            ),
           }}
         </Cells>
         <AzureTheme />
@@ -86,10 +86,10 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
         return dispatch(
           actions.addTransform({
             mediaType: transform.MIMETYPE,
-            component: transform
+            component: transform,
           })
         );
-      }
+      },
     };
   };
   return mapDispatchToProps;

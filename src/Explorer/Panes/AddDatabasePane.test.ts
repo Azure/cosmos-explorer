@@ -10,7 +10,7 @@ describe("Add Database Pane", () => {
       explorer = new Explorer({
         documentClientUtility: null,
         notificationsClient: null,
-        isEmulator: false
+        isEmulator: false,
       });
     });
 

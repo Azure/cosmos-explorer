@@ -12,7 +12,7 @@ export default class PortalExplorerFactory {
     var explorer = new Explorer({
       documentClientUtility: documentClientUtility,
       notificationsClient: new NotificationsClient(),
-      isEmulator: false
+      isEmulator: false,
     });
 
     return explorer;

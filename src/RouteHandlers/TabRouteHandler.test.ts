@@ -12,7 +12,7 @@ describe("TabRouteHandler", () => {
     (<any>window).dataExplorer = new Explorer({
       documentClientUtility: null,
       notificationsClient: null,
-      isEmulator: false
+      isEmulator: false,
     }); // create a mock to avoid null refs
   });
 
@@ -91,7 +91,7 @@ describe("TabRouteHandler", () => {
       validateRouteWithParams(`${Constants.HashRoutePrefixes.collectionsWithIds("1", "2")}/triggers/3`, [
         "1",
         "2",
-        "3"
+        "3",
       ]);
     });
 

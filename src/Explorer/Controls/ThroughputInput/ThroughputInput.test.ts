@@ -36,18 +36,18 @@ describe.skip("Throughput Input Component", () => {
       selectedAutoPilotTier: null,
       throughputAutoPilotRadioId: null,
       throughputProvisionedRadioId: null,
-      throughputModeRadioName: null
+      throughputModeRadioName: null,
     };
   }
 
   function simulateKeyPressSpace(target: HTMLElement): Promise<boolean> {
     const event = new KeyboardEvent("keydown", {
-      key: "space"
+      key: "space",
     });
 
     const result = target.dispatchEvent(event);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(result);
       }, 1000);

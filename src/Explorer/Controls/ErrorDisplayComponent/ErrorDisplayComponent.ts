@@ -10,7 +10,7 @@ export class ErrorDisplayComponent {
   constructor() {
     return {
       viewModel: ErrorDisplayViewModel,
-      template
+      template,
     };
   }
 }

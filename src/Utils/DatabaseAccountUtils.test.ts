@@ -15,8 +15,8 @@ describe("DatabaseAccountUtils Tests", () => {
         documentEndpoint: "",
         cassandraEndpoint: "",
         gremlinEndpoint: "",
-        tableEndpoint: ""
-      }
+        tableEndpoint: "",
+      },
     };
 
     const databaseAccountWithLocations: ViewModels.DatabaseAccount = {
@@ -39,8 +39,8 @@ describe("DatabaseAccountUtils Tests", () => {
             id: "",
             locationId: "",
             locationName: "Central US",
-            provisioningState: "Succeeded"
-          }
+            provisioningState: "Succeeded",
+          },
         ],
         writeLocations: [
           {
@@ -49,10 +49,10 @@ describe("DatabaseAccountUtils Tests", () => {
             id: "",
             locationId: "",
             locationName: "Central US",
-            provisioningState: "Succeeded"
-          }
-        ]
-      }
+            provisioningState: "Succeeded",
+          },
+        ],
+      },
     };
 
     const databaseAccountWithoutProperties: ViewModels.DatabaseAccount = {
@@ -62,7 +62,7 @@ describe("DatabaseAccountUtils Tests", () => {
       location: "somewhere",
       type: "DocumentDB",
       tags: [],
-      properties: null
+      properties: null,
     };
 
     const gatewayDatabaseAccount: DataModels.GatewayDatabaseAccount = {
@@ -74,19 +74,19 @@ describe("DatabaseAccountUtils Tests", () => {
       ReadableLocations: [
         {
           name: "Central US",
-          documentAccountEndpoint: "https://centralus"
+          documentAccountEndpoint: "https://centralus",
         },
         {
           name: "North Central US",
-          documentAccountEndpoint: "https://northcentralus"
-        }
+          documentAccountEndpoint: "https://northcentralus",
+        },
       ],
       WritableLocations: [
         {
           name: "Central US",
-          documentAccountEndpoint: "https://centralus"
-        }
-      ]
+          documentAccountEndpoint: "https://centralus",
+        },
+      ],
     };
 
     it("should return databaseAccount when gatewayDatabaseAccount is not defined", () => {

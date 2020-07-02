@@ -12,7 +12,7 @@ import {
   Button,
   LinkBase,
   Separator,
-  TooltipHost
+  TooltipHost,
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
@@ -40,14 +40,14 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
     width: GalleryCardComponent.CARD_WIDTH,
     height: GalleryCardComponent.CARD_HEIGHT,
     childrenGap: 8,
-    childrenMargin: 10
+    childrenMargin: 10,
   };
 
   public render(): JSX.Element {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
-      day: "numeric"
+      day: "numeric",
     };
 
     const dateString = new Date(this.props.data.created).toLocaleString("default", options);

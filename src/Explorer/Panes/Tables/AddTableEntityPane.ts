@@ -15,7 +15,7 @@ export default class AddTableEntityPane extends TableEntityPane implements ViewM
   private static _readonlyFields: string[] = [
     TableConstants.EntityKeyNames.PartitionKey,
     TableConstants.EntityKeyNames.RowKey,
-    TableConstants.EntityKeyNames.Timestamp
+    TableConstants.EntityKeyNames.Timestamp,
   ];
 
   public enterRequiredValueLabel = "Enter identifier value."; // localize
@@ -24,7 +24,7 @@ export default class AddTableEntityPane extends TableEntityPane implements ViewM
   constructor(options: ViewModels.PaneOptions) {
     super(options);
     this.submitButtonText("Add Entity");
-    this.container.isPreferredApiCassandra.subscribe(isCassandra => {
+    this.container.isPreferredApiCassandra.subscribe((isCassandra) => {
       if (isCassandra) {
         this.submitButtonText("Add Row");
       }
@@ -63,7 +63,7 @@ export default class AddTableEntityPane extends TableEntityPane implements ViewM
         .then((columns: CassandraTableKey[]) => {
           this.displayedAttributes(
             this.constructDisplayedAttributes(
-              columns.map(col => col.property),
+              columns.map((col) => col.property),
               Utilities.getDataTypesFromCassandraSchema(columns)
             )
           );
@@ -92,7 +92,7 @@ export default class AddTableEntityPane extends TableEntityPane implements ViewM
           if (this.container.isPreferredApiCassandra()) {
             const cassandraKeys = this.tableViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys
               .concat(this.tableViewModel.queryTablesTab.collection.cassandraKeys.clusteringKeys)
-              .map(key => key.property);
+              .map((key) => key.property);
             var isRequired: boolean = _.contains<string>(cassandraKeys, key);
             var editable: boolean = false;
             var placeholderLabel: string = isRequired ? this.enterRequiredValueLabel : this.enterValueLabel;

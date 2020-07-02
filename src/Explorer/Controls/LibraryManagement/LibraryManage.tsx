@@ -19,7 +19,7 @@ export interface LibraryManageComponentProps {
 export function LibraryManageComponent(props: LibraryManageComponentProps): JSX.Element {
   const {
     addProps: { nameProps, urlProps, buttonProps },
-    gridProps
+    gridProps,
   } = props;
   return (
     <div>
@@ -47,7 +47,7 @@ function LibraryManageGrid(props: LibraryManageGridProps): JSX.Element {
       key: "name",
       name: "Name",
       fieldName: "name",
-      minWidth: 200
+      minWidth: 200,
     },
     {
       key: "delete",
@@ -62,8 +62,8 @@ function LibraryManageGrid(props: LibraryManageGridProps): JSX.Element {
             <img src={DeleteIcon} alt="Delete" onClick={onDelete} />
           </span>
         );
-      }
-    }
+      },
+    },
   ];
   return <DetailsList columns={columns} items={props.items} selectionMode={SelectionMode.none} />;
 }

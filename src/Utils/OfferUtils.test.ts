@@ -13,7 +13,7 @@ describe("OfferUtils tests", () => {
     offerType: "Standard",
     offerResourceId: "",
     content: null,
-    resource: ""
+    resource: "",
   };
 
   const offerV2: DataModels.Offer = {
@@ -26,7 +26,7 @@ describe("OfferUtils tests", () => {
     offerType: "Standard",
     offerResourceId: "",
     content: null,
-    resource: ""
+    resource: "",
   };
 
   describe("isOfferV1()", () => {

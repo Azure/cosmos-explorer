@@ -31,7 +31,7 @@ describe("Delete Collection Confirmation Pane", () => {
       let database: ViewModels.Database = new DatabaseStub({});
       database.collections = ko.observableArray<ViewModels.Collection>([
         new CollectionStub({}),
-        new CollectionStub({})
+        new CollectionStub({}),
       ]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastCollection()).toBe(false);
@@ -66,7 +66,7 @@ describe("Delete Collection Confirmation Pane", () => {
         documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any
+        container: fakeExplorer as any,
       });
 
       fakeExplorer.isLastCollection.returns(true);
@@ -107,7 +107,7 @@ describe("Delete Collection Confirmation Pane", () => {
       fakeExplorer.findSelectedCollection.returns(
         new CollectionStub({
           id: ko.observable<string>(selectedCollectionId),
-          rid: "test"
+          rid: "test",
         })
       );
       sinon.stub(fakeExplorer, "isNotificationConsoleExpanded").value(ko.observable<boolean>(false));
@@ -118,7 +118,7 @@ describe("Delete Collection Confirmation Pane", () => {
       sinon.stub(fakeExplorer, "databaseAccount").value(
         ko.observable<ViewModels.DatabaseAccount>({
           id: SubscriptionId,
-          name: AccountName
+          name: AccountName,
         } as ViewModels.DatabaseAccount)
       );
       sinon.stub(fakeExplorer, "defaultExperience").value(ko.observable<string>("DocumentDB"));
@@ -136,7 +136,7 @@ describe("Delete Collection Confirmation Pane", () => {
         documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any
+        container: fakeExplorer as any,
       });
       pane.collectionIdConfirmation = ko.observable<string>(selectedCollectionId);
       const Feedback = "my feedback";

@@ -20,7 +20,7 @@ export default class EditTableEntityPane extends TableEntityPane implements View
   constructor(options: ViewModels.PaneOptions) {
     super(options);
     this.submitButtonText("Update Entity");
-    this.container.isPreferredApiCassandra.subscribe(isCassandra => {
+    this.container.isPreferredApiCassandra.subscribe((isCassandra) => {
       if (isCassandra) {
         this.submitButtonText("Update Row");
       }
@@ -97,7 +97,7 @@ export default class EditTableEntityPane extends TableEntityPane implements View
           if (this.container.isPreferredApiCassandra()) {
             const cassandraKeys = this.tableViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys
               .concat(this.tableViewModel.queryTablesTab.collection.cassandraKeys.clusteringKeys)
-              .map(key => key.property);
+              .map((key) => key.property);
             var entityAttribute: Entities.ITableEntityAttribute = entity[key];
             var entityAttributeType: string = entityAttribute.$;
             var displayValue: any = this.getPropertyDisplayValue(entity, key, entityAttributeType);
@@ -154,7 +154,7 @@ export default class EditTableEntityPane extends TableEntityPane implements View
         .getTableSchema(this.tableViewModel.queryTablesTab.collection)
         .then((properties: CassandraTableKey[]) => {
           properties &&
-            properties.forEach(property => {
+            properties.forEach((property) => {
               if (!_.contains(keys, property.property)) {
                 this.insertAttribute(property.property, property.type);
               }
@@ -179,7 +179,7 @@ export default class EditTableEntityPane extends TableEntityPane implements View
           }
           updatedEntity[attribute.name()] = {
             _: value,
-            $: type
+            $: type,
           };
         }
       });

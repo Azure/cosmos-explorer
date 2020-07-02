@@ -49,7 +49,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase
       defaultExperience: this.container.defaultExperience(),
       databaseId: selectedDatabase.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     let promise: Q.Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
@@ -80,7 +80,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             databaseId: selectedDatabase.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );
@@ -114,7 +114,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             databaseId: selectedDatabase.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );

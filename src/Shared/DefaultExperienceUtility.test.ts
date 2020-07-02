@@ -83,7 +83,7 @@ describe("Default Experience Utility", () => {
       location: "somewhere",
       type: "DocumentDB",
       tags: {
-        defaultExperience: "Gremlin (graph)"
+        defaultExperience: "Gremlin (graph)",
       },
       properties: {
         documentEndpoint: "",
@@ -93,10 +93,10 @@ describe("Default Experience Utility", () => {
         capabilities: [
           {
             name: Constants.CapabilityNames.EnableGremlin,
-            description: "something"
-          }
-        ]
-      }
+            description: "something",
+          },
+        ],
+      },
     };
 
     const databaseAccountWithApiKind: ViewModels.DatabaseAccount = {
@@ -114,10 +114,10 @@ describe("Default Experience Utility", () => {
         capabilities: [
           {
             name: Constants.CapabilityNames.EnableGremlin,
-            description: "something"
-          }
-        ]
-      }
+            description: "something",
+          },
+        ],
+      },
     };
 
     describe("Disregard tags", () => {

@@ -62,7 +62,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       1;
     const storedProcedure = <DataModels.StoredProcedure>{
       id: "",
-      body: sampleStoredProcedureBody
+      body: sampleStoredProcedureBody,
     };
     let storedProcedureTab: ViewModels.Tab = new StoredProcedureTab({
       resource: storedProcedure,
@@ -77,7 +77,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      openedTabs: source.container.openedTabs(),
     });
     source.container.openedTabs.push(storedProcedureTab);
 
@@ -91,7 +91,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       description: "Stored procedure node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -102,7 +102,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
     const storedProcedureTabsOpen: ViewModels.Tab[] =
       openedTabs &&
       openedTabs.filter(
-        tab => tab.node && tab.node.rid === this.rid && tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
+        (tab) => tab.node && tab.node.rid === this.rid && tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
       );
     let storedProcedureTab: ViewModels.Tab =
       storedProcedureTabsOpen && storedProcedureTabsOpen.length > 0 && storedProcedureTabsOpen[0];
@@ -111,7 +111,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
-        body: this.body()
+        body: this.body(),
       };
 
       storedProcedureTab = new StoredProcedureTab({
@@ -130,7 +130,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
         selfLink: this.self,
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(storedProcedureTab);
     }
@@ -148,7 +148,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       _rid: this.rid,
       _self: this.self,
       id: this.id(),
-      body: this.body()
+      body: this.body(),
     };
 
     this.container.documentClientUtility.deleteStoredProcedure(this.collection, storedProcedureData).then(
@@ -156,7 +156,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
         this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      reason => {}
+      (reason) => {}
     );
   }
 
@@ -190,7 +190,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
     const storedProcedureTabsOpen: ViewModels.Tab[] =
       openedTabs &&
       openedTabs.filter(
-        tab => tab.node && tab.node.rid === this.rid && tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
+        (tab) => tab.node && tab.node.rid === this.rid && tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
       );
 
     return (storedProcedureTabsOpen &&

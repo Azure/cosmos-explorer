@@ -81,7 +81,7 @@ initializeIcons(/* optional base url */);
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
 
-initializeConfiguration().then(config => {
+initializeConfiguration().then((config) => {
   if (config.platform === Platform.Hosted) {
     try {
       // TODO Remove. All window variables should move to src/Config file

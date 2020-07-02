@@ -48,7 +48,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
       defaultExperience: this.container.defaultExperience(),
       collectionId: selectedCollection.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     let promise: Q.Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
@@ -76,7 +76,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );
@@ -109,7 +109,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );

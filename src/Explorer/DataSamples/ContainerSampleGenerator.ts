@@ -53,7 +53,7 @@ export class ContainerSampleGenerator {
 
   private async createContainerAsync(): Promise<ViewModels.Collection> {
     const createRequest: DataModels.CreateDatabaseAndCollectionRequest = {
-      ...this.sampleDataFile
+      ...this.sampleDataFile,
     };
 
     const options: any = {};
@@ -93,17 +93,17 @@ export class ContainerSampleGenerator {
         databaseId: databaseId,
         collectionId: collection.id(),
         masterKey: CosmosClient.masterKey() || "",
-        maxResultSize: 100
+        maxResultSize: 100,
       });
 
       await queries
-        .map(query => () => gremlinClient.execute(query))
+        .map((query) => () => gremlinClient.execute(query))
         .reduce((previous, current) => previous.then(current), Promise.resolve());
     } else {
       // For SQL all queries are executed at the same time
-      this.sampleDataFile.data.forEach(doc => {
+      this.sampleDataFile.data.forEach((doc) => {
         const subPromise = this.container.documentClientUtility.createDocument(collection, doc);
-        subPromise.catch(reason => NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, reason));
+        subPromise.catch((reason) => NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, reason));
         promises.push(subPromise);
       });
       await Promise.all(promises);

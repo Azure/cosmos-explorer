@@ -19,7 +19,7 @@ import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 
 enum ToggleState {
   Result,
-  QueryMetrics
+  QueryMetrics,
 }
 
 export default class QueryTab extends TabsBase implements ViewModels.QueryTab, ViewModels.WaitsForTemplate {
@@ -111,7 +111,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this._isSaveQueriesEnabled = ko.computed<boolean>(() => {
@@ -121,20 +121,20 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
 
     this.saveQueryButton = {
       enabled: this._isSaveQueriesEnabled,
-      visible: this._isSaveQueriesEnabled
+      visible: this._isSaveQueriesEnabled,
     };
 
     super.onTemplateReady((isTemplateReady: boolean) => {
       if (isTemplateReady) {
         const splitterBounds: SplitterBounds = {
           min: Constants.Queries.QueryEditorMinHeightRatio * window.innerHeight,
-          max: $("#" + this.tabId).height() - Constants.Queries.QueryEditorMaxHeightRatio * window.innerHeight
+          max: $("#" + this.tabId).height() - Constants.Queries.QueryEditorMaxHeightRatio * window.innerHeight,
         };
         this.splitter = new Splitter({
           splitterId: this.splitterId,
           leftId: this.queryEditorId,
           bounds: splitterBounds,
-          direction: SplitterDirection.Horizontal
+          direction: SplitterDirection.Horizontal,
         });
       }
     });
@@ -157,7 +157,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this._buildCommandBarOptions();
@@ -284,7 +284,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
@@ -306,7 +306,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
             hasMoreResults: queryResults.hasMoreResults,
             itemCount: queryResults.itemCount,
             firstItemIndex: queryResults.firstItemIndex,
-            lastItemIndex: queryResults.lastItemIndex
+            lastItemIndex: queryResults.lastItemIndex,
           };
           this.allResultsMetadata.push(resultsMetadata);
           this.activityId(queryResults.activityId);
@@ -337,7 +337,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
               sqlQuery: this.sqlStatementToExecute(),
               hasMoreResults: resultsMetadata.hasMoreResults,
               itemCount: resultsMetadata.itemCount,
-              responseHeaders: queryResults && queryResults.headers
+              responseHeaders: queryResults && queryResults.headers,
             });
             Logger.logError(errorMessage, "QueryTab");
           }
@@ -350,7 +350,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -364,7 +364,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
               start: error.location ? error.location.start : undefined,
               end: error.location ? error.location.end : undefined,
               code: error.code,
-              severity: error.severity
+              severity: error.severity,
             };
           });
 
@@ -375,7 +375,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -499,7 +499,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     return Q(
       this.documentClientUtility
         .queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options)
-        .then(iterator => (this._iterator = iterator))
+        .then((iterator) => (this._iterator = iterator))
     );
   }
 
@@ -533,9 +533,9 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
       runtimeExecutionTimes: {
         queryEngineExecutionTime: undefined,
         systemFunctionExecutionTime: undefined,
-        userDefinedFunctionExecutionTime: undefined
+        userDefinedFunctionExecutionTime: undefined,
       },
-      totalQueryExecutionTime: undefined
+      totalQueryExecutionTime: undefined,
     });
   }
 
@@ -559,7 +559,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
         "Query engine execution time (ms)",
         "System function execution time (ms)",
         "User defined function execution time (ms)",
-        "Document write time (ms)"
+        "Document write time (ms)",
       ].join(",") + "\n";
     csvData = csvData + columnHeaders;
     queryMetrics.forEach((partitionKeyRangeId: string, queryMetric: DataModels.QueryMetrics) => {
@@ -582,7 +582,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
           queryMetric.runtimeExecutionTimes &&
             queryMetric.runtimeExecutionTimes.userDefinedFunctionExecutionTime &&
             queryMetric.runtimeExecutionTimes.userDefinedFunctionExecutionTime.totalMilliseconds(),
-          queryMetric.documentWriteTime && queryMetric.documentWriteTime.totalMilliseconds()
+          queryMetric.documentWriteTime && queryMetric.documentWriteTime.totalMilliseconds(),
         ].join(",") + "\n";
       csvData = csvData + partitionKeyRangeData;
     });
@@ -601,7 +601,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.executeQueryButton.enabled()
+        disabled: !this.executeQueryButton.enabled(),
       });
     }
 
@@ -614,7 +614,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveQueryButton.enabled()
+        disabled: !this.saveQueryButton.enabled(),
       });
     }
 

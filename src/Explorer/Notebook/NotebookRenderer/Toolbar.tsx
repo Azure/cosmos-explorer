@@ -7,7 +7,7 @@ import { IconButton } from "office-ui-fabric-react/lib/Button";
 import {
   DirectionalHint,
   IContextualMenuItem,
-  ContextualMenuItemType
+  ContextualMenuItemType,
 } from "office-ui-fabric-react/lib/ContextualMenu";
 import { actions, AppState, DocumentRecordProps } from "@nteract/core";
 import { CellToolbarContext } from "@nteract/stateful-components";
@@ -48,49 +48,49 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         {
           key: "Run",
           text: "Run",
-          onClick: this.props.executeCell
+          onClick: this.props.executeCell,
         },
         {
           key: "Clear Outputs",
           text: "Clear Outputs",
-          onClick: this.props.clearOutputs
+          onClick: this.props.clearOutputs,
         },
         {
           key: "Divider",
-          itemType: ContextualMenuItemType.Divider
-        }
+          itemType: ContextualMenuItemType.Divider,
+        },
       ]);
     }
 
     items = items.concat([
       {
         key: "Divider",
-        itemType: ContextualMenuItemType.Divider
+        itemType: ContextualMenuItemType.Divider,
       },
       {
         key: "Insert Code Cell Above",
         text: "Insert Code Cell Above",
-        onClick: this.props.insertCodeCellAbove
+        onClick: this.props.insertCodeCellAbove,
       },
       {
         key: "Insert Code Cell Below",
         text: "Insert Code Cell Below",
-        onClick: this.props.insertCodeCellBelow
+        onClick: this.props.insertCodeCellBelow,
       },
       {
         key: "Insert Text Cell Above",
         text: "Insert Text Cell Above",
-        onClick: this.props.insertTextCellAbove
+        onClick: this.props.insertTextCellAbove,
       },
       {
         key: "Insert Text Cell Below",
         text: "Insert Text Cell Below",
-        onClick: this.props.insertTextCellBelow
+        onClick: this.props.insertTextCellBelow,
       },
       {
         key: "Divider",
-        itemType: ContextualMenuItemType.Divider
-      }
+        itemType: ContextualMenuItemType.Divider,
+      },
     ]);
 
     const moveItems: IContextualMenuItem[] = [];
@@ -98,7 +98,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
       moveItems.push({
         key: "Move Cell Up",
         text: "Move Cell Up",
-        onClick: () => this.props.moveCell(this.props.cellIdAbove, true)
+        onClick: () => this.props.moveCell(this.props.cellIdAbove, true),
       });
     }
 
@@ -106,14 +106,14 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
       moveItems.push({
         key: "Move Cell Down",
         text: "Move Cell Down",
-        onClick: () => this.props.moveCell(this.props.cellIdBelow, false)
+        onClick: () => this.props.moveCell(this.props.cellIdBelow, false),
       });
     }
 
     if (moveItems.length > 0) {
       moveItems.push({
         key: "Divider",
-        itemType: ContextualMenuItemType.Divider
+        itemType: ContextualMenuItemType.Divider,
       });
       items = items.concat(moveItems);
     }
@@ -121,7 +121,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
     items.push({
       key: "Delete Cell",
       text: "Delete Cell",
-      onClick: this.props.deleteCell
+      onClick: this.props.deleteCell,
     });
 
     const menuItemLabel = "More";
@@ -132,12 +132,12 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         ariaLabel={menuItemLabel}
         menuIconProps={{
           iconName: menuItemLabel,
-          styles: { root: { fontSize: "18px", fontWeight: "bold" } }
+          styles: { root: { fontSize: "18px", fontWeight: "bold" } },
         }}
         menuProps={{
           isBeakVisible: false,
           directionalHint: DirectionalHint.bottomRightEdge,
-          items
+          items,
         }}
       />
     );
@@ -156,7 +156,7 @@ const mapDispatchToProps = (
   moveCell: (destinationId: CellId, above: boolean) =>
     dispatch(actions.moveCell({ id, contentRef, destinationId, above })),
   clearOutputs: () => dispatch(actions.clearOutputs({ id, contentRef })),
-  deleteCell: () => dispatch(actions.deleteCell({ id, contentRef }))
+  deleteCell: () => dispatch(actions.deleteCell({ id, contentRef })),
 });
 
 const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
@@ -172,7 +172,7 @@ const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state
     return {
       cellType,
       cellIdAbove,
-      cellIdBelow
+      cellIdBelow,
     };
   };
   return mapStateToProps;

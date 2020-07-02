@@ -11,13 +11,13 @@ context("Mongo API Test", () => {
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
     const sharedKey = `SharedKey${crypt.randomBytes(8).toString("hex")}`;
 
-    cy.get("iframe").then($element => {
+    cy.get("iframe").then(($element) => {
       const $body = $element.contents().find("body");
 
       cy.wrap($body)
         .find('span[class="nodeLabel"]')
         .should("be.visible")
-        .then($span => {
+        .then(($span) => {
           const dbId1 = $span.text();
           cy.log("DBBB", dbId1);
 
@@ -28,30 +28,17 @@ context("Mongo API Test", () => {
             .should("be.visible")
             .click();
 
-          cy.wrap($body)
-            .find('div[class="contextual-pane-in"]')
-            .should("be.visible")
-            .find('span[id="containerTitle"]');
+          cy.wrap($body).find('div[class="contextual-pane-in"]').should("be.visible").find('span[id="containerTitle"]');
 
-          cy.wrap($body)
-            .find('input[data-test="addCollection-existingDatabase"]')
-            .check();
+          cy.wrap($body).find('input[data-test="addCollection-existingDatabase"]').check();
 
-          cy.wrap($body)
-            .find('input[data-test="addCollection-existingDatabase"]')
-            .type(dbId1);
+          cy.wrap($body).find('input[data-test="addCollection-existingDatabase"]').type(dbId1);
 
-          cy.wrap($body)
-            .find('input[data-test="addCollection-collectionId"]')
-            .type(collectionId);
+          cy.wrap($body).find('input[data-test="addCollection-collectionId"]').type(collectionId);
 
-          cy.wrap($body)
-            .find('input[data-test="addCollection-partitionKeyValue"]')
-            .type(sharedKey);
+          cy.wrap($body).find('input[data-test="addCollection-partitionKeyValue"]').type(sharedKey);
 
-          cy.wrap($body)
-            .find('input[data-test="addCollection-createCollection"]')
-            .click();
+          cy.wrap($body).find('input[data-test="addCollection-createCollection"]').click();
 
           cy.wait(10000);
 

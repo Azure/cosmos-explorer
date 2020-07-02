@@ -41,36 +41,36 @@ export class GitHubReposPane extends ContextualPaneBase {
 
     this.branchesProps = {};
     this.pinnedReposProps = {
-      repos: []
+      repos: [],
     };
     this.unpinnedReposProps = {
       repos: [],
       hasMore: true,
       isLoading: true,
-      loadMore: (): Promise<void> => this.loadMoreUnpinnedRepos()
+      loadMore: (): Promise<void> => this.loadMoreUnpinnedRepos(),
     };
 
     this.gitHubReposProps = {
       showAuthorizeAccess: true,
       authorizeAccessProps: {
         scope: this.getOAuthScope(),
-        authorizeAccess: (scope): void => this.connectToGitHub(scope)
+        authorizeAccess: (scope): void => this.connectToGitHub(scope),
       },
       reposListProps: {
         branchesProps: this.branchesProps,
         pinnedReposProps: this.pinnedReposProps,
         unpinnedReposProps: this.unpinnedReposProps,
         pinRepo: (item): Promise<void> => this.pinRepo(item),
-        unpinRepo: (item): Promise<void> => this.unpinRepo(item)
+        unpinRepo: (item): Promise<void> => this.unpinRepo(item),
       },
       addRepoProps: {
         container: this.container,
         getRepo: (owner, repo): Promise<IGitHubRepo> => this.getRepo(owner, repo),
-        pinRepo: (item): Promise<void> => this.pinRepo(item)
+        pinRepo: (item): Promise<void> => this.pinRepo(item),
       },
       resetConnection: (): void => this.setup(true),
       onOkClick: (): Promise<void> => this.submit(),
-      onCancelClick: (): void => this.cancel()
+      onCancelClick: (): void => this.cancel(),
     };
     this.gitHubReposAdapter = new GitHubReposComponentAdapter(this.gitHubReposProps);
 
@@ -88,7 +88,7 @@ export class GitHubReposPane extends ContextualPaneBase {
 
   public async submit(): Promise<void> {
     const pinnedReposUpdated = this.pinnedReposUpdated;
-    const reposToPin: IPinnedRepo[] = this.pinnedReposProps.repos.map(repo => JunoUtils.toPinnedRepo(repo));
+    const reposToPin: IPinnedRepo[] = this.pinnedReposProps.repos.map((repo) => JunoUtils.toPinnedRepo(repo));
 
     // Submit resets data too
     super.submit();
@@ -158,7 +158,7 @@ export class GitHubReposPane extends ContextualPaneBase {
     TelemetryProcessor.trace(Action.NotebooksGitHubManageRepo, ActionModifiers.Mark, {
       databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
-      dataExplorerArea: Areas.Notebook
+      dataExplorerArea: Areas.Notebook,
     });
     this.triggerRender();
 
@@ -167,15 +167,15 @@ export class GitHubReposPane extends ContextualPaneBase {
 
   private calculateUnpinnedRepos(): RepoListItem[] {
     const unpinnedGitHubRepos = this.allGitHubRepos.filter(
-      gitHubRepo =>
+      (gitHubRepo) =>
         this.pinnedReposProps.repos.findIndex(
-          pinnedRepo => pinnedRepo.key === GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name)
+          (pinnedRepo) => pinnedRepo.key === GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name)
         ) === -1
     );
-    return unpinnedGitHubRepos.map(gitHubRepo => ({
+    return unpinnedGitHubRepos.map((gitHubRepo) => ({
       key: GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name),
       repo: gitHubRepo,
-      branches: []
+      branches: [],
     }));
   }
 
@@ -261,7 +261,7 @@ export class GitHubReposPane extends ContextualPaneBase {
     this.pinnedReposUpdated = true;
     const initialReposLength = this.pinnedReposProps.repos.length;
 
-    const existingRepo = _.find(this.pinnedReposProps.repos, repo => repo.key === item.key);
+    const existingRepo = _.find(this.pinnedReposProps.repos, (repo) => repo.key === item.key);
     if (existingRepo) {
       existingRepo.branches = item.branches;
     } else {
@@ -278,7 +278,7 @@ export class GitHubReposPane extends ContextualPaneBase {
 
   private async unpinRepo(item: RepoListItem): Promise<void> {
     this.pinnedReposUpdated = true;
-    this.pinnedReposProps.repos = this.pinnedReposProps.repos.filter(pinnedRepo => pinnedRepo.key !== item.key);
+    this.pinnedReposProps.repos = this.pinnedReposProps.repos.filter((pinnedRepo) => pinnedRepo.key !== item.key);
     this.unpinnedReposProps.repos = this.calculateUnpinnedRepos();
     this.triggerRender();
   }
@@ -303,11 +303,11 @@ export class GitHubReposPane extends ContextualPaneBase {
 
       if (response.data) {
         const pinnedRepos = response.data.map(
-          pinnedRepo =>
+          (pinnedRepo) =>
             ({
               key: GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name),
               branches: pinnedRepo.branches,
-              repo: JunoUtils.toGitHubRepo(pinnedRepo)
+              repo: JunoUtils.toGitHubRepo(pinnedRepo),
             } as RepoListItem)
         );
 
@@ -322,14 +322,14 @@ export class GitHubReposPane extends ContextualPaneBase {
   }
 
   private refreshBranchesForPinnedRepos(): void {
-    this.pinnedReposProps.repos.map(item => {
+    this.pinnedReposProps.repos.map((item) => {
       if (!this.branchesProps[item.key]) {
         this.branchesProps[item.key] = {
           branches: [],
           lastPageInfo: undefined,
           hasMore: true,
           isLoading: true,
-          loadMore: (): Promise<void> => this.loadMoreBranches(item.repo)
+          loadMore: (): Promise<void> => this.loadMoreBranches(item.repo),
         };
         this.loadMoreBranches(item.repo);
       }
@@ -349,7 +349,7 @@ export class GitHubReposPane extends ContextualPaneBase {
       databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
       dataExplorerArea: Areas.Notebook,
-      scopesSelected: scope
+      scopesSelected: scope,
     });
     this.container.notebookManager?.gitHubOAuthService.startOAuth(scope);
   }

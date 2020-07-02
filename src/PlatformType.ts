@@ -6,5 +6,5 @@ export enum PlatformType {
 
   Hosted,
   Emulator,
-  Portal
+  Portal,
 }

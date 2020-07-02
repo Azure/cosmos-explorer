@@ -12,7 +12,7 @@ import {
   LibraryAddNameTextFieldProps,
   LibraryAddUrlTextFieldProps,
   LibraryAddButtonProps,
-  LibraryManageGridProps
+  LibraryManageGridProps,
 } from "../Controls/LibraryManagement/LibraryManage";
 import { Library } from "../../Contracts/DataModels";
 import * as Logger from "../../Common/Logger";
@@ -30,29 +30,29 @@ export class LibraryManagePane extends ContextualPaneBase {
 
     this._libraryManageStates = {
       isNameValid: true,
-      isUrlValid: true
+      isUrlValid: true,
     };
     this._libraryManageProps = ko.observable<LibraryManageComponentProps>({
       addProps: {
         nameProps: {
           libraryName: "",
           onLibraryNameChange: this._onLibraryNameChange,
-          onLibraryNameValidated: this._onLibraryNameValidated
+          onLibraryNameValidated: this._onLibraryNameValidated,
         },
         urlProps: {
           libraryAddress: "",
           onLibraryAddressChange: this._onLibraryAddressChange,
-          onLibraryAddressValidated: this._onLibraryAddressValidated
+          onLibraryAddressValidated: this._onLibraryAddressValidated,
         },
         buttonProps: {
           disabled: false,
-          onLibraryAddClick: this._onLibraryAddClick
-        }
+          onLibraryAddClick: this._onLibraryAddClick,
+        },
       },
       gridProps: {
         items: [],
-        onLibraryDeleteClick: this._onLibraryDeleteClick
-      }
+        onLibraryDeleteClick: this._onLibraryDeleteClick,
+      },
     });
     this.libraryManageComponentAdapter = new LibraryManageComponentAdapter();
     this.libraryManageComponentAdapter.parameters = this._libraryManageProps;
@@ -65,10 +65,10 @@ export class LibraryManagePane extends ContextualPaneBase {
     this._getLibraries(resourceId).then(
       (libraries: Library[]) => {
         this._updateLibraryManageComponentProps(null, null, null, {
-          items: libraries
+          items: libraries,
         });
       },
-      reason => {
+      (reason) => {
         const parsedError = ErrorParserUtility.parse(reason);
         this.formErrors(parsedError[0].message);
       }
@@ -88,7 +88,7 @@ export class LibraryManagePane extends ContextualPaneBase {
   ): void {
     let {
       addProps: { buttonProps, nameProps, urlProps },
-      gridProps
+      gridProps,
     } = this._libraryManageProps();
     if (newNameProps) {
       nameProps = { ...nameProps, ...newNameProps };
@@ -106,9 +106,9 @@ export class LibraryManagePane extends ContextualPaneBase {
       addProps: {
         nameProps,
         urlProps,
-        buttonProps
+        buttonProps,
       },
-      gridProps
+      gridProps,
     });
     this._libraryManageProps.valueHasMutated();
   }
@@ -124,7 +124,7 @@ export class LibraryManagePane extends ContextualPaneBase {
 
   private _onLibraryAddressChange = (libraryAddress: string): void => {
     this._updateLibraryManageComponentProps(null, {
-      libraryAddress
+      libraryAddress,
     });
 
     if (!this._libraryManageProps().addProps.nameProps.libraryName) {
@@ -155,7 +155,7 @@ export class LibraryManagePane extends ContextualPaneBase {
     const isUploadDisabled = this._libraryManageProps().addProps.buttonProps.disabled;
     if (isValid === isUploadDisabled) {
       this._updateLibraryManageComponentProps(null, null, {
-        disabled: !isUploadDisabled
+        disabled: !isUploadDisabled,
       });
     }
   };
@@ -166,12 +166,12 @@ export class LibraryManagePane extends ContextualPaneBase {
     this._deleteLibrary(resourceId, libraryName).then(
       () => {
         this.isExecuting(false);
-        const items = this._libraryManageProps().gridProps.items.filter(lib => lib.name !== libraryName);
+        const items = this._libraryManageProps().gridProps.items.filter((lib) => lib.name !== libraryName);
         this._updateLibraryManageComponentProps(null, null, null, {
-          items
+          items,
         });
       },
-      reason => {
+      (reason) => {
         this.isExecuting(false);
         const parsedError = ErrorParserUtility.parse(reason);
         this.formErrors(parsedError[0].message);
@@ -203,9 +203,9 @@ export class LibraryManagePane extends ContextualPaneBase {
         source: {
           kind: "HttpsUri",
           libraryFileName: `${libraryName}.${parsedLibraryAddress[3]}`,
-          uri: libraryAddress
-        }
-      }
+          uri: libraryAddress,
+        },
+      },
     };
     const resourceId: string = this.container.databaseAccount() && this.container.databaseAccount().id;
 
@@ -216,20 +216,20 @@ export class LibraryManagePane extends ContextualPaneBase {
         this.isExecuting(false);
         this._updateLibraryManageComponentProps(
           {
-            libraryName: ""
+            libraryName: "",
           },
           {
-            libraryAddress: ""
+            libraryAddress: "",
           },
           {
-            disabled: false
+            disabled: false,
           },
           {
-            items: [...this._libraryManageProps().gridProps.items, library]
+            items: [...this._libraryManageProps().gridProps.items, library],
           }
         );
       },
-      reason => {
+      (reason) => {
         this.isExecuting(false);
         const parsedError = ErrorParserUtility.parse(reason);
         this.formErrors(parsedError[0].message);
@@ -243,9 +243,7 @@ export class LibraryManagePane extends ContextualPaneBase {
   };
 
   private _generateLibraryName = (): string => {
-    return `library-${Math.random()
-      .toString(32)
-      .substring(2)}`;
+    return `library-${Math.random().toString(32).substring(2)}`;
   };
 
   private async _getLibraries(resourceId: string): Promise<Library[]> {
@@ -291,7 +289,7 @@ export class LibraryManagePane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
       area: "LibraryManagePane/_deleteLibrary",
-      libraryName: library.name
+      libraryName: library.name,
     });
 
     const libraryName = library.name;
@@ -304,7 +302,7 @@ export class LibraryManagePane extends ContextualPaneBase {
       TelemetryProcessor.traceSuccess(Action.LibraryManage, {
         resourceId,
         area: "LibraryManagePane/_deleteLibrary",
-        libraryName: library.name
+        libraryName: library.name,
       });
     } catch (e) {
       NotificationConsoleUtils.logConsoleMessage(
@@ -315,7 +313,7 @@ export class LibraryManagePane extends ContextualPaneBase {
         resourceId,
         area: "LibraryManagePane/_deleteLibrary",
         libraryName: library.name,
-        error: e
+        error: e,
       });
       Logger.logError(e, "Explorer/_uploadLibrary");
       throw e;
@@ -339,7 +337,7 @@ export class LibraryManagePane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
       area: "LibraryManagePane/_deleteLibrary",
-      libraryName
+      libraryName,
     });
     const inProgressId = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
@@ -350,7 +348,7 @@ export class LibraryManagePane extends ContextualPaneBase {
       TelemetryProcessor.traceSuccess(Action.LibraryManage, {
         resourceId,
         area: "LibraryManagePane/_deleteLibrary",
-        libraryName
+        libraryName,
       });
     } catch (e) {
       NotificationConsoleUtils.logConsoleMessage(
@@ -361,7 +359,7 @@ export class LibraryManagePane extends ContextualPaneBase {
         resourceId,
         area: "LibraryManagePane/_deleteLibrary",
         libraryName,
-        error: e
+        error: e,
       });
       Logger.logError(e, "Explorer/_deleteLibrary");
       throw e;

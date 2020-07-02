@@ -18,8 +18,8 @@ const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
     documentEndpoint: "documentEndpoint",
     gremlinEndpoint: "gremlinEndpoint",
     tableEndpoint: "tableEndpoint",
-    cassandraEndpoint: "cassandraEndpoint"
-  }
+    cassandraEndpoint: "cassandraEndpoint",
+  },
 };
 
 describe("GitHubOAuthService", () => {
@@ -34,7 +34,7 @@ describe("GitHubOAuthService", () => {
     window.dataExplorer = {
       ...originalDataExplorer,
       logConsoleData: (data): void =>
-        data.type === ConsoleDataType.Error ? console.error(data.message) : console.log(data.message)
+        data.type === ConsoleDataType.Error ? console.error(data.message) : console.log(data.message),
     } as ViewModels.Explorer;
     window.dataExplorer.notebookManager = new NotebookManager();
     window.dataExplorer.notebookManager.junoClient = junoClient;
@@ -90,7 +90,7 @@ describe("GitHubOAuthService", () => {
 
     const params: IGitHubConnectorParams = {
       state: "state",
-      code: "code"
+      code: "code",
     };
     const searchParams = new URLSearchParams({ ...params });
 
@@ -98,7 +98,7 @@ describe("GitHubOAuthService", () => {
     gitHubConnector.start(searchParams, window);
 
     // GitHubConnector uses Window.postMessage and there's no good way to know when the message has received
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(finishOAuthCallback).toBeCalledWith(params);
   });
@@ -113,7 +113,7 @@ describe("GitHubOAuthService", () => {
 
     const params: IGitHubConnectorParams = {
       state,
-      code: "code"
+      code: "code",
     };
     await gitHubOAuthService.finishOAuth(params);
     const updatedToken = gitHubOAuthService.getTokenObservable()();
@@ -127,7 +127,7 @@ describe("GitHubOAuthService", () => {
 
     const params: IGitHubConnectorParams = {
       state: "state",
-      code: "code"
+      code: "code",
     };
     await gitHubOAuthService.finishOAuth(params);
 
@@ -142,7 +142,7 @@ describe("GitHubOAuthService", () => {
 
     const params: IGitHubConnectorParams = {
       state,
-      code: "code"
+      code: "code",
     };
     await gitHubOAuthService.finishOAuth(params);
 

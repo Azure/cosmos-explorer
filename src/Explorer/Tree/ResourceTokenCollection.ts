@@ -51,7 +51,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     return Q.resolve();
@@ -69,7 +69,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -90,7 +90,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     const collection: ViewModels.Collection = source.collection || source;
     const explorer: ViewModels.Explorer = source.container;
     const openedTabs = explorer.openedTabs();
-    const id = openedTabs.filter(t => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
+    const id = openedTabs.filter((t) => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseAccountName: this.container.databaseAccount().name,
@@ -98,7 +98,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: title
+      tabTitle: title,
     });
 
     let queryTab: ViewModels.Tab = new QueryTab({
@@ -116,7 +116,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      openedTabs: this.container.openedTabs()
+      openedTabs: this.container.openedTabs(),
     });
     this.container.openedTabs.push(queryTab);
 
@@ -133,15 +133,15 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create documents tab if not created yet
     const openedTabs = this.container.openedTabs();
 
     let documentsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
+      .filter((tab) => tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
 
     if (!documentsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -150,7 +150,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Items"
+        tabTitle: "Items",
       });
       documentsTab = new DocumentsTab({
         partitionKey: this.partitionKey,
@@ -168,7 +168,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(documentsTab);
     }

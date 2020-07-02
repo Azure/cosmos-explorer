@@ -36,7 +36,7 @@ export default class Trigger implements ViewModels.Trigger {
       description: "Trigger node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -49,7 +49,7 @@ export default class Trigger implements ViewModels.Trigger {
       id: "",
       body: "function trigger(){}",
       triggerOperation: "All",
-      triggerType: "Pre"
+      triggerType: "Pre",
     };
 
     let triggerTab: ViewModels.Tab = new TriggerTab({
@@ -65,7 +65,7 @@ export default class Trigger implements ViewModels.Trigger {
       selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      openedTabs: source.container.openedTabs(),
     });
 
     source.container.openedTabs.push(triggerTab);
@@ -79,7 +79,7 @@ export default class Trigger implements ViewModels.Trigger {
 
     let triggerTab: ViewModels.Tab = this.container
       .openedTabs()
-      .filter(tab => tab.node && tab.node.rid === this.rid)[0];
+      .filter((tab) => tab.node && tab.node.rid === this.rid)[0];
     if (!triggerTab) {
       const triggerData = <DataModels.Trigger>{
         _rid: this.rid,
@@ -87,7 +87,7 @@ export default class Trigger implements ViewModels.Trigger {
         id: this.id(),
         body: this.body(),
         triggerOperation: this.triggerOperation(),
-        triggerType: this.triggerType()
+        triggerType: this.triggerType(),
       };
 
       triggerTab = new TriggerTab({
@@ -106,7 +106,7 @@ export default class Trigger implements ViewModels.Trigger {
         selfLink: "",
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
 
       this.container.openedTabs.push(triggerTab);
@@ -127,7 +127,7 @@ export default class Trigger implements ViewModels.Trigger {
       id: this.id(),
       body: this.body(),
       triggerOperation: this.triggerOperation(),
-      triggerType: this.triggerType()
+      triggerType: this.triggerType(),
     };
 
     this.container.documentClientUtility.deleteTrigger(this.collection, triggerData).then(
@@ -135,7 +135,7 @@ export default class Trigger implements ViewModels.Trigger {
         this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      reason => {}
+      (reason) => {}
     );
   }
 }

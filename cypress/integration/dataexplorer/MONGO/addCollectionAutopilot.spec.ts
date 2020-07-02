@@ -24,7 +24,7 @@ context("Mongo API Test", () => {
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
     const sharedKey = `SharedKey${crypt.randomBytes(8).toString("hex")}`;
 
-    cy.get("iframe").then($element => {
+    cy.get("iframe").then(($element) => {
       const $body = $element.contents().find("body");
       cy.wrap($body)
         .find('div[class="commandBarContainer"]')
@@ -33,34 +33,23 @@ context("Mongo API Test", () => {
         .should("be.visible")
         .click();
 
-      cy.wrap($body)
-        .find('div[class="contextual-pane-in"]')
-        .should("be.visible")
-        .find('span[id="containerTitle"]');
+      cy.wrap($body).find('div[class="contextual-pane-in"]').should("be.visible").find('span[id="containerTitle"]');
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-createNewDatabase"]')
-        .check();
+      cy.wrap($body).find('input[data-test="addCollection-createNewDatabase"]').check();
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-newDatabaseId"]')
-        .type(dbId);
+      cy.wrap($body).find('input[data-test="addCollection-newDatabaseId"]').type(dbId);
 
-      cy.wrap($body)
-        .find('input[data-test="addCollectionPane-databaseSharedThroughput"]')
-        .check();
+      cy.wrap($body).find('input[data-test="addCollectionPane-databaseSharedThroughput"]').check();
 
       cy.wrap($body)
         .find('div[class="throughputModeContainer"]')
         .should("be.visible")
-        .and(input => {
+        .and((input) => {
           expect(input.get(0).textContent, "first item").contains("Autopilot (preview)");
           expect(input.get(1).textContent, "second item").contains("Manual");
         });
 
-      cy.wrap($body)
-        .find('input[id="newContainer-databaseThroughput-autoPilotRadio"]')
-        .check();
+      cy.wrap($body).find('input[id="newContainer-databaseThroughput-autoPilotRadio"]').check();
 
       cy.wrap($body)
         .find('select[name="autoPilotTiers"]')
@@ -68,19 +57,13 @@ context("Mongo API Test", () => {
         //    // .select('4,000 RU/s').should('have.value', '1');
 
         .find('option[value="2"]')
-        .then($element => $element.get(1).setAttribute("selected", "selected"));
+        .then(($element) => $element.get(1).setAttribute("selected", "selected"));
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-collectionId"]')
-        .type(collectionId);
+      cy.wrap($body).find('input[data-test="addCollection-collectionId"]').type(collectionId);
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-partitionKeyValue"]')
-        .type(sharedKey);
+      cy.wrap($body).find('input[data-test="addCollection-partitionKeyValue"]').type(sharedKey);
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-createCollection"]')
-        .click();
+      cy.wrap($body).find('input[data-test="addCollection-createCollection"]').click();
 
       cy.wait(10000);
 

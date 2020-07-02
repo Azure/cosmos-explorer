@@ -16,7 +16,7 @@
     <!-- Tables Query Tab Errors - Start-->
     <div class="error-bar">
       <div class="error-message" aria-label="Error Message" data-bind="visible: hasQueryError">
-        <span><img class="entity-error-Img" src="/error_red.svg"/></span>
+        <span><img class="entity-error-Img" src="/error_red.svg" /></span>
         <span class="error-text" data-bind="text: queryErrorMessage"></span>
       </div>
     </div>
@@ -37,7 +37,7 @@
     </div>
     <!-- Tables Query Tab Query Text - End-->
     <!-- Tables Query Tab Query Helper - Start-->
-    <div data-bind="visible: isHelperActive" style="padding-left:13px">
+    <div data-bind="visible: isHelperActive" style="padding-left: 13px;">
       <div class="clause-table" data-bind="with: queryBuilderViewModel ">
         <div class="scroll-box scrollable" id="scroll">
           <table class="clause-table">
@@ -85,11 +85,11 @@
             <span class="clause-table addClause-title">
               <img
                 class="addclauseProperty-Img"
-                style="margin-bottom:5px;"
+                style="margin-bottom: 5px;"
                 src="/Add-property.svg"
                 alt="Add new clause"
               />
-              <span style="margin-left:5px;" data-bind="text: addNewClauseLine"></span>
+              <span style="margin-left: 5px;" data-bind="text: addNewClauseLine"></span>
             </span>
           </div>
         </div>
@@ -107,7 +107,7 @@
         >
           <!-- ko template: { ifnot: isExpanded} -->
           <div class="themed-images" type="text/html" id="ExpandChevronRight" data-bind="hasFocus: focusExpandIcon">
-            <img class="imgiconwidth expand-triangle expand-triangle-right " src="/Triangle-right.svg" alt="toggle" />
+            <img class="imgiconwidth expand-triangle expand-triangle-right" src="/Triangle-right.svg" alt="toggle" />
           </div>
           <!-- /ko -->
           <!-- ko template: { if: isExpanded} -->

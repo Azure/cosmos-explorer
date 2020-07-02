@@ -21,7 +21,7 @@ export class QueriesGridComponentAdapter implements ReactAdapter {
       queriesClient: this.container.queriesClient,
       onQuerySelect: this.container.browseQueriesPane.loadSavedQuery,
       containerVisible: this.container.browseQueriesPane.visible(),
-      saveQueryEnabled: this.container.canSaveQueries()
+      saveQueryEnabled: this.container.canSaveQueries(),
     };
     return <QueriesGridComponent {...props} />;
   }

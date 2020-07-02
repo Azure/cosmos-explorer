@@ -17,7 +17,7 @@ describe("GalleryCardComponent", () => {
         isSample: false,
         downloads: 0,
         favorites: 0,
-        views: 0
+        views: 0,
       },
       isFavorite: false,
       showDelete: true,
@@ -26,7 +26,7 @@ describe("GalleryCardComponent", () => {
       onFavoriteClick: undefined,
       onUnfavoriteClick: undefined,
       onDownloadClick: undefined,
-      onDeleteClick: undefined
+      onDeleteClick: undefined,
     };
 
     const wrapper = shallow(<GalleryCardComponent {...props} />);

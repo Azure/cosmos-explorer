@@ -28,7 +28,7 @@ export class NotificationsClientBase implements ViewModels.NotificationsClient {
       url: url,
       type: "GET",
       headers: headers,
-      cache: false
+      cache: false,
     }).then(
       (notifications: DataModels.Notification[], textStatus: string, xhr: JQueryXHR<any>) => {
         deferred.resolve(notifications);

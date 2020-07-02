@@ -121,7 +121,7 @@ Database: ${databaseName}, Container: ${collectionName} ${currentThroughput(
 
 enum ChangeFeedPolicyToggledState {
   Off = "Off",
-  On = "On"
+  On = "On",
 }
 
 export default class SettingsTab extends TabsBase implements ViewModels.SettingsTab, ViewModels.WaitsForTemplate {
@@ -458,10 +458,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
       }
       for (let i = 0, len = this.container.databases().length; i < len; i++) {
         for (let j = 0, len2 = this.container.databases()[i].collections().length; j < len2; j++) {
-          const collectionOffer = this.container
-            .databases()
-            [i].collections()
-            [j].offer();
+          const collectionOffer = this.container.databases()[i].collections()[j].offer();
           if (
             collectionOffer &&
             collectionOffer.content &&
@@ -786,7 +783,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
 
       visible: ko.pureComputed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this.discardSettingsChangesButton = {
@@ -847,7 +844,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this.ttlOffFocused = ko.observable<boolean>(false);
@@ -1014,7 +1011,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     const newCollectionAttributes: any = {};
@@ -1041,7 +1038,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
       newCollectionAttributes.changeFeedPolicy =
         this.changeFeedPolicyVisible() && this.changeFeedPolicyToggled() === ChangeFeedPolicyToggledState.On
           ? ({
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
+              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
             } as DataModels.ChangeFeedPolicy)
           : undefined;
 
@@ -1052,7 +1049,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
         : undefined;
 
       newCollectionAttributes.geospatialConfig = {
-        type: this.geospatialConfigType()
+        type: this.geospatialConfigType(),
       };
 
       const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
@@ -1095,8 +1092,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
         newOffer = _.extend({}, newOffer, {
           content: {
             offerThroughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
-          }
+            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled,
+          },
         });
       }
 
@@ -1105,11 +1102,11 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
       if (this.isAutoPilotSelected()) {
         if (!this.hasAutoPilotV2FeatureFlag()) {
           newOffer.content.offerAutopilotSettings = {
-            maxThroughput: this.autoPilotThroughput()
+            maxThroughput: this.autoPilotThroughput(),
           };
         } else {
           newOffer.content.offerAutopilotSettings = {
-            tier: this.selectedAutoPilotTier()
+            tier: this.selectedAutoPilotTier(),
           };
         }
 
@@ -1144,7 +1141,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
           databaseName: this.collection.databaseId,
           collectionName: this.collection.id(),
           throughput: newThroughput,
-          offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+          offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled,
         };
         const updateOfferBeyondLimitPromise: Q.Promise<void> = this.documentClientUtility
           .updateOfferThroughputBeyondLimit(requestPayload)
@@ -1174,7 +1171,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
                   defaultExperience: this.container.defaultExperience(),
                   dataExplorerArea: Constants.Areas.Tab,
                   tabTitle: this.tabTitle(),
-                  error: error
+                  error: error,
                 },
                 startKey
               );
@@ -1210,7 +1207,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
               databaseAccountName: this.container.databaseAccount().name,
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -1225,7 +1222,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
               databaseAccountName: this.container.databaseAccount().name,
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -1464,7 +1461,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
     }
 
     const policy: DataModels.ConflictResolutionPolicy = {
-      mode: SettingsTab.parseConflictResolutionMode(this.conflictResolutionPolicyMode())
+      mode: SettingsTab.parseConflictResolutionMode(this.conflictResolutionPolicyMode()),
     };
 
     if (
@@ -1647,7 +1644,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
         value: value,
         language: "json",
         readOnly: false,
-        ariaLabel: "Indexing Policy"
+        ariaLabel: "Indexing Policy",
       });
       indexingPolicyEditor.onDidFocusEditorText(() => this.indexingPolicyElementFocused(true));
       indexingPolicyEditor.onDidBlurEditorText(() => this.indexingPolicyElementFocused(false));
@@ -1664,7 +1661,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
             collectionName: this.collection.id(),
             defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.Tab,
-            tabTitle: this.tabTitle()
+            tabTitle: this.tabTitle(),
           },
           this.onLoadStartKey
         );
@@ -1699,7 +1696,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveSettingsButton.enabled()
+        disabled: !this.saveSettingsButton.enabled(),
       });
     }
 
@@ -1712,7 +1709,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardSettingsChangesButton.enabled()
+        disabled: !this.discardSettingsChangesButton.enabled(),
       });
     }
     return buttons;
@@ -1724,7 +1721,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
         this.saveSettingsButton.visible,
         this.saveSettingsButton.enabled,
         this.discardSettingsChangesButton.visible,
-        this.discardSettingsChangesButton.enabled
+        this.discardSettingsChangesButton.enabled,
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();

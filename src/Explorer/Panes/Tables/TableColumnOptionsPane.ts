@@ -71,14 +71,14 @@ export class TableColumnOptionsPane extends ContextualPaneBase implements ViewMo
       read: () => {
         return !this.canSelectAll();
       },
-      write: value => {
+      write: (value) => {
         if (value) {
           this.selectAll();
         } else {
           this.clearAll();
         }
       },
-      owner: this
+      owner: this,
     });
   }
 
@@ -98,7 +98,7 @@ export class TableColumnOptionsPane extends ContextualPaneBase implements ViewMo
     var newColumnSettings: IColumnSetting = <IColumnSetting>{
       columnNames: [],
       order: [],
-      visible: []
+      visible: [],
     };
     this.columnOptions().map((value: IColumnOption) => {
       newColumnSettings.columnNames.push(value.columnName());
@@ -114,7 +114,7 @@ export class TableColumnOptionsPane extends ContextualPaneBase implements ViewMo
         columnName: ko.observable<string>(columnNames[index]),
         order: value,
         selected: ko.observable<boolean>(visible[index]),
-        index: index
+        index: index,
       };
       return columnOption;
     });

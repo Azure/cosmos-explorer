@@ -31,7 +31,7 @@
 
         <div class="warningErrorContainer" data-bind="visible: !formErrors()">
           <div class="warningErrorContent">
-            <span><img class="paneWarningIcon" src="/warning.svg" alt="Warning"/></span>
+            <span><img class="paneWarningIcon" src="/warning.svg" alt="Warning" /></span>
             <span class="warningErrorDetailsLinkContainer">
               Warning! The action you are about to take cannot be undone. Continuing will permanently delete this
               resource and all of its children resources.
@@ -47,7 +47,7 @@
                         visible: formErrors() && formErrors() !== ''"
         >
           <div class="warningErrorContent">
-            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"/></span>
+            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
             <span class="warningErrorDetailsLinkContainer">
               <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
               <a class="errorLink" role="link" data-bind="click: showErrorDetails">More details</a>

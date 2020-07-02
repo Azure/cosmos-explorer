@@ -44,7 +44,7 @@ export class StringInputPane extends ContextualPaneBase {
           this.close();
           this.paneDeferred.resolve(value);
         },
-        reason => {
+        (reason) => {
           let error = reason;
           if (reason instanceof Error) {
             error = reason.message;

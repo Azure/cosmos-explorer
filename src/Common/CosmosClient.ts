@@ -63,13 +63,13 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-ms-encrypted-auth-token": _accessToken
+        "x-ms-encrypted-auth-token": _accessToken,
       },
       body: JSON.stringify({
         verb,
         resourceType,
-        resourceId
-      })
+        resourceId,
+      }),
     });
     //TODO I am not sure why we have to parse the JSON again here. fetch should do it for us when we call .json()
     const result = JSON.parse(await response.json());
@@ -93,9 +93,9 @@ export const CosmosClient = {
       key: _masterKey,
       tokenProvider,
       connectionPolicy: {
-        enableEndpointDiscovery: false
+        enableEndpointDiscovery: false,
       },
-      userAgentSuffix: "Azure Portal"
+      userAgentSuffix: "Azure Portal",
     };
 
     // In development we proxy requests to the backend via webpack. This is removed in production bundles.
@@ -176,5 +176,5 @@ export const CosmosClient = {
     _client = null;
     _resourceToken = value;
     return value;
-  }
+  },
 };

@@ -11,15 +11,11 @@ context("Resource tree notebook file manipulation", () => {
   };
 
   const clickContextMenuAndSelectOption = (nodeLabel, option) => {
-    cy.get(`.treeNodeHeader[data-test="${nodeLabel}"]`)
-      .find("button.treeMenuEllipsis")
-      .click();
-    cy.get('[data-test="treeComponentMenuItemContainer"]')
-      .contains(option)
-      .click();
+    cy.get(`.treeNodeHeader[data-test="${nodeLabel}"]`).find("button.treeMenuEllipsis").click();
+    cy.get('[data-test="treeComponentMenuItemContainer"]').contains(option).click();
   };
 
-  const createFolder = folder => {
+  const createFolder = (folder) => {
     clickContextMenuAndSelectOption("My Notebooks/", "New Directory");
 
     cy.get("#stringInputPane").within(() => {
@@ -28,11 +24,9 @@ context("Resource tree notebook file manipulation", () => {
     });
   };
 
-  const deleteItem = nodeName => {
+  const deleteItem = (nodeName) => {
     clickContextMenuAndSelectOption(`${nodeName}`, "Delete");
-    cy.get(".ms-Dialog-main")
-      .contains("Delete")
-      .click();
+    cy.get(".ms-Dialog-main").contains("Delete").click();
   };
 
   beforeEach(() => {
@@ -56,9 +50,7 @@ context("Resource tree notebook file manipulation", () => {
     // Rename
     clickContextMenuAndSelectOption(`${folder}/`, "Rename");
     cy.get("#stringInputPane").within(() => {
-      cy.get('input[name="collectionIdConfirmation"]')
-        .clear()
-        .type(renamedFolder);
+      cy.get('input[name="collectionIdConfirmation"]').clear().type(renamedFolder);
       cy.get("form").submit();
     });
     cy.get(`.treeNodeHeader[data-test="${renamedFolder}/"]`).should("exist");
@@ -75,16 +67,12 @@ context("Resource tree notebook file manipulation", () => {
     clickContextMenuAndSelectOption(`${folder}/`, "New Notebook");
 
     // Verify tab is open
-    cy.get(".tabList")
-      .contains(newNotebookName)
-      .should("exist");
+    cy.get(".tabList").contains(newNotebookName).should("exist");
 
     // Close tab
-    cy.get(`.tabList[title="notebooks/${folder}/${newNotebookName}"]`)
-      .find(".cancelButton")
-      .click();
+    cy.get(`.tabList[title="notebooks/${folder}/${newNotebookName}"]`).find(".cancelButton").click();
     // When running from command line, closing the tab is too fast
-    cy.get("body").then($body => {
+    cy.get("body").then(($body) => {
       if ($body.find(".ms-Dialog-main").length) {
         // For some reason, this does not work
         // cy.get(".ms-Dialog-main").contains("Close").click();
@@ -100,14 +88,10 @@ context("Resource tree notebook file manipulation", () => {
     cy.get(`.nodeChildren[data-test="${folder}/"] .treeNodeHeader[data-test="${newNotebookName}"]`)
       .find("button.treeMenuEllipsis")
       .click();
-    cy.get('[data-test="treeComponentMenuItemContainer"]')
-      .contains("Delete")
-      .click();
+    cy.get('[data-test="treeComponentMenuItemContainer"]').contains("Delete").click();
 
     // Confirm
-    cy.get(".ms-Dialog-main")
-      .contains("Delete")
-      .click();
+    cy.get(".ms-Dialog-main").contains("Delete").click();
     cy.get(`.nodeChildren[data-test="${folder}/"] .treeNodeHeader[data-test="${newNotebookName}"]`).should("not.exist");
 
     deleteItem(`${folder}/`);
@@ -121,10 +105,8 @@ context("Resource tree notebook file manipulation", () => {
     clickContextMenuAndSelectOption(`${folder}/`, "New Notebook");
 
     // Close tab
-    cy.get(`.tabList[title="notebooks/${folder}/${newNotebookName}"]`)
-      .find(".cancelButton")
-      .click();
-    cy.get("body").then($body => {
+    cy.get(`.tabList[title="notebooks/${folder}/${newNotebookName}"]`).find(".cancelButton").click();
+    cy.get("body").then(($body) => {
       if ($body.find(".ms-Dialog-main").length) {
         // For some reason, this does not work
         // cy.get(".ms-Dialog-main").contains("Close").click();
@@ -140,14 +122,10 @@ context("Resource tree notebook file manipulation", () => {
     cy.get(`.nodeChildren[data-test="${folder}/"] .treeNodeHeader[data-test="${newNotebookName}"]`)
       .find("button.treeMenuEllipsis")
       .click();
-    cy.get('[data-test="treeComponentMenuItemContainer"]')
-      .contains("Rename")
-      .click();
+    cy.get('[data-test="treeComponentMenuItemContainer"]').contains("Rename").click();
 
     cy.get("#stringInputPane").within(() => {
-      cy.get('input[name="collectionIdConfirmation"]')
-        .clear()
-        .type(renamedNotebookName);
+      cy.get('input[name="collectionIdConfirmation"]').clear().type(renamedNotebookName);
       cy.get("form").submit();
     });
     cy.get(`.nodeChildren[data-test="${folder}/"] .treeNodeHeader[data-test="${newNotebookName}"]`).should("not.exist");
@@ -157,14 +135,10 @@ context("Resource tree notebook file manipulation", () => {
     cy.get(`.nodeChildren[data-test="${folder}/"] .treeNodeHeader[data-test="${renamedNotebookName}"]`)
       .find("button.treeMenuEllipsis")
       .click();
-    cy.get('[data-test="treeComponentMenuItemContainer"]')
-      .contains("Delete")
-      .click();
+    cy.get('[data-test="treeComponentMenuItemContainer"]').contains("Delete").click();
 
     // Confirm
-    cy.get(".ms-Dialog-main")
-      .contains("Delete")
-      .click();
+    cy.get(".ms-Dialog-main").contains("Delete").click();
     // Give it time to settle
     cy.wait(1000);
     deleteItem(`${folder}/`);

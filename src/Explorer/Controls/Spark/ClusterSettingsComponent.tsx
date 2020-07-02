@@ -29,9 +29,9 @@ export class ClusterSettingsComponent extends React.Component<ClusterSettingsCom
   private getMasterSizeDropdown(): JSX.Element {
     const driverSize: string =
       this.props.cluster && this.props.cluster.properties && this.props.cluster.properties.driverSize;
-    const masterSizeOptions: IDropdownOption[] = Spark.SKUs.keys().map(sku => ({
+    const masterSizeOptions: IDropdownOption[] = Spark.SKUs.keys().map((sku) => ({
       key: sku,
-      text: Spark.SKUs.get(sku)
+      text: Spark.SKUs.get(sku),
     }));
     const masterSizeDropdownProps: IDropdownProps = {
       label: "Master Size",
@@ -39,8 +39,8 @@ export class ClusterSettingsComponent extends React.Component<ClusterSettingsCom
       defaultSelectedKey: driverSize,
       onChange: this._onDriverSizeChange,
       styles: {
-        root: "clusterSettingsDropdown"
-      }
+        root: "clusterSettingsDropdown",
+      },
     };
     return <Dropdown {...masterSizeDropdownProps} />;
   }
@@ -48,9 +48,9 @@ export class ClusterSettingsComponent extends React.Component<ClusterSettingsCom
   private getWorkerSizeDropdown(): JSX.Element {
     const workerSize: string =
       this.props.cluster && this.props.cluster.properties && this.props.cluster.properties.workerSize;
-    const workerSizeOptions: IDropdownOption[] = Spark.SKUs.keys().map(sku => ({
+    const workerSizeOptions: IDropdownOption[] = Spark.SKUs.keys().map((sku) => ({
       key: sku,
-      text: Spark.SKUs.get(sku)
+      text: Spark.SKUs.get(sku),
     }));
     const workerSizeDropdownProps: IDropdownProps = {
       label: "Worker Size",
@@ -59,8 +59,8 @@ export class ClusterSettingsComponent extends React.Component<ClusterSettingsCom
       onChange: this._onWorkerSizeChange,
       styles: {
         label: "labelWithRedAsterisk",
-        root: "clusterSettingsDropdown"
-      }
+        root: "clusterSettingsDropdown",
+      },
     };
     return <Dropdown {...workerSizeDropdownProps} />;
   }
@@ -74,14 +74,14 @@ export class ClusterSettingsComponent extends React.Component<ClusterSettingsCom
       0;
     const stackStyle: IStackStyles = {
       root: {
-        paddingTop: 5
-      }
+        paddingTop: 5,
+      },
     };
     const sliderItemStyle: IStackItemStyles = {
       root: {
         width: "100%",
-        paddingRight: 20
-      }
+        paddingRight: 20,
+      },
     };
 
     const workerCountSliderProps: ISliderProps = {
@@ -94,22 +94,22 @@ export class ClusterSettingsComponent extends React.Component<ClusterSettingsCom
       styles: {
         root: {
           width: "100%",
-          paddingRight: 20
-        }
-      }
+          paddingRight: 20,
+        },
+      },
     };
     const workerCountTextFieldProps: ITextFieldProps = {
       value: workerCount.toString(),
       styles: {
         fieldGroup: {
           width: 45,
-          height: 25
+          height: 25,
         },
         field: {
-          textAlign: "center"
-        }
+          textAlign: "center",
+        },
       },
-      onChange: this._onWorkerCountTextFieldChange
+      onChange: this._onWorkerCountTextFieldChange,
     };
 
     return (

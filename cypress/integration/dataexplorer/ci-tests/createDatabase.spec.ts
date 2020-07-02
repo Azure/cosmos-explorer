@@ -38,27 +38,15 @@ context("Emulator - Create database -> container -> item", () => {
     cy.get("[data-test=addCollection-partitionKeyValue]").type("/pk");
     cy.get('input[name="createCollection"]').click();
     cy.get(".dataResourceTree").should("contain", databaseId);
-    cy.get(".dataResourceTree")
-      .contains(databaseId)
-      .click();
+    cy.get(".dataResourceTree").contains(databaseId).click();
     cy.get(".dataResourceTree").should("contain", collectionId);
-    cy.get(".dataResourceTree")
-      .contains(collectionId)
-      .click();
-    cy.get(".dataResourceTree")
-      .contains("Items")
-      .click();
-    cy.get(".dataResourceTree")
-      .contains("Items")
-      .click();
+    cy.get(".dataResourceTree").contains(collectionId).click();
+    cy.get(".dataResourceTree").contains("Items").click();
+    cy.get(".dataResourceTree").contains("Items").click();
     cy.wait(1000); // React rendering inside KO causes some weird async rendering that makes this test flaky without waiting
-    cy.get(".commandBarContainer")
-      .contains("New Item")
-      .click();
+    cy.get(".commandBarContainer").contains("New Item").click();
     cy.wait(1000); // React rendering inside KO causes some weird async rendering that makes this test flaky without waiting
-    cy.get(".commandBarContainer")
-      .contains("Save")
-      .click();
+    cy.get(".commandBarContainer").contains("Save").click();
     cy.wait(1000); // React rendering inside KO causes some weird async rendering that makes this test flaky without waiting
     cy.get(".documentsGridHeaderContainer").should("contain", "replace_with_new_document_id");
   });

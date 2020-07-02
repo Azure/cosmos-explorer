@@ -32,7 +32,7 @@ export default class Ajax {
       type: method,
       cache: false,
       contentType: "application/json",
-      traditional: true
+      traditional: true,
     };
 
     if (!!data) {

@@ -10,11 +10,11 @@
   <div class="warningErrorContainer scaleWarningContainer" data-bind="visible: shouldShowStatusBar">
     <div>
       <div class="warningErrorContent" data-bind="visible: shouldShowNotificationStatusPrompt">
-        <span><img src="/info_color.svg" alt="Info"/></span>
+        <span><img src="/info_color.svg" alt="Info" /></span>
         <span class="warningErrorDetailsLinkContainer" data-bind="html: notificationStatusInfo"></span>
       </div>
       <div class="warningErrorContent" data-bind="visible: !shouldShowNotificationStatusPrompt()">
-        <span><img src="/warning.svg" alt="Warning"/></span>
+        <span><img src="/warning.svg" alt="Warning" /></span>
         <span class="warningErrorDetailsLinkContainer" data-bind="html: warningMessage"></span>
       </div>
     </div>
@@ -36,14 +36,14 @@
       >
         <span class="themed-images" type="text/html" id="ExpandChevronRightScale" data-bind="visible: !scaleExpanded()">
           <img
-            class="imgiconwidth ssExpandCollapseIcon ssCollapseIcon "
+            class="imgiconwidth ssExpandCollapseIcon ssCollapseIcon"
             src="/Triangle-right.svg"
             alt="Show scale properties"
           />
         </span>
 
         <span class="themed-images" type="text/html" id="ExpandChevronDownScale" data-bind="visible: scaleExpanded">
-          <img class="imgiconwidth ssExpandCollapseIcon " src="/Triangle-down.svg" alt="Hide scale properties" />
+          <img class="imgiconwidth ssExpandCollapseIcon" src="/Triangle-down.svg" alt="Hide scale properties" />
         </span>
 
         <span class="scaleSettingTitle">Scale</span>

@@ -41,7 +41,7 @@ describe("Message Handler", () => {
     let mockPromise: CachedDataPromise<any> = {
       id: "123",
       startTime: new Date(),
-      deferred: Q.defer<any>()
+      deferred: Q.defer<any>(),
     };
     let mockMessage = { message: { id: "123", data: "{}" } };
 
@@ -54,7 +54,7 @@ describe("Message Handler", () => {
     let mockPromise: CachedDataPromise<any> = {
       id: "123",
       startTime: new Date(),
-      deferred: Q.defer<any>()
+      deferred: Q.defer<any>(),
     };
 
     MockMessageHandler.addToMap(mockPromise.id, mockPromise);

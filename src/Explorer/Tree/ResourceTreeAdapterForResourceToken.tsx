@@ -33,7 +33,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       return {
         label: undefined,
         isExpanded: true,
-        children: []
+        children: [],
       };
     }
 
@@ -47,10 +47,10 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
-          data: collection.rid
+          data: collection.rid,
         });
       },
-      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Documents)
+      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Documents),
     });
 
     const collectionNode: TreeNode = {
@@ -65,13 +65,13 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         this.container.onUpdateTabsButtons([]);
         collection.refreshActiveTab();
       },
-      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined)
+      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined),
     };
 
     return {
       label: undefined,
       isExpanded: true,
-      children: [collectionNode]
+      children: [collectionNode],
     };
   }
 

@@ -4,7 +4,7 @@ import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button"
 import {
   IContextualMenuItem,
   IContextualMenuProps,
-  ContextualMenuItemType
+  ContextualMenuItemType,
 } from "office-ui-fabric-react/lib/ContextualMenu";
 import * as Logger from "../../../Common/Logger";
 
@@ -33,7 +33,7 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
   constructor(props: ArcadiaMenuPickerProps) {
     super(props);
     this.state = {
-      selectedSparkPool: props.selectedSparkPool
+      selectedSparkPool: props.selectedSparkPool,
     };
   }
 
@@ -44,7 +44,7 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
     try {
       this.props.onSparkPoolSelect(e, item);
       this.setState({
-        selectedSparkPool: item.text
+        selectedSparkPool: item.text,
       });
     } catch (error) {
       Logger.logError(error, "ArcadiaMenuPicker/_onSparkPoolClicked");
@@ -68,28 +68,28 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
 
   public render() {
     const { workspaces } = this.props;
-    let workspaceMenuItems: IContextualMenuItem[] = workspaces.map(workspace => {
+    let workspaceMenuItems: IContextualMenuItem[] = workspaces.map((workspace) => {
       let sparkPoolsMenuProps: IContextualMenuProps = {
         items: workspace.sparkPools.map(
           (sparkpool): IContextualMenuItem => ({
             key: sparkpool.id,
             text: sparkpool.name,
-            onClick: this._onSparkPoolClicked
+            onClick: this._onSparkPoolClicked,
           })
-        )
+        ),
       };
       if (!sparkPoolsMenuProps.items.length) {
         sparkPoolsMenuProps.items.push({
           key: workspace.id,
           text: "Create new spark pool",
-          onClick: this._onCreateNewSparkPoolClicked
+          onClick: this._onCreateNewSparkPoolClicked,
         });
       }
 
       return {
         key: workspace.id,
         text: workspace.name,
-        subMenuProps: this.props.disableSubmenu ? undefined : sparkPoolsMenuProps
+        subMenuProps: this.props.disableSubmenu ? undefined : sparkPoolsMenuProps,
       };
     });
 
@@ -97,7 +97,7 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
       workspaceMenuItems.push({
         key: "create_workspace",
         text: "Create new workspace",
-        onClick: this._onCreateNewWorkspaceClicked
+        onClick: this._onCreateNewWorkspaceClicked,
       });
     }
 
@@ -106,29 +106,29 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
         backgroundColor: "transparent",
         margin: "auto 5px",
         padding: "0",
-        border: "0"
+        border: "0",
       },
       rootHovered: {
-        backgroundColor: "transparent"
+        backgroundColor: "transparent",
       },
       rootChecked: {
-        backgroundColor: "transparent"
+        backgroundColor: "transparent",
       },
       rootFocused: {
-        backgroundColor: "transparent"
+        backgroundColor: "transparent",
       },
       rootExpanded: {
-        backgroundColor: "transparent"
+        backgroundColor: "transparent",
       },
       flexContainer: {
         height: "30px",
         border: "1px solid #a6a6a6",
-        padding: "0 8px"
+        padding: "0 8px",
       },
       label: {
         fontWeight: "400",
-        fontSize: "12px"
-      }
+        fontSize: "12px",
+      },
     };
 
     return (
@@ -137,7 +137,7 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
         persistMenu={true}
         className="arcadia-menu-picker"
         menuProps={{
-          items: workspaceMenuItems
+          items: workspaceMenuItems,
         }}
         styles={dropdownStyle}
       />

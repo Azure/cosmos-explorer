@@ -11,7 +11,7 @@ export class NotificationConsoleUtils {
       const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
         hour12: true,
         hour: "numeric",
-        minute: "numeric"
+        minute: "numeric",
       }).format(date);
       if (!id) {
         id = _.uniqueId();

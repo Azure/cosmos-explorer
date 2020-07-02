@@ -106,7 +106,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     this.databaseCreateNew = ko.observable<boolean>(true);
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
     this.container.subscriptionType &&
-      this.container.subscriptionType.subscribe(subscriptionType => {
+      this.container.subscriptionType.subscribe((subscriptionType) => {
         this.databaseCreateNewShared(this.getSharedThroughputDefault());
       });
     this.collectionWithThroughputInShared = ko.observable<boolean>(false);
@@ -604,7 +604,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
 
       // TODO: remove check for capability once all accounts have been migrated
       const capabilities = properties.capabilities || ([] as DataModels.Capability[]);
-      if (capabilities.some(capability => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
+      if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
         return true;
       }
 
@@ -632,9 +632,9 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
 
     this.isSynapseLinkUpdating = ko.computed(() => this.container.isSynapseLinkUpdating());
 
-    this.useIndexingForSharedThroughput.subscribe(value => {
+    this.useIndexingForSharedThroughput.subscribe((value) => {
       TelemetryProcessor.traceMark(Action.ModifyOptionForThroughputWithSharedDatabase, {
-        changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex
+        changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex,
       });
     });
   }
@@ -680,16 +680,16 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
         offerThroughput: this._getThroughput(),
         partitionKey: this.partitionKey(),
         databaseId: this.databaseId(),
-        rupm: this.rupm()
+        rupm: this.rupm(),
       }),
       subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: this._getThroughput(),
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
-      dataExplorerArea: Constants.Areas.ContextualPane
+      dataExplorerArea: Constants.Areas.ContextualPane,
     };
 
     this._onDatabasesChange(this.container.databases());
@@ -739,7 +739,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
       ? {
           paths: [partitionKeyPath],
           kind: Constants.BackendDefaults.partitionKeyKind,
-          version: partitionKeyVersion
+          version: partitionKeyVersion,
         }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
@@ -750,7 +750,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
       database: ko.toJS({
         id: this.databaseId(),
         new: this.databaseCreateNew(),
-        shared: this.databaseHasSharedOffer()
+        shared: this.databaseHasSharedOffer(),
       }),
       offerThroughput: offerThroughput,
       offerAutopilot: autoPilot,
@@ -760,17 +760,17 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
         partitionKey,
         rupm: this.rupm(),
         uniqueKeyPolicy,
-        collectionWithThroughputInShared: this.collectionWithThroughputInShared()
+        collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
       }),
       subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: offerThroughput,
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
-      useIndexingForSharedThroughput: this.useIndexingForSharedThroughput()
+      useIndexingForSharedThroughput: this.useIndexingForSharedThroughput(),
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
 
@@ -807,7 +807,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
       uniqueKeyPolicy,
       autoPilot,
       analyticalStorageTtl: this._getAnalyticalStorageTtl(),
-      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
+      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag(),
     };
 
     const options: any = {};
@@ -926,7 +926,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),
-            shared: this.databaseHasSharedOffer()
+            shared: this.databaseHasSharedOffer(),
           }),
           offerThroughput,
           collection: ko.toJS({
@@ -935,16 +935,16 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
             partitionKey,
             rupm: this.rupm(),
             uniqueKeyPolicy,
-            collectionWithThroughputInShared: this.collectionWithThroughputInShared()
+            collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
           }),
           subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight()
+            flight: this.container.flight(),
           },
-          dataExplorerArea: Constants.Areas.ContextualPane
+          dataExplorerArea: Constants.Areas.ContextualPane,
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
         this.resetData();
@@ -964,7 +964,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),
-            shared: this.databaseHasSharedOffer()
+            shared: this.databaseHasSharedOffer(),
           }),
           offerThroughput: offerThroughput,
           collection: {
@@ -973,17 +973,17 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
             partitionKey,
             rupm: this.rupm(),
             uniqueKeyPolicy,
-            collectionWithThroughputInShared: this.collectionWithThroughputInShared()
+            collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
           },
           subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight()
+            flight: this.container.flight(),
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
-          error: reason
+          error: reason,
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
@@ -1181,7 +1181,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            maxThroughput: this.sharedAutoPilotThroughput() * 1
+            maxThroughput: this.sharedAutoPilotThroughput() * 1,
           }
         : { autopilotTier: this.selectedSharedAutoPilotTier() };
     }
@@ -1191,7 +1191,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            maxThroughput: this.autoPilotThroughput() * 1
+            maxThroughput: this.autoPilotThroughput() * 1,
           }
         : { autopilotTier: this.selectedAutoPilotTier() };
     }
@@ -1211,7 +1211,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.sharedAutoPilotThroughput() * 1 }
+            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.sharedAutoPilotThroughput() * 1 },
           }
         : { [Constants.HttpHeaders.autoPilotTier]: this.selectedSharedAutoPilotTier().toString() };
     }
@@ -1221,7 +1221,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.autoPilotThroughput() * 1 }
+            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.autoPilotThroughput() * 1 },
           }
         : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
     }

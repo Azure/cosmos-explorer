@@ -13,7 +13,7 @@ describe("Add Database Utitlity", () => {
     st: true,
     sid: "a1",
     rg: "b1",
-    dba: "main"
+    dba: "main",
   };
 
   describe("getRpClient", () => {
@@ -77,7 +77,7 @@ describe("Add Database Utitlity", () => {
         st: false,
         sid: "a2",
         rg: "c1",
-        dba: "main"
+        dba: "main",
       };
       const resourceProviderClientPutAsyncSpy = jest.spyOn(ResourceProviderClient.prototype, "putAsync");
       AddDbUtilities.createGremlinDatabase(armEndpoint, properties, undefined);
@@ -137,7 +137,7 @@ describe("Add Database Utitlity", () => {
         st: false,
         sid: "a2",
         rg: "c1",
-        dba: "main"
+        dba: "main",
       };
       const resourceProviderClientPutAsyncSpy = jest.spyOn(ResourceProviderClient.prototype, "putAsync");
       AddDbUtilities.createSqlDatabase(armEndpoint, properties, undefined);

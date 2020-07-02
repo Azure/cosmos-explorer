@@ -24,7 +24,7 @@ export function ClusterLibraryGrid(props: ClusterLibraryGridProps): JSX.Element 
       key: "name",
       name: "Name",
       fieldName: "name",
-      minWidth: 150
+      minWidth: 150,
     },
     {
       key: "installed",
@@ -32,8 +32,8 @@ export function ClusterLibraryGrid(props: ClusterLibraryGridProps): JSX.Element 
       minWidth: 100,
       onRender: (item: ClusterLibraryItem) => {
         return <input type="checkbox" checked={item.installed} onChange={onInstalledChanged} data-name={item.name} />;
-      }
-    }
+      },
+    },
   ];
 
   return <DetailsList columns={columns} items={props.libraryItems} selectionMode={SelectionMode.none} />;

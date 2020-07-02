@@ -2,5 +2,5 @@ export enum AuthType {
   AAD = "aad",
   EncryptedToken = "encryptedtoken",
   MasterKey = "masterkey",
-  ResourceToken = "resourcetoken"
+  ResourceToken = "resourcetoken",
 }

@@ -4,22 +4,22 @@ import { IIconStyles, ITextStyles } from "office-ui-fabric-react";
 export const siteTextStyles: ITextStyles = {
   root: {
     color: "#025F52",
-    fontWeight: FontWeights.semibold
-  }
+    fontWeight: FontWeights.semibold,
+  },
 };
 
 export const descriptionTextStyles: ITextStyles = {
   root: {
     color: "#333333",
-    fontWeight: FontWeights.semibold
-  }
+    fontWeight: FontWeights.semibold,
+  },
 };
 
 export const subtleHelpfulTextStyles: ITextStyles = {
   root: {
     color: "#ccc",
-    fontWeight: FontWeights.regular
-  }
+    fontWeight: FontWeights.regular,
+  },
 };
 
 export const iconButtonStyles: IIconStyles = {
@@ -32,10 +32,10 @@ export const iconButtonStyles: IIconStyles = {
     display: "inline-block",
     selectors: {
       ":hover .ms-Button-icon": {
-        color: "#ccc"
-      }
-    }
-  }
+        color: "#ccc",
+      },
+    },
+  },
 };
 
 export const iconStyles: IIconStyles = {
@@ -45,28 +45,28 @@ export const iconStyles: IIconStyles = {
     backgroundColor: "#FFF",
     fontSize: 16,
     fontWeight: FontWeights.regular,
-    display: "inline-block"
-  }
+    display: "inline-block",
+  },
 };
 
 export const mainHelpfulTextStyles: ITextStyles = {
   root: {
     color: "#000",
-    fontWeight: FontWeights.regular
-  }
+    fontWeight: FontWeights.regular,
+  },
 };
 
 export const subtleIconStyles: IIconStyles = {
   root: {
     color: "#ddd",
     fontSize: 12,
-    fontWeight: FontWeights.regular
-  }
+    fontWeight: FontWeights.regular,
+  },
 };
 
 export const helpfulTextStyles: ITextStyles = {
   root: {
     color: "#333333",
-    fontWeight: FontWeights.regular
-  }
+    fontWeight: FontWeights.regular,
+  },
 };

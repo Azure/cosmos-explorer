@@ -43,7 +43,7 @@ export const coreReducer = (state: CoreRecord, action: Action) => {
         "model",
         "notebook",
         "metadata",
-        "kernelspec"
+        "kernelspec",
       ];
       // Update metadata
       return state
@@ -78,7 +78,7 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
         ...typedAction.payload.data,
         databaseAccountName: state.databaseAccountName,
         defaultExperience: state.defaultExperience,
-        dataExplorerArea: Areas.Notebook
+        dataExplorerArea: Areas.Notebook,
       });
       return state;
     }

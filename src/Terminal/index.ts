@@ -21,7 +21,7 @@ const main = (): void => {
   let body: BodyInit;
   if (urlVars.hasOwnProperty("terminalEndpoint")) {
     body = JSON.stringify({
-      endpoint: urlVars["terminalEndpoint"]
+      endpoint: urlVars["terminalEndpoint"],
     });
   }
 
@@ -29,14 +29,14 @@ const main = (): void => {
   let options: Partial<ServerConnection.ISettings> = {
     baseUrl: server,
     init: { body },
-    fetch: window.parent.fetch
+    fetch: window.parent.fetch,
   };
   if (urlVars.hasOwnProperty("token")) {
     options = {
       baseUrl: server,
       token: urlVars["token"],
       init: { body },
-      fetch: window.parent.fetch
+      fetch: window.parent.fetch,
     };
   }
   const serverSettings = ServerConnection.makeSettings(options);

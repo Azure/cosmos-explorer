@@ -16,8 +16,8 @@ export default class TelemetryProcessor {
       data: {
         action: Action[action],
         actionModifier: actionModifier,
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.trackEvent({ name: Action[action] }, TelemetryProcessor.getData(data));
@@ -31,8 +31,8 @@ export default class TelemetryProcessor {
         action: Action[action],
         actionModifier: ActionModifiers.Start,
         timestamp: timestamp,
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.startTrackEvent(Action[action]);
@@ -46,8 +46,8 @@ export default class TelemetryProcessor {
         action: Action[action],
         actionModifier: ActionModifiers.Success,
         timestamp: timestamp || Date.now(),
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.stopTrackEvent(Action[action], TelemetryProcessor.getData(data));
@@ -60,8 +60,8 @@ export default class TelemetryProcessor {
         action: Action[action],
         actionModifier: ActionModifiers.Failed,
         timestamp: timestamp || Date.now(),
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.stopTrackEvent(Action[action], TelemetryProcessor.getData(data));
@@ -74,8 +74,8 @@ export default class TelemetryProcessor {
         action: Action[action],
         actionModifier: ActionModifiers.Cancel,
         timestamp: timestamp || Date.now(),
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.stopTrackEvent(Action[action], TelemetryProcessor.getData(data));
@@ -88,8 +88,8 @@ export default class TelemetryProcessor {
         action: Action[action],
         actionModifier: ActionModifiers.Open,
         timestamp: timestamp || Date.now(),
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.startTrackEvent(Action[action]);
@@ -103,8 +103,8 @@ export default class TelemetryProcessor {
         action: Action[action],
         actionModifier: ActionModifiers.Mark,
         timestamp: timestamp || Date.now(),
-        data: JSON.stringify(data)
-      }
+        data: JSON.stringify(data),
+      },
     });
 
     appInsights.startTrackEvent(Action[action]);
@@ -114,7 +114,7 @@ export default class TelemetryProcessor {
   private static getData(data?: any): any {
     return {
       platform: config.platform,
-      ...(data ? data : [])
+      ...(data ? data : []),
     };
   }
 }

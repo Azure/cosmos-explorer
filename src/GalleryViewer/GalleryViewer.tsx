@@ -7,7 +7,7 @@ import {
   GalleryTab,
   GalleryViewerComponent,
   GalleryViewerComponentProps,
-  SortBy
+  SortBy,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
@@ -24,7 +24,7 @@ const onInit = async () => {
     searchText: galleryViewerProps.searchText,
     onSelectedTabChange: undefined,
     onSortByChange: undefined,
-    onSearchTextChange: undefined
+    onSearchTextChange: undefined,
   };
 
   ReactDOM.render(<GalleryViewerComponent {...props} />, document.getElementById("galleryContent"));

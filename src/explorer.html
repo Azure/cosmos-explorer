@@ -10,7 +10,7 @@
 
   <body>
     <div class="flexContainer">
-      <div id="divExplorer" class="flexContainer hideOverflows" style="display: none">
+      <div id="divExplorer" class="flexContainer hideOverflows" style="display: none;">
         <!-- Main Command Bar - Start -->
         <div data-bind="react: commandBarComponentAdapter"></div>
         <!-- Main Command Bar - End -->
@@ -129,10 +129,10 @@
                   </div>
                   <!-- Collections Window Title/Command Bar - End  -->
                   <!-- ko if: !isAuthWithResourceToken() -->
-                  <div style="overflow-y: auto" data-bind="react:resourceTree"></div>
+                  <div style="overflow-y: auto;" data-bind="react:resourceTree"></div>
                   <!-- /ko -->
                   <!-- ko if: isAuthWithResourceToken() -->
-                  <div style="overflow-y: auto" data-bind="react:resourceTreeForResourceToken"></div>
+                  <div style="overflow-y: auto;" data-bind="react:resourceTreeForResourceToken"></div>
                   <!-- /ko -->
                 </div>
                 <!--  Collections Window - End -->
@@ -458,7 +458,7 @@
       <div
         id="dataAccessTokenModal"
         class="dataAccessTokenModal"
-        style="display: none"
+        style="display: none;"
         data-bind="visible: shouldShowDataAccessExpiryDialog"
       >
         <div class="dataAccessTokenModalContent">
@@ -470,7 +470,7 @@
       <div
         id="contextSwitchPrompt"
         class="dataAccessTokenModal"
-        style="display: none"
+        style="display: none;"
         data-bind="visible: shouldShowContextSwitchPrompt"
       >
         <div class="dataAccessTokenModalContent">

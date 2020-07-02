@@ -12,14 +12,14 @@ const autoPilotTiers: Array<AutopilotTier> = [
   AutopilotTier.Tier1,
   AutopilotTier.Tier2,
   AutopilotTier.Tier3,
-  AutopilotTier.Tier4
+  AutopilotTier.Tier4,
 ];
 
 const autoPilotTierTextMap = {
   [AutopilotTier.Tier1]: Constants.AutoPilot.tier1Text,
   [AutopilotTier.Tier2]: Constants.AutoPilot.tier2Text,
   [AutopilotTier.Tier3]: Constants.AutoPilot.tier3Text,
-  [AutopilotTier.Tier4]: Constants.AutoPilot.tier4Text
+  [AutopilotTier.Tier4]: Constants.AutoPilot.tier4Text,
 };
 
 export function isAutoPilotOfferUpgradedToV3(offer: AutoPilotOfferSettings): boolean {

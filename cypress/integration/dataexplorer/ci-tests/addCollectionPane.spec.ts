@@ -29,7 +29,7 @@ context("Emulator - createDatabase", () => {
 
     cy.get(".createNewDatabaseOrUseExisting")
       .should("have.length", 2)
-      .and(input => {
+      .and((input) => {
         expect(input.get(0).textContent, "first item").contains("Create new");
         expect(input.get(1).textContent, "second item").contains("Use existing");
       });

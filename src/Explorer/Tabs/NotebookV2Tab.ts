@@ -45,7 +45,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
         connectionInfo: this.container.notebookServerInfo(),
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
-        contentProvider: this.container.notebookManager?.notebookContentProvider
+        contentProvider: this.container.notebookManager?.notebookContentProvider,
       });
     }
 
@@ -59,7 +59,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
       contentItem: options.notebookContentItem,
       notebooksBasePath: this.container.getNotebookBasePath(),
       notebookClient: NotebookTabV2.clientManager,
-      onUpdateKernelInfo: this.onKernelUpdate
+      onUpdateKernelInfo: this.onKernelUpdate,
     });
 
     this.selectedSparkPool = ko.observable<string>(null);
@@ -152,7 +152,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
                 commandButtonLabel: saveLabel,
                 hasPopup: false,
                 disabled: false,
-                ariaLabel: saveLabel
+                ariaLabel: saveLabel,
               },
               {
                 iconName: "PublishContent",
@@ -160,10 +160,10 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
                 commandButtonLabel: publishLabel,
                 hasPopup: false,
                 disabled: false,
-                ariaLabel: publishLabel
-              }
+                ariaLabel: publishLabel,
+              },
             ]
-          : undefined
+          : undefined,
       },
       {
         iconSrc: null,
@@ -186,10 +186,10 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
               dropdownItemKey: kernel.name,
               hasPopup: false,
               disabled: false,
-              ariaLabel: kernel.displayName
+              ariaLabel: kernel.displayName,
             } as ViewModels.NavbarButtonConfig)
         ),
-        ariaLabel: kernelLabel
+        ariaLabel: kernelLabel,
       },
       {
         iconSrc: RunIcon,
@@ -213,7 +213,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: runActiveCellLabel,
             hasPopup: false,
             disabled: false,
-            ariaLabel: runActiveCellLabel
+            ariaLabel: runActiveCellLabel,
           },
           {
             iconSrc: RunAllIcon,
@@ -225,7 +225,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: runAllLabel,
             hasPopup: false,
             disabled: false,
-            ariaLabel: runAllLabel
+            ariaLabel: runAllLabel,
           },
           {
             iconSrc: InterruptKernelIcon,
@@ -234,7 +234,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: interruptKernelLabel,
             hasPopup: false,
             disabled: false,
-            ariaLabel: interruptKernelLabel
+            ariaLabel: interruptKernelLabel,
           },
           {
             iconSrc: KillKernelIcon,
@@ -243,7 +243,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: killKernelLabel,
             hasPopup: false,
             disabled: false,
-            ariaLabel: killKernelLabel
+            ariaLabel: killKernelLabel,
           },
           {
             iconSrc: RestartIcon,
@@ -252,9 +252,9 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: restartKernelLabel,
             hasPopup: false,
             disabled: false,
-            ariaLabel: restartKernelLabel
-          }
-        ]
+            ariaLabel: restartKernelLabel,
+          },
+        ],
       },
       {
         iconSrc: ClearAllOutputsIcon,
@@ -263,7 +263,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
         commandButtonLabel: clearLabel,
         hasPopup: false,
         disabled: false,
-        ariaLabel: clearLabel
+        ariaLabel: clearLabel,
       },
       {
         iconSrc: NewCellIcon,
@@ -272,7 +272,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
         commandButtonLabel: newCellLabel,
         ariaLabel: newCellLabel,
         hasPopup: false,
-        disabled: false
+        disabled: false,
       },
       CommandBarComponentButtonFactory.createDivider(),
       {
@@ -296,7 +296,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             ariaLabel: codeLabel,
             dropdownItemKey: cellCodeType,
             hasPopup: false,
-            disabled: false
+            disabled: false,
           },
           {
             iconSrc: null,
@@ -306,7 +306,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             ariaLabel: markdownLabel,
             dropdownItemKey: cellMarkdownType,
             hasPopup: false,
-            disabled: false
+            disabled: false,
           },
           {
             iconSrc: null,
@@ -316,9 +316,9 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             ariaLabel: rawLabel,
             dropdownItemKey: cellRawType,
             hasPopup: false,
-            disabled: false
-          }
-        ]
+            disabled: false,
+          },
+        ],
       },
       {
         iconSrc: CopyIcon,
@@ -336,7 +336,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: copyLabel,
             ariaLabel: copyLabel,
             hasPopup: false,
-            disabled: false
+            disabled: false,
           },
           {
             iconSrc: CutIcon,
@@ -345,7 +345,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: cutLabel,
             ariaLabel: cutLabel,
             hasPopup: false,
-            disabled: false
+            disabled: false,
           },
           {
             iconSrc: PasteIcon,
@@ -354,10 +354,10 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
             commandButtonLabel: pasteLabel,
             ariaLabel: pasteLabel,
             hasPopup: false,
-            disabled: false
-          }
-        ]
-      }
+            disabled: false,
+          },
+        ],
+      },
       // TODO: Uncomment when undo/redo is reimplemented in nteract
     ];
 
@@ -381,8 +381,8 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
           },
           onCreateNewSparkPoolClicked: (workspaceResourceId: string) => {
             this.container.createSparkPool(workspaceResourceId);
-          }
-        }
+          },
+        },
       };
       buttons.splice(1, 0, arcadiaWorkspaceDropdown);
     }
@@ -402,9 +402,9 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     this.container &&
       this.container.arcadiaWorkspaces &&
       this.container.arcadiaWorkspaces() &&
-      this.container.arcadiaWorkspaces().forEach(async workspace => {
+      this.container.arcadiaWorkspaces().forEach(async (workspace) => {
         if (workspace && workspace.name && workspace.sparkPools) {
-          const selectedPoolIndex = _.findIndex(workspace.sparkPools, pool => pool && pool.name === item.text);
+          const selectedPoolIndex = _.findIndex(workspace.sparkPools, (pool) => pool && pool.name === item.text);
           if (selectedPoolIndex >= 0) {
             const selectedPool = workspace.sparkPools[selectedPoolIndex];
             if (selectedPool && selectedPool.name) {
@@ -414,9 +414,9 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
                 endpoints: [
                   {
                     endpoint: `https://${workspace.name}.${config.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
-                    kind: DataModels.SparkClusterEndpointKind.Livy
-                  }
-                ]
+                    kind: DataModels.SparkClusterEndpointKind.Livy,
+                  },
+                ],
               });
               this.selectedSparkPool(item.text);
               await this.reconfigureServiceEndpoints();
@@ -429,7 +429,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
   };
 
   private onKernelUpdate = async () => {
-    await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName()).catch(reason => {
+    await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName()).catch((reason) => {
       /* Erroring is ok here */
     });
     this.updateNavbarWithTabsButtons();
@@ -455,7 +455,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {
       databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
-      dataExplorerArea: Areas.Notebook
+      dataExplorerArea: Areas.Notebook,
     });
   }
 }

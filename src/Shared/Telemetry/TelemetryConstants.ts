@@ -80,7 +80,7 @@ export enum Action {
   NotebooksGitHubManualRepoAdd,
   NotebooksGitHubManageRepo,
   NotebooksGitHubCommit,
-  NotebooksGitHubDisconnect
+  NotebooksGitHubDisconnect,
 }
 
 export class ActionModifiers {
@@ -124,7 +124,7 @@ export enum SourceBlade {
   RpcProvider,
   ScaleCollection,
   ScriptExplorer,
-  Keys
+  Keys,
 }
 
 export class BladeLoadRequirements {

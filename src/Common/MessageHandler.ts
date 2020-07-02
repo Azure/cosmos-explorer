@@ -46,7 +46,7 @@ export class MessageHandler {
     let cachedDataPromise: CachedDataPromise<TResponseDataModel> = {
       deferred: Q.defer<TResponseDataModel>(),
       startTime: new Date(),
-      id: _.uniqueId()
+      id: _.uniqueId(),
     };
     MessageHandler.RequestMap[cachedDataPromise.id] = cachedDataPromise;
     MessageHandler.sendMessage({ type: messageType, params: params, id: cachedDataPromise.id });
@@ -63,7 +63,7 @@ export class MessageHandler {
       window.parent.postMessage(
         {
           signature: "pcIframe",
-          data: data
+          data: data,
         },
         window.document.referrer
       );

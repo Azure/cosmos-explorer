@@ -27,7 +27,7 @@ export class DocumentsTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: DocumentsTabTemplate
+      template: DocumentsTabTemplate,
     };
   }
 }
@@ -36,7 +36,7 @@ export class ConflictsTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: ConflictsTabTemplate
+      template: ConflictsTabTemplate,
     };
   }
 }
@@ -45,7 +45,7 @@ export class GraphTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: GraphTabTemplate
+      template: GraphTabTemplate,
     };
   }
 }
@@ -54,7 +54,7 @@ export class SparkMasterTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: SparkMasterTabTemplate
+      template: SparkMasterTabTemplate,
     };
   }
 }
@@ -63,7 +63,7 @@ export class NotebookV2Tab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: NotebookV2TabTemplate
+      template: NotebookV2TabTemplate,
     };
   }
 }
@@ -72,7 +72,7 @@ export class TerminalTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: TerminalTabTemplate
+      template: TerminalTabTemplate,
     };
   }
 }
@@ -81,7 +81,7 @@ export class MongoDocumentsTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: MongoDocumentsTabTemplate
+      template: MongoDocumentsTabTemplate,
     };
   }
 }
@@ -90,7 +90,7 @@ export class MongoQueryTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: MongoQueryTabTemplate
+      template: MongoQueryTabTemplate,
     };
   }
 }
@@ -99,7 +99,7 @@ export class MongoShellTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: MongoShellTabTemplate
+      template: MongoShellTabTemplate,
     };
   }
 }
@@ -108,7 +108,7 @@ export class QueryTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: QueryTabTemplate
+      template: QueryTabTemplate,
     };
   }
 }
@@ -117,7 +117,7 @@ export class QueryTablesTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: QueryTablesTabTemplate
+      template: QueryTablesTabTemplate,
     };
   }
 }
@@ -126,7 +126,7 @@ export class SettingsTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: SettingsTabTemplate
+      template: SettingsTabTemplate,
     };
   }
 }
@@ -135,7 +135,7 @@ export class DatabaseSettingsTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: DatabaseSettingsTabTemplate
+      template: DatabaseSettingsTabTemplate,
     };
   }
 }
@@ -144,7 +144,7 @@ export class StoredProcedureTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: StoredProcedureTabTemplate
+      template: StoredProcedureTabTemplate,
     };
   }
 }
@@ -153,7 +153,7 @@ export class TriggerTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: TriggerTabTemplate
+      template: TriggerTabTemplate,
     };
   }
 }
@@ -162,7 +162,7 @@ export class UserDefinedFunctionTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: UserDefinedFunctionTabTemplate
+      template: UserDefinedFunctionTabTemplate,
     };
   }
 }
@@ -171,7 +171,7 @@ export class GalleryTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: GalleryTabTemplate
+      template: GalleryTabTemplate,
     };
   }
 }
@@ -180,7 +180,7 @@ export class NotebookViewerTab {
   constructor() {
     return {
       viewModel: TabComponent,
-      template: NotebookViewerTabTemplate
+      template: NotebookViewerTabTemplate,
     };
   }
 }

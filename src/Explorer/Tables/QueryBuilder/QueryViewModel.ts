@@ -62,7 +62,7 @@ export default class QueryViewModel {
         this.topValue() !== this.unchangedSaveTop()
     );
 
-    this.queryBuilderViewModel().clauseArray.subscribe(value => {
+    this.queryBuilderViewModel().clauseArray.subscribe((value) => {
       this.setFilter();
     });
 
@@ -154,7 +154,7 @@ export default class QueryViewModel {
       );
     })
     .extend({
-      notify: "always"
+      notify: "always",
     });
 
   public runQuery = (): DataTables.DataTable => {

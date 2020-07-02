@@ -37,7 +37,7 @@ export default class NewVertexPane extends ContextualPaneBase implements ViewMod
 
     this.tempVertexData({
       label: "",
-      properties: <ViewModels.InputProperty[]>[]
+      properties: <ViewModels.InputProperty[]>[],
     });
     this.partitionKeyProperty(null);
   }

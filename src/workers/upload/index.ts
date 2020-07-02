@@ -19,7 +19,7 @@ onerror = (event: ProgressEvent) => {
       numUploadsFailed: numUploadsFailed,
       uploadDetails: transformDetailsMap(fileUploadDetails),
       // TODO: Typescript complains about event.error below
-      runtimeError: (event as any).error.message
+      runtimeError: (event as any).error.message,
     },
     undefined
   );
@@ -42,14 +42,14 @@ onmessage = (event: MessageEvent) => {
         fileName: files[i].name,
         numSucceeded: 0,
         numFailed: 0,
-        errors: []
+        errors: [],
       };
       uploadFile(files[i]);
     }
   } else {
     postMessage(
       {
-        runtimeError: "No files specified"
+        runtimeError: "No files specified",
       },
       undefined
     );
@@ -82,11 +82,11 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
         .database(databaseId)
         .container(containerId)
         .items.create(documentContent)
-        .then(savedDoc => {
+        .then((savedDoc) => {
           fileUploadDetails[fileName].numSucceeded++;
           numUploadsSuccessful++;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           recordUploadDetailErrorForFile(fileName, JSON.stringify(error));
           numUploadsFailed++;
@@ -118,7 +118,7 @@ function transmitResultIfUploadComplete(): void {
       {
         numUploadsSuccessful: numUploadsSuccessful,
         numUploadsFailed: numUploadsFailed,
-        uploadDetails: transformDetailsMap(fileUploadDetails)
+        uploadDetails: transformDetailsMap(fileUploadDetails),
       },
       undefined
     );

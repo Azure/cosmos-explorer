@@ -11,7 +11,7 @@ export default class HostedExplorerFactory {
     const explorer = new Explorer({
       documentClientUtility: documentClientUtility,
       notificationsClient: new NotificationsClient(),
-      isEmulator: false
+      isEmulator: false,
     });
 
     return explorer;

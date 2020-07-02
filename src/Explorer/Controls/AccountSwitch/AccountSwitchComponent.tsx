@@ -34,13 +34,13 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
       items: [
         {
           key: "switchSubscription",
-          onRender: this._renderSubscriptionDropdown.bind(this)
+          onRender: this._renderSubscriptionDropdown.bind(this),
         },
         {
           key: "switchAccount",
-          onRender: this._renderAccountDropDown.bind(this)
-        }
-      ]
+          onRender: this._renderAccountDropDown.bind(this),
+        },
+      ],
     };
 
     const buttonStyles: IButtonStyles = {
@@ -51,27 +51,27 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
         paddingLeft: 10,
         marginRight: 5,
         backgroundColor: StyleConstants.BaseDark,
-        color: StyleConstants.BaseLight
+        color: StyleConstants.BaseLight,
       },
       rootHovered: {
         backgroundColor: StyleConstants.BaseHigh,
-        color: StyleConstants.BaseLight
+        color: StyleConstants.BaseLight,
       },
       rootFocused: {
         backgroundColor: StyleConstants.BaseHigh,
-        color: StyleConstants.BaseLight
+        color: StyleConstants.BaseLight,
       },
       rootPressed: {
         backgroundColor: StyleConstants.BaseHigh,
-        color: StyleConstants.BaseLight
+        color: StyleConstants.BaseLight,
       },
       rootExpanded: {
         backgroundColor: StyleConstants.BaseHigh,
-        color: StyleConstants.BaseLight
+        color: StyleConstants.BaseLight,
       },
       textContainer: {
-        flexGrow: "initial"
-      }
+        flexGrow: "initial",
+      },
     };
 
     const buttonProps: IButtonProps = {
@@ -79,7 +79,7 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
       menuProps: menuProps,
       styles: buttonStyles,
       className: "accountSwitchButton",
-      id: "accountSwitchButton"
+      id: "accountSwitchButton",
     };
 
     return <DefaultButton {...buttonProps} />;
@@ -87,11 +87,11 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
 
   private _renderSubscriptionDropdown(): JSX.Element {
     const { subscriptions, selectedSubscriptionId, isLoadingSubscriptions } = this.props;
-    const options: IDropdownOption[] = subscriptions.map(sub => {
+    const options: IDropdownOption[] = subscriptions.map((sub) => {
       return {
         key: sub.subscriptionId,
         text: sub.displayName,
-        data: sub
+        data: sub,
       };
     });
 
@@ -109,8 +109,8 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
       defaultSelectedKey: selectedSubscriptionId,
       placeholder: placeHolderText,
       styles: {
-        callout: "accountSwitchSubscriptionDropdownMenu"
-      }
+        callout: "accountSwitchSubscriptionDropdownMenu",
+      },
     };
 
     return <Dropdown {...dropdownProps} />;
@@ -126,11 +126,11 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
 
   private _renderAccountDropDown(): JSX.Element {
     const { accounts, selectedAccountName, isLoadingAccounts } = this.props;
-    const options: IDropdownOption[] = accounts.map(account => {
+    const options: IDropdownOption[] = accounts.map((account) => {
       return {
         key: account.name,
         text: account.name,
-        data: account
+        data: account,
       };
     });
     // Fabric UI will also try to select the first non-disabled option from dropdown.
@@ -138,7 +138,7 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
     options.unshift({
       key: "select from list",
       text: "Select Cosmos DB account from list",
-      data: undefined
+      data: undefined,
     });
 
     const placeHolderText = isLoadingAccounts
@@ -155,8 +155,8 @@ export class AccountSwitchComponent extends React.Component<AccountSwitchCompone
       defaultSelectedKey: selectedAccountName,
       placeholder: placeHolderText,
       styles: {
-        callout: "accountSwitchAccountDropdownMenu"
-      }
+        callout: "accountSwitchAccountDropdownMenu",
+      },
     };
 
     return <Dropdown {...dropdownProps} />;

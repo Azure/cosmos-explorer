@@ -237,18 +237,18 @@ export class GitHubClient {
     try {
       const response = (await this.ocktokit.graphql(repositoryQuery, {
         owner,
-        repo
+        repo,
       } as RepositoryQueryParams)) as RepositoryQueryResponse;
 
       return {
         status: HttpStatusCodes.OK,
-        data: GitHubClient.toGitHubRepo(response.repository)
+        data: GitHubClient.toGitHubRepo(response.repository),
       };
     } catch (error) {
       GitHubClient.log(Logger.logError, `GitHubClient.getRepoAsync failed: ${error}`);
       return {
         status: GitHubClient.SelfErrorCode,
-        data: undefined
+        data: undefined,
       };
     }
   }
@@ -257,19 +257,19 @@ export class GitHubClient {
     try {
       const response = (await this.ocktokit.graphql(repositoriesQuery, {
         pageSize,
-        endCursor
+        endCursor,
       } as RepositoriesQueryParams)) as RepositoriesQueryResponse;
 
       return {
         status: HttpStatusCodes.OK,
-        data: response.viewer.repositories.nodes.map(repo => GitHubClient.toGitHubRepo(repo)),
-        pageInfo: GitHubClient.toGitHubPageInfo(response.viewer.repositories.pageInfo)
+        data: response.viewer.repositories.nodes.map((repo) => GitHubClient.toGitHubRepo(repo)),
+        pageInfo: GitHubClient.toGitHubPageInfo(response.viewer.repositories.pageInfo),
       };
     } catch (error) {
       GitHubClient.log(Logger.logError, `GitHubClient.getReposAsync failed: ${error}`);
       return {
         status: GitHubClient.SelfErrorCode,
-        data: undefined
+        data: undefined,
       };
     }
   }
@@ -286,19 +286,19 @@ export class GitHubClient {
         repo,
         refPrefix: "refs/heads/",
         pageSize,
-        endCursor
+        endCursor,
       } as BranchesQueryParams)) as BranchesQueryResponse;
 
       return {
         status: HttpStatusCodes.OK,
-        data: response.repository.refs.nodes.map(ref => GitHubClient.toGitHubBranch(ref)),
-        pageInfo: GitHubClient.toGitHubPageInfo(response.repository.refs.pageInfo)
+        data: response.repository.refs.nodes.map((ref) => GitHubClient.toGitHubBranch(ref)),
+        pageInfo: GitHubClient.toGitHubPageInfo(response.repository.refs.pageInfo),
       };
     } catch (error) {
       GitHubClient.log(Logger.logError, `GitHubClient.getBranchesAsync failed: ${error}`);
       return {
         status: GitHubClient.SelfErrorCode,
-        data: undefined
+        data: undefined,
       };
     }
   }
@@ -319,7 +319,7 @@ export class GitHubClient {
           repo,
           ref: `refs/heads/${branch}`,
           path: path || undefined,
-          objectExpression: `refs/heads/${branch}:${path || ""}`
+          objectExpression: `refs/heads/${branch}:${path || ""}`,
         } as ContentsQueryParams)) as ContentsQueryResponse;
       }
 
@@ -330,7 +330,7 @@ export class GitHubClient {
       const gitHubCommit = GitHubClient.toGitHubCommit(response.repository.ref.target.history.nodes[0]);
 
       if (Array.isArray(entries)) {
-        data = entries.map(entry =>
+        data = entries.map((entry) =>
           GitHubClient.toGitHubFile(
             entry,
             (path && UrlUtility.createUri(path, entry.name)) || entry.name,
@@ -344,7 +344,7 @@ export class GitHubClient {
           {
             name: NotebookUtil.getName(path),
             type: "blob",
-            object: response.repository.object
+            object: response.repository.object,
           },
           path,
           gitHubRepo,
@@ -355,13 +355,13 @@ export class GitHubClient {
 
       return {
         status: HttpStatusCodes.OK,
-        data
+        data,
       };
     } catch (error) {
       GitHubClient.log(Logger.logError, `GitHubClient.getContentsAsync failed: ${error}`);
       return {
         status: GitHubClient.SelfErrorCode,
-        data: undefined
+        data: undefined,
       };
     }
   }
@@ -382,7 +382,7 @@ export class GitHubClient {
       path,
       message,
       content,
-      sha
+      sha,
     });
 
     let data: IGitHubCommit;
@@ -407,8 +407,8 @@ export class GitHubClient {
       repo,
       ref,
       headers: {
-        "If-None-Match": "" // disable 60s cache
-      }
+        "If-None-Match": "", // disable 60s cache
+      },
     });
 
     const currentTree = await this.ocktokit.git.getTree({
@@ -417,13 +417,13 @@ export class GitHubClient {
       tree_sha: currentRef.data.object.sha,
       recursive: "1",
       headers: {
-        "If-None-Match": "" // disable 60s cache
-      }
+        "If-None-Match": "", // disable 60s cache
+      },
     });
 
     // API infers tree from paths so we need to filter them out
-    const currentTreeItems = currentTree.data.tree.filter(item => item.type !== "tree");
-    currentTreeItems.forEach(item => {
+    const currentTreeItems = currentTree.data.tree.filter((item) => item.type !== "tree");
+    currentTreeItems.forEach((item) => {
       if (item.path === newPath) {
         throw new Error("File with the path already exists");
       }
@@ -432,12 +432,12 @@ export class GitHubClient {
     const updatedTree = await this.ocktokit.git.createTree({
       owner,
       repo,
-      tree: currentTreeItems.map(item => ({
+      tree: currentTreeItems.map((item) => ({
         path: item.path === oldPath ? newPath : item.path,
         mode: item.mode as "100644" | "100755" | "040000" | "160000" | "120000",
         type: item.type as "blob" | "tree" | "commit",
-        sha: item.sha
-      }))
+        sha: item.sha,
+      })),
     });
 
     const newCommit = await this.ocktokit.git.createCommit({
@@ -445,19 +445,19 @@ export class GitHubClient {
       repo,
       message,
       parents: [currentRef.data.object.sha],
-      tree: updatedTree.data.sha
+      tree: updatedTree.data.sha,
     });
 
     const updatedRef = await this.ocktokit.git.updateRef({
       owner,
       repo,
       ref,
-      sha: newCommit.data.sha
+      sha: newCommit.data.sha,
     });
 
     return {
       status: updatedRef.status,
-      data: GitHubClient.toGitHubCommit(newCommit.data)
+      data: GitHubClient.toGitHubCommit(newCommit.data),
     };
   }
 
@@ -468,7 +468,7 @@ export class GitHubClient {
       path: file.path,
       message,
       sha: file.sha,
-      branch: file.branch.name
+      branch: file.branch.name,
     });
 
     let data: IGitHubCommit;
@@ -485,11 +485,11 @@ export class GitHubClient {
       repo,
       file_sha: sha,
       mediaType: {
-        format: "raw"
+        format: "raw",
       },
       headers: {
-        "If-None-Match": "" // disable 60s cache
-      }
+        "If-None-Match": "", // disable 60s cache
+      },
     });
 
     return { status: response.status, data: <string>(<unknown>response.data) };
@@ -502,11 +502,11 @@ export class GitHubClient {
         debug: () => {},
         info: (message?: any) => GitHubClient.log(Logger.logInfo, message),
         warn: (message?: any) => GitHubClient.log(Logger.logWarning, message),
-        error: (message?: any) => GitHubClient.log(Logger.logError, message)
-      }
+        error: (message?: any) => GitHubClient.log(Logger.logError, message),
+      },
     });
 
-    this.ocktokit.hook.error("request", error => {
+    this.ocktokit.hook.error("request", (error) => {
       this.errorCallback(error);
       throw error;
     });
@@ -523,13 +523,13 @@ export class GitHubClient {
     return {
       owner: object.owner.login,
       name: object.name,
-      private: object.isPrivate
+      private: object.isPrivate,
     };
   }
 
   private static toGitHubBranch(object: Ref): IGitHubBranch {
     return {
-      name: object.name
+      name: object.name,
     };
   }
 
@@ -544,14 +544,14 @@ export class GitHubClient {
     return {
       sha: object.sha || object.oid,
       message: object.message,
-      commitDate: object.committer.date
+      commitDate: object.committer.date,
     };
   }
 
   private static toGitHubPageInfo(object: PageInfo): IGitHubPageInfo {
     return {
       endCursor: object.endCursor,
-      hasNextPage: object.hasNextPage
+      hasNextPage: object.hasNextPage,
     };
   }
 
@@ -574,7 +574,7 @@ export class GitHubClient {
       branch,
       commit,
       size: entry.object?.byteSize,
-      sha: entry.object?.oid
+      sha: entry.object?.oid,
     };
   }
 }

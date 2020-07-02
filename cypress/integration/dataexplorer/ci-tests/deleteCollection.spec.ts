@@ -14,25 +14,18 @@ context("Emulator - deleteCollection", () => {
   });
 
   it("Delete a collection", () => {
-    cy.get(".databaseId")
-      .last()
-      .click();
+    cy.get(".databaseId").last().click();
 
     cy.get(".collectionList")
       .last()
-      .then($id => {
+      .then(($id) => {
         const collectionId = $id.text();
 
         cy.get('span[data-test="collectionEllipsisMenu"]').should("exist");
 
-        cy.get('span[data-test="collectionEllipsisMenu"]')
-          .invoke("show")
-          .last()
-          .click();
+        cy.get('span[data-test="collectionEllipsisMenu"]').invoke("show").last().click();
 
-        cy.get('div[data-test="collectionContextMenu"]')
-          .contains("Delete Container")
-          .click({ force: true });
+        cy.get('div[data-test="collectionContextMenu"]').contains("Delete Container").click({ force: true });
 
         cy.get('input[data-test="confirmCollectionId"]').type(collectionId.trim());
 

@@ -14,7 +14,7 @@
  */
 
 export default class MongoUtility {
-  public static tojson = function(x: any, indent: string, nolint: boolean) {
+  public static tojson = function (x: any, indent: string, nolint: boolean) {
     if (x === null || x === undefined) {
       return String(x);
     }
@@ -71,7 +71,7 @@ export default class MongoUtility {
     }
   };
 
-  private static tojsonObject = function(x: any, indent: string, nolint: boolean) {
+  private static tojsonObject = function (x: any, indent: string, nolint: boolean) {
     var lineEnding = nolint ? " " : "\n";
     var tabSpace = nolint ? "" : "\t";
     indent = indent || "";
@@ -114,7 +114,7 @@ export default class MongoUtility {
       }
     }
     // Add proper line endings, indents, and commas to each line
-    s += $.map(pairs, function(pair) {
+    s += $.map(pairs, function (pair) {
       return lineEnding + indent + pair;
     }).join(",");
     s += lineEnding;
@@ -124,7 +124,7 @@ export default class MongoUtility {
     return s + indent + "}";
   };
 
-  private static tojsonArray = function(a: any, indent: string, nolint: boolean) {
+  private static tojsonArray = function (a: any, indent: string, nolint: boolean) {
     if (a.length === 0) {
       return "[ ]";
     }
@@ -151,7 +151,7 @@ export default class MongoUtility {
     return s;
   };
 
-  private static hasDefinedProperty = function(obj: any, prop: string): boolean {
+  private static hasDefinedProperty = function (obj: any, prop: string): boolean {
     if (Object.getPrototypeOf === undefined || Object.getPrototypeOf(obj) === null) {
       return false;
     } else if (obj.hasOwnProperty(prop)) {

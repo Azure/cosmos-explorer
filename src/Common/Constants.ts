@@ -140,7 +140,7 @@ export class Spark {
     "Cosmos.Spark.D8s": "D8s / 8 cores / 32GB RAM",
     "Cosmos.Spark.D16s": "D16s / 16 cores / 64GB RAM",
     "Cosmos.Spark.D32s": "D32s / 32 cores / 128GB RAM",
-    "Cosmos.Spark.D64s": "D64s / 64 cores / 256GB RAM"
+    "Cosmos.Spark.D64s": "D64s / 64 cores / 256GB RAM",
   });
 }
 
@@ -155,7 +155,7 @@ export class MongoDBAccounts {
 
 export enum MongoBackendEndpointType {
   local,
-  remote
+  remote,
 }
 
 export class MongoBackend {
@@ -180,14 +180,14 @@ export class MongoBackend {
     koreasouth: MongoBackend.southEastAsiaEndpoint,
     southeastasia: MongoBackend.southEastAsiaEndpoint,
     southindia: MongoBackend.southEastAsiaEndpoint,
-    westindia: MongoBackend.southEastAsiaEndpoint
+    westindia: MongoBackend.southEastAsiaEndpoint,
   };
 
   public static endpointsByEnvironment: any = {
     default: MongoBackendEndpointType.local,
     localhost: MongoBackendEndpointType.local,
     prod1: MongoBackendEndpointType.remote,
-    prod2: MongoBackendEndpointType.remote
+    prod2: MongoBackendEndpointType.remote,
   };
 }
 
@@ -238,7 +238,7 @@ export class CassandraBackend {
     chinaeast: CassandraBackend.mc_default,
     chinaeast2: CassandraBackend.mc_default,
     chinanorth: CassandraBackend.mc_default,
-    chinanorth2: CassandraBackend.mc_default
+    chinanorth2: CassandraBackend.mc_default,
   };
 
   public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
@@ -368,7 +368,7 @@ export class HttpStatusCodes {
     HttpStatusCodes.InternalServerError, // TODO: Handle all 500s on Portal backend and remove from retries list
     HttpStatusCodes.BadGateway,
     HttpStatusCodes.ServiceUnavailable,
-    HttpStatusCodes.GatewayTimeout
+    HttpStatusCodes.GatewayTimeout,
   ];
 }
 
@@ -422,10 +422,7 @@ export class HashRoutePrefixes {
   public static docsWithIds(databaseId: string, collectionId: string, docId: string) {
     const transformedDatabasePrefix: string = this.docs.replace("{db_id}", databaseId);
 
-    return transformedDatabasePrefix
-      .replace("{coll_id}", collectionId)
-      .replace("{doc_id}", docId)
-      .replace("/", ""); // strip the first slash since hasher adds it
+    return transformedDatabasePrefix.replace("{coll_id}", collectionId).replace("{doc_id}", docId).replace("/", ""); // strip the first slash since hasher adds it
   }
 }
 
@@ -460,7 +457,7 @@ export class OfferVersions {
 export enum ConflictOperationType {
   Replace = "replace",
   Create = "create",
-  Delete = "delete"
+  Delete = "delete",
 }
 
 export class AutoPilot {
@@ -473,28 +470,28 @@ export class AutoPilot {
     [AutopilotTier.Tier1]: "Tier 1",
     [AutopilotTier.Tier2]: "Tier 2",
     [AutopilotTier.Tier3]: "Tier 3",
-    [AutopilotTier.Tier4]: "Tier 4"
+    [AutopilotTier.Tier4]: "Tier 4",
   };
 
   public static tierMaxRus = {
     [AutopilotTier.Tier1]: 2000,
     [AutopilotTier.Tier2]: 20000,
     [AutopilotTier.Tier3]: 100000,
-    [AutopilotTier.Tier4]: 500000
+    [AutopilotTier.Tier4]: 500000,
   };
 
   public static tierMinRus = {
     [AutopilotTier.Tier1]: 0,
     [AutopilotTier.Tier2]: 0,
     [AutopilotTier.Tier3]: 0,
-    [AutopilotTier.Tier4]: 0
+    [AutopilotTier.Tier4]: 0,
   };
 
   public static tierStorageInGB = {
     [AutopilotTier.Tier1]: 50,
     [AutopilotTier.Tier2]: 200,
     [AutopilotTier.Tier3]: 1000,
-    [AutopilotTier.Tier4]: 5000
+    [AutopilotTier.Tier4]: 5000,
   };
 }
 
@@ -508,7 +505,7 @@ export class DataExplorerFeatures {
 }
 
 export const DataExplorerFeaturesVersions: any = {
-  OfferCache: DataExplorerVersions.v_1_0_1
+  OfferCache: DataExplorerVersions.v_1_0_1,
 };
 
 export const EmulatorMasterKey =

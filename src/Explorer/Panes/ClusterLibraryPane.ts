@@ -25,7 +25,7 @@ export class ClusterLibraryPane extends ContextualPaneBase {
 
     this._clusterLibraryProps = ko.observable<ClusterLibraryGridProps>({
       libraryItems: [],
-      onInstalledChanged: this._onInstalledChanged
+      onInstalledChanged: this._onInstalledChanged,
     });
     this.clusterLibraryGridAdapter = new ClusterLibraryGridAdapter();
     this.clusterLibraryGridAdapter.parameters = this._clusterLibraryProps;
@@ -36,13 +36,13 @@ export class ClusterLibraryPane extends ContextualPaneBase {
   public open(): void {
     const resourceId: string = this.container.databaseAccount() && this.container.databaseAccount().id;
     Promise.all([this._getLibraries(resourceId), this._getDefaultCluster(resourceId)]).then(
-      result => {
+      (result) => {
         const [libraries, cluster] = result;
         this._originalCluster = cluster;
         const libraryItems = this._mapClusterLibraries(cluster, libraries);
         this._updateClusterLibraryGridStates({ libraryItems });
       },
-      reason => {
+      (reason) => {
         const parsedError = ErrorParserUtility.parse(reason);
         this.formErrors(parsedError[0].message);
       }
@@ -55,14 +55,14 @@ export class ClusterLibraryPane extends ContextualPaneBase {
     this.isExecuting(true);
     if (this._areLibrariesChanged()) {
       const newLibraries = this._clusterLibraryProps()
-        .libraryItems.filter(lib => lib.installed)
-        .map(lib => ({ name: lib.name }));
+        .libraryItems.filter((lib) => lib.installed)
+        .map((lib) => ({ name: lib.name }));
       this._updateClusterLibraries(resourceId, this._originalCluster, newLibraries).then(
         () => {
           this.isExecuting(false);
           this.close();
         },
-        reason => {
+        (reason) => {
           this.isExecuting(false);
           const parsedError = ErrorParserUtility.parse(reason);
           this.formErrors(parsedError[0].message);
@@ -82,7 +82,7 @@ export class ClusterLibraryPane extends ContextualPaneBase {
 
   private _onInstalledChanged = (libraryName: string, installed: boolean): void => {
     const items = this._clusterLibraryProps().libraryItems;
-    const library = _.find(items, item => item.name === libraryName);
+    const library = _.find(items, (item) => item.name === libraryName);
     library.installed = installed;
     this._clusterLibraryProps.valueHasMutated();
   };
@@ -90,8 +90,8 @@ export class ClusterLibraryPane extends ContextualPaneBase {
   private _areLibrariesChanged(): boolean {
     const original = this._originalCluster.properties && this._originalCluster.properties.libraries;
     const changed = this._clusterLibraryProps()
-      .libraryItems.filter(lib => lib.installed)
-      .map(lib => lib.name);
+      .libraryItems.filter((lib) => lib.installed)
+      .map((lib) => lib.name);
     if (original.length !== changed.length) {
       return true;
     }
@@ -107,9 +107,9 @@ export class ClusterLibraryPane extends ContextualPaneBase {
 
   private _mapClusterLibraries(cluster: SparkCluster, libraries: Library[]): ClusterLibraryItem[] {
     const clusterLibraries = cluster && cluster.properties && cluster.properties.libraries;
-    const libraryItems = libraries.map(lib => ({
+    const libraryItems = libraries.map((lib) => ({
       ...lib,
-      installed: clusterLibraries.some(clusterLib => clusterLib.name === lib.name)
+      installed: clusterLibraries.some((clusterLib) => clusterLib.name === lib.name),
     }));
     return libraryItems;
   }
@@ -186,7 +186,7 @@ export class ClusterLibraryPane extends ContextualPaneBase {
       paneTitle: this.title(),
       area: "ClusterLibraryPane/_updateClusterLibraries",
       originalCluster,
-      newLibrarys
+      newLibrarys,
     });
 
     let newCluster = originalCluster;
@@ -213,7 +213,7 @@ export class ClusterLibraryPane extends ContextualPaneBase {
         dataExplorerArea: Constants.Areas.ContextualPane,
         paneTitle: this.title(),
         area: "ClusterLibraryPane/_updateClusterLibraries",
-        cluster
+        cluster,
       });
     } catch (e) {
       NotificationConsoleUtils.logConsoleMessage(
@@ -226,7 +226,7 @@ export class ClusterLibraryPane extends ContextualPaneBase {
         dataExplorerArea: Constants.Areas.ContextualPane,
         paneTitle: this.title(),
         area: "ClusterLibraryPane/_updateClusterLibraries",
-        error: e
+        error: e,
       });
       Logger.logError(e, "Explorer/_updateClusterLibraries");
       throw e;

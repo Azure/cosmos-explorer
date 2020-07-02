@@ -10,8 +10,8 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: 24,
           PricePerRU: 0.09,
-          PricePerGB: 0.25
-        }
+          PricePerGB: 0.25,
+        },
       },
       multiMaster: {
         Currency: "USD",
@@ -19,9 +19,9 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: 24,
           PricePerRU: 0.12,
-          PricePerGB: 0.25
-        }
-      }
+          PricePerGB: 0.25,
+        },
+      },
     },
     mooncake: {
       singleMaster: {
@@ -30,8 +30,8 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: 152,
           PricePerRU: 0.57,
-          PricePerGB: 2.576
-        }
+          PricePerGB: 2.576,
+        },
       },
       multiMaster: {
         Currency: "RMB",
@@ -39,10 +39,10 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: 152,
           PricePerRU: 0.76,
-          PricePerGB: 2.576
-        }
-      }
-    }
+          PricePerGB: 2.576,
+        },
+      },
+    },
   };
 
   public static HourlyPricing = {
@@ -53,8 +53,8 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: 24 / hoursInAMonth,
           PricePerRU: 0.00012,
-          PricePerGB: 0.25 / hoursInAMonth
-        }
+          PricePerGB: 0.25 / hoursInAMonth,
+        },
       },
       multiMaster: {
         Currency: "USD",
@@ -62,9 +62,9 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: 24 / hoursInAMonth,
           PricePerRU: 0.00016,
-          PricePerGB: 0.25 / hoursInAMonth
-        }
-      }
+          PricePerGB: 0.25 / hoursInAMonth,
+        },
+      },
     },
     mooncake: {
       singleMaster: {
@@ -73,8 +73,8 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: AutoscalePricing.MonthlyPricing.mooncake.singleMaster.Standard.StartingPrice / hoursInAMonth, // per hour
           PricePerRU: 0.000765,
-          PricePerGB: AutoscalePricing.MonthlyPricing.mooncake.singleMaster.Standard.PricePerGB / hoursInAMonth
-        }
+          PricePerGB: AutoscalePricing.MonthlyPricing.mooncake.singleMaster.Standard.PricePerGB / hoursInAMonth,
+        },
       },
       multiMaster: {
         Currency: "RMB",
@@ -82,10 +82,10 @@ export class AutoscalePricing {
         Standard: {
           StartingPrice: AutoscalePricing.MonthlyPricing.mooncake.multiMaster.Standard.StartingPrice / hoursInAMonth, // per hour
           PricePerRU: 0.00102,
-          PricePerGB: AutoscalePricing.MonthlyPricing.mooncake.multiMaster.Standard.PricePerGB / hoursInAMonth
-        }
-      }
-    }
+          PricePerGB: AutoscalePricing.MonthlyPricing.mooncake.multiMaster.Standard.PricePerGB / hoursInAMonth,
+        },
+      },
+    },
   };
 }
 
@@ -100,8 +100,8 @@ export class OfferPricing {
       Standard: {
         StartingPrice: 24,
         PricePerRU: 0.06,
-        PricePerGB: 0.25
-      }
+        PricePerGB: 0.25,
+      },
     },
     mooncake: {
       Currency: "RMB",
@@ -112,9 +112,9 @@ export class OfferPricing {
       Standard: {
         StartingPrice: 152,
         PricePerRU: 0.3794,
-        PricePerGB: 2.576
-      }
-    }
+        PricePerGB: 2.576,
+      },
+    },
   };
   public static HourlyPricing = {
     default: {
@@ -127,8 +127,8 @@ export class OfferPricing {
         StartingPrice: 24 / hoursInAMonth, // per hour
         PricePerRU: 0.00008,
         PricePerRUPM: (10 * 2) / 1000 / hoursInAMonth, // preview price: $2 per 1000 RU/m per month -> 100 RU/s
-        PricePerGB: 0.25 / hoursInAMonth
-      }
+        PricePerGB: 0.25 / hoursInAMonth,
+      },
     },
     mooncake: {
       Currency: "RMB",
@@ -140,9 +140,9 @@ export class OfferPricing {
         StartingPrice: OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice / hoursInAMonth, // per hour
         PricePerRU: 0.00051,
         PricePerRUPM: (10 * 20) / 1000 / hoursInAMonth, // preview price: 20rmb per 1000 RU/m per month -> 100 RU/s
-        PricePerGB: OfferPricing.MonthlyPricing.mooncake.Standard.PricePerGB / hoursInAMonth
-      }
-    }
+        PricePerGB: OfferPricing.MonthlyPricing.mooncake.Standard.PricePerGB / hoursInAMonth,
+      },
+    },
   };
 }
 
@@ -190,8 +190,8 @@ export const CollectionCreationDefaults = {
     unlimited: CollectionCreation.DefaultCollectionRUs400,
     unlimitedmax: CollectionCreation.DefaultCollectionRUs1Million,
     unlimitedmin: CollectionCreation.DefaultCollectionRUs400,
-    shared: CollectionCreation.DefaultCollectionRUs400
-  }
+    shared: CollectionCreation.DefaultCollectionRUs400,
+  },
 } as const;
 
 export class IndexingPolicies {
@@ -201,9 +201,9 @@ export class IndexingPolicies {
     includedPaths: <any>[],
     excludedPaths: [
       {
-        path: "/*"
-      }
-    ]
+        path: "/*",
+      },
+    ],
   };
 
   public static AllPropertiesIndexed = {
@@ -216,17 +216,17 @@ export class IndexingPolicies {
           {
             kind: "Range",
             dataType: "Number",
-            precision: -1
+            precision: -1,
           },
           {
             kind: "Range",
             dataType: "String",
-            precision: -1
-          }
-        ]
-      }
+            precision: -1,
+          },
+        ],
+      },
     ],
-    excludedPaths: <any>[]
+    excludedPaths: <any>[],
   };
 
   // todo - remove mongo indexing policy ticket # 616274
@@ -240,29 +240,29 @@ export class IndexingPolicies {
           {
             kind: "Range",
             dataType: "Number",
-            precision: -1
+            precision: -1,
           },
           {
             kind: "Range",
             dataType: "String",
-            precision: -1
+            precision: -1,
           },
           {
             kind: "Spatial",
-            dataType: "Point"
+            dataType: "Point",
           },
           {
             kind: "Spatial",
-            dataType: "LineString"
+            dataType: "LineString",
           },
           {
             kind: "Spatial",
-            dataType: "Polygon"
-          }
-        ]
-      }
+            dataType: "Polygon",
+          },
+        ],
+      },
     ],
-    excludedPaths: <any>[]
+    excludedPaths: <any>[],
   };
 }
 
@@ -290,7 +290,7 @@ export class SubscriptionUtilMappings {
     "MSDN_2014-09-01": SubscriptionType.Benefits,
     "MSDNDevTest_2014-09-01": SubscriptionType.Benefits,
     "PayAsYouGo_2014-09-01": SubscriptionType.PAYG,
-    "Sponsored_2016-01-01": SubscriptionType.Benefits
+    "Sponsored_2016-01-01": SubscriptionType.Benefits,
   };
 
   public static FreeTierSubscriptionIds: string[] = [
@@ -299,7 +299,7 @@ export class SubscriptionUtilMappings {
     "41f6d14d-ece1-46e4-942c-02c00d67f7d6",
     "11dc62e3-77dc-4ef5-a46b-480ec6caa8fe",
     "199d0919-60bd-448e-b64d-8461a0fe9747",
-    "a57b6849-d443-44cf-a3b7-7dd07ead9401"
+    "a57b6849-d443-44cf-a3b7-7dd07ead9401",
   ];
 }
 

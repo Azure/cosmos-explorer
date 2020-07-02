@@ -11,7 +11,7 @@ describe("Main", () => {
     expect(features).toEqual({
       notebookserverurl: "https://localhost:10001/12345/notebook",
       notebookservertoken: "token",
-      enablenotebooks: "true"
+      enablenotebooks: "true",
     });
   });
 
@@ -25,7 +25,7 @@ describe("Main", () => {
       collectionId: "fakeCollectionId",
       databaseId: "fakeDatabaseId",
       partitionKey: undefined,
-      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;"
+      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;",
     });
   });
 
@@ -39,7 +39,7 @@ describe("Main", () => {
       collectionId: "fakeCollectionId",
       databaseId: "fakeDatabaseId",
       partitionKey: "fakePartitionKey",
-      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;"
+      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;",
     });
   });
 });

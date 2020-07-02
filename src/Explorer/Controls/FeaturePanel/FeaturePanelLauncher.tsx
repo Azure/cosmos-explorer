@@ -20,7 +20,7 @@ export const FeaturePanelLauncher: React.FunctionComponent = (): JSX.Element => 
     container: {
       display: "flex",
       flexFlow: "column nowrap",
-      alignItems: "stretch"
+      alignItems: "stretch",
     },
     header: [
       // tslint:disable-next-line:deprecation
@@ -32,16 +32,16 @@ export const FeaturePanelLauncher: React.FunctionComponent = (): JSX.Element => 
         display: "flex",
         alignItems: "center",
         fontWeight: FontWeights.semibold,
-        padding: "12px 12px 14px 24px"
-      }
+        padding: "12px 12px 14px 24px",
+      },
     ],
     body: {
       flex: "4 4 auto",
       overflowY: "hidden",
       marginBottom: 40,
       height: "100%",
-      display: "flex"
-    }
+      display: "flex",
+    },
   });
 
   const iconButtonStyles = {
@@ -49,11 +49,11 @@ export const FeaturePanelLauncher: React.FunctionComponent = (): JSX.Element => 
       color: theme.palette.neutralPrimary,
       marginLeft: "auto",
       marginTop: "4px",
-      marginRight: "2px"
+      marginRight: "2px",
     },
     rootHovered: {
-      color: theme.palette.neutralDark
-    }
+      color: theme.palette.neutralDark,
+    },
   };
   const cancelIcon: IIconProps = { iconName: "Cancel" };
   const hideModal = (): void => showModal(false);

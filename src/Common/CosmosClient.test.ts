@@ -9,7 +9,7 @@ describe("tokenProvider", () => {
     resourceId: "",
     resourceType: "dbs" as ResourceType,
     headers: {},
-    getAuthorizationTokenUsingMasterKey: () => ""
+    getAuthorizationTokenUsingMasterKey: () => "",
   };
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe("tokenProvider", () => {
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         json: () => "{}",
-        headers: new Map()
+        headers: new Map(),
       };
     });
   });
@@ -45,7 +45,7 @@ describe("getTokenFromAuthService", () => {
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         json: () => "{}",
-        headers: new Map()
+        headers: new Map(),
       };
     });
   });
@@ -86,8 +86,8 @@ describe("endpoint", () => {
         documentEndpoint: "bar",
         gremlinEndpoint: "foo",
         tableEndpoint: "foo",
-        cassandraEndpoint: "foo"
-      }
+        cassandraEndpoint: "foo",
+      },
     });
     expect(endpoint()).toEqual("bar");
   });

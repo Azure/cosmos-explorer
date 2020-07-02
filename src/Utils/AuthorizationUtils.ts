@@ -11,12 +11,12 @@ export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMet
   if (window.authType === AuthType.EncryptedToken) {
     return {
       header: Constants.HttpHeaders.guestAccessToken,
-      token: CosmosClient.accessToken()
+      token: CosmosClient.accessToken(),
     };
   } else {
     return {
       header: Constants.HttpHeaders.authorization,
-      token: CosmosClient.authorizationToken() || ""
+      token: CosmosClient.authorizationToken() || "",
     };
   }
 }
@@ -49,7 +49,7 @@ export function decryptJWTToken(token: string) {
   const tokenPayload = decodeURIComponent(
     atob(tokenPayloadBase64)
       .split("")
-      .map(p => "%" + ("00" + p.charCodeAt(0).toString(16)).slice(-2))
+      .map((p) => "%" + ("00" + p.charCodeAt(0).toString(16)).slice(-2))
       .join("")
   );
 

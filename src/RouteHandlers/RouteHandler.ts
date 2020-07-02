@@ -29,7 +29,7 @@ export class RouteHandler {
   public updateRouteHashLocation(hash: string): void {
     MessageHandler.sendMessage({
       type: MessageTypes.UpdateLocationHash,
-      locationHash: hash
+      locationHash: hash,
     });
   }
 }

@@ -376,7 +376,7 @@ export default class DocumentClientUtilityBase {
             JSON.stringify({
               oldOffer: offer,
               newOffer: newOffer,
-              error: error
+              error: error,
             }),
             "UpdateOffer",
             error.code
@@ -583,7 +583,7 @@ export default class DocumentClientUtilityBase {
           );
           deferred.resolve(createdStoredProcedure);
         },
-        error => {
+        (error) => {
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
             `Error while creating stored procedure for container ${collection.id()}:\n ${JSON.stringify(error)}`
@@ -620,7 +620,7 @@ export default class DocumentClientUtilityBase {
           );
           deferred.resolve(createdUserDefinedFunction);
         },
-        error => {
+        (error) => {
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
             `Error while creating user defined function for container ${collection.id()}:\n ${JSON.stringify(error)}`
@@ -1176,7 +1176,7 @@ export default class DocumentClientUtilityBase {
       }
       MessageHandler.sendMessage({
         type: MessageTypes.ForbiddenError,
-        reason: error && error.message ? error.message : error
+        reason: error && error.message ? error.message : error,
       });
     }
   }

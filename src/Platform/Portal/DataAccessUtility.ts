@@ -14,8 +14,8 @@ export class DataAccessUtility extends DataAccessUtilityBase {
   public readDatabases(options: any): Q.Promise<DataModels.Database[]> {
     return MessageHandler.sendCachedDataMessage<DataModels.Database[]>(MessageTypes.AllDatabases, [
       (<any>window).dataExplorer.databaseAccount().id,
-      Constants.ClientDefaults.portalCacheTimeoutMs
-    ]).catch(error => {
+      Constants.ClientDefaults.portalCacheTimeoutMs,
+    ]).catch((error) => {
       return super.readDatabases(options);
     });
   }
@@ -30,8 +30,8 @@ export class DataAccessUtility extends DataAccessUtilityBase {
   public readOffers(options: any): Q.Promise<DataModels.Offer[]> {
     return MessageHandler.sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [
       (<any>window).dataExplorer.databaseAccount().id,
-      Constants.ClientDefaults.portalCacheTimeoutMs
-    ]).catch(error => {
+      Constants.ClientDefaults.portalCacheTimeoutMs,
+    ]).catch((error) => {
       return super.readOffers(options);
     });
   }
@@ -50,7 +50,7 @@ export class DataAccessUtility extends DataAccessUtilityBase {
           MessageHandler.sendCachedDataMessage<DataModels.OfferWithHeaders>(MessageTypes.SingleOffer, [
             (<any>window).dataExplorer.databaseAccount().id,
             requestedResource._self,
-            requestedResource.offerVersion
+            requestedResource.offerVersion,
           ]).then(
             (offer: DataModels.OfferWithHeaders) => deferred.resolve(offer),
             (reason: any) => deferred.reject(reason)
@@ -79,7 +79,7 @@ export class DataAccessUtility extends DataAccessUtilityBase {
       type: "POST",
       contentType: "application/json",
       headers: requestOptions,
-      data: JSON.stringify(updateThroughputRequestPayload)
+      data: JSON.stringify(updateThroughputRequestPayload),
     };
 
     $.ajax(url, requestSettings).then(

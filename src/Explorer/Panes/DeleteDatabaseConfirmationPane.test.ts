@@ -59,7 +59,7 @@ describe("Delete Database Confirmation Pane", () => {
         documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletedatabaseconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any
+        container: fakeExplorer as any,
       });
 
       fakeExplorer.isLastNonEmptyDatabase.returns(true);
@@ -101,7 +101,7 @@ describe("Delete Database Confirmation Pane", () => {
         new DatabaseStub({
           id: ko.observable<string>(selectedDatabaseId),
           rid: "test",
-          collections: ko.observableArray<ViewModels.Collection>()
+          collections: ko.observableArray<ViewModels.Collection>(),
         })
       );
       sinon.stub(fakeExplorer, "isNotificationConsoleExpanded").value(ko.observable<boolean>(false));
@@ -112,7 +112,7 @@ describe("Delete Database Confirmation Pane", () => {
       sinon.stub(fakeExplorer, "databaseAccount").value(
         ko.observable<ViewModels.DatabaseAccount>({
           id: SubscriptionId,
-          name: AccountName
+          name: AccountName,
         } as ViewModels.DatabaseAccount)
       );
       sinon.stub(fakeExplorer, "defaultExperience").value(ko.observable<string>("DocumentDB"));
@@ -129,7 +129,7 @@ describe("Delete Database Confirmation Pane", () => {
         documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletedatabaseconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any
+        container: fakeExplorer as any,
       });
       pane.databaseIdConfirmation = ko.observable<string>(selectedDatabaseId);
       const Feedback = "my feedback";

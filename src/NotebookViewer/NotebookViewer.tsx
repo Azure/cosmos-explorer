@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 import { initializeConfiguration } from "../Config";
 import {
   NotebookViewerComponent,
-  NotebookViewerComponentProps
+  NotebookViewerComponentProps,
 } from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
@@ -35,7 +35,7 @@ const render = (notebookUrl: string, backNavigationText: string, galleryItem?: I
     galleryItem,
     backNavigationText,
     onBackClick: undefined,
-    onTagClick: undefined
+    onTagClick: undefined,
   };
 
   ReactDOM.render(<NotebookViewerComponent {...props} />, document.getElementById("notebookContent"));

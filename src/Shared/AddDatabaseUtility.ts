@@ -19,10 +19,10 @@ export class AddDbUtilities {
     const rpPayloadToCreateDatabase: DataModels.MongoCreationRequest = {
       properties: {
         resource: {
-          id: params.db
+          id: params.db,
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     if (params.st) {
@@ -54,10 +54,10 @@ export class AddDbUtilities {
     const rpPayloadToCreateKeyspace: DataModels.CreationRequest = {
       properties: {
         resource: {
-          id: params.db
+          id: params.db,
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     if (params.st) {
@@ -88,10 +88,10 @@ export class AddDbUtilities {
     const rpPayloadToCreateSqlDatabase: DataModels.CreationRequest = {
       properties: {
         resource: {
-          id: params.db
+          id: params.db,
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     if (params.st) {
@@ -126,10 +126,10 @@ export class AddDbUtilities {
     const rpPayloadToCreateDatabase: DataModels.CreationRequest = {
       properties: {
         resource: {
-          id: params.db
+          id: params.db,
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     const uri = AddDbUtilities.getGremlinDatabaseUri(params);
@@ -150,7 +150,7 @@ export class AddDbUtilities {
           () => {
             resolve();
           },
-          reason => {
+          (reason) => {
             AddDbUtilities._handleCreationError(reason, params);
             reject();
           }

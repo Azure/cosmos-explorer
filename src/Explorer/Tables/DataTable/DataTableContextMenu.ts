@@ -41,26 +41,26 @@ export default class DataTableContextMenu {
           name: "Edit",
           cmd: TableCommands.editEntityCommand,
           icon: "edit-entity",
-          disabled: () => !this.isEnabled(TableCommands.editEntityCommand)
+          disabled: () => !this.isEnabled(TableCommands.editEntityCommand),
         },
         delete: {
           name: "Delete",
           cmd: TableCommands.deleteEntitiesCommand,
           icon: "delete-entity",
-          disabled: () => !this.isEnabled(TableCommands.deleteEntitiesCommand)
+          disabled: () => !this.isEnabled(TableCommands.deleteEntitiesCommand),
         },
         reorder: {
           name: "Reorder Columns Based on Schema",
           cmd: TableCommands.reorderColumnsCommand,
           icon: "shift-non-empty-columns-left",
-          disabled: () => !this.isEnabled(TableCommands.reorderColumnsCommand)
+          disabled: () => !this.isEnabled(TableCommands.reorderColumnsCommand),
         },
         reset: {
           name: "Reset Columns",
           cmd: TableCommands.resetColumnsCommand,
-          icon: "reset-column-order"
-        }
-      }
+          icon: "reset-column-order",
+        },
+      },
     });
   }
 
@@ -74,14 +74,14 @@ export default class DataTableContextMenu {
         customizeColumns: {
           name: "Column Options",
           cmd: TableCommands.customizeColumnsCommand,
-          icon: "customize-columns"
+          icon: "customize-columns",
         },
         reset: {
           name: "Reset Columns",
           cmd: TableCommands.resetColumnsCommand,
-          icon: "reset-column-order"
-        }
-      }
+          icon: "reset-column-order",
+        },
+      },
     });
   }
 
@@ -143,7 +143,7 @@ export default class DataTableContextMenu {
   public static contextMenuFactory(viewModel: TableEntityListViewModel, tableCommands: TableCommands) {
     if (!DataTableContextMenu.Instance[viewModel.queryTablesTab.tabId]) {
       DataTableContextMenu.Instance[viewModel.queryTablesTab.tabId] = {
-        contextMenu: new DataTableContextMenu(viewModel, tableCommands)
+        contextMenu: new DataTableContextMenu(viewModel, tableCommands),
       };
     }
   }

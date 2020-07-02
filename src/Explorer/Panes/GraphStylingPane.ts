@@ -16,30 +16,30 @@ export default class GraphStylingPane extends ContextualPaneBase implements View
       nodeCaptionChoice: ko.observable(null),
       nodeColorKeyChoice: ko.observable(null),
       nodeIconChoice: ko.observable(null),
-      nodeIconSet: ko.observable(null)
+      nodeIconSet: ko.observable(null),
     };
 
-    this.graphConfigUIData.nodeCaptionChoice.subscribe(val => {
+    this.graphConfigUIData.nodeCaptionChoice.subscribe((val) => {
       if (this.remoteConfig) {
         this.remoteConfig.nodeCaptionChoice(val);
       }
     });
-    this.graphConfigUIData.nodeColorKeyChoice.subscribe(val => {
+    this.graphConfigUIData.nodeColorKeyChoice.subscribe((val) => {
       if (this.remoteConfig) {
         this.remoteConfig.nodeColorKeyChoice(val);
       }
     });
-    this.graphConfigUIData.nodeIconChoice.subscribe(val => {
+    this.graphConfigUIData.nodeIconChoice.subscribe((val) => {
       if (this.remoteConfig) {
         this.remoteConfig.nodeIconChoice(val);
       }
     });
-    this.graphConfigUIData.nodeIconSet.subscribe(val => {
+    this.graphConfigUIData.nodeIconSet.subscribe((val) => {
       if (this.remoteConfig) {
         this.remoteConfig.nodeIconSet(val);
       }
     });
-    this.graphConfigUIData.showNeighborType.subscribe(val => {
+    this.graphConfigUIData.showNeighborType.subscribe((val) => {
       if (this.remoteConfig) {
         this.remoteConfig.showNeighborType(val);
       }

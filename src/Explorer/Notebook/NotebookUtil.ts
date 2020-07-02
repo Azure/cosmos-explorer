@@ -26,7 +26,7 @@ export class NotebookUtil {
       name,
       path,
       type: NotebookUtil.getType(type),
-      timestamp: NotebookUtil.getCurrentTimestamp()
+      timestamp: NotebookUtil.getCurrentTimestamp(),
     };
   }
 
@@ -66,7 +66,7 @@ export class NotebookUtil {
 
     return {
       cwd,
-      kernelSpecName
+      kernelSpecName,
     };
   }
 

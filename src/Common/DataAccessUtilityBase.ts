@@ -14,7 +14,7 @@ import {
   PartitionKeyDefinition,
   QueryIterator,
   Resource,
-  TriggerDefinition
+  TriggerDefinition,
 } from "@azure/cosmos";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { CosmosClient } from "./CosmosClient";
@@ -68,7 +68,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.storedProcedures.readAll(options)
         .fetchAll()
-        .then(response => response.resources as DataModels.StoredProcedure[])
+        .then((response) => response.resources as DataModels.StoredProcedure[])
     );
   }
 
@@ -83,7 +83,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.storedProcedure(requestedResource.id)
         .read(options)
-        .then(response => response.resource as DataModels.StoredProcedure)
+        .then((response) => response.resource as DataModels.StoredProcedure)
     );
   }
   public readUserDefinedFunctions(
@@ -96,7 +96,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.userDefinedFunctions.readAll(options)
         .fetchAll()
-        .then(response => response.resources as DataModels.UserDefinedFunction[])
+        .then((response) => response.resources as DataModels.UserDefinedFunction[])
     );
   }
   public readUserDefinedFunction(
@@ -110,7 +110,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.userDefinedFunction(requestedResource.id)
         .read(options)
-        .then(response => response.resource as DataModels.UserDefinedFunction)
+        .then((response) => response.resource as DataModels.UserDefinedFunction)
     );
   }
 
@@ -121,7 +121,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.triggers.readAll(options)
         .fetchAll()
-        .then(response => response.resources as DataModels.Trigger[])
+        .then((response) => response.resources as DataModels.Trigger[])
     );
   }
 
@@ -136,7 +136,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.trigger(requestedResource.id)
         .read(options)
-        .then(response => response.resource as DataModels.Trigger)
+        .then((response) => response.resource as DataModels.Trigger)
     );
   }
 
@@ -154,13 +154,13 @@ export abstract class DataAccessUtilityBase {
       .container(collection.id())
       .scripts.storedProcedure(storedProcedure.id())
       .execute(partitionKeyValue, params, { enableScriptLogging: true })
-      .then(response =>
+      .then((response) =>
         deferred.resolve({
           result: response.resource,
-          scriptLogs: response.headers[Constants.HttpHeaders.scriptLogResults]
+          scriptLogs: response.headers[Constants.HttpHeaders.scriptLogResults],
         })
       )
-      .catch(error => deferred.reject(error));
+      .catch((error) => deferred.reject(error));
 
     return deferred.promise.timeout(
       Constants.ClientDefaults.requestTimeoutMs,
@@ -177,7 +177,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .item(documentId.id(), partitionKey)
         .read()
-        .then(response => response.resource)
+        .then((response) => response.resource)
     );
   }
 
@@ -230,7 +230,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .item(documentId.id(), partitionKey)
         .replace(newDocument)
-        .then(response => response.resource)
+        .then((response) => response.resource)
     );
   }
 
@@ -243,7 +243,7 @@ export abstract class DataAccessUtilityBase {
       CosmosClient.client()
         .offer(offer.id)
         .replace(newOffer, options)
-        .then(response => {
+        .then((response) => {
           return Promise.all([this.refreshCachedOffers(), this.refreshCachedResources()]).then(() => response.resource);
         })
     );
@@ -260,7 +260,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.storedProcedure(storedProcedure.id)
         .replace(storedProcedure, options)
-        .then(response => response.resource as DataModels.StoredProcedure)
+        .then((response) => response.resource as DataModels.StoredProcedure)
     );
   }
 
@@ -275,7 +275,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.userDefinedFunction(userDefinedFunction.id)
         .replace(userDefinedFunction, options)
-        .then(response => response.resource as DataModels.StoredProcedure)
+        .then((response) => response.resource as DataModels.StoredProcedure)
     );
   }
 
@@ -290,7 +290,7 @@ export abstract class DataAccessUtilityBase {
         .container(collection.id())
         .scripts.trigger(trigger.id)
         .replace(trigger as TriggerDefinition, options)
-        .then(response => response.resource as DataModels.Trigger)
+        .then((response) => response.resource as DataModels.Trigger)
     );
   }
 
@@ -300,7 +300,7 @@ export abstract class DataAccessUtilityBase {
         .database(collection.databaseId)
         .container(collection.id())
         .items.create(newDocument)
-        .then(response => response.resource as DataModels.StoredProcedure)
+        .then((response) => response.resource as DataModels.StoredProcedure)
     );
   }
 
@@ -314,7 +314,7 @@ export abstract class DataAccessUtilityBase {
         .database(collection.databaseId)
         .container(collection.id())
         .scripts.storedProcedures.create(newStoredProcedure, options)
-        .then(response => response.resource as DataModels.StoredProcedure)
+        .then((response) => response.resource as DataModels.StoredProcedure)
     );
   }
 
@@ -328,7 +328,7 @@ export abstract class DataAccessUtilityBase {
         .database(collection.databaseId)
         .container(collection.id())
         .scripts.userDefinedFunctions.create(newUserDefinedFunction, options)
-        .then(response => response.resource as DataModels.UserDefinedFunction)
+        .then((response) => response.resource as DataModels.UserDefinedFunction)
     );
   }
 
@@ -342,7 +342,7 @@ export abstract class DataAccessUtilityBase {
         .database(collection.databaseId)
         .container(collection.id())
         .scripts.triggers.create(newTrigger as TriggerDefinition, options)
-        .then(response => response.resource as DataModels.Trigger)
+        .then((response) => response.resource as DataModels.Trigger)
     );
   }
 
@@ -437,7 +437,7 @@ export abstract class DataAccessUtilityBase {
         .database(database.id())
         .containers.readAll()
         .fetchAll()
-        .then(response => response.resources as DataModels.Collection[])
+        .then((response) => response.resources as DataModels.Collection[])
     );
   }
 
@@ -447,7 +447,7 @@ export abstract class DataAccessUtilityBase {
         .database(databaseId)
         .container(collectionId)
         .read()
-        .then(response => response.resource)
+        .then((response) => response.resource)
     );
   }
 
@@ -491,7 +491,7 @@ export abstract class DataAccessUtilityBase {
       CosmosClient.client()
         .offers.readAll()
         .fetchAll()
-        .then(response => response.resources)
+        .then((response) => response.resources)
     );
   }
 
@@ -506,7 +506,7 @@ export abstract class DataAccessUtilityBase {
       CosmosClient.client()
         .offer(requestedResource.id)
         .read(options)
-        .then(response => ({ ...response.resource, headers: response.headers }))
+        .then((response) => ({ ...response.resource, headers: response.headers }))
     );
   }
 
@@ -515,7 +515,7 @@ export abstract class DataAccessUtilityBase {
       CosmosClient.client()
         .databases.readAll()
         .fetchAll()
-        .then(response => response.resources as DataModels.Database[])
+        .then((response) => response.resources as DataModels.Database[])
     );
   }
 
@@ -533,11 +533,11 @@ export abstract class DataAccessUtilityBase {
       uniqueKeyPolicy,
       offerThroughput,
       analyticalStorageTtl,
-      hasAutoPilotV2FeatureFlag
+      hasAutoPilotV2FeatureFlag,
     } = request;
 
     const createBody: DatabaseRequest = {
-      id: databaseId
+      id: databaseId,
     };
 
     // TODO: replace when SDK support autopilot
@@ -545,11 +545,11 @@ export abstract class DataAccessUtilityBase {
       ? !hasAutoPilotV2FeatureFlag
         ? {
             [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({
-              maxThroughput: request.autoPilot.maxThroughput
-            })
+              maxThroughput: request.autoPilot.maxThroughput,
+            }),
           }
         : {
-            [Constants.HttpHeaders.autoPilotTier]: request.autoPilot.autopilotTier
+            [Constants.HttpHeaders.autoPilotTier]: request.autoPilot.autopilotTier,
           }
       : undefined;
     if (databaseLevelThroughput) {
@@ -562,7 +562,7 @@ export abstract class DataAccessUtilityBase {
     return Q(
       CosmosClient.client()
         .databases.createIfNotExists(createBody, databaseOptions)
-        .then(response => {
+        .then((response) => {
           return response.database.containers.create(
             {
               id: collectionId,
@@ -570,14 +570,14 @@ export abstract class DataAccessUtilityBase {
               indexingPolicy: indexingPolicy ? indexingPolicy : undefined,
               uniqueKeyPolicy: uniqueKeyPolicy ? uniqueKeyPolicy : undefined,
               analyticalStorageTtl: analyticalStorageTtl,
-              throughput: databaseLevelThroughput || request.autoPilot ? undefined : offerThroughput
+              throughput: databaseLevelThroughput || request.autoPilot ? undefined : offerThroughput,
             } as ContainerRequest, // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
             {
-              initialHeaders: databaseLevelThroughput ? undefined : initialHeaders
+              initialHeaders: databaseLevelThroughput ? undefined : initialHeaders,
             }
           );
         })
-        .then(containerResponse => containerResponse.resource)
+        .then((containerResponse) => containerResponse.resource)
         .finally(() => this.refreshCachedResources(options))
     );
   }
@@ -591,7 +591,7 @@ export abstract class DataAccessUtilityBase {
           deferred.resolve(createdDatabase);
         });
       },
-      _createDatabaseError => {
+      (_createDatabaseError) => {
         deferred.reject(_createDatabaseError);
       }
     );
@@ -654,10 +654,10 @@ export abstract class DataAccessUtilityBase {
     const initialHeaders = autoPilot
       ? !hasAutoPilotV2FeatureFlag
         ? {
-            [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({ maxThroughput: autoPilot.maxThroughput })
+            [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({ maxThroughput: autoPilot.maxThroughput }),
           }
         : {
-            [Constants.HttpHeaders.autoPilotTier]: autoPilot.autopilotTier
+            [Constants.HttpHeaders.autoPilotTier]: autoPilot.autopilotTier,
           }
       : undefined;
     if (!!databaseLevelThroughput) {

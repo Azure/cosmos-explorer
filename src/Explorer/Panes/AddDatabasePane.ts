@@ -61,7 +61,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
 
     this.container.subscriptionType &&
-      this.container.subscriptionType.subscribe(subscriptionType => {
+      this.container.subscriptionType.subscribe((subscriptionType) => {
         this.databaseCreateNewShared(this.getSharedThroughputDefault());
       });
 
@@ -254,9 +254,9 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         throughput: this.throughput(),
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
-      dataExplorerArea: Constants.Areas.ContextualPane
+      dataExplorerArea: Constants.Areas.ContextualPane,
     };
     const focusElement = document.getElementById("database-id");
     focusElement && focusElement.focus();
@@ -275,15 +275,15 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
-        shared: this.databaseCreateNewShared()
+        shared: this.databaseCreateNewShared(),
       }),
       offerThroughput,
       subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
-      dataExplorerArea: Constants.Areas.ContextualPane
+      dataExplorerArea: Constants.Areas.ContextualPane,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDatabase, addDatabasePaneStartMessage);
     this.formErrors("");
@@ -295,7 +295,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       offerThroughput: addDatabasePaneStartMessage.offerThroughput,
       sid: CosmosClient.subscriptionId(),
       rg: CosmosClient.resourceGroup(),
-      dba: addDatabasePaneStartMessage.databaseAccountName
+      dba: addDatabasePaneStartMessage.databaseAccountName,
     };
 
     const autopilotSettings = this._getAutopilotSettings();
@@ -322,7 +322,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       () => {
         Promise.all([
           this.container.documentClientUtility.refreshCachedOffers(),
-          this.container.documentClientUtility.refreshCachedResources()
+          this.container.documentClientUtility.refreshCachedResources(),
         ]).then(() => {
           this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
         });
@@ -342,7 +342,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     ).then(() => {
       Promise.all([
         this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
+        this.container.documentClientUtility.refreshCachedResources(),
       ]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
@@ -361,7 +361,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     ).then(() => {
       Promise.all([
         this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
+        this.container.documentClientUtility.refreshCachedResources(),
       ]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
@@ -397,7 +397,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       offerThroughput,
       databaseLevelThroughput: this.databaseCreateNewShared(),
       autoPilot,
-      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
+      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag(),
     };
     this.container.documentClientUtility.createDatabase(createRequest).then(
       (database: DataModels.Database) => {
@@ -452,7 +452,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     AddDbUtilities.createCassandraKeyspace(armEndpoint, createKeyspaceParameters, autoPilotSettings).then(() => {
       Promise.all([
         this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
+        this.container.documentClientUtility.refreshCachedResources(),
       ]).then(() => {
         this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
       });
@@ -468,15 +468,15 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
-        shared: this.databaseCreateNewShared()
+        shared: this.databaseCreateNewShared(),
       }),
       offerThroughput: offerThroughput,
       subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
-      dataExplorerArea: Constants.Areas.ContextualPane
+      dataExplorerArea: Constants.Areas.ContextualPane,
     };
     TelemetryProcessor.traceSuccess(Action.CreateDatabase, addDatabasePaneSuccessMessage, startKey);
     this.resetData();
@@ -492,16 +492,16 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
-        shared: this.databaseCreateNewShared()
+        shared: this.databaseCreateNewShared(),
       }),
       offerThroughput: offerThroughput,
       subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
-      error: reason
+      error: reason,
     };
     TelemetryProcessor.traceFailure(Action.CreateDatabase, addDatabasePaneFailedMessage, startKey);
   }
@@ -564,7 +564,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            maxThroughput: this.maxAutoPilotThroughputSet() * 1
+            maxThroughput: this.maxAutoPilotThroughputSet() * 1,
           }
         : { autopilotTier: this.selectedAutoPilotTier() };
     }
@@ -578,7 +578,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     ) {
       return !this.hasAutoPilotV2FeatureFlag()
         ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.maxAutoPilotThroughputSet() * 1 }
+            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.maxAutoPilotThroughputSet() * 1 },
           }
         : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
     }

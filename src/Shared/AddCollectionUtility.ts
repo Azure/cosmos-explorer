@@ -41,7 +41,7 @@ export class CreateSqlCollectionUtilities {
       rg,
       dba,
       analyticalStorageTtl,
-      partitionKeyVersion
+      partitionKeyVersion,
     };
 
     if (params.cd) {
@@ -64,11 +64,11 @@ export class CreateSqlCollectionUtilities {
           partitionKey: {
             paths: [params.pk],
             kind: "Hash",
-            version: params.partitionKeyVersion
-          }
+            version: params.partitionKeyVersion,
+          },
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     if (params.analyticalStorageTtl) {
@@ -137,7 +137,7 @@ export class CreateCollectionUtilities {
       sid,
       rg,
       dba,
-      partitionKeyVersion
+      partitionKeyVersion,
     };
 
     if (params.cd) {
@@ -160,11 +160,11 @@ export class CreateCollectionUtilities {
           partitionKey: {
             paths: [params.pk],
             kind: "Hash",
-            version: params.partitionKeyVersion
-          }
+            version: params.partitionKeyVersion,
+          },
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     if (!params.st) {
@@ -208,10 +208,10 @@ export class Utilities {
     const rpPayloadToCreateDatabase: DataModels.CreationRequest = {
       properties: {
         resource: {
-          id: params.collectionId
+          id: params.collectionId,
         },
-        options: {}
-      }
+        options: {},
+      },
     };
 
     if (!params.databaseLevelThroughput) {
@@ -282,7 +282,7 @@ export class Utilities {
     const databases = (container && container.databases && container.databases()) || [];
     return _.any(
       databases,
-      database =>
+      (database) =>
         database && database.collections && database.collections() && database.collections().length > unlimitedThreshold
     );
   }

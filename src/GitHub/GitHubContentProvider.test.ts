@@ -8,12 +8,12 @@ import * as GitHubUtils from "../Utils/GitHubUtils";
 const gitHubClient = new GitHubClient("token", () => {});
 const gitHubContentProvider = new GitHubContentProvider({
   gitHubClient,
-  promptForCommitMsg: () => Promise.resolve("commit msg")
+  promptForCommitMsg: () => Promise.resolve("commit msg"),
 });
 const gitHubCommit: IGitHubCommit = {
   sha: "sha",
   message: "message",
-  commitDate: "date"
+  commitDate: "date",
 };
 const sampleFile: IGitHubFile = {
   type: "blob",
@@ -25,12 +25,12 @@ const sampleFile: IGitHubFile = {
   repo: {
     owner: "owner",
     name: "repo",
-    private: false
+    private: false,
   },
   branch: {
-    name: "branch"
+    name: "branch",
   },
-  commit: gitHubCommit
+  commit: gitHubCommit,
 };
 const sampleGitHubUri = GitHubUtils.toContentUri(
   sampleFile.repo.owner,
@@ -47,7 +47,7 @@ const sampleNotebookModel: IContent<"notebook"> = {
   last_modified: "date",
   mimetype: "application/x-ipynb+json",
   content: sampleFile.content ? JSON.parse(sampleFile.content) : null,
-  format: "json"
+  format: "json",
 };
 
 describe("GitHubContentProvider remove", () => {

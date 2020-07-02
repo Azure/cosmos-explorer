@@ -34,7 +34,7 @@ export class SetupSparkClusterPane extends ContextualPaneBase {
       databaseAccountName: this.container && this.container.databaseAccount().name,
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     const id = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
@@ -52,8 +52,8 @@ export class SetupSparkClusterPane extends ContextualPaneBase {
             driverSize: "Cosmos.Spark.D4s",
             workerSize: "Cosmos.Spark.D4s",
             creationTime: undefined,
-            status: undefined
-          }
+            status: undefined,
+          },
         }
       );
       this.container.isAccountReady.valueHasMutated(); // refresh internal state
@@ -64,7 +64,7 @@ export class SetupSparkClusterPane extends ContextualPaneBase {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
         },
         startKey
       );
@@ -81,7 +81,7 @@ export class SetupSparkClusterPane extends ContextualPaneBase {
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
-          error: errorMessage
+          error: errorMessage,
         },
         startKey
       );

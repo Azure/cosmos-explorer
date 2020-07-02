@@ -37,7 +37,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateTrigger, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     return this.documentClientUtility
@@ -57,7 +57,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -76,7 +76,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -115,7 +115,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     return this.documentClientUtility
@@ -144,7 +144,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -159,7 +159,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -176,7 +176,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
       id: this.id(),
       body: this.editorContent(),
       triggerOperation: this.triggerOperation(),
-      triggerType: this.triggerType()
+      triggerType: this.triggerType(),
     };
 
     return resource;

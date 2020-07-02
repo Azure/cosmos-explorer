@@ -4,6 +4,6 @@ module.exports = {
   launch: {
     headless: isCI,
     slowMo: isCI ? null : 20,
-    defaultViewport: null
-  }
+    defaultViewport: null,
+  },
 };

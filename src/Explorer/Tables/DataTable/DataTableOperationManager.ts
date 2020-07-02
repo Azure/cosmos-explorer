@@ -46,10 +46,8 @@ export default class DataTableOperationManager {
     this.updateLastSelectedItem(elem, event.shiftKey);
 
     this.applyContextMenuSelection(elem);
-    setTimeout(function() {
-      $(".context-menu-list")
-        .attr("tabindex", -1)
-        .focus();
+    setTimeout(function () {
+      $(".context-menu-list").attr("tabindex", -1).focus();
     }, 0);
   };
 
@@ -157,7 +155,7 @@ export default class DataTableOperationManager {
 
   private getEntityIdentity($elem: JQuery): Entities.ITableEntityIdentity {
     return {
-      RowKey: $elem.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr)
+      RowKey: $elem.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr),
     };
   }
 

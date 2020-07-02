@@ -17,14 +17,14 @@ describe("NotebookMetadataComponent", () => {
         isSample: false,
         downloads: 0,
         favorites: 0,
-        views: 0
+        views: 0,
       },
       isFavorite: false,
       downloadButtonText: "Download",
       onTagClick: undefined,
       onDownloadClick: undefined,
       onFavoriteClick: undefined,
-      onUnfavoriteClick: undefined
+      onUnfavoriteClick: undefined,
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);
@@ -45,14 +45,14 @@ describe("NotebookMetadataComponent", () => {
         isSample: false,
         downloads: 0,
         favorites: 0,
-        views: 0
+        views: 0,
       },
       isFavorite: true,
       downloadButtonText: "Download",
       onTagClick: undefined,
       onDownloadClick: undefined,
       onFavoriteClick: undefined,
-      onUnfavoriteClick: undefined
+      onUnfavoriteClick: undefined,
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);

@@ -138,7 +138,7 @@ export default class ConflictId implements ViewModels.ConflictId {
         id,
         partitionKeyValue: partitionKeyValueResolved,
         partitionKeyProperty: this.partitionKeyProperty,
-        partitionKey: this.partitionKey
+        partitionKey: this.partitionKey,
       },
       partitionKeyValueResolved
     );

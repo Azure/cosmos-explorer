@@ -8,11 +8,11 @@ import {
   GalleryTab as GalleryViewerTab,
   GalleryViewerComponent,
   GalleryViewerComponentProps,
-  SortBy
+  SortBy,
 } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import {
   NotebookViewerComponent,
-  NotebookViewerComponentProps
+  NotebookViewerComponentProps,
 } from "../Controls/NotebookViewer/NotebookViewerComponent";
 import TabsBase from "./TabsBase";
 
@@ -51,7 +51,7 @@ class GalleryComponentAdapter implements ReactAdapter {
       isFavorite: props.isFavorite,
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
-      searchText: props.searchText
+      searchText: props.searchText,
     };
   }
 
@@ -65,7 +65,7 @@ class GalleryComponentAdapter implements ReactAdapter {
         isFavorite: this.state.isFavorite,
         backNavigationText: GalleryUtils.getTabTitle(this.state.selectedTab),
         onBackClick: this.onBackClick,
-        onTagClick: this.loadTaggedItems
+        onTagClick: this.loadTaggedItems,
       };
 
       return <NotebookViewerComponent {...props} />;
@@ -79,7 +79,7 @@ class GalleryComponentAdapter implements ReactAdapter {
       searchText: this.state.searchText,
       onSelectedTabChange: this.onSelectedTabChange,
       onSortByChange: this.onSortByChange,
-      onSearchTextChange: this.onSearchTextChange
+      onSearchTextChange: this.onSearchTextChange,
     };
 
     return <GalleryViewerComponent {...props} />;
@@ -97,7 +97,7 @@ class GalleryComponentAdapter implements ReactAdapter {
   private loadTaggedItems = (tag: string): void => {
     this.setState({
       notebookUrl: undefined,
-      searchText: tag
+      searchText: tag,
     });
   };
 
@@ -131,7 +131,7 @@ export default class GalleryTab extends TabsBase implements ViewModels.Tab {
       isFavorite: options.isFavorite,
       selectedTab: GalleryViewerTab.OfficialSamples,
       sortBy: SortBy.MostViewed,
-      searchText: undefined
+      searchText: undefined,
     };
 
     this.galleryComponentAdapter = new GalleryComponentAdapter(this.galleryComponentAdapterProps);
@@ -145,7 +145,7 @@ export default class GalleryTab extends TabsBase implements ViewModels.Tab {
     this.galleryComponentAdapter.setState({
       notebookUrl,
       galleryItem,
-      isFavorite
+      isFavorite,
     });
   }
 }

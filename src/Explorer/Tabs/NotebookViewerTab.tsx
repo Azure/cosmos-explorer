@@ -4,7 +4,7 @@ import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../Contracts/ViewModels";
 import {
   NotebookViewerComponent,
-  NotebookViewerComponentProps
+  NotebookViewerComponentProps,
 } from "../Controls/NotebookViewer/NotebookViewerComponent";
 import TabsBase from "./TabsBase";
 
@@ -21,7 +21,7 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
       notebookUrl: this.notebookUrl,
       backNavigationText: undefined,
       onBackClick: undefined,
-      onTagClick: undefined
+      onTagClick: undefined,
     };
 
     return this.parameters() ? <NotebookViewerComponent {...props} /> : <></>;

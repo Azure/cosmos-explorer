@@ -11,7 +11,7 @@ describe("Error Parser Utility", () => {
       err.code = 400;
       err.body = {
         code: "BadRequest",
-        message
+        message,
       };
       err.headers = {};
       err.activityId = "97b2e684-7505-4921-85f6-2513b9b28220";

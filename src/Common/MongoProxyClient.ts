@@ -20,7 +20,7 @@ import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClie
 const defaultHeaders = {
   [HttpHeaders.apiType]: ApiType.MongoDB.toString(),
   [CosmosSDKConstants.HttpHeaders.MaxEntityCount]: "100",
-  [CosmosSDKConstants.HttpHeaders.Version]: "2017-11-15"
+  [CosmosSDKConstants.HttpHeaders.Version]: "2017-11-15",
 };
 
 function authHeaders(): any {
@@ -35,7 +35,7 @@ export function queryIterator(databaseId: string, collection: Collection, query:
   let continuationToken: string;
   return {
     fetchNext: () => {
-      return queryDocuments(databaseId, collection, false, query).then(response => {
+      return queryDocuments(databaseId, collection, false, query).then((response) => {
         continuationToken = response.continuationToken;
         const headers = {} as any;
         response.headers.forEach((value: any, key: any) => {
@@ -46,10 +46,10 @@ export function queryIterator(databaseId: string, collection: Collection, query:
           headers,
           requestCharge: headers[CosmosSDKConstants.HttpHeaders.RequestCharge],
           activityId: headers[CosmosSDKConstants.HttpHeaders.ActivityId],
-          hasMoreResults: !!continuationToken
+          hasMoreResults: !!continuationToken,
         };
       });
-    }
+    },
   };
 }
 
@@ -78,7 +78,9 @@ export function queryDocuments(
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
     pk:
-      collection && collection.partitionKey && !collection.partitionKey.systemKey ? collection.partitionKeyProperty : ""
+      collection && collection.partitionKey && !collection.partitionKey.systemKey
+        ? collection.partitionKeyProperty
+        : "",
   };
 
   const endpoint = getEndpoint(databaseAccount) || "";
@@ -91,7 +93,7 @@ export function queryDocuments(
     [CosmosSDKConstants.HttpHeaders.EnableScanInQuery]: "true",
     [CosmosSDKConstants.HttpHeaders.EnableCrossPartitionQuery]: "true",
     [CosmosSDKConstants.HttpHeaders.ParallelizeCrossPartitionQuery]: "true",
-    [HttpHeaders.contentType]: "application/query+json"
+    [HttpHeaders.contentType]: "application/query+json",
   };
 
   if (continuationToken) {
@@ -104,14 +106,14 @@ export function queryDocuments(
     .fetch(`${endpoint}${path}?${queryString.stringify(params)}`, {
       method: "POST",
       body: JSON.stringify({ query }),
-      headers
+      headers,
     })
-    .then(async response => {
+    .then(async (response) => {
       if (response.ok) {
         return {
           continuationToken: response.headers.get(CosmosSDKConstants.HttpHeaders.Continuation),
           documents: (await response.json()).Documents as DataModels.DocumentId[],
-          headers: response.headers
+          headers: response.headers,
         };
       }
       return errorHandling(response, "querying documents", params);
@@ -138,7 +140,9 @@ export function readDocument(
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
     pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
+      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
+        ? documentId.partitionKeyProperty
+        : "",
   };
 
   const endpoint = getEndpoint(databaseAccount);
@@ -150,10 +154,10 @@ export function readDocument(
         ...authHeaders(),
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: encodeURIComponent(
           JSON.stringify(documentId.partitionKeyHeader())
-        )
-      }
+        ),
+      },
     })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return response.json();
       }
@@ -178,7 +182,7 @@ export function createDocument(
     sid: CosmosClient.subscriptionId(),
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
-    pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : ""
+    pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
   };
 
   const endpoint = getEndpoint(databaseAccount);
@@ -189,10 +193,10 @@ export function createDocument(
       body: JSON.stringify(documentContent),
       headers: {
         ...defaultHeaders,
-        ...authHeaders()
-      }
+        ...authHeaders(),
+      },
     })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return response.json();
       }
@@ -221,7 +225,9 @@ export function updateDocument(
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
     pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
+      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
+        ? documentId.partitionKeyProperty
+        : "",
   };
   const endpoint = getEndpoint(databaseAccount);
 
@@ -233,10 +239,10 @@ export function updateDocument(
         ...defaultHeaders,
         ...authHeaders(),
         [HttpHeaders.contentType]: "application/json",
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader())
-      }
+        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
+      },
     })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return response.json();
       }
@@ -264,7 +270,9 @@ export function deleteDocument(
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
     pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
+      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
+        ? documentId.partitionKeyProperty
+        : "",
   };
   const endpoint = getEndpoint(databaseAccount);
 
@@ -275,10 +283,10 @@ export function deleteDocument(
         ...defaultHeaders,
         ...authHeaders(),
         [HttpHeaders.contentType]: "application/json",
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader())
-      }
+        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
+      },
     })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return undefined;
       }
@@ -311,7 +319,7 @@ export function createMongoCollectionWithProxy(
     sid: CosmosClient.subscriptionId(),
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
-    isAutoPilot: false
+    isAutoPilot: false,
   };
 
   if (autopilotOptions) {
@@ -329,11 +337,11 @@ export function createMongoCollectionWithProxy(
         headers: {
           ...defaultHeaders,
           ...authHeaders(),
-          [HttpHeaders.contentType]: "application/json"
-        }
+          [HttpHeaders.contentType]: "application/json",
+        },
       }
     )
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return undefined;
       }
@@ -368,7 +376,7 @@ export function createMongoCollectionWithARM(
     sid: CosmosClient.subscriptionId(),
     rg: CosmosClient.resourceGroup(),
     dba: databaseAccount.name,
-    analyticalStorageTtl
+    analyticalStorageTtl,
   };
 
   if (createDatabase) {
@@ -424,10 +432,10 @@ export async function _createMongoCollectionWithARM(
   const rpPayloadToCreateCollection: DataModels.MongoCreationRequest = {
     properties: {
       resource: {
-        id: params.coll
+        id: params.coll,
       },
-      options: {}
-    }
+      options: {},
+    },
   };
 
   if (params.is) {

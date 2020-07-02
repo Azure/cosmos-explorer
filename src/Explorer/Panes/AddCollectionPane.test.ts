@@ -15,7 +15,7 @@ describe("Add Collection Pane", () => {
       name: "mock",
       properties: undefined,
       type: undefined,
-      tags: []
+      tags: [],
     };
 
     beforeEach(() => {

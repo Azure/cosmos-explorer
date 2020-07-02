@@ -8,7 +8,7 @@ import {
   AnyAction,
   Middleware,
   Dispatch,
-  MiddlewareAPI
+  MiddlewareAPI,
 } from "redux";
 import { combineEpics, createEpicMiddleware, Epic, ActionsObservable } from "redux-observable";
 import { allEpics } from "./epics";
@@ -28,7 +28,7 @@ export default function configureStore(
     comms: reducers.comms,
     config: reducers.config,
     core: coreReducer,
-    cdb: cdbReducer
+    cdb: cdbReducer,
   });
 
   /**
@@ -36,7 +36,7 @@ export default function configureStore(
    */
   const catchErrorMiddleware: Middleware = <D extends Dispatch<AnyAction>, S extends AppState>({
     dispatch,
-    getState
+    getState,
   }: MiddlewareAPI<D, S>) => (next: Dispatch<AnyAction>) => <A extends AnyAction>(action: A): any => {
     try {
       next(action);
@@ -65,7 +65,7 @@ export default function configureStore(
   };
 
   const combineAndProtectEpics = (epics: Epic[]): Epic => {
-    const protectedEpics = epics.map(epic => protect(epic));
+    const protectedEpics = epics.map((epic) => protect(epic));
     return combineEpics<Epic>(...protectedEpics);
   };
 
@@ -91,7 +91,7 @@ export default function configureStore(
     coreEpics.saveContentEpic,
     coreEpics.publishToBookstore,
     coreEpics.publishToBookstoreAfterSave,
-    coreEpics.sendInputReplyEpic
+    coreEpics.sendInputReplyEpic,
   ];
   const rootEpic = combineAndProtectEpics([...filteredCoreEpics, ...allEpics]);
   const epicMiddleware = createEpicMiddleware({ dependencies: { contentProvider } });

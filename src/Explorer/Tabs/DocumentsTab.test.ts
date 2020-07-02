@@ -21,7 +21,7 @@ describe("Documents tab", () => {
         isActive: ko.observable<boolean>(false),
 
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -32,64 +32,64 @@ describe("Documents tab", () => {
     const explorer = new Explorer({
       documentClientUtility: null,
       notificationsClient: null,
-      isEmulator: false
+      isEmulator: false,
     });
 
     const mongoExplorer = new Explorer({
       documentClientUtility: null,
       notificationsClient: null,
-      isEmulator: false
+      isEmulator: false,
     });
     mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
-      container: explorer
+      container: explorer,
     });
 
     const collectionWithSystemPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
       partitionKey: {
         paths: ["/foo"],
         kind: "Hash",
         version: 2,
-        systemKey: true
+        systemKey: true,
       },
-      container: explorer
+      container: explorer,
     });
 
     const collectionWithNonSystemPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
       partitionKey: {
         paths: ["/foo"],
         kind: "Hash",
         version: 2,
-        systemKey: false
+        systemKey: false,
       },
-      container: explorer
+      container: explorer,
     });
 
     const mongoCollectionWithSystemPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
       partitionKey: {
         paths: ["/foo"],
         kind: "Hash",
         version: 2,
-        systemKey: true
+        systemKey: true,
       },
-      container: mongoExplorer
+      container: mongoExplorer,
     });
 
     it("should be false for null or undefined collection", () => {
@@ -105,7 +105,7 @@ describe("Documents tab", () => {
         isActive: ko.observable<boolean>(false),
 
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -125,7 +125,7 @@ describe("Documents tab", () => {
         isActive: ko.observable<boolean>(false),
 
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -145,7 +145,7 @@ describe("Documents tab", () => {
         isActive: ko.observable<boolean>(false),
 
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -165,7 +165,7 @@ describe("Documents tab", () => {
         isActive: ko.observable<boolean>(false),
 
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -185,7 +185,7 @@ describe("Documents tab", () => {
         isActive: ko.observable<boolean>(false),
 
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

@@ -35,14 +35,14 @@ export class ManageSparkClusterPane extends ContextualPaneBase {
         driverSize: undefined,
         status: undefined,
         workerInstanceCount: undefined,
-        workerSize: undefined
-      }
+        workerSize: undefined,
+      },
     });
     this._settingsComponentAdapterProps = ko.observable<ClusterSettingsComponentProps>({
       cluster: this._defaultCluster(),
-      onClusterSettingsChanged: this.onClusterSettingsChange
+      onClusterSettingsChanged: this.onClusterSettingsChange,
     });
-    this._defaultCluster.subscribe(cluster => {
+    this._defaultCluster.subscribe((cluster) => {
       this._settingsComponentAdapterProps().cluster = cluster;
       this._settingsComponentAdapterProps.valueHasMutated(); // trigger component re-render
     });
@@ -68,7 +68,7 @@ export class ManageSparkClusterPane extends ContextualPaneBase {
       databaseAccountName: this.container && this.container.databaseAccount().name,
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     const workerCount = this.workerCount();
     const id = NotificationConsoleUtils.logConsoleMessage(
@@ -98,7 +98,7 @@ export class ManageSparkClusterPane extends ContextualPaneBase {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
         },
         startKey
       );
@@ -114,7 +114,7 @@ export class ManageSparkClusterPane extends ContextualPaneBase {
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
-          error: JSON.stringify(error)
+          error: JSON.stringify(error),
         },
         startKey
       );

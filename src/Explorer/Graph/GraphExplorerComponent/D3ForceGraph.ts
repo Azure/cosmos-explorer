@@ -32,7 +32,7 @@ export interface D3GraphNodeData {
 export enum PAGE_ACTION {
   FIRST_PAGE,
   PREVIOUS_PAGE,
-  NEXT_PAGE
+  NEXT_PAGE,
 }
 
 export interface LoadMoreDataAction {
@@ -244,20 +244,14 @@ export class D3ForceGraph implements GraphRenderer {
     });
 
     this.g = this.svg.append("g");
-    this.linkSelection = this.g
-      .append("g")
-      .attr("class", "links")
-      .selectAll(".link");
-    this.nodeSelection = this.g
-      .append("g")
-      .attr("class", "nodes")
-      .selectAll(".node");
+    this.linkSelection = this.g.append("g").attr("class", "links").selectAll(".link");
+    this.nodeSelection = this.g.append("g").attr("class", "nodes").selectAll(".node");
 
     // Reset state variables
     this.selectedNode = null;
     this.isDragging = false;
 
-    this.idToSelect.subscribe(newVal => {
+    this.idToSelect.subscribe((newVal) => {
       if (!newVal) {
         this.deselectNode();
         return;
@@ -266,10 +260,10 @@ export class D3ForceGraph implements GraphRenderer {
       var self = this;
       // Select this node id
       selectAll(".node")
-        .filter(function(d: D3Node, i) {
+        .filter(function (d: D3Node, i) {
           return d.id === newVal;
         })
-        .each(function(d: D3Node) {
+        .each(function (d: D3Node) {
           self.onNodeClicked(this, d);
         });
     });
@@ -348,7 +342,7 @@ export class D3ForceGraph implements GraphRenderer {
     this.zoomTransform = {
       x: d3Event.transform.x,
       y: d3Event.transform.y,
-      k: d3Event.transform.k
+      k: d3Event.transform.k,
     };
     this.g.attr("transform", d3Event.transform);
   }
@@ -454,11 +448,7 @@ export class D3ForceGraph implements GraphRenderer {
         this.svg.select(`#${this.getArrowHeadSymbolId()}-nonMarker`).classed("hidden", true);
       }
 
-      linkExitSelection
-        .select(".link")
-        .transition()
-        .duration(D3ForceGraph.TRANSITION_STEP2_MS)
-        .attr("stroke-width", 0);
+      linkExitSelection.select(".link").transition().duration(D3ForceGraph.TRANSITION_STEP2_MS).attr("stroke-width", 0);
       linkExitSelection
         .transition()
         .delay(D3ForceGraph.TRANSITION_STEP2_MS)
@@ -475,11 +465,7 @@ export class D3ForceGraph implements GraphRenderer {
     const nodeExitSelection = this.nodeSelection.exit();
     let nodeCounter = nodeExitSelection.size();
     if (nodeCounter > 0) {
-      nodeExitSelection
-        .selectAll("circle")
-        .transition()
-        .duration(D3ForceGraph.TRANSITION_STEP2_MS)
-        .attr("r", 0);
+      nodeExitSelection.selectAll("circle").transition().duration(D3ForceGraph.TRANSITION_STEP2_MS).attr("r", 0);
       nodeExitSelection
         .selectAll(".iconContainer")
         .transition()
@@ -490,11 +476,7 @@ export class D3ForceGraph implements GraphRenderer {
         .transition()
         .duration(D3ForceGraph.TRANSITION_STEP2_MS)
         .attr("opacity", 0);
-      nodeExitSelection
-        .selectAll("text")
-        .transition()
-        .duration(D3ForceGraph.TRANSITION_STEP2_MS)
-        .style("opacity", 0);
+      nodeExitSelection.selectAll("text").transition().duration(D3ForceGraph.TRANSITION_STEP2_MS).style("opacity", 0);
       nodeExitSelection
         .transition()
         .delay(D3ForceGraph.TRANSITION_STEP2_MS)
@@ -576,12 +558,7 @@ export class D3ForceGraph implements GraphRenderer {
           return ic(t);
         };
       });
-    newNodes
-      .selectAll(".loadmore")
-      .attr("visibility", "hidden")
-      .transition()
-      .delay(600)
-      .attr("visibility", "visible");
+    newNodes.selectAll(".loadmore").attr("visibility", "hidden").transition().delay(600).attr("visibility", "visible");
   }
 
   private restartSimulation(graph: GraphData<D3Node, D3Link>, posMap: HashMap<Point2D>) {
@@ -643,10 +620,7 @@ export class D3ForceGraph implements GraphRenderer {
 
     removePromise.then(() => {
       if (D3ForceGraph.useSvgMarkerEnd()) {
-        this.svg
-          .select(`#${this.getArrowHeadSymbolId()}-marker`)
-          .attr("fill-opacity", 1)
-          .attr("stroke-opacity", 1);
+        this.svg.select(`#${this.getArrowHeadSymbolId()}-marker`).attr("fill-opacity", 1).attr("stroke-opacity", 1);
       } else {
         this.svg.select(`#${this.getArrowHeadSymbolId()}-nonMarker`).classed("hidden", false);
       }
@@ -680,10 +654,7 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private addNewLinks(): d3.Selection<Element, any, any, any> {
-    const newLinks = this.linkSelection
-      .enter()
-      .append("g")
-      .attr("class", "markerEndContainer");
+    const newLinks = this.linkSelection.enter().append("g").attr("class", "markerEndContainer");
 
     const line = newLinks
       .append("path")
@@ -765,15 +736,15 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("aria-label", (d: D3Node) => {
         return this.retrieveNodeCaption(d);
       })
-      .on("dblclick", function(d: D3Node) {
+      .on("dblclick", function (d: D3Node) {
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("click", function(d: D3Node) {
+      .on("click", function (d: D3Node) {
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("keypress", function(d: D3Node) {
+      .on("keypress", function (d: D3Node) {
         if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
           d3Event.stopPropagation();
           // this is the <g> element
@@ -850,22 +821,22 @@ export class D3ForceGraph implements GraphRenderer {
         return `Next page of nodes for ${this.retrieveNodeCaption(d)}`;
       })
       .attr("tabindex", 0)
-      .on("click", function(d: D3Node) {
+      .on("click", function (d: D3Node) {
         self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
       })
-      .on("dblclick", function(d: D3Node) {
+      .on("dblclick", function (d: D3Node) {
         self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
       })
-      .on("keypress", function(d: D3Node) {
+      .on("keypress", function (d: D3Node) {
         if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
           d3Event.stopPropagation();
           self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
         }
       })
-      .on("mouseover", function(d: D3Node) {
+      .on("mouseover", function (d: D3Node) {
         select(this).classed("active", true);
       })
-      .on("mouseout", function(d: D3Node) {
+      .on("mouseout", function (d: D3Node) {
         select(this).classed("active", false);
       })
       .attr("visibility", (d: D3Node) => (!d._outEAllLoaded || !d._inEAllLoaded ? "visible" : "hidden"));
@@ -879,22 +850,22 @@ export class D3ForceGraph implements GraphRenderer {
         return `Previous page of nodes for ${this.retrieveNodeCaption(d)}`;
       })
       .attr("tabindex", 0)
-      .on("click", function(d: D3Node) {
+      .on("click", function (d: D3Node) {
         self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
       })
-      .on("dblclick", function(d: D3Node) {
+      .on("dblclick", function (d: D3Node) {
         self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
       })
-      .on("keypress", function(d: D3Node) {
+      .on("keypress", function (d: D3Node) {
         if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
           d3Event.stopPropagation();
           self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
         }
       })
-      .on("mouseover", function(d: D3Node) {
+      .on("mouseover", function (d: D3Node) {
         select(this).classed("active", true);
       })
-      .on("mouseout", function(d: D3Node) {
+      .on("mouseout", function (d: D3Node) {
         select(this).classed("active", false);
       })
       .attr("visibility", (d: D3Node) =>
@@ -975,22 +946,22 @@ export class D3ForceGraph implements GraphRenderer {
         return `Load adjacent nodes for ${this.retrieveNodeCaption(d)}`;
       })
       .attr("tabindex", 0)
-      .on("click", function(d: D3Node) {
+      .on("click", function (d: D3Node) {
         self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
       })
-      .on("dblclick", function(d: D3Node) {
+      .on("dblclick", function (d: D3Node) {
         self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
       })
-      .on("keypress", function(d: D3Node) {
+      .on("keypress", function (d: D3Node) {
         if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
           d3Event.stopPropagation();
           self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
         }
       })
-      .on("mouseover", function(d: D3Node) {
+      .on("mouseover", function (d: D3Node) {
         select(this).classed("active", true);
       })
-      .on("mouseout", function(d: D3Node) {
+      .on("mouseout", function (d: D3Node) {
         select(this).classed("active", false);
       });
   }
@@ -1040,7 +1011,7 @@ export class D3ForceGraph implements GraphRenderer {
 
     this.params.onLoadMoreData({
       nodeId: v.id,
-      pageAction: pageAction
+      pageAction: pageAction,
     });
   }
 
@@ -1122,7 +1093,7 @@ export class D3ForceGraph implements GraphRenderer {
 
   private fadeNonNeighbors(nodeId: string) {
     this.g.selectAll(".node").classed("inactive", (d: D3Node) => {
-      var neighbors = (showNeighborType => {
+      var neighbors = ((showNeighborType) => {
         switch (showNeighborType) {
           case NeighborType.SOURCES_ONLY:
             return this.graphDataWrapper.getSourcesForId(nodeId);
@@ -1218,7 +1189,7 @@ export class D3ForceGraph implements GraphRenderer {
     const length = Math.sqrt((end.y - start.y) * (end.y - start.y) + (end.x - start.x) * (end.x - start.x)) / 2;
     const result = {
       x: start.x + Math.cos(beta) * length,
-      y: start.y + Math.sin(beta) * length
+      y: start.y + Math.sin(beta) * length,
     };
 
     return result;

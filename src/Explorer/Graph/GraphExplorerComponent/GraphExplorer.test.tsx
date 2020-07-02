@@ -49,8 +49,8 @@ describe("Check whether query result is edge-vertex array", () => {
       GraphExplorer.isEdgeVertexPairArray([
         {
           e: { id: "ide", type: "edge" },
-          v: { id: "idv", type: "vertex" }
-        }
+          v: { id: "idv", type: "vertex" },
+        },
       ])
     ).toBe(true);
   });
@@ -72,7 +72,7 @@ describe("getPkIdFromDocumentId", () => {
     _self: "_self",
     _etag: "_etag",
     _ts: 1234,
-    ...override
+    ...override,
   });
 
   it("should create pkid pair from non-partitioned graph", () => {
@@ -163,7 +163,7 @@ describe("GraphExplorer", () => {
 
       /* TODO Figure out how to make this Knockout-free */
       graphConfigUiData: graphConfigUi,
-      graphConfig: graphConfig
+      graphConfig: graphConfig,
     };
   };
 
@@ -232,17 +232,17 @@ describe("GraphExplorer", () => {
             documents: docDBResponse.response,
             activityId: "",
             headers: [] as any[],
-            requestCharge: gVRU
+            requestCharge: gVRU,
           };
 
           return Q.resolve(qresult);
-        }
+        },
       };
 
       const fakeIterator: any = {
         nextItem: (callback: (error: any, document: DataModels.DocumentId) => void): void => {},
         hasMoreResults: () => false,
-        executeNext: (callback: (error: any, documents: DataModels.DocumentId[], headers: any) => void): void => {}
+        executeNext: (callback: (error: any, documents: DataModels.DocumentId[], headers: any) => void): void => {},
       };
 
       queryDocStub = sinon.stub(mock, "queryDocuments").callsFake(
@@ -277,7 +277,7 @@ describe("GraphExplorer", () => {
           selectNode: sinon.spy(),
           resetZoom: sinon.spy(),
           updateGraph: sinon.stub().callsFake(() => complete()),
-          enableHighlight: sinon.spy()
+          enableHighlight: sinon.spy(),
         };
         graphExplorer.d3ForceGraph = mockGraphRenderer;
       });
@@ -301,7 +301,7 @@ describe("GraphExplorer", () => {
             client.params.successCallback({
               requestId: requestId,
               data: backendResponse.response,
-              requestCharge: gremlinRU
+              requestCharge: gremlinRU,
             });
 
             if (backendResponse.isLast) {
@@ -354,11 +354,11 @@ describe("GraphExplorer", () => {
     });
 
     describe("Load Graph button", () => {
-      beforeEach(async done => {
+      beforeEach(async (done) => {
         const backendResponses: BackendResponses = {};
         backendResponses["g.V()"] = backendResponses["g.V('1')"] = {
           response: [{ id: "1", type: "vertex" }],
-          isLast: false
+          isLast: false,
         };
         backendResponses[createFetchOutEQuery("1", GraphExplorer.LOAD_PAGE_SIZE + 1)] = { response: [], isLast: false };
         backendResponses[createFetchInEQuery("1", GraphExplorer.LOAD_PAGE_SIZE + 1)] = { response: [], isLast: true };
@@ -402,11 +402,11 @@ describe("GraphExplorer", () => {
     });
 
     describe("Execute Gremlin Query button", () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         const backendResponses: BackendResponses = {};
         backendResponses["g.V()"] = backendResponses["g.V('2')"] = {
           response: [{ id: "2", type: "vertex" }],
-          isLast: false
+          isLast: false,
         };
         backendResponses[createFetchOutEQuery("2", GraphExplorer.LOAD_PAGE_SIZE + 1)] = { response: [], isLast: false };
         backendResponses[createFetchInEQuery("2", GraphExplorer.LOAD_PAGE_SIZE + 1)] = { response: [], isLast: true };
@@ -468,10 +468,10 @@ describe("GraphExplorer", () => {
         inV: node2Id,
         outV: node1Id,
         label: linkLabel,
-        type: "edge"
+        type: "edge",
       };
 
-      beforeEach(done => {
+      beforeEach((done) => {
         const backendResponses: BackendResponses = {};
         // TODO Make this less dependent on spaces, order and quotes
         backendResponses["g.V()"] = backendResponses[`g.V('${node1Id}','${node2Id}')`] = {
@@ -480,15 +480,15 @@ describe("GraphExplorer", () => {
               id: node1Id,
               label: label1,
               type: "vertex",
-              properties: { prop1Id: [{ id: "id123", value: prop1Val1 }] }
+              properties: { prop1Id: [{ id: "id123", value: prop1Val1 }] },
             },
             {
               id: node2Id,
               label: label2,
-              type: "vertex"
-            }
+              type: "vertex",
+            },
           ],
-          isLast: false
+          isLast: false,
         };
 
         backendResponses[createFetchOutEQuery(node1Id, GraphExplorer.LOAD_PAGE_SIZE + 1)] = {
@@ -498,17 +498,17 @@ describe("GraphExplorer", () => {
               v: {
                 id: node2Id,
                 label: label2,
-                type: "vertex"
-              }
-            }
+                type: "vertex",
+              },
+            },
           ],
-          isLast: false
+          isLast: false,
         };
         backendResponses[createFetchInEQuery(node1Id, GraphExplorer.LOAD_PAGE_SIZE)] = { response: [], isLast: true };
 
         backendResponses[createFetchOutEQuery(node2Id, GraphExplorer.LOAD_PAGE_SIZE + 1)] = {
           response: [],
-          isLast: false
+          isLast: false,
         };
         backendResponses[createFetchInEQuery(node2Id, GraphExplorer.LOAD_PAGE_SIZE + 1)] = {
           response: [
@@ -518,16 +518,16 @@ describe("GraphExplorer", () => {
                 inV: node2Id,
                 outV: node1Id,
                 label: linkLabel,
-                type: "edge"
+                type: "edge",
               },
               v: {
                 id: node1Id,
                 label: label1,
-                type: "vertex"
-              }
-            }
+                type: "vertex",
+              },
+            },
           ],
-          isLast: true
+          isLast: true,
         };
 
         const docDBResponse: AjaxResponse = { response: [{ id: node1Id }, { id: node2Id }], isLast: false };
@@ -614,7 +614,7 @@ describe("GraphExplorer", () => {
       describe("Select root node", () => {
         let loadNeighborsPageStub: sinon.SinonSpy;
 
-        beforeEach(done => {
+        beforeEach((done) => {
           loadNeighborsPageStub = sinon.stub(graphExplorerInstance, "loadNeighborsPage").callsFake(() => {
             return Q.resolve();
           });
@@ -693,12 +693,12 @@ describe("GraphExplorer", () => {
       let processGremlinQueryResultsStub: sinon.SinonSpy;
       let graphExplorerInstance: GraphExplorer;
 
-      beforeEach(done => {
+      beforeEach((done) => {
         const backendResponses: BackendResponses = {};
         // TODO Make this less dependent on spaces, order and quotes
         backendResponses["g.V()"] = {
           response: "invalid response",
-          isLast: true
+          isLast: true,
         };
 
         const docDBResponse: AjaxResponse = { response: [], isLast: false };
@@ -728,11 +728,11 @@ describe("GraphExplorer", () => {
     });
 
     describe("when isGraphAutoVizDisabled setting is true (autoviz disabled)", () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         const backendResponses: BackendResponses = {};
         backendResponses["g.V()"] = backendResponses["g.V('3')"] = {
           response: [{ id: "3", type: "vertex" }],
-          isLast: true
+          isLast: true,
         };
         const docDBResponse: AjaxResponse = { response: [{ id: "3" }], isLast: false };
 

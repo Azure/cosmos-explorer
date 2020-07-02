@@ -36,7 +36,7 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
   tableEntityListViewModelMap[queryTablesTab.tabId] = {
     tableViewModel: tableEntityListViewModel,
     operationManager: operationManager,
-    $dataTable: $dataTable
+    $dataTable: $dataTable,
   };
 
   createDataTable(0, tableEntityListViewModel, queryTablesTab); // Fake a DataTable to start.
@@ -48,10 +48,7 @@ function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: Query
   var columnsFilter: boolean[] = null;
   var tableEntityListViewModel = tableEntityListViewModelMap[queryTablesTab.tabId].tableViewModel;
   if (queryTablesTab.queryViewModel()) {
-    queryTablesTab
-      .queryViewModel()
-      .queryBuilderViewModel()
-      .updateColumnOptions();
+    queryTablesTab.queryViewModel().queryBuilderViewModel().updateColumnOptions();
   }
   createDataTable(
     tableEntityListViewModel.tablePageStartIndex,
@@ -81,9 +78,7 @@ function createDataTable(
     // The official support for dynamically add column is not yet there
     // Please track github issue https://github.com/DataTables/DataTables/issues/273 for its offical support
     for (var i = 0; i < columnsToAdd; i++) {
-      $(".dataTables_scrollHead table thead tr th")
-        .eq(0)
-        .after("<th></th>");
+      $(".dataTables_scrollHead table thead tr th").eq(0).after("<th></th>");
     }
     tableEntityListViewModel.table.destroy();
     $dataTable.empty();
@@ -97,7 +92,7 @@ function createDataTable(
       data: tableEntityListViewModel.headers[i],
       aTargets: [i],
       mRender: bindColumn,
-      visible: !!columnsFilter ? columnsFilter[i] : true
+      visible: !!columnsFilter ? columnsFilter[i] : true,
     });
   }
 
@@ -109,7 +104,7 @@ function createDataTable(
     stateSave: false,
     dom: "RZlfrtip",
     oColReorder: {
-      iFixedColumns: 1
+      iFixedColumns: 1,
     },
     displayStart: startIndex,
     bPaginate: true,
@@ -121,13 +116,13 @@ function createDataTable(
         sFirst: "<<",
         sNext: ">",
         sPrevious: "<",
-        sLast: ">>"
+        sLast: ">>",
       },
       sProcessing: '<img style="width: 28px; height: 6px; " src="images/LoadingIndicator_3Squares.gif">',
       oAria: {
         sSortAscending: "",
-        sSortDescending: ""
-      }
+        sSortDescending: "",
+      },
     },
     destroy: destroy,
     bInfo: true,
@@ -141,7 +136,7 @@ function createDataTable(
     fnServerData: getServerData,
     fnRowCallback: bindClientId,
     fnInitComplete: initializeTable,
-    fnDrawCallback: updateSelectionStatus
+    fnDrawCallback: updateSelectionStatus,
   });
 }
 
@@ -183,9 +178,7 @@ function bindClientId(nRow: Node, aData: Entities.ITableEntity) {
 }
 
 function selectionChanged(element: any, valueAccessor: any, allBindings: any, viewModel: any, bindingContext: any) {
-  $(".dataTable tr.selected")
-    .attr("tabindex", "-1")
-    .removeClass("selected");
+  $(".dataTable tr.selected").attr("tabindex", "-1").removeClass("selected");
 
   const selected =
     bindingContext && bindingContext.$data && bindingContext.$data.selected && bindingContext.$data.selected();
@@ -194,14 +187,11 @@ function selectionChanged(element: any, valueAccessor: any, allBindings: any, vi
       var sel = DataTableOperations.getRowSelector([
         {
           key: Constants.htmlAttributeNames.dataTableRowKeyAttr,
-          value: b.RowKey && b.RowKey._ && b.RowKey._.toString()
-        }
+          value: b.RowKey && b.RowKey._ && b.RowKey._.toString(),
+        },
       ]);
 
-      $(sel)
-        .attr("tabindex", "0")
-        .focus()
-        .addClass("selected");
+      $(sel).attr("tabindex", "0").focus().addClass("selected");
     });
   //selected = bindingContext.$data.selected();
 }
@@ -224,7 +214,7 @@ function updateTableScrollableRegionMetrics(): void {
  * Update the table's scrollable region height. So the pagination control is always shown at the bottom of the page.
  */
 function updateTableScrollableRegionHeight(): void {
-  $(".tab-pane").each(function(index, tabElement) {
+  $(".tab-pane").each(function (index, tabElement) {
     if (!$(tabElement).hasClass("tableContainer")) {
       return;
     }
@@ -232,15 +222,13 @@ function updateTableScrollableRegionHeight(): void {
     // Add some padding to the table so it doesn't get too close to the container border.
     var dataTablePaddingBottom = 10;
     var bodyHeight = $(window).height();
-    var dataTablesScrollBodyPosY = $(tabElement)
-      .find(Constants.htmlSelectors.dataTableScrollBodySelector)
-      .offset().top;
+    var dataTablesScrollBodyPosY = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset().top;
     var dataTablesInfoElem = $(tabElement).find(".dataTables_info");
     var dataTablesPaginateElem = $(tabElement).find(".dataTables_paginate");
     const explorer = window.dataExplorer as ViewModels.Explorer;
     const notificationConsoleHeight = explorer.isNotificationConsoleExpanded()
-        ? 252 /** 32px(header) + 220px(content height) **/
-        : 32 /** Header height **/;
+      ? 252 /** 32px(header) + 220px(content height) **/
+      : 32; /** Header height **/
 
     var scrollHeight =
       bodyHeight -
@@ -271,22 +259,19 @@ function updateTableScrollableRegionHeight(): void {
  * Update the table's scrollable region width to make efficient use of the remaining space.
  */
 function updateTableScrollableRegionWidth(): void {
-  $(".tab-pane").each(function(index, tabElement) {
+  $(".tab-pane").each(function (index, tabElement) {
     if (!$(tabElement).hasClass("tableContainer")) {
       return;
     }
 
     var bodyWidth = $(window).width();
-    var dataTablesScrollBodyPosLeft = $(tabElement)
-      .find(Constants.htmlSelectors.dataTableScrollBodySelector)
-      .offset().left;
+    var dataTablesScrollBodyPosLeft = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset()
+      .left;
     var scrollWidth = bodyWidth - dataTablesScrollBodyPosLeft;
 
     // jquery datatables automatically sets width:100% to both the header and the body when we use it's column autoWidth feature.
     // We work around that by setting the height for it's container instead.
-    $(tabElement)
-      .find(Constants.htmlSelectors.dataTableScrollContainerSelector)
-      .width(scrollWidth);
+    $(tabElement).find(Constants.htmlSelectors.dataTableScrollContainerSelector).width(scrollWidth);
   });
 }
 
@@ -377,20 +362,20 @@ function updateDataTableFocus(queryTablesTabId: string): void {
 
 (<any>ko.bindingHandlers).tableSource = {
   init: bindDataTable,
-  update: dataChanged
+  update: dataChanged,
 };
 
 (<any>ko.bindingHandlers).tableSelection = {
-  update: selectionChanged
+  update: selectionChanged,
 };
 
 (<any>ko.bindingHandlers).readOnly = {
-  update: function(element: any, valueAccessor: any) {
+  update: function (element: any, valueAccessor: any) {
     var value = ko.utils.unwrapObservable(valueAccessor());
     if (value) {
       element.setAttribute("readOnly", true);
     } else {
       element.removeAttribute("readOnly");
     }
-  }
+  },
 };

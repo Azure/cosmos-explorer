@@ -21,5 +21,5 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   databaseAccountName: undefined,
   defaultExperience: undefined,
   kernelRestartDelayMs: Notebook.kernelRestartInitialDelayMs,
-  hoveredCellId: undefined
+  hoveredCellId: undefined,
 });

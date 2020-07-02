@@ -22,7 +22,7 @@ import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown
 export enum ConsoleDataType {
   Info = 0,
   Error = 1,
-  InProgress = 2
+  InProgress = 2,
 }
 
 /**
@@ -63,7 +63,7 @@ export class NotificationConsoleComponent extends React.Component<
     this.state = {
       headerStatus: "",
       selectedFilter: NotificationConsoleComponent.FilterOptions[0],
-      isExpanded: props.isConsoleExpanded
+      isExpanded: props.isConsoleExpanded,
     };
     this.prevHeaderStatus = null;
   }

@@ -26,7 +26,7 @@ function _parse(err: any): DataModels.ErrorDataModel[] {
     normalizedErrors.push(err);
   } else {
     const innerErrors: any[] = _getInnerErrors(err.message);
-    normalizedErrors = innerErrors.map(innerError =>
+    normalizedErrors = innerErrors.map((innerError) =>
       typeof innerError === "string" ? { message: innerError } : innerError
     );
   }

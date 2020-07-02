@@ -44,7 +44,7 @@ export class DatabaseAccountUtils {
         failoverPriority: index,
         locationId: StringUtils.stripSpacesFromString(gatewayLocation.name).toLowerCase(),
         provisioningState: "Succeeded",
-        id: gatewayLocation.name
+        id: gatewayLocation.name,
       };
 
       return responseLocation;

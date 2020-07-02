@@ -59,7 +59,7 @@ export class CommandBarComponentButtonFactory {
       const newNotebookButton = CommandBarComponentButtonFactory.createNewNotebookButton(container);
       newNotebookButton.children = [
         CommandBarComponentButtonFactory.createNewNotebookButton(container),
-        CommandBarComponentButtonFactory.createuploadNotebookButton(container)
+        CommandBarComponentButtonFactory.createuploadNotebookButton(container),
       ];
       buttons.push(newNotebookButton);
 
@@ -125,7 +125,7 @@ export class CommandBarComponentButtonFactory {
         const openQueryBtn = CommandBarComponentButtonFactory.createOpenQueryButton(container);
         openQueryBtn.children = [
           CommandBarComponentButtonFactory.createOpenQueryButton(container),
-          CommandBarComponentButtonFactory.createOpenQueryFromDiskButton(container)
+          CommandBarComponentButtonFactory.createOpenQueryFromDiskButton(container),
         ];
         buttons.push(openQueryBtn);
       } else if (isSupportedOpenQueryFromDiskApi && container.selectedNode() && container.findSelectedCollection()) {
@@ -144,7 +144,7 @@ export class CommandBarComponentButtonFactory {
           commandButtonLabel: label,
           ariaLabel: label,
           hasPopup: true,
-          disabled: container.isDatabaseNodeOrNoneSelected()
+          disabled: container.isDatabaseNodeOrNoneSelected(),
         };
 
         newStoredProcedureBtn.children = CommandBarComponentButtonFactory.createScriptCommandButtons(container);
@@ -170,7 +170,7 @@ export class CommandBarComponentButtonFactory {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()
+        disabled: container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB(),
       };
       buttons.push(newMongoShellBtn);
     }
@@ -194,7 +194,7 @@ export class CommandBarComponentButtonFactory {
         ariaLabel: label,
         tooltipText: label,
         hasPopup: true,
-        disabled: false
+        disabled: false,
       };
       buttons.push(settingsPaneButton);
     }
@@ -210,7 +210,7 @@ export class CommandBarComponentButtonFactory {
         tooltipText: label,
         hasPopup: false,
         disabled: !container.isHostedDataExplorerEnabled(),
-        className: "OpenFullScreen"
+        className: "OpenFullScreen",
       };
       buttons.push(fullScreenButton);
     }
@@ -225,7 +225,7 @@ export class CommandBarComponentButtonFactory {
         ariaLabel: label,
         tooltipText: label,
         hasPopup: false,
-        disabled: false
+        disabled: false,
       };
       buttons.push(feedbackButtonOptions);
     }
@@ -242,7 +242,7 @@ export class CommandBarComponentButtonFactory {
       iconSrc: null,
       iconAlt: null,
       onCommandClick: null,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -259,7 +259,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      id: "createNewContainerCommandButton"
+      id: "createNewContainerCommandButton",
     };
   }
 
@@ -282,7 +282,7 @@ export class CommandBarComponentButtonFactory {
         container.databaseAccount().properties &&
         container.databaseAccount().properties.capabilities) ||
       [];
-    if (capabilities.some(capability => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
+    if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
       return null;
     }
 
@@ -294,7 +294,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: container.isSynapseLinkUpdating(),
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -309,7 +309,7 @@ export class CommandBarComponentButtonFactory {
       },
       commandButtonLabel: label,
       ariaLabel: label,
-      hasPopup: true
+      hasPopup: true,
     };
   }
 
@@ -326,7 +326,7 @@ export class CommandBarComponentButtonFactory {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected()
+        disabled: container.isDatabaseNodeOrNoneSelected(),
       };
     } else if (container.isPreferredApiMongoDB()) {
       const label = "New Query";
@@ -340,7 +340,7 @@ export class CommandBarComponentButtonFactory {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected()
+        disabled: container.isDatabaseNodeOrNoneSelected(),
       };
     }
 
@@ -365,7 +365,7 @@ export class CommandBarComponentButtonFactory {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected()
+        disabled: container.isDatabaseNodeOrNoneSelected(),
       };
       buttons.push(newStoredProcedureBtn);
     }
@@ -382,7 +382,7 @@ export class CommandBarComponentButtonFactory {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected()
+        disabled: container.isDatabaseNodeOrNoneSelected(),
       };
       buttons.push(newUserDefinedFunctionBtn);
     }
@@ -399,7 +399,7 @@ export class CommandBarComponentButtonFactory {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected()
+        disabled: container.isDatabaseNodeOrNoneSelected(),
       };
       buttons.push(newTriggerBtn);
     }
@@ -428,7 +428,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected()
+      disabled: container.isDatabaseNodeOrNoneSelected(),
     };
   }
 
@@ -441,7 +441,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -454,7 +454,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -467,7 +467,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: false
+      disabled: false,
     };
   }
 
@@ -480,7 +480,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: false
+      disabled: false,
     };
   }
 
@@ -501,7 +501,7 @@ export class CommandBarComponentButtonFactory {
       hasPopup: false,
       disabled: !container.isNotebooksEnabledForAccount(),
       ariaLabel: label,
-      tooltipText: container.isNotebooksEnabledForAccount() ? "" : tooltip
+      tooltipText: container.isNotebooksEnabledForAccount() ? "" : tooltip,
     };
   }
 
@@ -514,7 +514,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -527,7 +527,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -540,7 +540,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -553,7 +553,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -566,7 +566,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -592,7 +592,7 @@ export class CommandBarComponentButtonFactory {
       hasPopup: false,
       disabled: disableButton,
       ariaLabel: label,
-      tooltipText: !disableButton ? "" : tooltip
+      tooltipText: !disableButton ? "" : tooltip,
     };
   }
 
@@ -618,7 +618,7 @@ export class CommandBarComponentButtonFactory {
       hasPopup: false,
       disabled: disableButton,
       ariaLabel: label,
-      tooltipText: !disableButton ? "" : tooltip
+      tooltipText: !disableButton ? "" : tooltip,
     };
   }
 
@@ -631,7 +631,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -646,7 +646,7 @@ export class CommandBarComponentButtonFactory {
           TelemetryProcessor.trace(Action.NotebooksGitHubConnect, ActionModifiers.Mark, {
             databaseAccountName: container.databaseAccount() && container.databaseAccount().name,
             defaultExperience: container.defaultExperience && container.defaultExperience(),
-            dataExplorerArea: Areas.Notebook
+            dataExplorerArea: Areas.Notebook,
           });
         }
         container.gitHubReposPane.open();
@@ -654,7 +654,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -667,7 +667,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -680,7 +680,7 @@ export class CommandBarComponentButtonFactory {
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,
-      ariaLabel: label
+      ariaLabel: label,
     };
   }
 
@@ -700,7 +700,7 @@ export class CommandBarComponentButtonFactory {
     if (!openQueryBtn.disabled) {
       openQueryBtn.children = [
         CommandBarComponentButtonFactory.createOpenQueryButton(container),
-        CommandBarComponentButtonFactory.createOpenQueryFromDiskButton(container)
+        CommandBarComponentButtonFactory.createOpenQueryFromDiskButton(container),
       ];
     }
 

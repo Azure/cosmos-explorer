@@ -32,7 +32,7 @@ export class GraphUtil {
             id: edge.id,
             label: label,
             inV: edge.inV,
-            outV: vertex.id
+            outV: vertex.id,
           };
 
           graphData.addEdge(e);
@@ -51,7 +51,7 @@ export class GraphUtil {
             id: edge.id,
             label: label,
             inV: vertex.id,
-            outV: edge.outV
+            outV: edge.outV,
           };
 
           graphData.addEdge(e);
@@ -89,7 +89,7 @@ export class GraphUtil {
 
     return {
       result: output,
-      consumedCount: i + 1
+      consumedCount: i + 1,
     };
   }
 
@@ -113,8 +113,9 @@ export class GraphUtil {
         }().as('v').select('e', 'v')`;
       } else {
         const start = startIndex - joined.consumedCount;
-        gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}()${hasWithoutStep}.range(${start},${start +
-          pageSize}).as('e').${outE ? "inV" : "outV"}().as('v').select('e', 'v')`;
+        gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}()${hasWithoutStep}.range(${start},${
+          start + pageSize
+        }).as('e').${outE ? "inV" : "outV"}().as('v').select('e', 'v')`;
       }
     } else {
       gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}().limit(${pageSize}).as('e').${

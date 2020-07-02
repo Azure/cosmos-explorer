@@ -22,7 +22,7 @@ context("Table API Test", () => {
   it("Create a new table in Table API", () => {
     const collectionId = `TestCollection${crypt.randomBytes(8).toString("hex")}`;
 
-    cy.get("iframe").then($element => {
+    cy.get("iframe").then(($element) => {
       const $body = $element.contents().find("body");
       cy.wrap($body)
         .find('div[class="commandBarContainer"]')
@@ -31,22 +31,13 @@ context("Table API Test", () => {
         .should("be.visible")
         .click();
 
-      cy.wrap($body)
-        .find('div[class="contextual-pane-in"]')
-        .should("be.visible")
-        .find('span[id="containerTitle"]');
+      cy.wrap($body).find('div[class="contextual-pane-in"]').should("be.visible").find('span[id="containerTitle"]');
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-collectionId"]')
-        .type(collectionId);
+      cy.wrap($body).find('input[data-test="addCollection-collectionId"]').type(collectionId);
 
-      cy.wrap($body)
-        .find('input[data-test="databaseThroughputValue"]')
-        .should("have.value", "400");
+      cy.wrap($body).find('input[data-test="databaseThroughputValue"]').should("have.value", "400");
 
-      cy.wrap($body)
-        .find('input[data-test="addCollection-createCollection"]')
-        .click();
+      cy.wrap($body).find('input[data-test="addCollection-createCollection"]').click();
 
       cy.wait(10000);
 

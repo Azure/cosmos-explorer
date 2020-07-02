@@ -22,10 +22,10 @@ context("Emulator - deleteDatabase", () => {
       url: "https://localhost:8081/_explorer/authorization/post/dbs/",
       headers: {
         "x-ms-date": date,
-        authorization: "-"
-      }
+        authorization: "-",
+      },
     })
-      .then(response => {
+      .then((response) => {
         authToken = response.body.Token; // Getting auth token for collection creation
         return new Cypress.Promise((resolve, reject) => {
           return resolve();
@@ -38,12 +38,12 @@ context("Emulator - deleteDatabase", () => {
           headers: {
             "x-ms-date": date,
             authorization: authToken,
-            "x-ms-version": "2018-12-31"
+            "x-ms-version": "2018-12-31",
           },
           body: {
-            id: dbId
-          }
-        }).then(response => {
+            id: dbId,
+          },
+        }).then((response) => {
           cy.log("Response", response);
           db_rid = response.body._rid;
           return new Cypress.Promise((resolve, reject) => {
@@ -59,19 +59,14 @@ context("Emulator - deleteDatabase", () => {
 
     cy.get(".databaseId")
       .last()
-      .then($id => {
+      .then(($id) => {
         const dbId = $id.text();
 
         cy.get('span[data-test="databaseEllipsisMenu"]').should("exist");
 
-        cy.get('span[data-test="databaseEllipsisMenu"]')
-          .invoke("show")
-          .last()
-          .click();
+        cy.get('span[data-test="databaseEllipsisMenu"]').invoke("show").last().click();
 
-        cy.get('div[data-test="databaseContextMenu"]')
-          .contains("Delete Database")
-          .click({ force: true });
+        cy.get('div[data-test="databaseContextMenu"]').contains("Delete Database").click({ force: true });
 
         cy.get('input[data-test="confirmDatabaseId"]').type(dbId.trim());
 

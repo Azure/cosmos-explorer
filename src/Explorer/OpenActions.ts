@@ -117,7 +117,7 @@ function openCollectionTab(
       subscription.dispose();
     };
 
-    const subscription = database.collections.subscribe(collections => collectionActionHandler(collections));
+    const subscription = database.collections.subscribe((collections) => collectionActionHandler(collections));
     if (database.collections && database.collections() && database.collections().length) {
       collectionActionHandler(database.collections());
     }

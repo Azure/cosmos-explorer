@@ -31,7 +31,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
 
   constructor(private container: ViewModels.Explorer) {
     this.parameters = ko.observable<number>(Date.now());
-    this.container.openedTabs.subscribe(tabs => {
+    this.container.openedTabs.subscribe((tabs) => {
       if (tabs.length === 0) {
         this.forceRender();
       }
@@ -78,8 +78,8 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
         iconSrc: NewContainerIcon,
         title: this.container.addCollectionText(),
         description: "Create a new container for storage and throughput",
-        onClick: () => this.container.onNewCollectionClicked()
-      }
+        onClick: () => this.container.onNewCollectionClicked(),
+      },
     ];
 
     if (dataSampleUtil.isSampleContainerCreationSupported()) {
@@ -88,7 +88,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
         iconSrc: SampleIcon,
         title: "Start with Sample",
         description: "Get started with a sample provided by Cosmos DB",
-        onClick: () => dataSampleUtil.createSampleContainerAsync()
+        onClick: () => dataSampleUtil.createSampleContainerAsync(),
       });
     }
 
@@ -97,7 +97,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
         description: "Create a notebook to start querying, visualizing, and modeling your data",
-        onClick: () => this.container.onNewNotebookClicked()
+        onClick: () => this.container.onNewNotebookClicked(),
       });
     }
 
@@ -120,7 +120,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
             selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
           },
           title: "New SQL Query",
-          description: null
+          description: null,
         });
       } else if (this.container.isPreferredApiMongoDB()) {
         items.push({
@@ -130,7 +130,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
             selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null);
           },
           title: "New Query",
-          description: null
+          description: null,
         });
       }
 
@@ -138,7 +138,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
         iconSrc: OpenQueryIcon,
         title: "Open Query",
         description: null,
-        onClick: () => this.container.browseQueriesPane.open()
+        onClick: () => this.container.browseQueriesPane.open(),
       });
 
       if (!this.container.isPreferredApiCassandra()) {
@@ -149,7 +149,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
           onClick: () => {
             const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
             selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
-          }
+          },
         });
       }
 
@@ -170,14 +170,14 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
         onClick: () => {
           const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
           selectedCollection && selectedCollection.onSettingsClick();
-        }
+        },
       });
     } else {
       items.push({
         iconSrc: AddDatabaseIcon,
         title: this.container.addDatabaseText(),
         description: null,
-        onClick: () => this.container.addDatabasePane.open()
+        onClick: () => this.container.addDatabasePane.open(),
       });
     }
 
@@ -194,12 +194,12 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return this.container.mostRecentActivity.getItems(CosmosClient.databaseAccount().id).map(item => ({
+    return this.container.mostRecentActivity.getItems(CosmosClient.databaseAccount().id).map((item) => ({
       iconSrc: MostRecentActivity.MostRecentActivity.getItemIcon(item),
       title: item.title,
       description: item.description,
       info: SplashScreenComponentAdapter.getInfo(item),
-      onClick: () => this.container.mostRecentActivity.onItemClicked(item)
+      onClick: () => this.container.mostRecentActivity.onItemClicked(item),
     }));
   }
 
@@ -209,20 +209,20 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
         iconSrc: null,
         title: "Data Modeling",
         description: "Learn more about modeling",
-        onClick: () => window.open(SplashScreenComponentAdapter.dataModelingUrl)
+        onClick: () => window.open(SplashScreenComponentAdapter.dataModelingUrl),
       },
       {
         iconSrc: null,
         title: "Cost & Throughput Calculation",
         description: "Learn more about cost calculation",
-        onClick: () => window.open(SplashScreenComponentAdapter.throughputEstimatorUrl)
+        onClick: () => window.open(SplashScreenComponentAdapter.throughputEstimatorUrl),
       },
       {
         iconSrc: null,
         title: "Configure automatic failover",
         description: "Learn more about Cosmos DB high-availability",
-        onClick: () => window.open(SplashScreenComponentAdapter.failoverUrl)
-      }
+        onClick: () => window.open(SplashScreenComponentAdapter.failoverUrl),
+      },
     ];
   }
 }

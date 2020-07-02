@@ -23,7 +23,7 @@ context("Cassandra API Test - createDatabase", () => {
     const keyspaceId = `KeyspaceId${crypt.randomBytes(8).toString("hex")}`;
     const tableId = `TableId112`;
 
-    cy.get("iframe").then($element => {
+    cy.get("iframe").then(($element) => {
       const $body = $element.contents().find("body");
       cy.wrap($body)
         .find('div[class="commandBarContainer"]')
@@ -32,27 +32,15 @@ context("Cassandra API Test - createDatabase", () => {
         .should("be.visible")
         .click();
 
-      cy.wrap($body)
-        .find('div[class="contextual-pane-in"]')
-        .should("be.visible")
-        .find('span[id="containerTitle"]');
+      cy.wrap($body).find('div[class="contextual-pane-in"]').should("be.visible").find('span[id="containerTitle"]');
 
-      cy.wrap($body)
-        .find('input[id="keyspace-id"]')
-        .should("be.visible")
-        .type(keyspaceId);
+      cy.wrap($body).find('input[id="keyspace-id"]').should("be.visible").type(keyspaceId);
 
-      cy.wrap($body)
-        .find('input[class="textfontclr"]')
-        .type(tableId);
+      cy.wrap($body).find('input[class="textfontclr"]').type(tableId);
 
-      cy.wrap($body)
-        .find('input[data-test="databaseThroughputValue"]')
-        .should("have.value", "400");
+      cy.wrap($body).find('input[data-test="databaseThroughputValue"]').should("have.value", "400");
 
-      cy.wrap($body)
-        .find('data-test="addCollection-createCollection"')
-        .click();
+      cy.wrap($body).find('data-test="addCollection-createCollection"').click();
 
       cy.wait(10000);
 

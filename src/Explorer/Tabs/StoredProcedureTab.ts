@@ -12,7 +12,7 @@ import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 
 enum ToggleState {
   Result = "result",
-  Logs = "logs"
+  Logs = "logs",
 }
 
 export default class StoredProcedureTab extends ScriptTabBase implements ViewModels.StoredProcedureTab {
@@ -54,7 +54,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
   public onSaveClick = (): Q.Promise<DataModels.StoredProcedure> => {
     const resource: DataModels.StoredProcedure = <DataModels.StoredProcedure>{
       id: this.id(),
-      body: this.editorContent()
+      body: this.editorContent(),
     };
 
     return this._createStoredProcedure(resource);
@@ -78,7 +78,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
     return this.documentClientUtility
       .updateStoredProcedure(this.collection, data)
@@ -99,7 +99,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -112,7 +112,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -214,7 +214,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled: this.isNew() || this.formIsDirty()
+      disabled: this.isNew() || this.formIsDirty(),
     });
   }
 
@@ -223,7 +223,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       _rid: this.resource()._rid,
       _self: this.resource()._self,
       id: this.id(),
-      body: this.editorContent()
+      body: this.editorContent(),
     };
 
     return resource;
@@ -236,13 +236,13 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     return this.documentClientUtility
       .createStoredProcedure(this.collection, resource)
       .then(
-        createdResource => {
+        (createdResource) => {
           this.tabTitle(createdResource.id);
           this.isNew(false);
           this.resource(createdResource);
@@ -264,14 +264,14 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
           this.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
           return createdResource;
         },
-        createError => {
+        (createError) => {
           this.isExecutionError(true);
           TelemetryProcessor.traceFailure(
             Action.CreateStoredProcedure,
@@ -279,7 +279,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );

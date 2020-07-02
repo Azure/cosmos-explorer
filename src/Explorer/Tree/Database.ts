@@ -46,14 +46,14 @@ export default class Database implements ViewModels.Database {
       description: "Settings node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create settings tab if not created yet
     const openedTabs = this.container.openedTabs();
     let settingsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.DatabaseSettings)[0];
+      .filter((tab) => tab.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.DatabaseSettings)[0];
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -61,7 +61,7 @@ export default class Database implements ViewModels.Database {
         databaseName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Scale"
+        tabTitle: "Scale",
       });
       Q.all([pendingNotificationsPromise, this.readSettings()]).then(
         (data: any) => {
@@ -79,7 +79,7 @@ export default class Database implements ViewModels.Database {
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-            openedTabs: this.container.openedTabs()
+            openedTabs: this.container.openedTabs(),
           });
           (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(pendingNotification);
           this.container.openedTabs.push(settingsTab);
@@ -95,7 +95,7 @@ export default class Database implements ViewModels.Database {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: "Scale",
-              error: error
+              error: error,
             },
             startKey
           );
@@ -126,11 +126,11 @@ export default class Database implements ViewModels.Database {
     const databaseDataModel: DataModels.Database = <DataModels.Database>{
       id: this.id(),
       _rid: this.rid,
-      _self: this.self
+      _self: this.self,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
       databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience()
+      defaultExperience: this.container.defaultExperience(),
     });
 
     const offerInfoPromise: Q.Promise<DataModels.Offer[]> = this.container.documentClientUtility.readOffers();
@@ -153,7 +153,7 @@ export default class Database implements ViewModels.Database {
               numPhysicalPartitions:
                 offerDetail.content &&
                 offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
+                offerDetail.content.collectionThroughputInfo.numPhysicalPartitions,
             };
 
             databaseOffer.content.collectionThroughputInfo = offerThroughputInfo;
@@ -165,7 +165,7 @@ export default class Database implements ViewModels.Database {
               Action.LoadOffers,
               {
                 databaseAccountName: this.container.databaseAccount().name,
-                defaultExperience: this.container.defaultExperience()
+                defaultExperience: this.container.defaultExperience(),
               },
               startKey
             );
@@ -179,7 +179,7 @@ export default class Database implements ViewModels.Database {
           Action.LoadOffers,
           {
             databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience()
+            defaultExperience: this.container.defaultExperience(),
           },
           startKey
         );
@@ -209,7 +209,7 @@ export default class Database implements ViewModels.Database {
       description: "Database node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -235,7 +235,7 @@ export default class Database implements ViewModels.Database {
       description: "Database node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -249,7 +249,7 @@ export default class Database implements ViewModels.Database {
       description: "Database node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -334,7 +334,7 @@ export default class Database implements ViewModels.Database {
             error: JSON.stringify(error),
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.id(),
-            collectionName: this.id()
+            collectionName: this.id(),
           }),
           "Settings tree node"
         );

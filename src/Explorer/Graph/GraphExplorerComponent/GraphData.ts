@@ -152,7 +152,7 @@ export class GraphData<V extends GremlinVertex, E extends GremlinEdge> {
             const v = this.getVertexById(e.outV);
             GraphData.addOutE(v, p, {
               id: e.id,
-              inV: e.outV
+              inV: e.outV,
             });
           }
         });
@@ -165,7 +165,7 @@ export class GraphData<V extends GremlinVertex, E extends GremlinEdge> {
             const v = this.getVertexById(e.inV);
             GraphData.addInE(v, p, {
               id: e.id,
-              outV: e.inV
+              outV: e.inV,
             });
           }
         });

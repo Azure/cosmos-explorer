@@ -7,18 +7,18 @@ describe("AutoPilotUtils", () => {
     const legacyAutopilotOffer = {
       tier: 1,
       maximumTierThroughput: 20000,
-      maxThroughput: 20000
+      maxThroughput: 20000,
     };
 
     const v3AutopilotOffer = {
       maximumTierThroughput: 20000,
-      maxThroughput: 20000
+      maxThroughput: 20000,
     };
 
     const v3AutopilotOfferDuringTransitionPhase = {
       tier: 0,
       maximumTierThroughput: 20000,
-      maxThroughput: 20000
+      maxThroughput: 20000,
     };
 
     it("should return false if the offer has a tier level and the tier level >= 1", () => {
@@ -45,8 +45,8 @@ describe("AutoPilotUtils", () => {
         content: {
           offerThroughput: 0,
           offerIsRUPerMinuteThroughputEnabled: false,
-          offerAutopilotSettings: undefined
-        }
+          offerAutopilotSettings: undefined,
+        },
       };
       return commonOffer;
     }
@@ -54,7 +54,7 @@ describe("AutoPilotUtils", () => {
     it("offer with autopilot", () => {
       let offer = getOffer();
       offer.content.offerAutopilotSettings = {
-        tier: 1
+        tier: 1,
       };
       const isValid = AutoPilotUtils.isValidV2AutoPilotOffer(offer);
       expect(isValid).toBe(true);

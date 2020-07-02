@@ -57,7 +57,7 @@ export default class ToolbarDropDown implements IToolbarDropDown {
               type: "normal",
               label: actionConfig.displayName,
               enabled: actionConfig.enabled(),
-              visible: actionConfig.visible ? actionConfig.visible() : true
+              visible: actionConfig.visible ? actionConfig.visible() : true,
             };
             actionMap[actionConfig.id] = actionConfig.action;
             break;
@@ -68,7 +68,7 @@ export default class ToolbarDropDown implements IToolbarDropDown {
               label: actionConfig.displayName,
               enabled: actionConfig.enabled(),
               visible: actionConfig.visible ? actionConfig.visible() : true,
-              submenu: ToolbarDropDown._convertToMenuItem(actionConfig.subgroup, actionMap).menuItems
+              submenu: ToolbarDropDown._convertToMenuItem(actionConfig.subgroup, actionMap).menuItems,
             };
             break;
           case "toggle":
@@ -77,7 +77,7 @@ export default class ToolbarDropDown implements IToolbarDropDown {
               type: "normal",
               label: actionConfig.checked() ? actionConfig.checkedDisplayName : actionConfig.displayName,
               enabled: actionConfig.enabled(),
-              visible: actionConfig.visible ? actionConfig.visible() : true
+              visible: actionConfig.visible ? actionConfig.visible() : true,
             };
             actionMap[actionConfig.id] = () => {
               actionConfig.checked(!actionConfig.checked());
@@ -86,13 +86,13 @@ export default class ToolbarDropDown implements IToolbarDropDown {
           case "separator":
             menuItem = <IMenuItem>{
               type: "separator",
-              visible: true
+              visible: true,
             };
             break;
         }
         return menuItem;
       }),
-      actionMap: actionMap
+      actionMap: actionMap,
     };
 
     return returnValue;
@@ -106,7 +106,7 @@ export default class ToolbarDropDown implements IToolbarDropDown {
         .executeProviderOperation("MenuManager.showMenu", {
           iFrameStack: [`#${window.frameElement.id}`],
           anchor: `#${this.id}`,
-          menuItems: convertedMenuItem.menuItems
+          menuItems: convertedMenuItem.menuItems,
         })
         .then((id?: string) => {
           if (!!id && !!convertedMenuItem.actionMap[id]) {

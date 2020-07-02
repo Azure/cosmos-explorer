@@ -52,7 +52,7 @@ var keyCodes = {
   F10: 121,
   F11: 122,
   F12: 123,
-  Dash: 189
+  Dash: 189,
 };
 
 export default keyCodes;

@@ -44,12 +44,12 @@ export default class Toolbar {
       enabled: ko.observable(true),
       visible: ko.observable(true),
       icon: "images/ASX_More.svg",
-      subgroup: []
+      subgroup: [],
     };
 
     var showHasMoreItem = false;
     var addSeparator = false;
-    this._actionConfigs.forEach(actionConfig => {
+    this._actionConfigs.forEach((actionConfig) => {
       if (actionConfig.type === "separator") {
         addSeparator = true;
       } else if (remainingToolbarSpace / 60 > 2) {
@@ -66,7 +66,7 @@ export default class Toolbar {
         if (addSeparator) {
           addSeparator = false;
           moreItem.subgroup.push({
-            type: "separator"
+            type: "separator",
           });
         }
 
@@ -126,7 +126,7 @@ export default class Toolbar {
       case "separator":
         return {
           type: "separator",
-          visible: ko.observable(true)
+          visible: ko.observable(true),
         };
     }
   }
@@ -139,7 +139,7 @@ export class ToolbarComponent {
   constructor() {
     return {
       viewModel: Toolbar,
-      template
+      template,
     };
   }
 }

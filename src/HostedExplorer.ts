@@ -16,7 +16,7 @@ import { ConsoleDataType } from "./Explorer/Menus/NotificationConsole/Notificati
 import { DatabaseAccount, Subscription, AccountKeys, Tenant } from "./Contracts/DataModels";
 import {
   DefaultDirectoryDropdownComponent,
-  DefaultDirectoryDropdownProps
+  DefaultDirectoryDropdownProps,
 } from "./Explorer/Controls/Directory/DefaultDirectoryDropdownComponent";
 import { DialogComponentAdapter } from "./Explorer/Controls/DialogReactComponent/DialogComponentAdapter";
 import { DialogProps } from "./Explorer/Controls/DialogReactComponent/DialogComponent";
@@ -75,7 +75,7 @@ class HostedExplorer {
         ariaLabel: "connect button",
         tooltipText: "Connect to a Cosmos DB account",
         hasPopup: true,
-        disabled: false
+        disabled: false,
       },
       {
         iconSrc: SettingsIcon,
@@ -85,7 +85,7 @@ class HostedExplorer {
         ariaLabel: "setting button",
         tooltipText: "Global settings",
         hasPopup: true,
-        disabled: false
+        disabled: false,
       },
       {
         iconSrc: FeedbackIcon,
@@ -96,21 +96,21 @@ class HostedExplorer {
         ariaLabel: "feeback button",
         tooltipText: "Send feedback",
         hasPopup: true,
-        disabled: false
-      }
+        disabled: false,
+      },
     ]);
     this.controlBarComponentAdapter = new ControlBarComponentAdapter(this._controlbarCommands);
 
     this._directoryDropdownProps = ko.observable({
       defaultDirectoryId: undefined,
       directories: [],
-      onDefaultDirectoryChange: this._onDefaultDirectoryChange
+      onDefaultDirectoryChange: this._onDefaultDirectoryChange,
     });
 
     this._directoryListProps = ko.observable({
       directories: [],
       selectedDirectoryId: undefined,
-      onNewDirectorySelected: this._onNewDirectorySelected
+      onNewDirectorySelected: this._onNewDirectorySelected,
     });
 
     this.switchDirectoryPane = new SwitchDirectoryPane(this._directoryDropdownProps, this._directoryListProps);
@@ -124,7 +124,7 @@ class HostedExplorer {
       primaryButtonText: "OK",
       secondaryButtonText: "Cancel",
       onPrimaryButtonClick: this._closeFirewallWarningDialog,
-      onSecondaryButtonClick: this._closeFirewallWarningDialog
+      onSecondaryButtonClick: this._closeFirewallWarningDialog,
     });
     this.firewallWarningComponentAdapter = new DialogComponentAdapter();
     this.firewallWarningComponentAdapter.parameters = this._firewallWarningDialogProps;
@@ -137,7 +137,7 @@ class HostedExplorer {
       primaryButtonText: undefined,
       secondaryButtonText: undefined,
       onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined
+      onSecondaryButtonClick: undefined,
     });
     this.dialogComponentAdapter = new DialogComponentAdapter();
     this.dialogComponentAdapter.parameters = this._dialogProps;
@@ -148,11 +148,11 @@ class HostedExplorer {
         name: undefined,
         email: undefined,
         tenantName: undefined,
-        imageUrl: undefined
+        imageUrl: undefined,
       },
       onSignInClick: this._onSignInClick,
       onSignOutClick: this._onSignOutClick,
-      onSwitchDirectoryClick: this._onSwitchDirectoryClick
+      onSwitchDirectoryClick: this._onSwitchDirectoryClick,
     });
     this.meControlComponentAdapter = new MeControlComponentAdapter();
     this.meControlComponentAdapter.parameters = this._meControlProps;
@@ -166,7 +166,7 @@ class HostedExplorer {
       selectedSubscriptionId: undefined,
       subscriptions: [],
       isLoadingSubscriptions: false,
-      onSubscriptionChange: this._onSubscriptionChange
+      onSubscriptionChange: this._onSubscriptionChange,
     });
     this.accountSwitchComponentAdapter = new AccountSwitchComponentAdapter();
     this.accountSwitchComponentAdapter.parameters = this._accountSwitchProps;
@@ -196,8 +196,8 @@ class HostedExplorer {
     this._sendMessageToExplorerFrame({
       openAction: {
         actionType: ActionType.OpenPane,
-        paneKind: PaneKind.GlobalSettings
-      }
+        paneKind: PaneKind.GlobalSettings,
+      },
     });
 
     return false;
@@ -207,8 +207,8 @@ class HostedExplorer {
     this._sendMessageToExplorerFrame({
       openAction: {
         actionType: ActionType.OpenPane,
-        paneKind: PaneKind.AdHocAccess
-      }
+        paneKind: PaneKind.AdHocAccess,
+      },
     });
 
     return false;
@@ -409,7 +409,7 @@ class HostedExplorer {
       primaryButtonText: "OK",
       secondaryButtonText: "Cancel",
       onPrimaryButtonClick: () => this._onSwitchDialogOkClicked(newAccount),
-      onSecondaryButtonClick: this._onSwitchDialogCancelClicked
+      onSecondaryButtonClick: this._onSwitchDialogCancelClicked,
     };
     this._dialogProps(switchAccountDialogProps);
   };
@@ -421,12 +421,12 @@ class HostedExplorer {
 
   private _onSwitchDialogOkClicked = (newAccount: DatabaseAccount) => {
     this._closeModalDialog();
-    this._switchAccount(newAccount).then(accountResponse => {
+    this._switchAccount(newAccount).then((accountResponse) => {
       this._sendMessageToExplorerFrame({
         type: MessageTypes.SwitchAccount,
         account: accountResponse[0],
         keys: accountResponse[1],
-        authorizationToken: accountResponse[2]
+        authorizationToken: accountResponse[2],
       });
     });
     TelemetryProcessor.traceSuccess(Action.AccountSwitch);
@@ -450,7 +450,7 @@ class HostedExplorer {
   private _updateExplorerWithHash(newHash: string): void {
     this._sendMessageToExplorerFrame({
       type: MessageTypes.UpdateLocationHash,
-      locationHash: newHash
+      locationHash: newHash,
     });
   }
 
@@ -462,7 +462,7 @@ class HostedExplorer {
       explorerFrame.contentWindow.postMessage(
         {
           signature: "pcIframe",
-          data: data
+          data: data,
         },
         explorerFrame.contentDocument.referrer || window.location.href
       );
@@ -502,8 +502,8 @@ class HostedExplorer {
         actionType: ActionType.TransmitCachedData,
         message: {
           id: message && message.id,
-          data: JSON.stringify(token) // target expects stringified value
-        }
+          data: JSON.stringify(token), // target expects stringified value
+        },
       });
     } catch (error) {
       Logger.logError(error, "HostedExplorer/_getArcadiaToken");
@@ -511,8 +511,8 @@ class HostedExplorer {
         actionType: ActionType.TransmitCachedData,
         message: {
           id: message && message.id,
-          error: JSON.stringify(error)
-        }
+          error: JSON.stringify(error),
+        },
       });
     }
   }
@@ -528,11 +528,11 @@ class HostedExplorer {
           name: user.profile.name,
           email: user.userName,
           tenantName: undefined,
-          imageUrl: undefined
-        }
+          imageUrl: undefined,
+        },
       });
 
-      AuthHeadersUtil.getPhotoFromGraphAPI().then(blob => {
+      AuthHeadersUtil.getPhotoFromGraphAPI().then((blob) => {
         const imageUrl = URL.createObjectURL(blob);
         this._updateMeControlProps({
           isUserSignedIn: true,
@@ -540,8 +540,8 @@ class HostedExplorer {
             name: undefined,
             email: undefined,
             tenantName: undefined,
-            imageUrl: imageUrl
-          }
+            imageUrl: imageUrl,
+          },
         });
       });
     }
@@ -549,19 +549,19 @@ class HostedExplorer {
 
   private _handleGetAccessAadRequest() {
     this._getAccessAad().then(
-      response => {
+      (response) => {
         this._sendMessageToExplorerFrame({
           type: MessageTypes.GetAccessAadResponse,
-          response
+          response,
         });
       },
-      error => {
+      (error) => {
         if (typeof error !== "string") {
           error = JSON.stringify(error, Object.getOwnPropertyNames(error));
         }
         this._sendMessageToExplorerFrame({
           type: MessageTypes.GetAccessAadResponse,
-          error
+          error,
         });
       }
     );
@@ -583,7 +583,7 @@ class HostedExplorer {
     try {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
-        displayText: "Loading..."
+        displayText: "Loading...",
       });
       this._updateLoadingStatusText("Loading Account...");
 
@@ -592,15 +592,15 @@ class HostedExplorer {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
         displayText: "",
-        selectedAccountName: loadAccountResult[0].name
+        selectedAccountName: loadAccountResult[0].name,
       });
       this._updateLoadingStatusText("Successfully loaded the account.");
 
       this._setAadControlBar();
-      this._getTenantsHelper().then(tenants => {
+      this._getTenantsHelper().then((tenants) => {
         this._getDefaultTenantHelper(tenants);
       });
-      this._getSubscriptionsHelper(tenantId, true, true).then(subs =>
+      this._getSubscriptionsHelper(tenantId, true, true).then((subs) =>
         this._getDefaultSubscriptionHelper(subs, true, true)
       );
       const subscriptionId: string = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
@@ -644,7 +644,7 @@ class HostedExplorer {
     try {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
-        displayText: "Loading..."
+        displayText: "Loading...",
       });
       const authToken = await ArmResourceUtils.getAuthToken(tenantId);
       const subscriptions = await this._getSubscriptionsHelper(tenantId, true, true);
@@ -713,7 +713,7 @@ class HostedExplorer {
       ? storedDefaultTenantId.substring(DefaultDirectoryDropdownComponent.lastVisitedKey.length)
       : storedDefaultTenantId;
 
-    let defaultTenant: Tenant = _.find(tenants, t => t.tenantId === storedDefaultTenantId);
+    let defaultTenant: Tenant = _.find(tenants, (t) => t.tenantId === storedDefaultTenantId);
     if (!defaultTenant) {
       defaultTenant = tenants[0];
       LocalStorageUtility.setEntryString(
@@ -738,8 +738,8 @@ class HostedExplorer {
           name: undefined,
           email: undefined,
           tenantName: defaultTenant && defaultTenant.displayName,
-          imageUrl: undefined
-        }
+          imageUrl: undefined,
+        },
       });
     }
     if (setLoadingStatus) {
@@ -760,7 +760,7 @@ class HostedExplorer {
     if (setControl) {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
-        isLoadingSubscriptions: true
+        isLoadingSubscriptions: true,
       });
     }
     try {
@@ -785,7 +785,7 @@ class HostedExplorer {
             isLoadingSubscriptions: false,
             subscriptions: [],
             accounts: [],
-            displayText: message
+            displayText: message,
           });
         }
         return Promise.reject(new Error(message));
@@ -797,7 +797,7 @@ class HostedExplorer {
         this._updateAccountSwitchProps({
           authType: AuthType.AAD,
           isLoadingSubscriptions: false,
-          subscriptions: subscriptions
+          subscriptions: subscriptions,
         });
       }
       return subscriptions;
@@ -810,7 +810,7 @@ class HostedExplorer {
         this._updateAccountSwitchProps({
           authType: AuthType.AAD,
           isLoadingSubscriptions: false,
-          displayText: failureMessage
+          displayText: failureMessage,
         });
       }
       TelemetryProcessor.traceFailure(Action.FetchSubscriptions);
@@ -830,14 +830,14 @@ class HostedExplorer {
     const storedAccountId = LocalStorageUtility.getEntryString(StorageKey.DatabaseAccountId);
     const storedSubId = storedAccountId && storedAccountId.split("subscriptions/")[1].split("/")[0];
 
-    let defaultSub = _.find(subscriptions, s => s.subscriptionId === storedSubId);
+    let defaultSub = _.find(subscriptions, (s) => s.subscriptionId === storedSubId);
     if (!defaultSub) {
       defaultSub = subscriptions[0];
     }
     if (setControl) {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
-        selectedSubscriptionId: defaultSub.subscriptionId
+        selectedSubscriptionId: defaultSub.subscriptionId,
       });
     }
     if (setLoadingStatus) {
@@ -863,7 +863,7 @@ class HostedExplorer {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
         isLoadingAccounts: true,
-        accounts: []
+        accounts: [],
       });
     }
 
@@ -888,7 +888,7 @@ class HostedExplorer {
             authType: AuthType.AAD,
             displayText: message,
             isLoadingAccounts: false,
-            accounts: []
+            accounts: [],
           });
         }
         return Promise.reject(new Error("No Account Found"));
@@ -900,7 +900,7 @@ class HostedExplorer {
         this._updateAccountSwitchProps({
           authType: AuthType.AAD,
           isLoadingAccounts: false,
-          accounts: accounts
+          accounts: accounts,
         });
       }
       return accounts;
@@ -914,7 +914,7 @@ class HostedExplorer {
           authType: AuthType.AAD,
           isLoadingAccounts: false,
           accounts: [],
-          displayText: failureMessage
+          displayText: failureMessage,
         });
       }
       TelemetryProcessor.traceFailure(Action.FetchAccounts);
@@ -932,7 +932,7 @@ class HostedExplorer {
     }
 
     let storedDefaultAccountId = LocalStorageUtility.getEntryString(StorageKey.DatabaseAccountId);
-    let defaultAccount = _.find(accounts, a => a.id === storedDefaultAccountId);
+    let defaultAccount = _.find(accounts, (a) => a.id === storedDefaultAccountId);
 
     if (!defaultAccount) {
       defaultAccount = accounts[0];
@@ -942,7 +942,7 @@ class HostedExplorer {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
         displayText: "",
-        selectedAccountName: defaultAccount.name
+        selectedAccountName: defaultAccount.name,
       });
     }
     if (setLoadingStatus) {
@@ -988,7 +988,7 @@ class HostedExplorer {
     }
     this._updateAccountSwitchProps({
       authType: AuthType.AAD,
-      selectedSubscriptionId: newSubscription.subscriptionId
+      selectedSubscriptionId: newSubscription.subscriptionId,
     });
     const id: string = _.uniqueId();
     this._logConsoleMessage(
@@ -1019,7 +1019,7 @@ class HostedExplorer {
 
     this._updateAccountSwitchProps({
       authType: AuthType.AAD,
-      displayText: "Loading..."
+      displayText: "Loading...",
     });
     const id: string = _.uniqueId();
     this._logConsoleMessage(ConsoleDataType.InProgress, `Connecting to Cosmos DB account: ${newAccount.name}`, id);
@@ -1032,7 +1032,7 @@ class HostedExplorer {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
         displayText: "",
-        selectedAccountName: account.name
+        selectedAccountName: account.name,
       });
       this._logConsoleMessage(ConsoleDataType.Info, "Connection successful");
       this._clearInProgressMessageWithId(id);
@@ -1041,7 +1041,7 @@ class HostedExplorer {
     } catch (error) {
       this._updateAccountSwitchProps({
         authType: AuthType.AAD,
-        displayText: "Error loading account"
+        displayText: "Error loading account",
       });
       this._updateLoadingStatusText(`Failed to load selected account: ${newAccount.name}`);
       this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${JSON.stringify(error)}`);
@@ -1063,14 +1063,14 @@ class HostedExplorer {
       type: MessageTypes.SendNotification,
       consoleDataType,
       message,
-      id: id || undefined
+      id: id || undefined,
     });
   }
 
   private _clearInProgressMessageWithId(id: string) {
     this._sendMessageToExplorerFrame({
       type: MessageTypes.ClearNotification,
-      id
+      id,
     });
   }
 
@@ -1078,7 +1078,7 @@ class HostedExplorer {
     this._sendMessageToExplorerFrame({
       type: MessageTypes.LoadingStatus,
       text,
-      title
+      title,
     });
   }
 
@@ -1092,7 +1092,7 @@ class HostedExplorer {
       tooltipText: "Switch Directory",
       hasPopup: true,
       disabled: false,
-      id: "directorySwitchButton"
+      id: "directorySwitchButton",
     };
 
     this._controlbarCommands.splice(0, 1, switchDirectoryCommand);
@@ -1117,18 +1117,18 @@ class HostedExplorer {
     this._updateDirectoryProps(null, { selectedDirectoryId: newDirectory.tenantId });
     this._updateCacheOnNewDirectorySelected(newDirectory);
     this._updateMeControlProps({
-      user: { tenantName: newDirectory.displayName, name: undefined, email: undefined, imageUrl: undefined }
+      user: { tenantName: newDirectory.displayName, name: undefined, email: undefined, imageUrl: undefined },
     });
     this._getAccessAfterTenantSelection(newDirectory.tenantId).then(
-      accountResponse => {
+      (accountResponse) => {
         this._sendMessageToExplorerFrame({
           type: MessageTypes.SwitchAccount,
           account: accountResponse[0],
           keys: accountResponse[1],
-          authorizationToken: accountResponse[2]
+          authorizationToken: accountResponse[2],
         });
       },
-      error => {
+      (error) => {
         Logger.logError(error, "HostedExplorer/_onNewDirectorySelected");
       }
     );

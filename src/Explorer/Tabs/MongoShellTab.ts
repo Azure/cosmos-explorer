@@ -126,8 +126,8 @@ export default class MongoShellTab extends TabsBase implements ViewModels.MongoS
           databaseId: databaseId,
           collectionId: collectionId,
           encryptedAuthToken: encryptedAuthToken,
-          apiEndpoint: apiEndpoint
-        }
+          apiEndpoint: apiEndpoint,
+        },
       },
       this._container.extensionEndpoint()
     );

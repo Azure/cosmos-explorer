@@ -21,9 +21,9 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
    * @param item
    */
   public updateItemChildren(item: NotebookContentItem): Promise<void> {
-    return this.fetchNotebookFiles(item.path).then(subItems => {
+    return this.fetchNotebookFiles(item.path).then((subItems) => {
       item.children = subItems;
-      subItems.forEach(subItem => (subItem.parent = item));
+      subItems.forEach((subItem) => (subItem.parent = item));
     });
   }
 
@@ -69,7 +69,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
 
       if (item.parent && item.parent.children) {
         // Remove deleted child
-        const newChildren = item.parent.children.filter(child => child.path !== path);
+        const newChildren = item.parent.children.filter((child) => child.path !== path);
         item.parent.children = newChildren;
       }
     });
@@ -99,7 +99,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
       content,
       format: "text",
       name,
-      type: "file"
+      type: "file",
     };
 
     return this.contentProvider
@@ -118,13 +118,10 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
 
   private async checkIfFilepathExists(filepath: string): Promise<boolean> {
     const basename = filepath.split("/").pop();
-    let parentDirPath = filepath
-      .split(basename)
-      .shift()
-      .replace(/\/$/, ""); // no trailling slash
+    let parentDirPath = filepath.split(basename).shift().replace(/\/$/, ""); // no trailling slash
 
     const items = await this.fetchNotebookFiles(parentDirPath);
-    return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
+    return items.some((value) => FileSystemUtil.isPathEqual(value.path, filepath));
   }
 
   /**
@@ -145,7 +142,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
     return this.contentProvider
       .update<"file" | "notebook" | "directory">(this.getServerConfig(), sourcePath, { path: targetPath })
       .toPromise()
-      .then(xhr => {
+      .then((xhr) => {
         if (typeof xhr.response === "string") {
           throw new Error(`jupyter server response invalid: ${xhr.response}`);
         }
@@ -204,7 +201,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
     return this.contentProvider
       .get(this.getServerConfig(), filePath, { type: "notebook", format: "text", content: 1 })
       .toPromise()
-      .then(xhr => {
+      .then((xhr) => {
         const content = (xhr.response as any).content;
         if (!content) {
           throw new Error("No content read");
@@ -240,10 +237,10 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
   private fetchNotebookFiles(path: string): Promise<NotebookContentItem[]> {
     return this.contentProvider
       .get(this.getServerConfig(), path, {
-        type: "directory"
+        type: "directory",
       })
       .toPromise()
-      .then(xhr => {
+      .then((xhr) => {
         if (xhr.status !== 200) {
           throw new Error(JSON.stringify(xhr.response));
         }
@@ -261,7 +258,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
           (item: IEmptyContent<FileType>): NotebookContentItem => ({
             name: item.name,
             path: item.path,
-            type: NotebookUtil.getType(item.type)
+            type: NotebookUtil.getType(item.type),
           })
         );
       });
@@ -271,7 +268,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
     return {
       endpoint: this.notebookServerInfo().notebookServerEndpoint,
       token: this.notebookServerInfo().authToken,
-      crossDomain: true
+      crossDomain: true,
     };
   }
 }

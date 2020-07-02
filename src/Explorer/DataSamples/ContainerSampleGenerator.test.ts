@@ -37,26 +37,26 @@ describe("ContainerSampleGenerator", () => {
       data: [
         {
           firstname: "Eva",
-          age: 44
+          age: 44,
         },
         {
           firstname: "Véronique",
-          age: 50
+          age: 50,
         },
         {
           firstname: "亜妃子",
-          age: 5
+          age: 5,
         },
         {
           firstname: "John",
-          age: 23
-        }
-      ]
+          age: 23,
+        },
+      ],
     };
     const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
     const database = new DatabaseStub({
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray([collection])
+      collections: ko.observableArray([collection]),
     });
     database.findCollectionWithId = () => collection;
 
@@ -82,7 +82,7 @@ describe("ContainerSampleGenerator", () => {
     const executeStub = sinon.stub(GremlinClient.prototype, "execute").returns(Q.resolve());
 
     sinon.stub(CosmosClient, "databaseAccount").returns({
-      properties: {}
+      properties: {},
     });
 
     const sampleCollectionId = "SampleCollection";
@@ -95,13 +95,13 @@ describe("ContainerSampleGenerator", () => {
       collectionId: sampleCollectionId,
       rupmEnabled: false,
       data: [
-        "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)"
-      ]
+        "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)",
+      ],
     };
     const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
     const database = new DatabaseStub({
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray([collection])
+      collections: ko.observableArray([collection]),
     });
     database.findCollectionWithId = () => collection;
     collection.databaseId = database.id();

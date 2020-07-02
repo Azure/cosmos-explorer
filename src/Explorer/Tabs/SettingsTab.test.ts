@@ -15,14 +15,14 @@ describe("Settings tab", () => {
     partitionKey: null,
     conflictResolutionPolicy: {
       mode: DataModels.ConflictResolutionMode.LastWriterWins,
-      conflictResolutionPath: "/_ts"
+      conflictResolutionPath: "/_ts",
     },
     indexingPolicy: {},
     _rid: "",
     _self: "",
     _etag: "",
     _ts: 0,
-    id: "mycoll"
+    id: "mycoll",
   };
 
   const baseDatabase: DataModels.Database = {
@@ -31,7 +31,7 @@ describe("Settings tab", () => {
     _etag: "",
     _ts: 0,
     id: "mydb",
-    collections: [baseCollection]
+    collections: [baseCollection],
   };
 
   const quotaInfo: DataModels.CollectionQuotaInfo = {
@@ -42,7 +42,7 @@ describe("Settings tab", () => {
     documentsCount: 0,
     collectionSize: 0,
     usageSizeInKB: 0,
-    numPartitions: 0
+    numPartitions: 0,
   };
 
   describe("Conflict Resolution", () => {
@@ -57,7 +57,7 @@ describe("Settings tab", () => {
         _self: "",
         _etag: "",
         _ts: 0,
-        id: "mycoll"
+        id: "mycoll",
       };
       const getSettingsTab = (conflictResolution: boolean = true) => {
         return new SettingsTab({
@@ -77,7 +77,7 @@ describe("Settings tab", () => {
             null
           ),
           onUpdateTabsButtons: undefined,
-          openedTabs: []
+          openedTabs: [],
         });
       };
 
@@ -104,8 +104,8 @@ describe("Settings tab", () => {
             documentEndpoint: "",
             cassandraEndpoint: "",
             gremlinEndpoint: "",
-            tableEndpoint: ""
-          }
+            tableEndpoint: "",
+          },
         });
 
         const settingsTab = getSettingsTab();
@@ -125,8 +125,8 @@ describe("Settings tab", () => {
             documentEndpoint: "",
             cassandraEndpoint: "",
             gremlinEndpoint: "",
-            tableEndpoint: ""
-          }
+            tableEndpoint: "",
+          },
         });
 
         const settingsTab = getSettingsTab(false /* no resolution conflict*/);
@@ -197,7 +197,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -222,7 +222,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -242,7 +242,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -282,7 +282,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -300,7 +300,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -327,7 +327,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -349,14 +349,14 @@ describe("Settings tab", () => {
     enum PartitionKeyOption {
       None,
       System,
-      NonSystem
+      NonSystem,
     }
 
     function getCollection(defaultApi: string, partitionKeyOption: PartitionKeyOption) {
       const explorer = new Explorer({
         documentClientUtility: null,
         notificationsClient: null,
-        isEmulator: false
+        isEmulator: false,
       });
       explorer.defaultExperience(defaultApi);
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
@@ -367,7 +367,7 @@ describe("Settings tab", () => {
       const database = new Database(explorer, baseDatabase, null);
       const conflictResolutionPolicy = {
         mode: DataModels.ConflictResolutionMode.LastWriterWins,
-        conflictResolutionPath: "/_ts"
+        conflictResolutionPath: "/_ts",
       };
 
       return new Collection(
@@ -381,7 +381,7 @@ describe("Settings tab", () => {
                   paths: ["/foo"],
                   kind: "Hash",
                   version: 2,
-                  systemKey: partitionKeyOption === PartitionKeyOption.System
+                  systemKey: partitionKeyOption === PartitionKeyOption.System,
                 }
               : null,
           conflictResolutionPolicy: conflictResolutionPolicy,
@@ -390,7 +390,7 @@ describe("Settings tab", () => {
           _self: "",
           _etag: "",
           _ts: 0,
-          id: "mycoll"
+          id: "mycoll",
         },
         quotaInfo,
         offer
@@ -409,7 +409,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: getCollection(defaultApi, partitionKeyOption),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
     }
 
@@ -494,7 +494,7 @@ describe("Settings tab", () => {
       const explorer = new Explorer({
         documentClientUtility: null,
         notificationsClient: null,
-        isEmulator: false
+        isEmulator: false,
       });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
 
@@ -510,8 +510,8 @@ describe("Settings tab", () => {
           documentEndpoint: "",
           cassandraEndpoint: "",
           gremlinEndpoint: "",
-          tableEndpoint: ""
-        }
+          tableEndpoint: "",
+        },
       });
 
       const offer: DataModels.Offer = {
@@ -524,9 +524,9 @@ describe("Settings tab", () => {
           offerThroughput: 0,
           offerIsRUPerMinuteThroughputEnabled: false,
           offerAutopilotSettings: {
-            tier: autoPilotTier
-          }
-        }
+            tier: autoPilotTier,
+          },
+        },
       };
       const database = new Database(explorer, baseDatabase, null);
       const container: DataModels.Collection = {
@@ -537,8 +537,8 @@ describe("Settings tab", () => {
         id: "mycoll",
         conflictResolutionPolicy: {
           mode: DataModels.ConflictResolutionMode.LastWriterWins,
-          conflictResolutionPath: "/_ts"
-        }
+          conflictResolutionPath: "/_ts",
+        },
       };
 
       return new Collection(explorer, "mydb", container, quotaInfo, offer);
@@ -556,7 +556,7 @@ describe("Settings tab", () => {
         isActive: ko.observable(false),
         collection: getCollection(autoPilotTier),
         onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        openedTabs: [],
       });
     }
     describe("Visible", () => {

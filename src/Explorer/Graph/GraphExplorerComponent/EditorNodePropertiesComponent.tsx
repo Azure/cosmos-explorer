@@ -79,7 +79,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
         {this.props.editedProperties.readOnlyProperties.map((nodeProp: ViewModels.InputProperty) =>
           ReadOnlyNodePropertiesComponent.renderReadOnlyPropertyKeyPair(
             nodeProp.key,
-            nodeProp.values.map(val => val.value)
+            nodeProp.values.map((val) => val.value)
           )
         )}
       </React.Fragment>
@@ -112,7 +112,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
               type="text"
               value={singleValue.value.toString()}
               placeholder="Value"
-              onChange={e => {
+              onChange={(e) => {
                 singleValue.value = e.target.value;
                 this.props.onUpdateProperties(this.props.editedProperties);
               }}
@@ -123,7 +123,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
           <select
             className="typeSelect"
             value={singleValue.type}
-            onChange={e => {
+            onChange={(e) => {
               singleValue.type = e.target.value as ViewModels.InputPropertyValueTypeString;
               if (singleValue.type === "null") {
                 singleValue.value = null;
@@ -144,7 +144,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
             className="rightPaneTrashIcon rightPaneBtns"
             as="span"
             aria-label="Delete property"
-            onActivated={e => this.removeExistingProperty(key)}
+            onActivated={(e) => this.removeExistingProperty(key)}
           >
             <img src={DeleteIcon} alt="Delete" />
           </AccessibleElement>
@@ -157,14 +157,16 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
     return (
       <tr key={nodeProp.key}>
         <td className="labelCol propertyId">{nodeProp.key}</td>
-        <td>{nodeProp.values.map(value => ReadOnlyNodePropertiesComponent.renderSinglePropertyValue(value.value))}</td>
+        <td>
+          {nodeProp.values.map((value) => ReadOnlyNodePropertiesComponent.renderSinglePropertyValue(value.value))}
+        </td>
         <td />
         <td className="actionCol">
           <AccessibleElement
             className="rightPaneTrashIcon rightPaneBtns"
             as="span"
             aria-label="Remove existing property"
-            onActivated={e => this.removeExistingProperty(nodeProp.key)}
+            onActivated={(e) => this.removeExistingProperty(nodeProp.key)}
           >
             <img src={DeleteIcon} alt="Delete" />
           </AccessibleElement>
@@ -188,7 +190,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
                   type="text"
                   value={addedProperty.key}
                   placeholder="Key"
-                  onChange={e => {
+                  onChange={(e) => {
                     addedProperty.key = e.target.value;
                     this.props.onUpdateProperties(this.props.editedProperties);
                   }}
@@ -201,7 +203,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
                     type="text"
                     value={firstValue.value.toString()}
                     placeholder="Value"
-                    onChange={e => {
+                    onChange={(e) => {
                       firstValue.value = e.target.value;
                       if (firstValue.type === "null") {
                         firstValue.value = null;
@@ -215,7 +217,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
                 <select
                   className="typeSelect"
                   value={firstValue.type}
-                  onChange={e => {
+                  onChange={(e) => {
                     firstValue.type = e.target.value as ViewModels.InputPropertyValueTypeString;
                     this.props.onUpdateProperties(this.props.editedProperties);
                   }}
@@ -233,7 +235,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
                   className="rightPaneTrashIcon rightPaneBtns"
                   as="span"
                   aria-label="Remove property"
-                  onActivated={e => this.removeAddedProperty(index)}
+                  onActivated={(e) => this.removeAddedProperty(index)}
                 >
                   <img src={DeleteIcon} alt="Delete" />
                 </AccessibleElement>

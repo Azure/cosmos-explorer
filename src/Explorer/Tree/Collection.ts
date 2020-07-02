@@ -115,10 +115,7 @@ export default class Collection implements ViewModels.Collection {
         this.partitionKey.paths &&
         this.partitionKey.paths.length &&
         this.partitionKey.paths.length > 0 &&
-        this.partitionKey.paths[0]
-          .replace(/[/]+/g, ".")
-          .substr(1)
-          .replace(/[']+/g, "")) ||
+        this.partitionKey.paths[0].replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")) ||
       null;
     this.partitionKeyPropertyHeader =
       (this.partitionKey &&
@@ -148,28 +145,28 @@ export default class Collection implements ViewModels.Collection {
     this.focusedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
 
     this.documentsFocused = ko.observable<boolean>();
-    this.documentsFocused.subscribe(focus => {
+    this.documentsFocused.subscribe((focus) => {
       console.log("Focus set on Documents: " + focus);
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     });
 
     this.settingsFocused = ko.observable<boolean>(false);
-    this.settingsFocused.subscribe(focus => {
+    this.settingsFocused.subscribe((focus) => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     });
 
     this.storedProceduresFocused = ko.observable<boolean>(false);
-    this.storedProceduresFocused.subscribe(focus => {
+    this.storedProceduresFocused.subscribe((focus) => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
     });
 
     this.userDefinedFunctionsFocused = ko.observable<boolean>(false);
-    this.userDefinedFunctionsFocused.subscribe(focus => {
+    this.userDefinedFunctionsFocused.subscribe((focus) => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
     });
 
     this.triggersFocused = ko.observable<boolean>(false);
-    this.triggersFocused.subscribe(focus => {
+    this.triggersFocused.subscribe((focus) => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
     });
 
@@ -177,20 +174,20 @@ export default class Collection implements ViewModels.Collection {
 
     this.storedProcedures = ko.computed(() => {
       return this.children()
-        .filter(node => node.nodeKind === "StoredProcedure")
-        .map(node => <ViewModels.StoredProcedure>node);
+        .filter((node) => node.nodeKind === "StoredProcedure")
+        .map((node) => <ViewModels.StoredProcedure>node);
     });
 
     this.userDefinedFunctions = ko.computed(() => {
       return this.children()
-        .filter(node => node.nodeKind === "UserDefinedFunction")
-        .map(node => <ViewModels.UserDefinedFunction>node);
+        .filter((node) => node.nodeKind === "UserDefinedFunction")
+        .map((node) => <ViewModels.UserDefinedFunction>node);
     });
 
     this.triggers = ko.computed(() => {
       return this.children()
-        .filter(node => node.nodeKind === "Trigger")
-        .map(node => <ViewModels.Trigger>node);
+        .filter((node) => node.nodeKind === "Trigger")
+        .map((node) => <ViewModels.Trigger>node);
     });
 
     const showScriptsMenus: boolean = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
@@ -221,7 +218,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
     if (this.isCollectionExpanded()) {
       this.collapseCollection();
@@ -244,7 +241,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -260,7 +257,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     return Q.resolve();
@@ -275,15 +272,15 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create documents tab if not created yet
     const openedTabs = this.container.openedTabs();
 
     let documentsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
+      .filter((tab) => tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
 
     if (!documentsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -292,7 +289,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Items"
+        tabTitle: "Items",
       });
       this.documentIds([]);
       documentsTab = new DocumentsTab({
@@ -310,7 +307,7 @@ export default class Collection implements ViewModels.Collection {
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(documentsTab);
     }
@@ -328,15 +325,15 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create documents tab if not created yet
     const openedTabs = this.container.openedTabs();
 
     let conflictsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Conflicts)[0];
+      .filter((tab) => tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.Conflicts)[0];
 
     if (!conflictsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -345,7 +342,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Conflicts"
+        tabTitle: "Conflicts",
       });
       this.documentIds([]);
       conflictsTab = new ConflictsTab({
@@ -363,7 +360,7 @@ export default class Collection implements ViewModels.Collection {
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/conflicts`,
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(conflictsTab);
     }
@@ -381,7 +378,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     if (this.container.isPreferredApiCassandra() && !this.cassandraKeys) {
@@ -394,8 +391,8 @@ export default class Collection implements ViewModels.Collection {
     const openedTabs = this.container.openedTabs();
 
     let documentsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.QueryTables)[0];
+      .filter((tab) => tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.QueryTables)[0];
 
     if (!documentsTab) {
       this.documentIds([]);
@@ -409,7 +406,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: title
+        tabTitle: title,
       });
       documentsTab = new QueryTablesTab({
         tabKind: ViewModels.CollectionTabKind.QueryTables,
@@ -424,7 +421,7 @@ export default class Collection implements ViewModels.Collection {
         isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(documentsTab);
     }
@@ -442,15 +439,15 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create documents tab if not created yet
     const openedTabs = this.container.openedTabs();
 
     let documentsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Graph)[0];
+      .filter((tab) => tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.Graph)[0];
 
     if (!documentsTab) {
       this.documentIds([]);
@@ -469,7 +466,7 @@ export default class Collection implements ViewModels.Collection {
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: title
+      tabTitle: title,
     });
     // TODO where does the success/failure trace for this tab go?
     return new GraphTab({
@@ -490,7 +487,7 @@ export default class Collection implements ViewModels.Collection {
       isTabsContentExpanded: this.container.isTabsContentExpanded,
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      openedTabs: this.container.openedTabs()
+      openedTabs: this.container.openedTabs(),
     });
   };
 
@@ -503,15 +500,15 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create documents tab if not created yet
     const openedTabs = this.container.openedTabs();
 
     let documentsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
+      .filter((tab) => tab.collection && tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
 
     if (!documentsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -520,7 +517,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Documents"
+        tabTitle: "Documents",
       });
       this.documentIds([]);
       documentsTab = new MongoDocumentsTab({
@@ -538,7 +535,7 @@ export default class Collection implements ViewModels.Collection {
         isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(documentsTab);
     }
@@ -556,14 +553,14 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     // create settings tab if not created yet
     const openedTabs = this.container.openedTabs();
     let settingsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Settings)[0];
+      .filter((tab) => tab.collection && tab.collection.rid === this.rid)
+      .filter((tab) => tab.tabKind === ViewModels.CollectionTabKind.Settings)[0];
 
     const tabTitle = "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
@@ -574,7 +571,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: tabTitle
+        tabTitle: tabTitle,
       });
 
       Q.all([pendingNotificationsPromise, this.readSettings()]).then(
@@ -593,7 +590,7 @@ export default class Collection implements ViewModels.Collection {
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-            openedTabs: this.container.openedTabs()
+            openedTabs: this.container.openedTabs(),
           });
           (settingsTab as ViewModels.SettingsTab).pendingNotification(pendingNotification);
           this.container.openedTabs.push(settingsTab);
@@ -609,7 +606,7 @@ export default class Collection implements ViewModels.Collection {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: tabTitle,
-              error: error
+              error: error,
             },
             startKey
           );
@@ -643,13 +640,13 @@ export default class Collection implements ViewModels.Collection {
       _self: this.self,
       defaultTtl: this.defaultTtl(),
       indexingPolicy: this.indexingPolicy(),
-      partitionKey: this.partitionKey
+      partitionKey: this.partitionKey,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
       databaseAccountName: this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience()
+      defaultExperience: this.container.defaultExperience(),
     });
     // TODO: Use the collection entity cache to get quota info
     const quotaInfoPromise: Q.Promise<DataModels.CollectionQuotaInfo> = this.container.documentClientUtility.readCollectionQuotaInfo(
@@ -673,7 +670,7 @@ export default class Collection implements ViewModels.Collection {
               databaseAccountName: this.container.databaseAccount().name,
               databaseName: this.databaseId,
               collectionName: this.id(),
-              defaultExperience: this.container.defaultExperience()
+              defaultExperience: this.container.defaultExperience(),
             },
             startKey
           );
@@ -693,7 +690,7 @@ export default class Collection implements ViewModels.Collection {
                 numPhysicalPartitions:
                   offerDetail.content &&
                   offerDetail.content.collectionThroughputInfo &&
-                  offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
+                  offerDetail.content.collectionThroughputInfo.numPhysicalPartitions,
               };
 
               collectionOffer.content.collectionThroughputInfo = offerThroughputInfo;
@@ -710,7 +707,7 @@ export default class Collection implements ViewModels.Collection {
                 databaseName: this.databaseId,
                 collectionName: this.id(),
                 defaultExperience: this.container.defaultExperience(),
-                offerVersion: collectionOffer && collectionOffer.offerVersion
+                offerVersion: collectionOffer && collectionOffer.offerVersion,
               },
               startKey
             );
@@ -726,7 +723,7 @@ export default class Collection implements ViewModels.Collection {
             databaseAccountName: this.container.databaseAccount().name,
             databaseName: this.databaseId,
             collectionName: this.id(),
-            defaultExperience: this.container.defaultExperience()
+            defaultExperience: this.container.defaultExperience(),
           },
           startKey
         );
@@ -740,7 +737,7 @@ export default class Collection implements ViewModels.Collection {
     const collection: ViewModels.Collection = source.collection || source;
     const explorer: ViewModels.Explorer = source.container;
     const openedTabs = explorer.openedTabs();
-    const id = openedTabs.filter(t => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
+    const id = openedTabs.filter((t) => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseAccountName: this.container.databaseAccount().name,
@@ -748,7 +745,7 @@ export default class Collection implements ViewModels.Collection {
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: title
+      tabTitle: title,
     });
 
     let queryTab: ViewModels.Tab = new QueryTab({
@@ -765,7 +762,7 @@ export default class Collection implements ViewModels.Collection {
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      openedTabs: this.container.openedTabs()
+      openedTabs: this.container.openedTabs(),
     });
     this.container.openedTabs.push(queryTab);
 
@@ -777,7 +774,7 @@ export default class Collection implements ViewModels.Collection {
     const collection: ViewModels.Collection = source.collection || source;
     const explorer: ViewModels.Explorer = source.container;
     const openedTabs = explorer.openedTabs();
-    const id = openedTabs.filter(t => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
+    const id = openedTabs.filter((t) => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
 
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -786,7 +783,7 @@ export default class Collection implements ViewModels.Collection {
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: title
+      tabTitle: title,
     });
 
     let queryTab: ViewModels.Tab = new MongoQueryTab({
@@ -802,7 +799,7 @@ export default class Collection implements ViewModels.Collection {
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      openedTabs: this.container.openedTabs()
+      openedTabs: this.container.openedTabs(),
     });
     this.container.openedTabs.push(queryTab);
 
@@ -811,7 +808,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onNewGraphClick() {
-    var id = this.container.openedTabs().filter(t => t.tabKind === ViewModels.CollectionTabKind.Graph).length + 1;
+    var id = this.container.openedTabs().filter((t) => t.tabKind === ViewModels.CollectionTabKind.Graph).length + 1;
     var graphTab = this._createGraphTab("Graph Query " + id);
     this.container.openedTabs.push(graphTab);
     // Activate
@@ -819,7 +816,8 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onNewMongoShellClick() {
-    var id = this.container.openedTabs().filter(t => t.tabKind === ViewModels.CollectionTabKind.MongoShell).length + 1;
+    var id =
+      this.container.openedTabs().filter((t) => t.tabKind === ViewModels.CollectionTabKind.MongoShell).length + 1;
     var mongoShellTab = new MongoShellTab({
       tabKind: ViewModels.CollectionTabKind.MongoShell,
       title: "Shell " + id,
@@ -831,7 +829,7 @@ export default class Collection implements ViewModels.Collection {
       selfLink: this.self,
       isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      openedTabs: this.container.openedTabs()
+      openedTabs: this.container.openedTabs(),
     });
 
     this.container.openedTabs.push(mongoShellTab);
@@ -915,10 +913,10 @@ export default class Collection implements ViewModels.Collection {
           databaseName: this.databaseId,
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
-          dataExplorerArea: Constants.Areas.ResourceTree
+          dataExplorerArea: Constants.Areas.ResourceTree,
         });
       },
-      error => {
+      (error) => {
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Failed, {
           description: "Stored procedures node",
           databaseAccountName: this.container.databaseAccount().name,
@@ -926,7 +924,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : JSON.stringify(error)
+          error: typeof error === "string" ? error : JSON.stringify(error),
         });
       }
     );
@@ -944,7 +942,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -972,10 +970,10 @@ export default class Collection implements ViewModels.Collection {
           databaseName: this.databaseId,
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
-          dataExplorerArea: Constants.Areas.ResourceTree
+          dataExplorerArea: Constants.Areas.ResourceTree,
         });
       },
-      error => {
+      (error) => {
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Failed, {
           description: "UDF node",
           databaseAccountName: this.container.databaseAccount().name,
@@ -983,7 +981,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : JSON.stringify(error)
+          error: typeof error === "string" ? error : JSON.stringify(error),
         });
       }
     );
@@ -1001,7 +999,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -1029,10 +1027,10 @@ export default class Collection implements ViewModels.Collection {
           databaseName: this.databaseId,
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
-          dataExplorerArea: Constants.Areas.ResourceTree
+          dataExplorerArea: Constants.Areas.ResourceTree,
         });
       },
-      error => {
+      (error) => {
         this.isTriggersExpanded(true);
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
           description: "Triggers node",
@@ -1041,7 +1039,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : JSON.stringify(error)
+          error: typeof error === "string" ? error : JSON.stringify(error),
         });
       }
     );
@@ -1059,7 +1057,7 @@ export default class Collection implements ViewModels.Collection {
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -1068,9 +1066,9 @@ export default class Collection implements ViewModels.Collection {
       .readStoredProcedures(this)
       .then((storedProcedures: DataModels.StoredProcedure[]) => {
         const storedProceduresNodes: ViewModels.TreeNode[] = storedProcedures.map(
-          storedProcedure => new StoredProcedure(this.container, this, storedProcedure)
+          (storedProcedure) => new StoredProcedure(this.container, this, storedProcedure)
         );
-        const otherNodes = this.children().filter(node => node.nodeKind !== "StoredProcedure");
+        const otherNodes = this.children().filter((node) => node.nodeKind !== "StoredProcedure");
         const allNodes = otherNodes.concat(storedProceduresNodes);
         this.children(allNodes);
       });
@@ -1081,9 +1079,9 @@ export default class Collection implements ViewModels.Collection {
       .readUserDefinedFunctions(this)
       .then((userDefinedFunctions: DataModels.UserDefinedFunction[]) => {
         const userDefinedFunctionsNodes: ViewModels.TreeNode[] = userDefinedFunctions.map(
-          udf => new UserDefinedFunction(this.container, this, udf)
+          (udf) => new UserDefinedFunction(this.container, this, udf)
         );
-        const otherNodes = this.children().filter(node => node.nodeKind !== "UserDefinedFunction");
+        const otherNodes = this.children().filter((node) => node.nodeKind !== "UserDefinedFunction");
         const allNodes = otherNodes.concat(userDefinedFunctionsNodes);
         this.children(allNodes);
       });
@@ -1093,8 +1091,10 @@ export default class Collection implements ViewModels.Collection {
     return this.container.documentClientUtility
       .readTriggers(this, null /*options*/)
       .then((triggers: DataModels.Trigger[]) => {
-        const triggerNodes: ViewModels.TreeNode[] = triggers.map(trigger => new Trigger(this.container, this, trigger));
-        const otherNodes = this.children().filter(node => node.nodeKind !== "Trigger");
+        const triggerNodes: ViewModels.TreeNode[] = triggers.map(
+          (trigger) => new Trigger(this.container, this, trigger)
+        );
+        const otherNodes = this.children().filter((node) => node.nodeKind !== "Trigger");
         const allNodes = otherNodes.concat(triggerNodes);
         this.children(allNodes);
       });
@@ -1192,8 +1192,8 @@ export default class Collection implements ViewModels.Collection {
         endpoint: CosmosClient.endpoint(),
         accessToken: CosmosClient.accessToken(),
         platform: config.platform,
-        databaseAccount: CosmosClient.databaseAccount()
-      }
+        databaseAccount: CosmosClient.databaseAccount(),
+      },
     };
 
     documentUploader.postMessage(uploaderMessage);
@@ -1225,7 +1225,7 @@ export default class Collection implements ViewModels.Collection {
     const reader = new FileReader();
     reader.onload = (evt: any): void => {
       const fileData: string = evt.target.result;
-      this._createDocumentsFromFile(file.name, fileData).then(record => {
+      this._createDocumentsFromFile(file.name, fileData).then((record) => {
         deferred.resolve(record);
       });
     };
@@ -1235,7 +1235,7 @@ export default class Collection implements ViewModels.Collection {
         fileName: file.name,
         numSucceeded: 0,
         numFailed: 1,
-        errors: [(evt as any).error.message]
+        errors: [(evt as any).error.message],
       });
     };
 
@@ -1250,7 +1250,7 @@ export default class Collection implements ViewModels.Collection {
       fileName: fileName,
       numSucceeded: 0,
       numFailed: 0,
-      errors: []
+      errors: [],
     };
 
     try {
@@ -1259,11 +1259,11 @@ export default class Collection implements ViewModels.Collection {
 
       const triggerCreateDocument: (documentContent: any) => Q.Promise<any> = (documentContent: any) => {
         return this.container.documentClientUtility.createDocument(this, documentContent).then(
-          doc => {
+          (doc) => {
             record.numSucceeded++;
             return Q.resolve();
           },
-          error => {
+          (error) => {
             record.numFailed++;
             record.errors = [...record.errors, JSON.stringify(error)];
             return Q.resolve();
@@ -1321,7 +1321,7 @@ export default class Collection implements ViewModels.Collection {
             error: JSON.stringify(error),
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.databaseId,
-            collectionName: this.id()
+            collectionName: this.id(),
           }),
           "Settings tree node"
         );

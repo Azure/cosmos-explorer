@@ -72,7 +72,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     super(props);
 
     this.state = {
-      hoveredCellId: undefined
+      hoveredCellId: undefined,
     };
   }
 
@@ -99,14 +99,14 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             editor: {
                               codemirror: (props: PassedEditorProps) => (
                                 <CodeMirrorEditor {...props} lineNumbers={true} />
-                              )
+                              ),
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
                               <Prompt id={id} contentRef={contentRef} isHovered={false}>
                                 {promptContent}
                               </Prompt>
                             ),
-                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
+                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
                         </CodeCell>
                       ),
@@ -117,7 +117,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         "markdown",
                         <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                           {{
-                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
+                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
                         </MarkdownCell>
                       ),
@@ -129,10 +129,10 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         "raw",
                         <RawCell id={id} contentRef={contentRef} cell_type="raw">
                           {{
-                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
+                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
                         </RawCell>
-                      )
+                      ),
                   }}
                 </Cells>
               </KeyboardShortcuts>
@@ -153,10 +153,10 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
         return dispatch(
           actions.addTransform({
             mediaType: transform.MIMETYPE,
-            component: transform
+            component: transform,
           })
         );
-      }
+      },
     };
   };
   return mapDispatchToProps;

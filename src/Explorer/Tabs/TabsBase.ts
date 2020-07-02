@@ -78,7 +78,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     const openedTabs = options.openedTabs;
@@ -96,7 +96,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
     previousTab && previousTab.nextTab(nextTab);
     nextTab && nextTab.previousTab(previousTab);
 
-    this.getContainer().openedTabs.remove(tab => tab.tabId === this.tabId);
+    this.getContainer().openedTabs.remove((tab) => tab.tabId === this.tabId);
 
     const tabToActivate = nextTab || previousTab;
 
@@ -113,7 +113,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
       databaseAccountName: this.getContainer().databaseAccount().name,
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
     return Q();
   }
@@ -176,7 +176,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
       databaseAccountName: this.getContainer().databaseAccount().name,
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
     return Q();
   }

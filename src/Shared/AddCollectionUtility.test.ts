@@ -19,7 +19,7 @@ describe("Add Collection Utitlity", () => {
         rg: "b1",
         st: true,
         defaultTtl: -1,
-        partitionKeyVersion: 2
+        partitionKeyVersion: 2,
       };
       const additionalOptions = {};
       const createSqlCollectionWithARMSpy = jest.spyOn(CreateSqlCollectionUtilities, "createSqlCollectionWithARM");
@@ -55,7 +55,7 @@ describe("Add Collection Utitlity", () => {
         rg: "b1",
         st: true,
         analyticalStorageTtl: -1,
-        partitionKeyVersion: 2
+        partitionKeyVersion: 2,
       };
       const additionalOptions = {};
       const createSqlCollectionWithARMSpy = jest.spyOn(CreateSqlCollectionUtilities, "createSqlCollectionWithARM");
@@ -95,7 +95,7 @@ describe("Add Collection Utitlity", () => {
         sid: "a1",
         rg: "b1",
         st: true,
-        partitionKeyVersion: 2
+        partitionKeyVersion: 2,
       };
       const additionalOptions = {};
       const createGremlinGraphWithARMSpy = jest.spyOn(CreateCollectionUtilities, "createGremlinGraphWithARM");
@@ -127,7 +127,7 @@ describe("Add Collection Utitlity", () => {
         sid: "a1",
         rg: "b1",
         st: true,
-        partitionKeyVersion: 2
+        partitionKeyVersion: 2,
       };
       const additionalOptions = {};
       const createGremlinGraphWithARMSpy = jest.spyOn(CreateCollectionUtilities, "createGremlinGraphWithARM");

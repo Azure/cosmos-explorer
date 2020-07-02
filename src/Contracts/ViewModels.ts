@@ -711,7 +711,7 @@ export interface UploadFilePane extends ContextualPane {
 export enum NeighborType {
   SOURCES_ONLY,
   TARGETS_ONLY,
-  BOTH
+  BOTH,
 }
 
 /**
@@ -1183,14 +1183,14 @@ export enum DocumentExplorerState {
   newDocumentInvalid,
   exisitingDocumentNoEdits,
   exisitingDocumentDirtyValid,
-  exisitingDocumentDirtyInvalid
+  exisitingDocumentDirtyInvalid,
 }
 
 export enum IndexingPolicyEditorState {
   noCollectionSelected,
   noEdits,
   dirtyValid,
-  dirtyInvalid
+  dirtyInvalid,
 }
 
 export enum ScriptEditorState {
@@ -1198,7 +1198,7 @@ export enum ScriptEditorState {
   newValid,
   exisitingNoEdits,
   exisitingDirtyValid,
-  exisitingDirtyInvalid
+  exisitingDirtyInvalid,
 }
 
 export enum CollectionTabKind {
@@ -1218,13 +1218,13 @@ export enum CollectionTabKind {
   NotebookV2 = 15,
   SparkMasterTab = 16,
   Gallery = 17,
-  NotebookViewer = 18
+  NotebookViewer = 18,
 }
 
 export enum TerminalKind {
   Default = 0,
   Mongo = 1,
-  Cassandra = 2
+  Cassandra = 2,
 }
 
 export interface DataExplorerInputsFrame {
@@ -1276,7 +1276,7 @@ export enum SubscriptionType {
   EA,
   Free,
   Internal,
-  PAYG
+  PAYG,
 }
 
 export class MonacoEditorSettings {

@@ -42,7 +42,7 @@ describe("Resource tree for resource token", () => {
     const rootNode: TreeNode = resourceTree.buildCollectionNode();
     const props: TreeComponentProps = {
       rootNode,
-      className: "dataResourceTree"
+      className: "dataResourceTree",
     };
     const wrapper = shallow(<TreeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();

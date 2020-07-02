@@ -44,7 +44,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       title: "Upload Items",
       submitButtonText: "Upload",
       onClose: () => this.close(),
-      onSubmit: () => this.submit()
+      onSubmit: () => this.submit(),
     };
     return <GenericRightPaneComponent {...props} />;
   }
@@ -97,7 +97,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
             this.selectedFiles = undefined;
             this.selectedFilesTitle = "";
           },
-          error => {
+          (error) => {
             const message = ErrorParserUtility.parse(error);
             this.formError = message[0].message;
             this.formErrorDetail = message[0].message;

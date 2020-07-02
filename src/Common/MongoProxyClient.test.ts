@@ -4,7 +4,7 @@ import {
   getEndpoint,
   queryDocuments,
   readDocument,
-  updateDocument
+  updateDocument,
 } from "./MongoProxyClient";
 import { AuthType } from "../AuthType";
 import { Collection, DatabaseAccount, DocumentId } from "../Contracts/ViewModels";
@@ -20,7 +20,7 @@ const fetchMock = () => {
     ok: true,
     text: () => "{}",
     json: () => "{}",
-    headers: new Map()
+    headers: new Map(),
   });
 };
 
@@ -33,8 +33,8 @@ const collection = {
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
-    version: 1
-  }
+    version: 1,
+  },
 } as Collection;
 
 const documentId = ({
@@ -44,8 +44,8 @@ const documentId = ({
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
-    version: 1
-  }
+    version: 1,
+  },
 } as unknown) as DocumentId;
 
 const databaseAccount = {
@@ -58,8 +58,8 @@ const databaseAccount = {
     documentEndpoint: "bar",
     gremlinEndpoint: "foo",
     tableEndpoint: "foo",
-    cassandraEndpoint: "foo"
-  }
+    cassandraEndpoint: "foo",
+  },
 };
 
 describe("MongoProxyClient", () => {
@@ -69,7 +69,7 @@ describe("MongoProxyClient", () => {
       CosmosClient.databaseAccount(databaseAccount as any);
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
+        serverId: () => "",
       } as any;
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -100,7 +100,7 @@ describe("MongoProxyClient", () => {
       CosmosClient.databaseAccount(databaseAccount as any);
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
+        serverId: () => "",
       } as any;
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -131,7 +131,7 @@ describe("MongoProxyClient", () => {
       CosmosClient.databaseAccount(databaseAccount as any);
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
+        serverId: () => "",
       } as any;
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -162,7 +162,7 @@ describe("MongoProxyClient", () => {
       CosmosClient.databaseAccount(databaseAccount as any);
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
+        serverId: () => "",
       } as any;
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -193,7 +193,7 @@ describe("MongoProxyClient", () => {
       CosmosClient.databaseAccount(databaseAccount as any);
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
+        serverId: () => "",
       } as any;
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -225,7 +225,7 @@ describe("MongoProxyClient", () => {
       CosmosClient.databaseAccount(databaseAccount as any);
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
+        serverId: () => "",
       } as any;
     });
 
@@ -259,7 +259,7 @@ describe("MongoProxyClient", () => {
         sid: "a2",
         rg: "c1",
         dba: "main",
-        is: false
+        is: false,
       };
       _createMongoCollectionWithARM("management.azure.com", properties, { "x-ms-cosmos-offer-autopilot-tier": "1" });
       expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
@@ -268,8 +268,8 @@ describe("MongoProxyClient", () => {
         {
           properties: {
             options: { "x-ms-cosmos-offer-autopilot-tier": "1" },
-            resource: { id: "abc-collection" }
-          }
+            resource: { id: "abc-collection" },
+          },
         }
       );
     });
@@ -285,7 +285,7 @@ describe("MongoProxyClient", () => {
         rg: "c1",
         dba: "main",
         is: false,
-        offerThroughput: 400
+        offerThroughput: 400,
       };
       _createMongoCollectionWithARM("management.azure.com", properties, undefined);
       expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
@@ -294,8 +294,8 @@ describe("MongoProxyClient", () => {
         {
           properties: {
             options: { throughput: "400" },
-            resource: { id: "abc-collection" }
-          }
+            resource: { id: "abc-collection" },
+          },
         }
       );
     });

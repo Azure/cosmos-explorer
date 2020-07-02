@@ -52,19 +52,19 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
       isReadOnly: true,
       cellEditorType: "codemirror",
       autoSaveInterval: 365 * 24 * 3600 * 1000, // There is no way to turn off auto-save, set to 1 year
-      contentProvider: contents.JupyterContentProvider // NotebookViewer only knows how to talk to Jupyter contents API
+      contentProvider: contents.JupyterContentProvider, // NotebookViewer only knows how to talk to Jupyter contents API
     });
 
     this.notebookComponentBootstrapper = new NotebookComponentBootstrapper({
       notebookClient: this.clientManager,
-      contentRef: createContentRef()
+      contentRef: createContentRef(),
     });
 
     this.state = {
       content: undefined,
       galleryItem: props.galleryItem,
       isFavorite: props.isFavorite,
-      dialogProps: undefined
+      dialogProps: undefined,
     };
 
     this.loadNotebookContent();
@@ -153,24 +153,24 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
 
     return {
       galleryItem,
-      isFavorite
+      isFavorite,
     };
   }
 
   private favoriteItem = async (): Promise<void> => {
-    GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
+    GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
       this.setState({ galleryItem: item, isFavorite: true })
     );
   };
 
   private unfavoriteItem = async (): Promise<void> => {
-    GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
+    GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
       this.setState({ galleryItem: item, isFavorite: false })
     );
   };
 
   private downloadItem = async (): Promise<void> => {
-    GalleryUtils.downloadItem(this, this.props.container, this.props.junoClient, this.state.galleryItem, item =>
+    GalleryUtils.downloadItem(this, this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
       this.setState({ galleryItem: item })
     );
   };

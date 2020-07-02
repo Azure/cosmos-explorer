@@ -5,7 +5,7 @@ import * as Logger from "../Common/Logger";
 import {
   NotebookWorkspace,
   NotebookWorkspaceConnectionInfo,
-  NotebookWorkspaceFeedResponse
+  NotebookWorkspaceFeedResponse,
 } from "../Contracts/DataModels";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 

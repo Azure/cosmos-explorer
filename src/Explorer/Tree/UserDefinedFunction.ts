@@ -34,7 +34,7 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
         .filter((tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
     const userDefinedFunction = <DataModels.UserDefinedFunction>{
       id: "",
-      body: "function userDefinedFunction(){}"
+      body: "function userDefinedFunction(){}",
     };
     let userDefinedFunctionTab: ViewModels.Tab = new UserDefinedFunctionTab({
       resource: userDefinedFunction,
@@ -49,7 +49,7 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
       selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      openedTabs: source.container.openedTabs(),
     });
     source.container.openedTabs.push(userDefinedFunctionTab);
 
@@ -62,13 +62,13 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
 
     let userDefinedFunctionTab: ViewModels.Tab = this.container
       .openedTabs()
-      .filter(tab => tab.node && tab.node.rid === this.rid)[0];
+      .filter((tab) => tab.node && tab.node.rid === this.rid)[0];
     if (!userDefinedFunctionTab) {
       const userDefinedFunctionData = <DataModels.UserDefinedFunction>{
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
-        body: this.body()
+        body: this.body(),
       };
 
       userDefinedFunctionTab = new UserDefinedFunctionTab({
@@ -87,7 +87,7 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
         selfLink: "",
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        openedTabs: this.container.openedTabs(),
       });
       this.container.openedTabs.push(userDefinedFunctionTab);
     }
@@ -102,7 +102,7 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
       description: "UDF item node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -115,14 +115,14 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
       _rid: this.rid,
       _self: this.self,
       id: this.id(),
-      body: this.body()
+      body: this.body(),
     };
     this.container.documentClientUtility.deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
       () => {
         this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      reason => {}
+      (reason) => {}
     );
   }
 }

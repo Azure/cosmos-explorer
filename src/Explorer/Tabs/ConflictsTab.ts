@@ -71,10 +71,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
     this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
-      ? this.partitionKeyPropertyHeader
-          .replace(/[/]+/g, ".")
-          .substr(1)
-          .replace(/[']+/g, "")
+      ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
       : null;
 
     this.dataContentsGridScrollHeight = ko.observable<string>(null);
@@ -85,13 +82,13 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
         const tabContainer: HTMLElement = document.getElementById("content");
         const splitterBounds: SplitterBounds = {
           min: Constants.DocumentsGridMetrics.DocumentEditorMinWidthRatio * tabContainer.clientWidth,
-          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth
+          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth,
         };
         this.splitter = new Splitter({
           splitterId: "h_splitter2",
           leftId: this.documentContentsContainerId,
           bounds: splitterBounds,
-          direction: SplitterDirection.Vertical
+          direction: SplitterDirection.Vertical,
         });
       }
     });
@@ -147,7 +144,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
 
       visible: ko.computed<boolean>(() => {
         return this.conflictOperation() !== Constants.ConflictOperationType.Delete || !!this.selectedConflictContent();
-      })
+      }),
     };
 
     this.discardButton = {
@@ -163,7 +160,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
 
       visible: ko.computed<boolean>(() => {
         return this.conflictOperation() !== Constants.ConflictOperationType.Delete || !!this.selectedConflictContent();
-      })
+      }),
     };
 
     this.deleteButton = {
@@ -179,7 +176,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this.buildCommandBarOptions();
@@ -226,7 +223,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
     return this.createIterator()
       .then(
         // reset iterator
-        iterator => {
+        (iterator) => {
           this._documentsIterator = iterator;
         }
       )
@@ -236,7 +233,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
           return this.loadNextPage();
         }
       )
-      .catch(reason => {
+      .catch((reason) => {
         const message = ErrorParserUtility.parse(reason)[0].message;
         window.alert(message);
       });
@@ -278,7 +275,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
       tabTitle: this.tabTitle(),
       conflictResourceType: selectedConflict.resourceType,
       conflictOperationType: selectedConflict.operationType,
-      conflictResourceId: selectedConflict.resourceId
+      conflictResourceId: selectedConflict.resourceId,
     });
 
     let operationPromise: Q.Promise<any> = Q();
@@ -325,13 +322,13 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
                 tabTitle: this.tabTitle(),
                 conflictResourceType: selectedConflict.resourceType,
                 conflictOperationType: selectedConflict.operationType,
-                conflictResourceId: selectedConflict.resourceId
+                conflictResourceId: selectedConflict.resourceId,
               },
               startKey
             );
           });
         },
-        reason => {
+        (reason) => {
           this.isExecutionError(true);
           const message = ErrorParserUtility.parse(reason)[0].message;
           window.alert(message);
@@ -344,7 +341,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
             },
             startKey
           );
@@ -366,7 +363,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
       tabTitle: this.tabTitle(),
       conflictResourceType: selectedConflict.resourceType,
       conflictOperationType: selectedConflict.operationType,
-      conflictResourceId: selectedConflict.resourceId
+      conflictResourceId: selectedConflict.resourceId,
     });
 
     return this._container.documentClientUtility
@@ -387,12 +384,12 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
             },
             startKey
           );
         },
-        reason => {
+        (reason) => {
           this.isExecutionError(true);
           const message = ErrorParserUtility.parse(reason)[0].message;
           window.alert(message);
@@ -405,7 +402,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
             },
             startKey
           );
@@ -455,7 +452,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
           this._documentsIterator = iterator;
           return this.loadNextPage();
         },
-        error => {
+        (error) => {
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,
@@ -466,7 +463,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: error,
               },
               this.onLoadStartKey
             );
@@ -500,7 +497,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
       .then(
         (conflictIdsResponse: DataModels.ConflictId[]) => {
           const currentConflicts = this.conflictIds();
-          const currentDocumentsRids = currentConflicts.map(currentConflict => currentConflict.rid);
+          const currentDocumentsRids = currentConflicts.map((currentConflict) => currentConflict.rid);
           const nextConflictIds = conflictIdsResponse
             // filter documents already loaded in observable
             .filter((d: any) => {
@@ -522,14 +519,14 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
                 collectionName: this.collection.id(),
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle()
+                tabTitle: this.tabTitle(),
               },
               this.onLoadStartKey
             );
             this.onLoadStartKey = null;
           }
         },
-        error => {
+        (error) => {
           this.isExecutionError(true);
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
@@ -541,7 +538,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: error,
               },
               this.onLoadStartKey
             );
@@ -561,7 +558,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
   };
 
   protected _loadNextPageInternal(): Q.Promise<DataModels.ConflictId[]> {
-    return Q(this._documentsIterator.fetchNext().then(response => response.resources));
+    return Q(this._documentsIterator.fetchNext().then((response) => response.resources));
   }
 
   protected _onEditorContentChange(newContent: string) {
@@ -635,7 +632,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.acceptChangesButton.enabled()
+        disabled: !this.acceptChangesButton.enabled(),
       });
     }
 
@@ -648,7 +645,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardButton.enabled()
+        disabled: !this.discardButton.enabled(),
       });
     }
 
@@ -661,7 +658,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.deleteButton.enabled()
+        disabled: !this.deleteButton.enabled(),
       });
     }
     return buttons;
@@ -676,7 +673,7 @@ export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
         this.discardButton.visible,
         this.discardButton.enabled,
         this.deleteButton.visible,
-        this.deleteButton.enabled
+        this.deleteButton.enabled,
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();

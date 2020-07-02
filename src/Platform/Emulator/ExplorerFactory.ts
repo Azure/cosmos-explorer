@@ -15,7 +15,7 @@ export default class EmulatorExplorerFactory {
     const explorer: Explorer = new Explorer({
       documentClientUtility: documentClientUtility,
       notificationsClient: new NotificationsClient(),
-      isEmulator: true
+      isEmulator: true,
     });
     explorer.databaseAccount({
       name: "",
@@ -24,14 +24,14 @@ export default class EmulatorExplorerFactory {
       type: "",
       kind: AccountKind.DocumentDB,
       tags: {
-        [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB
+        [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB,
       },
       properties: {
         documentEndpoint: "",
         tableEndpoint: "",
         gremlinEndpoint: "",
-        cassandraEndpoint: ""
-      }
+        cassandraEndpoint: "",
+      },
     });
     explorer.isAccountReady(true);
     return explorer;

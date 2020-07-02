@@ -425,7 +425,7 @@ export default class DatabaseSettingsTab extends TabsBase
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this.discardSettingsChangesButton = {
@@ -445,7 +445,7 @@ export default class DatabaseSettingsTab extends TabsBase
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this.isTemplateReady = ko.observable<boolean>(false);
@@ -463,7 +463,7 @@ export default class DatabaseSettingsTab extends TabsBase
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     const headerOptions: RequestOptions = { initialHeaders: {} };
@@ -480,7 +480,7 @@ export default class DatabaseSettingsTab extends TabsBase
         content: {
           offerThroughput: undefined,
           offerIsRUPerMinuteThroughputEnabled: false,
-          offerAutopilotSettings
+          offerAutopilotSettings,
         },
         _etag: undefined,
         _ts: undefined,
@@ -490,7 +490,7 @@ export default class DatabaseSettingsTab extends TabsBase
         offerResourceId: offer.offerResourceId,
         offerVersion: offer.offerVersion,
         offerType: offer.offerType,
-        resource: offer.resource
+        resource: offer.resource,
       };
 
       // user has changed from provisioned --> autoscale
@@ -525,7 +525,7 @@ export default class DatabaseSettingsTab extends TabsBase
             databaseName: this.database.id(),
             collectionName: undefined,
             throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
+            offerIsRUPerMinuteThroughputEnabled: false,
           };
           const updateOfferBeyondLimitPromise: Q.Promise<void> = this.documentClientUtility
             .updateOfferThroughputBeyondLimit(requestPayload)
@@ -547,7 +547,7 @@ export default class DatabaseSettingsTab extends TabsBase
                     defaultExperience: this.container.defaultExperience(),
                     dataExplorerArea: Constants.Areas.Tab,
                     tabTitle: this.tabTitle(),
-                    error: error
+                    error: error,
                   },
                   startKey
                 );
@@ -558,7 +558,7 @@ export default class DatabaseSettingsTab extends TabsBase
           const newOffer: DataModels.Offer = {
             content: {
               offerThroughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: false
+              offerIsRUPerMinuteThroughputEnabled: false,
             },
             _etag: undefined,
             _ts: undefined,
@@ -568,7 +568,7 @@ export default class DatabaseSettingsTab extends TabsBase
             offerResourceId: offer.offerResourceId,
             offerVersion: offer.offerVersion,
             offerType: offer.offerType,
-            resource: offer.resource
+            resource: offer.resource,
           };
 
           // user has changed from autoscale --> provisioned
@@ -606,7 +606,7 @@ export default class DatabaseSettingsTab extends TabsBase
               databaseAccountName: this.container.databaseAccount().name,
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -622,7 +622,7 @@ export default class DatabaseSettingsTab extends TabsBase
               databaseAccountName: this.container.databaseAccount().name,
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -679,7 +679,7 @@ export default class DatabaseSettingsTab extends TabsBase
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveSettingsButton.enabled()
+        disabled: !this.saveSettingsButton.enabled(),
       });
     }
 
@@ -692,7 +692,7 @@ export default class DatabaseSettingsTab extends TabsBase
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardSettingsChangesButton.enabled()
+        disabled: !this.discardSettingsChangesButton.enabled(),
       });
     }
     return buttons;
@@ -704,7 +704,7 @@ export default class DatabaseSettingsTab extends TabsBase
         this.saveSettingsButton.visible,
         this.saveSettingsButton.enabled,
         this.discardSettingsChangesButton.visible,
-        this.discardSettingsChangesButton.enabled
+        this.discardSettingsChangesButton.enabled,
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();

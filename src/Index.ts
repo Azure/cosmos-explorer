@@ -13,7 +13,7 @@ class Index {
     this.navigationSelection = ko.observable("quickstart");
     this.correlationSrc = ko.observable("");
 
-    Ajax.get("/_explorer/installation_id.txt").then(result => {
+    Ajax.get("/_explorer/installation_id.txt").then((result) => {
       // TODO: Detect correct URL for each environment automatically.
       const url: string = `${CorrelationBackend.Url}?emulator_id=${result}`;
       this.correlationSrc(url);

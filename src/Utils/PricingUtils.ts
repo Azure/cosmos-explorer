@@ -228,8 +228,9 @@ export function getEstimatedAutoscaleSpendHtml(
     `Estimated monthly cost (${currency}): <b>` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice / 10)} - ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} </b> ` +
-    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput /
-      10} - ${throughput} RU/s, ${currencySign}${pricePerRu}/RU)`
+    `(${regions} ${regions === 1 ? "region" : "regions"}, ${
+      throughput / 10
+    } - ${throughput} RU/s, ${currencySign}${pricePerRu}/RU)`
   );
 }
 
