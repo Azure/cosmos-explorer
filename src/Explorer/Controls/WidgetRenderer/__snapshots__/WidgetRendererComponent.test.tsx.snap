@@ -10,10 +10,15 @@ exports[`WidgetRendererComponent should render 1`] = `
       }
     }
   >
-    <InfoBoxComponent
-      message="Start at $24/mo per database"
-      url="https://aka.ms/azure-cosmos-db-pricing"
-    />
+    <StyledMessageBarBase>
+      Start at $24/mo per database
+      <StyledLinkBase
+        href="https://aka.ms/azure-cosmos-db-pricing"
+        target="_blank"
+      >
+        More Details
+      </StyledLinkBase>
+    </StyledMessageBarBase>
     <div
       key="throughput"
     >
@@ -113,21 +118,21 @@ exports[`WidgetRendererComponent should render 1`] = `
         <div
           className="stringInputContainer"
         >
-          <div
-            className="inputLabelContainer"
-          >
-            <Text
-              className="inputLabel"
-              nowrap={true}
-              variant="small"
-            >
-              Container id
-            </Text>
-          </div>
           <div>
             <StyledTextFieldBase
               id="containerId-input"
+              label="Container id"
               onChange={[Function]}
+              styles={
+                Object {
+                  "label": Object {
+                    "color": "#393939",
+                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                    "fontSize": 12,
+                    "fontWeight": 600,
+                  },
+                }
+              }
               type="text"
             />
           </div>

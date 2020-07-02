@@ -7,8 +7,9 @@ import { TextField } from "office-ui-fabric-react/lib/TextField";
 import { Text } from "office-ui-fabric-react/lib/Text";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
-import { InfoBoxComponent, InfoBoxComponentProps } from "../InfoBox/InfoBoxComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
+import { Link, MessageBar } from "office-ui-fabric-react";
+
 import * as InputUtils from "./InputUtils";
 import "./WidgetRendererComponent.less";
 
@@ -60,11 +61,19 @@ export interface EnumInput extends BaseInput {
   defaultKey: string;
 }
 
+export interface Info {
+  message: string;
+  link?: {
+    href: string;
+    text: string;
+  };
+}
+
 export type AnyInput = NumberInput | BooleanInput | StringInput | EnumInput;
 
 export interface Node {
   id: string;
-  info?: InfoBoxComponentProps;
+  info?: Info;
   input?: AnyInput;
   children?: Node[];
 }
@@ -103,8 +112,15 @@ export class WidgetRendererComponent extends React.Component<
     };
   }
 
-  private renderInfo(info: InfoBoxComponentProps): JSX.Element {
-    return <InfoBoxComponent {...info} />;
+  private renderInfo(info: Info): JSX.Element {
+    return (
+      <MessageBar>
+        {info.message}
+        <Link href={info.link.href} target="_blank">
+          {info.link.text}
+        </Link>
+      </MessageBar>
+    );
   }
 
   private onInputChange = (newValue: string | number | boolean, dataFieldName: string) => {
@@ -116,18 +132,24 @@ export class WidgetRendererComponent extends React.Component<
   private renderStringInput(input: StringInput): JSX.Element {
     return (
       <div className="stringInputContainer">
-        <div className="inputLabelContainer">
-          <Text variant="small" className="inputLabel" nowrap>
-            {input.label}
-          </Text>
-        </div>
         <div>
           <TextField
             id={`${input.dataFieldName}-input`}
+            label={input.label}
             type="text"
             value={input.defaultValue}
             placeholder={input.placeholder}
             onChange={(_, newValue) => this.onInputChange(newValue, input.dataFieldName)}
+            styles={{
+              subComponentStyles: {
+                label: {
+                  root: {
+                    ...WidgetRendererComponent.labelStyle,
+                    fontWeight: 600
+                  }
+                }
+              }
+            }}
           />
         </div>
       </div>
@@ -294,7 +316,7 @@ export class WidgetRendererComponent extends React.Component<
       case "enum":
         return this.renderEnumInput(input as EnumInput);
       default:
-        return <>Unknown type{input.type}</>;
+        throw new Error(`Unknown input type: ${input.type}`);
     }
   }
 

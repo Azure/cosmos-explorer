@@ -8,7 +8,10 @@ describe("WidgetRendererComponent", () => {
       id: "root",
       info: {
         message: "Start at $24/mo per database",
-        url: "https://aka.ms/azure-cosmos-db-pricing"
+        link: {
+          href: "https://aka.ms/azure-cosmos-db-pricing",
+          text: "More Details"
+        }
       },
       children: [
         {
