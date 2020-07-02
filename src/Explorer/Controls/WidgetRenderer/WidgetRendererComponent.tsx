@@ -8,7 +8,7 @@ import { Text } from "office-ui-fabric-react/lib/Text";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
-import { Link, MessageBar } from "office-ui-fabric-react";
+import { Link, MessageBar, MessageBarType } from "office-ui-fabric-react";
 
 import * as InputUtils from "./InputUtils";
 import "./WidgetRendererComponent.less";
@@ -218,7 +218,7 @@ export class WidgetRendererComponent extends React.Component<
             }}
           />
           {this.state.errors.has(dataFieldName) && (
-            <div style={{ color: "red" }}>Error: {this.state.errors.get(dataFieldName)}</div>
+            <MessageBar messageBarType={MessageBarType.error}>Error: {this.state.errors.get(dataFieldName)}</MessageBar>
           )}
         </div>
       );

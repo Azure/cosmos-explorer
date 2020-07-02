@@ -125,11 +125,15 @@ exports[`WidgetRendererComponent should render 1`] = `
               onChange={[Function]}
               styles={
                 Object {
-                  "label": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                    "fontWeight": 600,
+                  "subComponentStyles": Object {
+                    "label": Object {
+                      "root": Object {
+                        "color": "#393939",
+                        "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                        "fontSize": 12,
+                        "fontWeight": 600,
+                      },
+                    },
                   },
                 }
               }
