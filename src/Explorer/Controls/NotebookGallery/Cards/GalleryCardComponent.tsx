@@ -17,6 +17,7 @@ import {
 import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../../Notebook/FileSystemUtil";
+import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 
 export interface GalleryCardComponentProps {
   data: IGalleryItem;
@@ -55,7 +56,11 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
     return (
       <Card aria-label="Notebook Card" tokens={GalleryCardComponent.cardTokens} onClick={this.props.onClick}>
         <Card.Item>
-          <Persona text={this.props.data.author} secondaryText={dateString} />
+          <Persona
+            imageUrl={this.props.data.isSample && CosmosDBLogo}
+            text={this.props.data.author}
+            secondaryText={dateString}
+          />
         </Card.Item>
 
         <Card.Item fill>
