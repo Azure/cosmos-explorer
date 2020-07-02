@@ -129,7 +129,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
           <></>
         )}
 
-        {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, { hideInputs: true })}
+        {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, { hideInputs: false })}
 
         {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
       </div>
