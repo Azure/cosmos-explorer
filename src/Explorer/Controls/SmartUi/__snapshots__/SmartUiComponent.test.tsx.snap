@@ -1,0 +1,240 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SmartUiComponent should render 1`] = `
+<Fragment>
+  <Stack
+    className="widgetRendererContainer"
+    tokens={
+      Object {
+        "childrenGap": 10,
+      }
+    }
+  >
+    <StyledMessageBarBase>
+      Start at $24/mo per database
+      <StyledLinkBase
+        href="https://aka.ms/azure-cosmos-db-pricing"
+        target="_blank"
+      >
+        More Details
+      </StyledLinkBase>
+    </StyledMessageBarBase>
+    <div
+      key="throughput"
+    >
+      <Stack
+        className="widgetRendererContainer"
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <div>
+          <CustomizedSpinButton
+            ariaLabel="Throughput (input)"
+            decrementButtonIcon={
+              Object {
+                "iconName": "ChevronDownSmall",
+              }
+            }
+            defaultValue="400"
+            disabled={false}
+            incrementButtonIcon={
+              Object {
+                "iconName": "ChevronUpSmall",
+              }
+            }
+            label="Throughput (input)"
+            labelPosition={0}
+            max={500}
+            min={400}
+            onDecrement={[Function]}
+            onIncrement={[Function]}
+            onValidate={[Function]}
+            step={10}
+            styles={
+              Object {
+                "label": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
+                  "fontWeight": 600,
+                },
+              }
+            }
+          />
+        </div>
+      </Stack>
+    </div>
+    <div
+      key="throughput2"
+    >
+      <Stack
+        className="widgetRendererContainer"
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <StyledSliderBase
+          ariaLabel="Throughput (Slider)"
+          defaultValue={400}
+          label="Throughput (Slider)"
+          max={500}
+          min={400}
+          onChange={[Function]}
+          step={10}
+          styles={
+            Object {
+              "titleLabel": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+                "fontWeight": 600,
+              },
+              "valueLabel": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+              },
+            }
+          }
+        />
+      </Stack>
+    </div>
+    <div
+      key="containerId"
+    >
+      <Stack
+        className="widgetRendererContainer"
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <div
+          className="stringInputContainer"
+        >
+          <div>
+            <StyledTextFieldBase
+              id="containerId-input"
+              label="Container id"
+              onChange={[Function]}
+              styles={
+                Object {
+                  "subComponentStyles": Object {
+                    "label": Object {
+                      "root": Object {
+                        "color": "#393939",
+                        "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                        "fontSize": 12,
+                        "fontWeight": 600,
+                      },
+                    },
+                  },
+                }
+              }
+              type="text"
+            />
+          </div>
+        </div>
+      </Stack>
+    </div>
+    <div
+      key="analyticalStore"
+    >
+      <Stack
+        className="widgetRendererContainer"
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <div>
+          <div
+            className="inputLabelContainer"
+          >
+            <Text
+              className="inputLabel"
+              nowrap={true}
+              variant="small"
+            >
+              Analytical Store
+            </Text>
+          </div>
+          <RadioSwitchComponent
+            choices={
+              Array [
+                Object {
+                  "key": "false",
+                  "label": "Disabled",
+                  "onSelect": [Function],
+                },
+                Object {
+                  "key": "true",
+                  "label": "Enabled",
+                  "onSelect": [Function],
+                },
+              ]
+            }
+            selectedKey="true"
+          />
+        </div>
+      </Stack>
+    </div>
+    <div
+      key="database"
+    >
+      <Stack
+        className="widgetRendererContainer"
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <StyledWithResponsiveMode
+          label="Database"
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "db1",
+                "text": "database1",
+              },
+              Object {
+                "key": "db2",
+                "text": "database2",
+              },
+              Object {
+                "key": "db3",
+                "text": "database3",
+              },
+            ]
+          }
+          selectedKey="db2"
+          styles={
+            Object {
+              "dropdown": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+              },
+              "label": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+                "fontWeight": 600,
+              },
+            }
+          }
+        />
+      </Stack>
+    </div>
+  </Stack>
+</Fragment>
+`;

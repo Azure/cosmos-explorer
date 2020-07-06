@@ -444,6 +444,17 @@ export class KeyCodes {
   public static Tab: number = 9;
 }
 
+// Normalized per: https://www.w3.org/TR/uievents-key/#named-key-attribute-values
+export class NormalizedEventKey {
+  public static readonly Space = " ";
+  public static readonly Enter = "Enter";
+  public static readonly Escape = "Escape";
+  public static readonly UpArrow = "ArrowUp";
+  public static readonly DownArrow = "ArrowDown";
+  public static readonly LeftArrow = "ArrowLeft";
+  public static readonly RightArrow = "ArrowRight";
+}
+
 export class TryCosmosExperience {
   public static extendUrl: string = "https://trycosmosdb.azure.com/api/resource/extendportal?userId={0}";
   public static deleteUrl: string = "https://trycosmosdb.azure.com/api/resource/deleteportal?userId={0}";

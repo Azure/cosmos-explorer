@@ -1,0 +1,16 @@
+@import "../../../../less/Common/Constants.less";
+
+.radioSwitchComponent {
+  cursor: pointer;
+  display: flex;
+
+  &>span:nth-child(n+2) {
+    margin-left: 10px;
+  }
+
+  .caption {
+    color: @BaseDark;
+    padding-left: @SmallSpace;
+    vertical-align: top;
+  }
+}
