@@ -82,33 +82,35 @@ export default class TelemetryProcessor {
   }
 
   public static traceOpen(action: Action, data?: any, timestamp?: number): number {
+    const validTimestamp = timestamp || Date.now();
     MessageHandler.sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
         actionModifier: ActionModifiers.Open,
-        timestamp: timestamp || Date.now(),
+        timestamp: validTimestamp,
         data: JSON.stringify(data)
       }
     });
 
     appInsights.startTrackEvent(Action[action]);
-    return timestamp;
+    return validTimestamp;
   }
 
   public static traceMark(action: Action, data?: any, timestamp?: number): number {
+    const validTimestamp = timestamp || Date.now();
     MessageHandler.sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
         actionModifier: ActionModifiers.Mark,
-        timestamp: timestamp || Date.now(),
+        timestamp: validTimestamp,
         data: JSON.stringify(data)
       }
     });
 
     appInsights.startTrackEvent(Action[action]);
-    return timestamp;
+    return validTimestamp;
   }
 
   private static getData(data?: any): any {

@@ -198,7 +198,7 @@ export class Heatmap {
       let timeSelected: string = data.points[0].x;
       timeSelected = timeSelected.replace(" ", "T");
       timeSelected = `${timeSelected}Z`;
-      let xAxisIndex;
+      let xAxisIndex = 0;
       for (let i = 0; i < this._chartData.xAxisPoints.length; i++) {
         if (this._chartData.xAxisPoints[i] === timeSelected) {
           xAxisIndex = i;
@@ -234,7 +234,8 @@ export function handleMessage(event: MessageEvent) {
     return;
   }
   Plotly.purge(Heatmap.elementId);
-  document.getElementById(Heatmap.elementId).innerHTML = "";
+
+  document.getElementById(Heatmap.elementId)!.innerHTML = "";
   const data = event.data.data;
   const chartData: DataPayload = data.chartData;
   const chartSettings: HeatmapCaptions = data.chartSettings;
@@ -259,8 +260,8 @@ export function handleMessage(event: MessageEvent) {
       noDataMessageContent.classList.add("dark-theme");
     }
 
-    document.getElementById(Heatmap.elementId).appendChild(chartTitleElement);
-    document.getElementById(Heatmap.elementId).appendChild(noDataMessageElement);
+    document.getElementById(Heatmap.elementId)!.appendChild(chartTitleElement);
+    document.getElementById(Heatmap.elementId)!.appendChild(noDataMessageElement);
   }
 }
 

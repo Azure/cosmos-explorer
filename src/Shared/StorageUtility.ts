@@ -5,7 +5,7 @@ export class LocalStorageUtility {
     return !!localStorage.getItem(StorageKey[key]);
   }
 
-  public static getEntryString(key: StorageKey): string {
+  public static getEntryString(key: StorageKey): string | null {
     return localStorage.getItem(StorageKey[key]);
   }
 
@@ -39,7 +39,7 @@ export class SessionStorageUtility {
     return !!sessionStorage.getItem(StorageKey[key]);
   }
 
-  public static getEntryString(key: StorageKey): string {
+  public static getEntryString(key: StorageKey): string | null {
     return sessionStorage.getItem(StorageKey[key]);
   }
 
