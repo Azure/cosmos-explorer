@@ -48,7 +48,6 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     { key: "feature.dataexplorerexecutesproc", label: "Execute stored procedure", value: "true" },
     { key: "feature.hosteddataexplorerenabled", label: "Hosted Data Explorer (deprecated?)", value: "true" },
     { key: "feature.enablettl", label: "Enable TTL", value: "true" },
-    { key: "feature.enablegallery", label: "Enable Notebook Gallery", value: "true" },
     { key: "feature.enablegallerypublish", label: "Enable Notebook Gallery Publishing", value: "true" },
     { key: "feature.canexceedmaximumvalue", label: "Can exceed max value", value: "true" },
     {

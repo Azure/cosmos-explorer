@@ -83,6 +83,7 @@ import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
+import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -199,7 +200,6 @@ export default class Explorer implements ViewModels.Explorer {
   public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
-  public isGalleryEnabled: ko.Computed<boolean>;
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
@@ -244,7 +244,10 @@ export default class Explorer implements ViewModels.Explorer {
   private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ViewModels.ArcadiaResourceManager;
-  private _filePathToImportAndOpen: string;
+  private notebookToImport: {
+    name: string;
+    content: string;
+  };
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
@@ -344,7 +347,7 @@ export default class Explorer implements ViewModels.Explorer {
               await this.initNotebooks(this.databaseAccount());
               const workspaces = await this._getArcadiaWorkspaces();
               this.arcadiaWorkspaces(workspaces);
-            } else if (this._filePathToImportAndOpen) {
+            } else if (this.notebookToImport) {
               // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
               this._openSetupNotebooksPaneForQuickstart();
             }
@@ -405,7 +408,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.shouldShowShareDialogContents = ko.observable<boolean>(false);
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
-    this.isGalleryEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableGallery));
     this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );
@@ -2490,10 +2492,6 @@ export default class Explorer implements ViewModels.Explorer {
     const parent = this.resourceTree.myNotebooksContentRoot;
 
     if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
-      if (this._filePathToImportAndOpen === path) {
-        this._filePathToImportAndOpen = null; // we don't want to try opening this path again
-      }
-
       const existingItem = _.find(parent.children, node => node.name === name);
       if (existingItem) {
         return this.openNotebook(existingItem);
@@ -2504,24 +2502,27 @@ export default class Explorer implements ViewModels.Explorer {
       return this.openNotebook(uploadedItem);
     }
 
-    this._filePathToImportAndOpen = path; // we'll try opening this path later on
     return Promise.resolve(false);
   }
 
-  public async importAndOpenFromGallery(name: string, content: string): Promise<boolean> {
+  public async importAndOpenContent(name: string, content: string): Promise<boolean> {
     const parent = this.resourceTree.myNotebooksContentRoot;
 
     if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
+      if (this.notebookToImport && this.notebookToImport.name === name && this.notebookToImport.content === content) {
+        this.notebookToImport = undefined; // we don't want to try opening this notebook again
+      }
+
       const existingItem = _.find(parent.children, node => node.name === name);
       if (existingItem) {
-        this.showOkModalDialog("Download failed", "Notebook with the same name already exists.");
-        return Promise.reject(false);
+        return this.openNotebook(existingItem);
       }
 
       const uploadedItem = await this.uploadFile(name, content, parent);
       return this.openNotebook(uploadedItem);
     }
 
+    this.notebookToImport = { name, content }; // we'll try opening this notebook later on
     return Promise.resolve(false);
   }
 
@@ -2927,8 +2928,8 @@ export default class Explorer implements ViewModels.Explorer {
     }
 
     await this.resourceTree.initialize();
-    if (this._filePathToImportAndOpen) {
-      this.importAndOpen(this._filePathToImportAndOpen);
+    if (this.notebookToImport) {
+      this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
     }
   };
 
@@ -3351,6 +3352,21 @@ export default class Explorer implements ViewModels.Explorer {
       this._openSetupNotebooksPaneForQuickstart();
     }
 
-    this.importAndOpen(path);
+    // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb
+    // when launching a notebook quickstart from Portal. In future we should just use gallery id and use Juno to fetch instead of directly
+    // calling GitHub. For now convert this url to a raw url and download content.
+    const gitHubInfo = fromContentUri(path);
+    if (gitHubInfo) {
+      const rawUrl = toRawContentUri(gitHubInfo.owner, gitHubInfo.repo, gitHubInfo.branch, gitHubInfo.path);
+      const response = await fetch(rawUrl);
+      if (response.status === Constants.HttpStatusCodes.OK) {
+        this.notebookToImport = {
+          name: NotebookUtil.getName(path),
+          content: await response.text()
+        };
+
+        this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
+      }
+    }
   }
 }

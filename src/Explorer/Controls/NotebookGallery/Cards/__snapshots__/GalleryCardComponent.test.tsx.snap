@@ -14,6 +14,7 @@ exports[`GalleryCardComponent renders 1`] = `
 >
   <CardItem>
     <StyledPersonaBase
+      imageUrl={false}
       secondaryText="Invalid Date"
       text="author"
     />
@@ -256,6 +257,7 @@ exports[`GalleryCardComponent renders 1`] = `
               "iconName": "Delete",
             }
           }
+          onClick={[Function]}
           title="Remove"
         />
       </StyledTooltipHostBase>

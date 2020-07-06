@@ -75,27 +75,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
-  private static readonly mostFavoritedText = "Most favorited";
+  private static readonly mostFavoritedText = "Most liked";
   private static readonly mostRecentText = "Most recent";
 
-  private static readonly sortingOptions: IDropdownOption[] = [
-    {
-      key: SortBy.MostViewed,
-      text: GalleryViewerComponent.mostViewedText
-    },
-    {
-      key: SortBy.MostDownloaded,
-      text: GalleryViewerComponent.mostDownloadedText
-    },
-    {
-      key: SortBy.MostFavorited,
-      text: GalleryViewerComponent.mostFavoritedText
-    },
-    {
-      key: SortBy.MostRecent,
-      text: GalleryViewerComponent.mostRecentText
-    }
-  ];
+  private readonly sortingOptions: IDropdownOption[];
 
   private sampleNotebooks: IGalleryItem[];
   private publicNotebooks: IGalleryItem[];
@@ -118,8 +101,29 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       dialogProps: undefined
     };
 
+    this.sortingOptions = [
+      {
+        key: SortBy.MostViewed,
+        text: GalleryViewerComponent.mostViewedText
+      },
+      {
+        key: SortBy.MostDownloaded,
+        text: GalleryViewerComponent.mostDownloadedText
+      },
+      {
+        key: SortBy.MostRecent,
+        text: GalleryViewerComponent.mostRecentText
+      }
+    ];
+    if (this.props.container?.isGalleryPublishEnabled()) {
+      this.sortingOptions.push({
+        key: SortBy.MostFavorited,
+        text: GalleryViewerComponent.mostFavoritedText
+      });
+    }
+
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
-    if (this.props.container) {
+    if (this.props.container?.isGalleryPublishEnabled()) {
       this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
     }
   }
@@ -131,16 +135,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public render(): JSX.Element {
     const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
-    if (this.props.container) {
-      if (this.props.container.isGalleryPublishEnabled()) {
-        tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
-      }
-
+    if (this.props.container?.isGalleryPublishEnabled()) {
+      tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-
-      if (this.props.container.isGalleryPublishEnabled()) {
-        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
-      }
+      tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
     }
 
     const pivotProps: IPivotProps = {
@@ -189,11 +187,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
             <Label>Sort by</Label>
           </Stack.Item>
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
-            <Dropdown
-              options={GalleryViewerComponent.sortingOptions}
-              selectedKey={this.state.sortBy}
-              onChange={this.onDropdownChange}
-            />
+            <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
         </Stack>
 
@@ -405,7 +399,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
-    const isFavorite = this.favoriteNotebooks?.find(item => item.id === data.id) !== undefined;
+    let isFavorite: boolean;
+    if (this.props.container?.isGalleryPublishEnabled()) {
+      isFavorite = this.favoriteNotebooks?.find(item => item.id === data.id) !== undefined;
+    }
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,
@@ -434,7 +431,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         [GalleryUtils.NotebookViewerParams.GalleryItemId]: data.id
       });
 
-      window.open(`/notebookViewer.html?${params.toString()}`);
+      const location = new URL("./notebookViewer.html", window.location.href).href;
+      window.open(`${location}?${params.toString()}`);
     }
   };
 

@@ -58,3 +58,7 @@ export function fromContentUri(
 export function toContentUri(owner: string, repo: string, branch: string, path: string): string {
   return `github://${owner}/${repo}/${path}?ref=${branch}`;
 }
+
+export function toRawContentUri(owner: string, repo: string, branch: string, path: string): string {
+  return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
+}

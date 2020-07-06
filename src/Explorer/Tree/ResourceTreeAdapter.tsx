@@ -18,13 +18,11 @@ import FileIcon from "../../../images/notebook/file-cosmos.svg";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import _ from "underscore";
-import { StringUtils } from "../../Utils/StringUtils";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
-import { SamplesRepo, SamplesBranch } from "../Notebook/NotebookSamples";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
@@ -37,7 +35,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
 
   public galleryContentRoot: NotebookContentItem;
-  public sampleNotebooksContentRoot: NotebookContentItem;
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
 
@@ -95,26 +92,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public async initialize(): Promise<void[]> {
     const refreshTasks: Promise<void>[] = [];
 
-    if (this.container.isGalleryEnabled()) {
-      this.galleryContentRoot = {
-        name: "Gallery",
-        path: "Gallery",
-        type: NotebookContentItemType.File
-      };
-
-      this.sampleNotebooksContentRoot = undefined;
-    } else {
-      this.galleryContentRoot = undefined;
-
-      this.sampleNotebooksContentRoot = {
-        name: "Sample Notebooks (View Only)",
-        path: GitHubUtils.toContentUri(SamplesRepo.owner, SamplesRepo.name, SamplesBranch.name, ""),
-        type: NotebookContentItemType.Directory
-      };
-      refreshTasks.push(
-        this.container.refreshContentItem(this.sampleNotebooksContentRoot).then(() => this.triggerRender())
-      );
-    }
+    this.galleryContentRoot = {
+      name: "Gallery",
+      path: "Gallery",
+      type: NotebookContentItemType.File
+    };
 
     this.myNotebooksContentRoot = {
       name: "My Notebooks",
@@ -361,10 +343,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
       notebooksTree.children.push(this.buildGalleryNotebooksTree());
     }
 
-    if (this.sampleNotebooksContentRoot) {
-      notebooksTree.children.push(this.buildSampleNotebooksTree());
-    }
-
     if (this.myNotebooksContentRoot) {
       notebooksTree.children.push(this.buildMyNotebooksTree());
     }
@@ -435,57 +413,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
       }
     };
-  }
-
-  private buildSampleNotebooksTree(): TreeNode {
-    const sampleNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.sampleNotebooksContentRoot,
-      (item: NotebookContentItem) => {
-        const databaseAccountName: string = this.container.databaseAccount() && this.container.databaseAccount().name;
-        const defaultExperience: string = this.container.defaultExperience && this.container.defaultExperience();
-        const dataExplorerArea: string = Areas.ResourceTree;
-
-        const startKey: number = TelemetryProcessor.traceStart(Action.OpenSampleNotebook, {
-          databaseAccountName,
-          defaultExperience,
-          dataExplorerArea
-        });
-
-        this.container.importAndOpen(item.path).then(hasOpened => {
-          if (hasOpened) {
-            this.pushItemToMostRecent(item);
-            TelemetryProcessor.traceSuccess(
-              Action.OpenSampleNotebook,
-              {
-                databaseAccountName,
-                defaultExperience,
-                dataExplorerArea
-              },
-              startKey
-            );
-          } else {
-            TelemetryProcessor.traceFailure(
-              Action.OpenSampleNotebook,
-              {
-                databaseAccountName,
-                defaultExperience,
-                dataExplorerArea
-              },
-              startKey
-            );
-          }
-        });
-      },
-      false,
-      false
-    );
-
-    sampleNotebooksTree.isExpanded = true;
-    // Remove children starting with "."
-    sampleNotebooksTree.children = sampleNotebooksTree.children.filter(
-      node => !StringUtils.startsWith(node.label, ".")
-    );
-    return sampleNotebooksTree;
   }
 
   private buildMyNotebooksTree(): TreeNode {

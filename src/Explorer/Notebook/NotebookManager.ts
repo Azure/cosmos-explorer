@@ -6,7 +6,6 @@ import { JunoClient } from "../../Juno/JunoClient";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { GitHubClient } from "../../GitHub/GitHubClient";
-import { config } from "../../Config";
 import * as Logger from "../../Common/Logger";
 import { HttpStatusCodes, Areas } from "../../Common/Constants";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
@@ -54,7 +53,7 @@ export default class NotebookManager {
     this.junoClient = new JunoClient(this.params.container.databaseAccount);
 
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
-    this.gitHubClient = new GitHubClient(config.AZURESAMPLESCOSMOSDBPAT, this.onGitHubClientError);
+    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
     this.gitHubReposPane = new GitHubReposPane({
       documentClientUtility: this.params.container.documentClientUtility,
       id: "gitHubReposPane",
@@ -91,7 +90,7 @@ export default class NotebookManager {
     }
 
     this.gitHubOAuthService.getTokenObservable().subscribe(token => {
-      this.gitHubClient.setToken(token?.access_token ? token.access_token : config.AZURESAMPLESCOSMOSDBPAT);
+      this.gitHubClient.setToken(token?.access_token);
 
       if (this.gitHubReposPane.visible()) {
         this.gitHubReposPane.open();

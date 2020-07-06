@@ -44,11 +44,15 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
             {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
           </Text>
           <Text>
-            <IconButton
-              iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
-              onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
-            />
-            {this.props.data.favorites} likes
+            {this.props.isFavorite !== undefined && (
+              <>
+                <IconButton
+                  iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
+                  onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
+                />
+                {this.props.data.favorites} likes
+              </>
+            )}
           </Text>
           <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
         </Stack>

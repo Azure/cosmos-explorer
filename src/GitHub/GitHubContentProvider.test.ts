@@ -5,7 +5,7 @@ import { GitHubClient, IGitHubCommit, IGitHubFile } from "./GitHubClient";
 import { GitHubContentProvider } from "./GitHubContentProvider";
 import * as GitHubUtils from "../Utils/GitHubUtils";
 
-const gitHubClient = new GitHubClient("token", () => {});
+const gitHubClient = new GitHubClient(() => {});
 const gitHubContentProvider = new GitHubContentProvider({
   gitHubClient,
   promptForCommitMsg: () => Promise.resolve("commit msg")

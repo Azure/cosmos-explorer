@@ -15,7 +15,7 @@ import * as GalleryUtils from "../Utils/GalleryUtils";
 const onInit = async () => {
   initializeIcons();
   await initializeConfiguration();
-  const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window);
+  const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
 
   const props: GalleryViewerComponentProps = {
     junoClient: new JunoClient(),

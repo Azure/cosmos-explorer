@@ -36,7 +36,7 @@ export interface GalleryViewerProps {
   searchText: string;
 }
 
-export function showOkCancelModalDialog(
+function showOkCancelModalDialog(
   component: DialogEnabledComponent,
   title: string,
   msg: string,
@@ -91,7 +91,7 @@ export function downloadItem(
             throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
           }
 
-          await container.importAndOpenFromGallery(data.name, response.data);
+          await container.importAndOpenContent(data.name, response.data);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Info,
             `Successfully downloaded ${name} to My Notebooks`
@@ -217,8 +217,8 @@ export function deleteItem(
   }
 }
 
-export function getGalleryViewerProps(window: Window & typeof globalThis): GalleryViewerProps {
-  const params = new URLSearchParams(window.location.search);
+export function getGalleryViewerProps(search: string): GalleryViewerProps {
+  const params = new URLSearchParams(search);
   let selectedTab: GalleryTab;
   if (params.has(GalleryViewerParams.SelectedTab)) {
     selectedTab = GalleryTab[params.get(GalleryViewerParams.SelectedTab) as keyof typeof GalleryTab];
@@ -236,8 +236,8 @@ export function getGalleryViewerProps(window: Window & typeof globalThis): Galle
   };
 }
 
-export function getNotebookViewerProps(window: Window & typeof globalThis): NotebookViewerProps {
-  const params = new URLSearchParams(window.location.search);
+export function getNotebookViewerProps(search: string): NotebookViewerProps {
+  const params = new URLSearchParams(search);
   return {
     notebookUrl: params.get(NotebookViewerParams.NotebookUrl),
     galleryItemId: params.get(NotebookViewerParams.GalleryItemId)

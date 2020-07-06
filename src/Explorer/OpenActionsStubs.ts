@@ -96,7 +96,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public setupNotebooksPane: SetupNotebooksPane;
   public setupSparkClusterPane: ViewModels.ContextualPane;
   public manageSparkClusterPane: ViewModels.ContextualPane;
-  public isGalleryEnabled: ko.Computed<boolean>;
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
@@ -333,7 +332,7 @@ export class ExplorerStub implements ViewModels.Explorer {
     throw new Error("Not implemented");
   }
 
-  public importAndOpenFromGallery(name: string, content: string): Promise<boolean> {
+  public importAndOpenContent(name: string, content: string): Promise<boolean> {
     throw new Error("Not implemented");
   }
 

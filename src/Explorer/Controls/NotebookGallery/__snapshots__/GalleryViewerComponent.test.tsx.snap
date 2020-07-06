@@ -68,10 +68,6 @@ exports[`GalleryViewerComponent renders 1`] = `
                     "text": "Most downloaded",
                   },
                   Object {
-                    "key": 2,
-                    "text": "Most favorited",
-                  },
-                  Object {
                     "key": 3,
                     "text": "Most recent",
                   },

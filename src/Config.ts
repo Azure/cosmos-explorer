@@ -16,7 +16,6 @@ interface Config {
   ARM_API_VERSION: string;
   GRAPH_ENDPOINT: string;
   GRAPH_API_VERSION: string;
-  AZURESAMPLESCOSMOSDBPAT: string;
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
@@ -44,8 +43,7 @@ let config: Config = {
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
-  JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
-  AZURESAMPLESCOSMOSDBPAT: "99e38770e29b4a61d7c49f188780504efd35cc86" //[SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="  // this PAT is a "no scopes" PAT with zero access to any projects, this is just used to get around the dev.github.com rate limit when accessing public samples repo.")]
+  JUNO_ENDPOINT: "https://tools.cosmos.azure.com"
 };
 
 // Injected for local develpment. These will be removed in the production bundle by webpack

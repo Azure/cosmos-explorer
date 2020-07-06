@@ -2,7 +2,6 @@ import { Octokit } from "@octokit/rest";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import UrlUtility from "../Common/UrlUtility";
-import { isSamplesCall, SamplesContentsQueryResponse } from "../Explorer/Notebook/NotebookSamples";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 
 export interface IGitHubPageInfo {
@@ -225,8 +224,8 @@ export class GitHubClient {
   private static readonly SelfErrorCode = 599;
   private ocktokit: Octokit;
 
-  constructor(token: string, private errorCallback: (error: any) => void) {
-    this.initOctokit(token);
+  constructor(private errorCallback: (error: any) => void) {
+    this.initOctokit();
   }
 
   public setToken(token: string): void {
@@ -310,18 +309,13 @@ export class GitHubClient {
     path?: string
   ): Promise<IGitHubResponse<IGitHubFile | IGitHubFile[]>> {
     try {
-      let response: ContentsQueryResponse;
-      if (isSamplesCall(owner, repo, branch) && !path) {
-        response = SamplesContentsQueryResponse;
-      } else {
-        response = (await this.ocktokit.graphql(contentsQuery, {
-          owner,
-          repo,
-          ref: `refs/heads/${branch}`,
-          path: path || undefined,
-          objectExpression: `refs/heads/${branch}:${path || ""}`
-        } as ContentsQueryParams)) as ContentsQueryResponse;
-      }
+      const response = (await this.ocktokit.graphql(contentsQuery, {
+        owner,
+        repo,
+        ref: `refs/heads/${branch}`,
+        path: path || undefined,
+        objectExpression: `refs/heads/${branch}:${path || ""}`
+      } as ContentsQueryParams)) as ContentsQueryResponse;
 
       let data: IGitHubFile | IGitHubFile[];
       const entries = response.repository.object.entries;
@@ -495,7 +489,7 @@ export class GitHubClient {
     return { status: response.status, data: <string>(<unknown>response.data) };
   }
 
-  private async initOctokit(token: string) {
+  private async initOctokit(token?: string) {
     this.ocktokit = new Octokit({
       auth: token,
       log: {

@@ -83,7 +83,6 @@ export interface Explorer {
   extensionEndpoint: ko.Observable<string>;
   armEndpoint: ko.Observable<string>;
   isFeatureEnabled: (feature: string) => boolean;
-  isGalleryEnabled: ko.Computed<boolean>;
   isGalleryPublishEnabled: ko.Computed<boolean>;
   isGitHubPaneEnabled: ko.Observable<boolean>;
   isPublishNotebookPaneEnabled: ko.Observable<boolean>;
@@ -230,7 +229,7 @@ export interface Explorer {
   openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
   resetNotebookWorkspace(): void;
   importAndOpen: (path: string) => Promise<boolean>;
-  importAndOpenFromGallery: (name: string, content: string) => Promise<boolean>;
+  importAndOpenContent: (name: string, content: string) => Promise<boolean>;
   publishNotebook: (name: string, content: string) => void;
   openNotebookTerminal: (kind: TerminalKind) => void;
   openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
