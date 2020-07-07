@@ -55,14 +55,14 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
       Invalid Date
     </Text>
     <Text>
-      <StyledIconBase
+      <Memo(StyledIconBase)
         iconName="RedEye"
       />
        
       0
     </Text>
     <Text>
-      <StyledIconBase
+      <Memo(StyledIconBase)
         iconName="Download"
       />
       0
@@ -154,14 +154,14 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
       Invalid Date
     </Text>
     <Text>
-      <StyledIconBase
+      <Memo(StyledIconBase)
         iconName="RedEye"
       />
        
       0
     </Text>
     <Text>
-      <StyledIconBase
+      <Memo(StyledIconBase)
         iconName="Download"
       />
       0
