@@ -24,7 +24,6 @@ import { MessageHandler } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { Collection } from "immutable";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
