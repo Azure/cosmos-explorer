@@ -66,7 +66,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         this.isExecuting(false);
         this.close();
         this.container.selectedNode(selectedCollection.database);
-        this.container.tabsManager.closeTabsByComparator(
+        this.container.tabsManager?.closeTabsByComparator(
           (tab: ViewModels.Tab) => tab.node && tab.node.rid === selectedCollection.rid
         );
         this.container.refreshAllDatabases();
