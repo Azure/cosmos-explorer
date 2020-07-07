@@ -12,32 +12,52 @@ export class ResourceProviderClient<T> implements IResourceProviderClient<T> {
     this.httpClient = new HttpClient();
   }
 
-  public async getAsync(url: string, apiVersion: string, queryString?: string): Promise<T | T[]> {
+  public async getAsync(
+    url: string,
+    apiVersion: string,
+    queryString?: string,
+    skipResourceValidation: boolean = false
+  ): Promise<T | T[]> {
     let uri = `${this.armEndpoint}${url}?api-version=${apiVersion}`;
     if (queryString) {
       uri += `&${queryString}`;
     }
-    return await this.httpClient.getAsync<T | T[]>(uri);
+    return await this.httpClient.getAsync<T | T[]>(uri, skipResourceValidation);
   }
 
-  public async postAsync(url: string, apiVersion: string, body: any): Promise<any> {
+  public async postAsync(
+    url: string,
+    apiVersion: string,
+    body: any,
+    skipResourceValidation: boolean = false
+  ): Promise<any> {
     const fullUrl = UrlUtility.createUri(this.armEndpoint, url);
-    return await this.httpClient.postAsync(`${fullUrl}?api-version=${apiVersion}`, body);
+    return await this.httpClient.postAsync(`${fullUrl}?api-version=${apiVersion}`, body, skipResourceValidation);
   }
 
-  public async putAsync(url: string, apiVersion: string, body: any): Promise<T> {
+  public async putAsync(
+    url: string,
+    apiVersion: string,
+    body: any,
+    skipResourceValidation: boolean = false
+  ): Promise<T> {
     const fullUrl = UrlUtility.createUri(this.armEndpoint, url);
-    return await this.httpClient.putAsync<T>(`${fullUrl}?api-version=${apiVersion}`, body);
+    return await this.httpClient.putAsync<T>(`${fullUrl}?api-version=${apiVersion}`, body, skipResourceValidation);
   }
 
-  public async patchAsync(url: string, apiVersion: string, body: any): Promise<T> {
+  public async patchAsync(
+    url: string,
+    apiVersion: string,
+    body: any,
+    skipResourceValidation: boolean = false
+  ): Promise<T> {
     const fullUrl = UrlUtility.createUri(this.armEndpoint, url);
-    return await this.httpClient.patchAsync<T>(`${fullUrl}?api-version=${apiVersion}`, body);
+    return await this.httpClient.patchAsync<T>(`${fullUrl}?api-version=${apiVersion}`, body, skipResourceValidation);
   }
 
-  public async deleteAsync(url: string, apiVersion: string): Promise<void> {
+  public async deleteAsync(url: string, apiVersion: string, skipResourceValidation: boolean = true): Promise<void> {
     const fullUrl = UrlUtility.createUri(this.armEndpoint, url);
-    return await this.httpClient.deleteAsync(`${fullUrl}?api-version=${apiVersion}`);
+    return await this.httpClient.deleteAsync(`${fullUrl}?api-version=${apiVersion}`, skipResourceValidation);
   }
 }
 
@@ -55,40 +75,44 @@ class HttpClient {
     this.tokenProvider = TokenProviderFactory.create();
   }
 
-  public async getAsync<T>(url: string): Promise<T> {
+  public async getAsync<T>(url: string, skipResourceValidation: boolean): Promise<T> {
     const args: RequestInit = { method: "GET" };
-    const response = await this.httpRequest(new Request(url, args));
+    const response = await this.httpRequest(new Request(url, args), skipResourceValidation);
     return (await response.json()) as T;
   }
 
-  public async postAsync(url: string, body: any): Promise<any> {
+  public async postAsync(url: string, body: any, skipResourceValidation: boolean): Promise<any> {
     body = typeof body !== "string" && body !== undefined ? JSON.stringify(body) : body;
     const args: RequestInit = { method: "POST", headers: { "Content-Type": "application/json" }, body };
-    const response = await this.httpRequest(new Request(url, args));
+    const response = await this.httpRequest(new Request(url, args), skipResourceValidation);
     return await response.json();
   }
 
-  public async putAsync<T>(url: string, body: any): Promise<T> {
+  public async putAsync<T>(url: string, body: any, skipResourceValidation: boolean): Promise<T> {
     body = typeof body !== "string" && body !== undefined ? JSON.stringify(body) : body;
     const args: RequestInit = { method: "PUT", headers: { "Content-Type": "application/json" }, body };
-    const response = await this.httpRequest(new Request(url, args));
+    const response = await this.httpRequest(new Request(url, args), skipResourceValidation);
     return (await response.json()) as T;
   }
 
-  public async patchAsync<T>(url: string, body: any): Promise<T> {
+  public async patchAsync<T>(url: string, body: any, skipResourceValidation: boolean): Promise<T> {
     body = typeof body !== "string" && body !== undefined ? JSON.stringify(body) : body;
     const args: RequestInit = { method: "PATCH", headers: { "Content-Type": "application/json" }, body };
-    const response = await this.httpRequest(new Request(url, args));
+    const response = await this.httpRequest(new Request(url, args), skipResourceValidation);
     return (await response.json()) as T;
   }
 
-  public async deleteAsync(url: string): Promise<void> {
+  public async deleteAsync(url: string, skipResourceValidation: boolean): Promise<void> {
     const args: RequestInit = { method: "DELETE" };
-    await this.httpRequest(new Request(url, args));
+    await this.httpRequest(new Request(url, args), skipResourceValidation);
     return null;
   }
 
-  public async httpRequest<T>(request: RequestInfo, numRetries: number = 12): Promise<Response> {
+  public async httpRequest<T>(
+    request: RequestInfo,
+    skipResourceValidation: boolean,
+    numRetries: number = 12
+  ): Promise<Response> {
     const authHeader = await this.tokenProvider.getAuthHeader();
     authHeader &&
       authHeader.forEach((value: string, header: string) => {
@@ -99,7 +123,11 @@ class HttpClient {
     if (response.status === HttpStatusCodes.Accepted) {
       const operationStatusUrl: string =
         response.headers && response.headers.get(HttpClient.AZURE_ASYNC_OPERATION_HEADER);
-      const resource = await this.pollOperationAndGetResultAsync<T>(request, operationStatusUrl);
+      const resource = await this.pollOperationAndGetResultAsync<T>(
+        request,
+        operationStatusUrl,
+        skipResourceValidation
+      );
       return new Response(resource && JSON.stringify(resource));
     }
 
@@ -112,7 +140,7 @@ class HttpClient {
       return new Promise<Response>((resolve: (value: Response) => void, reject: (error: any) => void) => {
         setTimeout(async () => {
           try {
-            const response = await this.httpRequest<T>(request, numRetries - 1);
+            const response = await this.httpRequest<T>(request, skipResourceValidation, numRetries - 1);
             resolve(response);
           } catch (error) {
             reject(error);
@@ -128,7 +156,11 @@ class HttpClient {
         response.headers && response.headers.get(HttpClient.AZURE_ASYNC_OPERATION_HEADER);
 
       if (operationStatusUrl) {
-        const resource = await this.pollOperationAndGetResultAsync<T>(request, operationStatusUrl);
+        const resource = await this.pollOperationAndGetResultAsync<T>(
+          request,
+          operationStatusUrl,
+          skipResourceValidation
+        );
         return new Response(resource && JSON.stringify(resource));
       }
 
@@ -140,16 +172,20 @@ class HttpClient {
 
   private async pollOperationAndGetResultAsync<T>(
     originalRequest: RequestInfo,
-    operationStatusUrl: string
+    operationStatusUrl: string,
+    skipResourceValidation: boolean
   ): Promise<T> {
     const getOperationResult = async (resolve: (value: T) => void, reject: (error: any) => void) => {
-      const operationStatus: OperationStatus = await this.getAsync<OperationStatus>(operationStatusUrl);
+      const operationStatus: OperationStatus = await this.getAsync<OperationStatus>(
+        operationStatusUrl,
+        skipResourceValidation
+      );
       if (!operationStatus) {
         return reject("Could not retrieve operation status");
       } else if (operationStatus.status === HttpClient.SUCCEEDED_STATUS) {
         let result;
-        if ((originalRequest as Request).method !== "DELETE") {
-          result = await this.getAsync<T>((originalRequest as Request).url);
+        if (!skipResourceValidation) {
+          result = await this.getAsync<T>((originalRequest as Request).url, skipResourceValidation);
         }
         return resolve(result);
       } else if (
