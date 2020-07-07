@@ -16,7 +16,8 @@
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": ["styled-components", "jest"]
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/__mocks__/**/*"]

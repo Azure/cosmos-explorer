@@ -24,6 +24,7 @@ import { MessageHandler } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { Collection } from "immutable";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
@@ -447,7 +448,7 @@ export abstract class DataAccessUtilityBase {
         .database(databaseId)
         .container(collectionId)
         .read()
-        .then(response => response.resource)
+        .then(response => response.resource as DataModels.Collection)
     );
   }
 
@@ -577,7 +578,7 @@ export abstract class DataAccessUtilityBase {
             }
           );
         })
-        .then(containerResponse => containerResponse.resource)
+        .then(containerResponse => containerResponse.resource as DataModels.Collection)
         .finally(() => this.refreshCachedResources(options))
     );
   }
