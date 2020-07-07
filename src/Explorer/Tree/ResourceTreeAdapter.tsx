@@ -286,7 +286,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        this.container.tabsManager.refreshActiveTab(collection.rid);
+        this.container.tabsManager.refreshActiveTab(
+          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+        );
       },
       onExpanded: () => {
         if (ResourceTreeAdapter.showScriptNodes(this.container)) {
@@ -312,7 +314,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
-        this.container.tabsManager.refreshActiveTab(collection.rid);
+        this.container.tabsManager.refreshActiveTab(
+          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+        );
       }
     };
   }
@@ -329,7 +333,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
-        this.container.tabsManager.refreshActiveTab(collection.rid);
+        this.container.tabsManager.refreshActiveTab(
+          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+        );
       }
     };
   }
@@ -345,7 +351,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
-        this.container.tabsManager.refreshActiveTab(collection.rid);
+        this.container.tabsManager.refreshActiveTab(
+          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+        );
       }
     };
   }

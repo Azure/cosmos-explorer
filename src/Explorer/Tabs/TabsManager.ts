@@ -66,19 +66,10 @@ export class TabsManager {
     notebookTabs.forEach((tab: ViewModels.Tab) => tab.onCloseTabButtonClick());
   }
 
-  public getOpenedTabsOfTargetKind(tabKind: number, hashLocation?: string): ViewModels.Tab[] {
-    return this.openedTabs().filter((tab: ViewModels.Tab) => {
-      return tab.tabKind === tabKind && (!hashLocation || hashLocation === tab.hashLocation());
-    });
-  }
-
-  public refreshActiveTab(collectionRid: string): void {
+  public refreshActiveTab(comparator: (tab: ViewModels.Tab) => boolean): void {
     // ensures that the tab selects/highlights the right node based on resource tree expand/collapse state
-    const openedRelevantTabs: ViewModels.Tab[] = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collectionRid
-    );
-    openedRelevantTabs.forEach((tab: ViewModels.Tab) => {
-      if (tab.isActive()) {
+    this.openedTabs().forEach((tab: ViewModels.Tab) => {
+      if (comparator(tab) && tab.isActive()) {
         tab.onActivate();
       }
     });

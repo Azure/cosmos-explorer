@@ -64,7 +64,9 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        this.container.tabsManager.refreshActiveTab(collection.rid);
+        this.container.tabsManager.refreshActiveTab(
+          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+        );
       },
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined)
     };

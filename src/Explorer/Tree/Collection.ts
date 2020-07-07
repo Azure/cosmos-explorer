@@ -230,7 +230,9 @@ export default class Collection implements ViewModels.Collection {
       this.expandCollection();
     }
     this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+    );
   }
 
   public collapseCollection() {
@@ -902,7 +904,9 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandStoredProcedures();
     }
-    this.container.tabsManager.refreshActiveTab(this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+    );
   }
 
   public expandStoredProcedures() {
@@ -959,7 +963,9 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandUserDefinedFunctions();
     }
-    this.container.tabsManager.refreshActiveTab(this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+    );
   }
 
   public expandUserDefinedFunctions() {
@@ -1016,7 +1022,9 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandTriggers();
     }
-    this.container.tabsManager.refreshActiveTab(this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+    );
   }
 
   public expandTriggers() {
