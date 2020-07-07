@@ -10,6 +10,7 @@ import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleCompo
 import { InputTypeaheadComponent } from "./Controls/InputTypeahead/InputTypeahead";
 import { JsonEditorComponent } from "./Controls/JsonEditor/JsonEditorComponent";
 import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
+import { TabsManagerKOComponent } from "./Tabs/TabsManager";
 import { ThroughputInputComponent } from "./Controls/ThroughputInput/ThroughputInputComponent";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
 import { ToolbarComponent } from "./Controls/Toolbar/Toolbar";
@@ -26,6 +27,7 @@ ko.components.register("diff-editor", new DiffEditorComponent());
 ko.components.register("dynamic-list", DynamicListComponent);
 ko.components.register("throughput-input", ThroughputInputComponent);
 ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponentAutoPilotV3);
+ko.components.register("tabs-manager", TabsManagerKOComponent());
 
 // Collection Tabs
 ko.components.register("documents-tab", new TabComponents.DocumentsTab());

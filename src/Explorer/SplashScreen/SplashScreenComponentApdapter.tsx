@@ -31,7 +31,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
 
   constructor(private container: ViewModels.Explorer) {
     this.parameters = ko.observable<number>(Date.now());
-    this.container.openedTabs.subscribe(tabs => {
+    this.container.tabsManager.openedTabs.subscribe((tabs: ViewModels.Tab[]) => {
       if (tabs.length === 0) {
         this.forceRender();
       }

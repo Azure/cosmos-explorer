@@ -16,10 +16,20 @@ import TriggerTabTemplate from "./TriggerTab.html";
 import UserDefinedFunctionTabTemplate from "./UserDefinedFunctionTab.html";
 import GalleryTabTemplate from "./GalleryTab.html";
 import NotebookViewerTabTemplate from "./NotebookViewerTab.html";
+import TabsManagerTemplate from "./TabsManager.html";
 
 export class TabComponent {
   constructor(data: any) {
     return data.data;
+  }
+}
+
+export class TabsManager {
+  constructor() {
+    return {
+      viewModel: TabComponent,
+      template: TabsManagerTemplate
+    };
   }
 }
 

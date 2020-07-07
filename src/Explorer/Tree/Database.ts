@@ -49,12 +49,12 @@ export default class Database implements ViewModels.Database {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    // create settings tab if not created yet
-    const openedTabs = this.container.openedTabs();
-    let settingsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.DatabaseSettings)[0];
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
+    const matchingTabs: ViewModels.Tab[] = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.DatabaseSettings,
+      (tab: ViewModels.Tab) => tab.rid === this.rid
+    );
+    let settingsTab: DatabaseSettingsTab = matchingTabs && (matchingTabs[0] as DatabaseSettingsTab);
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseAccountName: this.container.databaseAccount().name,
@@ -78,12 +78,11 @@ export default class Database implements ViewModels.Database {
             selfLink: this.self,
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
-            onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-            openedTabs: this.container.openedTabs()
+            onUpdateTabsButtons: this.container.onUpdateTabsButtons
           });
-          (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(pendingNotification);
-          this.container.openedTabs.push(settingsTab);
-          settingsTab.onTabClick(); // Activate
+
+          settingsTab.pendingNotification(pendingNotification);
+          this.container.tabsManager.activateNewTab(settingsTab);
         },
         (error: any) => {
           TelemetryProcessor.traceFailure(
@@ -109,12 +108,12 @@ export default class Database implements ViewModels.Database {
     } else {
       pendingNotificationsPromise.then(
         (pendingNotification: DataModels.Notification) => {
-          (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(pendingNotification);
-          settingsTab.onTabClick();
+          settingsTab.pendingNotification(pendingNotification);
+          this.container.tabsManager.activateTab(settingsTab);
         },
         (error: any) => {
-          (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(undefined);
-          settingsTab.onTabClick();
+          settingsTab.pendingNotification(undefined);
+          this.container.tabsManager.activateTab(settingsTab);
         }
       );
     }
@@ -221,7 +220,7 @@ export default class Database implements ViewModels.Database {
       this.expandDatabase();
     }
     this.container.onUpdateTabsButtons([]);
-    this.refreshTabSelectedState();
+    this.container.tabsManager.refreshTabSelectedState(this.rid);
   }
 
   public expandDatabase() {
@@ -284,18 +283,6 @@ export default class Database implements ViewModels.Database {
   public openAddCollection(database: Database, event: MouseEvent) {
     database.container.addCollectionPane.databaseId(database.id());
     database.container.addCollectionPane.open();
-  }
-
-  public refreshTabSelectedState(): void {
-    const openedRelevantTabs: ViewModels.Tab[] = this.container
-      .openedTabs()
-      .filter((tab: ViewModels.Tab) => tab && tab.collection && tab.collection.getDatabase().rid === this.rid);
-
-    openedRelevantTabs.forEach((tab: ViewModels.Tab) => {
-      if (tab.isActive()) {
-        tab.onTabClick(); // this ensures the next (deepest) item in the resource tree is highlighted
-      }
-    });
   }
 
   public findCollectionWithId(collectionId: string): ViewModels.Collection {

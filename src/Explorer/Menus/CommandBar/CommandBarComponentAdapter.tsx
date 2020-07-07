@@ -16,10 +16,14 @@ export class CommandBarComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
   public container: ViewModels.Explorer;
   private tabsButtons: ViewModels.NavbarButtonConfig[];
+  private isNotebookTabActive: ko.Computed<boolean>;
 
   constructor(container: ViewModels.Explorer) {
     this.container = container;
     this.tabsButtons = [];
+    this.isNotebookTabActive = ko.computed(() =>
+      container.tabsManager.isTabActive(ViewModels.CollectionTabKind.NotebookV2)
+    );
 
     // These are the parameters watched by the react binding that will trigger a renderComponent() if one of the ko mutates
     const toWatch = [
@@ -39,7 +43,7 @@ export class CommandBarComponentAdapter implements ReactAdapter {
       container.isHostedDataExplorerEnabled,
       container.isSynapseLinkUpdating,
       container.databaseAccount,
-      container.isNotebookTabActive
+      this.isNotebookTabActive
     ];
 
     ko.computed(() => ko.toJSON(toWatch)).subscribe(() => this.triggerRender());
@@ -74,7 +78,7 @@ export class CommandBarComponentAdapter implements ReactAdapter {
     const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
     uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-    if (this.container && this.container.isNotebookTabActive()) {
+    if (this.isNotebookTabActive()) {
       uiFabricControlButtons.unshift(
         CommandBarUtil.createMemoryTracker("memoryTracker", this.container.memoryUsageInfo)
       );

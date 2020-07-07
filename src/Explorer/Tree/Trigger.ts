@@ -3,7 +3,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import Collection from "./Collection";
 import TriggerTab from "../Tabs/TriggerTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 
@@ -41,10 +40,7 @@ export default class Trigger implements ViewModels.Trigger {
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const id =
-      source.container
-        .openedTabs()
-        .filter((tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.Triggers).length + 1;
+    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
     const trigger = <DataModels.Trigger>{
       id: "",
       body: "function trigger(){}",
@@ -52,7 +48,7 @@ export default class Trigger implements ViewModels.Trigger {
       triggerType: "Pre"
     };
 
-    let triggerTab: ViewModels.Tab = new TriggerTab({
+    const triggerTab: TriggerTab = new TriggerTab({
       resource: trigger,
       isNew: true,
       tabKind: ViewModels.CollectionTabKind.Triggers,
@@ -64,23 +60,24 @@ export default class Trigger implements ViewModels.Trigger {
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
       selfLink: "",
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
 
-    source.container.openedTabs.push(triggerTab);
-
-    // Activate
-    triggerTab.onTabClick();
+    source.container.tabsManager.activateNewTab(triggerTab);
   }
 
   public open = () => {
     this.select();
 
-    let triggerTab: ViewModels.Tab = this.container
-      .openedTabs()
-      .filter(tab => tab.node && tab.node.rid === this.rid)[0];
-    if (!triggerTab) {
+    const triggerTabs: TriggerTab[] = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.Triggers,
+      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+    ) as TriggerTab[];
+    let triggerTab: TriggerTab = triggerTabs && triggerTabs[0];
+
+    if (triggerTab) {
+      this.container.tabsManager.activateTab(triggerTab);
+    } else {
       const triggerData = <DataModels.Trigger>{
         _rid: this.rid,
         _self: this.self,
@@ -105,15 +102,11 @@ export default class Trigger implements ViewModels.Trigger {
         )}/triggers/${this.id()}`,
         selfLink: "",
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
 
-      this.container.openedTabs.push(triggerTab);
+      this.container.tabsManager.activateNewTab(triggerTab);
     }
-
-    // Activate
-    triggerTab.onTabClick();
   };
 
   public delete() {
@@ -132,7 +125,9 @@ export default class Trigger implements ViewModels.Trigger {
 
     this.container.documentClientUtility.deleteTrigger(this.collection, triggerData).then(
       () => {
-        this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.removeTabByComparator(
+          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+        );
         this.collection.children.remove(this);
       },
       reason => {}

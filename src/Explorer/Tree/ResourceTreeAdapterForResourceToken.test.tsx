@@ -12,9 +12,7 @@ const createMockContainer = (): ViewModels.Explorer => {
   let mockContainer = {} as ViewModels.Explorer;
   mockContainer.resourceTokenCollection = createMockCollection(mockContainer);
   mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-  mockContainer.activeTab = ko.observable<ViewModels.Tab>();
   mockContainer.mostRecentActivity = new MostRecentActivity.MostRecentActivity(mockContainer);
-  mockContainer.openedTabs = ko.observableArray<ViewModels.Tab>([]);
   mockContainer.onUpdateTabsButtons = () => {};
 
   return mockContainer;

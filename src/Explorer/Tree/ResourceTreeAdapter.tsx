@@ -49,7 +49,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.tabsManager.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
     this.container.isNotebookEnabled.subscribe(newValue => this.triggerRender());
 
     this.koSubsDatabaseIdMap = new ArrayHashMap();
@@ -189,7 +189,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           }
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
-          database.refreshTabSelectedState();
+          this.container.tabsManager.refreshTabSelectedState(database.rid);
         },
         onContextMenuOpen: () => this.container.selectedNode(database)
       };
@@ -286,7 +286,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(collection.rid);
       },
       onExpanded: () => {
         if (ResourceTreeAdapter.showScriptNodes(this.container)) {
@@ -312,7 +312,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(collection.rid);
       }
     };
   }
@@ -329,7 +329,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(collection.rid);
       }
     };
   }
@@ -345,7 +345,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(collection.rid);
       }
     };
   }
@@ -431,7 +431,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       className: "notebookHeader galleryHeader",
       onClick: () => this.container.openGallery(),
       isSelected: () => {
-        const activeTab = this.container.findActiveTab();
+        const activeTab = this.container.tabsManager.activeTab();
         return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
       }
     };
@@ -590,7 +590,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       className: "notebookHeader",
       onClick: () => onFileClick(item),
       isSelected: () => {
-        const activeTab = this.container.findActiveTab();
+        const activeTab = this.container.tabsManager.activeTab();
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
@@ -707,7 +707,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         }
       },
       isSelected: () => {
-        const activeTab = this.container.findActiveTab();
+        const activeTab = this.container.tabsManager.activeTab();
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
@@ -730,14 +730,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
 
-  private getActiveTab(): ViewModels.Tab {
-    const activeTabs: ViewModels.Tab[] = this.container.openedTabs().filter((tab: ViewModels.Tab) => tab.isActive());
-    if (activeTabs.length) {
-      return activeTabs[0];
-    }
-    return undefined;
-  }
-
   private isDataNodeSelected(rid: string, nodeKind: string, subnodeKind: ViewModels.CollectionTabKind): boolean {
     if (!this.container.selectedNode || !this.container.selectedNode()) {
       return false;
@@ -747,7 +739,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     if (subnodeKind === undefined) {
       return selectedNode.rid === rid && selectedNode.nodeKind === nodeKind;
     } else {
-      const activeTab = this.getActiveTab();
+      const activeTab = this.container.tabsManager.activeTab();
       let selectedSubnodeKind;
       if (nodeKind === "Database" && (selectedNode as ViewModels.Database).selectedSubnodeKind) {
         selectedSubnodeKind = (selectedNode as ViewModels.Database).selectedSubnodeKind();

@@ -22,6 +22,7 @@ import { Versions } from "../../src/Contracts/ExplorerContracts";
 import { CollectionCreationDefaults } from "../Shared/Constants";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
+import { TabsManager } from "./Tabs/TabsManager";
 
 export class ExplorerStub implements ViewModels.Explorer {
   public flight: ko.Observable<string>;
@@ -69,7 +70,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
-  public openedTabs: ko.ObservableArray<ViewModels.Tab>;
   public isTabsContentExpanded: ko.Observable<boolean>;
   public addCollectionPane: ViewModels.AddCollectionPane;
   public addDatabasePane: ViewModels.AddDatabasePane;
@@ -104,7 +104,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public parentFrameDataExplorerVersion: ko.Observable<string> = ko.observable<string>(Versions.DataExplorer);
-  public activeTab: ko.Observable<ViewModels.Tab>;
   public mostRecentActivity: MostRecentActivity;
   public isNotebookEnabled: ko.Observable<boolean>;
   public isSparkEnabled: ko.Observable<boolean>;
@@ -122,7 +121,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
-  public isNotebookTabActive: ko.Computed<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any;
   public openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
@@ -133,6 +131,7 @@ export class ExplorerStub implements ViewModels.Explorer {
   public resourceTokenPartitionKey: ko.Observable<string>;
   public isAuthWithResourceToken: ko.Observable<boolean>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
+  public tabsManager: TabsManager;
 
   private _featureEnabledReturnValue: boolean;
 
@@ -251,10 +250,6 @@ export class ExplorerStub implements ViewModels.Explorer {
     throw new Error("Not implemented");
   }
 
-  public findActiveTab(): ViewModels.Tab {
-    throw new Error("Not implemented");
-  }
-
   public findSelectedStoredProcedure(): ViewModels.StoredProcedure {
     throw new Error("Not implemented");
   }
@@ -300,10 +295,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   }
 
   public renewShareAccess(token: string): Q.Promise<void> {
-    throw new Error("Not implemented");
-  }
-
-  public closeAllTabsForResource(resourceId: string): void {
     throw new Error("Not implemented");
   }
 
@@ -429,10 +420,6 @@ export class ExplorerStub implements ViewModels.Explorer {
     throw new Error("Not implemented");
   }
 
-  public closeNotebookTab(filepath: string): void {
-    throw new Error("Not implemented");
-  }
-
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     throw new Error("Not implemented");
   }
@@ -511,10 +498,6 @@ export class DatabaseStub implements ViewModels.Database {
   }
 
   public openAddCollection(database: ViewModels.Database, event: MouseEvent) {
-    throw new Error("Not implemented");
-  }
-
-  public refreshTabSelectedState(): void {
     throw new Error("Not implemented");
   }
 
@@ -779,10 +762,6 @@ export class CollectionStub implements ViewModels.Collection {
   }
 
   public uploadFiles = (fileList: FileList): Q.Promise<UploadDetails> => {
-    throw new Error("Not implemented");
-  };
-
-  public refreshActiveTab = (): void => {
     throw new Error("Not implemented");
   };
 

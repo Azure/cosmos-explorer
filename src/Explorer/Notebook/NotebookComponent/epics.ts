@@ -806,7 +806,7 @@ const closeUnsupportedMimetypesEpic = (
       if (explorer && !TextFile.handles(mimetype)) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.closeNotebookTab(filepath);
+        explorer.tabsManager.closeNotebookTab(filepath);
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         explorer.showOkModalDialog("File cannot be rendered", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
@@ -832,7 +832,7 @@ const closeContentFailedToFetchEpic = (
       if (explorer) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.closeNotebookTab(filepath);
+        explorer.tabsManager.closeNotebookTab(filepath);
         const msg = `Failed to load file: ${filepath}.`;
         explorer.showOkModalDialog("Failure to load", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);

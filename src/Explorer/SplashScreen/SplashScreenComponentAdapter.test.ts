@@ -6,7 +6,6 @@ jest.mock("../Explorer");
 
 const createExplorer = () => {
   const mock = new Explorer({} as any);
-  mock.openedTabs = ko.observableArray([]);
   mock.selectedNode = ko.observable();
   mock.isNotebookEnabled = ko.observable(false);
   mock.addCollectionText = ko.observable("add collection");
