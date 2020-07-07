@@ -11,6 +11,7 @@ import Explorer from "../Explorer";
 import { CollectionStub, DatabaseStub, ExplorerStub } from "../OpenActionsStubs";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
+import { TabsManager } from "../Tabs/TabsManager";
 
 describe("Delete Database Confirmation Pane", () => {
   describe("Explorer.isLastDatabase() and Explorer.isLastNonEmptyDatabase()", () => {
@@ -123,6 +124,7 @@ describe("Delete Database Confirmation Pane", () => {
       );
       sinon.stub(fakeExplorer, "documentClientUtility").value(fakeDocumentClientUtility);
       sinon.stub(fakeExplorer, "selectedNode").value(ko.observable<TreeNode>());
+      sinon.stub(fakeExplorer, "tabsManager").value(new TabsManager());
       fakeExplorer.isLastNonEmptyDatabase.returns(true);
 
       let pane = new DeleteDatabaseConfirmationPane({
