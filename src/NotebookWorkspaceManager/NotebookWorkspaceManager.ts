@@ -83,7 +83,9 @@ export class NotebookWorkspaceManager implements ViewModels.NotebookWorkspaceMan
   public async startNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void> {
     const uri = `${cosmosdbResourceId}/notebookWorkspaces/${notebookWorkspaceId}/start`;
     try {
-      return await this.rpClient(uri).postAsync(uri, ArmApiVersions.documentDB, undefined);
+      return await this.rpClient(uri).postAsync(uri, ArmApiVersions.documentDB, undefined, {
+        skipResourceValidation: true
+      });
     } catch (error) {
       Logger.logError(error, "NotebookWorkspaceManager/startNotebookWorkspaceAsync");
       throw error;
