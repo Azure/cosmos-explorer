@@ -447,7 +447,7 @@ export abstract class DataAccessUtilityBase {
         .database(databaseId)
         .container(collectionId)
         .read()
-        .then(response => response.resource)
+        .then(response => response.resource as DataModels.Collection)
     );
   }
 
@@ -577,7 +577,7 @@ export abstract class DataAccessUtilityBase {
             }
           );
         })
-        .then(containerResponse => containerResponse.resource)
+        .then(containerResponse => containerResponse.resource as DataModels.Collection)
         .finally(() => this.refreshCachedResources(options))
     );
   }
