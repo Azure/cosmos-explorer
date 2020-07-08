@@ -64,9 +64,7 @@ function showOkCancelModalDialog(
       onCancel && onCancel();
     },
     showCloseButton,
-    onDismiss: () => {
-      component.setDialogProps(undefined);
-    }
+    onDismiss: () => component.setDialogProps(undefined)
   });
 }
 
