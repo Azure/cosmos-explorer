@@ -11,6 +11,7 @@ import {
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
+import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 
 const onInit = async () => {
   initializeIcons();
@@ -27,7 +28,18 @@ const onInit = async () => {
     onSearchTextChange: undefined
   };
 
-  ReactDOM.render(<GalleryViewerComponent {...props} />, document.getElementById("galleryContent"));
+  const element = (
+    <>
+      <header>
+        <GalleryHeaderComponent />
+      </header>
+      <div style={{ marginLeft: 138, marginRight: 138 }}>
+        <GalleryViewerComponent {...props} />
+      </div>
+    </>
+  );
+
+  ReactDOM.render(element, document.getElementById("galleryContent"));
 };
 
 // Entry point

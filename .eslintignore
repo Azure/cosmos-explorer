@@ -411,7 +411,6 @@ src/Explorer/Tabs/NotebookViewerTab.tsx
 src/Explorer/Tabs/TerminalTab.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.tsx
-src/GalleryViewer/Cards/CardStyleConstants.tsx
 src/GalleryViewer/Cards/GalleryCardComponent.tsx
 src/GalleryViewer/GalleryViewer.tsx
 src/GalleryViewer/GalleryViewerComponent.tsx

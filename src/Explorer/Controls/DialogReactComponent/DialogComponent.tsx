@@ -31,6 +31,8 @@ export interface DialogProps {
   onSecondaryButtonClick: () => void;
   primaryButtonDisabled?: boolean;
   type?: DialogType;
+  showCloseButton?: boolean;
+  onDismiss?: () => void;
 }
 
 const DIALOG_MIN_WIDTH = "400px";
@@ -55,7 +57,8 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
           title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
           subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE }
         },
-        showCloseButton: false
+        showCloseButton: this.props.showCloseButton || false,
+        onDismiss: this.props.onDismiss
       },
       modalProps: { isBlocking: this.props.isModal },
       minWidth: DIALOG_MIN_WIDTH,

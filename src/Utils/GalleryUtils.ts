@@ -41,6 +41,7 @@ function showOkCancelModalDialog(
   title: string,
   msg: string,
   linkProps: LinkProps,
+  showCloseButton: boolean,
   okLabel: string,
   onOk: () => void,
   cancelLabel: string,
@@ -61,7 +62,9 @@ function showOkCancelModalDialog(
     onSecondaryButtonClick: () => {
       component.setDialogProps(undefined);
       onCancel && onCancel();
-    }
+    },
+    showCloseButton,
+    onDismiss: () => component.setDialogProps(undefined)
   });
 }
 
@@ -121,6 +124,7 @@ export function downloadItem(
         linkText: "Learn more about Cosmos DB",
         linkUrl: "https://azure.microsoft.com/en-us/services/cosmos-db"
       },
+      true,
       "Open data explorer",
       () => {
         window.open("https://cosmos.azure.com");
