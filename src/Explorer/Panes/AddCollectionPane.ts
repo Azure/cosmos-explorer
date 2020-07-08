@@ -69,6 +69,8 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
   public uniqueKeysPlaceholder: ko.Computed<string>;
   public upsellMessage: ko.PureComputed<string>;
   public upsellMessageAriaLabel: ko.PureComputed<string>;
+  public upsellAnchorUrl: ko.PureComputed<string>;
+  public upsellAnchorText: ko.PureComputed<string>;
   public debugstring: ko.Computed<string>;
   public displayCollectionThroughput: ko.Computed<boolean>;
   public isAutoPilotSelected: ko.Observable<boolean>;
@@ -508,11 +510,19 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     });
 
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId());
+      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
-      return `${this.upsellMessage()}. Click for more details`;
+      return `${this.upsellMessage()}. Click ${this.isFreeTierAccount() ? "to learn more" : "for more details"}`;
+    });
+
+    this.upsellAnchorUrl = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
+    });
+
+    this.upsellAnchorText = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? "Learn more" : "More details";
     });
 
     this.displayCollectionThroughput = ko.computed<boolean>(() => {

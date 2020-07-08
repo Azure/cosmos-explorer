@@ -13,7 +13,29 @@ describe("Add Collection Pane", () => {
       kind: "DocumentDB",
       location: "",
       name: "mock",
-      properties: undefined,
+      properties: {
+        documentEndpoint: "",
+        cassandraEndpoint: "",
+        gremlinEndpoint: "",
+        tableEndpoint: "",
+        enableFreeTier: false
+      },
+      type: undefined,
+      tags: []
+    };
+
+    const mockFreeTierDatabaseAccount: ViewModels.DatabaseAccount = {
+      id: "mock",
+      kind: "DocumentDB",
+      location: "",
+      name: "mock",
+      properties: {
+        documentEndpoint: "",
+        cassandraEndpoint: "",
+        gremlinEndpoint: "",
+        tableEndpoint: "",
+        enableFreeTier: true
+      },
       type: undefined,
       tags: []
     };
@@ -67,6 +89,24 @@ describe("Add Collection Pane", () => {
 
       addCollectionPane.partitionKey("/label");
       expect(addCollectionPane.isValid()).toBe(true);
+    });
+
+    it("should display free tier text in upsell messaging", () => {
+      explorer.databaseAccount(mockFreeTierDatabaseAccount);
+      const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
+      expect(addCollectionPane.isFreeTierAccount()).toBe(true);
+      expect(addCollectionPane.upsellMessage()).toContain("With free tier discount");
+      expect(addCollectionPane.upsellAnchorUrl()).toBe(Constants.Urls.freeTierInformation);
+      expect(addCollectionPane.upsellAnchorText()).toBe("Learn more");
+    });
+
+    it("should display standard texr in upsell messaging", () => {
+      explorer.databaseAccount(mockDatabaseAccount);
+      const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
+      expect(addCollectionPane.isFreeTierAccount()).toBe(false);
+      expect(addCollectionPane.upsellMessage()).toContain("Start at");
+      expect(addCollectionPane.upsellAnchorUrl()).toBe(Constants.Urls.cosmosPricing);
+      expect(addCollectionPane.upsellAnchorText()).toBe("More details");
     });
   });
 });

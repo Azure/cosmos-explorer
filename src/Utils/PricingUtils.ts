@@ -279,12 +279,16 @@ export function getEstimatedSpendAcknowledgeString(
       )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
-export function getUpsellMessage(serverId: string = "default"): string {
-  let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
+export function getUpsellMessage(serverId: string = "default", isFreeTier: boolean = false): string {
+  if (isFreeTier) {
+    return `With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s.`;
+  } else {
+    let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
 
-  if (serverId === "mooncake") {
-    price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
+    if (serverId === "mooncake") {
+      price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
+    }
+
+    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
   }
-
-  return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
 }
