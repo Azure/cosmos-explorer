@@ -9,6 +9,7 @@ import {
 } from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
+import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 
 const onInit = async () => {
   initializeIcons();
@@ -38,7 +39,18 @@ const render = (notebookUrl: string, backNavigationText: string, galleryItem?: I
     onTagClick: undefined
   };
 
-  ReactDOM.render(<NotebookViewerComponent {...props} />, document.getElementById("notebookContent"));
+  const element = (
+    <>
+      <header>
+        <GalleryHeaderComponent />
+      </header>
+      <div style={{ marginLeft: 120, marginRight: 120 }}>
+        <NotebookViewerComponent {...props} />
+      </div>
+    </>
+  );
+
+  ReactDOM.render(element, document.getElementById("notebookContent"));
 };
 
 // Entry point
