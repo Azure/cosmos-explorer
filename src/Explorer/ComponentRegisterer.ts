@@ -76,8 +76,6 @@ ko.components.register("browse-queries-pane", new PaneComponents.BrowseQueriesPa
 ko.components.register("upload-file-pane", new PaneComponents.UploadFilePaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
-ko.components.register("setup-spark-cluster-pane", new PaneComponents.SetupSparkClusterPaneComponent());
-ko.components.register("manage-spark-cluster-pane", new PaneComponents.ManageSparkClusterPaneComponent());
 ko.components.register("library-manage-pane", new PaneComponents.LibraryManagePaneComponent());
 ko.components.register("cluster-library-pane", new PaneComponents.ClusterLibraryPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());

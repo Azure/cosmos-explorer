@@ -94,8 +94,6 @@ export class ExplorerStub implements ViewModels.Explorer {
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
-  public setupSparkClusterPane: ViewModels.ContextualPane;
-  public manageSparkClusterPane: ViewModels.ContextualPane;
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;

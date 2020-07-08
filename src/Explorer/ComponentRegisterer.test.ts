@@ -116,14 +116,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("setup-notebooks-pane")).toBe(true);
   });
 
-  it("should register setup-spark-cluster-pane component", () => {
-    expect(ko.components.isRegistered("setup-spark-cluster-pane")).toBe(true);
-  });
-
-  it("should register manage-spark-cluster-pane component", () => {
-    expect(ko.components.isRegistered("manage-spark-cluster-pane")).toBe(true);
-  });
-
   it("should register dynamic-list component", () => {
     expect(ko.components.isRegistered("dynamic-list")).toBe(true);
   });

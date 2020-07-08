@@ -4,14 +4,11 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { Areas } from "../../../Common/Constants";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-import ApacheSparkIcon from "../../../../images/notebook/Apache-spark.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import * as Constants from "../../../Common/Constants";
-import DeleteIcon from "../../../../images/delete.svg";
-import EditIcon from "../../../../images/edit.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
@@ -25,7 +22,6 @@ import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import EnableNotebooksIcon from "../../../../images/notebook/Notebook-enable.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
-import LibraryManageIcon from "../../../../images/notebook/Spark-library-manage.svg";
 import GitHubIcon from "../../../../images/github.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { config, Platform } from "../../../Config";
@@ -87,25 +83,6 @@ export class CommandBarComponentButtonFactory {
 
       buttons.push(CommandBarComponentButtonFactory.createNotebookWorkspaceResetButton(container));
     }
-
-    // TODO: Should be replaced with the create arcadia spark pool button
-    // if (!container.isSparkEnabled() && container.isSparkEnabledForAccount()) {
-    //   const createSparkClusterButton = CommandBarComponentButtonFactory.createSparkClusterButton(container);
-    //   buttons.push(createSparkClusterButton);
-    // }
-
-    // TODO: Should be replaced with the edit/manage/delete arcadia spark pool button
-    // if (container.isSparkEnabled()) {
-    //   const manageSparkClusterButton = CommandBarComponentButtonFactory.createMonitorClusterButton(container);
-    //   manageSparkClusterButton.children = [
-    //     CommandBarComponentButtonFactory.createMonitorClusterButton(container),
-    //     CommandBarComponentButtonFactory.createEditClusterButton(container),
-    //     CommandBarComponentButtonFactory.createDeleteClusterButton(container),
-    //     CommandBarComponentButtonFactory.createLibraryManageButton(container),
-    //     CommandBarComponentButtonFactory.createClusterLibraryButton(container)
-    //   ];
-    //   buttons.push(manageSparkClusterButton);
-    // }
 
     if (!container.isDatabaseNodeOrNoneSelected()) {
       if (container.isNotebookEnabled()) {
@@ -505,58 +482,6 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createSparkClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Enable Spark";
-    return {
-      iconSrc: ApacheSparkIcon,
-      iconAlt: "Enable spark icon",
-      onCommandClick: () => container.setupSparkClusterPane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createEditClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Edit Cluster";
-    return {
-      iconSrc: EditIcon,
-      iconAlt: "Edit cluster icon",
-      onCommandClick: () => container.manageSparkClusterPane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createDeleteClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Delete Cluster";
-    return {
-      iconSrc: DeleteIcon,
-      iconAlt: "Delete cluster icon",
-      onCommandClick: () => container.deleteCluster(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createMonitorClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Monitor Cluster";
-    return {
-      iconSrc: ApacheSparkIcon,
-      iconAlt: "Monitor cluster icon",
-      onCommandClick: () => container.openSparkMasterTab(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
   private static createOpenTerminalButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
     const label = "Open Terminal";
     return {
@@ -651,32 +576,6 @@ export class CommandBarComponentButtonFactory {
         }
         container.gitHubReposPane.open();
       },
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createLibraryManageButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Manage Libraries";
-    return {
-      iconSrc: LibraryManageIcon,
-      iconAlt: label,
-      onCommandClick: () => container.libraryManagePane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createClusterLibraryButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Manage Cluster Libraries";
-    return {
-      iconSrc: LibraryManageIcon,
-      iconAlt: label,
-      onCommandClick: () => container.clusterLibraryPane.open(),
       commandButtonLabel: label,
       hasPopup: false,
       disabled: false,

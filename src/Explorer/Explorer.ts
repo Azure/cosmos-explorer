@@ -55,7 +55,6 @@ import { IGalleryItem } from "../Juno/JunoClient";
 import { LibraryManagePane } from "./Panes/LibraryManagePane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
-import { ManageSparkClusterPane } from "./Panes/ManageSparkClusterPane";
 import { MessageHandler } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
@@ -73,7 +72,6 @@ import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SetupSparkClusterPane } from "./Panes/SetupSparkClusterPane";
 import { SparkClusterManager } from "../SparkClusterManager/SparkClusterManager";
 import { SplashScreenComponentAdapter } from "./SplashScreen/SplashScreenComponentApdapter";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
@@ -192,8 +190,6 @@ export default class Explorer implements ViewModels.Explorer {
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
-  public setupSparkClusterPane: ViewModels.ContextualPane;
-  public manageSparkClusterPane: ViewModels.ContextualPane;
   public libraryManagePane: ViewModels.ContextualPane;
   public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
@@ -759,22 +755,6 @@ export default class Explorer implements ViewModels.Explorer {
       container: this
     });
 
-    this.setupSparkClusterPane = new SetupSparkClusterPane({
-      documentClientUtility: this.documentClientUtility,
-      id: "setupsparkclusterpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this
-    });
-
-    this.manageSparkClusterPane = new ManageSparkClusterPane({
-      documentClientUtility: this.documentClientUtility,
-      id: "managesparkclusterpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this
-    });
-
     this.libraryManagePane = new LibraryManagePane({
       documentClientUtility: this.documentClientUtility,
       id: "libraryManagePane",
@@ -818,9 +798,7 @@ export default class Explorer implements ViewModels.Explorer {
       this.browseQueriesPane,
       this.uploadFilePane,
       this.stringInputPane,
-      this.setupNotebooksPane,
-      this.setupSparkClusterPane,
-      this.manageSparkClusterPane
+      this.setupNotebooksPane
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.rebindDocumentClientUtility.bind(this);

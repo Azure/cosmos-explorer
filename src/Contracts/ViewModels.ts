@@ -148,8 +148,6 @@ export interface Explorer {
   uploadFilePane: UploadFilePane;
   stringInputPane: StringInputPane;
   setupNotebooksPane: SetupNotebooksPane;
-  setupSparkClusterPane: ContextualPane;
-  manageSparkClusterPane: ContextualPane;
   libraryManagePane: ContextualPane;
   clusterLibraryPane: ContextualPane;
   gitHubReposPane: ContextualPane;
