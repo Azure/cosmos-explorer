@@ -1273,7 +1273,7 @@ export default class Explorer implements ViewModels.Explorer {
       class: "connectDialogButtons okBtn connectOkBtns",
       click: () => {
         $("#contextSwitchPrompt").dialog("close");
-        this.tabsManager.clearAllTabs(); // clear all tabs so we dont leave any tabs from previous session open
+        this.tabsManager.closeTabs(); // clear all tabs so we dont leave any tabs from previous session open
         this.renewShareAccess(connectionString);
       }
     };
@@ -2599,12 +2599,9 @@ export default class Explorer implements ViewModels.Explorer {
 
     const notebookTabs: NotebookV2Tab[] = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.NotebookV2,
-      (tab: ViewModels.Tab) => {
-        return (
-          (tab as NotebookV2Tab).notebookPath &&
-          FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
-        );
-      }
+      (tab: ViewModels.Tab) =>
+        (tab as NotebookV2Tab).notebookPath &&
+        FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
     ) as NotebookV2Tab[];
     let notebookTab: NotebookV2Tab = notebookTabs && notebookTabs[0];
 
@@ -2679,9 +2676,7 @@ export default class Explorer implements ViewModels.Explorer {
       .then(newNotebookFile => {
         const notebookTabs: ViewModels.Tab[] = this.tabsManager.getTabs(
           ViewModels.CollectionTabKind.NotebookV2,
-          (tab: NotebookV2Tab) => {
-            return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath);
-          }
+          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
         );
         notebookTabs.forEach(tab => {
           tab.tabTitle(newNotebookFile.name);

@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsManagerTemplate from "./TabsManager.html";
-import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 
 export class TabsManager {
   public openedTabs: ko.ObservableArray<ViewModels.Tab>;
@@ -32,20 +31,6 @@ export class TabsManager {
     });
   }
 
-  public closeNotebookTab(filepath: string): void {
-    if (!filepath) {
-      return;
-    }
-
-    const notebookTabs: ViewModels.Tab[] = this.getTabs(
-      ViewModels.CollectionTabKind.NotebookV2,
-      (tab: ViewModels.Tab) => {
-        return (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath);
-      }
-    );
-    notebookTabs.forEach((tab: ViewModels.Tab) => tab.onCloseTabButtonClick());
-  }
-
   public refreshActiveTab(comparator: (tab: ViewModels.Tab) => boolean): void {
     // ensures that the tab selects/highlights the right node based on resource tree expand/collapse state
     this.openedTabs().forEach((tab: ViewModels.Tab) => {
@@ -73,7 +58,7 @@ export class TabsManager {
     });
   }
 
-  public clearAllTabs(): void {
+  public closeTabs(): void {
     this.openedTabs([]);
   }
 

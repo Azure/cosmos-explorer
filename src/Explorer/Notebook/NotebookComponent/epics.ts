@@ -43,6 +43,7 @@ import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as TextFile from "./contents/file/text-file";
 import { NotebookUtil } from "../NotebookUtil";
+import { FileSystemUtil } from "../FileSystemUtil";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
@@ -806,7 +807,9 @@ const closeUnsupportedMimetypesEpic = (
       if (explorer && !TextFile.handles(mimetype)) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.tabsManager.closeNotebookTab(filepath);
+        explorer.tabsManager.closeTabsByComparator(
+          tab => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+        );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         explorer.showOkModalDialog("File cannot be rendered", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
@@ -832,7 +835,9 @@ const closeContentFailedToFetchEpic = (
       if (explorer) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.tabsManager.closeNotebookTab(filepath);
+        explorer.tabsManager.closeTabsByComparator(
+          tab => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+        );
         const msg = `Failed to load file: ${filepath}.`;
         explorer.showOkModalDialog("Failure to load", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
