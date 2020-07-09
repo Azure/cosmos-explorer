@@ -252,7 +252,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
     this.throughputModeRadioName = `throughputModeRadio${this.tabId}`;
 
     this.changeFeedPolicyToggled = editable.observable<ChangeFeedPolicyToggledState>(
-      this.collection.rawDataModel.changeFeedPolicy != null
+      this.collection.rawDataModel?.changeFeedPolicy != null
         ? ChangeFeedPolicyToggledState.On
         : ChangeFeedPolicyToggledState.Off
     );

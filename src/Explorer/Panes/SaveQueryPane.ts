@@ -34,7 +34,8 @@ export class SaveQueryPane extends ContextualPaneBase {
     }
 
     const queryName: string = this.queryName();
-    const queryTab: ViewModels.QueryTab = this.container && (this.container.findActiveTab() as ViewModels.QueryTab);
+    const queryTab: ViewModels.QueryTab =
+      this.container && (this.container.tabsManager.activeTab() as ViewModels.QueryTab);
     const query: string = queryTab && queryTab.sqlQueryEditorContent();
     if (!queryName || queryName.length === 0) {
       this.formErrors("No query name specified");

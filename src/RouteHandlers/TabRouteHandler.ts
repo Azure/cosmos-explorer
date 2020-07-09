@@ -390,17 +390,15 @@ export class TabRouteHandler {
     isNewScriptTab?: boolean
   ): ViewModels.Tab {
     const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
-
-    return _.find(explorer.openedTabs(), (tab: ViewModels.Tab) => {
-      const isMatchingTabKind =
-        tab.collection.databaseId === databaseId && tab.collection.id() === collectionId && tab.tabKind === tabKind;
-
-      if (isNewScriptTab) {
-        return isMatchingTabKind && (tab as ViewModels.ScriptTab).isNew();
-      }
-
-      return isMatchingTabKind;
-    });
+    const matchingTabs: ViewModels.Tab[] = explorer.tabsManager.getTabs(
+      tabKind,
+      (tab: ViewModels.Tab) =>
+        tab.collection &&
+        tab.collection.databaseId === databaseId &&
+        tab.collection.id() === collectionId &&
+        (!isNewScriptTab || (tab as ViewModels.ScriptTab).isNew())
+    );
+    return matchingTabs && matchingTabs[0];
   }
 
   private _findMatchingCollectionForResource(databaseId: string, collectionId: string): ViewModels.Collection {

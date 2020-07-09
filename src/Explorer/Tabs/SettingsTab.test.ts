@@ -76,8 +76,7 @@ describe("Settings tab", () => {
             quotaInfo,
             null
           ),
-          onUpdateTabsButtons: undefined,
-          openedTabs: []
+          onUpdateTabsButtons: undefined
         });
       };
 
@@ -196,8 +195,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -221,8 +219,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -241,8 +238,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -281,8 +277,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -299,8 +294,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -326,8 +320,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -408,8 +401,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(defaultApi, partitionKeyOption),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
     }
 
@@ -555,8 +547,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(autoPilotTier),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
     }
     describe("Visible", () => {

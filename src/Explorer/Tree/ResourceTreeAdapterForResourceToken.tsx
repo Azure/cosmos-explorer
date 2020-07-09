@@ -17,7 +17,8 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
 
     this.container.resourceTokenCollection.subscribe((collection: ViewModels.CollectionBase) => this.triggerRender());
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.tabsManager &&
+      this.container.tabsManager.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
 
     this.triggerRender();
   }
@@ -63,7 +64,9 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(
+          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+        );
       },
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined)
     };
@@ -75,14 +78,6 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
     };
   }
 
-  private getActiveTab(): ViewModels.Tab {
-    const activeTabs: ViewModels.Tab[] = this.container.openedTabs().filter((tab: ViewModels.Tab) => tab.isActive());
-    if (activeTabs.length) {
-      return activeTabs[0];
-    }
-    return undefined;
-  }
-
   private isDataNodeSelected(rid: string, nodeKind: string, subnodeKind: ViewModels.CollectionTabKind): boolean {
     if (!this.container.selectedNode || !this.container.selectedNode()) {
       return false;
@@ -92,7 +87,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
     if (subnodeKind) {
       return selectedNode.rid === rid && selectedNode.nodeKind === nodeKind;
     } else {
-      const activeTab = this.getActiveTab();
+      const activeTab = this.container.tabsManager.activeTab();
       let selectedSubnodeKind;
       if (nodeKind === "Database" && (selectedNode as ViewModels.Database).selectedSubnodeKind) {
         selectedSubnodeKind = (selectedNode as ViewModels.Database).selectedSubnodeKind();

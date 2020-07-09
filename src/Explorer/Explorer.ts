@@ -77,6 +77,7 @@ import { SplashScreenComponentAdapter } from "./SplashScreen/SplashScreenCompone
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
+import { TabsManager } from "./Tabs/TabsManager";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
@@ -161,11 +162,10 @@ export default class Explorer implements ViewModels.Explorer {
   private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
-  public openedTabs: ko.ObservableArray<ViewModels.Tab>;
-  public activeTab: ko.Observable<ViewModels.Tab>;
   public isTabsContentExpanded: ko.Observable<boolean>;
   public galleryTab: any;
   public notebookViewerTab: any;
+  public tabsManager: TabsManager;
 
   // Contextual panes
   public addDatabasePane: ViewModels.AddDatabasePane;
@@ -229,7 +229,6 @@ export default class Explorer implements ViewModels.Explorer {
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
-  public isNotebookTabActive: ko.Computed<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any; // This is dynamically loaded
 
@@ -296,14 +295,10 @@ export default class Explorer implements ViewModels.Explorer {
     this.arcadiaToken = ko.observable<string>();
     this.arcadiaToken.subscribe((token: string) => {
       if (token) {
-        this.openedTabs &&
-          this.openedTabs().forEach(tab => {
-            if (tab.tabKind === ViewModels.CollectionTabKind.Notebook) {
-              throw new Error("NotebookTab is deprecated. Use NotebookV2Tab");
-            } else if (tab.tabKind === ViewModels.CollectionTabKind.NotebookV2) {
-              (tab as NotebookV2Tab).reconfigureServiceEndpoints();
-            }
-          });
+        const notebookTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2);
+        (notebookTabs || []).forEach((tab: NotebookV2Tab) => {
+          tab.reconfigureServiceEndpoints();
+        });
       }
     });
     this.isNotebooksEnabledForAccount = ko.observable(false);
@@ -771,12 +766,8 @@ export default class Explorer implements ViewModels.Explorer {
       container: this
     });
 
-    this.openedTabs = ko.observableArray<ViewModels.Tab>([]);
-    this.activeTab = ko.observable(null);
-    this.isNotebookTabActive = ko.computed<boolean>(() => {
-      // only show memory tracker if the current active tab is a notebook
-      return this.activeTab() && this.activeTab().tabKind === ViewModels.CollectionTabKind.NotebookV2;
-    });
+    this.tabsManager = new TabsManager();
+
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
@@ -1262,7 +1253,7 @@ export default class Explorer implements ViewModels.Explorer {
       class: "connectDialogButtons okBtn connectOkBtns",
       click: () => {
         $("#contextSwitchPrompt").dialog("close");
-        this.openedTabs([]); // clear all tabs so we dont leave any tabs from previous session open
+        this.tabsManager.closeTabs(); // clear all tabs so we dont leave any tabs from previous session open
         this.renewShareAccess(connectionString);
       }
     };
@@ -2090,10 +2081,6 @@ export default class Explorer implements ViewModels.Explorer {
     return Q();
   }
 
-  public findActiveTab(): ViewModels.Tab {
-    return this.activeTab();
-  }
-
   public findSelectedCollection(): ViewModels.Collection {
     if (this.selectedNode().nodeKind === "Collection") {
       return this.findSelectedCollectionForSelectedNode();
@@ -2106,11 +2093,9 @@ export default class Explorer implements ViewModels.Explorer {
   public findSelectedStoredProcedure(): ViewModels.StoredProcedure {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
     return _.find(selectedCollection.storedProcedures(), (storedProcedure: ViewModels.StoredProcedure) => {
-      const openedSprocTab = this.openedTabs().filter(
-        (tab: ViewModels.Tab) =>
-          tab.node &&
-          tab.node.rid === storedProcedure.rid &&
-          tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
+      const openedSprocTab = this.tabsManager.getTabs(
+        ViewModels.CollectionTabKind.StoredProcedures,
+        (tab: ViewModels.Tab) => tab.node && tab.node.rid === storedProcedure.rid
       );
       return (
         storedProcedure.rid === this.selectedNode().rid ||
@@ -2122,11 +2107,9 @@ export default class Explorer implements ViewModels.Explorer {
   public findSelectedUDF(): ViewModels.UserDefinedFunction {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
     return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: ViewModels.UserDefinedFunction) => {
-      const openedUdfTab = this.openedTabs().filter(
-        (tab: ViewModels.Tab) =>
-          tab.node &&
-          tab.node.rid === userDefinedFunction.rid &&
-          tab.tabKind === ViewModels.CollectionTabKind.UserDefinedFunctions
+      const openedUdfTab = this.tabsManager.getTabs(
+        ViewModels.CollectionTabKind.UserDefinedFunctions,
+        (tab: ViewModels.Tab) => tab.node && tab.node.rid === userDefinedFunction.rid
       );
       return (
         userDefinedFunction.rid === this.selectedNode().rid ||
@@ -2138,25 +2121,15 @@ export default class Explorer implements ViewModels.Explorer {
   public findSelectedTrigger(): ViewModels.Trigger {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
     return _.find(selectedCollection.triggers(), (trigger: ViewModels.Trigger) => {
-      const openedTriggerTab = this.openedTabs().filter(
-        (tab: ViewModels.Tab) =>
-          tab.node && tab.node.rid === trigger.rid && tab.tabKind === ViewModels.CollectionTabKind.Triggers
+      const openedTriggerTab = this.tabsManager.getTabs(
+        ViewModels.CollectionTabKind.Triggers,
+        (tab: ViewModels.Tab) => tab.node && tab.node.rid === trigger.rid
       );
       return (
         trigger.rid === this.selectedNode().rid ||
         (!!openedTriggerTab && openedTriggerTab.length > 0 && openedTriggerTab[0].isActive())
       );
     });
-  }
-
-  public closeAllTabsForResource(resourceId: string): void {
-    const currentlyActiveTabs = this.openedTabs().filter((tab: ViewModels.Tab) => tab.isActive && tab.isActive());
-    currentlyActiveTabs.forEach((tab: ViewModels.Tab) => tab.isActive(false));
-    this.activeTab(null);
-    const openedTabsForResource = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === resourceId
-    );
-    openedTabsForResource.forEach((tab: ViewModels.Tab) => tab.onCloseTabButtonClick());
   }
 
   public closeAllPanes(): void {
@@ -2235,7 +2208,9 @@ export default class Explorer implements ViewModels.Explorer {
           if (isNewDatabase) {
             database.expandDatabase();
           }
-          database.refreshTabSelectedState();
+          this.tabsManager.refreshActiveTab(
+            (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === database.rid
+          );
         })
       );
     });
@@ -2338,7 +2313,7 @@ export default class Explorer implements ViewModels.Explorer {
     }
 
     const urlPrefixWithKeyParam: string = `${config.hostedExplorerURL}?key=`;
-    const currentActiveTab: ViewModels.Tab = this.findActiveTab();
+    const currentActiveTab: ViewModels.Tab = this.tabsManager.activeTab();
 
     return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;
   }
@@ -2600,46 +2575,48 @@ export default class Explorer implements ViewModels.Explorer {
     if (!notebookContentItem || !notebookContentItem.path) {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
-    const openedNotebookTabs = this.getNotebookTabsForFilepath(notebookContentItem.path);
 
-    if (openedNotebookTabs.length > 0) {
-      openedNotebookTabs[0].onTabClick();
-      openedNotebookTabs[0].onActivate();
-      return true;
+    const notebookTabs: NotebookV2Tab[] = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.NotebookV2,
+      (tab: ViewModels.Tab) =>
+        (tab as NotebookV2Tab).notebookPath &&
+        FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
+    ) as NotebookV2Tab[];
+    let notebookTab: NotebookV2Tab = notebookTabs && notebookTabs[0];
+
+    if (notebookTab) {
+      this.tabsManager.activateTab(notebookTab);
+    } else {
+      const options: ViewModels.NotebookTabOptions = {
+        account: CosmosClient.databaseAccount(),
+        tabKind: ViewModels.CollectionTabKind.NotebookV2,
+        node: null,
+        title: notebookContentItem.name,
+        tabPath: notebookContentItem.path,
+        documentClientUtility: null,
+
+        collection: null,
+        selfLink: null,
+        masterKey: CosmosClient.masterKey() || "",
+        hashLocation: "notebooks",
+        isActive: ko.observable(false),
+        isTabsContentExpanded: ko.observable(true),
+        onLoadStartKey: null,
+        onUpdateTabsButtons: this.onUpdateTabsButtons,
+        container: this,
+        notebookContentItem
+      };
+
+      try {
+        const NotebookTabV2 = await import(/* webpackChunkName: "NotebookV2Tab" */ "./Tabs/NotebookV2Tab");
+        notebookTab = new NotebookTabV2.default(options);
+        this.tabsManager.activateNewTab(notebookTab);
+      } catch (reason) {
+        console.error("Import NotebookV2Tab failed!", reason);
+        return false;
+      }
     }
 
-    const options: ViewModels.NotebookTabOptions = {
-      account: CosmosClient.databaseAccount(),
-      tabKind: ViewModels.CollectionTabKind.NotebookV2,
-      node: null,
-      title: notebookContentItem.name,
-      tabPath: notebookContentItem.path,
-      documentClientUtility: null,
-
-      collection: null,
-      selfLink: null,
-      masterKey: CosmosClient.masterKey() || "",
-      hashLocation: "notebooks",
-      isActive: ko.observable(false),
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      container: this,
-      notebookContentItem,
-      openedTabs: this.openedTabs()
-    };
-
-    try {
-      const NotebookTabV2 = await import(/* webpackChunkName: "NotebookV2Tab" */ "./Tabs/NotebookV2Tab");
-      const notebookTab = new NotebookTabV2.default(options);
-      this.openedTabs.push(notebookTab);
-
-      // Activate
-      notebookTab.onTabClick();
-    } catch (reason) {
-      console.error("Import NotebookV2Tab failed!", reason);
-      return false;
-    }
     return true;
   }
 
@@ -2652,10 +2629,11 @@ export default class Explorer implements ViewModels.Explorer {
     }
 
     // Don't delete if tab is open to avoid accidental deletion
-    const openedNotebookTabs = this.openedTabs().filter(
-      (tab: ViewModels.Tab) =>
-        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-        (tab as NotebookV2Tab).notebookPath() === notebookFile.path
+    const openedNotebookTabs = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.NotebookV2,
+      (tab: NotebookV2Tab) => {
+        return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), notebookFile.path);
+      }
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
@@ -2675,17 +2653,15 @@ export default class Explorer implements ViewModels.Explorer {
         onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
       })
       .then(newNotebookFile => {
-        this.openedTabs()
-          .filter(
-            (tab: ViewModels.Tab) =>
-              tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-              FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), originalPath)
-          )
-          .forEach(tab => {
-            tab.tabTitle(newNotebookFile.name);
-            tab.tabPath(newNotebookFile.path);
-            (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
-          });
+        const notebookTabs: ViewModels.Tab[] = this.tabsManager.getTabs(
+          ViewModels.CollectionTabKind.NotebookV2,
+          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
+        );
+        notebookTabs.forEach(tab => {
+          tab.tabTitle(newNotebookFile.name);
+          tab.tabPath(newNotebookFile.path);
+          (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
+        });
 
         return newNotebookFile;
       });
@@ -2865,39 +2841,34 @@ export default class Explorer implements ViewModels.Explorer {
       await this.initSparkConnectionInfo(this.databaseAccount());
     }
 
-    const openedSparkMasterTabs = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.SparkMasterTab
-    );
-    if (openedSparkMasterTabs.length > 0) {
-      openedSparkMasterTabs[0].onTabClick();
-      openedSparkMasterTabs[0].onActivate();
-      return;
+    const sparkMasterTabs: SparkMasterTab[] = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.SparkMasterTab
+    ) as SparkMasterTab[];
+    let sparkMasterTab: SparkMasterTab = sparkMasterTabs && sparkMasterTabs[0];
+
+    if (sparkMasterTab) {
+      this.tabsManager.activateTab(sparkMasterTab);
+    } else {
+      sparkMasterTab = new SparkMasterTab({
+        clusterConnectionInfo: this.sparkClusterConnectionInfo(),
+        tabKind: ViewModels.CollectionTabKind.SparkMasterTab,
+        node: null,
+        title: "Apache Spark",
+        tabPath: "",
+        documentClientUtility: null,
+
+        collection: null,
+        selfLink: null,
+        hashLocation: "sparkmaster",
+        isActive: ko.observable(false),
+        isTabsContentExpanded: ko.observable(true),
+        onLoadStartKey: null,
+        onUpdateTabsButtons: this.onUpdateTabsButtons,
+        container: this
+      });
+
+      this.tabsManager.activateNewTab(sparkMasterTab);
     }
-
-    const sparkMasterTab = new SparkMasterTab({
-      clusterConnectionInfo: this.sparkClusterConnectionInfo(),
-      tabKind: ViewModels.CollectionTabKind.SparkMasterTab,
-      node: null,
-      title: "Apache Spark",
-      tabPath: "",
-      documentClientUtility: null,
-
-      collection: null,
-      selfLink: null,
-      hashLocation: "sparkmaster",
-      isActive: ko.observable(false),
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      openedTabs: this.openedTabs(),
-      container: this
-    });
-
-    this.openedTabs.push(sparkMasterTab);
-
-    // Activate
-    sparkMasterTab.onTabClick();
-    return;
   }
 
   private refreshNotebookList = async (): Promise<void> => {
@@ -2920,9 +2891,11 @@ export default class Explorer implements ViewModels.Explorer {
     }
 
     // Don't delete if tab is open to avoid accidental deletion
-    const openedNotebookTabs = this.openedTabs().filter(
-      (tab: ViewModels.Tab) =>
-        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 && (tab as NotebookV2Tab).notebookPath() === item.path
+    const openedNotebookTabs = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.NotebookV2,
+      (tab: NotebookV2Tab) => {
+        return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), item.path);
+      }
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
@@ -3084,94 +3057,79 @@ export default class Explorer implements ViewModels.Explorer {
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const openedTabs = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.Terminal
-    );
+    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.Terminal,
+      (tab: ViewModels.Tab) => tab.hashLocation() == hashLocation
+    ) as TerminalTab[];
+    let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
-    for (let i = 0; i < openedTabs.length; ++i) {
-      if (openedTabs[i].hashLocation() == hashLocation) {
-        openedTabs[i].onTabClick();
-        openedTabs[i].onActivate();
-        return;
-      }
+    if (terminalTab) {
+      this.tabsManager.activateTab(terminalTab);
+    } else {
+      const newTab = new TerminalTab({
+        account: CosmosClient.databaseAccount(),
+        tabKind: ViewModels.CollectionTabKind.Terminal,
+        node: null,
+        title: title,
+        tabPath: title,
+        documentClientUtility: null,
+
+        collection: null,
+        selfLink: null,
+        hashLocation: hashLocation,
+        isActive: ko.observable(false),
+        isTabsContentExpanded: ko.observable(true),
+        onLoadStartKey: null,
+        onUpdateTabsButtons: this.onUpdateTabsButtons,
+        container: this,
+        kind: kind
+      });
+
+      this.tabsManager.activateNewTab(newTab);
     }
-
-    const newTab = new TerminalTab({
-      account: CosmosClient.databaseAccount(),
-      tabKind: ViewModels.CollectionTabKind.Terminal,
-      node: null,
-      title: title,
-      tabPath: title,
-      documentClientUtility: null,
-
-      collection: null,
-      selfLink: null,
-      hashLocation: hashLocation,
-      isActive: ko.observable(false),
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      container: this,
-      openedTabs: this.openedTabs(),
-      kind: kind
-    });
-
-    this.openedTabs.push(newTab);
-
-    // Activate
-    newTab.onTabClick();
   }
 
   public async openGallery(notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) {
-    let title: string;
-    let hashLocation: string;
+    let title: string = "Gallery";
+    let hashLocation: string = "gallery";
 
-    title = "Gallery";
-    hashLocation = "gallery";
-
-    const openedTabs = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.Gallery
+    const galleryTabs = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.Gallery,
+      (tab: ViewModels.Tab) => tab.hashLocation() == hashLocation
     );
+    let galleryTab = galleryTabs && galleryTabs[0];
 
-    for (let i = 0; i < openedTabs.length; ++i) {
-      if (openedTabs[i].hashLocation() == hashLocation) {
-        openedTabs[i].onTabClick();
-        openedTabs[i].onActivate();
-        (openedTabs[i] as any).updateGalleryParams(notebookUrl, galleryItem, isFavorite);
-        return;
+    if (galleryTab) {
+      this.tabsManager.activateTab(galleryTab);
+      (galleryTab as any).updateGalleryParams(notebookUrl, galleryItem, isFavorite);
+    } else {
+      if (!this.galleryTab) {
+        this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
       }
+
+      const newTab = new this.galleryTab.default({
+        // GalleryTabOptions
+        account: CosmosClient.databaseAccount(),
+        container: this,
+        junoClient: this.notebookManager?.junoClient,
+        notebookUrl,
+        galleryItem,
+        isFavorite,
+        // TabOptions
+        tabKind: ViewModels.CollectionTabKind.Gallery,
+        title: title,
+        tabPath: title,
+        documentClientUtility: null,
+        selfLink: null,
+        isActive: ko.observable(false),
+        hashLocation: hashLocation,
+        onUpdateTabsButtons: this.onUpdateTabsButtons,
+        isTabsContentExpanded: ko.observable(true),
+        onLoadStartKey: null
+      });
+
+      this.tabsManager.activateNewTab(newTab);
     }
-
-    if (!this.galleryTab) {
-      this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
-    }
-
-    const newTab = new this.galleryTab.default({
-      // GalleryTabOptions
-      account: CosmosClient.databaseAccount(),
-      container: this,
-      junoClient: this.notebookManager?.junoClient,
-      notebookUrl,
-      galleryItem,
-      isFavorite,
-      // TabOptions
-      tabKind: ViewModels.CollectionTabKind.Gallery,
-      title: title,
-      tabPath: title,
-      documentClientUtility: null,
-      selfLink: null,
-      isActive: ko.observable(false),
-      hashLocation: hashLocation,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-      openedTabs: this.openedTabs()
-    });
-
-    this.openedTabs.push(newTab);
-
-    // Activate
-    newTab.onTabClick();
   }
 
   public async openNotebookViewer(notebookUrl: string) {
@@ -3189,41 +3147,37 @@ export default class Explorer implements ViewModels.Explorer {
       return notebookViewerTab.notebookUrl === notebookUrl;
     };
 
-    const openedTabs = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.NotebookViewer && isNotebookViewerOpen(tab)
-    );
-
-    for (let i = 0; i < openedTabs.length; ++i) {
-      if (openedTabs[i].hashLocation() == hashLocation) {
-        openedTabs[i].onTabClick();
-        openedTabs[i].onActivate();
-        return;
+    const notebookViewerTabs = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.NotebookV2,
+      (tab: ViewModels.Tab) => {
+        return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
       }
+    );
+    let notebookViewerTab = notebookViewerTabs && notebookViewerTabs[0];
+
+    if (notebookViewerTab) {
+      this.tabsManager.activateNewTab(notebookViewerTab);
+    } else {
+      notebookViewerTab = new this.notebookViewerTab.default({
+        account: CosmosClient.databaseAccount(),
+        tabKind: ViewModels.CollectionTabKind.NotebookViewer,
+        node: null,
+        title: title,
+        tabPath: title,
+        documentClientUtility: null,
+        collection: null,
+        selfLink: null,
+        hashLocation: hashLocation,
+        isActive: ko.observable(false),
+        isTabsContentExpanded: ko.observable(true),
+        onLoadStartKey: null,
+        onUpdateTabsButtons: this.onUpdateTabsButtons,
+        container: this,
+        notebookUrl
+      });
+
+      this.tabsManager.activateNewTab(notebookViewerTab);
     }
-
-    const newTab = new this.notebookViewerTab.default({
-      account: CosmosClient.databaseAccount(),
-      tabKind: ViewModels.CollectionTabKind.NotebookViewer,
-      node: null,
-      title: title,
-      tabPath: title,
-      documentClientUtility: null,
-      collection: null,
-      selfLink: null,
-      hashLocation: hashLocation,
-      isActive: ko.observable(false),
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      container: this,
-      openedTabs: this.openedTabs(),
-      notebookUrl
-    });
-
-    this.openedTabs.push(newTab);
-
-    // Activate
-    newTab.onTabClick();
   }
 
   public onNewCollectionClicked(): void {
@@ -3235,24 +3189,8 @@ export default class Explorer implements ViewModels.Explorer {
     document.getElementById("linkAddCollection").focus();
   }
 
-  private getNotebookTabsForFilepath(filepath: string): ViewModels.Tab[] {
-    return this.openedTabs().filter(
-      (tab: ViewModels.Tab) =>
-        tab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-        (tab as any).notebookPath &&
-        FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
-    );
-  }
-
-  public closeNotebookTab(filepath: string): void {
-    if (!filepath) {
-      return;
-    }
-    this.getNotebookTabsForFilepath(filepath).forEach(tab => tab.onCloseTabButtonClick());
-  }
-
   private refreshCommandBarButtons(): void {
-    const activeTab = this.findActiveTab();
+    const activeTab = this.tabsManager.activeTab();
     if (activeTab) {
       activeTab.onActivate(); // TODO only update tabs buttons?
     } else {

@@ -21,7 +21,7 @@ import DeleteIcon from "../../../images/delete.svg";
 import { QueryIterator, ItemDefinition, Resource, ConflictDefinition } from "@azure/cosmos";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 
-export class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
+export default class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
   public selectedConflictId: ko.Observable<ViewModels.ConflictId>;
   public selectedConflictContent: ViewModels.Editable<string>;
   public selectedConflictCurrent: ViewModels.Editable<string>;

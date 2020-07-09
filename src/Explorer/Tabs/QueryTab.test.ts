@@ -28,8 +28,7 @@ describe("Query Tab", () => {
       selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
-      onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-      openedTabs: []
+      onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
     });
   }
 

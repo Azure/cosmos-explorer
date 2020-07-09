@@ -87,7 +87,7 @@ export class BrowseQueriesPane extends ContextualPaneBase implements ViewModels.
     } else {
       selectedCollection.onNewQueryClick(selectedCollection, null);
     }
-    const queryTab: ViewModels.QueryTab = this.container.findActiveTab() as ViewModels.QueryTab;
+    const queryTab: ViewModels.QueryTab = this.container.tabsManager.activeTab() as ViewModels.QueryTab;
     queryTab.tabTitle(savedQuery.queryName);
     queryTab.tabPath(`${selectedCollection.databaseId}>${selectedCollection.id()}>${savedQuery.queryName}`);
     queryTab.initialEditorContent(savedQuery.query);

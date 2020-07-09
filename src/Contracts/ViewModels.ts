@@ -22,6 +22,7 @@ import { QueryMetrics } from "@azure/cosmos";
 import { SetupNotebooksPane } from "../Explorer/Panes/SetupNotebooksPane";
 import { Splitter } from "../Common/Splitter";
 import { StringInputPane } from "../Explorer/Panes/StringInputPane";
+import { TabsManager } from "../Explorer/Tabs/TabsManager";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
@@ -121,9 +122,8 @@ export interface Explorer {
   isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
 
   // Tabs
-  openedTabs: ko.ObservableArray<Tab>;
-  activeTab: ko.Observable<Tab>;
   isTabsContentExpanded: ko.Observable<boolean>;
+  tabsManager: TabsManager;
 
   // Contextual Panes
   addDatabasePane: AddDatabasePane;
@@ -161,8 +161,6 @@ export interface Explorer {
   refreshDatabaseForResourceToken(): Q.Promise<void>;
   refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any>;
   closeAllPanes(): void;
-  closeAllTabsForResource(resourceId: string): void;
-  findActiveTab(): Tab; // TODO Deprecate in favor activeTab
   findSelectedDatabase(): Database;
   findDatabaseWithId(databaseRid: string): Database;
   isLastDatabase(): boolean;
@@ -221,7 +219,6 @@ export interface Explorer {
   sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   arcadiaToken: ko.Observable<string>;
   arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
-  isNotebookTabActive: ko.Computed<boolean>;
   memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   notebookManager?: any; // This is dynamically loaded
   openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
@@ -250,7 +247,6 @@ export interface Explorer {
   readFile: (notebookFile: NotebookContentItem) => Promise<string>;
   downloadFile: (notebookFile: NotebookContentItem) => Promise<void>;
   createNotebookContentItemFile: (name: string, filepath: string) => NotebookContentItem;
-  closeNotebookTab: (filepath: string) => void;
   refreshContentItem(item: NotebookContentItem): Promise<void>;
   getNotebookBasePath(): string;
 
@@ -381,7 +377,6 @@ export interface Database extends TreeNode {
   findCollectionWithId(collectionRid: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
   onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
-  refreshTabSelectedState(): void;
   readSettings(): void;
   onSettingsClick: () => void;
 }
@@ -403,7 +398,6 @@ export interface CollectionBase extends TreeNode {
   onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void;
   expandCollection(): Q.Promise<any>;
   collapseCollection(): void;
-  refreshActiveTab(): void;
   getDatabase(): Database;
 }
 
@@ -837,7 +831,6 @@ export interface TabOptions {
   onUpdateTabsButtons: (buttons: NavbarButtonConfig[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
-  openedTabs: Tab[];
 
   // TODO Remove the flag and use a context to handle this
   // TODO: 145357 Remove dependency on collection/database and add abstraction
@@ -931,14 +924,12 @@ export interface Tab {
   tabTitle: ko.Observable<string>;
   hashLocation: ko.Observable<string>;
   closeTabButton: Button;
-  onCloseTabButtonClick(): Q.Promise<any>;
+  onCloseTabButtonClick(): void;
   onTabClick(): Q.Promise<any>;
   onKeyPressActivate(source: any, event: KeyboardEvent): void;
   onKeyPressClose(source: any, event: KeyboardEvent): void;
   onActivate(): Q.Promise<any>;
   refresh(): void;
-  nextTab: ko.Observable<Tab>;
-  previousTab: ko.Observable<Tab>;
   closeButtonTabIndex: ko.Computed<number>;
   isExecutionError: ko.Observable<boolean>;
   isExecuting: ko.Observable<boolean>;

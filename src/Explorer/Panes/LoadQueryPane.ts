@@ -111,7 +111,7 @@ export class LoadQueryPane extends ContextualPaneBase implements ViewModels.Load
     const reader = new FileReader();
     reader.onload = (evt: any): void => {
       const fileData: string = evt.target.result;
-      const queryTab: ViewModels.QueryTab = this.container.findActiveTab() as ViewModels.QueryTab;
+      const queryTab: ViewModels.QueryTab = this.container.tabsManager.activeTab() as ViewModels.QueryTab;
       queryTab.initialEditorContent(fileData);
       queryTab.sqlQueryEditorContent(fileData);
       deferred.resolve();

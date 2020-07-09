@@ -24,8 +24,6 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
   public tabKind: ViewModels.CollectionTabKind;
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
-  public nextTab: ko.Observable<ViewModels.Tab>;
-  public previousTab: ko.Observable<ViewModels.Tab>;
   public closeButtonTabIndex: ko.Computed<number>;
   public errorDetailsTabIndex: ko.Computed<number>;
   public hashLocation: ko.Observable<string>;
@@ -55,8 +53,6 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
       (options.tabPath && ko.observable<string>(options.tabPath)) ||
       (this.collection &&
         ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${this.tabTitle()}`));
-    this.nextTab = ko.observable<ViewModels.Tab>();
-    this.previousTab = ko.observable<ViewModels.Tab>();
     this.closeButtonTabIndex = ko.computed<number>(() => (this.isActive() ? 0 : null));
     this.errorDetailsTabIndex = ko.computed<number>(() => (this.isActive() ? 0 : null));
     this.isExecutionError = ko.observable<boolean>(false);
@@ -80,34 +76,11 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
         return true;
       })
     };
-
-    const openedTabs = options.openedTabs;
-    if (openedTabs && openedTabs.length && openedTabs.length > 0) {
-      const lastTab = openedTabs[openedTabs.length - 1];
-      lastTab && lastTab.nextTab(this);
-      this.previousTab(lastTab);
-    }
   }
 
-  public onCloseTabButtonClick(): Q.Promise<any> {
-    const previousTab = this.previousTab();
-    const nextTab = this.nextTab();
-
-    previousTab && previousTab.nextTab(nextTab);
-    nextTab && nextTab.previousTab(previousTab);
-
-    this.getContainer().openedTabs.remove(tab => tab.tabId === this.tabId);
-
-    const tabToActivate = nextTab || previousTab;
-
-    if (!tabToActivate) {
-      this.getContainer().selectedNode(null);
-      this.getContainer().onUpdateTabsButtons([]);
-      this.getContainer().activeTab(null);
-    } else {
-      tabToActivate.isActive(true);
-      this.getContainer().activeTab(tabToActivate);
-    }
+  public onCloseTabButtonClick(): void {
+    const explorer: ViewModels.Explorer = this.getContainer();
+    explorer.tabsManager.closeTab(this.tabId, explorer);
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
       databaseAccountName: this.getContainer().databaseAccount().name,
@@ -115,16 +88,10 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle()
     });
-    return Q();
   }
 
   public onTabClick(): Q.Promise<any> {
-    for (let i = 0; i < this.getContainer().openedTabs().length; i++) {
-      const tab = this.getContainer().openedTabs()[i];
-      tab.isActive(false);
-    }
-    this.isActive(true);
-    this.getContainer().activeTab(this);
+    this.getContainer().tabsManager.activateTab(this);
     return Q();
   }
 

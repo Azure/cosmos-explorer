@@ -20,8 +20,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -104,8 +103,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -124,8 +122,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -144,8 +141,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -164,8 +160,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -184,8 +179,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {},
-        openedTabs: []
+        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

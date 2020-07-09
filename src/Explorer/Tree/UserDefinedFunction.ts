@@ -5,7 +5,6 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import Collection from "./Collection";
 
 export default class UserDefinedFunction implements ViewModels.UserDefinedFunction {
   public nodeKind: string;
@@ -28,15 +27,13 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const id =
-      source.container
-        .openedTabs()
-        .filter((tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
+    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
     const userDefinedFunction = <DataModels.UserDefinedFunction>{
       id: "",
       body: "function userDefinedFunction(){}"
     };
-    let userDefinedFunctionTab: ViewModels.Tab = new UserDefinedFunctionTab({
+
+    const userDefinedFunctionTab: UserDefinedFunctionTab = new UserDefinedFunctionTab({
       resource: userDefinedFunction,
       isNew: true,
       tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
@@ -48,22 +45,24 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
       selfLink: "",
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
-    source.container.openedTabs.push(userDefinedFunctionTab);
 
-    // Activate
-    userDefinedFunctionTab.onTabClick();
+    source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
   }
 
   public open = () => {
     this.select();
 
-    let userDefinedFunctionTab: ViewModels.Tab = this.container
-      .openedTabs()
-      .filter(tab => tab.node && tab.node.rid === this.rid)[0];
-    if (!userDefinedFunctionTab) {
+    const userDefinedFunctionTabs: UserDefinedFunctionTab[] = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.UserDefinedFunctions,
+      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+    ) as UserDefinedFunctionTab[];
+    let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
+
+    if (userDefinedFunctionTab) {
+      this.container.tabsManager.activateTab(userDefinedFunctionTab);
+    } else {
       const userDefinedFunctionData = <DataModels.UserDefinedFunction>{
         _rid: this.rid,
         _self: this.self,
@@ -86,14 +85,11 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
         )}/udfs/${this.id()}`,
         selfLink: "",
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
-      this.container.openedTabs.push(userDefinedFunctionTab);
-    }
 
-    // Activate
-    userDefinedFunctionTab.onTabClick();
+      this.container.tabsManager.activateNewTab(userDefinedFunctionTab);
+    }
   };
 
   public select() {
@@ -119,7 +115,9 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
     };
     this.container.documentClientUtility.deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
       () => {
-        this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.removeTabByComparator(
+          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+        );
         this.collection.children.remove(this);
       },
       reason => {}
