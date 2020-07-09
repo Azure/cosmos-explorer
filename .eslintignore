@@ -1,5 +1,6 @@
 **/node_modules/
 dist/
+Contracts/
 src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
