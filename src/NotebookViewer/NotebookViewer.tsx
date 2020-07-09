@@ -17,24 +17,26 @@ const onInit = async () => {
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
   const notebookViewerProps = GalleryUtils.getNotebookViewerProps(window.location.search);
   const backNavigationText = galleryViewerProps.selectedTab && GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
+  const hideInputs = notebookViewerProps.hideInputs;
 
   const notebookUrl = decodeURIComponent(notebookViewerProps.notebookUrl);
-  render(notebookUrl, backNavigationText);
+  render(notebookUrl, backNavigationText, hideInputs);
 
   const galleryItemId = notebookViewerProps.galleryItemId;
   if (galleryItemId) {
     const junoClient = new JunoClient();
     const notebook = await junoClient.getNotebook(galleryItemId);
-    render(notebookUrl, backNavigationText, notebook.data);
+    render(notebookUrl, backNavigationText, hideInputs, notebook.data);
   }
 };
 
-const render = (notebookUrl: string, backNavigationText: string, galleryItem?: IGalleryItem) => {
+const render = (notebookUrl: string, backNavigationText: string, hideInputs: boolean, galleryItem?: IGalleryItem) => {
   const props: NotebookViewerComponentProps = {
     junoClient: galleryItem ? new JunoClient() : undefined,
     notebookUrl,
     galleryItem,
     backNavigationText,
+    hideInputs,
     onBackClick: undefined,
     onTagClick: undefined
   };
