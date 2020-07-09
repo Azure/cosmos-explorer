@@ -10,6 +10,7 @@ import {
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
+import { FileSystemUtil } from "../Explorer/Notebook/FileSystemUtil";
 
 const onInit = async () => {
   initializeIcons();
@@ -40,6 +41,10 @@ const render = (notebookUrl: string, backNavigationText: string, hideInputs: boo
     onBackClick: undefined,
     onTagClick: undefined
   };
+
+  if (galleryItem) {
+    document.title = FileSystemUtil.stripExtension(galleryItem.name, "ipynb");
+  }
 
   const element = (
     <>
