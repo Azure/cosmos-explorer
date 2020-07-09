@@ -189,7 +189,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
           }
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
-          this.container.tabsManager.refreshTabSelectedState(database.rid);
+          this.container.tabsManager.refreshActiveTab(
+            (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === database.rid
+          );
         },
         onContextMenuOpen: () => this.container.selectedNode(database)
       };

@@ -32,26 +32,6 @@ export class TabsManager {
     });
   }
 
-  public getMatchingTab(
-    databaseId: string,
-    collectionId: string,
-    tabKind: ViewModels.CollectionTabKind,
-    isNewScriptTab?: boolean
-  ): ViewModels.Tab {
-    return this.openedTabs().find((tab: ViewModels.Tab) => {
-      if (
-        tab.collection &&
-        tab.collection.databaseId === databaseId &&
-        tab.collection.id() === collectionId &&
-        tab.tabKind === tabKind
-      ) {
-        return isNewScriptTab ? (tab as ViewModels.ScriptTab).isNew() : true;
-      }
-
-      return false;
-    });
-  }
-
   public closeNotebookTab(filepath: string): void {
     if (!filepath) {
       return;
@@ -71,17 +51,6 @@ export class TabsManager {
     this.openedTabs().forEach((tab: ViewModels.Tab) => {
       if (comparator(tab) && tab.isActive()) {
         tab.onActivate();
-      }
-    });
-  }
-
-  public refreshTabSelectedState(databaseRid: string): void {
-    const openedRelevantTabs: ViewModels.Tab[] = this.openedTabs().filter(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === databaseRid
-    );
-    openedRelevantTabs.forEach((tab: ViewModels.Tab) => {
-      if (tab.isActive()) {
-        this.activateTab(tab); // this ensures the next (deepest) item in the resource tree is highlighted
       }
     });
   }
@@ -109,20 +78,20 @@ export class TabsManager {
   }
 
   public closeTab(tabId: string, explorer: ViewModels.Explorer): void {
-    const tabIndex = this.openedTabs().findIndex((tab: ViewModels.Tab) => tab.tabId === tabId);
+    const tabIndex: number = this.openedTabs().findIndex((tab: ViewModels.Tab) => tab.tabId === tabId);
     if (tabIndex !== -1) {
-      const tabToActive = this.openedTabs()[tabIndex + 1] || this.openedTabs()[tabIndex - 1];
+      const tabToActive: ViewModels.Tab = this.openedTabs()[tabIndex + 1] || this.openedTabs()[tabIndex - 1];
+      this.openedTabs()[tabIndex].isActive(false);
       this.removeTabById(tabId);
       if (tabToActive) {
         tabToActive.isActive(true);
         this.activeTab(tabToActive);
-        return;
+      } else {
+        explorer.selectedNode(undefined);
+        explorer.onUpdateTabsButtons([]);
+        this.activeTab(undefined);
       }
     }
-
-    explorer.selectedNode(undefined);
-    explorer.onUpdateTabsButtons([]);
-    this.activeTab(undefined);
   }
 
   public isTabActive(tabKind: ViewModels.CollectionTabKind): boolean {

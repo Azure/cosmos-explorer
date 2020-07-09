@@ -2228,7 +2228,9 @@ export default class Explorer implements ViewModels.Explorer {
           if (isNewDatabase) {
             database.expandDatabase();
           }
-          this.tabsManager.refreshTabSelectedState(database.rid);
+          this.tabsManager.refreshActiveTab(
+            (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === database.rid
+          );
         })
       );
     });

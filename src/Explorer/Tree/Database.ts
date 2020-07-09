@@ -220,7 +220,9 @@ export default class Database implements ViewModels.Database {
       this.expandDatabase();
     }
     this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshTabSelectedState(this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === this.rid
+    );
   }
 
   public expandDatabase() {
