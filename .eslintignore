@@ -147,7 +147,6 @@ src/Explorer/Panes/ExecuteSprocParamsPane.ts
 src/Explorer/Panes/GraphStylingPane.ts
 src/Explorer/Panes/LibraryManagePane.ts
 src/Explorer/Panes/LoadQueryPane.ts
-src/Explorer/Panes/ManageSparkClusterPane.ts
 src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
@@ -155,7 +154,6 @@ src/Explorer/Panes/SaveQueryPane.ts
 src/Explorer/Panes/SettingsPane.test.ts
 src/Explorer/Panes/SettingsPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts
-src/Explorer/Panes/SetupSparkClusterPane.ts
 src/Explorer/Panes/StringInputPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts
 src/Explorer/Panes/Tables/AddTableEntityPane.ts
