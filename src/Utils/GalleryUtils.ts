@@ -16,12 +16,14 @@ export interface DialogEnabledComponent {
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
-  GalleryItemId = "galleryItemId"
+  GalleryItemId = "galleryItemId",
+  HideInputs = "hideInputs"
 }
 
 export interface NotebookViewerProps {
   notebookUrl: string;
   galleryItemId: string;
+  hideInputs: boolean;
 }
 
 export enum GalleryViewerParams {
@@ -244,7 +246,8 @@ export function getNotebookViewerProps(search: string): NotebookViewerProps {
   const params = new URLSearchParams(search);
   return {
     notebookUrl: params.get(NotebookViewerParams.NotebookUrl),
-    galleryItemId: params.get(NotebookViewerParams.GalleryItemId)
+    galleryItemId: params.get(NotebookViewerParams.GalleryItemId),
+    hideInputs: JSON.parse(params.get(NotebookViewerParams.HideInputs))
   };
 }
 

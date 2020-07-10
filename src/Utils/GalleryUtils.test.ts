@@ -93,21 +93,23 @@ describe("GalleryUtils", () => {
       selectedTab,
       sortBy,
       searchText: decodeURIComponent(searchText)
-    });
+    } as GalleryUtils.GalleryViewerProps);
   });
 
   it("getNotebookViewerProps gets notebook viewer props correctly", () => {
     const notebookUrl = "https%3A%2F%2Fnotebook.url";
     const galleryItemId = "1234-abcd-efgh";
+    const hideInputs = "true";
 
     const response = GalleryUtils.getNotebookViewerProps(
-      `?${GalleryUtils.NotebookViewerParams.NotebookUrl}=${notebookUrl}&${GalleryUtils.NotebookViewerParams.GalleryItemId}=${galleryItemId}`
+      `?${GalleryUtils.NotebookViewerParams.NotebookUrl}=${notebookUrl}&${GalleryUtils.NotebookViewerParams.GalleryItemId}=${galleryItemId}&${GalleryUtils.NotebookViewerParams.HideInputs}=${hideInputs}`
     );
 
     expect(response).toEqual({
       notebookUrl: decodeURIComponent(notebookUrl),
-      galleryItemId
-    });
+      galleryItemId,
+      hideInputs: true
+    } as GalleryUtils.NotebookViewerProps);
   });
 
   it("getTabTitle returns correct title for official samples", () => {
