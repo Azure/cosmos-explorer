@@ -18,6 +18,7 @@ export class CreateSqlCollectionUtilities {
     databaseId: string,
     analyticalStorageTtl: number,
     collectionId: string,
+    indexingPolicy: DataModels.IndexingPolicy,
     offerThroughput: number,
     partitionKey: string,
     partitionKeyVersion: number,
@@ -41,6 +42,7 @@ export class CreateSqlCollectionUtilities {
       rg,
       dba,
       analyticalStorageTtl,
+      indexingPolicy,
       partitionKeyVersion
     };
 
@@ -73,6 +75,10 @@ export class CreateSqlCollectionUtilities {
 
     if (params.analyticalStorageTtl) {
       rpPayloadToCreateCollection.properties.resource.analyticalStorageTtl = params.analyticalStorageTtl;
+    }
+
+    if (params.indexingPolicy) {
+      rpPayloadToCreateCollection.properties.resource.indexingPolicy = params.indexingPolicy;
     }
 
     if (!params.st) {
@@ -117,6 +123,7 @@ export class CreateCollectionUtilities {
     armEndpoint: string,
     databaseId: string,
     collectionId: string,
+    indexingPolicy: DataModels.IndexingPolicy,
     offerThroughput: number,
     partitionKey: string,
     partitionKeyVersion: number,
@@ -137,6 +144,7 @@ export class CreateCollectionUtilities {
       sid,
       rg,
       dba,
+      indexingPolicy,
       partitionKeyVersion
     };
 
@@ -166,6 +174,10 @@ export class CreateCollectionUtilities {
         options: {}
       }
     };
+
+    if (params.indexingPolicy) {
+      rpPayloadToCreateCollection.properties.resource.indexingPolicy = params.indexingPolicy;
+    }
 
     if (!params.st) {
       if (rpOptions) {
