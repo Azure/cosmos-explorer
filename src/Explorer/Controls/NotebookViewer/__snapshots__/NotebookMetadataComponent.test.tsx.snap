@@ -48,6 +48,7 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
     verticalAlign="center"
   >
     <StyledPersonaBase
+      imageUrl={false}
       size={11}
       text="author"
     />
@@ -147,6 +148,7 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
     verticalAlign="center"
   >
     <StyledPersonaBase
+      imageUrl={false}
       size={11}
       text="author"
     />
