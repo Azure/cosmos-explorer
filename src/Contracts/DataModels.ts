@@ -553,6 +553,7 @@ export interface GraphParameters extends RpParameters {
   pk: string;
   coll: string;
   cd: Boolean;
+  indexingPolicy?: IndexingPolicy;
 }
 
 export interface CreationRequest {
@@ -570,6 +571,7 @@ export interface SqlCollectionParameters extends RpParameters {
   coll: string;
   cd: Boolean;
   analyticalStorageTtl?: number;
+  indexingPolicy?: IndexingPolicy;
 }
 
 export interface MongoCreationRequest extends CreationRequest {
@@ -588,6 +590,7 @@ export interface GraphCreationRequest extends CreationRequest {
     resource: {
       id: string;
       partitionKey: {};
+      indexingPolicy?: IndexingPolicy;
     };
     options: RpOptions;
   };
@@ -613,6 +616,7 @@ export interface SqlCollectionCreationRequest extends CreationRequest {
       id: string;
       partitionKey: {};
       analyticalStorageTtl?: number;
+      indexingPolicy?: IndexingPolicy;
     };
     options: RpOptions;
   };
