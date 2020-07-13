@@ -11,7 +11,7 @@ export const getCellMonacoLanguage = (
   cellId: CellId,
   cellLanguageOverride?: string,
   notebookLanguageOverride?: string
-) => {
+): string => {
   const model = nteractSelectors.model(state, { contentRef });
   if (!model || model.type !== "notebook") {
     throw new Error("Connected Editor components should not be used with non-notebook models");
@@ -35,7 +35,6 @@ export const getCellMonacoLanguage = (
         return getNotebookMonacoLanguage(state, contentRef, notebookLanguageOverride);
       }
   }
-  return Mode.raw;
 };
 
 /**
@@ -45,7 +44,7 @@ export const getNotebookMonacoLanguage = (
   state: AppState,
   contentRef: ContentRef,
   notebookLanguageOverride?: string
-) => {
+): string => {
   const model = nteractSelectors.model(state, { contentRef });
   if (!model || model.type !== "notebook") {
     throw new Error("Connected Editor components should not be used with non-notebook models");
@@ -56,7 +55,7 @@ export const getNotebookMonacoLanguage = (
   }
 
   const kernelRef = model.kernelRef;
-  let codeMirrorMode = null;
+  let codeMirrorMode;
   // Try to get the CodeMirror mode from the kernel.
   if (kernelRef) {
     codeMirrorMode = nteractSelectors.kernel(state, { kernelRef })?.info?.codemirrorMode;

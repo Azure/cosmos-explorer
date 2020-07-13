@@ -1,5 +1,4 @@
 import { Channels } from "@nteract/messaging";
-// import * as monaco from "./monaco";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import * as React from "react";
 // import { completionProvider } from "./completions/completionItemProvider";
@@ -27,7 +26,7 @@ export interface IMonacoProps {
   channels: Channels | undefined;
   enableCompletion: boolean;
   shouldRegisterDefaultCompletion?: boolean;
-  onChange: (value: string, event?: any) => void;
+  onChange: (value: string, event?: unknown) => void;
   onFocusChange: (focus: boolean) => void;
   onCursorPositionChange?: (selection: monaco.ISelection | null) => void;
   onRegisterCompletionProvider?: (languageId: string) => void;
@@ -82,7 +81,7 @@ function getMonacoTheme(theme: monaco.editor.IStandaloneThemeData | monaco.edito
 
 const makeMapStateToProps = (initialState: AppState, initialProps: IMonacoProps) => {
   const { id, contentRef } = initialProps;
-  function mapStateToProps(state: any, ownProps: IMonacoProps & IMonacoStateProps) {
+  function mapStateToProps(state: AppState, ownProps: IMonacoProps & IMonacoStateProps) {
     return {
       language: getCellMonacoLanguage(
         state,
@@ -112,7 +111,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
     this.calculateHeight = this.calculateHeight.bind(this);
   }
 
-  onDidChangeModelContent(e: monaco.editor.IModelContentChangedEvent) {
+  onDidChangeModelContent(e: monaco.editor.IModelContentChangedEvent): void {
     if (this.editor) {
       if (this.props.onChange) {
         this.props.onChange(this.editor.getValue(), e);
@@ -130,7 +129,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
    * If numberOfLines is not set or set to 0, we adjust the height to fit the content
    * If numberOfLines is specified we respect that setting
    */
-  calculateHeight() {
+  calculateHeight(): void {
     // Make sure we have an editor
     if (!this.editor) {
       return;
@@ -158,7 +157,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     if (this.editorContainerRef && this.editorContainerRef.current) {
       // Register Jupyter completion provider if needed
       this.registerCompletionProvider();
@@ -225,9 +224,13 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
 
       // Ignore Ctrl + Enter
       // tslint:disable-next-line no-bitwise
-      this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-        // Do nothing. This is handled elsewhere, we just don't want the editor to put the newline.
-      }, undefined);
+      this.editor.addCommand(
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+        () => {
+          // Do nothing. This is handled elsewhere, we just don't want the editor to put the newline.
+        },
+        undefined
+      );
       // TODO Add right context
 
       this.toggleEditorOptions(this.props.editorFocused);
@@ -269,13 +272,13 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
     }
   }
 
-  addEditorTopMargin() {
+  addEditorTopMargin(): void {
     if (this.editor) {
       // Monaco editor doesn't have margins
       // https://github.com/notable/notable/issues/551
       // This is a workaround to add an editor area 12px padding at the top
       // so that cursors rendered by collab decorators could be visible without being cut.
-      this.editor.changeViewZones((changeAccessor) => {
+      this.editor.changeViewZones(changeAccessor => {
         const domNode = document.createElement("div");
         changeAccessor.addZone({
           afterLineNumber: 0,
@@ -289,13 +292,13 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
   /**
    * Tells editor to check the surrounding container size and resize itself appropriately
    */
-  resize() {
+  resize(): void {
     if (this.editor && this.props.editorFocused) {
       this.editor.layout();
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     if (!this.editor) {
       return;
     }
@@ -361,7 +364,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
     this.editor.layout();
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     if (this.editor) {
       try {
         const model = this.editor.getModel();
@@ -376,7 +379,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
     }
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div className="monaco-container">
         <div ref={this.editorContainerRef} id={`editor-${this.props.id}`} />
@@ -388,7 +391,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
    * Register default kernel-based completion provider.
    * @param language Language
    */
-  registerDefaultCompletionProvider(language: string) {
+  registerDefaultCompletionProvider(language: string): void {
     // onLanguage event is emitted only once per language when language is first time needed.
     monaco.languages.onLanguage(language, () => {
       // monaco.languages.registerCompletionItemProvider(language, completionProvider);
@@ -413,7 +416,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
       this.props.onCursorPositionChange(selection);
 
       if (!this.cursorPositionListener) {
-        this.cursorPositionListener = this.editor.onDidChangeCursorSelection((event) =>
+        this.cursorPositionListener = this.editor.onDidChangeCursorSelection(event =>
           this.props.onCursorPositionChange!(event.selection)
         );
       }

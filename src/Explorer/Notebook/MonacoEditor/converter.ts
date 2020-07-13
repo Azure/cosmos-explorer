@@ -1,5 +1,4 @@
 import Immutable from "immutable";
-// import * as monaco from "./monaco";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 /**
@@ -8,7 +7,8 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 export enum Mode {
   markdown = "markdown",
   raw = "plaintext",
-  python = "python"
+  python = "python",
+  csharp = "csharp"
 }
 
 /**
@@ -17,7 +17,7 @@ export enum Mode {
  * @param mode Code Mirror mode
  * @returns Monaco language
  */
-export function mapCodeMirrorModeToMonaco(mode: any): string {
+export function mapCodeMirrorModeToMonaco(mode: string | { name: string }): string {
   let language = "";
 
   // Parse codemirror mode object
@@ -36,6 +36,8 @@ export function mapCodeMirrorModeToMonaco(mode: any): string {
   // Need to handle "ipython" as a special case since it is not a registered language
   if (language === "ipython") {
     return Mode.python;
+  } else if (language === "text/x-csharp") {
+    return Mode.csharp;
   } else if (monaco.languages.getEncodedLanguageId(language) > 0) {
     return language;
   }

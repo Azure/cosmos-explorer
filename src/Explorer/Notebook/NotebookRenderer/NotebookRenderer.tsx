@@ -100,7 +100,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             editor: {
                               codemirror: (props: PassedEditorProps) => (
                                 // <CodeMirrorEditor {...props} lineNumbers={true} />
-                                <MonacoEditor {...props}  lineNumbers={true} enableCompletion={true} />
+                                <MonacoEditor {...props} lineNumbers={true} enableCompletion={true} />
                               )
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
