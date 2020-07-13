@@ -1,0 +1,26 @@
+.monaco-container {
+  padding: 0px 0px 7px 0px;
+}
+
+/*
+For the following components, we use the inherited width values from monaco-container.
+On resizing the browser, the width of monaco-container will be calculated
+and we just use the calculated width for the following components
+So we don't need to use Monaco editor's layout() function which is expensive operation and causes performance issues on resizing.
+*/
+/*
+TODO: These styles below are added for resizing perf improvement.
+Once the virtualization is implemented, we will revisit this later.
+ */
+.monaco-container .monaco-editor {
+  width: inherit !important;
+}
+
+.monaco-container .monaco-editor .overflow-guard {
+  width: inherit !important;
+}
+
+/* 26px is the left margin for .monaco-scrollable-element  */
+.monaco-container .monaco-editor .monaco-scrollable-element.editor-scrollable.vs {
+  width: calc(100% - 26px) !important;
+}

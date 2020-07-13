@@ -30,6 +30,7 @@ import { CellType } from "@nteract/commutable/src";
 import "./NotebookRenderer.less";
 import HoverableCell from "./decorators/HoverableCell";
 import CellLabeler from "./decorators/CellLabeler";
+import MonacoEditor from "../MonacoEditor/MonacoEditor";
 
 export interface NotebookRendererProps {
   contentRef: any;
@@ -98,7 +99,8 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                           {{
                             editor: {
                               codemirror: (props: PassedEditorProps) => (
-                                <CodeMirrorEditor {...props} lineNumbers={true} />
+                                // <CodeMirrorEditor {...props} lineNumbers={true} />
+                                <MonacoEditor {...props}  lineNumbers={true} enableCompletion={true} />
                               )
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
