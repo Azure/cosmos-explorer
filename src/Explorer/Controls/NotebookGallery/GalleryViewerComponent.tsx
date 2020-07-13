@@ -389,8 +389,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
-    this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH);
-    this.rowCount = Math.floor(visibleRect.height / GalleryCardComponent.CARD_HEIGHT);
+    if (itemIndex === 0) {
+      this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH) || this.columnCount;
+      this.rowCount = Math.ceil(visibleRect.height / GalleryCardComponent.CARD_HEIGHT) || this.rowCount;
+    }
 
     return {
       height: visibleRect.height,
