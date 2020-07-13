@@ -16,6 +16,7 @@ import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../Notebook/FileSystemUtil";
 import "./NotebookViewerComponent.less";
+import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;
@@ -58,7 +59,11 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
         </Stack>
 
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>
-          <Persona text={this.props.data.author} size={PersonaSize.size32} />
+          <Persona
+            imageUrl={this.props.data.isSample && CosmosDBLogo}
+            text={this.props.data.author}
+            size={PersonaSize.size32}
+          />
           <Text>{dateString}</Text>
           <Text>
             <Icon iconName="RedEye" /> {this.props.data.views}
