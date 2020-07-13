@@ -18,7 +18,6 @@ async function main() {
   let color = "red";
 
   commits.forEach(commit => {
-    // console.log(commit);
     if (commit.sha === mpacSha) {
       color = "yellow";
       log(chalk.keyword(color)(`\n=========== MPAC ${mpacDate.fromNow()} =============\n`));
