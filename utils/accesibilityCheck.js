@@ -8,7 +8,7 @@ const puppeteer = require("puppeteer");
   await page.goto("https://localhost:1234/hostedExplorer.html");
 
   const results = await new AxePuppeteer(page).withTags(["wcag2a", "wcag2aa"]).analyze();
-  if (results.violations?.length > 0) {
+  if (results.violations && results.violations.length && results.violations.length > 0) {
     throw results.violations;
   }
 
