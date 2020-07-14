@@ -164,7 +164,6 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
   }
 
   private getCommandButtonId(): string {
-    console.log(this.props);
     if (this.props.id) {
       return this.props.id;
     } else {
@@ -173,7 +172,6 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
   }
 
   public static renderButton(options: CommandButtonComponentProps, key?: string): JSX.Element {
-    console.log(options);
     return <CommandButtonComponent key={key} {...options} />;
   }
 
