@@ -123,12 +123,4 @@ describe("Component Registerer", () => {
   it("should register throughput-input component", () => {
     expect(ko.components.isRegistered("throughput-input")).toBe(true);
   });
-
-  it("should register library-manage-pane component", () => {
-    expect(ko.components.isRegistered("library-manage-pane")).toBe(true);
-  });
-
-  it("should register cluster-library-pane component", () => {
-    expect(ko.components.isRegistered("cluster-library-pane")).toBe(true);
-  });
 });

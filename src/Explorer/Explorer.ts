@@ -24,7 +24,6 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import NotebookV2Tab from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import SparkMasterTab from "./Tabs/SparkMasterTab";
 import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import TerminalTab from "./Tabs/TerminalTab";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -36,7 +35,6 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraApi } from "../Api/Apis";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import { ClusterLibraryPane } from "./Panes/ClusterLibraryPane";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { config } from "../Config";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
@@ -52,7 +50,6 @@ import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { handleOpenAction } from "./OpenActions";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { IGalleryItem } from "../Juno/JunoClient";
-import { LibraryManagePane } from "./Panes/LibraryManagePane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
 import { MessageHandler } from "../Common/MessageHandler";
@@ -72,7 +69,6 @@ import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SparkClusterManager } from "../SparkClusterManager/SparkClusterManager";
 import { SplashScreenComponentAdapter } from "./SplashScreen/SplashScreenComponentApdapter";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
@@ -190,8 +186,6 @@ export default class Explorer implements ViewModels.Explorer {
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
-  public libraryManagePane: ViewModels.ContextualPane;
-  public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
   public publishNotebookPaneAdapter: ReactAdapter;
 
@@ -221,7 +215,6 @@ export default class Explorer implements ViewModels.Explorer {
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
   public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
-  public sparkClusterManager: ViewModels.SparkClusterManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSparkEnabled: ko.Observable<boolean>;
   public isSparkEnabledForAccount: ko.Observable<boolean>;
@@ -313,7 +306,6 @@ export default class Explorer implements ViewModels.Explorer {
         this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager(this.armEndpoint());
-        this.sparkClusterManager = new SparkClusterManager(this.armEndpoint());
         this.arcadiaWorkspaces = ko.observableArray();
         this._arcadiaManager = new ArcadiaResourceManager(this.armEndpoint());
         this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then(isRegistered =>
@@ -745,22 +737,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.setupNotebooksPane = new SetupNotebooksPane({
       documentClientUtility: this.documentClientUtility,
       id: "setupnotebookspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this
-    });
-
-    this.libraryManagePane = new LibraryManagePane({
-      documentClientUtility: this.documentClientUtility,
-      id: "libraryManagePane",
-      visible: ko.observable<boolean>(false),
-
-      container: this
-    });
-
-    this.clusterLibraryPane = new ClusterLibraryPane({
-      documentClientUtility: this.documentClientUtility,
-      id: "clusterLibraryPane",
       visible: ko.observable<boolean>(false),
 
       container: this
@@ -1607,70 +1583,6 @@ export default class Explorer implements ViewModels.Explorer {
     window.open(Constants.Urls.feedbackEmail, "_self");
   };
 
-  public async initSparkConnectionInfo(databaseAccount: DataModels.DatabaseAccount) {
-    if (!databaseAccount) {
-      throw new Error("No database account specified");
-    }
-
-    if (this._isInitializingSparkConnectionInfo) {
-      return;
-    }
-    this._isInitializingSparkConnectionInfo = true;
-
-    let connectionInfo: DataModels.SparkClusterConnectionInfo;
-    try {
-      connectionInfo = await this.sparkClusterManager.getClusterConnectionInfoAsync(databaseAccount.id, "default");
-    } catch (error) {
-      this._isInitializingSparkConnectionInfo = false;
-      Logger.logError(error, "initSparkConnectionInfo/getClusterConnectionInfoAsync");
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to get cluster connection info: ${JSON.stringify(error)}`
-      );
-      throw error;
-    } finally {
-      // Overwrite with feature flags
-      if (this.isFeatureEnabled(Constants.Features.livyEndpoint)) {
-        connectionInfo = {
-          userName: undefined,
-          password: undefined,
-          endpoints: [
-            {
-              kind: DataModels.SparkClusterEndpointKind.Livy,
-              endpoint: this.features()[Constants.Features.livyEndpoint]
-            }
-          ]
-        };
-      }
-    }
-
-    this.sparkClusterConnectionInfo(connectionInfo);
-    this.sparkClusterConnectionInfo.valueHasMutated();
-    this._isInitializingSparkConnectionInfo = false;
-  }
-
-  public deleteCluster() {
-    if (!this.isSparkEnabled() || !this.sparkClusterManager) {
-      return;
-    }
-
-    const deleteClusterDialogProps: DialogProps = {
-      isModal: true,
-      visible: true,
-      title: "Delete Cluster",
-      subText:
-        "This will delete the default cluster associated with this account and interrupt any scheduled jobs. Proceed anyway?",
-      primaryButtonText: "OK",
-      secondaryButtonText: "Cancel",
-      onPrimaryButtonClick: async () => {
-        this._closeModalDialog();
-        await this._deleteCluster();
-      },
-      onSecondaryButtonClick: this._closeModalDialog
-    };
-    this._dialogProps(deleteClusterDialogProps);
-  }
-
   public async getArcadiaToken(): Promise<string> {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
       MessageHandler.sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
@@ -1820,53 +1732,6 @@ export default class Explorer implements ViewModels.Explorer {
       Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
     }
   }
-
-  private _deleteCluster = async () => {
-    const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSparkCluster, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
-    });
-    const id = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Deleting the default spark cluster associated with this account"
-    );
-    try {
-      await this.sparkClusterManager.deleteClusterAsync(this.databaseAccount().id, "default");
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Info,
-        "Successfully deleted the default spark cluster associated with this account"
-      );
-      TelemetryProcessor.traceSuccess(
-        Action.DeleteSparkCluster,
-        {
-          databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-          defaultExperience: this.defaultExperience(),
-          dataExplorerArea: Constants.Areas.ResourceTree
-        },
-        startKey
-      );
-    } catch (error) {
-      const errorMessage = JSON.stringify(error);
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to delete default spark cluster: ${errorMessage}`
-      );
-      TelemetryProcessor.traceFailure(
-        Action.DeleteSparkCluster,
-        {
-          databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-          defaultExperience: this.defaultExperience(),
-          dataExplorerArea: Constants.Areas.ResourceTree,
-          error,
-          errorMessage
-        },
-        startKey
-      );
-    } finally {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    }
-  };
 
   private _resetNotebookWorkspace = async () => {
     this._closeModalDialog();
@@ -2835,42 +2700,6 @@ export default class Explorer implements ViewModels.Explorer {
       return false;
     }
   };
-
-  public async openSparkMasterTab() {
-    if (!this.sparkClusterConnectionInfo()) {
-      await this.initSparkConnectionInfo(this.databaseAccount());
-    }
-
-    const sparkMasterTabs: SparkMasterTab[] = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.SparkMasterTab
-    ) as SparkMasterTab[];
-    let sparkMasterTab: SparkMasterTab = sparkMasterTabs && sparkMasterTabs[0];
-
-    if (sparkMasterTab) {
-      this.tabsManager.activateTab(sparkMasterTab);
-    } else {
-      sparkMasterTab = new SparkMasterTab({
-        clusterConnectionInfo: this.sparkClusterConnectionInfo(),
-        tabKind: ViewModels.CollectionTabKind.SparkMasterTab,
-        node: null,
-        title: "Apache Spark",
-        tabPath: "",
-        documentClientUtility: null,
-
-        collection: null,
-        selfLink: null,
-        hashLocation: "sparkmaster",
-        isActive: ko.observable(false),
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        container: this
-      });
-
-      this.tabsManager.activateNewTab(sparkMasterTab);
-    }
-  }
-
   private refreshNotebookList = async (): Promise<void> => {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       return;

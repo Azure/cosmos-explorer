@@ -108,11 +108,8 @@ export class ExplorerStub implements ViewModels.Explorer {
   public isSparkEnabledForAccount: ko.Observable<boolean>;
   public arcadiaToken: ko.Observable<string>;
   public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
-  public sparkClusterManager: ViewModels.SparkClusterManager;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
-  public libraryManagePane: ViewModels.ContextualPane;
-  public clusterLibraryPane: ViewModels.ContextualPane;
   public gitHubReposPane: ViewModels.ContextualPane;
   public publishNotebookPaneAdapter: ReactAdapter;
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
@@ -402,14 +399,6 @@ export class ExplorerStub implements ViewModels.Explorer {
     textFieldProps: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    throw new Error("Not implemented");
-  }
-
-  public deleteCluster(): void {
-    throw new Error("Not implemented");
-  }
-
-  public async openSparkMasterTab(): Promise<void> {
     throw new Error("Not implemented");
   }
 
