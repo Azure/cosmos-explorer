@@ -155,6 +155,25 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
+  endtoendmongo:
+    name: "Accessibility | Hosted"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Accessibility Check
+        run: |
+          npm ci
+          npm start &
+          node utils/accesibilityCheck.js
+        shell: bash
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+          CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
   nuget:
     name: Publish Nuget
     needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
