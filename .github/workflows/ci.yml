@@ -151,10 +151,6 @@ jobs:
           npm run wait-for-server
           npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/MONGO/*"
         shell: bash
-        env:
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
-          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
-          CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
   accessibility:
     name: "Accessibility | Hosted"
     runs-on: ubuntu-latest
