@@ -168,7 +168,7 @@ jobs:
         run: |
           npm ci
           npm start &
-          npx wait-on -d 30000 -t 240000 -i 5000 -v https-get://0.0.0.0:1234/
+          npx wait-on -d 30000 -t 240000 -i 5000 -v https-get://localhost:1234/
           node utils/accesibilityCheck.js
         shell: bash
   nuget:
