@@ -155,7 +155,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
-  endtoendmongo:
+  accessibility:
     name: "Accessibility | Hosted"
     runs-on: ubuntu-latest
     steps:
@@ -168,6 +168,7 @@ jobs:
         run: |
           npm ci
           npm start &
+          npx wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/
           node utils/accesibilityCheck.js
         shell: bash
         env:
