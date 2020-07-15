@@ -68,6 +68,7 @@ class HostedExplorer {
 
     this._controlbarCommands = ko.observableArray([
       {
+        id: "commandbutton-connect",
         iconSrc: ConnectIcon,
         iconAlt: "connect button",
         onCommandClick: () => this.openConnectPane(),
@@ -78,6 +79,7 @@ class HostedExplorer {
         disabled: false
       },
       {
+        id: "commandbutton-settings",
         iconSrc: SettingsIcon,
         iconAlt: "setting button",
         onCommandClick: () => this.openSettingsPane(),
@@ -88,6 +90,7 @@ class HostedExplorer {
         disabled: false
       },
       {
+        id: "commandbutton-feedback",
         iconSrc: FeedbackIcon,
         iconAlt: "feeback button",
         onCommandClick: () =>
