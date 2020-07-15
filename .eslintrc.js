@@ -39,6 +39,7 @@ module.exports = {
     curly: "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-extraneous-class": "error",
-    "no-null/no-null": "error"
+    "no-null/no-null": "error",
+    "@typescript-eslint/no-explicit-any": "error"
   }
 };
