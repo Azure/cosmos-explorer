@@ -3,7 +3,7 @@
  */
 import { Notebook } from "@nteract/commutable";
 import { createContentRef } from "@nteract/core";
-import { Icon, Link } from "office-ui-fabric-react";
+import { Icon, Link, ProgressIndicator } from "office-ui-fabric-react";
 import * as React from "react";
 import { contents } from "rx-jupyter";
 import * as Logger from "../../../Common/Logger";
@@ -17,7 +17,6 @@ import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
-import { InfiniteProgressBarComponent } from "../InfiniteProgressBar/InfinitePorgressBarComponent";
 import "./NotebookViewerComponent.less";
 
 export interface NotebookViewerComponentProps {
@@ -135,7 +134,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
           <></>
         )}
 
-        {this.state.showProgressBar && <InfiniteProgressBarComponent />}
+        {this.state.showProgressBar && <ProgressIndicator />}
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
           hideInputs: this.props.hideInputs
