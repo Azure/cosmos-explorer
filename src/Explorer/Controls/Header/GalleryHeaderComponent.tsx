@@ -5,7 +5,7 @@ export class GalleryHeaderComponent extends React.Component {
   private static readonly azureText = "Microsoft Azure";
   private static readonly cosmosdbText = "Cosmos DB";
   private static readonly galleryText = "Gallery";
-  private static readonly loginText = "Log in";
+  private static readonly loginText = "Sign In";
   private static readonly openPortal = () => window.open("https://portal.azure.com", "_blank");
   private static readonly openDataExplorer = () => (window.location.href = new URL("./", window.location.href).href);
   private static readonly headerItemStyle: React.CSSProperties = {
