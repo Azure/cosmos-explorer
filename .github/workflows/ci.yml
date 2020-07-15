@@ -179,6 +179,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
   nuget:
     name: Publish Nuget
+    if: github.ref == 'refs/heads/master'
     needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
@@ -202,6 +203,7 @@ jobs:
           path: "*.nupkg"
   nugetmpac:
     name: Publish Nuget MPAC
+    if: github.ref == 'refs/heads/master'
     needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
