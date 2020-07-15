@@ -37,6 +37,7 @@ interface NotebookViewerComponentState {
   galleryItem?: IGalleryItem;
   isFavorite?: boolean;
   dialogProps: DialogProps;
+  showProgressBar: boolean;
 }
 
 export class NotebookViewerComponent extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
@@ -66,7 +67,8 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
       content: undefined,
       galleryItem: props.galleryItem,
       isFavorite: props.isFavorite,
-      dialogProps: undefined
+      dialogProps: undefined,
+      showProgressBar: true
     };
 
     this.loadNotebookContent();
@@ -80,12 +82,13 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
     try {
       const response = await fetch(this.props.notebookUrl);
       if (!response.ok) {
+        this.setState({ showProgressBar: false });
         throw new Error(`Received HTTP ${response.status} while fetching ${this.props.notebookUrl}`);
       }
 
       const notebook: Notebook = await response.json();
       this.notebookComponentBootstrapper.setContent("json", notebook);
-      this.setState({ content: notebook });
+      this.setState({ content: notebook, showProgressBar: false });
 
       if (this.props.galleryItem) {
         const response = await this.props.junoClient.increaseNotebookViews(this.props.galleryItem.id);
@@ -96,6 +99,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
         this.setState({ galleryItem: response.data });
       }
     } catch (error) {
+      this.setState({ showProgressBar: false });
       const message = `Failed to load notebook content: ${error}`;
       Logger.logError(message, "NotebookViewerComponent/loadNotebookContent");
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
@@ -131,7 +135,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
           <></>
         )}
 
-        {!this.state.content && <InfiniteProgressBarComponent />}
+        {this.state.showProgressBar && <InfiniteProgressBarComponent />}
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
           hideInputs: this.props.hideInputs
