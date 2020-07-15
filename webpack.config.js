@@ -214,6 +214,7 @@ module.exports = function(env = {}, argv = {}) {
     },
     devServer: {
       hot: false,
+      liveReload: false,
       https: true,
       host: "0.0.0.0",
       port: envVars.PORT,
