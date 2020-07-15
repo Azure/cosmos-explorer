@@ -1,4 +1,4 @@
-import { Card, ICardTokens } from "@uifabric/react-cards";
+import { Card } from "@uifabric/react-cards";
 import {
   FontWeights,
   Icon,
@@ -33,17 +33,11 @@ export interface GalleryCardComponentProps {
 }
 
 export class GalleryCardComponent extends React.Component<GalleryCardComponentProps> {
-  public static readonly CARD_HEIGHT = 384;
   public static readonly CARD_WIDTH = 256;
-
   private static readonly cardImageHeight = 144;
   private static readonly cardDescriptionMaxChars = 88;
-  private static readonly cardTokens: ICardTokens = {
-    width: GalleryCardComponent.CARD_WIDTH,
-    height: GalleryCardComponent.CARD_HEIGHT,
-    childrenGap: 8,
-    childrenMargin: 10
-  };
+  private static readonly cardItemGapBig = 10;
+  private static readonly cardItemGapSmall = 8;
 
   public render(): JSX.Element {
     const cardButtonsVisible = this.props.isFavorite !== undefined || this.props.showDownload || this.props.showDelete;
@@ -52,12 +46,15 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
       month: "short",
       day: "numeric"
     };
-
     const dateString = new Date(this.props.data.created).toLocaleString("default", options);
 
     return (
-      <Card aria-label="Notebook Card" tokens={GalleryCardComponent.cardTokens} onClick={this.props.onClick}>
-        <Card.Item>
+      <Card
+        aria-label="Notebook Card"
+        tokens={{ width: GalleryCardComponent.CARD_WIDTH, childrenGap: 0 }}
+        onClick={this.props.onClick}
+      >
+        <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
           <Persona
             imageUrl={this.props.data.isSample && CosmosDBLogo}
             text={this.props.data.author}
@@ -65,7 +62,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           />
         </Card.Item>
 
-        <Card.Item fill>
+        <Card.Item>
           <Image
             src={
               this.props.data.thumbnailUrl ||
@@ -78,7 +75,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           />
         </Card.Item>
 
-        <Card.Section>
+        <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
           <Text variant="small" nowrap>
             {this.props.data.tags?.map((tag, index, array) => (
               <span key={tag}>
@@ -87,49 +84,67 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
               </span>
             ))}
           </Text>
-          <Text styles={{ root: { fontWeight: FontWeights.semibold } }} nowrap>
+
+          <Text
+            styles={{
+              root: {
+                fontWeight: FontWeights.semibold,
+                paddingTop: GalleryCardComponent.cardItemGapSmall,
+                paddingBottom: GalleryCardComponent.cardItemGapSmall
+              }
+            }}
+            nowrap
+          >
             {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
           </Text>
+
           <Text variant="small" styles={{ root: { height: 36 } }}>
             {this.props.data.description.substr(0, GalleryCardComponent.cardDescriptionMaxChars)}
           </Text>
-        </Card.Section>
 
-        <Card.Section horizontal styles={{ root: { alignItems: "flex-end" } }}>
-          {this.generateIconText("RedEye", this.props.data.views.toString())}
-          {this.generateIconText("Download", this.props.data.downloads.toString())}
-          {this.props.isFavorite !== undefined && this.generateIconText("Heart", this.props.data.favorites.toString())}
+          <span>
+            {this.generateIconText("RedEye", this.props.data.views.toString())}
+            {this.generateIconText("Download", this.props.data.downloads.toString())}
+            {this.props.isFavorite !== undefined &&
+              this.generateIconText("Heart", this.props.data.favorites.toString())}
+          </span>
         </Card.Section>
 
         {cardButtonsVisible && (
-          <Card.Item>
+          <Card.Section
+            styles={{
+              root: {
+                marginLeft: GalleryCardComponent.cardItemGapBig,
+                marginRight: GalleryCardComponent.cardItemGapBig
+              }
+            }}
+          >
             <Separator styles={{ root: { padding: 0, height: 1 } }} />
-          </Card.Item>
+
+            <span>
+              {this.props.isFavorite !== undefined &&
+                this.generateIconButtonWithTooltip(
+                  this.props.isFavorite ? "HeartFill" : "Heart",
+                  this.props.isFavorite ? "Unlike" : "Like",
+                  false,
+                  this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
+                )}
+
+              {this.props.showDownload &&
+                this.generateIconButtonWithTooltip("Download", "Download", false, this.onDownloadClick)}
+
+              {this.props.showDelete &&
+                this.generateIconButtonWithTooltip("Delete", "Remove", true, this.onDeleteClick)}
+            </span>
+          </Card.Section>
         )}
-
-        <Card.Section horizontal styles={{ root: { marginTop: 0 } }}>
-          {this.props.isFavorite !== undefined &&
-            this.generateIconButtonWithTooltip(
-              this.props.isFavorite ? "HeartFill" : "Heart",
-              this.props.isFavorite ? "Unlike" : "Like",
-              this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
-            )}
-
-          {this.props.showDownload && this.generateIconButtonWithTooltip("Download", "Download", this.onDownloadClick)}
-
-          {this.props.showDelete && (
-            <div style={{ width: "100%", textAlign: "right" }}>
-              {this.generateIconButtonWithTooltip("Delete", "Remove", this.onDeleteClick)}
-            </div>
-          )}
-        </Card.Section>
       </Card>
     );
   }
 
   private generateIconText = (iconName: string, text: string): JSX.Element => {
     return (
-      <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
+      <Text variant="tiny" styles={{ root: { color: "#ccc", paddingRight: GalleryCardComponent.cardItemGapSmall } }}>
         <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
       </Text>
     );
@@ -142,6 +157,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private generateIconButtonWithTooltip = (
     iconName: string,
     title: string,
+    rightAlign: boolean,
     onClick: (
       event: React.MouseEvent<
         HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
@@ -154,7 +170,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
         content={title}
         id={`TooltipHost-IconButton-${iconName}`}
         calloutProps={{ gapSpace: 0 }}
-        styles={{ root: { display: "inline-block" } }}
+        styles={{ root: { display: "inline-block", float: rightAlign ? "right" : "left" } }}
       >
         <IconButton iconProps={{ iconName }} title={title} ariaLabel={title} onClick={onClick} />
       </TooltipHost>

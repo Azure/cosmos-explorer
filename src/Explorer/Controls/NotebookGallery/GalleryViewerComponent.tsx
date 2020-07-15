@@ -73,6 +73,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public static readonly FavoritesTitle = "Liked";
   public static readonly PublishedTitle = "Your published work";
 
+  private static readonly rowsPerPage = 5;
+
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
   private static readonly mostFavoritedText = "Most liked";
@@ -387,7 +389,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
     if (itemIndex === 0) {
       this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH) || this.columnCount;
-      this.rowCount = Math.ceil(visibleRect.height / GalleryCardComponent.CARD_HEIGHT) || this.rowCount;
+      this.rowCount = GalleryViewerComponent.rowsPerPage;
     }
 
     return {
