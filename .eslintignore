@@ -1,5 +1,6 @@
 **/node_modules/
 dist/
+Contracts/
 src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
@@ -269,7 +270,6 @@ src/Shared/AddCollectionUtility.test.ts
 src/Shared/AddCollectionUtility.ts
 src/Shared/AddDatabaseUtility.test.ts
 src/Shared/AddDatabaseUtility.ts
-src/Shared/Ajax.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts

@@ -31,6 +31,7 @@ export interface GalleryViewerComponentProps {
   selectedTab: GalleryTab;
   sortBy: SortBy;
   searchText: string;
+  openNotebook: (data: IGalleryItem, isFavorite: boolean) => void;
   onSelectedTabChange: (newTab: GalleryTab) => void;
   onSortByChange: (sortBy: SortBy) => void;
   onSearchTextChange: (searchText: string) => void;
@@ -66,12 +67,13 @@ interface GalleryTabInfo {
   content: JSX.Element;
 }
 
-export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps, GalleryViewerComponentState>
-  implements GalleryUtils.DialogEnabledComponent {
+export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps, GalleryViewerComponentState> {
   public static readonly OfficialSamplesTitle = "Official samples";
   public static readonly PublicGalleryTitle = "Public gallery";
   public static readonly FavoritesTitle = "Liked";
   public static readonly PublishedTitle = "Your published work";
+
+  private static readonly rowsPerPage = 5;
 
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
@@ -128,10 +130,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
   }
 
-  setDialogProps = (dialogProps: DialogProps): void => {
-    this.setState({ dialogProps });
-  };
-
   public render(): JSX.Element {
     const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
@@ -178,8 +176,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private createTabContent(data: IGalleryItem[]): JSX.Element {
     return (
-      <Stack tokens={{ childrenGap: 20 }}>
-        <Stack horizontal tokens={{ childrenGap: 20 }}>
+      <Stack tokens={{ childrenGap: 10 }}>
+        <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
           <Stack.Item grow>
             <SearchBox value={this.state.searchText} placeholder="Search" onChange={this.onSearchBoxChange} />
           </Stack.Item>
@@ -389,8 +387,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
-    this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH);
-    this.rowCount = Math.floor(visibleRect.height / GalleryCardComponent.CARD_HEIGHT);
+    if (itemIndex === 0) {
+      this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH) || this.columnCount;
+      this.rowCount = GalleryViewerComponent.rowsPerPage;
+    }
 
     return {
       height: visibleRect.height,
@@ -406,8 +406,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,
+      showDownload: !!this.props.container,
       showDelete: this.state.selectedTab === GalleryTab.Published,
-      onClick: () => this.openNotebook(data, isFavorite),
+      onClick: () => this.props.openNotebook(data, isFavorite),
       onTagClick: this.loadTaggedItems,
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
@@ -420,20 +421,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         <GalleryCardComponent {...props} />
       </div>
     );
-  };
-
-  private openNotebook = (data: IGalleryItem, isFavorite: boolean): void => {
-    if (this.props.container && this.props.junoClient) {
-      this.props.container.openGallery(this.props.junoClient.getNotebookContentUrl(data.id), data, isFavorite);
-    } else {
-      const params = new URLSearchParams({
-        [GalleryUtils.NotebookViewerParams.NotebookUrl]: this.props.junoClient.getNotebookContentUrl(data.id),
-        [GalleryUtils.NotebookViewerParams.GalleryItemId]: data.id
-      });
-
-      const location = new URL("./notebookViewer.html", window.location.href).href;
-      window.open(`${location}?${params.toString()}`);
-    }
   };
 
   private loadTaggedItems = (tag: string): void => {
@@ -465,9 +452,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private downloadItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.downloadItem(this, this.props.container, this.props.junoClient, data, item =>
-      this.refreshSelectedTab(item)
-    );
+    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, data, item => this.refreshSelectedTab(item));
   };
 
   private deleteItem = async (data: IGalleryItem): Promise<void> => {

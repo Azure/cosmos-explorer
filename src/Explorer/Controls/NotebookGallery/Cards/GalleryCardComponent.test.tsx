@@ -20,6 +20,7 @@ describe("GalleryCardComponent", () => {
         views: 0
       },
       isFavorite: false,
+      showDownload: true,
       showDelete: true,
       onClick: undefined,
       onTagClick: undefined,

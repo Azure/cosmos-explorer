@@ -2,35 +2,47 @@
 
 exports[`GalleryCardComponent renders 1`] = `
 <Card
-  aria-label="Notebook Card"
+  aria-label="name"
+  data-is-focusable="true"
+  onClick={[Function]}
   tokens={
     Object {
-      "childrenGap": 8,
-      "childrenMargin": 10,
-      "height": 384,
+      "childrenGap": 0,
       "width": 256,
     }
   }
 >
-  <CardItem>
+  <CardItem
+    tokens={
+      Object {
+        "padding": 10,
+      }
+    }
+  >
     <StyledPersonaBase
       imageUrl={false}
       secondaryText="Invalid Date"
       text="author"
     />
   </CardItem>
-  <CardItem
-    fill={true}
-  >
+  <CardItem>
     <Memo(StyledImageBase)
-      alt="Notebook cover image"
+      alt="name cover image"
       height={144}
       imageFit={2}
       src="thumbnailUrl"
       width={256}
     />
   </CardItem>
-  <CardSection>
+  <CardSection
+    styles={
+      Object {
+        "root": Object {
+          "padding": 10,
+        },
+      }
+    }
+  >
     <Text
       nowrap={true}
       variant="small"
@@ -51,6 +63,8 @@ exports[`GalleryCardComponent renders 1`] = `
         Object {
           "root": Object {
             "fontWeight": 600,
+            "paddingBottom": 8,
+            "paddingTop": 8,
           },
         }
       }
@@ -69,88 +83,91 @@ exports[`GalleryCardComponent renders 1`] = `
     >
       description
     </Text>
+    <span>
+      <Text
+        styles={
+          Object {
+            "root": Object {
+              "color": undefined,
+              "paddingRight": 8,
+            },
+          }
+        }
+        variant="tiny"
+      >
+        <Memo(StyledIconBase)
+          iconName="RedEye"
+          styles={
+            Object {
+              "root": Object {
+                "verticalAlign": "middle",
+              },
+            }
+          }
+        />
+         
+        0
+      </Text>
+      <Text
+        styles={
+          Object {
+            "root": Object {
+              "color": undefined,
+              "paddingRight": 8,
+            },
+          }
+        }
+        variant="tiny"
+      >
+        <Memo(StyledIconBase)
+          iconName="Download"
+          styles={
+            Object {
+              "root": Object {
+                "verticalAlign": "middle",
+              },
+            }
+          }
+        />
+         
+        0
+      </Text>
+      <Text
+        styles={
+          Object {
+            "root": Object {
+              "color": undefined,
+              "paddingRight": 8,
+            },
+          }
+        }
+        variant="tiny"
+      >
+        <Memo(StyledIconBase)
+          iconName="Heart"
+          styles={
+            Object {
+              "root": Object {
+                "verticalAlign": "middle",
+              },
+            }
+          }
+        />
+         
+        0
+      </Text>
+    </span>
   </CardSection>
   <CardSection
-    horizontal={true}
     styles={
       Object {
         "root": Object {
-          "alignItems": "flex-end",
+          "marginLeft": 10,
+          "marginRight": 10,
         },
       }
     }
   >
-    <Text
-      styles={
-        Object {
-          "root": Object {
-            "color": "#ccc",
-          },
-        }
-      }
-      variant="tiny"
-    >
-      <Memo(StyledIconBase)
-        iconName="RedEye"
-        styles={
-          Object {
-            "root": Object {
-              "verticalAlign": "middle",
-            },
-          }
-        }
-      />
-       
-      0
-    </Text>
-    <Text
-      styles={
-        Object {
-          "root": Object {
-            "color": "#ccc",
-          },
-        }
-      }
-      variant="tiny"
-    >
-      <Memo(StyledIconBase)
-        iconName="Download"
-        styles={
-          Object {
-            "root": Object {
-              "verticalAlign": "middle",
-            },
-          }
-        }
-      />
-       
-      0
-    </Text>
-    <Text
-      styles={
-        Object {
-          "root": Object {
-            "color": "#ccc",
-          },
-        }
-      }
-      variant="tiny"
-    >
-      <Memo(StyledIconBase)
-        iconName="Heart"
-        styles={
-          Object {
-            "root": Object {
-              "verticalAlign": "middle",
-            },
-          }
-        }
-      />
-       
-      0
-    </Text>
-  </CardSection>
-  <CardItem>
     <Styled
       styles={
         Object {
@@ -161,79 +178,63 @@ exports[`GalleryCardComponent renders 1`] = `
         }
       }
     />
-  </CardItem>
-  <CardSection
-    horizontal={true}
-    styles={
-      Object {
-        "root": Object {
-          "marginTop": 0,
-        },
-      }
-    }
-  >
-    <StyledTooltipHostBase
-      calloutProps={
-        Object {
-          "gapSpace": 0,
-        }
-      }
-      content="Like"
-      id="TooltipHost-IconButton-Heart"
-      styles={
-        Object {
-          "root": Object {
-            "display": "inline-block",
-          },
-        }
-      }
-    >
-      <CustomizedIconButton
-        ariaLabel="Like"
-        iconProps={
+    <span>
+      <StyledTooltipHostBase
+        calloutProps={
           Object {
-            "iconName": "Heart",
+            "gapSpace": 0,
           }
         }
-        onClick={[Function]}
-        title="Like"
-      />
-    </StyledTooltipHostBase>
-    <StyledTooltipHostBase
-      calloutProps={
-        Object {
-          "gapSpace": 0,
-        }
-      }
-      content="Download"
-      id="TooltipHost-IconButton-Download"
-      styles={
-        Object {
-          "root": Object {
-            "display": "inline-block",
-          },
-        }
-      }
-    >
-      <CustomizedIconButton
-        ariaLabel="Download"
-        iconProps={
+        content="Like"
+        id="TooltipHost-IconButton-Heart"
+        styles={
           Object {
-            "iconName": "Download",
+            "root": Object {
+              "display": "inline-block",
+              "float": "left",
+            },
           }
         }
-        onClick={[Function]}
-        title="Download"
-      />
-    </StyledTooltipHostBase>
-    <div
-      style={
-        Object {
-          "textAlign": "right",
-          "width": "100%",
+      >
+        <CustomizedIconButton
+          ariaLabel="Like"
+          iconProps={
+            Object {
+              "iconName": "Heart",
+            }
+          }
+          onClick={[Function]}
+          title="Like"
+        />
+      </StyledTooltipHostBase>
+      <StyledTooltipHostBase
+        calloutProps={
+          Object {
+            "gapSpace": 0,
+          }
         }
-      }
-    >
+        content="Download"
+        id="TooltipHost-IconButton-Download"
+        styles={
+          Object {
+            "root": Object {
+              "display": "inline-block",
+              "float": "left",
+            },
+          }
+        }
+      >
+        <CustomizedIconButton
+          ariaLabel="Download"
+          iconProps={
+            Object {
+              "iconName": "Download",
+            }
+          }
+          onClick={[Function]}
+          title="Download"
+        />
+      </StyledTooltipHostBase>
       <StyledTooltipHostBase
         calloutProps={
           Object {
@@ -246,6 +247,7 @@ exports[`GalleryCardComponent renders 1`] = `
           Object {
             "root": Object {
               "display": "inline-block",
+              "float": "right",
             },
           }
         }
@@ -261,7 +263,7 @@ exports[`GalleryCardComponent renders 1`] = `
           title="Remove"
         />
       </StyledTooltipHostBase>
-    </div>
+    </span>
   </CardSection>
 </Card>
 `;
