@@ -1,4 +1,3 @@
-import { LinkProps, DialogProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as ViewModels from "../Contracts/ViewModels";
 import { NotificationConsoleUtils } from "./NotificationConsoleUtils";
@@ -9,10 +8,6 @@ import {
   SortBy,
   GalleryViewerComponent
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
-
-export interface DialogEnabledComponent {
-  setDialogProps: (dialogProps: DialogProps) => void;
-}
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
@@ -38,105 +33,50 @@ export interface GalleryViewerProps {
   searchText: string;
 }
 
-function showOkCancelModalDialog(
-  component: DialogEnabledComponent,
-  title: string,
-  msg: string,
-  linkProps: LinkProps,
-  showCloseButton: boolean,
-  okLabel: string,
-  onOk: () => void,
-  cancelLabel: string,
-  onCancel: () => void
-): void {
-  component.setDialogProps({
-    linkProps,
-    isModal: true,
-    visible: true,
-    title,
-    subText: msg,
-    primaryButtonText: okLabel,
-    secondaryButtonText: cancelLabel,
-    onPrimaryButtonClick: () => {
-      component.setDialogProps(undefined);
-      onOk && onOk();
-    },
-    onSecondaryButtonClick: () => {
-      component.setDialogProps(undefined);
-      onCancel && onCancel();
-    },
-    showCloseButton,
-    onDismiss: () => component.setDialogProps(undefined)
-  });
-}
-
 export function downloadItem(
-  component: DialogEnabledComponent,
   container: ViewModels.Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void
 ): void {
   const name = data.name;
+  container.showOkCancelModalDialog(
+    "Download to My Notebooks",
+    `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
+    "Download",
+    async () => {
+      const notificationId = NotificationConsoleUtils.logConsoleMessage(
+        ConsoleDataType.InProgress,
+        `Downloading ${name} to My Notebooks`
+      );
 
-  if (container) {
-    container.showOkCancelModalDialog(
-      "Download to My Notebooks",
-      `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
-      "Download",
-      async () => {
-        const notificationId = NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.InProgress,
-          `Downloading ${name} to My Notebooks`
-        );
-
-        try {
-          const response = await junoClient.getNotebookContent(data.id);
-          if (!response.data) {
-            throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
-          }
-
-          await container.importAndOpenContent(data.name, response.data);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `Successfully downloaded ${name} to My Notebooks`
-          );
-
-          const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
-          if (increaseDownloadResponse.data) {
-            onComplete(increaseDownloadResponse.data);
-          }
-        } catch (error) {
-          const message = `Failed to download ${data.name}: ${error}`;
-          Logger.logError(message, "GalleryUtils/downloadItem");
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      try {
+        const response = await junoClient.getNotebookContent(data.id);
+        if (!response.data) {
+          throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
         }
 
-        NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
-      },
-      "Cancel",
-      undefined
-    );
-  } else {
-    showOkCancelModalDialog(
-      component,
-      "Edit/Run notebook in Cosmos DB data explorer",
-      `In order to edit/run ${name} in Cosmos DB data explorer, a Cosmos DB account will be needed. If you do not have a Cosmos DB account yet, please create one.`,
-      {
-        linkText: "Learn more about Cosmos DB",
-        linkUrl: "https://azure.microsoft.com/en-us/services/cosmos-db"
-      },
-      true,
-      "Open data explorer",
-      () => {
-        window.open("https://cosmos.azure.com");
-      },
-      "Create Cosmos DB account",
-      () => {
-        window.open("https://ms.portal.azure.com/#create/Microsoft.DocumentDB");
+        await container.importAndOpenContent(data.name, response.data);
+        NotificationConsoleUtils.logConsoleMessage(
+          ConsoleDataType.Info,
+          `Successfully downloaded ${name} to My Notebooks`
+        );
+
+        const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
+        if (increaseDownloadResponse.data) {
+          onComplete(increaseDownloadResponse.data);
+        }
+      } catch (error) {
+        const message = `Failed to download ${data.name}: ${error}`;
+        Logger.logError(message, "GalleryUtils/downloadItem");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
       }
-    );
-  }
+
+      NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
+    },
+    "Cancel",
+    undefined
+  );
 }
 
 export async function favoriteItem(

@@ -3,29 +3,25 @@ import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { initializeConfiguration } from "../Config";
+import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
-  GalleryTab,
-  GalleryViewerComponent,
-  GalleryViewerComponentProps,
-  SortBy
-} from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+  GalleryAndNotebookViewerComponent,
+  GalleryAndNotebookViewerComponentProps
+} from "../Explorer/Controls/NotebookGallery/GalleryAndNotebookViewerComponent";
+import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
-import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 
 const onInit = async () => {
   initializeIcons();
   await initializeConfiguration();
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
 
-  const props: GalleryViewerComponentProps = {
+  const props: GalleryAndNotebookViewerComponentProps = {
     junoClient: new JunoClient(),
     selectedTab: galleryViewerProps.selectedTab || GalleryTab.OfficialSamples,
     sortBy: galleryViewerProps.sortBy || SortBy.MostViewed,
-    searchText: galleryViewerProps.searchText,
-    onSelectedTabChange: undefined,
-    onSortByChange: undefined,
-    onSearchTextChange: undefined
+    searchText: galleryViewerProps.searchText
   };
 
   const element = (
@@ -34,7 +30,7 @@ const onInit = async () => {
         <GalleryHeaderComponent />
       </header>
       <div style={{ marginLeft: 138, marginRight: 138 }}>
-        <GalleryViewerComponent {...props} />
+        <GalleryAndNotebookViewerComponent {...props} />
       </div>
     </>
   );

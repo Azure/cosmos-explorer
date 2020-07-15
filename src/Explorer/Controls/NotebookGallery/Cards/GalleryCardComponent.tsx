@@ -22,6 +22,7 @@ import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 export interface GalleryCardComponentProps {
   data: IGalleryItem;
   isFavorite: boolean;
+  showDownload: boolean;
   showDelete: boolean;
   onClick: () => void;
   onTagClick: (tag: string) => void;
@@ -45,6 +46,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   };
 
   public render(): JSX.Element {
+    const cardButtonsVisible = this.props.isFavorite !== undefined || this.props.showDownload || this.props.showDelete;
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
@@ -99,9 +101,11 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           {this.props.isFavorite !== undefined && this.generateIconText("Heart", this.props.data.favorites.toString())}
         </Card.Section>
 
-        <Card.Item>
-          <Separator styles={{ root: { padding: 0, height: 1 } }} />
-        </Card.Item>
+        {cardButtonsVisible && (
+          <Card.Item>
+            <Separator styles={{ root: { padding: 0, height: 1 } }} />
+          </Card.Item>
+        )}
 
         <Card.Section horizontal styles={{ root: { marginTop: 0 } }}>
           {this.props.isFavorite !== undefined &&
@@ -111,7 +115,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
               this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
             )}
 
-          {this.generateIconButtonWithTooltip("Download", "Download", this.onDownloadClick)}
+          {this.props.showDownload && this.generateIconButtonWithTooltip("Download", "Download", this.onDownloadClick)}
 
           {this.props.showDelete && (
             <div style={{ width: "100%", textAlign: "right" }}>

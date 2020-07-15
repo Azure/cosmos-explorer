@@ -3101,7 +3101,6 @@ export default class Explorer implements ViewModels.Explorer {
 
     if (galleryTab) {
       this.tabsManager.activateTab(galleryTab);
-      (galleryTab as any).updateGalleryParams(notebookUrl, galleryItem, isFavorite);
     } else {
       if (!this.galleryTab) {
         this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");

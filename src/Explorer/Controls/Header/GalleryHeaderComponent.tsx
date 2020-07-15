@@ -8,8 +8,6 @@ export class GalleryHeaderComponent extends React.Component {
   private static readonly loginText = "Log in";
   private static readonly openPortal = () => window.open("https://portal.azure.com", "_blank");
   private static readonly openDataExplorer = () => (window.location.href = new URL("./", window.location.href).href);
-  private static readonly openGallery = () =>
-    (window.location.href = new URL("./galleryViewer.html", window.location.href).href);
   private static readonly headerItemStyle: React.CSSProperties = {
     color: "white"
   };
@@ -63,7 +61,7 @@ export class GalleryHeaderComponent extends React.Component {
         <Stack.Item>
           {this.renderHeaderItem(
             GalleryHeaderComponent.galleryText,
-            GalleryHeaderComponent.openGallery,
+            undefined,
             GalleryHeaderComponent.headerItemTextProps
           )}
         </Stack.Item>

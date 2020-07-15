@@ -21,7 +21,7 @@ import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;
   isFavorite: boolean;
-  downloadButtonText: string;
+  downloadButtonText?: string;
   onTagClick: (tag: string) => void;
   onFavoriteClick: () => void;
   onUnfavoriteClick: () => void;
@@ -55,7 +55,10 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
               </>
             )}
           </Text>
-          <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
+
+          {this.props.downloadButtonText && (
+            <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
+          )}
         </Stack>
 
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>

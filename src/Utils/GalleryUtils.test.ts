@@ -24,22 +24,12 @@ describe("GalleryUtils", () => {
     jest.resetAllMocks();
   });
 
-  it("downloadItem shows dialog in standalone gallery", () => {
-    const setDialogProps = jest.fn().mockImplementation();
-
-    GalleryUtils.downloadItem({ setDialogProps }, undefined, undefined, galleryItem, undefined);
-
-    expect(setDialogProps).toBeCalled();
-  });
-
   it("downloadItem shows dialog in data explorer", () => {
-    const setDialogProps = jest.fn().mockImplementation();
     const container = new ExplorerStub();
     container.showOkCancelModalDialog = jest.fn().mockImplementation();
 
-    GalleryUtils.downloadItem({ setDialogProps }, container, undefined, galleryItem, undefined);
+    GalleryUtils.downloadItem(container, undefined, galleryItem, undefined);
 
-    expect(setDialogProps).not.toBeCalled();
     expect(container.showOkCancelModalDialog).toBeCalled();
   });
 
