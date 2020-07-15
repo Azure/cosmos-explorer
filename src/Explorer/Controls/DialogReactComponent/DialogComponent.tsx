@@ -3,6 +3,7 @@ import { Dialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric
 import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
 import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
 import { Link } from "office-ui-fabric-react/lib/Link";
+import { FontIcon } from "office-ui-fabric-react";
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -84,7 +85,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         {textFieldProps && <TextField {...textFieldProps} />}
         {linkProps && (
           <Link href={linkProps.linkUrl} target="_blank">
-            {linkProps.linkText}
+            {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
           </Link>
         )}
         <DialogFooter>

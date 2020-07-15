@@ -39,8 +39,10 @@ interface NotebookViewerComponentState {
   showProgressBar: boolean;
 }
 
-export class NotebookViewerComponent extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
-  implements GalleryUtils.DialogEnabledComponent {
+export class NotebookViewerComponent extends React.Component<
+  NotebookViewerComponentProps,
+  NotebookViewerComponentState
+> {
   private clientManager: NotebookClientV2;
   private notebookComponentBootstrapper: NotebookComponentBootstrapper;
 
@@ -72,10 +74,6 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
 
     this.loadNotebookContent();
   }
-
-  setDialogProps = (dialogProps: DialogProps): void => {
-    this.setState({ dialogProps });
-  };
 
   private async loadNotebookContent(): Promise<void> {
     try {
@@ -121,9 +119,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
             <NotebookMetadataComponent
               data={this.state.galleryItem}
               isFavorite={this.state.isFavorite}
-              downloadButtonText={
-                this.props.container ? "Download to my notebooks" : "Edit/Run in Cosmos DB data explorer"
-              }
+              downloadButtonText={this.props.container && "Download to my notebooks"}
               onTagClick={this.props.onTagClick}
               onFavoriteClick={this.favoriteItem}
               onUnfavoriteClick={this.unfavoriteItem}
@@ -179,7 +175,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
   };
 
   private downloadItem = async (): Promise<void> => {
-    GalleryUtils.downloadItem(this, this.props.container, this.props.junoClient, this.state.galleryItem, item =>
+    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item })
     );
   };

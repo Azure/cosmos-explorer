@@ -1,4 +1,4 @@
-import { Card, ICardTokens } from "@uifabric/react-cards";
+import { Card } from "@uifabric/react-cards";
 import {
   FontWeights,
   Icon,
@@ -18,10 +18,12 @@ import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../../Notebook/FileSystemUtil";
 import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
+import { StyleConstants } from "../../../../Common/Constants";
 
 export interface GalleryCardComponentProps {
   data: IGalleryItem;
   isFavorite: boolean;
+  showDownload: boolean;
   showDelete: boolean;
   onClick: () => void;
   onTagClick: (tag: string) => void;
@@ -32,30 +34,30 @@ export interface GalleryCardComponentProps {
 }
 
 export class GalleryCardComponent extends React.Component<GalleryCardComponentProps> {
-  public static readonly CARD_HEIGHT = 384;
   public static readonly CARD_WIDTH = 256;
-
   private static readonly cardImageHeight = 144;
   private static readonly cardDescriptionMaxChars = 88;
-  private static readonly cardTokens: ICardTokens = {
-    width: GalleryCardComponent.CARD_WIDTH,
-    height: GalleryCardComponent.CARD_HEIGHT,
-    childrenGap: 8,
-    childrenMargin: 10
-  };
+  private static readonly cardItemGapBig = 10;
+  private static readonly cardItemGapSmall = 8;
 
   public render(): JSX.Element {
+    const cardButtonsVisible = this.props.isFavorite !== undefined || this.props.showDownload || this.props.showDelete;
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
       day: "numeric"
     };
-
     const dateString = new Date(this.props.data.created).toLocaleString("default", options);
+    const cardTitle = FileSystemUtil.stripExtension(this.props.data.name, "ipynb");
 
     return (
-      <Card aria-label="Notebook Card" tokens={GalleryCardComponent.cardTokens} onClick={this.props.onClick}>
-        <Card.Item>
+      <Card
+        aria-label={cardTitle}
+        data-is-focusable="true"
+        tokens={{ width: GalleryCardComponent.CARD_WIDTH, childrenGap: 0 }}
+        onClick={event => this.onClick(event, this.props.onClick)}
+      >
+        <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
           <Persona
             imageUrl={this.props.data.isSample && CosmosDBLogo}
             text={this.props.data.author}
@@ -63,69 +65,89 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           />
         </Card.Item>
 
-        <Card.Item fill>
+        <Card.Item>
           <Image
-            src={
-              this.props.data.thumbnailUrl ||
-              `https://placehold.it/${GalleryCardComponent.CARD_WIDTH}x${GalleryCardComponent.cardImageHeight}`
-            }
+            src={this.props.data.thumbnailUrl}
             width={GalleryCardComponent.CARD_WIDTH}
             height={GalleryCardComponent.cardImageHeight}
             imageFit={ImageFit.cover}
-            alt="Notebook cover image"
+            alt={`${cardTitle} cover image`}
           />
         </Card.Item>
 
-        <Card.Section>
+        <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
           <Text variant="small" nowrap>
             {this.props.data.tags?.map((tag, index, array) => (
               <span key={tag}>
-                <Link onClick={(event): void => this.onTagClick(event, tag)}>{tag}</Link>
+                <Link onClick={event => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
                 {index === array.length - 1 ? <></> : ", "}
               </span>
             ))}
           </Text>
-          <Text styles={{ root: { fontWeight: FontWeights.semibold } }} nowrap>
-            {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
+
+          <Text
+            styles={{
+              root: {
+                fontWeight: FontWeights.semibold,
+                paddingTop: GalleryCardComponent.cardItemGapSmall,
+                paddingBottom: GalleryCardComponent.cardItemGapSmall
+              }
+            }}
+            nowrap
+          >
+            {cardTitle}
           </Text>
+
           <Text variant="small" styles={{ root: { height: 36 } }}>
             {this.props.data.description.substr(0, GalleryCardComponent.cardDescriptionMaxChars)}
           </Text>
+
+          <span>
+            {this.generateIconText("RedEye", this.props.data.views.toString())}
+            {this.generateIconText("Download", this.props.data.downloads.toString())}
+            {this.props.isFavorite !== undefined &&
+              this.generateIconText("Heart", this.props.data.favorites.toString())}
+          </span>
         </Card.Section>
 
-        <Card.Section horizontal styles={{ root: { alignItems: "flex-end" } }}>
-          {this.generateIconText("RedEye", this.props.data.views.toString())}
-          {this.generateIconText("Download", this.props.data.downloads.toString())}
-          {this.props.isFavorite !== undefined && this.generateIconText("Heart", this.props.data.favorites.toString())}
-        </Card.Section>
+        {cardButtonsVisible && (
+          <Card.Section
+            styles={{
+              root: {
+                marginLeft: GalleryCardComponent.cardItemGapBig,
+                marginRight: GalleryCardComponent.cardItemGapBig
+              }
+            }}
+          >
+            <Separator styles={{ root: { padding: 0, height: 1 } }} />
 
-        <Card.Item>
-          <Separator styles={{ root: { padding: 0, height: 1 } }} />
-        </Card.Item>
+            <span>
+              {this.props.isFavorite !== undefined &&
+                this.generateIconButtonWithTooltip(
+                  this.props.isFavorite ? "HeartFill" : "Heart",
+                  this.props.isFavorite ? "Unlike" : "Like",
+                  "left",
+                  this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick
+                )}
 
-        <Card.Section horizontal styles={{ root: { marginTop: 0 } }}>
-          {this.props.isFavorite !== undefined &&
-            this.generateIconButtonWithTooltip(
-              this.props.isFavorite ? "HeartFill" : "Heart",
-              this.props.isFavorite ? "Unlike" : "Like",
-              this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
-            )}
+              {this.props.showDownload &&
+                this.generateIconButtonWithTooltip("Download", "Download", "left", this.props.onDownloadClick)}
 
-          {this.generateIconButtonWithTooltip("Download", "Download", this.onDownloadClick)}
-
-          {this.props.showDelete && (
-            <div style={{ width: "100%", textAlign: "right" }}>
-              {this.generateIconButtonWithTooltip("Delete", "Remove", this.onDeleteClick)}
-            </div>
-          )}
-        </Card.Section>
+              {this.props.showDelete &&
+                this.generateIconButtonWithTooltip("Delete", "Remove", "right", this.props.onDeleteClick)}
+            </span>
+          </Card.Section>
+        )}
       </Card>
     );
   }
 
   private generateIconText = (iconName: string, text: string): JSX.Element => {
     return (
-      <Text variant="tiny" styles={{ root: { color: "#ccc" } }}>
+      <Text
+        variant="tiny"
+        styles={{ root: { color: StyleConstants.BaseMedium, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
+      >
         <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
       </Text>
     );
@@ -138,70 +160,37 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private generateIconButtonWithTooltip = (
     iconName: string,
     title: string,
-    onClick: (
-      event: React.MouseEvent<
-        HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-        MouseEvent
-      >
-    ) => void
+    horizontalAlign: "right" | "left",
+    activate: () => void
   ): JSX.Element => {
     return (
       <TooltipHost
         content={title}
         id={`TooltipHost-IconButton-${iconName}`}
         calloutProps={{ gapSpace: 0 }}
-        styles={{ root: { display: "inline-block" } }}
+        styles={{ root: { display: "inline-block", float: horizontalAlign } }}
       >
-        <IconButton iconProps={{ iconName }} title={title} ariaLabel={title} onClick={onClick} />
+        <IconButton
+          iconProps={{ iconName }}
+          title={title}
+          ariaLabel={title}
+          onClick={event => this.onClick(event, activate)}
+        />
       </TooltipHost>
     );
   };
 
-  private onTagClick = (
-    event: React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>,
-    tag: string
+  private onClick = (
+    event:
+      | React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>
+      | React.MouseEvent<
+          HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+          MouseEvent
+        >,
+    activate: () => void
   ): void => {
     event.stopPropagation();
-    this.props.onTagClick(tag);
-  };
-
-  private onFavoriteClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onFavoriteClick();
-  };
-
-  private onUnfavoriteClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onUnfavoriteClick();
-  };
-
-  private onDownloadClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onDownloadClick();
-  };
-
-  private onDeleteClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onDeleteClick();
+    event.preventDefault();
+    activate();
   };
 }
