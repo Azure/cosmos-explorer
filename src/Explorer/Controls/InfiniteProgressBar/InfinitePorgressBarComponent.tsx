@@ -8,8 +8,8 @@ export class InfiniteProgressBarComponent extends React.Component<{}, {}> {
   
     public render(): JSX.Element {
       return (
-        <div className='progress'>
-          <div className='indeterminate'></div>
+        <div className="progress">
+          <div className="indeterminate"></div>
         </div>
       );
     }
