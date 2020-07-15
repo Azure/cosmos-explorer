@@ -18,6 +18,7 @@ import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../../Notebook/FileSystemUtil";
 import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
+import { StyleConstants } from "../../../../Common/Constants";
 
 export interface GalleryCardComponentProps {
   data: IGalleryItem;
@@ -47,12 +48,14 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
       day: "numeric"
     };
     const dateString = new Date(this.props.data.created).toLocaleString("default", options);
+    const cardTitle = FileSystemUtil.stripExtension(this.props.data.name, "ipynb");
 
     return (
       <Card
-        aria-label="Notebook Card"
+        aria-label={cardTitle}
+        data-is-focusable="true"
         tokens={{ width: GalleryCardComponent.CARD_WIDTH, childrenGap: 0 }}
-        onClick={this.props.onClick}
+        onClick={event => this.onClick(event, this.props.onClick)}
       >
         <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
           <Persona
@@ -64,14 +67,11 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
         <Card.Item>
           <Image
-            src={
-              this.props.data.thumbnailUrl ||
-              `https://placehold.it/${GalleryCardComponent.CARD_WIDTH}x${GalleryCardComponent.cardImageHeight}`
-            }
+            src={this.props.data.thumbnailUrl}
             width={GalleryCardComponent.CARD_WIDTH}
             height={GalleryCardComponent.cardImageHeight}
             imageFit={ImageFit.cover}
-            alt="Notebook cover image"
+            alt={`${cardTitle} cover image`}
           />
         </Card.Item>
 
@@ -79,7 +79,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           <Text variant="small" nowrap>
             {this.props.data.tags?.map((tag, index, array) => (
               <span key={tag}>
-                <Link onClick={(event): void => this.onTagClick(event, tag)}>{tag}</Link>
+                <Link onClick={event => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
                 {index === array.length - 1 ? <></> : ", "}
               </span>
             ))}
@@ -95,7 +95,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
             }}
             nowrap
           >
-            {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
+            {cardTitle}
           </Text>
 
           <Text variant="small" styles={{ root: { height: 36 } }}>
@@ -126,15 +126,15 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
                 this.generateIconButtonWithTooltip(
                   this.props.isFavorite ? "HeartFill" : "Heart",
                   this.props.isFavorite ? "Unlike" : "Like",
-                  false,
-                  this.props.isFavorite ? this.onUnfavoriteClick : this.onFavoriteClick
+                  "left",
+                  this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick
                 )}
 
               {this.props.showDownload &&
-                this.generateIconButtonWithTooltip("Download", "Download", false, this.onDownloadClick)}
+                this.generateIconButtonWithTooltip("Download", "Download", "left", this.props.onDownloadClick)}
 
               {this.props.showDelete &&
-                this.generateIconButtonWithTooltip("Delete", "Remove", true, this.onDeleteClick)}
+                this.generateIconButtonWithTooltip("Delete", "Remove", "right", this.props.onDeleteClick)}
             </span>
           </Card.Section>
         )}
@@ -144,7 +144,10 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
   private generateIconText = (iconName: string, text: string): JSX.Element => {
     return (
-      <Text variant="tiny" styles={{ root: { color: "#ccc", paddingRight: GalleryCardComponent.cardItemGapSmall } }}>
+      <Text
+        variant="tiny"
+        styles={{ root: { color: StyleConstants.BaseMedium, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
+      >
         <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
       </Text>
     );
@@ -157,71 +160,37 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private generateIconButtonWithTooltip = (
     iconName: string,
     title: string,
-    rightAlign: boolean,
-    onClick: (
-      event: React.MouseEvent<
-        HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-        MouseEvent
-      >
-    ) => void
+    horizontalAlign: "right" | "left",
+    activate: () => void
   ): JSX.Element => {
     return (
       <TooltipHost
         content={title}
         id={`TooltipHost-IconButton-${iconName}`}
         calloutProps={{ gapSpace: 0 }}
-        styles={{ root: { display: "inline-block", float: rightAlign ? "right" : "left" } }}
+        styles={{ root: { display: "inline-block", float: horizontalAlign } }}
       >
-        <IconButton iconProps={{ iconName }} title={title} ariaLabel={title} onClick={onClick} />
+        <IconButton
+          iconProps={{ iconName }}
+          title={title}
+          ariaLabel={title}
+          onClick={event => this.onClick(event, activate)}
+        />
       </TooltipHost>
     );
   };
 
-  private onTagClick = (
-    event: React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>,
-    tag: string
+  private onClick = (
+    event:
+      | React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>
+      | React.MouseEvent<
+          HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
+          MouseEvent
+        >,
+    activate: () => void
   ): void => {
     event.stopPropagation();
-    this.props.onTagClick(tag);
-  };
-
-  private onFavoriteClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onFavoriteClick();
-  };
-
-  private onUnfavoriteClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onUnfavoriteClick();
-  };
-
-  private onDownloadClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onDownloadClick();
-  };
-
-  private onDeleteClick = (
-    event: React.MouseEvent<
-      HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
-      MouseEvent
-    >
-  ): void => {
-    event.stopPropagation();
-    this.props.onDeleteClick();
+    event.preventDefault();
+    activate();
   };
 }

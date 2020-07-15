@@ -2,7 +2,9 @@
 
 exports[`GalleryCardComponent renders 1`] = `
 <Card
-  aria-label="Notebook Card"
+  aria-label="name"
+  data-is-focusable="true"
+  onClick={[Function]}
   tokens={
     Object {
       "childrenGap": 0,
@@ -25,7 +27,7 @@ exports[`GalleryCardComponent renders 1`] = `
   </CardItem>
   <CardItem>
     <Memo(StyledImageBase)
-      alt="Notebook cover image"
+      alt="name cover image"
       height={144}
       imageFit={2}
       src="thumbnailUrl"
@@ -86,7 +88,7 @@ exports[`GalleryCardComponent renders 1`] = `
         styles={
           Object {
             "root": Object {
-              "color": "#ccc",
+              "color": undefined,
               "paddingRight": 8,
             },
           }
@@ -110,7 +112,7 @@ exports[`GalleryCardComponent renders 1`] = `
         styles={
           Object {
             "root": Object {
-              "color": "#ccc",
+              "color": undefined,
               "paddingRight": 8,
             },
           }
@@ -134,7 +136,7 @@ exports[`GalleryCardComponent renders 1`] = `
         styles={
           Object {
             "root": Object {
-              "color": "#ccc",
+              "color": undefined,
               "paddingRight": 8,
             },
           }
