@@ -17,6 +17,7 @@ import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
+import { InfiniteProgressBarComponent } from "../InfiniteProgressBar/InfinitePorgressBarComponent"
 import "./NotebookViewerComponent.less";
 
 export interface NotebookViewerComponentProps {
@@ -129,6 +130,8 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
         ) : (
           <></>
         )}
+
+        {!this.state.content && <InfiniteProgressBarComponent/>}
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
           hideInputs: this.props.hideInputs
