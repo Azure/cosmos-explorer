@@ -32,7 +32,6 @@ import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/SplashScreen/SplashScreenComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
-import "./Explorer/Controls/Spark/ClusterSettingsComponent.less";
 
 // Image Dependencies
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";

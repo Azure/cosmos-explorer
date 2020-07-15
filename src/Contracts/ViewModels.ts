@@ -148,8 +148,6 @@ export interface Explorer {
   uploadFilePane: UploadFilePane;
   stringInputPane: StringInputPane;
   setupNotebooksPane: SetupNotebooksPane;
-  libraryManagePane: ContextualPane;
-  clusterLibraryPane: ContextualPane;
   gitHubReposPane: ContextualPane;
   publishNotebookPaneAdapter: ReactAdapter;
 
@@ -230,11 +228,8 @@ export interface Explorer {
   openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
   openNotebookViewer: (notebookUrl: string) => void;
   notebookWorkspaceManager: NotebookWorkspaceManager;
-  sparkClusterManager: SparkClusterManager;
   mostRecentActivity: MostRecentActivity;
   initNotebooks: (databaseAccount: DataModels.DatabaseAccount) => Promise<void>;
-  deleteCluster(): void;
-  openSparkMasterTab(): Promise<void>;
   handleOpenFileAction(path: string): Promise<void>;
 
   // Notebook operations
@@ -273,26 +268,6 @@ export interface KernelConnectionMetadata {
   name: string;
   configurationEndpoints: DataModels.NotebookConfigurationEndpoints;
   notebookConnectionInfo: DataModels.NotebookWorkspaceConnectionInfo;
-}
-
-export interface SparkClusterManager {
-  getClustersAsync(cosmosAccountResourceId: string): Promise<DataModels.SparkCluster[]>;
-  getClusterAsync(cosmosAccountResourceId: string, clusterId: string): Promise<DataModels.SparkCluster>;
-  createClusterAsync(cosmosAccountResourceId: string, cluster: Partial<DataModels.SparkCluster>): Promise<void>;
-  updateClusterAsync(
-    cosmosAccountResourceId: string,
-    clusterId: string,
-    sparkCluster: DataModels.SparkCluster
-  ): Promise<DataModels.SparkCluster>;
-  deleteClusterAsync(cosmosAccountResourceId: string, clusterId: string): Promise<void>;
-  getClusterConnectionInfoAsync(
-    cosmosAccountResourceId: string,
-    clusterId: string
-  ): Promise<DataModels.SparkClusterConnectionInfo>;
-  getLibrariesAsync(cosmosdbResourceId: string): Promise<Library[]>;
-  getLibraryAsync(cosmosdbResourceId: string, libraryName: string): Promise<Library>;
-  addLibraryAsync(cosmosdbResourceId: string, libraryName: string, library: Library): Promise<void>;
-  deleteLibraryAsync(cosmosdbResourceId: string, libraryName: string): Promise<void>;
 }
 
 export interface ArcadiaResourceManager {

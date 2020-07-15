@@ -138,7 +138,6 @@ src/Explorer/Panes/AddDatabasePane.test.ts
 src/Explorer/Panes/AddDatabasePane.ts
 src/Explorer/Panes/BrowseQueriesPane.ts
 src/Explorer/Panes/CassandraAddCollectionPane.ts
-src/Explorer/Panes/ClusterLibraryPane.ts
 src/Explorer/Panes/ContextualPaneBase.ts
 src/Explorer/Panes/DeleteCollectionConfirmationPane.test.ts
 src/Explorer/Panes/DeleteCollectionConfirmationPane.ts
@@ -146,7 +145,6 @@ src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
 src/Explorer/Panes/ExecuteSprocParamsPane.ts
 src/Explorer/Panes/GraphStylingPane.ts
-src/Explorer/Panes/LibraryManagePane.ts
 src/Explorer/Panes/LoadQueryPane.ts
 src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
@@ -332,10 +330,6 @@ src/Explorer/Controls/Directory/DirectoryListComponent.test.tsx
 src/Explorer/Controls/Directory/DirectoryListComponent.tsx
 src/Explorer/Controls/Editor/EditorReact.tsx
 src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx
-src/Explorer/Controls/LibraryManagement/ClusterLibraryGrid.tsx
-src/Explorer/Controls/LibraryManagement/ClusterLibraryGridAdapter.tsx
-src/Explorer/Controls/LibraryManagement/LibraryManage.tsx
-src/Explorer/Controls/LibraryManagement/LibraryManageComponentAdapter.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookMetadataComponent.tsx

@@ -19,8 +19,6 @@ import BrowseQueriesPaneTemplate from "./BrowseQueriesPane.html";
 import UploadFilePaneTemplate from "./UploadFilePane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
-import LibraryManagePaneTemplate from "./LibraryManagePane.html";
-import ClusterLibraryPaneTemplate from "./ClusterLibraryPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 
 export class PaneComponent {
@@ -214,24 +212,6 @@ export class SetupNotebooksPaneComponent {
     return {
       viewModel: PaneComponent,
       template: SetupNotebooksPaneTemplate
-    };
-  }
-}
-
-export class LibraryManagePaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: LibraryManagePaneTemplate
-    };
-  }
-}
-
-export class ClusterLibraryPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: ClusterLibraryPaneTemplate
     };
   }
 }
