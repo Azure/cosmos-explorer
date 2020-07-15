@@ -16,6 +16,9 @@ jobs:
             node-version: 12.x
         - name: Accessibility Check
           run: |
+            cat /proc/sys/fs/inotify/max_user_watches
+            sudo sysctl fs.inotify.max_user_watches=524288
+            sudo sysctl -p
             npm ci
             npm start &
             npx wait-on -d 1000  -i 5000 https-get://0.0.0.0:1234/
