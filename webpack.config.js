@@ -148,7 +148,7 @@ module.exports = function(env = {}, argv = {}) {
       chunks: ["notebookViewer"]
     }),
     new HtmlWebpackPlugin({
-      filename: "gallery/index.html",
+      filename: "gallery.html",
       template: "src/GalleryViewer/galleryViewer.html",
       chunks: ["galleryViewer"]
     }),
