@@ -4,13 +4,14 @@ import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { NotificationConsoleComponent } from "./NotificationConsoleComponent";
 import { ConsoleData } from "./NotificationConsoleComponent";
+import Explorer from "../../Explorer";
 
 export class NotificationConsoleComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   private consoleData: ko.ObservableArray<ConsoleData>;
 
-  constructor(container: ViewModels.Explorer) {
+  constructor(container: Explorer) {
     this.container = container;
 
     this.consoleData = container.notificationConsoleData;

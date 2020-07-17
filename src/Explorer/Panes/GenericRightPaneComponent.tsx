@@ -5,9 +5,10 @@ import { KeyCodes } from "../../Common/Constants";
 import { Subscription } from "knockout";
 import ErrorRedIcon from "../../../images/error_red.svg";
 import LoadingIndicatorIcon from "../../../images/LoadingIndicator_3Squares.gif";
+import Explorer from "../Explorer";
 
 export interface GenericRightPaneProps {
-  container: ViewModels.Explorer;
+  container: Explorer;
   content: JSX.Element;
   formError: string;
   formErrorDetail: string;

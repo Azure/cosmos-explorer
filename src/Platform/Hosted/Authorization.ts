@@ -90,7 +90,7 @@ export default class AuthHeadersUtil {
     const url: string = `${
       AuthHeadersUtil.extensionEndpoint
     }/api/tokens/generateToken${AuthHeadersUtil._generateResourceUrl()}`;
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     const headers: any = { authorization: CosmosClient.authorizationToken() };
     headers[Constants.HttpHeaders.getReadOnlyKey] = !explorer.hasWriteAccess();
 

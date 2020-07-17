@@ -15,7 +15,6 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Logger from "../../../Common/Logger";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
@@ -24,9 +23,10 @@ import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComp
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
+import Explorer from "../../Explorer";
 
 export interface GalleryViewerComponentProps {
-  container?: ViewModels.Explorer;
+  container?: Explorer;
   junoClient: JunoClient;
   selectedTab: GalleryTab;
   sortBy: SortBy;

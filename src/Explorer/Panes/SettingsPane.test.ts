@@ -4,7 +4,7 @@ import Explorer from "../Explorer";
 
 describe("Settings Pane", () => {
   describe("shouldShowQueryPageOptions()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });

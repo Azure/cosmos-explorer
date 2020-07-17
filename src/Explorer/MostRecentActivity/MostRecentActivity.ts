@@ -3,6 +3,7 @@ import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
 
 import CollectionIcon from "../../../images/tree-collection.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import Explorer from "../Explorer";
 
 export enum Type {
   OpenCollection,
@@ -36,7 +37,7 @@ export class MostRecentActivity {
   private static readonly schemaVersion: string = "1";
   private static itemsMaxNumber: number = 5;
   private storedData: StoredData;
-  constructor(private container: ViewModels.Explorer) {
+  constructor(private container: Explorer) {
     // Retrieve from local storage
     if (LocalStorageUtility.hasItem(StorageKey.MostRecentActivity)) {
       const rawData = LocalStorageUtility.getEntryString(StorageKey.MostRecentActivity);

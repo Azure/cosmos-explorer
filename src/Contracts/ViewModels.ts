@@ -6,27 +6,17 @@ import Q from "q";
 import QueryViewModel from "../Explorer/Tables/QueryBuilder/QueryViewModel";
 import TableEntityListViewModel from "../Explorer/Tables/DataTable/TableEntityListViewModel";
 import { AccessibleVerticalList } from "../Explorer/Tree/AccessibleVerticalList";
-import { ArcadiaWorkspaceItem } from "../Explorer/Controls/Arcadia/ArcadiaMenuPicker";
-import { CassandraTableKey, CassandraTableKeys, TableDataClient } from "../Explorer/Tables/TableDataClient";
+import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { ExecuteSprocParam } from "../Explorer/Panes/ExecuteSprocParamsPane";
 import { GitHubClient } from "../GitHub/GitHubClient";
 import { IColumnSetting } from "../Explorer/Panes/Tables/TableColumnOptionsPane";
 import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
-import { Library } from "./DataModels";
-import { MostRecentActivity } from "../Explorer/MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem } from "../Explorer/Notebook/NotebookContentItem";
-import { PlatformType } from "../PlatformType";
 import { QueryMetrics } from "@azure/cosmos";
-import { SetupNotebooksPane } from "../Explorer/Panes/SetupNotebooksPane";
-import { Splitter } from "../Common/Splitter";
-import { StringInputPane } from "../Explorer/Panes/StringInputPane";
-import { TabsManager } from "../Explorer/Tabs/TabsManager";
-import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
-import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
+import Explorer from "../Explorer/Explorer";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -41,213 +31,6 @@ export interface ConfigurationOverrides extends DataModels.ConfigurationOverride
 export interface NavbarButtonConfig extends CommandButtonComponentProps {}
 
 export interface DatabaseAccount extends DataModels.DatabaseAccount {}
-
-export interface Explorer {
-  flight: ko.Observable<string>;
-  handleMessage(event: MessageEvent): void;
-  isRefreshingExplorer: ko.Observable<boolean>;
-
-  databaseAccount: ko.Observable<DatabaseAccount>;
-  subscriptionType: ko.Observable<SubscriptionType>;
-  quotaId: ko.Observable<string>;
-  hasWriteAccess: ko.Observable<boolean>;
-
-  defaultExperience: ko.Observable<string>;
-  isPreferredApiDocumentDB: ko.Computed<boolean>;
-  isPreferredApiCassandra: ko.Computed<boolean>;
-  isPreferredApiTable: ko.Computed<boolean>;
-  isPreferredApiGraph: ko.Computed<boolean>;
-  isPreferredApiMongoDB: ko.Computed<boolean>;
-
-  isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-
-  isDatabaseNodeOrNoneSelected(): boolean;
-  isDatabaseNodeSelected(): boolean;
-  isNodeKindSelected(nodeKind: string): boolean;
-  isNoneSelected(): boolean;
-  isSelectedDatabaseShared(): boolean;
-  deleteDatabaseText: ko.Observable<string>;
-  deleteCollectionText: ko.Subscribable<string>; // Our code assigns to a ko.Observable, but unit test assigns to ko.Computed
-
-  addCollectionText: ko.Observable<string>;
-  addDatabaseText: ko.Observable<string>;
-  collectionTitle: ko.Observable<string>;
-  collectionTreeNodeAltText: ko.Observable<string>;
-  refreshTreeTitle: ko.Observable<string>;
-
-  isAccountReady: ko.Observable<boolean>;
-
-  collectionCreationDefaults: CollectionCreationDefaults;
-  isEmulator: boolean;
-  features: ko.Observable<any>;
-  serverId: ko.Observable<string>;
-  extensionEndpoint: ko.Observable<string>;
-  armEndpoint: ko.Observable<string>;
-  isFeatureEnabled: (feature: string) => boolean;
-  isGalleryPublishEnabled: ko.Computed<boolean>;
-  isGitHubPaneEnabled: ko.Observable<boolean>;
-  isPublishNotebookPaneEnabled: ko.Observable<boolean>;
-  isRightPanelV2Enabled: ko.Computed<boolean>;
-  canExceedMaximumValue: ko.Computed<boolean>;
-  hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
-  isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  isNotificationConsoleExpanded: ko.Observable<boolean>;
-  isTryCosmosDBSubscription: ko.Observable<boolean>;
-  canSaveQueries: ko.Computed<boolean>;
-  parentFrameDataExplorerVersion: ko.Observable<string>;
-
-  documentClientUtility: DocumentClientUtilityBase;
-  notificationsClient: NotificationsClient;
-  queriesClient: QueriesClient;
-  tableDataClient: TableDataClient;
-  splitter: Splitter;
-  notificationConsoleData: ko.ObservableArray<ConsoleData>;
-
-  // Selection
-  selectedNode: ko.Observable<TreeNode>;
-
-  // Tree
-  databases: ko.ObservableArray<Database>;
-  nonSystemDatabases: ko.Computed<Database[]>;
-  selectedDatabaseId: ko.Computed<string>;
-  selectedCollectionId: ko.Computed<string>;
-  isLeftPaneExpanded: ko.Observable<boolean>;
-
-  // Resource Token
-  resourceTokenDatabaseId: ko.Observable<string>;
-  resourceTokenCollectionId: ko.Observable<string>;
-  resourceTokenCollection: ko.Observable<CollectionBase>;
-  resourceTokenPartitionKey: ko.Observable<string>;
-  isAuthWithResourceToken: ko.Observable<boolean>;
-  isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
-
-  // Tabs
-  isTabsContentExpanded: ko.Observable<boolean>;
-  tabsManager: TabsManager;
-
-  // Contextual Panes
-  addDatabasePane: AddDatabasePane;
-  addCollectionPane: AddCollectionPane;
-  deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
-  deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
-  graphStylingPane: GraphStylingPane;
-  addTableEntityPane: AddTableEntityPane;
-  editTableEntityPane: EditTableEntityPane;
-  tableColumnOptionsPane: TableColumnOptionsPane;
-  querySelectPane: QuerySelectPane;
-  newVertexPane: NewVertexPane;
-  cassandraAddCollectionPane: CassandraAddCollectionPane;
-  settingsPane: SettingsPane;
-  executeSprocParamsPane: ExecuteSprocParamsPane;
-  renewAdHocAccessPane: RenewAdHocAccessPane;
-  uploadItemsPane: UploadItemsPane;
-  uploadItemsPaneAdapter: UploadItemsPaneAdapter;
-  loadQueryPane: LoadQueryPane;
-  saveQueryPane: ContextualPane;
-  browseQueriesPane: BrowseQueriesPane;
-  uploadFilePane: UploadFilePane;
-  stringInputPane: StringInputPane;
-  setupNotebooksPane: SetupNotebooksPane;
-  gitHubReposPane: ContextualPane;
-  publishNotebookPaneAdapter: ReactAdapter;
-
-  // Facade
-  logConsoleData(data: ConsoleData): void;
-  isNodeKindSelected(nodeKind: string): boolean;
-  initDataExplorerWithFrameInputs(inputs: DataExplorerInputsFrame): Q.Promise<void>;
-  toggleLeftPaneExpanded(): void;
-  refreshDatabaseForResourceToken(): Q.Promise<void>;
-  refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any>;
-  closeAllPanes(): void;
-  findSelectedDatabase(): Database;
-  findDatabaseWithId(databaseRid: string): Database;
-  isLastDatabase(): boolean;
-  isLastNonEmptyDatabase(): boolean;
-  findSelectedCollection(): Collection;
-  isLastCollection(): boolean;
-  findSelectedStoredProcedure(): StoredProcedure;
-  findSelectedUDF(): UserDefinedFunction;
-  findSelectedTrigger(): Trigger;
-  findCollection(rid: string): Collection;
-  provideFeedbackEmail(): void;
-  expandConsole: () => void;
-  collapseConsole: () => void;
-  generateSharedAccessData(): void;
-  getPlatformType(): PlatformType;
-  isConnectExplorerVisible(): boolean;
-  isRunningOnNationalCloud(): boolean;
-  displayConnectExplorerForm(): void;
-  hideConnectExplorerForm(): void;
-  displayContextSwitchPromptForConnectionString(connectionString: string): void;
-  displayGuestAccessTokenRenewalPrompt(): void;
-  rebindDocumentClientUtility(documentClientUtility: DocumentClientUtilityBase): void;
-  renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
-  renewShareAccess(accessInput: string): Q.Promise<void>;
-  onUpdateTabsButtons: (buttons: NavbarButtonConfig[]) => void;
-  onNewCollectionClicked: () => void;
-  showOkModalDialog: (title: string, msg: string) => void;
-  showOkCancelModalDialog: (
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void
-  ) => void;
-  showOkCancelTextFieldModalDialog: (
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void,
-    textFiledProps: TextFieldProps,
-    isPrimaryButtonDisabled?: boolean
-  ) => void;
-
-  // Analytics
-  isNotebookEnabled: ko.Observable<boolean>;
-  isSparkEnabled: ko.Observable<boolean>;
-  isNotebooksEnabledForAccount: ko.Observable<boolean>;
-  isSparkEnabledForAccount: ko.Observable<boolean>;
-  hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
-  openEnableSynapseLinkDialog(): void;
-  isSynapseLinkUpdating: ko.Observable<boolean>;
-  notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
-  arcadiaToken: ko.Observable<string>;
-  arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
-  memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
-  notebookManager?: any; // This is dynamically loaded
-  openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
-  resetNotebookWorkspace(): void;
-  importAndOpen: (path: string) => Promise<boolean>;
-  importAndOpenContent: (name: string, content: string) => Promise<boolean>;
-  publishNotebook: (name: string, content: string) => void;
-  openNotebookTerminal: (kind: TerminalKind) => void;
-  openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
-  openNotebookViewer: (notebookUrl: string) => void;
-  notebookWorkspaceManager: NotebookWorkspaceManager;
-  mostRecentActivity: MostRecentActivity;
-  initNotebooks: (databaseAccount: DataModels.DatabaseAccount) => Promise<void>;
-  handleOpenFileAction(path: string): Promise<void>;
-
-  // Notebook operations
-  openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
-  deleteNotebookFile: (item: NotebookContentItem) => Promise<void>;
-  onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem>;
-  onNewNotebookClicked: (parent?: NotebookContentItem) => void;
-  onUploadToNotebookServerClicked: (parent?: NotebookContentItem) => void;
-  renameNotebook: (notebookFile: NotebookContentItem) => Q.Promise<NotebookContentItem>;
-  readFile: (notebookFile: NotebookContentItem) => Promise<string>;
-  downloadFile: (notebookFile: NotebookContentItem) => Promise<void>;
-  createNotebookContentItemFile: (name: string, filepath: string) => NotebookContentItem;
-  refreshContentItem(item: NotebookContentItem): Promise<void>;
-  getNotebookBasePath(): string;
-
-  createWorkspace(): Promise<string>;
-  createSparkPool(workspaceId: string): Promise<string>;
-}
 
 export interface NotebookWorkspaceManager {
   getNotebookWorkspacesAsync(cosmosAccountResourceId: string): Promise<DataModels.NotebookWorkspace[]>;

@@ -25,6 +25,7 @@ import SynapseIcon from "../../../images/synapse-link.svg";
 import { extractPartitionKey, PartitionKeyDefinition, QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
 
 export default class DocumentsTab extends TabsBase implements ViewModels.DocumentsTab {
   public selectedDocumentId: ko.Observable<ViewModels.DocumentId>;
@@ -957,7 +958,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     );
   }
 
-  public static _createUploadButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  public static _createUploadButton(container: Explorer): ViewModels.NavbarButtonConfig {
     const label = "Upload Item";
     return {
       iconSrc: UploadIcon,

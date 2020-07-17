@@ -9,6 +9,7 @@ import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
+import Explorer from "../Explorer";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -24,7 +25,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private tags: string;
   private thumbnailUrl: string;
 
-  constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
+  constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
     this.reset();
     this.triggerRender();

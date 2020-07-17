@@ -2,12 +2,13 @@ import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "./TabsBase";
+import Explorer from "../Explorer";
 
 export default class SparkMasterTab extends TabsBase {
   public sparkMasterSrc: ko.Observable<string>;
 
   private _clusterConnectionInfo: DataModels.SparkClusterConnectionInfo;
-  private _container: ViewModels.Explorer;
+  private _container: Explorer;
 
   constructor(options: ViewModels.SparkMasterTabOptions) {
     super(options);

@@ -8,14 +8,14 @@ import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
-import { CollectionStub, DatabaseStub, ExplorerStub } from "../OpenActionsStubs";
+import { CollectionStub, DatabaseStub } from "../OpenActionsStubs";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
 
 describe("Delete Database Confirmation Pane", () => {
   describe("Explorer.isLastDatabase() and Explorer.isLastNonEmptyDatabase()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
@@ -50,11 +50,9 @@ describe("Delete Database Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last non empty database or is last database that has shared throughput, else false", () => {
-      let fakeDocumentClientUtility = sinon.createStubInstance<DocumentClientUtilityBase>(
-        DocumentClientUtilityBase as any
-      );
-      let fakeExplorer = sinon.createStubInstance<ExplorerStub>(ExplorerStub as any);
-      sinon.stub(fakeExplorer, "isNotificationConsoleExpanded").value(ko.observable<boolean>(false));
+      let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
+      let fakeExplorer = {} as Explorer;
+      fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
       let pane = new DeleteDatabaseConfirmationPane({
         documentClientUtility: fakeDocumentClientUtility as any,
@@ -63,18 +61,18 @@ describe("Delete Database Confirmation Pane", () => {
         container: fakeExplorer as any
       });
 
-      fakeExplorer.isLastNonEmptyDatabase.returns(true);
+      fakeExplorer.isLastNonEmptyDatabase = () => true;
       pane.container = fakeExplorer as any;
       expect(pane.shouldRecordFeedback()).toBe(true);
 
-      fakeExplorer.isLastDatabase.returns(true);
-      fakeExplorer.isSelectedDatabaseShared.returns(true);
+      fakeExplorer.isLastDatabase = () => true;
+      fakeExplorer.isSelectedDatabaseShared = () => true;
       pane.container = fakeExplorer as any;
       expect(pane.shouldRecordFeedback()).toBe(true);
 
-      fakeExplorer.isLastNonEmptyDatabase.returns(false);
-      fakeExplorer.isLastDatabase.returns(true);
-      fakeExplorer.isSelectedDatabaseShared.returns(false);
+      fakeExplorer.isLastNonEmptyDatabase = () => false;
+      fakeExplorer.isLastDatabase = () => true;
+      fakeExplorer.isSelectedDatabaseShared = () => false;
       pane.container = fakeExplorer as any;
       expect(pane.shouldRecordFeedback()).toBe(false);
     });
@@ -93,39 +91,33 @@ describe("Delete Database Confirmation Pane", () => {
 
     it("on submit() it should log feedback if last non empty database or is last database that has shared throughput", () => {
       let selectedDatabaseId = "testDB";
-      let fakeDocumentClientUtility = sinon.createStubInstance<DocumentClientUtilityBase>(
-        DocumentClientUtilityBase as any
-      );
-      fakeDocumentClientUtility.deleteDatabase.returns(Q.resolve(null));
-      let fakeExplorer = sinon.createStubInstance<ExplorerStub>(ExplorerStub as any);
-      fakeExplorer.findSelectedDatabase.returns(
+      let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
+      fakeDocumentClientUtility.deleteDatabase = () => Q.resolve(null);
+      let fakeExplorer = {} as Explorer;
+      fakeExplorer.findSelectedDatabase = () =>
         new DatabaseStub({
           id: ko.observable<string>(selectedDatabaseId),
           rid: "test",
           collections: ko.observableArray<ViewModels.Collection>()
-        })
-      );
-      sinon.stub(fakeExplorer, "isNotificationConsoleExpanded").value(ko.observable<boolean>(false));
-      sinon.stub(fakeExplorer, "selectedDatabaseId").value(ko.observable<string>(selectedDatabaseId));
-      fakeExplorer.isSelectedDatabaseShared.returns(false);
+        });
+      fakeExplorer.refreshAllDatabases = () => Q.resolve();
+      fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
+      fakeExplorer.selectedDatabaseId = ko.computed<string>(() => selectedDatabaseId);
+      fakeExplorer.isSelectedDatabaseShared = () => false;
       const SubscriptionId = "testId";
       const AccountName = "testAccount";
-      sinon.stub(fakeExplorer, "databaseAccount").value(
-        ko.observable<ViewModels.DatabaseAccount>({
-          id: SubscriptionId,
-          name: AccountName
-        } as ViewModels.DatabaseAccount)
-      );
-      sinon.stub(fakeExplorer, "defaultExperience").value(ko.observable<string>("DocumentDB"));
-      sinon.stub(fakeExplorer, "isPreferredApiCassandra").value(
-        ko.computed(() => {
-          return false;
-        })
-      );
-      sinon.stub(fakeExplorer, "documentClientUtility").value(fakeDocumentClientUtility);
-      sinon.stub(fakeExplorer, "selectedNode").value(ko.observable<TreeNode>());
-      sinon.stub(fakeExplorer, "tabsManager").value(new TabsManager());
-      fakeExplorer.isLastNonEmptyDatabase.returns(true);
+      fakeExplorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
+        id: SubscriptionId,
+        name: AccountName
+      } as ViewModels.DatabaseAccount);
+      fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
+      fakeExplorer.isPreferredApiCassandra = ko.computed(() => {
+        return false;
+      });
+      fakeExplorer.documentClientUtility = fakeDocumentClientUtility;
+      fakeExplorer.selectedNode = ko.observable<TreeNode>();
+      fakeExplorer.tabsManager = new TabsManager();
+      fakeExplorer.isLastNonEmptyDatabase = () => true;
 
       let pane = new DeleteDatabaseConfirmationPane({
         documentClientUtility: fakeDocumentClientUtility as any,

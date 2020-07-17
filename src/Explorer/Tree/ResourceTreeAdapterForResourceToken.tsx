@@ -7,12 +7,13 @@ import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import CollectionIcon from "../../../images/tree-collection.svg";
+import Explorer from "../Explorer";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public parameters: ko.Observable<number>;
   public myNotebooksContentRoot: NotebookContentItem;
 
-  public constructor(private container: ViewModels.Explorer) {
+  public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.resourceTokenCollection.subscribe((collection: ViewModels.CollectionBase) => this.triggerRender());

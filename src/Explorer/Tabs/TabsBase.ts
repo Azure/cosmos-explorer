@@ -8,6 +8,7 @@ import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ThemeUtility from "../../Common/ThemeUtility";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
+import Explorer from "../Explorer";
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel implements ViewModels.Tab {
@@ -79,7 +80,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
   }
 
   public onCloseTabButtonClick(): void {
-    const explorer: ViewModels.Explorer = this.getContainer();
+    const explorer = this.getContainer();
     explorer.tabsManager.closeTab(this.tabId, explorer);
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
@@ -173,7 +174,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
     return Q();
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return (this.collection && this.collection.container) || (this.database && this.database.container);
   }
 

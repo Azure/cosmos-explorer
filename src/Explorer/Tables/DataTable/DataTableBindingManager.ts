@@ -237,7 +237,7 @@ function updateTableScrollableRegionHeight(): void {
       .offset().top;
     var dataTablesInfoElem = $(tabElement).find(".dataTables_info");
     var dataTablesPaginateElem = $(tabElement).find(".dataTables_paginate");
-    const explorer = window.dataExplorer as ViewModels.Explorer;
+    const explorer = window.dataExplorer;
     const notificationConsoleHeight = explorer.isNotificationConsoleExpanded()
         ? 252 /** 32px(header) + 220px(content height) **/
         : 32 /** Header height **/;

@@ -1,8 +1,9 @@
-import { ExplorerStub, DatabaseStub, CollectionStub } from "../OpenActionsStubs";
+import { DatabaseStub, CollectionStub } from "../OpenActionsStubs";
 import { DataSamplesUtil } from "./DataSamplesUtil";
 import * as sinon from "sinon";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import * as ko from "knockout";
+import Explorer from "../Explorer";
 
 describe("DataSampleUtils", () => {
   const sampleCollectionId = "sampleCollectionId";
@@ -14,7 +15,7 @@ describe("DataSampleUtils", () => {
       id: ko.observable(sampleDatabaseId),
       collections: ko.observableArray([collection])
     });
-    const explorer = new ExplorerStub();
+    const explorer = {} as Explorer;
     explorer.nonSystemDatabases = ko.computed(() => [database]);
     explorer.showOkModalDialog = () => {};
     const dataSamplesUtil = new DataSamplesUtil(explorer);

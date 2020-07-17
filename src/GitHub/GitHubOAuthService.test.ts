@@ -6,6 +6,7 @@ import { GitHubConnector, IGitHubConnectorParams } from "./GitHubConnector";
 import { GitHubOAuthService } from "./GitHubOAuthService";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import NotebookManager from "../Explorer/Notebook/NotebookManager";
+import Explorer from "../Explorer/Explorer";
 
 const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
   id: "id",
@@ -25,7 +26,7 @@ const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
 describe("GitHubOAuthService", () => {
   let junoClient: JunoClient;
   let gitHubOAuthService: GitHubOAuthService;
-  let originalDataExplorer: ViewModels.Explorer;
+  let originalDataExplorer: Explorer;
 
   beforeEach(() => {
     junoClient = new JunoClient(ko.observable<ViewModels.DatabaseAccount>(sampleDatabaseAccount));
@@ -35,7 +36,7 @@ describe("GitHubOAuthService", () => {
       ...originalDataExplorer,
       logConsoleData: (data): void =>
         data.type === ConsoleDataType.Error ? console.error(data.message) : console.log(data.message)
-    } as ViewModels.Explorer;
+    } as Explorer;
     window.dataExplorer.notebookManager = new NotebookManager();
     window.dataExplorer.notebookManager.junoClient = junoClient;
     window.dataExplorer.notebookManager.gitHubOAuthService = gitHubOAuthService;

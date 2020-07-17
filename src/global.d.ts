@@ -1,6 +1,6 @@
 import { AuthType } from "./AuthType";
 import { PlatformType } from "./PlatformType";
-import { Explorer } from "./Contracts/ViewModels";
+import Explorer from "./Explorer/Explorer";
 
 declare global {
   interface Window {

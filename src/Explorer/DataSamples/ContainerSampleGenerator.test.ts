@@ -3,14 +3,15 @@ import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Q from "q";
-import { CollectionStub, DatabaseStub, ExplorerStub } from "../OpenActionsStubs";
+import { CollectionStub, DatabaseStub } from "../OpenActionsStubs";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
+import Explorer from "../Explorer";
 
 describe("ContainerSampleGenerator", () => {
-  const createExplorerStub = (database: ViewModels.Database): ExplorerStub => {
-    const explorerStub = new ExplorerStub();
+  const createExplorerStub = (database: ViewModels.Database): Explorer => {
+    const explorerStub = {} as Explorer;
     explorerStub.nonSystemDatabases = ko.computed(() => [database]);
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);

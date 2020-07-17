@@ -217,7 +217,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                     menuItem: any
                   ) => {
                     if (window.confirm("Are you sure you want to delete this query?")) {
-                      const container: ViewModels.Explorer = window.dataExplorer;
+                      const container = window.dataExplorer;
                       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
                         databaseAccountName: container && container.databaseAccount().name,
                         defaultExperience: container && container.defaultExperience(),

@@ -9,12 +9,12 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { CollectionStub, DatabaseStub, ExplorerStub } from "../OpenActionsStubs";
+import { CollectionStub, DatabaseStub } from "../OpenActionsStubs";
 import { TreeNode } from "../../Contracts/ViewModels";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
@@ -59,29 +59,27 @@ describe("Delete Collection Confirmation Pane", () => {
       let fakeDocumentClientUtility = sinon.createStubInstance<DocumentClientUtilityBase>(
         DocumentClientUtilityBase as any
       );
-      let fakeExplorer = sinon.createStubInstance<ExplorerStub>(ExplorerStub as any);
-      sinon.stub(fakeExplorer, "isNotificationConsoleExpanded").value(ko.observable<boolean>(false));
+      let fakeExplorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
+      fakeExplorer.refreshAllDatabases = () => Q.resolve();
 
       let pane = new DeleteCollectionConfirmationPane({
         documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any
+        container: fakeExplorer
       });
 
-      fakeExplorer.isLastCollection.returns(true);
-      fakeExplorer.isSelectedDatabaseShared.returns(false);
-      pane.container = fakeExplorer as any;
+      fakeExplorer.isLastCollection = () => true;
+      fakeExplorer.isSelectedDatabaseShared = () => false;
       expect(pane.shouldRecordFeedback()).toBe(true);
 
-      fakeExplorer.isLastCollection.returns(true);
-      fakeExplorer.isSelectedDatabaseShared.returns(true);
-      pane.container = fakeExplorer as any;
+      fakeExplorer.isLastCollection = () => true;
+      fakeExplorer.isSelectedDatabaseShared = () => true;
       expect(pane.shouldRecordFeedback()).toBe(false);
 
-      fakeExplorer.isLastCollection.returns(false);
-      fakeExplorer.isSelectedDatabaseShared.returns(false);
-      pane.container = fakeExplorer as any;
+      fakeExplorer.isLastCollection = () => false;
+      fakeExplorer.isSelectedDatabaseShared = () => false;
       expect(pane.shouldRecordFeedback()).toBe(false);
     });
   });
@@ -99,38 +97,34 @@ describe("Delete Collection Confirmation Pane", () => {
 
     it("it should log feedback if last collection and database is not shared", () => {
       let selectedCollectionId = "testCol";
-      let fakeDocumentClientUtility = sinon.createStubInstance<DocumentClientUtilityBase>(
-        DocumentClientUtilityBase as any
-      );
-      fakeDocumentClientUtility.deleteCollection.returns(Q.resolve(null));
-      let fakeExplorer = sinon.createStubInstance<ExplorerStub>(ExplorerStub as any);
-      fakeExplorer.findSelectedCollection.returns(
+      let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
+      fakeDocumentClientUtility.deleteCollection = () => Q(null);
+      let fakeExplorer = {} as Explorer;
+      fakeExplorer.findSelectedCollection = () =>
         new CollectionStub({
           id: ko.observable<string>(selectedCollectionId),
           rid: "test"
-        })
-      );
-      sinon.stub(fakeExplorer, "isNotificationConsoleExpanded").value(ko.observable<boolean>(false));
-      sinon.stub(fakeExplorer, "selectedCollectionId").value(ko.observable<string>(selectedCollectionId));
-      fakeExplorer.isSelectedDatabaseShared.returns(false);
+        });
+      fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
+      fakeExplorer.selectedCollectionId = ko.computed<string>(() => selectedCollectionId);
+      fakeExplorer.isSelectedDatabaseShared = () => false;
       const SubscriptionId = "testId";
       const AccountName = "testAccount";
-      sinon.stub(fakeExplorer, "databaseAccount").value(
-        ko.observable<ViewModels.DatabaseAccount>({
-          id: SubscriptionId,
-          name: AccountName
-        } as ViewModels.DatabaseAccount)
-      );
-      sinon.stub(fakeExplorer, "defaultExperience").value(ko.observable<string>("DocumentDB"));
-      sinon.stub(fakeExplorer, "isPreferredApiCassandra").value(
-        ko.computed(() => {
-          return false;
-        })
-      );
-      sinon.stub(fakeExplorer, "documentClientUtility").value(fakeDocumentClientUtility);
-      sinon.stub(fakeExplorer, "selectedNode").value(ko.observable<TreeNode>());
-      fakeExplorer.isLastCollection.returns(true);
-      fakeExplorer.isSelectedDatabaseShared.returns(false);
+      fakeExplorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
+        id: SubscriptionId,
+        name: AccountName
+      } as ViewModels.DatabaseAccount);
+
+      fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
+      fakeExplorer.isPreferredApiCassandra = ko.computed(() => {
+        return false;
+      });
+
+      fakeExplorer.documentClientUtility = fakeDocumentClientUtility;
+      fakeExplorer.selectedNode = ko.observable<TreeNode>();
+      fakeExplorer.isLastCollection = () => true;
+      fakeExplorer.isSelectedDatabaseShared = () => false;
+      fakeExplorer.refreshAllDatabases = () => Q.resolve();
 
       let pane = new DeleteCollectionConfirmationPane({
         documentClientUtility: fakeDocumentClientUtility as any,

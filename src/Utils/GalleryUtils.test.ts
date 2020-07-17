@@ -1,8 +1,8 @@
 import * as GalleryUtils from "./GalleryUtils";
 import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
-import { ExplorerStub } from "../Explorer/OpenActionsStubs";
 import { HttpStatusCodes } from "../Common/Constants";
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer/Explorer";
 
 const galleryItem: IGalleryItem = {
   id: "id",
@@ -25,7 +25,7 @@ describe("GalleryUtils", () => {
   });
 
   it("downloadItem shows dialog in data explorer", () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     container.showOkCancelModalDialog = jest.fn().mockImplementation();
 
     GalleryUtils.downloadItem(container, undefined, galleryItem, undefined);
@@ -34,7 +34,7 @@ describe("GalleryUtils", () => {
   });
 
   it("favoriteItem favorites item", async () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     const junoClient = new JunoClient();
     junoClient.favoriteNotebook = jest
       .fn()
@@ -48,7 +48,7 @@ describe("GalleryUtils", () => {
   });
 
   it("unfavoriteItem unfavorites item", async () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     const junoClient = new JunoClient();
     junoClient.unfavoriteNotebook = jest
       .fn()
@@ -62,7 +62,7 @@ describe("GalleryUtils", () => {
   });
 
   it("deleteItem shows dialog in data explorer", () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     container.showOkCancelModalDialog = jest.fn().mockImplementation();
 
     GalleryUtils.deleteItem(container, undefined, galleryItem, undefined);

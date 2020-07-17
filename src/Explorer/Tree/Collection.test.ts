@@ -2,11 +2,12 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Collection from "./Collection";
+import Explorer from "../Explorer";
 jest.mock("monaco-editor");
 
 describe("Collection", () => {
   function generateCollection(
-    container: ViewModels.Explorer,
+    container: Explorer,
     databaseId: string,
     data: DataModels.Collection,
     quotaInfo: DataModels.CollectionQuotaInfo,
@@ -31,7 +32,7 @@ describe("Collection", () => {
   }
 
   function generateMockCollectionWithDataModel(data: DataModels.Collection): Collection {
-    const mockContainer = {} as ViewModels.Explorer;
+    const mockContainer = {} as Explorer;
     mockContainer.isPreferredApiMongoDB = ko.computed(() => {
       return false;
     });
@@ -47,9 +48,7 @@ describe("Collection", () => {
     mockContainer.isPreferredApiGraph = ko.computed(() => {
       return false;
     });
-    mockContainer.deleteCollectionText = ko.computed(() => {
-      return "delete collection";
-    });
+    mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
     return generateCollection(mockContainer, "abc", data, {} as DataModels.CollectionQuotaInfo, {} as DataModels.Offer);
   }

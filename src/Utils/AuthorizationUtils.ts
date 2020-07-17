@@ -57,8 +57,8 @@ export function decryptJWTToken(token: string) {
 }
 
 export function displayTokenRenewalPromptForStatus(httpStatusCode: number): void {
-  const platformType: PlatformType = window.dataExplorerPlatform;
-  const explorer: ViewModels.Explorer = window.dataExplorer;
+  const platformType = window.dataExplorerPlatform;
+  const explorer = window.dataExplorer;
 
   if (
     httpStatusCode == null ||

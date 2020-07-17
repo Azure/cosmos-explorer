@@ -11,10 +11,11 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
+import Explorer from "../Explorer";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public self: string;
   public rid: string;
   public id: ko.Observable<string>;
@@ -24,7 +25,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
 
-  constructor(container: ViewModels.Explorer, data: any, offer: DataModels.Offer) {
+  constructor(container: Explorer, data: any, offer: DataModels.Offer) {
     this.nodeKind = "Database";
     this.container = container;
     this.self = data._self;

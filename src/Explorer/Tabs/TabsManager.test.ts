@@ -10,7 +10,7 @@ import QueryTab from "./QueryTab";
 
 describe("Tabs manager tests", () => {
   let tabsManager: TabsManager;
-  let explorer: ViewModels.Explorer;
+  let explorer: Explorer;
   let database: ViewModels.Database;
   let collection: ViewModels.Collection;
   let queryTab: QueryTab;

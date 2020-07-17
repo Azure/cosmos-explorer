@@ -17,6 +17,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
+import Explorer from "../Explorer";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -94,7 +95,7 @@ export default class DatabaseSettingsTab extends TabsBase
   private _hasProvisioningTypeChanged: ko.Computed<boolean>;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
   private _offerReplacePending: ko.Computed<boolean>;
-  private container: ViewModels.Explorer;
+  private container: Explorer;
 
   constructor(options: ViewModels.TabOptions) {
     super(options);

@@ -5,7 +5,7 @@ import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import { DataAccessUtility } from "./DataAccessUtility";
 
 export default class HostedExplorerFactory {
-  public createExplorer(): ViewModels.Explorer {
+  public createExplorer(): Explorer {
     var documentClientUtility = new DocumentClientUtilityBase(new DataAccessUtility());
 
     const explorer = new Explorer({
@@ -17,7 +17,7 @@ export default class HostedExplorerFactory {
     return explorer;
   }
 
-  public static reInitializeDocumentClientUtilityForExplorer(explorer: ViewModels.Explorer): void {
+  public static reInitializeDocumentClientUtilityForExplorer(explorer: Explorer): void {
     if (!!explorer) {
       const documentClientUtility = new DocumentClientUtilityBase(new DataAccessUtility());
       explorer.rebindDocumentClientUtility(documentClientUtility);

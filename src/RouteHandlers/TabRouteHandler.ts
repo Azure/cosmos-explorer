@@ -183,7 +183,6 @@ export class TabRouteHandler {
 
   private _openQueryTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
@@ -203,7 +202,6 @@ export class TabRouteHandler {
 
   private _openMongoQueryTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
@@ -226,7 +224,6 @@ export class TabRouteHandler {
 
   private _openMongoShellTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
@@ -249,7 +246,7 @@ export class TabRouteHandler {
 
   private _openDatabaseSettingsTabForResource(databaseId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+      const explorer = window.dataExplorer;
       const database: ViewModels.Database = _.find(
         explorer.databases(),
         (database: ViewModels.Database) => database.id() === databaseId
@@ -270,7 +267,6 @@ export class TabRouteHandler {
 
   private _openNewSprocTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
@@ -303,7 +299,6 @@ export class TabRouteHandler {
 
   private _openNewTriggerTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
@@ -335,7 +330,6 @@ export class TabRouteHandler {
 
   private _openNewUserDefinedFunctionTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
@@ -389,7 +383,7 @@ export class TabRouteHandler {
     tabKind: ViewModels.CollectionTabKind,
     isNewScriptTab?: boolean
   ): ViewModels.Tab {
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     const matchingTabs: ViewModels.Tab[] = explorer.tabsManager.getTabs(
       tabKind,
       (tab: ViewModels.Tab) =>
@@ -402,7 +396,7 @@ export class TabRouteHandler {
   }
 
   private _findMatchingCollectionForResource(databaseId: string, collectionId: string): ViewModels.Collection {
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     const matchedDatabase: ViewModels.Database = explorer.findDatabaseWithId(databaseId);
     const matchedCollection: ViewModels.Collection =
       matchedDatabase && matchedDatabase.findCollectionWithId(collectionId);
@@ -411,7 +405,7 @@ export class TabRouteHandler {
   }
 
   private _executeActionHelper(action: () => void): void {
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     if (!!explorer && (explorer.isRefreshingExplorer() || !explorer.isAccountReady())) {
       const refreshSubscription = explorer.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
         if (!isRefreshing) {

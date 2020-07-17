@@ -7,11 +7,12 @@ import { KeyCodes } from "../../Common/Constants";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
+import Explorer from "../Explorer";
 
 // TODO: Use specific actions for logging telemetry data
 export abstract class ContextualPaneBase extends WaitsForTemplateViewModel implements ViewModels.ContextualPane {
   public id: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public firstFieldHasFocus: ko.Observable<boolean>;
   public formErrorsDetails: ko.Observable<string>;
   public formErrors: ko.Observable<string>;

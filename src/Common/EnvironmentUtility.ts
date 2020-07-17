@@ -2,6 +2,7 @@ import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import { AuthType } from "../AuthType";
 import { StringUtils } from "../Utils/StringUtils";
+import Explorer from "../Explorer/Explorer";
 
 export default class EnvironmentUtility {
   public static getMongoBackendEndpoint(serverId: string, location: string, extensionEndpoint: string = ""): string {
@@ -26,7 +27,7 @@ export default class EnvironmentUtility {
     return window.authType === AuthType.AAD;
   }
 
-  public static getCassandraBackendEndpoint(explorer: ViewModels.Explorer): string {
+  public static getCassandraBackendEndpoint(explorer: Explorer): string {
     const defaultLocation: string = "default";
     const location: string = EnvironmentUtility.normalizeRegionName(explorer.databaseAccount().location);
     return (

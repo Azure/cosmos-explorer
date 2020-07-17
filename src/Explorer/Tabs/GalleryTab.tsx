@@ -3,12 +3,13 @@ import { GalleryAndNotebookViewerComponentProps } from "../Controls/NotebookGall
 import { GalleryAndNotebookViewerComponentAdapter } from "../Controls/NotebookGallery/GalleryAndNotebookViewerComponentAdapter";
 import { GalleryTab as GalleryViewerTab, SortBy } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import TabsBase from "./TabsBase";
+import Explorer from "../Explorer";
 
 /**
  * Notebook gallery tab
  */
 export default class GalleryTab extends TabsBase implements ViewModels.Tab {
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   public galleryAndNotebookViewerComponentAdapter: GalleryAndNotebookViewerComponentAdapter;
 
   constructor(options: ViewModels.GalleryTabOptions) {
@@ -29,7 +30,7 @@ export default class GalleryTab extends TabsBase implements ViewModels.Tab {
     this.galleryAndNotebookViewerComponentAdapter = new GalleryAndNotebookViewerComponentAdapter(props);
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 }

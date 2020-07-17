@@ -6,6 +6,7 @@ import TableEntityListViewModel from "./TableEntityListViewModel";
 import * as Entities from "../Entities";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as TableColumnOptionsPane from "../../Panes/Tables/TableColumnOptionsPane";
+import Explorer from "../../Explorer";
 
 export default class TableCommands {
   // Command Ids
@@ -15,9 +16,9 @@ export default class TableCommands {
   public static resetColumnsCommand: string = "reset";
   public static customizeColumnsCommand: string = "customizeColumns";
 
-  private _container: ViewModels.Explorer;
+  private _container: Explorer;
 
-  constructor(container: ViewModels.Explorer) {
+  constructor(container: Explorer) {
     this._container = container;
   }
 
