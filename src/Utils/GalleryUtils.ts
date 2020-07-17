@@ -1,5 +1,4 @@
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import * as ViewModels from "../Contracts/ViewModels";
 import { NotificationConsoleUtils } from "./NotificationConsoleUtils";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../Common/Logger";

@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { JunoClient, IGalleryItem } from "../../../Juno/JunoClient";
 import { GalleryTab, SortBy, GalleryViewerComponentProps, GalleryViewerComponent } from "./GalleryViewerComponent";
 import { NotebookViewerComponentProps, NotebookViewerComponent } from "../NotebookViewer/NotebookViewerComponent";

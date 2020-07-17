@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { IconButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import { KeyCodes } from "../../Common/Constants";
 import { Subscription } from "knockout";
