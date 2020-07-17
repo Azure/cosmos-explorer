@@ -111,7 +111,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.close();
   }
 
-  private createFormErrorForLargeImageSelection = (formError: string, formErrorDetail: string, area: string) => {
+  private createFormErrorForLargeImageSelection = (formError: string, formErrorDetail: string, area: string): void => {
     this.formError = formError;
     this.formErrorDetail = formErrorDetail;
 
@@ -121,7 +121,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.triggerRender();
   };
 
-  private clearFormError = () => {
+  private clearFormError = (): void => {
     this.formError = undefined;
     this.formErrorDetail = undefined;
     this.triggerRender();

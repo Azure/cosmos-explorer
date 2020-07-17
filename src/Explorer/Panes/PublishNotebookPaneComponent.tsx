@@ -24,8 +24,8 @@ interface PublishNotebookPaneState {
 }
 
 export class PublishNotebookPaneComponent extends React.Component<PublishNotebookPaneProps, PublishNotebookPaneState> {
-  private readonly maxImageSizeInMib = 1.5;
-  private readonly ImageTypes = ["URL", "Custom Image"];
+  private static readonly maxImageSizeInMib = 1.5;
+  private static readonly ImageTypes = ["URL", "Custom Image"];
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionProps: ITextFieldProps;
@@ -39,7 +39,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     super(props);
 
     this.state = {
-      type: this.ImageTypes[0],
+      type: PublishNotebookPaneComponent.ImageTypes[0],
       notebookDescription: "",
       notebookTags: "",
       imageSrc: undefined
@@ -64,10 +64,10 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     this.descriptionPara1 =
       "This notebook has your data. Please make sure you delete any sensitive data/output before publishing.";
 
-    this.descriptionPara2 = `Would you like to publish and share ${FileSystemUtil.stripExtension(
+    this.descriptionPara2 = `Would you like to publish and share "${FileSystemUtil.stripExtension(
       this.props.notebookName,
       "ipynb"
-    )} to the gallery?`;
+    )}" to the gallery?`;
 
     this.thumbnailUrlProps = {
       label: "Cover image url",
@@ -80,11 +80,9 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
     this.thumbnailSelectorProps = {
       label: "Cover image",
-      defaultSelectedKey: this.ImageTypes[0],
+      defaultSelectedKey: PublishNotebookPaneComponent.ImageTypes[0],
       ariaLabel: "Cover image",
-      options: this.ImageTypes.map((value: string) => {
-        return { text: value, key: value };
-      }),
+      options: PublishNotebookPaneComponent.ImageTypes.map((value: string) => ({ text: value, key: value })),
       onChange: (event, options) => {
         this.setState({ type: options.text });
       }
@@ -139,7 +137,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
             <Dropdown {...this.thumbnailSelectorProps} />
           </Stack.Item>
 
-          {this.state.type === this.ImageTypes[0] ? (
+          {this.state.type === PublishNotebookPaneComponent.ImageTypes[0] ? (
             <Stack.Item>
               <TextField {...this.thumbnailUrlProps} />
             </Stack.Item>
@@ -151,10 +149,10 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 accept="image/*"
                 onChange={event => {
                   const file = event.target.files[0];
-                  if (file.size / 1024 ** 2 > this.maxImageSizeInMib) {
+                  if (file.size / 1024 ** 2 > PublishNotebookPaneComponent.maxImageSizeInMib) {
                     event.target.value = "";
                     const formError = `Failed to upload ${file.name}`;
-                    const formErrorDetail = `Image is larger than ${this.maxImageSizeInMib} MiB. Please Choose a different image.`;
+                    const formErrorDetail = `Image is larger than ${PublishNotebookPaneComponent.maxImageSizeInMib} MiB. Please Choose a different image.`;
                     const area = "PublishNotebookPaneComponent/selectImageFile";
 
                     this.props.onError(formError, formErrorDetail, area);
