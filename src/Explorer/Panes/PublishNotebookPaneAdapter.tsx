@@ -1,5 +1,5 @@
 import ko from "knockout";
-import { ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
+import { Stack, Text } from "office-ui-fabric-react";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as Logger from "../../Common/Logger";
@@ -7,8 +7,8 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { JunoClient } from "../../Juno/JunoClient";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
+import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -22,7 +22,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private content: string;
   private description: string;
   private tags: string;
-  private thumbnailUrl: string;
+  private imageSrc: string;
 
   constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
@@ -87,7 +87,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         this.description,
         this.tags?.split(","),
         this.author,
-        this.thumbnailUrl,
+        this.imageSrc,
         this.content
       );
       if (!response.data) {
@@ -112,44 +112,36 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.close();
   }
 
+  private createFormErrorForLargeImageSelection = (formError: string, formErrorDetail: string, area: string) => {
+    this.formError = formError;
+    this.formErrorDetail = formErrorDetail;
+
+    const message = `${this.formError}: ${this.formErrorDetail}`;
+    Logger.logError(message, area);
+    NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+    this.triggerRender();
+  };
+
+  private clearFormError = () => {
+    this.formError = undefined;
+    this.formErrorDetail = undefined;
+    this.triggerRender();
+  };
+
   private createContent = (): JSX.Element => {
-    const descriptionPara1 =
-      "This notebook has your data. Please make sure you delete any sensitive data/output before publishing.";
-    const descriptionPara2 = `Would you like to publish and share ${FileSystemUtil.stripExtension(
-      this.name,
-      "ipynb"
-    )} to the gallery?`;
-    const descriptionProps: ITextFieldProps = {
-      label: "Description",
-      ariaLabel: "Description",
-      multiline: true,
-      rows: 3,
-      required: true,
-      onChange: (event, newValue) => (this.description = newValue)
-    };
-    const tagsProps: ITextFieldProps = {
-      label: "Tags",
-      ariaLabel: "Tags",
-      placeholder: "Optional tag 1, Optional tag 2",
-      onChange: (event, newValue) => (this.tags = newValue)
-    };
-    const thumbnailProps: ITextFieldProps = {
-      label: "Cover image url",
-      ariaLabel: "Cover image url",
-      onChange: (event, newValue) => (this.thumbnailUrl = newValue)
+    const publishNotebookPaneProps: PublishNotebookPaneProps = {
+      notebookName: this.name,
+      notebookDescription: "",
+      notebookTags: "",
+      notebookAuthor: this.author,
+      onChangeDescription: (newValue: string) => (this.description = newValue),
+      onChangeTags: (newValue: string) => (this.tags = newValue),
+      onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
+      onError: this.createFormErrorForLargeImageSelection,
+      clearFormError: this.clearFormError
     };
 
-    return (
-      <div className="panelContent">
-        <Stack className="paneMainContent" tokens={{ childrenGap: 20 }}>
-          <Text>{descriptionPara1}</Text>
-          <Text>{descriptionPara2}</Text>
-          <TextField {...descriptionProps} />
-          <TextField {...tagsProps} />
-          <TextField {...thumbnailProps} />
-        </Stack>
-      </div>
-    );
+    return <PublishNotebookPaneComponent {...publishNotebookPaneProps} />;
   };
 
   private reset = (): void => {
