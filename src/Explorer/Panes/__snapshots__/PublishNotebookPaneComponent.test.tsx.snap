@@ -77,7 +77,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
         data={
           Object {
             "author": "CosmosDB",
-            "created": "2020-07-17T14:33:06.100Z",
+            "created": "2020-07-17T00:00:00Z",
             "description": "",
             "downloads": 0,
             "favorites": 0,

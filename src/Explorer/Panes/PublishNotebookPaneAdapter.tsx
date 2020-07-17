@@ -133,6 +133,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       notebookDescription: "",
       notebookTags: "",
       notebookAuthor: this.author,
+      notebookCreatedDate: new Date().toISOString(),
       onChangeDescription: (newValue: string) => (this.description = newValue),
       onChangeTags: (newValue: string) => (this.tags = newValue),
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),

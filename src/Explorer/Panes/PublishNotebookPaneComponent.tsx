@@ -9,6 +9,7 @@ export interface PublishNotebookPaneProps {
   notebookDescription: string;
   notebookTags: string;
   notebookAuthor: string;
+  notebookCreatedDate: string;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
   onChangeImageSrc: (newValue: string) => void;
@@ -32,7 +33,6 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
   private tagsProps: ITextFieldProps;
   private thumbnailUrlProps: ITextFieldProps;
   private thumbnailSelectorProps: IDropdownProps;
-  private dateString: string;
   private imageToBase64: (file: File, updateImageSrc: (result: string) => void) => void;
 
   constructor(props: PublishNotebookPaneProps) {
@@ -109,8 +109,6 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         this.setState({ notebookTags: newValue });
       }
     };
-
-    this.dateString = new Date().toISOString();
   }
 
   public render(): JSX.Element {
@@ -183,7 +181,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 tags: this.state.notebookTags.split(","),
                 author: this.props.notebookAuthor,
                 thumbnailUrl: this.state.imageSrc,
-                created: this.dateString,
+                created: this.props.notebookCreatedDate,
                 isSample: false,
                 downloads: 0,
                 favorites: 0,
