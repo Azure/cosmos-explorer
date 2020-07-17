@@ -111,7 +111,9 @@ module.exports = function(env = {}, argv = {}) {
       content: `${gitSha.trim()} ${new Date().toUTCString()}`
     }),
     new CaseSensitivePathsPlugin(),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash].css"
+    }),
     new HtmlWebpackPlugin({
       filename: "explorer.html",
       template: "src/explorer.html",
