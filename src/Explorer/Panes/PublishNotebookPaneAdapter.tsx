@@ -1,5 +1,4 @@
 import ko from "knockout";
-import { Stack, Text } from "office-ui-fabric-react";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as Logger from "../../Common/Logger";

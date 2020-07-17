@@ -1,4 +1,4 @@
-import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps, Button } from "office-ui-fabric-react";
+import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps } from "office-ui-fabric-react";
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import { FileSystemUtil } from "../Notebook/FileSystemUtil";
@@ -46,7 +46,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     };
 
     this.imageToBase64 = (file: File, updateImageSrc: (result: string) => void) => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = function() {
         updateImageSrc(reader.result.toString());
@@ -57,7 +57,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         const formError = `Failed to convert ${file.name} to base64 format`;
         const formErrorDetail = `${error}`;
         const area = "PublishNotebookPaneComponent/selectImageFile";
-        onError(formErrorDetail, formErrorDetail, area);
+        onError(formError, formErrorDetail, area);
       };
     };
 
@@ -152,7 +152,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 onChange={event => {
                   const file = event.target.files[0];
                   if (file.size / 1024 ** 2 > this.maxImageSizeInMib) {
-                    event.target.value = null;
+                    event.target.value = "";
                     const formError = `Failed to upload ${file.name}`;
                     const formErrorDetail = `Image is larger than ${this.maxImageSizeInMib} MiB. Please Choose a different image.`;
                     const area = "PublishNotebookPaneComponent/selectImageFile";
