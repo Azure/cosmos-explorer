@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PublishNotebookPaneComponent renders 1`] = `
+<div
+  className="publishNotebookPanelContent"
+>
+  <Stack
+    className="panelMainContent"
+    tokens={
+      Object {
+        "childrenGap": 20,
+      }
+    }
+  >
+    <StackItem>
+      <Text>
+        This notebook has your data. Please make sure you delete any sensitive data/output before publishing.
+      </Text>
+    </StackItem>
+    <StackItem>
+      <Text>
+        Would you like to publish and share "SampleNotebook" to the gallery?
+      </Text>
+    </StackItem>
+    <StackItem>
+      <StyledTextFieldBase
+        ariaLabel="Description"
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        required={true}
+        rows={3}
+      />
+    </StackItem>
+    <StackItem>
+      <StyledTextFieldBase
+        ariaLabel="Tags"
+        label="Tags"
+        onChange={[Function]}
+        placeholder="Optional tag 1, Optional tag 2"
+      />
+    </StackItem>
+    <StackItem>
+      <StyledWithResponsiveMode
+        ariaLabel="Cover image"
+        defaultSelectedKey="URL"
+        label="Cover image"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "URL",
+              "text": "URL",
+            },
+            Object {
+              "key": "Custom Image",
+              "text": "Custom Image",
+            },
+          ]
+        }
+      />
+    </StackItem>
+    <StackItem>
+      <StyledTextFieldBase
+        ariaLabel="Cover image url"
+        label="Cover image url"
+        onChange={[Function]}
+      />
+    </StackItem>
+    <StackItem>
+      <Text>
+        Preview
+      </Text>
+    </StackItem>
+    <StackItem>
+      <GalleryCardComponent
+        data={
+          Object {
+            "author": "CosmosDB",
+            "created": "2020-07-17T14:33:06.100Z",
+            "description": "",
+            "downloads": 0,
+            "favorites": 0,
+            "gitSha": undefined,
+            "id": undefined,
+            "isSample": false,
+            "name": "SampleNotebook.ipynb",
+            "tags": Array [
+              "",
+            ],
+            "thumbnailUrl": undefined,
+            "views": 0,
+          }
+        }
+        isFavorite={false}
+        showDelete={true}
+        showDownload={true}
+      />
+    </StackItem>
+  </Stack>
+</div>
+`;
