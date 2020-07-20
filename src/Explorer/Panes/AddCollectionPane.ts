@@ -21,7 +21,7 @@ import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { HashMap } from "../../Common/HashMap";
 import { PlatformType } from "../../PlatformType";
 
-export default class AddCollectionPane extends ContextualPaneBase implements ViewModels.AddCollectionPane {
+export default class AddCollectionPane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIds: ko.ObservableArray<string>;
   public collectionId: ko.Observable<string>;

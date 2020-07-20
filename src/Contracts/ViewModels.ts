@@ -356,78 +356,6 @@ export interface AddCollectionPaneOptions extends PaneOptions {
   databaseSelfLink?: string;
 }
 
-export interface AddCollectionPane extends ContextualPane {
-  collectionIdTitle: ko.Observable<string>;
-  collectionWithThroughputInSharedTitle: ko.Observable<string>;
-  databaseId: ko.Observable<string>;
-  partitionKey: ko.Observable<string>;
-  storage: ko.Observable<string>;
-  throughputSinglePartition: ko.Observable<number>;
-  throughputMultiPartition: ko.Observable<number>;
-
-  open: (databaseId?: string) => void;
-  onStorageOptionsKeyDown(source: any, event: KeyboardEvent): boolean;
-  onRupmOptionsKeyDown(source: any, event: KeyboardEvent): void;
-  onEnableSynapseLinkButtonClicked: () => void;
-}
-
-export interface AddDatabasePane extends ContextualPane {}
-
-export interface DeleteDatabaseConfirmationPane extends ContextualPane {
-  databaseIdConfirmation: ko.Observable<string>;
-  databaseIdConfirmationText: ko.Observable<string>;
-  databaseDeleteFeedback: ko.Observable<string>;
-}
-
-export interface DeleteCollectionConfirmationPane extends ContextualPane {
-  collectionIdConfirmation: ko.Observable<string>;
-  collectionIdConfirmationText: ko.Observable<string>;
-  containerDeleteFeedback: ko.Observable<string>;
-  recordDeleteFeedback: ko.Observable<boolean>;
-}
-
-export interface SettingsPane extends ContextualPane {
-  pageOption: ko.Observable<string>;
-  customItemPerPage: ko.Observable<number>;
-  crossPartitionQueryEnabled: ko.Observable<boolean>;
-  maxDegreeOfParallelism: ko.Observable<number>;
-  shouldShowQueryPageOptions: ko.Computed<boolean>;
-
-  onCustomPageOptionsKeyDown(source: any, event: KeyboardEvent): boolean;
-  onUnlimitedPageOptionKeyDown(source: any, event: KeyboardEvent): boolean;
-  onJsonDisplayResultsKeyDown(source: any, event: KeyboardEvent): boolean;
-  onGraphDisplayResultsKeyDown(source: any, event: KeyboardEvent): boolean;
-}
-
-export interface ExecuteSprocParamsPane extends ContextualPane {
-  params: ko.ObservableArray<ExecuteSprocParam>;
-  partitionKeyValue: ko.Observable<string>;
-
-  addNewParam(): void;
-}
-
-export interface RenewAdHocAccessPane extends ContextualPane {
-  accessKey: ko.Observable<string>;
-}
-
-export interface UploadItemsPane extends ContextualPane {
-  selectedFilesTitle: ko.Observable<string>;
-  files: ko.Observable<FileList>;
-
-  updateSelectedFiles(element: any, event: any): void;
-}
-
-export interface LoadQueryPane extends ContextualPane {
-  selectedFilesTitle: ko.Observable<string>;
-  files: ko.Observable<FileList>;
-
-  loadQueryFromFile(file: File): Q.Promise<void>;
-}
-
-export interface BrowseQueriesPane extends ContextualPane {
-  loadSavedQuery: (savedQuery: DataModels.Query) => void;
-}
-
 export interface UploadFilePaneOpenOptions {
   paneTitle: string;
   selectFileInputLabel: string;
@@ -448,10 +376,6 @@ export interface StringInputPaneOpenOptions {
   onSubmit: (input: string) => Promise<any>;
   submitButtonLabel: string;
   defaultInput?: string;
-}
-
-export interface UploadFilePane extends ContextualPane {
-  openWithOptions: (options: UploadFilePaneOpenOptions) => void;
 }
 
 /**
@@ -496,41 +420,6 @@ export interface InputPropertyValue {
 export interface InputProperty {
   key: string;
   values: InputPropertyValue[];
-}
-
-export interface GraphStylingPane extends ContextualPane {
-  setData(graphConfigUIData: GraphConfigUiData): void;
-}
-
-export interface NewVertexPane extends ContextualPane {
-  setPartitionKeyProperty: (pKeyProp: string) => void;
-  subscribeOnSubmitCreate: (callback: (newVertexData: NewVertexData) => void) => void;
-}
-
-export interface AddTableEntityPane extends ContextualPane {
-  tableViewModel: TableEntityListViewModel;
-}
-
-export interface EditTableEntityPane extends ContextualPane {
-  originEntity: Entities.ITableEntity;
-  tableViewModel: TableEntityListViewModel;
-  originalNumberOfProperties: number;
-}
-
-export interface TableColumnOptionsPane extends ContextualPane {
-  tableViewModel: TableEntityListViewModel;
-  parameters: IColumnSetting;
-  setDisplayedColumns(columnNames: string[], order: number[], visible: boolean[]): void;
-}
-
-export interface QuerySelectPane extends ContextualPane {
-  queryViewModel: QueryViewModel;
-}
-
-export interface CassandraAddCollectionPane extends ContextualPane {
-  createTableQuery: ko.Observable<string>;
-  keyspaceId: ko.Observable<string>;
-  userTableQuery: ko.Observable<string>;
 }
 
 export interface Editable<T> extends ko.Observable<T> {
