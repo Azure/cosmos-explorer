@@ -9,7 +9,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { CollectionStub, DatabaseStub } from "../OpenActionsStubs";
+import { DatabaseStub } from "../OpenActionsStubs";
 import { TreeNode } from "../../Contracts/ViewModels";
 
 describe("Delete Collection Confirmation Pane", () => {
@@ -22,7 +22,7 @@ describe("Delete Collection Confirmation Pane", () => {
 
     it("should be true if 1 database and 1 collection", () => {
       let database: ViewModels.Database = new DatabaseStub({});
-      database.collections = ko.observableArray<ViewModels.Collection>([new CollectionStub({})]);
+      database.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastCollection()).toBe(true);
     });
@@ -30,8 +30,8 @@ describe("Delete Collection Confirmation Pane", () => {
     it("should be false if if 1 database and 2 collection", () => {
       let database: ViewModels.Database = new DatabaseStub({});
       database.collections = ko.observableArray<ViewModels.Collection>([
-        new CollectionStub({}),
-        new CollectionStub({})
+        {} as ViewModels.Collection,
+        {} as ViewModels.Collection
       ]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastCollection()).toBe(false);
@@ -39,9 +39,9 @@ describe("Delete Collection Confirmation Pane", () => {
 
     it("should be false if 2 database and 1 collection each", () => {
       let database: ViewModels.Database = new DatabaseStub({});
-      database.collections = ko.observableArray<ViewModels.Collection>([new CollectionStub({})]);
+      database.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       let database2: ViewModels.Database = new DatabaseStub({});
-      database2.collections = ko.observableArray<ViewModels.Collection>([new CollectionStub({})]);
+      database2.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database, database2]);
       expect(explorer.isLastCollection()).toBe(false);
     });
@@ -100,11 +100,12 @@ describe("Delete Collection Confirmation Pane", () => {
       let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
       fakeDocumentClientUtility.deleteCollection = () => Q(null);
       let fakeExplorer = {} as Explorer;
-      fakeExplorer.findSelectedCollection = () =>
-        new CollectionStub({
+      fakeExplorer.findSelectedCollection = () => {
+        return {
           id: ko.observable<string>(selectedCollectionId),
           rid: "test"
-        });
+        } as ViewModels.Collection;
+      };
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.selectedCollectionId = ko.computed<string>(() => selectedCollectionId);
       fakeExplorer.isSelectedDatabaseShared = () => false;

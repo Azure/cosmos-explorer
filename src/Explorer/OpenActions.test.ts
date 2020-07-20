@@ -1,9 +1,11 @@
 import * as ko from "knockout";
 import { handleOpenAction } from "./OpenActions";
 import * as ViewModels from "../Contracts/ViewModels";
-import { DatabaseStub, CollectionStub, AddCollectionPaneStub, CassandraAddCollectionPane } from "./OpenActionsStubs";
+import { DatabaseStub, CollectionStub } from "./OpenActionsStubs";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
 import Explorer from "./Explorer";
+import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import AddCollectionPane from "./Panes/AddCollectionPane";
 
 describe("OpenActions", () => {
   describe("handleOpenAction", () => {
@@ -19,13 +21,13 @@ describe("OpenActions", () => {
     let onGraphDocumentsClick: jasmine.Spy;
     let onNewQueryClick: jasmine.Spy;
     let onSettingsClick: jasmine.Spy;
-    let openAddCollectionPane: jasmine.Spy;
-    let openCassandraAddCollectionPane: jasmine.Spy;
 
     beforeEach(() => {
       explorer = {} as Explorer;
-      explorer.addCollectionPane = new AddCollectionPaneStub();
-      explorer.cassandraAddCollectionPane = new CassandraAddCollectionPane();
+      explorer.addCollectionPane = {} as AddCollectionPane;
+      explorer.addCollectionPane.open = jest.fn();
+      explorer.cassandraAddCollectionPane = {} as CassandraAddCollectionPane;
+      explorer.cassandraAddCollectionPane.open = jest.fn();
       explorer.closeAllPanes = () => {};
       explorer.isConnectExplorerVisible = () => false;
 
@@ -45,8 +47,6 @@ describe("OpenActions", () => {
       onGraphDocumentsClick = spyOn(collection, "onGraphDocumentsClick");
       onNewQueryClick = spyOn(collection, "onNewQueryClick");
       onSettingsClick = spyOn(collection, "onSettingsClick");
-      openAddCollectionPane = spyOn(explorer.addCollectionPane, "open");
-      openCassandraAddCollectionPane = spyOn(explorer.cassandraAddCollectionPane, "open");
     });
 
     describe("unknown action type", () => {
@@ -84,7 +84,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openCassandraAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
         });
 
         it("enum value should call cassandraAddCollectionPane.open", () => {
@@ -94,7 +94,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openCassandraAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
         });
       });
 
@@ -106,7 +106,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
         });
 
         it("enum value should call addCollectionPane.open", () => {
@@ -116,7 +116,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
         });
       });
     });
