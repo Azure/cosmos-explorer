@@ -1,17 +1,12 @@
 import * as DataModels from "./DataModels";
-import * as Entities from "../Explorer/Tables/Entities";
 import * as monaco from "monaco-editor";
 import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
 import Q from "q";
-import QueryViewModel from "../Explorer/Tables/QueryBuilder/QueryViewModel";
-import TableEntityListViewModel from "../Explorer/Tables/DataTable/TableEntityListViewModel";
 import { AccessibleVerticalList } from "../Explorer/Tree/AccessibleVerticalList";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { ExecuteSprocParam } from "../Explorer/Panes/ExecuteSprocParamsPane";
 import { GitHubClient } from "../GitHub/GitHubClient";
-import { IColumnSetting } from "../Explorer/Panes/Tables/TableColumnOptionsPane";
 import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
 import { NotebookContentItem } from "../Explorer/Notebook/NotebookContentItem";
 import { QueryMetrics } from "@azure/cosmos";
