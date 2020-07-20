@@ -26,6 +26,7 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import Explorer from "../Explorer";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -42,7 +43,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
 
-  public constructor(private container: ViewModels.Explorer) {
+  public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
@@ -208,7 +209,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
    * This is a rewrite of Collection.ts : showScriptsMenu, showStoredProcedures, showTriggers, showUserDefinedFunctions
    * @param container
    */
-  private static showScriptNodes(container: ViewModels.Explorer): boolean {
+  private static showScriptNodes(container: Explorer): boolean {
     return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
   }
 

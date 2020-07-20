@@ -6,6 +6,7 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
 
 interface SampleDataFile extends DataModels.CreateDatabaseAndCollectionRequest {
   data: any[];
@@ -14,12 +15,12 @@ interface SampleDataFile extends DataModels.CreateDatabaseAndCollectionRequest {
 export class ContainerSampleGenerator {
   private sampleDataFile: SampleDataFile;
 
-  private constructor(private container: ViewModels.Explorer) {}
+  private constructor(private container: Explorer) {}
 
   /**
    * Factory function to load the json data file
    */
-  public static async createSampleGeneratorAsync(container: ViewModels.Explorer): Promise<ContainerSampleGenerator> {
+  public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
     let dataFileContent: any;
     if (container.isPreferredApiGraph()) {

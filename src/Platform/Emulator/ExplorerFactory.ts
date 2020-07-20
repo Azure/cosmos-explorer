@@ -1,4 +1,3 @@
-import * as ViewModels from "../../Contracts/ViewModels";
 import { AccountKind, TagNames, DefaultAccountExperience } from "../../Common/Constants";
 
 import Explorer from "../../Explorer/Explorer";
@@ -8,7 +7,7 @@ import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import { DataAccessUtility } from "./DataAccessUtility";
 
 export default class EmulatorExplorerFactory {
-  public static createExplorer(): ViewModels.Explorer {
+  public static createExplorer(): Explorer {
     DocumentClientUtilityBase;
     const documentClientUtility: DocumentClientUtilityBase = new DocumentClientUtilityBase(new DataAccessUtility());
 

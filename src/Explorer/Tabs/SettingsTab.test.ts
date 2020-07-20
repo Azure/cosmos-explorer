@@ -177,7 +177,7 @@ describe("Settings tab", () => {
   });
 
   describe("Should update collection", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
@@ -259,7 +259,7 @@ describe("Settings tab", () => {
   });
 
   describe("Get Conflict Resolution configuration from user", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });

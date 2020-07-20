@@ -11,14 +11,15 @@ import { CommandBarComponentButtonFactory } from "./CommandBarComponentButtonFac
 import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { StyleConstants } from "../../../Common/Constants";
 import { CommandBarUtil } from "./CommandBarUtil";
+import Explorer from "../../Explorer";
 
 export class CommandBarComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   private tabsButtons: ViewModels.NavbarButtonConfig[];
   private isNotebookTabActive: ko.Computed<boolean>;
 
-  constructor(container: ViewModels.Explorer) {
+  constructor(container: Explorer) {
     this.container = container;
     this.tabsButtons = [];
     this.isNotebookTabActive = ko.computed(() =>

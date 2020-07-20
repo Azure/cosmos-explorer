@@ -89,7 +89,7 @@ enum ShareAccessToggleState {
   Read
 }
 
-export default class Explorer implements ViewModels.Explorer {
+export default class Explorer {
   public flight: ko.Observable<string> = ko.observable<string>(
     SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
   );
@@ -200,7 +200,7 @@ export default class Explorer implements ViewModels.Explorer {
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<ViewModels.AdHocAccessData>;
-  public renewExplorerShareAccess: (explorer: ViewModels.Explorer, token: string) => Q.Promise<void>;
+  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
   public renewTokenError: ko.Observable<string>;
   public tokenForRenewal: ko.Observable<string>;
   public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;

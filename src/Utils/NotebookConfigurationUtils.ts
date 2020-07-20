@@ -1,5 +1,5 @@
 import * as DataModels from "../Contracts/DataModels";
-import { Explorer, KernelConnectionMetadata } from "../Contracts/ViewModels";
+import { KernelConnectionMetadata } from "../Contracts/ViewModels";
 import * as Logger from "../Common/Logger";
 
 export class NotebookConfigurationUtils {
@@ -27,7 +27,7 @@ export class NotebookConfigurationUtils {
       return Promise.reject("Invalid or missing cluster connection info");
     }
 
-    const dataExplorer = window.dataExplorer as Explorer;
+    const dataExplorer = window.dataExplorer;
     const notebookEndpointInfo: DataModels.NotebookConfigurationEndpointInfo[] = clusterConnectionInfo.endpoints.map(
       clusterEndpoint => ({
         type: clusterEndpoint.kind.toLowerCase(),

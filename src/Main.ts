@@ -74,6 +74,7 @@ import { AuthType } from "./AuthType";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { applyExplorerBindings } from "./applyExplorerBindings";
 import { initializeConfiguration, Platform } from "./Config";
+import Explorer from "./Explorer/Explorer";
 
 initializeIcons(/* optional base url */);
 
@@ -86,13 +87,13 @@ initializeConfiguration().then(config => {
       // TODO Remove. All window variables should move to src/Config file
       window.dataExplorerPlatform = PlatformType.Hosted;
       Hosted.initializeExplorer().then(
-        (explorer: ViewModels.Explorer) => {
+        (explorer: Explorer) => {
           applyExplorerBindings(explorer);
           Hosted.configureTokenValidationDisplayPrompt(explorer);
         },
         (error: any) => {
           try {
-            const uninitializedExplorer: ViewModels.Explorer = Hosted.getUninitializedExplorerForGuestAccess();
+            const uninitializedExplorer: Explorer = Hosted.getUninitializedExplorerForGuestAccess();
             window.dataExplorer = uninitializedExplorer;
             ko.applyBindings(uninitializedExplorer);
             BindingHandlersRegisterer.registerBindingHandlers();

@@ -6,7 +6,7 @@ import { CollectionStub, DatabaseStub } from "../../Explorer/OpenActionsStubs";
 import QueryTab from "./QueryTab";
 
 describe("Query Tab", () => {
-  function getNewQueryTabForContainer(container: ViewModels.Explorer): ViewModels.QueryTab {
+  function getNewQueryTabForContainer(container: Explorer): ViewModels.QueryTab {
     const database: ViewModels.Database = new DatabaseStub({
       container: container,
       id: ko.observable<string>("test"),
@@ -54,7 +54,7 @@ describe("Query Tab", () => {
   });
 
   describe("isQueryMetricsEnabled()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
@@ -74,7 +74,7 @@ describe("Query Tab", () => {
   });
 
   describe("Save Queries command button", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
       explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });

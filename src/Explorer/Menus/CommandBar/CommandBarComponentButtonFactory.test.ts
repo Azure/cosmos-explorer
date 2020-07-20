@@ -1,24 +1,25 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { CommandBarComponentButtonFactory } from "./CommandBarComponentButtonFactory";
-import { ExplorerStub } from "../../OpenActionsStubs";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import NotebookManager from "../../Notebook/NotebookManager";
+import Explorer from "../../Explorer";
 
 describe("CommandBarComponentButtonFactory tests", () => {
-  let mockExplorer: ViewModels.Explorer;
+  let mockExplorer: Explorer;
 
   describe("Enable notebook button", () => {
     const enableNotebookBtnLabel = "Enable Notebooks (Preview)";
 
     beforeAll(() => {
-      mockExplorer = new ExplorerStub();
+      mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
+      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
+      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -75,12 +76,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const openMongoShellBtnLabel = "Open Mongo Shell";
 
     beforeAll(() => {
-      mockExplorer = new ExplorerStub();
+      mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
+      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -155,11 +157,12 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const openCassandraShellBtnLabel = "Open Cassandra Shell";
 
     beforeAll(() => {
-      mockExplorer = new ExplorerStub();
+      mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
+      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
@@ -236,13 +239,14 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const manageGitHubSettingsBtnLabel = "Manage GitHub settings";
 
     beforeAll(() => {
-      mockExplorer = new ExplorerStub();
+      mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
@@ -294,7 +298,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
   describe("Resource token", () => {
     beforeAll(() => {
-      mockExplorer = new ExplorerStub();
+      mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isAuthWithResourceToken = ko.observable(true);
       mockExplorer.isPreferredApiDocumentDB = ko.computed(() => true);

@@ -1,5 +1,4 @@
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import * as ViewModels from "../Contracts/ViewModels";
 import { NotificationConsoleUtils } from "./NotificationConsoleUtils";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../Common/Logger";
@@ -8,6 +7,7 @@ import {
   SortBy,
   GalleryViewerComponent
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer/Explorer";
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
@@ -34,7 +34,7 @@ export interface GalleryViewerProps {
 }
 
 export function downloadItem(
-  container: ViewModels.Explorer,
+  container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void
@@ -80,7 +80,7 @@ export function downloadItem(
 }
 
 export async function favoriteItem(
-  container: ViewModels.Explorer,
+  container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void
@@ -102,7 +102,7 @@ export async function favoriteItem(
 }
 
 export async function unfavoriteItem(
-  container: ViewModels.Explorer,
+  container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void
@@ -124,7 +124,7 @@ export async function unfavoriteItem(
 }
 
 export function deleteItem(
-  container: ViewModels.Explorer,
+  container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void

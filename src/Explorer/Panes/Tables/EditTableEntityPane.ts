@@ -8,9 +8,10 @@ import * as Utilities from "../../Tables/Utilities";
 import * as TableConstants from "../../Tables/Constants";
 import EntityPropertyViewModel from "./EntityPropertyViewModel";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import Explorer from "../../Explorer";
 
 export default class EditTableEntityPane extends TableEntityPane implements ViewModels.EditTableEntityPane {
-  container: ViewModels.Explorer;
+  container: Explorer;
   visible: ko.Observable<boolean>;
 
   public originEntity: Entities.ITableEntity;

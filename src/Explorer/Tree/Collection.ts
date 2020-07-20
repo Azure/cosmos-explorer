@@ -32,10 +32,11 @@ import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
 import { config } from "../../Config";
+import Explorer from "../Explorer";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public self: string;
   public rid: string;
   public databaseId: string;
@@ -86,7 +87,7 @@ export default class Collection implements ViewModels.Collection {
   public triggersFocused: ko.Observable<boolean>;
 
   constructor(
-    container: ViewModels.Explorer,
+    container: Explorer,
     databaseId: string,
     data: DataModels.Collection,
     quotaInfo: DataModels.CollectionQuotaInfo,

@@ -2,11 +2,11 @@ import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as Logger from "../../Common/Logger";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { JunoClient } from "../../Juno/JunoClient";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
+import Explorer from "../Explorer";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
@@ -23,7 +23,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private tags: string;
   private imageSrc: string;
 
-  constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
+  constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
     this.reset();
     this.triggerRender();

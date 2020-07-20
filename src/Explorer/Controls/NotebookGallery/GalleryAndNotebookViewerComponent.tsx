@@ -1,12 +1,12 @@
 import * as React from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { JunoClient, IGalleryItem } from "../../../Juno/JunoClient";
 import { GalleryTab, SortBy, GalleryViewerComponentProps, GalleryViewerComponent } from "./GalleryViewerComponent";
 import { NotebookViewerComponentProps, NotebookViewerComponent } from "../NotebookViewer/NotebookViewerComponent";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
+import Explorer from "../../Explorer";
 
 export interface GalleryAndNotebookViewerComponentProps {
-  container?: ViewModels.Explorer;
+  container?: Explorer;
   junoClient: JunoClient;
   notebookUrl?: string;
   galleryItem?: IGalleryItem;

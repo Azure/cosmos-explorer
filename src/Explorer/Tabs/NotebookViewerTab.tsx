@@ -7,6 +7,7 @@ import {
   NotebookViewerComponentProps
 } from "../Controls/NotebookViewer/NotebookViewerComponent";
 import TabsBase from "./TabsBase";
+import Explorer from "../Explorer";
 
 /**
  * Notebook Viewer tab
@@ -29,7 +30,7 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
 }
 
 export default class NotebookViewerTab extends TabsBase implements ViewModels.Tab {
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   public notebookUrl: string;
 
   public notebookViewerComponentAdapter: NotebookViewerComponentAdapter;
@@ -49,7 +50,7 @@ export default class NotebookViewerTab extends TabsBase implements ViewModels.Ta
     });
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 

@@ -5,7 +5,7 @@ import AddDatabasePane from "./AddDatabasePane";
 
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
     const mockDatabaseAccount: ViewModels.DatabaseAccount = {
       id: "mock",
       kind: "DocumentDB",

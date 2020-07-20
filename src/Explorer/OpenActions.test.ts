@@ -1,18 +1,13 @@
 import * as ko from "knockout";
 import { handleOpenAction } from "./OpenActions";
 import * as ViewModels from "../Contracts/ViewModels";
-import {
-  ExplorerStub,
-  DatabaseStub,
-  CollectionStub,
-  AddCollectionPaneStub,
-  CassandraAddCollectionPane
-} from "./OpenActionsStubs";
+import { DatabaseStub, CollectionStub, AddCollectionPaneStub, CassandraAddCollectionPane } from "./OpenActionsStubs";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
+import Explorer from "./Explorer";
 
 describe("OpenActions", () => {
   describe("handleOpenAction", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
     let database: ViewModels.Database;
     let collection: ViewModels.Collection;
     let databases: ViewModels.Database[];
@@ -28,9 +23,11 @@ describe("OpenActions", () => {
     let openCassandraAddCollectionPane: jasmine.Spy;
 
     beforeEach(() => {
-      explorer = new ExplorerStub();
+      explorer = {} as Explorer;
       explorer.addCollectionPane = new AddCollectionPaneStub();
       explorer.cassandraAddCollectionPane = new CassandraAddCollectionPane();
+      explorer.closeAllPanes = () => {};
+      explorer.isConnectExplorerVisible = () => false;
 
       database = new DatabaseStub({
         id: ko.observable("db"),

@@ -6,7 +6,7 @@ import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import { DataAccessUtility } from "./DataAccessUtility";
 
 export default class PortalExplorerFactory {
-  public createExplorer(): ViewModels.Explorer {
+  public createExplorer(): Explorer {
     var documentClientUtility = new DocumentClientUtilityBase(new DataAccessUtility());
 
     var explorer = new Explorer({

@@ -11,6 +11,7 @@ import { MessageHandler } from "../Common/MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import Explorer from "../Explorer/Explorer";
 
 export class CreateSqlCollectionUtilities {
   public static createSqlCollection(
@@ -276,10 +277,7 @@ export class Utilities {
     return defaults.throughput.unlimitedmin;
   }
 
-  public static getMaxThroughput(
-    defaults: ViewModels.CollectionCreationDefaults,
-    container: ViewModels.Explorer
-  ): number {
+  public static getMaxThroughput(defaults: ViewModels.CollectionCreationDefaults, container: Explorer): number {
     const throughput = defaults.throughput.unlimited;
     if (typeof throughput === "number") {
       return throughput;
@@ -290,7 +288,7 @@ export class Utilities {
     }
   }
 
-  private static _exceedsThreshold(unlimitedThreshold: number, container: ViewModels.Explorer): boolean {
+  private static _exceedsThreshold(unlimitedThreshold: number, container: Explorer): boolean {
     const databases = (container && container.databases && container.databases()) || [];
     return _.any(
       databases,
