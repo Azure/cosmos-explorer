@@ -23,5 +23,5 @@ interface ErrorDisplayParams {
 }
 
 class ErrorDisplayViewModel {
-  public constructor(private params: ErrorDisplayParams) {}
+  public constructor(public params: ErrorDisplayParams) {}
 }
