@@ -2,8 +2,9 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import { CollectionStub } from "../../Explorer/OpenActionsStubs";
 import QueryTab from "./QueryTab";
+import { View } from "@nteract/data-explorer/lib/utilities/types";
+import { PartitionKey } from "../../Contracts/DataModels";
 
 describe("Query Tab", () => {
   function getNewQueryTabForContainer(container: Explorer): ViewModels.QueryTab {
@@ -12,11 +13,11 @@ describe("Query Tab", () => {
       id: ko.observable<string>("test"),
       isDatabaseShared: () => false
     } as ViewModels.Database;
-    const collection: ViewModels.Collection = new CollectionStub({
+    const collection = {
       container: container,
       databaseId: "test",
       id: ko.observable<string>("test")
-    });
+    } as ViewModels.Collection;
 
     return new QueryTab({
       tabKind: ViewModels.CollectionTabKind.Query,
@@ -33,19 +34,12 @@ describe("Query Tab", () => {
   }
 
   describe("shouldSetSystemPartitionKeyContainerPartitionKeyValueUndefined", () => {
-    const collection: ViewModels.Collection = new CollectionStub({
-      id: "withoutsystempk",
+    const collection = {
+      id: ko.observable<string>("withoutsystempk"),
       partitionKey: {
         systemKey: true
       }
-    });
-
-    const collectionSystemPK: ViewModels.Collection = new CollectionStub({
-      id: "withsystempk",
-      partitionKey: {
-        systemKey: true
-      }
-    });
+    } as ViewModels.Collection;
 
     it("no container with system pk, should not set partition key option", () => {
       const iteratorOptions = QueryTab.getIteratorOptions(collection);

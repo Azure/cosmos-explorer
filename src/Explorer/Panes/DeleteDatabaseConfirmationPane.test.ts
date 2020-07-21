@@ -8,7 +8,6 @@ import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
-import { CollectionStub } from "../OpenActionsStubs";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
@@ -42,7 +41,7 @@ describe("Delete Database Confirmation Pane", () => {
 
     it("should be true if last non empty database", () => {
       let database = {} as ViewModels.Database;
-      database.collections = ko.observableArray<ViewModels.Collection>([new CollectionStub({})]);
+      database.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastNonEmptyDatabase()).toBe(true);
     });

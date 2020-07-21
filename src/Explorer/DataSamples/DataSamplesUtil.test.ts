@@ -1,4 +1,3 @@
-import { CollectionStub } from "../OpenActionsStubs";
 import { DataSamplesUtil } from "./DataSamplesUtil";
 import * as sinon from "sinon";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
@@ -11,7 +10,7 @@ describe("DataSampleUtils", () => {
   const sampleDatabaseId = "sampleDatabaseId";
 
   it("should not create sample collection if collection already exists", async () => {
-    const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
+    const collection = { id: ko.observable(sampleCollectionId) } as Collection;
     const database = {
       id: ko.observable(sampleDatabaseId),
       collections: ko.observableArray<Collection>([collection])

@@ -3,7 +3,6 @@ import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Q from "q";
-import { CollectionStub } from "../OpenActionsStubs";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
@@ -54,7 +53,7 @@ describe("ContainerSampleGenerator", () => {
         }
       ]
     };
-    const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
+    const collection = { id: ko.observable(sampleCollectionId) } as ViewModels.Collection;
     const database = {
       id: ko.observable(sampleDatabaseId),
       collections: ko.observableArray<ViewModels.Collection>([collection])
@@ -99,7 +98,7 @@ describe("ContainerSampleGenerator", () => {
         "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)"
       ]
     };
-    const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
+    const collection = { id: ko.observable(sampleCollectionId) } as ViewModels.Collection;
     const database = {
       id: ko.observable(sampleDatabaseId),
       collections: ko.observableArray<ViewModels.Collection>([collection])
