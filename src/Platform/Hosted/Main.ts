@@ -568,8 +568,9 @@ export default class Main {
 
     this._explorer.hideConnectExplorerForm();
 
+    const masterKey = Main._getMasterKey(keys);
     HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(this._explorer);
-    Main._setExplorerReady(this._explorer, keys.primaryMasterKey, account, authorizationToken);
+    Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
   }
 
   private static _handleGetAccessAadSucceed(response: [DatabaseAccount, AccountKeys, string]) {
@@ -577,10 +578,19 @@ export default class Main {
       return;
     }
     const account = response[0];
-    const keys = response[1];
+    const masterKey = Main._getMasterKey(response[1]);
     const authorizationToken = response[2];
-    Main._setExplorerReady(this._explorer, keys.primaryMasterKey, account, authorizationToken);
+    Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
     this._getAadAccessDeferred.resolve(this._explorer);
+  }
+
+  private static _getMasterKey(keys: AccountKeys): string {
+    return (
+      keys?.primaryMasterKey ??
+      keys?.secondaryMasterKey ??
+      keys?.primaryReadonlyMasterKey ??
+      keys?.secondaryReadonlyMasterKey
+    );
   }
 
   private static _handleGetAccessAadFailed(error: any) {
