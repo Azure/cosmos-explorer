@@ -1,88 +1,13 @@
 import * as DataModels from "../../src/Contracts/DataModels";
 import * as ko from "knockout";
 import * as ViewModels from "../../src/Contracts/ViewModels";
-import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
 import Q from "q";
 import { CassandraTableKey, CassandraTableKeys } from "../../src/Explorer/Tables/TableDataClient";
 import { UploadDetails } from "../workers/upload/definitions";
 import Explorer from "./Explorer";
-
-export class DatabaseStub implements ViewModels.Database {
-  public nodeKind: string;
-  public container: Explorer;
-  public self: string;
-  public rid: string;
-  public id: ko.Observable<string>;
-  public collections: ko.ObservableArray<ViewModels.Collection>;
-  public isDatabaseExpanded: ko.Observable<boolean>;
-  public isDatabaseShared: ko.Computed<boolean>;
-  public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
-  public offer: ko.Observable<DataModels.Offer>;
-
-  constructor(options?: any) {
-    this.nodeKind = options.nodeKind;
-    this.container = options.container;
-    this.self = options.self;
-    this.rid = options.rid;
-    this.id = options.id;
-    this.collections = options.collections;
-    this.isDatabaseExpanded = options.isDatabaseExpanded;
-    this.offer = options.offer;
-    this.selectedSubnodeKind = options.selectedSubnodeKind;
-  }
-
-  public onKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onMenuKeyDown = (source: any, event: KeyboardEvent): boolean => {
-    throw new Error("Not implemented");
-  };
-
-  public onDeleteDatabaseContextMenuClick(source: ViewModels.Database, event: MouseEvent | KeyboardEvent) {
-    throw new Error("Not implemented");
-  }
-
-  public selectDatabase() {
-    throw new Error("Not implemented");
-  }
-
-  public expandCollapseDatabase() {
-    throw new Error("Not implemented");
-  }
-
-  public expandDatabase() {
-    throw new Error("Not implemented");
-  }
-
-  public collapseDatabase() {
-    throw new Error("Not implemented");
-  }
-
-  public loadCollections(): Q.Promise<void> {
-    throw new Error("Not implemented");
-  }
-
-  public findCollectionWithId(collectionId: string): ViewModels.Collection {
-    throw new Error("Not implemented");
-  }
-
-  public openAddCollection(database: ViewModels.Database, event: MouseEvent) {
-    throw new Error("Not implemented");
-  }
-
-  public readSettings() {
-    throw new Error("Not implemented");
-  }
-
-  public onSettingsClick(): void {
-    throw new Error("Not implemented");
-  }
-}
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import StoredProcedure from "./Tree/StoredProcedure";
+import Trigger from "./Tree/Trigger";
 
 export class CollectionStub implements ViewModels.Collection {
   public nodeKind: string;
@@ -107,9 +32,9 @@ export class CollectionStub implements ViewModels.Collection {
   public cassandraSchema: CassandraTableKey[];
   public documentIds: ko.ObservableArray<ViewModels.DocumentId>;
   public children: ko.ObservableArray<ViewModels.TreeNode>;
-  public storedProcedures: ko.Computed<ViewModels.StoredProcedure[]>;
-  public userDefinedFunctions: ko.Computed<ViewModels.UserDefinedFunction[]>;
-  public triggers: ko.Computed<ViewModels.Trigger[]>;
+  public storedProcedures: ko.Computed<StoredProcedure[]>;
+  public userDefinedFunctions: ko.Computed<UserDefinedFunction[]>;
+  public triggers: ko.Computed<Trigger[]>;
   public showStoredProcedures: ko.Observable<boolean>;
   public showTriggers: ko.Observable<boolean>;
   public showUserDefinedFunctions: ko.Observable<boolean>;
@@ -243,15 +168,15 @@ export class CollectionStub implements ViewModels.Collection {
     throw new Error("Not implemented");
   }
 
-  public createStoredProcedureNode(data: DataModels.StoredProcedure): ViewModels.StoredProcedure {
+  public createStoredProcedureNode(data: DataModels.StoredProcedure): StoredProcedure {
     throw new Error("Not implemented");
   }
 
-  public createUserDefinedFunctionNode(data: DataModels.UserDefinedFunction): ViewModels.UserDefinedFunction {
+  public createUserDefinedFunctionNode(data: DataModels.UserDefinedFunction): UserDefinedFunction {
     throw new Error("Not implemented");
   }
 
-  public createTriggerNode(data: DataModels.Trigger): ViewModels.Trigger {
+  public createTriggerNode(data: DataModels.Trigger): Trigger {
     throw new Error("Not implemented");
   }
 
@@ -323,15 +248,15 @@ export class CollectionStub implements ViewModels.Collection {
     throw new Error("Not implemented");
   }
 
-  public findStoredProcedureWithId(sprocId: string): ViewModels.StoredProcedure {
+  public findStoredProcedureWithId(sprocId: string): StoredProcedure {
     throw new Error("Not implemented");
   }
 
-  public findTriggerWithId(triggerId: string): ViewModels.Trigger {
+  public findTriggerWithId(triggerId: string): Trigger {
     throw new Error("Not implemented");
   }
 
-  public findUserDefinedFunctionWithId(userDefinedFunctionId: string): ViewModels.UserDefinedFunction {
+  public findUserDefinedFunctionWithId(userDefinedFunctionId: string): UserDefinedFunction {
     throw new Error("Not implemented");
   }
 

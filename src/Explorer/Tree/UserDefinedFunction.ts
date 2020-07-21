@@ -7,7 +7,7 @@ import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 
-export default class UserDefinedFunction implements ViewModels.UserDefinedFunction {
+export default class UserDefinedFunction {
   public nodeKind: string;
   public container: Explorer;
   public collection: ViewModels.Collection;

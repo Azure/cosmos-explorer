@@ -35,7 +35,7 @@ function sample(prefix) {
     if (!isAccepted) throw new Error('The query was not accepted by the server.');
 }`;
 
-export default class StoredProcedure implements ViewModels.StoredProcedure {
+export default class StoredProcedure {
   public nodeKind: string;
   public container: Explorer;
   public collection: ViewModels.Collection;

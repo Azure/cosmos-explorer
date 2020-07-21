@@ -5,10 +5,11 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import ScriptTabBase from "./ScriptTabBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import UserDefinedFunction from "../Tree/UserDefinedFunction";
 
 export default class UserDefinedFunctionTab extends ScriptTabBase implements ViewModels.UserDefinedFunctionTab {
   public collection: ViewModels.Collection;
-  public node: ViewModels.UserDefinedFunction;
+  public node: UserDefinedFunction;
   constructor(options: ViewModels.ScriptTabOption) {
     super(options);
     this.ariaLabel("User Defined Function Body");

@@ -12,6 +12,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
+import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 
 // TODO: Log all promise resolutions and errors with verbosity levels
 export default class DocumentClientUtilityBase {
@@ -164,7 +165,7 @@ export default class DocumentClientUtilityBase {
 
   public executeStoredProcedure(
     collection: ViewModels.Collection,
-    storedProcedure: ViewModels.StoredProcedure,
+    storedProcedure: StoredProcedure,
     partitionKeyValue: any,
     params: any[]
   ): Q.Promise<any> {

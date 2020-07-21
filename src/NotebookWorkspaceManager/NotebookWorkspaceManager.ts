@@ -1,4 +1,3 @@
-import * as ViewModels from "../Contracts/ViewModels";
 import { ArmApiVersions } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
 import * as Logger from "../Common/Logger";
@@ -9,7 +8,7 @@ import {
 } from "../Contracts/DataModels";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 
-export class NotebookWorkspaceManager implements ViewModels.NotebookWorkspaceManager {
+export class NotebookWorkspaceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
 
   constructor(private _armEndpoint: string) {

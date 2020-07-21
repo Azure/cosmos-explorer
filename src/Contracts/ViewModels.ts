@@ -12,6 +12,10 @@ import { NotebookContentItem } from "../Explorer/Notebook/NotebookContentItem";
 import { QueryMetrics } from "@azure/cosmos";
 import { UploadDetails } from "../workers/upload/definitions";
 import Explorer from "../Explorer/Explorer";
+import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
+import StoredProcedure from "../Explorer/Tree/StoredProcedure";
+import ConflictsTab from "../Explorer/Tabs/ConflictsTab";
+import Trigger from "../Explorer/Tree/Trigger";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -27,32 +31,10 @@ export interface NavbarButtonConfig extends CommandButtonComponentProps {}
 
 export interface DatabaseAccount extends DataModels.DatabaseAccount {}
 
-export interface NotebookWorkspaceManager {
-  getNotebookWorkspacesAsync(cosmosAccountResourceId: string): Promise<DataModels.NotebookWorkspace[]>;
-  getNotebookWorkspaceAsync(
-    cosmosAccountResourceId: string,
-    notebookWorkspaceId: string
-  ): Promise<DataModels.NotebookWorkspace>;
-  createNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void>;
-  deleteNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void>;
-  getNotebookConnectionInfoAsync(
-    cosmosAccountResourceId: string,
-    notebookWorkspaceId: string
-  ): Promise<DataModels.NotebookWorkspaceConnectionInfo>;
-  startNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void>;
-}
-
 export interface KernelConnectionMetadata {
   name: string;
   configurationEndpoints: DataModels.NotebookConfigurationEndpoints;
   notebookConnectionInfo: DataModels.NotebookWorkspaceConnectionInfo;
-}
-
-export interface ArcadiaResourceManager {
-  getWorkspacesAsync(arcadiaResourceId: string): Promise<DataModels.ArcadiaWorkspace[]>;
-  getWorkspaceAsync(arcadiaResourceId: string, workspaceId: string): Promise<DataModels.ArcadiaWorkspace>;
-  listWorkspacesAsync(subscriptionIds: string[]): Promise<DataModels.ArcadiaWorkspace[]>;
-  listSparkPoolsAsync(resourceId: string): Promise<DataModels.SparkPool[]>;
 }
 
 export interface TokenProvider {
@@ -256,48 +238,6 @@ export interface ConflictId {
   buildDocumentIdFromConflict(partitionKeyValue: any): DocumentId;
   getPartitionKeyValueAsString(): string;
   loadConflict(): Q.Promise<any>;
-}
-
-export interface StoredProcedure extends TreeNode {
-  container: Explorer;
-  collection: Collection;
-  rid: string;
-  self: string;
-  id: ko.Observable<string>;
-  body: ko.Observable<string>;
-
-  delete(): void;
-  open: () => void;
-  select(): void;
-  execute(params: string[], partitionKeyValue?: string): void;
-}
-
-export interface UserDefinedFunction extends TreeNode {
-  container: Explorer;
-  collection: Collection;
-  rid: string;
-  self: string;
-  id: ko.Observable<string>;
-  body: ko.Observable<string>;
-
-  delete(): void;
-  open: () => void;
-  select(): void;
-}
-
-export interface Trigger extends TreeNode {
-  container: Explorer;
-  collection: Collection;
-  rid: string;
-  self: string;
-  id: ko.Observable<string>;
-  body: ko.Observable<string>;
-  triggerType: ko.Observable<string>;
-  triggerOperation: ko.Observable<string>;
-
-  delete(): void;
-  open: () => void;
-  select(): void;
 }
 
 /**
@@ -621,111 +561,6 @@ export interface DocumentsTab extends Tab {
 
   initDocumentEditor(documentId: DocumentId, content: any): Q.Promise<any>;
   loadNextPage(): Q.Promise<any>;
-}
-
-export interface ConflictsTab extends Tab {
-  /* Conflicts Grid  */
-  selectedConflictId: ko.Observable<ConflictId>;
-  selectedConflictContent: Editable<any>;
-  selectedConflictCurrent: Editable<any>;
-  onConflictIdClick(conflictId: ConflictId): Q.Promise<any>;
-  dataContentsGridScrollHeight: ko.Observable<string>;
-  accessibleDocumentList: AccessibleVerticalList;
-  documentContentsGridId: string;
-
-  partitionKey: DataModels.PartitionKey;
-  partitionKeyPropertyHeader: string;
-  partitionKeyProperty: string;
-  conflictIds: ko.ObservableArray<ConflictId>;
-
-  /* Document Editor */
-  isEditorDirty: ko.Computed<boolean>;
-  editorState: ko.Observable<DocumentExplorerState>;
-  onValidDocumentEdit(content: any): Q.Promise<any>;
-  onInvalidDocumentEdit(content: any): Q.Promise<any>;
-  loadingConflictData: ko.Observable<boolean>;
-
-  onAcceptChangesClick(): Q.Promise<any>;
-  onDiscardClick(): Q.Promise<any>;
-
-  initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Q.Promise<any>;
-  initDocumentEditorForReplace(documentId: ConflictId, conflictContent: any, currentContent: any): Q.Promise<any>;
-  initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Q.Promise<any>;
-  initDocumentEditorForNoOp(conflictId: ConflictId): Q.Promise<any>;
-  loadNextPage(): Q.Promise<any>;
-}
-
-export interface SettingsTab extends Tab {
-  /*state*/
-  throughput: ko.Observable<number>;
-  timeToLive: ko.Observable<string>;
-  timeToLiveSeconds: ko.Observable<number>;
-  geospatialVisible: ko.Computed<boolean>;
-  geospatialConfigType: ko.Observable<string>;
-  indexingPolicyContent: ko.Observable<DataModels.IndexingPolicy>;
-  rupm: ko.Observable<string>;
-  requestUnitsUsageCost: ko.Computed<string>;
-  canThroughputExceedMaximumValue: ko.Computed<boolean>;
-  shouldDisplayPortalUsePrompt: ko.Computed<boolean>;
-  warningMessage: ko.Computed<string>;
-  ttlOffFocused: ko.Observable<boolean>;
-  ttlOnDefaultFocused: ko.Observable<boolean>;
-  ttlOnFocused: ko.Observable<boolean>;
-  indexingPolicyElementFocused: ko.Observable<boolean>;
-  notificationStatusInfo: ko.Observable<string>;
-  shouldShowNotificationStatusPrompt: ko.Computed<boolean>;
-  shouldShowStatusBar: ko.Computed<boolean>;
-  pendingNotification: ko.Observable<DataModels.Notification>;
-
-  conflictResolutionPolicyMode: ko.Observable<string>;
-  conflictResolutionPolicyPath: ko.Observable<string>;
-  conflictResolutionPolicyProcedure: ko.Observable<string>;
-
-  rupmVisible: ko.Computed<boolean>;
-  costsVisible: ko.Computed<boolean>;
-  minRUAnotationVisible: ko.Computed<boolean>;
-
-  /* Command Bar */
-  saveSettingsButton: Button;
-  discardSettingsChangesButton: Button;
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
-
-  /* Indexing Policy Editor */
-  isIndexingPolicyEditorInitializing: ko.Observable<boolean>;
-  indexingPolicyEditor: ko.Observable<monaco.editor.IStandaloneCodeEditor>;
-  onValidIndexingPolicyEdit(content: any): Q.Promise<any>;
-  onInvalidIndexingPolicyEdit(content: any): Q.Promise<any>;
-
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
-}
-
-export interface DatabaseSettingsTab extends Tab {
-  /*state*/
-  throughput: ko.Observable<number>;
-  requestUnitsUsageCost: ko.PureComputed<string>;
-  canThroughputExceedMaximumValue: ko.Computed<boolean>;
-  warningMessage: ko.Computed<string>;
-  notificationStatusInfo: ko.Observable<string>;
-  shouldShowNotificationStatusPrompt: ko.Computed<boolean>;
-  shouldShowStatusBar: ko.Computed<boolean>;
-  pendingNotification: ko.Observable<DataModels.Notification>;
-
-  costsVisible: ko.Computed<boolean>;
-  minRUAnotationVisible: ko.Computed<boolean>;
-
-  /* Command Bar */
-  saveSettingsButton: Button;
-  discardSettingsChangesButton: Button;
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
-
-  /* Errors */
-  displayedError: ko.Observable<string>;
-
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
 }
 
 export interface WaitsForTemplate {

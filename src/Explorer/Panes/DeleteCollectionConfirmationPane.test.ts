@@ -9,7 +9,6 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { DatabaseStub } from "../OpenActionsStubs";
 import { TreeNode } from "../../Contracts/ViewModels";
 
 describe("Delete Collection Confirmation Pane", () => {
@@ -21,14 +20,14 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should be true if 1 database and 1 collection", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
       database.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastCollection()).toBe(true);
     });
 
     it("should be false if if 1 database and 2 collection", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
       database.collections = ko.observableArray<ViewModels.Collection>([
         {} as ViewModels.Collection,
         {} as ViewModels.Collection
@@ -38,16 +37,16 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should be false if 2 database and 1 collection each", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
       database.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
-      let database2: ViewModels.Database = new DatabaseStub({});
+      let database2 = {} as ViewModels.Database;
       database2.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database, database2]);
       expect(explorer.isLastCollection()).toBe(false);
     });
 
     it("should be false if 0 databases", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
       explorer.databases = ko.observableArray<ViewModels.Database>();
       database.collections = ko.observableArray<ViewModels.Collection>();
       expect(explorer.isLastCollection()).toBe(false);

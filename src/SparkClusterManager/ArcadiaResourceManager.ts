@@ -11,7 +11,7 @@ import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { config } from "../Config";
 
-export class ArcadiaResourceManager implements ViewModels.ArcadiaResourceManager {
+export class ArcadiaResourceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
 
   constructor(private armEndpoint = config.ARM_ENDPOINT) {

@@ -79,6 +79,9 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import StoredProcedure from "./Tree/StoredProcedure";
+import Trigger from "./Tree/Trigger";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -214,7 +217,7 @@ export default class Explorer {
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
+  public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSparkEnabled: ko.Observable<boolean>;
   public isSparkEnabledForAccount: ko.Observable<boolean>;
@@ -231,7 +234,7 @@ export default class Explorer {
   private _isInitializingNotebooks: boolean;
   private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
-  private _arcadiaManager: ViewModels.ArcadiaResourceManager;
+  private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
     name: string;
     content: string;
@@ -1955,9 +1958,9 @@ export default class Explorer {
   }
 
   // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
-  public findSelectedStoredProcedure(): ViewModels.StoredProcedure {
+  public findSelectedStoredProcedure(): StoredProcedure {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.storedProcedures(), (storedProcedure: ViewModels.StoredProcedure) => {
+    return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
       const openedSprocTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
         (tab: ViewModels.Tab) => tab.node && tab.node.rid === storedProcedure.rid
@@ -1969,9 +1972,9 @@ export default class Explorer {
     });
   }
 
-  public findSelectedUDF(): ViewModels.UserDefinedFunction {
+  public findSelectedUDF(): UserDefinedFunction {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: ViewModels.UserDefinedFunction) => {
+    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
       const openedUdfTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.UserDefinedFunctions,
         (tab: ViewModels.Tab) => tab.node && tab.node.rid === userDefinedFunction.rid
@@ -1983,9 +1986,9 @@ export default class Explorer {
     });
   }
 
-  public findSelectedTrigger(): ViewModels.Trigger {
+  public findSelectedTrigger(): Trigger {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.triggers(), (trigger: ViewModels.Trigger) => {
+    return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
       const openedTriggerTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.Triggers,
         (tab: ViewModels.Tab) => tab.node && tab.node.rid === trigger.rid

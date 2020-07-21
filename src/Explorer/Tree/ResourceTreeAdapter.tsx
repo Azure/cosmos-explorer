@@ -27,6 +27,9 @@ import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import Explorer from "../Explorer";
+import UserDefinedFunction from "./UserDefinedFunction";
+import StoredProcedure from "./StoredProcedure";
+import Trigger from "./Trigger";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -290,7 +293,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildStoredProcedureNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "Stored Procedures",
-      children: collection.storedProcedures().map((sp: ViewModels.StoredProcedure) => ({
+      children: collection.storedProcedures().map((sp: StoredProcedure) => ({
         label: sp.id(),
         onClick: sp.open.bind(sp),
         isSelected: () =>
@@ -309,7 +312,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "User Defined Functions",
-      children: collection.userDefinedFunctions().map((udf: ViewModels.UserDefinedFunction) => ({
+      children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
         label: udf.id(),
         onClick: udf.open.bind(udf),
         isSelected: () =>
@@ -328,7 +331,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildTriggerNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "Triggers",
-      children: collection.triggers().map((trigger: ViewModels.Trigger) => ({
+      children: collection.triggers().map((trigger: Trigger) => ({
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
         isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),

@@ -13,6 +13,9 @@ import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import DeleteSprocIcon from "../../images/DeleteSproc.svg";
 import Explorer from "./Explorer";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import StoredProcedure from "./Tree/StoredProcedure";
+import Trigger from "./Tree/Trigger";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -117,7 +120,7 @@ export class ResourceTreeContextMenuButtonFactory {
 
   public static createStoreProcedureContextMenuItems(
     container: Explorer,
-    storedProcedure: ViewModels.StoredProcedure
+    storedProcedure: StoredProcedure
   ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
@@ -132,7 +135,7 @@ export class ResourceTreeContextMenuButtonFactory {
     ];
   }
 
-  public static createTriggerContextMenuItems(container: Explorer, trigger: ViewModels.Trigger): TreeNodeMenuItem[] {
+  public static createTriggerContextMenuItems(container: Explorer, trigger: Trigger): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -148,7 +151,7 @@ export class ResourceTreeContextMenuButtonFactory {
 
   public static createUserDefinedFunctionContextMenuItems(
     container: Explorer,
-    userDefinedFunction: ViewModels.UserDefinedFunction
+    userDefinedFunction: UserDefinedFunction
   ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];

@@ -3,6 +3,7 @@ import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
+import StoredProcedure from "../Tree/StoredProcedure";
 
 export interface ExecuteSprocParam {
   type: ko.Observable<string>;
@@ -22,7 +23,7 @@ export class ExecuteSprocParamsPane extends ContextualPaneBase {
   public addNewParamLabel: string = "Add New Param";
   public executeButtonEnabled: ko.Computed<boolean>;
 
-  private _selectedSproc: ViewModels.StoredProcedure;
+  private _selectedSproc: StoredProcedure;
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
@@ -39,8 +40,7 @@ export class ExecuteSprocParamsPane extends ContextualPaneBase {
 
   public open() {
     super.open();
-    const currentSelectedSproc: ViewModels.StoredProcedure =
-      this.container && this.container.findSelectedStoredProcedure();
+    const currentSelectedSproc = this.container && this.container.findSelectedStoredProcedure();
     if (!!currentSelectedSproc && !!this._selectedSproc && this._selectedSproc.rid !== currentSelectedSproc.rid) {
       this.params([]);
       this.partitionKeyValue("");

@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import { handleOpenAction } from "./OpenActions";
 import * as ViewModels from "../Contracts/ViewModels";
-import { DatabaseStub, CollectionStub } from "./OpenActionsStubs";
+import { CollectionStub } from "./OpenActionsStubs";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
 import Explorer from "./Explorer";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
@@ -31,10 +31,10 @@ describe("OpenActions", () => {
       explorer.closeAllPanes = () => {};
       explorer.isConnectExplorerVisible = () => false;
 
-      database = new DatabaseStub({
+      database = {
         id: ko.observable("db"),
         collections: ko.observableArray<ViewModels.Collection>([])
-      });
+      } as ViewModels.Database;
       databases = [database];
       collection = new CollectionStub({
         id: ko.observable("coll")

@@ -7,7 +7,7 @@ import TriggerTab from "../Tabs/TriggerTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 
-export default class Trigger implements ViewModels.Trigger {
+export default class Trigger {
   public nodeKind: string;
   public container: Explorer;
   public collection: ViewModels.Collection;

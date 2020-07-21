@@ -2,16 +2,16 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import { CollectionStub, DatabaseStub } from "../../Explorer/OpenActionsStubs";
+import { CollectionStub } from "../../Explorer/OpenActionsStubs";
 import QueryTab from "./QueryTab";
 
 describe("Query Tab", () => {
   function getNewQueryTabForContainer(container: Explorer): ViewModels.QueryTab {
-    const database: ViewModels.Database = new DatabaseStub({
+    const database = {
       container: container,
       id: ko.observable<string>("test"),
       isDatabaseShared: () => false
-    });
+    } as ViewModels.Database;
     const collection: ViewModels.Collection = new CollectionStub({
       container: container,
       databaseId: "test",

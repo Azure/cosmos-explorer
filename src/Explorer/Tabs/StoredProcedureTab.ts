@@ -9,6 +9,7 @@ import editable from "../../Common/EditableUtility";
 import ScriptTabBase from "./ScriptTabBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
+import StoredProcedure from "../Tree/StoredProcedure";
 
 enum ToggleState {
   Result = "result",
@@ -17,7 +18,7 @@ enum ToggleState {
 
 export default class StoredProcedureTab extends ScriptTabBase implements ViewModels.StoredProcedureTab {
   public collection: ViewModels.Collection;
-  public node: ViewModels.StoredProcedure;
+  public node: StoredProcedure;
   public executeResultsEditorId: string;
   public executeLogsEditorId: string;
   public toggleState: ko.Observable<ToggleState>;

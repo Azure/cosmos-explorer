@@ -48,8 +48,7 @@ const throughputApplyLongDelayMessage = (isAutoscale: boolean, throughput: numbe
   This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
   Database: ${databaseName}, ${currentThroughput(isAutoscale, throughput)}`;
 
-export default class DatabaseSettingsTab extends TabsBase
-  implements ViewModels.DatabaseSettingsTab, ViewModels.WaitsForTemplate {
+export default class DatabaseSettingsTab extends TabsBase implements ViewModels.WaitsForTemplate {
   // editables
   public isAutoPilotSelected: ViewModels.Editable<boolean>;
   public throughput: ViewModels.Editable<number>;
