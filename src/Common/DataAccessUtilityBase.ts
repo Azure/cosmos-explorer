@@ -615,14 +615,6 @@ export abstract class DataAccessUtilityBase {
     }
   }
 
-  public readSubscription(subscriptionId: string, options: any): Q.Promise<DataModels.Subscription> {
-    throw new Error("Read subscription not supported on this platform");
-  }
-
-  public readSubscriptionDefaults(subscriptionId: string, quotaId: string, options: any): Q.Promise<string> {
-    throw new Error("Read subscription defaults not supported on this platform");
-  }
-
   public queryConflicts(
     databaseId: string,
     containerId: string,
