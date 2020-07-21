@@ -7,7 +7,7 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import * as Logger from "../../Common/Logger";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 
-export class LoadQueryPane extends ContextualPaneBase implements ViewModels.LoadQueryPane {
+export class LoadQueryPane extends ContextualPaneBase {
   public selectedFilesTitle: ko.Observable<string>;
   public files: ko.Observable<FileList>;
 

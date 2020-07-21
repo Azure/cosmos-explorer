@@ -13,8 +13,7 @@ import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { HashMap } from "../../Common/HashMap";
 
-export default class CassandraAddCollectionPane extends ContextualPaneBase
-  implements ViewModels.CassandraAddCollectionPane {
+export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
   public keyspaceId: ko.Observable<string>;
   public maxThroughputRU: ko.Observable<number>;

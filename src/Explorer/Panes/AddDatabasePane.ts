@@ -17,7 +17,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 
-export default class AddDatabasePane extends ContextualPaneBase implements ViewModels.AddDatabasePane {
+export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIdLabel: ko.Computed<string>;
   public databaseId: ko.Observable<string>;

@@ -10,7 +10,7 @@ import EntityPropertyViewModel from "./EntityPropertyViewModel";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import Explorer from "../../Explorer";
 
-export default class EditTableEntityPane extends TableEntityPane implements ViewModels.EditTableEntityPane {
+export default class EditTableEntityPane extends TableEntityPane {
   container: Explorer;
   visible: ko.Observable<boolean>;
 

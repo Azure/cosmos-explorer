@@ -7,7 +7,7 @@ import * as Logger from "../../Common/Logger";
 import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 
-export class BrowseQueriesPane extends ContextualPaneBase implements ViewModels.BrowseQueriesPane {
+export class BrowseQueriesPane extends ContextualPaneBase {
   public queriesGridComponentAdapter: QueriesGridComponentAdapter;
   public canSaveQueries: ko.Computed<boolean>;
 

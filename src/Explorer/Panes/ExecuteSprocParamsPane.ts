@@ -14,7 +14,7 @@ type UnwrappedExecuteSprocParam = {
   value: any;
 };
 
-export class ExecuteSprocParamsPane extends ContextualPaneBase implements ViewModels.ExecuteSprocParamsPane {
+export class ExecuteSprocParamsPane extends ContextualPaneBase {
   public params: ko.ObservableArray<ExecuteSprocParam>;
   public partitionKeyType: ko.Observable<string>;
   public partitionKeyValue: ko.Observable<string>;

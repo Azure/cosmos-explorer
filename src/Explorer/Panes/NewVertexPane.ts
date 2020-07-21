@@ -4,7 +4,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { KeyCodes } from "../../Common/Constants";
 import Explorer from "../Explorer";
 
-export default class NewVertexPane extends ContextualPaneBase implements ViewModels.NewVertexPane {
+export default class NewVertexPane extends ContextualPaneBase {
   public container: Explorer;
   public visible: ko.Observable<boolean>;
   public formErrors: ko.Observable<string>;

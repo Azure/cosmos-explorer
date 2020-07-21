@@ -11,7 +11,7 @@ export interface ISelectColumn {
   editable: ko.Observable<boolean>;
 }
 
-export class QuerySelectPane extends ContextualPaneBase implements ViewModels.QuerySelectPane {
+export class QuerySelectPane extends ContextualPaneBase {
   public titleLabel: string = "Select Columns";
   public instructionLabel: string = "Select the columns that you want to query.";
   public availableColumnsTableQueryLabel: string = "Available Columns";

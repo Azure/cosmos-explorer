@@ -9,7 +9,7 @@ import * as Utilities from "../../Tables/Utilities";
 import EntityPropertyViewModel from "./EntityPropertyViewModel";
 import TableEntityPane from "./TableEntityPane";
 
-export default class AddTableEntityPane extends TableEntityPane implements ViewModels.AddTableEntityPane {
+export default class AddTableEntityPane extends TableEntityPane {
   private static _excludedFields: string[] = [TableConstants.EntityKeyNames.Timestamp];
 
   private static _readonlyFields: string[] = [

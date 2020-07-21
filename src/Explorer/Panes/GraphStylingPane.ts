@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 
-export default class GraphStylingPane extends ContextualPaneBase implements ViewModels.GraphStylingPane {
+export default class GraphStylingPane extends ContextualPaneBase {
   public graphConfigUIData: ViewModels.GraphConfigUiData;
   private remoteConfig: ViewModels.GraphConfigUiData;
 
