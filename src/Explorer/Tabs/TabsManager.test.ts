@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { CollectionStub, DatabaseStub } from "../../Explorer/OpenActionsStubs";
 import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 import { TabsManager } from "./TabsManager";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
@@ -28,19 +27,19 @@ describe("Tabs manager tests", () => {
       properties: undefined
     });
 
-    database = new DatabaseStub({
+    database = {
       container: explorer,
       id: ko.observable<string>("test"),
       isDatabaseShared: () => false
-    });
+    } as ViewModels.Database;
     database.isDatabaseExpanded = ko.observable<boolean>(true);
     database.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
 
-    collection = new CollectionStub({
+    collection = {
       container: explorer,
       databaseId: "test",
       id: ko.observable<string>("test")
-    });
+    } as ViewModels.Collection;
     collection.getDatabase = (): ViewModels.Database => database;
     collection.isCollectionExpanded = ko.observable<boolean>(true);
     collection.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();

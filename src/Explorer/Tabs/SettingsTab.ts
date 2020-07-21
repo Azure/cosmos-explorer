@@ -125,7 +125,7 @@ enum ChangeFeedPolicyToggledState {
   On = "On"
 }
 
-export default class SettingsTab extends TabsBase implements ViewModels.SettingsTab, ViewModels.WaitsForTemplate {
+export default class SettingsTab extends TabsBase implements ViewModels.WaitsForTemplate {
   public GEOGRAPHY: string = "Geography";
   public GEOMETRY: string = "Geometry";
 

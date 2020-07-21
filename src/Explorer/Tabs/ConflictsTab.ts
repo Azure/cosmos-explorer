@@ -22,7 +22,7 @@ import { QueryIterator, ItemDefinition, Resource, ConflictDefinition } from "@az
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import Explorer from "../Explorer";
 
-export default class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
+export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ViewModels.ConflictId>;
   public selectedConflictContent: ViewModels.Editable<string>;
   public selectedConflictCurrent: ViewModels.Editable<string>;

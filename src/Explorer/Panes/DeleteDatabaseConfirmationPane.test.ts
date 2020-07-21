@@ -8,7 +8,6 @@ import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
-import { CollectionStub, DatabaseStub } from "../OpenActionsStubs";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
@@ -22,27 +21,27 @@ describe("Delete Database Confirmation Pane", () => {
     });
 
     it("should be true if only 1 database", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastDatabase()).toBe(true);
     });
 
     it("should be false if only 2 databases", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
-      let database2: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
+      let database2 = {} as ViewModels.Database;
       explorer.databases = ko.observableArray<ViewModels.Database>([database, database2]);
       expect(explorer.isLastDatabase()).toBe(false);
     });
 
     it("should be false if not last empty database", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
+      let database = {} as ViewModels.Database;
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastNonEmptyDatabase()).toBe(false);
     });
 
     it("should be true if last non empty database", () => {
-      let database: ViewModels.Database = new DatabaseStub({});
-      database.collections = ko.observableArray<ViewModels.Collection>([new CollectionStub({})]);
+      let database = {} as ViewModels.Database;
+      database.collections = ko.observableArray<ViewModels.Collection>([{} as ViewModels.Collection]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastNonEmptyDatabase()).toBe(true);
     });
@@ -94,12 +93,13 @@ describe("Delete Database Confirmation Pane", () => {
       let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
       fakeDocumentClientUtility.deleteDatabase = () => Q.resolve(null);
       let fakeExplorer = {} as Explorer;
-      fakeExplorer.findSelectedDatabase = () =>
-        new DatabaseStub({
+      fakeExplorer.findSelectedDatabase = () => {
+        return {
           id: ko.observable<string>(selectedDatabaseId),
           rid: "test",
           collections: ko.observableArray<ViewModels.Collection>()
-        });
+        } as ViewModels.Database;
+      };
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.selectedDatabaseId = ko.computed<string>(() => selectedDatabaseId);

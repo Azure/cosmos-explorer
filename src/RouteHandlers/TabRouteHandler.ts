@@ -290,8 +290,7 @@ export class TabRouteHandler {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
       collection &&
         collection.expandCollection().then(() => {
-          const storedProcedure: ViewModels.StoredProcedure =
-            collection && collection.findStoredProcedureWithId(sprocId);
+          const storedProcedure = collection && collection.findStoredProcedureWithId(sprocId);
           storedProcedure && storedProcedure.open();
         });
     });
@@ -322,7 +321,7 @@ export class TabRouteHandler {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
       collection &&
         collection.expandCollection().then(() => {
-          const trigger: ViewModels.Trigger = collection && collection.findTriggerWithId(triggerId);
+          const trigger = collection && collection.findTriggerWithId(triggerId);
           trigger && trigger.open();
         });
     });
@@ -353,8 +352,7 @@ export class TabRouteHandler {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
       collection &&
         collection.expandCollection().then(() => {
-          const userDefinedFunction: ViewModels.UserDefinedFunction =
-            collection && collection.findUserDefinedFunctionWithId(udfId);
+          const userDefinedFunction = collection && collection.findUserDefinedFunctionWithId(udfId);
           userDefinedFunction && userDefinedFunction.open();
         });
     });
