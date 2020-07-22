@@ -45,7 +45,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
   private thumbnailUrlProps: ITextFieldProps;
   private thumbnailSelectorProps: IDropdownProps;
   private imageToBase64: (file: File, updateImageSrc: (result: string) => void) => void;
-  private takeScreenshot: (target: HTMLElement, onError: (error: Error) => void) => Promise<void>;
+  private takeScreenshot: (target: HTMLElement, onError: (error: Error) => void) => void;
 
   constructor(props: PublishNotebookPaneProps) {
     super(props);
@@ -73,37 +73,36 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       };
     };
 
-    this.takeScreenshot = async (target: HTMLElement, onError: (error: Error) => void): Promise<void> => {
+    this.takeScreenshot = (target: HTMLElement, onError: (error: Error) => void): void => {
       const updateImageSrcWithScreenshot = (canvasUrl: string): void => {
         this.props.onChangeImageSrc(canvasUrl);
         this.setState({ imageSrc: canvasUrl });
       };
 
       target.scrollIntoView();
-      try {
-        const canvas = await Html2Canvas(target, {
-          useCORS: true,
-          allowTaint: true,
-          scale: 1,
-          logging: true
+      Html2Canvas(target, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 1,
+        logging: true
+      })
+        .then(canvas => {
+          //redraw canvas to fit Card Cover Image dimensions
+          const originalImageData = canvas.toDataURL();
+          const requiredHeight =
+            parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+          canvas.height = requiredHeight;
+          const context = canvas.getContext("2d");
+          const image = new Image();
+          image.src = originalImageData;
+          image.onload = function() {
+            context.drawImage(image, 0, 0);
+            updateImageSrcWithScreenshot(canvas.toDataURL());
+          };
+        })
+        .catch(error => {
+          onError(error);
         });
-
-        //redraw canvas to fit Card Cover Image dimensions
-        const originalImageData = canvas.toDataURL();
-        const requiredHeight =
-          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
-        canvas.height = requiredHeight;
-        const context = canvas.getContext("2d");
-        const image = new Image();
-        image.src = originalImageData;
-        image.onload = function() {
-          context.drawImage(image, 0, 0);
-          updateImageSrcWithScreenshot(canvas.toDataURL());
-          return;
-        };
-      } catch (error) {
-        onError(error);
-      }
     };
 
     this.descriptionPara1 =
