@@ -5,10 +5,11 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import TriggerTab from "../Tabs/TriggerTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
 
-export default class Trigger implements ViewModels.Trigger {
+export default class Trigger {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public collection: ViewModels.Collection;
   public self: string;
   public rid: string;
@@ -17,7 +18,7 @@ export default class Trigger implements ViewModels.Trigger {
   public triggerType: ko.Observable<string>;
   public triggerOperation: ko.Observable<string>;
 
-  constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: any) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: any) {
     this.nodeKind = "Trigger";
     this.container = container;
     this.collection = collection;

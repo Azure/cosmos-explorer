@@ -5,6 +5,7 @@ import TabsBase from "./TabsBase";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
+import Explorer from "../Explorer";
 
 /**
  * Notebook terminal tab
@@ -30,7 +31,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
 }
 
 export default class TerminalTab extends TabsBase implements ViewModels.Tab {
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
 
   constructor(options: ViewModels.TerminalTabOptions) {
@@ -48,7 +49,7 @@ export default class TerminalTab extends TabsBase implements ViewModels.Tab {
     });
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 

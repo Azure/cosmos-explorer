@@ -10,6 +10,7 @@ import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as Logger from "./Logger";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
+import Explorer from "../Explorer/Explorer";
 
 export class QueriesClient implements ViewModels.QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -20,7 +21,7 @@ export class QueriesClient implements ViewModels.QueriesClient {
   private static readonly FetchQuery: string = "SELECT * FROM c";
   private static readonly FetchMongoQuery: string = "{}";
 
-  public constructor(private container: ViewModels.Explorer) {}
+  public constructor(private container: Explorer) {}
 
   public async setupQueriesCollection(): Promise<DataModels.Collection> {
     const queriesCollection: ViewModels.Collection = this.findQueriesCollection();

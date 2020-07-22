@@ -23,6 +23,7 @@ import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { SessionStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { SubscriptionUtilMappings } from "../../Shared/Constants";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
+import Explorer from "../../Explorer/Explorer";
 
 export default class Main {
   private static _databaseAccountId: string;
@@ -32,8 +33,8 @@ export default class Main {
   private static _features: { [key: string]: string };
   // For AAD, Need to post message to hosted frame to do the auth
   // Use local deferred variable as work around until we find better solution
-  private static _getAadAccessDeferred: Q.Deferred<ViewModels.Explorer>;
-  private static _explorer: ViewModels.Explorer;
+  private static _getAadAccessDeferred: Q.Deferred<Explorer>;
+  private static _explorer: Explorer;
 
   public static isUsingEncryptionToken(): boolean {
     const params = new URLSearchParams(window.parent.location.search);
@@ -43,11 +44,11 @@ export default class Main {
     return false;
   }
 
-  public static initializeExplorer(): Q.Promise<ViewModels.Explorer> {
+  public static initializeExplorer(): Q.Promise<Explorer> {
     window.addEventListener("message", this._handleMessage.bind(this), false);
     this._features = {};
     const params = new URLSearchParams(window.parent.location.search);
-    const deferred: Q.Deferred<ViewModels.Explorer> = Q.defer<ViewModels.Explorer>();
+    const deferred: Q.Deferred<Explorer> = Q.defer<Explorer>();
     let authType: string = null;
 
     // Encrypted token flow
@@ -74,7 +75,7 @@ export default class Main {
       return Q.reject("Sign in needed");
     }
 
-    const explorer: ViewModels.Explorer = this._instantiateExplorer();
+    const explorer: Explorer = this._instantiateExplorer();
     if (authType === AuthType.EncryptedToken) {
       MessageHandler.sendMessage({
         type: MessageTypes.UpdateAccountSwitch,
@@ -109,7 +110,7 @@ export default class Main {
         return Q(null);
       }
       this._explorer = explorer;
-      this._getAadAccessDeferred = Q.defer<ViewModels.Explorer>();
+      this._getAadAccessDeferred = Q.defer<Explorer>();
       return this._getAadAccessDeferred.promise.finally(() => {
         this._getAadAccessDeferred = null;
       });
@@ -135,7 +136,7 @@ export default class Main {
     return features;
   }
 
-  public static configureTokenValidationDisplayPrompt(explorer: ViewModels.Explorer): void {
+  public static configureTokenValidationDisplayPrompt(explorer: Explorer): void {
     const authType: AuthType = (<any>window).authType;
     if (
       !explorer ||
@@ -182,7 +183,7 @@ export default class Main {
     };
   }
 
-  public static renewExplorerAccess = (explorer: ViewModels.Explorer, connectionString: string): Q.Promise<void> => {
+  public static renewExplorerAccess = (explorer: Explorer, connectionString: string): Q.Promise<void> => {
     if (!connectionString) {
       console.error("Missing or invalid connection string input");
       Q.reject("Missing or invalid connection string input");
@@ -249,7 +250,7 @@ export default class Main {
     return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
   };
 
-  public static getUninitializedExplorerForGuestAccess(): ViewModels.Explorer {
+  public static getUninitializedExplorerForGuestAccess(): Explorer {
     const explorer = Main._instantiateExplorer();
     if (window.authType === AuthType.AAD) {
       this._explorer = explorer;
@@ -260,7 +261,7 @@ export default class Main {
   }
 
   private static _initDataExplorerFrameInputs(
-    explorer: ViewModels.Explorer,
+    explorer: Explorer,
     masterKey?: string /* master key extracted from connection string if available */,
     account?: DatabaseAccount,
     authorizationToken?: string /* access key */
@@ -372,7 +373,7 @@ export default class Main {
     return Q.reject(`Unsupported AuthType ${authType}`);
   }
 
-  private static _instantiateExplorer(): ViewModels.Explorer {
+  private static _instantiateExplorer(): Explorer {
     const hostedExplorerFactory = new HostedExplorerFactory();
     const explorer = hostedExplorerFactory.createExplorer();
     // workaround to resolve cyclic refs with view
@@ -395,7 +396,7 @@ export default class Main {
     return explorer;
   }
 
-  private static _showGuestAccessTokenRenewalPromptInMs(explorer: ViewModels.Explorer, interval: number): void {
+  private static _showGuestAccessTokenRenewalPromptInMs(explorer: Explorer, interval: number): void {
     if (interval != null && !isNaN(interval)) {
       setTimeout(() => {
         explorer.displayGuestAccessTokenRenewalPrompt();
@@ -454,7 +455,7 @@ export default class Main {
   }
 
   private static _renewExplorerAccessWithResourceToken = (
-    explorer: ViewModels.Explorer,
+    explorer: Explorer,
     connectionString: string
   ): Q.Promise<void> => {
     window.authType = AuthType.ResourceToken;
@@ -506,7 +507,7 @@ export default class Main {
   };
 
   private static _setExplorerReady(
-    explorer: ViewModels.Explorer,
+    explorer: Explorer,
     masterKey?: string,
     account?: DatabaseAccount,
     authorizationToken?: string
@@ -567,8 +568,9 @@ export default class Main {
 
     this._explorer.hideConnectExplorerForm();
 
+    const masterKey = Main._getMasterKey(keys);
     HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(this._explorer);
-    Main._setExplorerReady(this._explorer, keys.primaryMasterKey, account, authorizationToken);
+    Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
   }
 
   private static _handleGetAccessAadSucceed(response: [DatabaseAccount, AccountKeys, string]) {
@@ -576,10 +578,19 @@ export default class Main {
       return;
     }
     const account = response[0];
-    const keys = response[1];
+    const masterKey = Main._getMasterKey(response[1]);
     const authorizationToken = response[2];
-    Main._setExplorerReady(this._explorer, keys.primaryMasterKey, account, authorizationToken);
+    Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
     this._getAadAccessDeferred.resolve(this._explorer);
+  }
+
+  private static _getMasterKey(keys: AccountKeys): string {
+    return (
+      keys?.primaryMasterKey ??
+      keys?.secondaryMasterKey ??
+      keys?.primaryReadonlyMasterKey ??
+      keys?.secondaryReadonlyMasterKey
+    );
   }
 
   private static _handleGetAccessAadFailed(error: any) {

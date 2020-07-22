@@ -7,6 +7,8 @@ import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplo
 import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
 import NewVertexIcon from "../../../images/NewVertex.svg";
 import StyleIcon from "../../../images/Style.svg";
+import GraphStylingPane from "../Panes/GraphStylingPane";
+import NewVertexPane from "../Panes/NewVertexPane";
 
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -41,8 +43,8 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
   private graphConfigUiData: ViewModels.GraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
-  private newVertexPane: ViewModels.NewVertexPane;
-  private graphStylingPane: ViewModels.GraphStylingPane;
+  private newVertexPane: NewVertexPane;
+  private graphStylingPane: GraphStylingPane;
   private collectionPartitionKeyProperty: string;
 
   constructor(options: ViewModels.GraphTabOptions) {

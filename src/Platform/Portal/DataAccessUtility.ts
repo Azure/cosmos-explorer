@@ -70,7 +70,7 @@ export class DataAccessUtility extends DataAccessUtilityBase {
     options: any
   ): Q.Promise<void> {
     const deferred: Q.Deferred<void> = Q.defer<void>();
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     const url: string = `${explorer.extensionEndpoint()}/api/offerthroughputrequest/updatebeyondspecifiedlimit`;
     const authorizationHeader: ViewModels.AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
     const requestOptions: any = _.extend({}, options, {});

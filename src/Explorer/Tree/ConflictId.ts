@@ -5,9 +5,10 @@ import DocumentId from "./DocumentId";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { extractPartitionKey } from "@azure/cosmos";
+import ConflictsTab from "../Tabs/ConflictsTab";
 
 export default class ConflictId implements ViewModels.ConflictId {
-  public container: ViewModels.ConflictsTab;
+  public container: ConflictsTab;
   public rid: string;
   public self: string;
   public ts: string;
@@ -23,7 +24,7 @@ export default class ConflictId implements ViewModels.ConflictId {
   public parsedContent: any;
   public isDirty: ko.Observable<boolean>;
 
-  constructor(container: ViewModels.ConflictsTab, data: any) {
+  constructor(container: ConflictsTab, data: any) {
     this.container = container;
     this.self = data._self;
     this.rid = data._rid;

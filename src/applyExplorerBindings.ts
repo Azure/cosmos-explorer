@@ -1,7 +1,7 @@
 import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
 import { MessageHandler } from "./Common/MessageHandler";
 import * as ko from "knockout";
-import { Explorer } from "./Contracts/ViewModels";
+import Explorer from "./Explorer/Explorer";
 
 export const applyExplorerBindings = (explorer: Explorer) => {
   if (!!explorer) {

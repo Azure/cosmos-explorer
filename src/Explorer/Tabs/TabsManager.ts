@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsManagerTemplate from "./TabsManager.html";
+import Explorer from "../Explorer";
 
 export class TabsManager {
   public openedTabs: ko.ObservableArray<ViewModels.Tab>;
@@ -62,7 +63,7 @@ export class TabsManager {
     this.openedTabs([]);
   }
 
-  public closeTab(tabId: string, explorer: ViewModels.Explorer): void {
+  public closeTab(tabId: string, explorer: Explorer): void {
     const tabIndex: number = this.openedTabs().findIndex((tab: ViewModels.Tab) => tab.tabId === tabId);
     if (tabIndex !== -1) {
       const tabToActive: ViewModels.Tab = this.openedTabs()[tabIndex + 1] || this.openedTabs()[tabIndex - 1];

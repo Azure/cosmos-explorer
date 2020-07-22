@@ -26,6 +26,10 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import Explorer from "../Explorer";
+import UserDefinedFunction from "./UserDefinedFunction";
+import StoredProcedure from "./StoredProcedure";
+import Trigger from "./Trigger";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -42,7 +46,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
 
-  public constructor(private container: ViewModels.Explorer) {
+  public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
@@ -208,7 +212,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
    * This is a rewrite of Collection.ts : showScriptsMenu, showStoredProcedures, showTriggers, showUserDefinedFunctions
    * @param container
    */
-  private static showScriptNodes(container: ViewModels.Explorer): boolean {
+  private static showScriptNodes(container: Explorer): boolean {
     return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
   }
 
@@ -289,7 +293,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildStoredProcedureNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "Stored Procedures",
-      children: collection.storedProcedures().map((sp: ViewModels.StoredProcedure) => ({
+      children: collection.storedProcedures().map((sp: StoredProcedure) => ({
         label: sp.id(),
         onClick: sp.open.bind(sp),
         isSelected: () =>
@@ -308,7 +312,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "User Defined Functions",
-      children: collection.userDefinedFunctions().map((udf: ViewModels.UserDefinedFunction) => ({
+      children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
         label: udf.id(),
         onClick: udf.open.bind(udf),
         isSelected: () =>
@@ -327,7 +331,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildTriggerNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "Triggers",
-      children: collection.triggers().map((trigger: ViewModels.Trigger) => ({
+      children: collection.triggers().map((trigger: Trigger) => ({
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
         isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),

@@ -8,10 +8,11 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import Q from "q";
 import QueryTab from "../Tabs/QueryTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public databaseId: string;
   public self: string;
   public rid: string;
@@ -24,7 +25,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public isCollectionExpanded: ko.Observable<boolean>;
 
-  constructor(container: ViewModels.Explorer, databaseId: string, data: DataModels.Collection) {
+  constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
     this.nodeKind = "Collection";
     this.container = container;
     this.databaseId = databaseId;

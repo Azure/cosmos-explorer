@@ -20,8 +20,9 @@ import DiscardIcon from "../../../images/discard.svg";
 import DeleteIcon from "../../../images/delete.svg";
 import { QueryIterator, ItemDefinition, Resource, ConflictDefinition } from "@azure/cosmos";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import Explorer from "../Explorer";
 
-export default class ConflictsTab extends TabsBase implements ViewModels.ConflictsTab {
+export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ViewModels.ConflictId>;
   public selectedConflictContent: ViewModels.Editable<string>;
   public selectedConflictCurrent: ViewModels.Editable<string>;
@@ -49,7 +50,7 @@ export default class ConflictsTab extends TabsBase implements ViewModels.Conflic
   public conflictIds: ko.ObservableArray<ViewModels.ConflictId>;
 
   private _documentsIterator: MinimalQueryIterator;
-  private _container: ViewModels.Explorer;
+  private _container: Explorer;
   private _acceptButtonLabel: ko.Observable<string> = ko.observable("Save");
   protected _selfLink: string;
 

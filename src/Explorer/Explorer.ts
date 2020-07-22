@@ -80,6 +80,9 @@ import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 import { ImmutableNotebook } from "@nteract/commutable";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import StoredProcedure from "./Tree/StoredProcedure";
+import Trigger from "./Tree/Trigger";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -90,7 +93,7 @@ enum ShareAccessToggleState {
   Read
 }
 
-export default class Explorer implements ViewModels.Explorer {
+export default class Explorer {
   public flight: ko.Observable<string> = ko.observable<string>(
     SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
   );
@@ -165,25 +168,25 @@ export default class Explorer implements ViewModels.Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public addDatabasePane: ViewModels.AddDatabasePane;
-  public addCollectionPane: ViewModels.AddCollectionPane;
-  public deleteCollectionConfirmationPane: ViewModels.DeleteCollectionConfirmationPane;
-  public deleteDatabaseConfirmationPane: ViewModels.DeleteDatabaseConfirmationPane;
-  public graphStylingPane: ViewModels.GraphStylingPane;
-  public addTableEntityPane: ViewModels.AddTableEntityPane;
-  public editTableEntityPane: ViewModels.EditTableEntityPane;
+  public addDatabasePane: AddDatabasePane;
+  public addCollectionPane: AddCollectionPane;
+  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
+  public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
+  public graphStylingPane: GraphStylingPane;
+  public addTableEntityPane: AddTableEntityPane;
+  public editTableEntityPane: EditTableEntityPane;
   public tableColumnOptionsPane: TableColumnOptionsPane;
   public querySelectPane: QuerySelectPane;
-  public newVertexPane: ViewModels.NewVertexPane;
-  public cassandraAddCollectionPane: ViewModels.CassandraAddCollectionPane;
-  public settingsPane: ViewModels.SettingsPane;
-  public executeSprocParamsPane: ViewModels.ExecuteSprocParamsPane;
-  public renewAdHocAccessPane: ViewModels.RenewAdHocAccessPane;
-  public uploadItemsPane: ViewModels.UploadItemsPane;
+  public newVertexPane: NewVertexPane;
+  public cassandraAddCollectionPane: CassandraAddCollectionPane;
+  public settingsPane: SettingsPane;
+  public executeSprocParamsPane: ExecuteSprocParamsPane;
+  public renewAdHocAccessPane: RenewAdHocAccessPane;
+  public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
-  public loadQueryPane: ViewModels.LoadQueryPane;
+  public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ViewModels.ContextualPane;
-  public browseQueriesPane: ViewModels.BrowseQueriesPane;
+  public browseQueriesPane: BrowseQueriesPane;
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
@@ -201,7 +204,7 @@ export default class Explorer implements ViewModels.Explorer {
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<ViewModels.AdHocAccessData>;
-  public renewExplorerShareAccess: (explorer: ViewModels.Explorer, token: string) => Q.Promise<void>;
+  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
   public renewTokenError: ko.Observable<string>;
   public tokenForRenewal: ko.Observable<string>;
   public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
@@ -215,7 +218,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
+  public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSparkEnabled: ko.Observable<boolean>;
   public isSparkEnabledForAccount: ko.Observable<boolean>;
@@ -232,7 +235,7 @@ export default class Explorer implements ViewModels.Explorer {
   private _isInitializingNotebooks: boolean;
   private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
-  private _arcadiaManager: ViewModels.ArcadiaResourceManager;
+  private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
     name: string;
     content: string;
@@ -1956,9 +1959,9 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
-  public findSelectedStoredProcedure(): ViewModels.StoredProcedure {
+  public findSelectedStoredProcedure(): StoredProcedure {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.storedProcedures(), (storedProcedure: ViewModels.StoredProcedure) => {
+    return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
       const openedSprocTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
         (tab: ViewModels.Tab) => tab.node && tab.node.rid === storedProcedure.rid
@@ -1970,9 +1973,9 @@ export default class Explorer implements ViewModels.Explorer {
     });
   }
 
-  public findSelectedUDF(): ViewModels.UserDefinedFunction {
+  public findSelectedUDF(): UserDefinedFunction {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: ViewModels.UserDefinedFunction) => {
+    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
       const openedUdfTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.UserDefinedFunctions,
         (tab: ViewModels.Tab) => tab.node && tab.node.rid === userDefinedFunction.rid
@@ -1984,9 +1987,9 @@ export default class Explorer implements ViewModels.Explorer {
     });
   }
 
-  public findSelectedTrigger(): ViewModels.Trigger {
+  public findSelectedTrigger(): Trigger {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.triggers(), (trigger: ViewModels.Trigger) => {
+    return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
       const openedTriggerTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.Triggers,
         (tab: ViewModels.Tab) => tab.node && tab.node.rid === trigger.rid

@@ -87,6 +87,10 @@ Jest and Puppeteer are used for end to end production runners and are contained 
 1. Copy .env.example to .env and fill in all variables
 2. Run `npm run test:e2e`
 
+### Releasing
+
+We generally adhear to the release strategy [documented by the Azure SDK Guidelines](https://azure.github.io/azure-sdk/policies_repobranching.html#release-branches). Most releases should happen from the master branch. If master contains commits that cannot be released, you may create a release from a `release/` or `hotfix/` branch. See linked documentation for more details.
+
 # Contributing
 
 Please read the [contribution guidelines](./CONTRIBUTING.md).

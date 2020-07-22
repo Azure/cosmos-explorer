@@ -115,7 +115,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     };
 
     this._isSaveQueriesEnabled = ko.computed<boolean>(() => {
-      const container: ViewModels.Explorer = this.collection && this.collection.container;
+      const container = this.collection && this.collection.container;
       return (container && (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph())) || false;
     });
 

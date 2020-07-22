@@ -27,10 +27,11 @@ import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/Notebook
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { config } from "../../Config";
+import Explorer from "../Explorer";
 
 export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
   private static clientManager: NotebookClientV2;
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
@@ -104,7 +105,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 

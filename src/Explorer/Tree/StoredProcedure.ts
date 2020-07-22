@@ -6,6 +6,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -34,9 +35,9 @@ function sample(prefix) {
     if (!isAccepted) throw new Error('The query was not accepted by the server.');
 }`;
 
-export default class StoredProcedure implements ViewModels.StoredProcedure {
+export default class StoredProcedure {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public collection: ViewModels.Collection;
   public self: string;
   public rid: string;
@@ -44,7 +45,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   public body: ko.Observable<string>;
   public isExecuteEnabled: boolean;
 
-  constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
     this.nodeKind = "StoredProcedure";
     this.container = container;
     this.collection = collection;

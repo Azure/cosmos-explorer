@@ -13,6 +13,7 @@ import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import AddEntityIcon from "../../../images/AddEntity.svg";
 import EditEntityIcon from "../../../images/Edit-entity.svg";
 import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
+import Explorer from "../Explorer";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
@@ -31,7 +32,7 @@ export default class QueryTablesTab extends TabsBase {
   public deleteEntityButton: ViewModels.Button;
   public queryBuilderButton: ViewModels.Button;
   public queryTextButton: ViewModels.Button;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
 
   constructor(options: ViewModels.TabOptions) {
     super(options);

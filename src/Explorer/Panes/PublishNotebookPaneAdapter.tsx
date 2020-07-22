@@ -2,7 +2,7 @@ import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as Logger from "../../Common/Logger";
-import * as ViewModels from "../../Contracts/ViewModels";
+import Explorer from "../Explorer";
 import { JunoClient } from "../../Juno/JunoClient";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
@@ -27,7 +27,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
 
-  constructor(private container: ViewModels.Explorer, private junoClient: JunoClient) {
+  constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
     this.reset();
     this.triggerRender();

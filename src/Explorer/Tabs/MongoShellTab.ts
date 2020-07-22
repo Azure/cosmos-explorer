@@ -13,10 +13,11 @@ import { CosmosClient } from "../../Common/CosmosClient";
 import { HashMap } from "../../Common/HashMap";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { PlatformType } from "../../PlatformType";
+import Explorer from "../Explorer";
 
 export default class MongoShellTab extends TabsBase implements ViewModels.MongoShellTab {
   public url: ko.Computed<string>;
-  private _container: ViewModels.Explorer;
+  private _container: Explorer;
   private _runtimeEndpoint: string;
   private _logTraces: HashMap<number>;
 

@@ -24,6 +24,7 @@ import { MessageHandler } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
+import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
@@ -142,7 +143,7 @@ export abstract class DataAccessUtilityBase {
 
   public executeStoredProcedure(
     collection: ViewModels.Collection,
-    storedProcedure: ViewModels.StoredProcedure,
+    storedProcedure: StoredProcedure,
     partitionKeyValue: any,
     params: any[]
   ): Q.Promise<any> {

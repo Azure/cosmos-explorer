@@ -5,17 +5,18 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
 
-export default class UserDefinedFunction implements ViewModels.UserDefinedFunction {
+export default class UserDefinedFunction {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public collection: ViewModels.Collection;
   public self: string;
   public rid: string;
   public id: ko.Observable<string>;
   public body: ko.Observable<string>;
 
-  constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.UserDefinedFunction) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.UserDefinedFunction) {
     this.nodeKind = "UserDefinedFunction";
     this.container = container;
 

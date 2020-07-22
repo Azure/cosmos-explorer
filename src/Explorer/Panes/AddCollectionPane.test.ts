@@ -7,7 +7,7 @@ import { AutopilotTier } from "../../Contracts/DataModels";
 
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
     const mockDatabaseAccount: ViewModels.DatabaseAccount = {
       id: "mock",
       kind: "DocumentDB",

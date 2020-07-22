@@ -32,10 +32,11 @@ import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
 import { config } from "../../Config";
+import Explorer from "../Explorer";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public self: string;
   public rid: string;
   public databaseId: string;
@@ -62,9 +63,9 @@ export default class Collection implements ViewModels.Collection {
 
   public documentIds: ko.ObservableArray<DocumentId>;
   public children: ko.ObservableArray<ViewModels.TreeNode>;
-  public storedProcedures: ko.Computed<ViewModels.StoredProcedure[]>;
-  public userDefinedFunctions: ko.Computed<ViewModels.UserDefinedFunction[]>;
-  public triggers: ko.Computed<ViewModels.Trigger[]>;
+  public storedProcedures: ko.Computed<StoredProcedure[]>;
+  public userDefinedFunctions: ko.Computed<UserDefinedFunction[]>;
+  public triggers: ko.Computed<Trigger[]>;
 
   public showStoredProcedures: ko.Observable<boolean>;
   public showTriggers: ko.Observable<boolean>;
@@ -86,7 +87,7 @@ export default class Collection implements ViewModels.Collection {
   public triggersFocused: ko.Observable<boolean>;
 
   constructor(
-    container: ViewModels.Explorer,
+    container: Explorer,
     databaseId: string,
     data: DataModels.Collection,
     quotaInfo: DataModels.CollectionQuotaInfo,
@@ -179,19 +180,19 @@ export default class Collection implements ViewModels.Collection {
     this.storedProcedures = ko.computed(() => {
       return this.children()
         .filter(node => node.nodeKind === "StoredProcedure")
-        .map(node => <ViewModels.StoredProcedure>node);
+        .map(node => <StoredProcedure>node);
     });
 
     this.userDefinedFunctions = ko.computed(() => {
       return this.children()
         .filter(node => node.nodeKind === "UserDefinedFunction")
-        .map(node => <ViewModels.UserDefinedFunction>node);
+        .map(node => <UserDefinedFunction>node);
     });
 
     this.triggers = ko.computed(() => {
       return this.children()
         .filter(node => node.nodeKind === "Trigger")
-        .map(node => <ViewModels.Trigger>node);
+        .map(node => <Trigger>node);
     });
 
     const showScriptsMenus: boolean = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
@@ -879,21 +880,18 @@ export default class Collection implements ViewModels.Collection {
     return node;
   }
 
-  public findStoredProcedureWithId(sprocId: string): ViewModels.StoredProcedure {
-    return _.find(
-      this.storedProcedures(),
-      (storedProcedure: ViewModels.StoredProcedure) => storedProcedure.id() === sprocId
-    );
+  public findStoredProcedureWithId(sprocId: string): StoredProcedure {
+    return _.find(this.storedProcedures(), (storedProcedure: StoredProcedure) => storedProcedure.id() === sprocId);
   }
 
-  public findTriggerWithId(triggerId: string): ViewModels.Trigger {
-    return _.find(this.triggers(), (trigger: ViewModels.Trigger) => trigger.id() === triggerId);
+  public findTriggerWithId(triggerId: string): Trigger {
+    return _.find(this.triggers(), (trigger: Trigger) => trigger.id() === triggerId);
   }
 
-  public findUserDefinedFunctionWithId(userDefinedFunctionId: string): ViewModels.UserDefinedFunction {
+  public findUserDefinedFunctionWithId(userDefinedFunctionId: string): UserDefinedFunction {
     return _.find(
       this.userDefinedFunctions(),
-      (userDefinedFunction: ViewModels.Trigger) => userDefinedFunction.id() === userDefinedFunctionId
+      (userDefinedFunction: Trigger) => userDefinedFunction.id() === userDefinedFunctionId
     );
   }
 

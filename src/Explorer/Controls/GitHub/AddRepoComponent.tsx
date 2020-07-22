@@ -1,6 +1,5 @@
 import { DefaultButton, IButtonProps, ITextFieldProps, TextField } from "office-ui-fabric-react";
 import * as React from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import * as Constants from "../../../Common/Constants";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RepoListItem } from "./GitHubReposComponent";
@@ -9,9 +8,10 @@ import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { IGitHubRepo } from "../../../GitHub/GitHubClient";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import UrlUtility from "../../../Common/UrlUtility";
+import Explorer from "../../Explorer";
 
 export interface AddRepoComponentProps {
-  container: ViewModels.Explorer;
+  container: Explorer;
   getRepo: (owner: string, repo: string) => Promise<IGitHubRepo>;
   pinRepo: (item: RepoListItem) => void;
 }

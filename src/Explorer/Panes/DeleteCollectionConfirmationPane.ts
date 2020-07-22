@@ -12,8 +12,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 
-export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
-  implements ViewModels.DeleteCollectionConfirmationPane {
+export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
   public collectionIdConfirmation: ko.Observable<string>;
   public containerDeleteFeedback: ko.Observable<string>;

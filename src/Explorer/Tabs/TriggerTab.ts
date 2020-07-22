@@ -6,10 +6,11 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import ScriptTabBase from "./ScriptTabBase";
 import editable from "../../Common/EditableUtility";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Trigger from "../Tree/Trigger";
 
 export default class TriggerTab extends ScriptTabBase implements ViewModels.TriggerTab {
   public collection: ViewModels.Collection;
-  public node: ViewModels.Trigger;
+  public node: Trigger;
   public triggerType: ViewModels.Editable<string>;
   public triggerOperation: ViewModels.Editable<string>;
 

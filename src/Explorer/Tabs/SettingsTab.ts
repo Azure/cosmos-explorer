@@ -17,6 +17,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
+import Explorer from "../Explorer";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -124,7 +125,7 @@ enum ChangeFeedPolicyToggledState {
   On = "On"
 }
 
-export default class SettingsTab extends TabsBase implements ViewModels.SettingsTab, ViewModels.WaitsForTemplate {
+export default class SettingsTab extends TabsBase implements ViewModels.WaitsForTemplate {
   public GEOGRAPHY: string = "Geography";
   public GEOMETRY: string = "Geometry";
 
@@ -218,7 +219,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.Settings
   public throughputModeRadioName: string;
 
   private _offerReplacePending: ko.PureComputed<boolean>;
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
   private _isAutoPilotDirty: ko.Computed<boolean>;
   private _hasProvisioningTypeChanged: ko.Computed<boolean>;

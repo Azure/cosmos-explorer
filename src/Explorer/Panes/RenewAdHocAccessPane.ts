@@ -8,7 +8,7 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 
-export class RenewAdHocAccessPane extends ContextualPaneBase implements ViewModels.RenewAdHocAccessPane {
+export class RenewAdHocAccessPane extends ContextualPaneBase {
   public accessKey: ko.Observable<string>;
   public isHelperImageVisible: ko.Observable<boolean>;
 

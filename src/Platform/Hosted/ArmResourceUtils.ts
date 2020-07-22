@@ -123,10 +123,18 @@ export abstract class ArmResourceUtils {
 
     try {
       const fetchHeaders = await ArmResourceUtils._getAuthHeader(ArmResourceUtils._armAuthArea, tenantId);
-      const url = `${ArmResourceUtils._armEndpoint}/${cosmosdbResourceId}/listKeys?api-version=${Constants.ArmApiVersions.documentDB}`;
-
-      const response: Response = await fetch(url, { headers: fetchHeaders, method: "POST" });
-      const result: AccountKeys = response.status === 204 || response.status === 304 ? null : await response.json();
+      const readWriteKeysUrl = `${ArmResourceUtils._armEndpoint}/${cosmosdbResourceId}/listKeys?api-version=${Constants.ArmApiVersions.documentDB}`;
+      const readOnlyKeysUrl = `${ArmResourceUtils._armEndpoint}/${cosmosdbResourceId}/readOnlyKeys?api-version=${Constants.ArmApiVersions.documentDB}`;
+      let response: Response = await fetch(readWriteKeysUrl, { headers: fetchHeaders, method: "POST" });
+      if (response.status === Constants.HttpStatusCodes.Forbidden) {
+        // fetch read only keys for readers
+        response = await fetch(readOnlyKeysUrl, { headers: fetchHeaders, method: "POST" });
+      }
+      const result: AccountKeys =
+        response.status === Constants.HttpStatusCodes.NoContent ||
+        response.status === Constants.HttpStatusCodes.NotModified
+          ? null
+          : await response.json();
       if (!response.ok) {
         throw result;
       }

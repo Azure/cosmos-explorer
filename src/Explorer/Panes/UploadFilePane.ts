@@ -5,7 +5,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 
-export class UploadFilePane extends ContextualPaneBase implements ViewModels.UploadFilePane {
+export class UploadFilePane extends ContextualPaneBase {
   public selectedFilesTitle: ko.Observable<string>;
   public files: ko.Observable<FileList>;
   private openOptions: ViewModels.UploadFilePaneOpenOptions;

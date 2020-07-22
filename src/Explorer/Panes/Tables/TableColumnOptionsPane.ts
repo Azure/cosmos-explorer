@@ -28,7 +28,7 @@ export interface IColumnSetting {
   order?: number[];
 }
 
-export class TableColumnOptionsPane extends ContextualPaneBase implements ViewModels.TableColumnOptionsPane {
+export class TableColumnOptionsPane extends ContextualPaneBase {
   public titleLabel: string = "Column Options";
   public instructionLabel: string = "Choose the columns and the order in which you want to display them in the table.";
   public availableColumnsLabel: string = "Available Columns";

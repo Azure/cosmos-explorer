@@ -24,9 +24,10 @@ import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { getFullName } from "../../Utils/UserUtils";
 import { ImmutableNotebook } from "@nteract/commutable";
+import Explorer from "../Explorer";
 
 export interface NotebookManagerOptions {
-  container: ViewModels.Explorer;
+  container: Explorer;
   notebookBasePath: ko.Observable<string>;
   dialogProps: ko.Observable<DialogProps>;
   resourceTree: ResourceTreeAdapter;

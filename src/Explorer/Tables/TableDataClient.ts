@@ -16,6 +16,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { MessageHandler } from "../../Common/MessageHandler";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
+import Explorer from "../Explorer";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -405,7 +406,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   public createKeyspace(
     cassandraEndpoint: string,
     resourceId: string,
-    explorer: ViewModels.Explorer,
+    explorer: Explorer,
     createKeyspaceQuery: string
   ): Q.Promise<any> {
     if (!createKeyspaceQuery) {
@@ -446,7 +447,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   public createTableAndKeyspace(
     cassandraEndpoint: string,
     resourceId: string,
-    explorer: ViewModels.Explorer,
+    explorer: Explorer,
     createTableQuery: string,
     createKeyspaceQuery?: string
   ): Q.Promise<any> {
@@ -506,7 +507,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     cassandraEndpoint: string,
     resourceId: string,
     deleteQuery: string,
-    explorer: ViewModels.Explorer
+    explorer: Explorer
   ): Q.Promise<any> {
     const deferred = Q.defer<any>();
     const notificationId = NotificationConsoleUtils.logConsoleMessage(
@@ -660,7 +661,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     cassandraEndpoint: string,
     resourceId: string,
     query: string,
-    explorer: ViewModels.Explorer
+    explorer: Explorer
   ): Q.Promise<any> {
     const deferred = Q.defer();
     const authType = window.authType;

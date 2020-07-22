@@ -1,33 +1,21 @@
 import * as DataModels from "./DataModels";
-import * as Entities from "../Explorer/Tables/Entities";
 import * as monaco from "monaco-editor";
 import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
 import Q from "q";
-import QueryViewModel from "../Explorer/Tables/QueryBuilder/QueryViewModel";
-import TableEntityListViewModel from "../Explorer/Tables/DataTable/TableEntityListViewModel";
 import { AccessibleVerticalList } from "../Explorer/Tree/AccessibleVerticalList";
-import { ArcadiaWorkspaceItem } from "../Explorer/Controls/Arcadia/ArcadiaMenuPicker";
-import { CassandraTableKey, CassandraTableKeys, TableDataClient } from "../Explorer/Tables/TableDataClient";
+import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { ExecuteSprocParam } from "../Explorer/Panes/ExecuteSprocParamsPane";
 import { GitHubClient } from "../GitHub/GitHubClient";
-import { IColumnSetting } from "../Explorer/Panes/Tables/TableColumnOptionsPane";
 import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
-import { Library } from "./DataModels";
-import { MostRecentActivity } from "../Explorer/MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem } from "../Explorer/Notebook/NotebookContentItem";
-import { PlatformType } from "../PlatformType";
 import { QueryMetrics } from "@azure/cosmos";
-import { SetupNotebooksPane } from "../Explorer/Panes/SetupNotebooksPane";
-import { Splitter } from "../Common/Splitter";
-import { StringInputPane } from "../Explorer/Panes/StringInputPane";
-import { TabsManager } from "../Explorer/Tabs/TabsManager";
-import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { UploadDetails } from "../workers/upload/definitions";
-import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
-import { ImmutableNotebook } from "@nteract/commutable";
+import Explorer from "../Explorer/Explorer";
+import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
+import StoredProcedure from "../Explorer/Tree/StoredProcedure";
+import ConflictsTab from "../Explorer/Tabs/ConflictsTab";
+import Trigger from "../Explorer/Tree/Trigger";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -43,239 +31,10 @@ export interface NavbarButtonConfig extends CommandButtonComponentProps {}
 
 export interface DatabaseAccount extends DataModels.DatabaseAccount {}
 
-export interface Explorer {
-  flight: ko.Observable<string>;
-  handleMessage(event: MessageEvent): void;
-  isRefreshingExplorer: ko.Observable<boolean>;
-
-  databaseAccount: ko.Observable<DatabaseAccount>;
-  subscriptionType: ko.Observable<SubscriptionType>;
-  quotaId: ko.Observable<string>;
-  hasWriteAccess: ko.Observable<boolean>;
-
-  defaultExperience: ko.Observable<string>;
-  isPreferredApiDocumentDB: ko.Computed<boolean>;
-  isPreferredApiCassandra: ko.Computed<boolean>;
-  isPreferredApiTable: ko.Computed<boolean>;
-  isPreferredApiGraph: ko.Computed<boolean>;
-  isPreferredApiMongoDB: ko.Computed<boolean>;
-
-  isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-
-  isDatabaseNodeOrNoneSelected(): boolean;
-  isDatabaseNodeSelected(): boolean;
-  isNodeKindSelected(nodeKind: string): boolean;
-  isNoneSelected(): boolean;
-  isSelectedDatabaseShared(): boolean;
-  deleteDatabaseText: ko.Observable<string>;
-  deleteCollectionText: ko.Subscribable<string>; // Our code assigns to a ko.Observable, but unit test assigns to ko.Computed
-
-  addCollectionText: ko.Observable<string>;
-  addDatabaseText: ko.Observable<string>;
-  collectionTitle: ko.Observable<string>;
-  collectionTreeNodeAltText: ko.Observable<string>;
-  refreshTreeTitle: ko.Observable<string>;
-
-  isAccountReady: ko.Observable<boolean>;
-
-  collectionCreationDefaults: CollectionCreationDefaults;
-  isEmulator: boolean;
-  features: ko.Observable<any>;
-  serverId: ko.Observable<string>;
-  extensionEndpoint: ko.Observable<string>;
-  armEndpoint: ko.Observable<string>;
-  isFeatureEnabled: (feature: string) => boolean;
-  isGalleryPublishEnabled: ko.Computed<boolean>;
-  isGitHubPaneEnabled: ko.Observable<boolean>;
-  isPublishNotebookPaneEnabled: ko.Observable<boolean>;
-  isRightPanelV2Enabled: ko.Computed<boolean>;
-  canExceedMaximumValue: ko.Computed<boolean>;
-  hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
-  isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  isNotificationConsoleExpanded: ko.Observable<boolean>;
-  isTryCosmosDBSubscription: ko.Observable<boolean>;
-  canSaveQueries: ko.Computed<boolean>;
-  parentFrameDataExplorerVersion: ko.Observable<string>;
-
-  documentClientUtility: DocumentClientUtilityBase;
-  notificationsClient: NotificationsClient;
-  queriesClient: QueriesClient;
-  tableDataClient: TableDataClient;
-  splitter: Splitter;
-  notificationConsoleData: ko.ObservableArray<ConsoleData>;
-
-  // Selection
-  selectedNode: ko.Observable<TreeNode>;
-
-  // Tree
-  databases: ko.ObservableArray<Database>;
-  nonSystemDatabases: ko.Computed<Database[]>;
-  selectedDatabaseId: ko.Computed<string>;
-  selectedCollectionId: ko.Computed<string>;
-  isLeftPaneExpanded: ko.Observable<boolean>;
-
-  // Resource Token
-  resourceTokenDatabaseId: ko.Observable<string>;
-  resourceTokenCollectionId: ko.Observable<string>;
-  resourceTokenCollection: ko.Observable<CollectionBase>;
-  resourceTokenPartitionKey: ko.Observable<string>;
-  isAuthWithResourceToken: ko.Observable<boolean>;
-  isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
-
-  // Tabs
-  isTabsContentExpanded: ko.Observable<boolean>;
-  tabsManager: TabsManager;
-
-  // Contextual Panes
-  addDatabasePane: AddDatabasePane;
-  addCollectionPane: AddCollectionPane;
-  deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
-  deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
-  graphStylingPane: GraphStylingPane;
-  addTableEntityPane: AddTableEntityPane;
-  editTableEntityPane: EditTableEntityPane;
-  tableColumnOptionsPane: TableColumnOptionsPane;
-  querySelectPane: QuerySelectPane;
-  newVertexPane: NewVertexPane;
-  cassandraAddCollectionPane: CassandraAddCollectionPane;
-  settingsPane: SettingsPane;
-  executeSprocParamsPane: ExecuteSprocParamsPane;
-  renewAdHocAccessPane: RenewAdHocAccessPane;
-  uploadItemsPane: UploadItemsPane;
-  uploadItemsPaneAdapter: UploadItemsPaneAdapter;
-  loadQueryPane: LoadQueryPane;
-  saveQueryPane: ContextualPane;
-  browseQueriesPane: BrowseQueriesPane;
-  uploadFilePane: UploadFilePane;
-  stringInputPane: StringInputPane;
-  setupNotebooksPane: SetupNotebooksPane;
-  gitHubReposPane: ContextualPane;
-  publishNotebookPaneAdapter: ReactAdapter;
-
-  // Facade
-  logConsoleData(data: ConsoleData): void;
-  isNodeKindSelected(nodeKind: string): boolean;
-  initDataExplorerWithFrameInputs(inputs: DataExplorerInputsFrame): Q.Promise<void>;
-  toggleLeftPaneExpanded(): void;
-  refreshDatabaseForResourceToken(): Q.Promise<void>;
-  refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any>;
-  closeAllPanes(): void;
-  findSelectedDatabase(): Database;
-  findDatabaseWithId(databaseRid: string): Database;
-  isLastDatabase(): boolean;
-  isLastNonEmptyDatabase(): boolean;
-  findSelectedCollection(): Collection;
-  isLastCollection(): boolean;
-  findSelectedStoredProcedure(): StoredProcedure;
-  findSelectedUDF(): UserDefinedFunction;
-  findSelectedTrigger(): Trigger;
-  findCollection(rid: string): Collection;
-  provideFeedbackEmail(): void;
-  expandConsole: () => void;
-  collapseConsole: () => void;
-  generateSharedAccessData(): void;
-  getPlatformType(): PlatformType;
-  isConnectExplorerVisible(): boolean;
-  isRunningOnNationalCloud(): boolean;
-  displayConnectExplorerForm(): void;
-  hideConnectExplorerForm(): void;
-  displayContextSwitchPromptForConnectionString(connectionString: string): void;
-  displayGuestAccessTokenRenewalPrompt(): void;
-  rebindDocumentClientUtility(documentClientUtility: DocumentClientUtilityBase): void;
-  renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
-  renewShareAccess(accessInput: string): Q.Promise<void>;
-  onUpdateTabsButtons: (buttons: NavbarButtonConfig[]) => void;
-  onNewCollectionClicked: () => void;
-  showOkModalDialog: (title: string, msg: string) => void;
-  showOkCancelModalDialog: (
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void
-  ) => void;
-  showOkCancelTextFieldModalDialog: (
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void,
-    textFiledProps: TextFieldProps,
-    isPrimaryButtonDisabled?: boolean
-  ) => void;
-
-  // Analytics
-  isNotebookEnabled: ko.Observable<boolean>;
-  isSparkEnabled: ko.Observable<boolean>;
-  isNotebooksEnabledForAccount: ko.Observable<boolean>;
-  isSparkEnabledForAccount: ko.Observable<boolean>;
-  hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
-  openEnableSynapseLinkDialog(): void;
-  isSynapseLinkUpdating: ko.Observable<boolean>;
-  notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
-  arcadiaToken: ko.Observable<string>;
-  arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
-  memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
-  notebookManager?: any; // This is dynamically loaded
-  openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
-  resetNotebookWorkspace(): void;
-  importAndOpen: (path: string) => Promise<boolean>;
-  importAndOpenContent: (name: string, content: string) => Promise<boolean>;
-  publishNotebook: (name: string, content: string | ImmutableNotebook, parentDomRef: HTMLElement) => void;
-  openNotebookTerminal: (kind: TerminalKind) => void;
-  openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
-  openNotebookViewer: (notebookUrl: string) => void;
-  notebookWorkspaceManager: NotebookWorkspaceManager;
-  mostRecentActivity: MostRecentActivity;
-  initNotebooks: (databaseAccount: DataModels.DatabaseAccount) => Promise<void>;
-  handleOpenFileAction(path: string): Promise<void>;
-
-  // Notebook operations
-  openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean>; // True if it was opened, false otherwise
-  deleteNotebookFile: (item: NotebookContentItem) => Promise<void>;
-  onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem>;
-  onNewNotebookClicked: (parent?: NotebookContentItem) => void;
-  onUploadToNotebookServerClicked: (parent?: NotebookContentItem) => void;
-  renameNotebook: (notebookFile: NotebookContentItem) => Q.Promise<NotebookContentItem>;
-  readFile: (notebookFile: NotebookContentItem) => Promise<string>;
-  downloadFile: (notebookFile: NotebookContentItem) => Promise<void>;
-  createNotebookContentItemFile: (name: string, filepath: string) => NotebookContentItem;
-  refreshContentItem(item: NotebookContentItem): Promise<void>;
-  getNotebookBasePath(): string;
-
-  createWorkspace(): Promise<string>;
-  createSparkPool(workspaceId: string): Promise<string>;
-}
-
-export interface NotebookWorkspaceManager {
-  getNotebookWorkspacesAsync(cosmosAccountResourceId: string): Promise<DataModels.NotebookWorkspace[]>;
-  getNotebookWorkspaceAsync(
-    cosmosAccountResourceId: string,
-    notebookWorkspaceId: string
-  ): Promise<DataModels.NotebookWorkspace>;
-  createNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void>;
-  deleteNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void>;
-  getNotebookConnectionInfoAsync(
-    cosmosAccountResourceId: string,
-    notebookWorkspaceId: string
-  ): Promise<DataModels.NotebookWorkspaceConnectionInfo>;
-  startNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void>;
-}
-
 export interface KernelConnectionMetadata {
   name: string;
   configurationEndpoints: DataModels.NotebookConfigurationEndpoints;
   notebookConnectionInfo: DataModels.NotebookWorkspaceConnectionInfo;
-}
-
-export interface ArcadiaResourceManager {
-  getWorkspacesAsync(arcadiaResourceId: string): Promise<DataModels.ArcadiaWorkspace[]>;
-  getWorkspaceAsync(arcadiaResourceId: string, workspaceId: string): Promise<DataModels.ArcadiaWorkspace>;
-  listWorkspacesAsync(subscriptionIds: string[]): Promise<DataModels.ArcadiaWorkspace[]>;
-  listSparkPoolsAsync(resourceId: string): Promise<DataModels.SparkPool[]>;
 }
 
 export interface TokenProvider {
@@ -481,48 +240,6 @@ export interface ConflictId {
   loadConflict(): Q.Promise<any>;
 }
 
-export interface StoredProcedure extends TreeNode {
-  container: Explorer;
-  collection: Collection;
-  rid: string;
-  self: string;
-  id: ko.Observable<string>;
-  body: ko.Observable<string>;
-
-  delete(): void;
-  open: () => void;
-  select(): void;
-  execute(params: string[], partitionKeyValue?: string): void;
-}
-
-export interface UserDefinedFunction extends TreeNode {
-  container: Explorer;
-  collection: Collection;
-  rid: string;
-  self: string;
-  id: ko.Observable<string>;
-  body: ko.Observable<string>;
-
-  delete(): void;
-  open: () => void;
-  select(): void;
-}
-
-export interface Trigger extends TreeNode {
-  container: Explorer;
-  collection: Collection;
-  rid: string;
-  self: string;
-  id: ko.Observable<string>;
-  body: ko.Observable<string>;
-  triggerType: ko.Observable<string>;
-  triggerOperation: ko.Observable<string>;
-
-  delete(): void;
-  open: () => void;
-  select(): void;
-}
-
 /**
  * Options used to initialize pane
  */
@@ -574,78 +291,6 @@ export interface AddCollectionPaneOptions extends PaneOptions {
   databaseSelfLink?: string;
 }
 
-export interface AddCollectionPane extends ContextualPane {
-  collectionIdTitle: ko.Observable<string>;
-  collectionWithThroughputInSharedTitle: ko.Observable<string>;
-  databaseId: ko.Observable<string>;
-  partitionKey: ko.Observable<string>;
-  storage: ko.Observable<string>;
-  throughputSinglePartition: ko.Observable<number>;
-  throughputMultiPartition: ko.Observable<number>;
-
-  open: (databaseId?: string) => void;
-  onStorageOptionsKeyDown(source: any, event: KeyboardEvent): boolean;
-  onRupmOptionsKeyDown(source: any, event: KeyboardEvent): void;
-  onEnableSynapseLinkButtonClicked: () => void;
-}
-
-export interface AddDatabasePane extends ContextualPane {}
-
-export interface DeleteDatabaseConfirmationPane extends ContextualPane {
-  databaseIdConfirmation: ko.Observable<string>;
-  databaseIdConfirmationText: ko.Observable<string>;
-  databaseDeleteFeedback: ko.Observable<string>;
-}
-
-export interface DeleteCollectionConfirmationPane extends ContextualPane {
-  collectionIdConfirmation: ko.Observable<string>;
-  collectionIdConfirmationText: ko.Observable<string>;
-  containerDeleteFeedback: ko.Observable<string>;
-  recordDeleteFeedback: ko.Observable<boolean>;
-}
-
-export interface SettingsPane extends ContextualPane {
-  pageOption: ko.Observable<string>;
-  customItemPerPage: ko.Observable<number>;
-  crossPartitionQueryEnabled: ko.Observable<boolean>;
-  maxDegreeOfParallelism: ko.Observable<number>;
-  shouldShowQueryPageOptions: ko.Computed<boolean>;
-
-  onCustomPageOptionsKeyDown(source: any, event: KeyboardEvent): boolean;
-  onUnlimitedPageOptionKeyDown(source: any, event: KeyboardEvent): boolean;
-  onJsonDisplayResultsKeyDown(source: any, event: KeyboardEvent): boolean;
-  onGraphDisplayResultsKeyDown(source: any, event: KeyboardEvent): boolean;
-}
-
-export interface ExecuteSprocParamsPane extends ContextualPane {
-  params: ko.ObservableArray<ExecuteSprocParam>;
-  partitionKeyValue: ko.Observable<string>;
-
-  addNewParam(): void;
-}
-
-export interface RenewAdHocAccessPane extends ContextualPane {
-  accessKey: ko.Observable<string>;
-}
-
-export interface UploadItemsPane extends ContextualPane {
-  selectedFilesTitle: ko.Observable<string>;
-  files: ko.Observable<FileList>;
-
-  updateSelectedFiles(element: any, event: any): void;
-}
-
-export interface LoadQueryPane extends ContextualPane {
-  selectedFilesTitle: ko.Observable<string>;
-  files: ko.Observable<FileList>;
-
-  loadQueryFromFile(file: File): Q.Promise<void>;
-}
-
-export interface BrowseQueriesPane extends ContextualPane {
-  loadSavedQuery: (savedQuery: DataModels.Query) => void;
-}
-
 export interface UploadFilePaneOpenOptions {
   paneTitle: string;
   selectFileInputLabel: string;
@@ -666,10 +311,6 @@ export interface StringInputPaneOpenOptions {
   onSubmit: (input: string) => Promise<any>;
   submitButtonLabel: string;
   defaultInput?: string;
-}
-
-export interface UploadFilePane extends ContextualPane {
-  openWithOptions: (options: UploadFilePaneOpenOptions) => void;
 }
 
 /**
@@ -714,41 +355,6 @@ export interface InputPropertyValue {
 export interface InputProperty {
   key: string;
   values: InputPropertyValue[];
-}
-
-export interface GraphStylingPane extends ContextualPane {
-  setData(graphConfigUIData: GraphConfigUiData): void;
-}
-
-export interface NewVertexPane extends ContextualPane {
-  setPartitionKeyProperty: (pKeyProp: string) => void;
-  subscribeOnSubmitCreate: (callback: (newVertexData: NewVertexData) => void) => void;
-}
-
-export interface AddTableEntityPane extends ContextualPane {
-  tableViewModel: TableEntityListViewModel;
-}
-
-export interface EditTableEntityPane extends ContextualPane {
-  originEntity: Entities.ITableEntity;
-  tableViewModel: TableEntityListViewModel;
-  originalNumberOfProperties: number;
-}
-
-export interface TableColumnOptionsPane extends ContextualPane {
-  tableViewModel: TableEntityListViewModel;
-  parameters: IColumnSetting;
-  setDisplayedColumns(columnNames: string[], order: number[], visible: boolean[]): void;
-}
-
-export interface QuerySelectPane extends ContextualPane {
-  queryViewModel: QueryViewModel;
-}
-
-export interface CassandraAddCollectionPane extends ContextualPane {
-  createTableQuery: ko.Observable<string>;
-  keyspaceId: ko.Observable<string>;
-  userTableQuery: ko.Observable<string>;
 }
 
 export interface Editable<T> extends ko.Observable<T> {
@@ -955,111 +561,6 @@ export interface DocumentsTab extends Tab {
 
   initDocumentEditor(documentId: DocumentId, content: any): Q.Promise<any>;
   loadNextPage(): Q.Promise<any>;
-}
-
-export interface ConflictsTab extends Tab {
-  /* Conflicts Grid  */
-  selectedConflictId: ko.Observable<ConflictId>;
-  selectedConflictContent: Editable<any>;
-  selectedConflictCurrent: Editable<any>;
-  onConflictIdClick(conflictId: ConflictId): Q.Promise<any>;
-  dataContentsGridScrollHeight: ko.Observable<string>;
-  accessibleDocumentList: AccessibleVerticalList;
-  documentContentsGridId: string;
-
-  partitionKey: DataModels.PartitionKey;
-  partitionKeyPropertyHeader: string;
-  partitionKeyProperty: string;
-  conflictIds: ko.ObservableArray<ConflictId>;
-
-  /* Document Editor */
-  isEditorDirty: ko.Computed<boolean>;
-  editorState: ko.Observable<DocumentExplorerState>;
-  onValidDocumentEdit(content: any): Q.Promise<any>;
-  onInvalidDocumentEdit(content: any): Q.Promise<any>;
-  loadingConflictData: ko.Observable<boolean>;
-
-  onAcceptChangesClick(): Q.Promise<any>;
-  onDiscardClick(): Q.Promise<any>;
-
-  initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Q.Promise<any>;
-  initDocumentEditorForReplace(documentId: ConflictId, conflictContent: any, currentContent: any): Q.Promise<any>;
-  initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Q.Promise<any>;
-  initDocumentEditorForNoOp(conflictId: ConflictId): Q.Promise<any>;
-  loadNextPage(): Q.Promise<any>;
-}
-
-export interface SettingsTab extends Tab {
-  /*state*/
-  throughput: ko.Observable<number>;
-  timeToLive: ko.Observable<string>;
-  timeToLiveSeconds: ko.Observable<number>;
-  geospatialVisible: ko.Computed<boolean>;
-  geospatialConfigType: ko.Observable<string>;
-  indexingPolicyContent: ko.Observable<DataModels.IndexingPolicy>;
-  rupm: ko.Observable<string>;
-  requestUnitsUsageCost: ko.Computed<string>;
-  canThroughputExceedMaximumValue: ko.Computed<boolean>;
-  shouldDisplayPortalUsePrompt: ko.Computed<boolean>;
-  warningMessage: ko.Computed<string>;
-  ttlOffFocused: ko.Observable<boolean>;
-  ttlOnDefaultFocused: ko.Observable<boolean>;
-  ttlOnFocused: ko.Observable<boolean>;
-  indexingPolicyElementFocused: ko.Observable<boolean>;
-  notificationStatusInfo: ko.Observable<string>;
-  shouldShowNotificationStatusPrompt: ko.Computed<boolean>;
-  shouldShowStatusBar: ko.Computed<boolean>;
-  pendingNotification: ko.Observable<DataModels.Notification>;
-
-  conflictResolutionPolicyMode: ko.Observable<string>;
-  conflictResolutionPolicyPath: ko.Observable<string>;
-  conflictResolutionPolicyProcedure: ko.Observable<string>;
-
-  rupmVisible: ko.Computed<boolean>;
-  costsVisible: ko.Computed<boolean>;
-  minRUAnotationVisible: ko.Computed<boolean>;
-
-  /* Command Bar */
-  saveSettingsButton: Button;
-  discardSettingsChangesButton: Button;
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
-
-  /* Indexing Policy Editor */
-  isIndexingPolicyEditorInitializing: ko.Observable<boolean>;
-  indexingPolicyEditor: ko.Observable<monaco.editor.IStandaloneCodeEditor>;
-  onValidIndexingPolicyEdit(content: any): Q.Promise<any>;
-  onInvalidIndexingPolicyEdit(content: any): Q.Promise<any>;
-
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
-}
-
-export interface DatabaseSettingsTab extends Tab {
-  /*state*/
-  throughput: ko.Observable<number>;
-  requestUnitsUsageCost: ko.PureComputed<string>;
-  canThroughputExceedMaximumValue: ko.Computed<boolean>;
-  warningMessage: ko.Computed<string>;
-  notificationStatusInfo: ko.Observable<string>;
-  shouldShowNotificationStatusPrompt: ko.Computed<boolean>;
-  shouldShowStatusBar: ko.Computed<boolean>;
-  pendingNotification: ko.Observable<DataModels.Notification>;
-
-  costsVisible: ko.Computed<boolean>;
-  minRUAnotationVisible: ko.Computed<boolean>;
-
-  /* Command Bar */
-  saveSettingsButton: Button;
-  discardSettingsChangesButton: Button;
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
-
-  /* Errors */
-  displayedError: ko.Observable<string>;
-
-  onSaveClick(): Q.Promise<any>;
-  onRevertClick(): Q.Promise<any>;
 }
 
 export interface WaitsForTemplate {

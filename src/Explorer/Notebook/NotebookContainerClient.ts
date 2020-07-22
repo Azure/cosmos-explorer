@@ -131,7 +131,7 @@ export class NotebookContainerClient implements ViewModels.INotebookContainerCli
   }
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
-    const explorer = window.dataExplorer as ViewModels.Explorer;
+    const explorer = window.dataExplorer;
     if (!explorer || !explorer.databaseAccount() || !explorer.databaseAccount().id) {
       throw new Error("DataExplorer not initialized");
     }
