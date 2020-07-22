@@ -34,7 +34,6 @@
     "@nteract/transform-vega": "7.0.6",
     "@octokit/rest": "17.9.2",
     "@phosphor/widgets": "1.9.3",
-    "@types/html2canvas": "0.0.35",
     "@uifabric/react-cards": "0.109.110",
     "@uifabric/styling": "7.13.7",
     "abort-controller": "3.0.0",

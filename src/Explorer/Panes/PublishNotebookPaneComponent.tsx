@@ -38,12 +38,6 @@ enum ImageTypes {
 
 export class PublishNotebookPaneComponent extends React.Component<PublishNotebookPaneProps, PublishNotebookPaneState> {
   private static readonly maxImageSizeInMib = 1.5;
-  /*
-  private static readonly Url = "URL";
-  private static readonly CustomImage = "Custom Image";
-  private static readonly TakeScreenshot = "Take Screenshot";
-  private static readonly UseFirstDisplayOutput = "Use First Display Output";
-  */
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionProps: ITextFieldProps;

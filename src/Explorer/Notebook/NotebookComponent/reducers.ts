@@ -4,7 +4,6 @@ import { Areas } from "../../../Common/Constants";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as cdbActions from "./actions";
 import { CdbRecord } from "./types";
-import { type } from "jquery";
 
 export const coreReducer = (state: CoreRecord, action: Action) => {
   let typedAction;
