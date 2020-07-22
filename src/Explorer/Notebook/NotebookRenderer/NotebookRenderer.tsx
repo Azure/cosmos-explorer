@@ -30,9 +30,14 @@ import { CellType } from "@nteract/commutable/src";
 import "./NotebookRenderer.less";
 import HoverableCell from "./decorators/HoverableCell";
 import CellLabeler from "./decorators/CellLabeler";
+import * as cdbActions from "../NotebookComponent/actions";
 
 export interface NotebookRendererProps {
   contentRef: any;
+}
+
+interface NotebookRendererDispatchProps {
+  updateNotebookParentDomElt: (parentElt: HTMLElement) => any;
 }
 
 interface PassedEditorProps {
@@ -67,8 +72,10 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
   return <Cell />;
 };
 
-class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
-  constructor(props: NotebookRendererProps) {
+class BaseNotebookRenderer extends React.Component<NotebookRendererProps & NotebookRendererDispatchProps> {
+  private notebookRendererRef = React.createRef<HTMLDivElement>();
+
+  constructor(props: NotebookRendererProps & NotebookRendererDispatchProps) {
     super(props);
 
     this.state = {
@@ -78,13 +85,22 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
 
   componentDidMount() {
     loadTransform(this.props as any);
+    this.props.updateNotebookParentDomElt(this.notebookRendererRef.current);
+  }
+
+  componentDidUpdate() {
+    this.props.updateNotebookParentDomElt(this.notebookRendererRef.current);
+  }
+
+  componentWillUnmount() {
+    this.props.updateNotebookParentDomElt(undefined);
   }
 
   render(): JSX.Element {
     return (
       <>
         <div className="NotebookRendererContainer">
-          <div className="NotebookRenderer">
+          <div className="NotebookRenderer" ref={this.notebookRendererRef}>
             <DndProvider backend={HTML5Backend}>
               <KeyboardShortcuts contentRef={this.props.contentRef}>
                 <Cells contentRef={this.props.contentRef}>
@@ -154,6 +170,13 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
           actions.addTransform({
             mediaType: transform.MIMETYPE,
             component: transform
+          })
+        );
+      },
+      updateNotebookParentDomElt: (parentElt: HTMLElement) => {
+        return dispatch(
+          cdbActions.UpdateNotebookParentDomElt({
+            parentElt: parentElt
           })
         );
       }

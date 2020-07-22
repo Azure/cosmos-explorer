@@ -79,6 +79,7 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
+import { ImmutableNotebook } from "@nteract/commutable";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -2344,9 +2345,9 @@ export default class Explorer implements ViewModels.Explorer {
     return Promise.resolve(false);
   }
 
-  public publishNotebook(name: string, content: string): void {
+  public publishNotebook(name: string, content: string | ImmutableNotebook, parentDomRef: HTMLElement): void {
     if (this.notebookManager) {
-      this.notebookManager.openPublishNotebookPane(name, content);
+      this.notebookManager.openPublishNotebookPane(name, content, parentDomRef);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }

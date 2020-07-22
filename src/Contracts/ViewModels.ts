@@ -27,6 +27,7 @@ import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/Dialog
 import { UploadDetails } from "../workers/upload/definitions";
 import { UploadItemsPaneAdapter } from "../Explorer/Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
+import { ImmutableNotebook } from "@nteract/commutable";
 
 export interface ExplorerOptions {
   documentClientUtility: DocumentClientUtilityBase;
@@ -223,7 +224,7 @@ export interface Explorer {
   resetNotebookWorkspace(): void;
   importAndOpen: (path: string) => Promise<boolean>;
   importAndOpenContent: (name: string, content: string) => Promise<boolean>;
-  publishNotebook: (name: string, content: string) => void;
+  publishNotebook: (name: string, content: string | ImmutableNotebook, parentDomRef: HTMLElement) => void;
   openNotebookTerminal: (kind: TerminalKind) => void;
   openGallery: (notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) => void;
   openNotebookViewer: (notebookUrl: string) => void;

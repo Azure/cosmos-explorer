@@ -23,6 +23,7 @@ import { DialogProps } from "../Controls/DialogReactComponent/DialogComponent";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { getFullName } from "../../Utils/UserUtils";
+import { ImmutableNotebook } from "@nteract/commutable";
 
 export interface NotebookManagerOptions {
   container: ViewModels.Explorer;
@@ -107,8 +108,8 @@ export default class NotebookManager {
     this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
   }
 
-  public openPublishNotebookPane(name: string, content: string): void {
-    this.publishNotebookPaneAdapter.open(name, getFullName(), content);
+  public openPublishNotebookPane(name: string, content: string | ImmutableNotebook, parentDomRef: HTMLElement): void {
+    this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomRef);
   }
 
   // Octokit's error handler uses any

@@ -82,6 +82,11 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       });
       return state;
     }
+
+    case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELT: {
+      const typedAction = action as cdbActions.UpdateNotebookParentDomEltAction;
+      return state.set("currentNotebookDomRef", typedAction.payload.parentElt);
+    }
   }
   return state;
 };

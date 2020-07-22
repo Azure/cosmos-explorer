@@ -448,7 +448,11 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
 
   private publishToGallery = () => {
     const notebookContent = this.notebookComponentAdapter.getContent();
-    this.container.publishNotebook(notebookContent.name, notebookContent.content);
+    this.container.publishNotebook(
+      notebookContent.name,
+      notebookContent.content,
+      this.notebookComponentAdapter.getNotebookParentDom()
+    );
   };
 
   private traceTelemetry(actionType: number) {
