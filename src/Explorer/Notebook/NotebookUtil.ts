@@ -105,24 +105,25 @@ export class NotebookUtil {
     let codeCellCount = -1;
     for (let i = 0; i < notebookObject.cellOrder.size; i++) {
       const cellId = notebookObject.cellOrder.get(i);
-      const cell = notebookObject.cellMap.get(cellId);
-      if (cell.cell_type === "code") {
-        codeCellCount++;
-        const codeCell = cell as ImmutableCodeCell;
-        if (codeCell.outputs) {
-          const displayOutput = codeCell.outputs.find((output: ImmutableOutput) => {
-            if (output.output_type === "display_data" || output.output_type === "execute_result") {
-              return true;
+      if (cellId) {
+        const cell = notebookObject.cellMap.get(cellId);
+        if (cell && cell.cell_type === "code") {
+          codeCellCount++;
+          const codeCell = cell as ImmutableCodeCell;
+          if (codeCell.outputs) {
+            const displayOutput = codeCell.outputs.find((output: ImmutableOutput) => {
+              if (output.output_type === "display_data" || output.output_type === "execute_result") {
+                return true;
+              }
+              return false;
+            });
+            if (displayOutput) {
+              return codeCellCount;
             }
-            return false;
-          });
-          if (displayOutput) {
-            return codeCellCount;
           }
         }
       }
     }
-
     throw new Error("Output does not exist for any of the cells.");
   }
 }
