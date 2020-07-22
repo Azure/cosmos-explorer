@@ -169,5 +169,10 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.name = undefined;
     this.author = undefined;
     this.content = undefined;
+    this.description = undefined;
+    this.tags = undefined;
+    this.imageSrc = undefined;
+    this.notebookObject = undefined;
+    this.parentDomElement = undefined;
   };
 }
