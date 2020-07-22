@@ -19,7 +19,7 @@ export interface NotebookComponentAdapterOptions {
 
 export class NotebookComponentAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
   private onUpdateKernelInfo: () => void;
-  public getNotebookParentDom: () => HTMLElement;
+  public getNotebookParentElement: () => HTMLElement;
   public parameters: any;
 
   constructor(options: NotebookComponentAdapterOptions) {
@@ -47,9 +47,9 @@ export class NotebookComponentAdapter extends NotebookComponentBootstrapper impl
       );
     }
 
-    this.getNotebookParentDom = (): HTMLElement => {
-      var cdbAppState = this.getStore().getState() as CdbAppState;
-      return cdbAppState.cdb.currentNotebookDomRef;
+    this.getNotebookParentElement = () => {
+      const cdbAppState = this.getStore().getState() as CdbAppState;
+      return cdbAppState.cdb.currentNotebookParentElements.get(this.contentRef);
     };
   }
 

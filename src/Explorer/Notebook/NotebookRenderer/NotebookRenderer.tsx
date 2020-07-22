@@ -32,13 +32,15 @@ import HoverableCell from "./decorators/HoverableCell";
 import CellLabeler from "./decorators/CellLabeler";
 import * as cdbActions from "../NotebookComponent/actions";
 
-export interface NotebookRendererProps {
+export interface NotebookRendererBaseProps {
   contentRef: any;
 }
 
 interface NotebookRendererDispatchProps {
-  updateNotebookParentDomElt: (parentElt: HTMLElement) => any;
+  updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => void;
 }
+
+type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps;
 
 interface PassedEditorProps {
   id: string;
@@ -72,10 +74,10 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
   return <Cell />;
 };
 
-class BaseNotebookRenderer extends React.Component<NotebookRendererProps & NotebookRendererDispatchProps> {
+class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   private notebookRendererRef = React.createRef<HTMLDivElement>();
 
-  constructor(props: NotebookRendererProps & NotebookRendererDispatchProps) {
+  constructor(props: NotebookRendererProps) {
     super(props);
 
     this.state = {
@@ -85,15 +87,15 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps & Noteb
 
   componentDidMount() {
     loadTransform(this.props as any);
-    this.props.updateNotebookParentDomElt(this.notebookRendererRef.current);
+    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
   componentDidUpdate() {
-    this.props.updateNotebookParentDomElt(this.notebookRendererRef.current);
+    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
   componentWillUnmount() {
-    this.props.updateNotebookParentDomElt(undefined);
+    this.props.updateNotebookParentDomElt(this.props.contentRef, undefined);
   }
 
   render(): JSX.Element {
@@ -162,7 +164,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps & Noteb
   }
 }
 
-const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererProps) => {
+const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererBaseProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
       addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => {
@@ -173,10 +175,11 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
           })
         );
       },
-      updateNotebookParentDomElt: (parentElt: HTMLElement) => {
+      updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => {
         return dispatch(
           cdbActions.UpdateNotebookParentDomElt({
-            parentElt: parentElt
+            contentRef,
+            parentElt
           })
         );
       }

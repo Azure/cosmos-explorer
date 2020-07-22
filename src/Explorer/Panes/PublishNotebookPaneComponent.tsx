@@ -5,7 +5,7 @@ import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 import "./PublishNotebookPaneComponent.less";
 import Html2Canvas from "html2canvas";
 import { ImmutableNotebook } from "@nteract/commutable/src";
-import { ImmutableCodeCell, ImmutableOutput } from "@nteract/commutable";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
 
 export interface PublishNotebookPaneProps {
   notebookName: string;
@@ -29,12 +29,21 @@ interface PublishNotebookPaneState {
   imageSrc: string;
 }
 
+enum ImageTypes {
+  Url = "URL",
+  CustomImage = "Custom Image",
+  TakeScreenshot = "Take Screenshot",
+  UseFirstDisplayOutput = "Use First Display Output"
+}
+
 export class PublishNotebookPaneComponent extends React.Component<PublishNotebookPaneProps, PublishNotebookPaneState> {
   private static readonly maxImageSizeInMib = 1.5;
+  /*
   private static readonly Url = "URL";
   private static readonly CustomImage = "Custom Image";
   private static readonly TakeScreenshot = "Take Screenshot";
   private static readonly UseFirstDisplayOutput = "Use First Display Output";
+  */
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionProps: ITextFieldProps;
@@ -42,14 +51,13 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
   private thumbnailUrlProps: ITextFieldProps;
   private thumbnailSelectorProps: IDropdownProps;
   private imageToBase64: (file: File, updateImageSrc: (result: string) => void) => void;
-  private takeScreenshot: (target: HTMLElement, onError: (error: Error) => void) => void;
-  private publishPaneRef = React.createRef<HTMLDivElement>();
+  private takeScreenshot: (target: HTMLElement, onError: (error: Error) => void) => Promise<void>;
 
   constructor(props: PublishNotebookPaneProps) {
     super(props);
 
     this.state = {
-      type: PublishNotebookPaneComponent.Url,
+      type: ImageTypes.Url,
       notebookDescription: "",
       notebookTags: "",
       imageSrc: undefined
@@ -71,37 +79,37 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       };
     };
 
-    this.takeScreenshot = (target: HTMLElement, onError: (error: Error) => void): void => {
+    this.takeScreenshot = async (target: HTMLElement, onError: (error: Error) => void): Promise<void> => {
       const updateImageSrcWithScreenshot = (canvasUrl: string): void => {
         this.props.onChangeImageSrc(canvasUrl);
         this.setState({ imageSrc: canvasUrl });
       };
 
       target.scrollIntoView();
-      Html2Canvas(target, {
-        useCORS: true,
-        allowTaint: true,
-        scale: 1,
-        logging: true
-      })
-        .then(function(canvas) {
-          //redraw canvas to fit Card Cover Image dimensions
-          const originalImageData = canvas.toDataURL();
-          const requiredHeight =
-            parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
-          canvas.height = requiredHeight;
-          const context = canvas.getContext("2d");
-          const image = new Image();
-          image.src = originalImageData;
-          image.onload = function() {
-            context.drawImage(image, 0, 0);
-            updateImageSrcWithScreenshot(canvas.toDataURL());
-            return;
-          };
-        })
-        .catch(error => {
-          onError(error);
+      try {
+        const canvas = await Html2Canvas(target, {
+          useCORS: true,
+          allowTaint: true,
+          scale: 1,
+          logging: true
         });
+
+        //redraw canvas to fit Card Cover Image dimensions
+        const originalImageData = canvas.toDataURL();
+        const requiredHeight =
+          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+        canvas.height = requiredHeight;
+        const context = canvas.getContext("2d");
+        const image = new Image();
+        image.src = originalImageData;
+        image.onload = function() {
+          context.drawImage(image, 0, 0);
+          updateImageSrcWithScreenshot(canvas.toDataURL());
+          return;
+        };
+      } catch (error) {
+        onError(error);
+      }
     };
 
     this.descriptionPara1 =
@@ -137,25 +145,25 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
     this.thumbnailSelectorProps = {
       label: "Cover image",
-      defaultSelectedKey: PublishNotebookPaneComponent.Url,
+      defaultSelectedKey: ImageTypes.Url,
       ariaLabel: "Cover image",
       options: [
-        PublishNotebookPaneComponent.Url,
-        PublishNotebookPaneComponent.CustomImage,
-        PublishNotebookPaneComponent.TakeScreenshot,
-        PublishNotebookPaneComponent.UseFirstDisplayOutput
+        ImageTypes.Url,
+        ImageTypes.CustomImage,
+        ImageTypes.TakeScreenshot,
+        ImageTypes.UseFirstDisplayOutput
       ].map((value: string) => ({ text: value, key: value })),
-      onChange: (event, options) => {
+      onChange: async (event, options) => {
         this.props.clearFormError();
-        if (options.text === PublishNotebookPaneComponent.TakeScreenshot) {
+        if (options.text === ImageTypes.TakeScreenshot) {
           try {
-            this.takeScreenshot(this.props.notebookParentDomElement, screenshotErrorHandler);
+            await this.takeScreenshot(this.props.notebookParentDomElement, screenshotErrorHandler);
           } catch (error) {
             screenshotErrorHandler(error);
           }
-        } else if (options.text === PublishNotebookPaneComponent.UseFirstDisplayOutput) {
+        } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
           try {
-            this.takeScreenshot(this.findFirstOutput(), firstOutputErrorHandler);
+            await this.takeScreenshot(this.findFirstOutput(), firstOutputErrorHandler);
           } catch (error) {
             firstOutputErrorHandler(error);
           }
@@ -189,9 +197,9 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
   private renderThumbnailSelectors(type: string) {
     switch (type) {
-      case PublishNotebookPaneComponent.Url:
+      case ImageTypes.Url:
         return <TextField {...this.thumbnailUrlProps} />;
-      case PublishNotebookPaneComponent.CustomImage:
+      case ImageTypes.CustomImage:
         return (
           <input
             id="selectImageFile"
@@ -225,41 +233,16 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
   }
 
   private findFirstOutput(): HTMLElement {
-    const indexOfFirstCodeCellWithDisplay = this.findFirstCodeCellWithDisplay();
+    const indexOfFirstCodeCellWithDisplay = NotebookUtil.findFirstCodeCellWithDisplay(this.props.notebookObject);
     const cellOutputDomElements = this.props.notebookParentDomElement.querySelectorAll<HTMLElement>(
       ".nteract-cell-outputs"
     );
     return cellOutputDomElements[indexOfFirstCodeCellWithDisplay];
   }
 
-  private findFirstCodeCellWithDisplay(): number {
-    let codeCellCount = -1;
-    for (let i = 0; i < this.props.notebookObject.cellOrder.size; i++) {
-      const cellId = this.props.notebookObject.cellOrder.get(i);
-      const cell = this.props.notebookObject.cellMap.get(cellId);
-      if (cell.cell_type === "code") {
-        codeCellCount++;
-        const codeCell = cell as ImmutableCodeCell;
-        if (codeCell.outputs) {
-          const displayOutput = codeCell.outputs.find((output: ImmutableOutput) => {
-            if (output.output_type === "display_data" || output.output_type === "execute_result") {
-              return true;
-            }
-            return false;
-          });
-          if (displayOutput) {
-            return codeCellCount;
-          }
-        }
-      }
-    }
-
-    throw new Error("Output does not exist for any of the cells.");
-  }
-
   public render(): JSX.Element {
     return (
-      <div className="publishNotebookPanelContent" ref={this.publishPaneRef}>
+      <div className="publishNotebookPanelContent">
         <Stack className="panelMainContent" tokens={{ childrenGap: 20 }}>
           <Stack.Item>
             <Text>{this.descriptionPara1}</Text>

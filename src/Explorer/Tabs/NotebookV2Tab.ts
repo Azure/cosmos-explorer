@@ -452,7 +452,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      this.notebookComponentAdapter.getNotebookParentDom()
+      this.notebookComponentAdapter.getNotebookParentElement()
     );
   };
 

@@ -62,7 +62,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
-    parentDomRef: HTMLElement
+    parentDomElement: HTMLElement
   ): void {
     this.name = name;
     this.author = author;
@@ -72,7 +72,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       this.content = JSON.stringify(toJS(notebookContent as ImmutableNotebook));
       this.notebookObject = notebookContent;
     }
-    this.parentDomElement = parentDomRef;
+    this.parentDomElement = parentDomElement;
 
     this.isOpened = true;
     this.triggerRender();

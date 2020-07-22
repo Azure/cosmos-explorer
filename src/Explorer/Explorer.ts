@@ -79,7 +79,6 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
-import { ImmutableNotebook } from "@nteract/commutable";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
@@ -2348,9 +2347,9 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public publishNotebook(name: string, content: string | ImmutableNotebook, parentDomRef: HTMLElement): void {
+  public publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): void {
     if (this.notebookManager) {
-      this.notebookManager.openPublishNotebookPane(name, content, parentDomRef);
+      this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }

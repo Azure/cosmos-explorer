@@ -4,6 +4,7 @@ import { Areas } from "../../../Common/Constants";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as cdbActions from "./actions";
 import { CdbRecord } from "./types";
+import { type } from "jquery";
 
 export const coreReducer = (state: CoreRecord, action: Action) => {
   let typedAction;
@@ -83,9 +84,17 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       return state;
     }
 
-    case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELT: {
+    case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELTS: {
       const typedAction = action as cdbActions.UpdateNotebookParentDomEltAction;
-      return state.set("currentNotebookDomRef", typedAction.payload.parentElt);
+      var parentEltsMap = state.get("currentNotebookParentElements");
+      const contentRef = typedAction.payload.contentRef;
+      const parentElt = typedAction.payload.parentElt;
+      if (parentElt) {
+        parentEltsMap.set(contentRef, parentElt);
+      } else {
+        parentEltsMap.delete(contentRef);
+      }
+      return state.set("currentNotebookParentElements", parentEltsMap);
     }
   }
   return state;

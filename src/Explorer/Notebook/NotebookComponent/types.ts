@@ -1,5 +1,5 @@
 import * as Immutable from "immutable";
-import { AppState } from "@nteract/core";
+import { AppState, ContentRef } from "@nteract/core";
 
 import { Notebook } from "../../../Common/Constants";
 import { CellId } from "@nteract/commutable";
@@ -9,7 +9,7 @@ export interface CdbRecordProps {
   defaultExperience: string | undefined;
   kernelRestartDelayMs: number;
   hoveredCellId: CellId | undefined;
-  currentNotebookDomRef: HTMLElement;
+  currentNotebookParentElements: Map<ContentRef, HTMLElement>;
 }
 
 export type CdbRecord = Immutable.RecordOf<CdbRecordProps>;
@@ -23,5 +23,5 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   defaultExperience: undefined,
   kernelRestartDelayMs: Notebook.kernelRestartInitialDelayMs,
   hoveredCellId: undefined,
-  currentNotebookDomRef: undefined
+  currentNotebookParentElements: new Map<ContentRef, HTMLElement>()
 });
