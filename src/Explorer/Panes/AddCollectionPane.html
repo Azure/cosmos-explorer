@@ -112,7 +112,9 @@
           <datalist id="databasesList" data-bind="foreach: databaseIds" data-bind="visible: databaseCreateNew">
               <option data-bind="value: $data">
           </datalist>
+
           <!-- Database provisioned throughput - Start -->
+          <!-- ko if: canConfigureThroughput -->
           <div class="databaseProvision" aria-label="New database provision support"
               data-bind="visible: databaseCreateNew">
               <input tabindex="0" type="checkbox" data-test="addCollectionPane-databaseSharedThroughput"
@@ -186,6 +188,7 @@
                                                                                                             }">
               </throughput-input>
           </div>
+          <!-- /ko -->
           <!-- /ko -->
           <!-- Database provisioned throughput - End -->
       </div>
@@ -414,7 +417,10 @@
                           more</a></p>
               </div>
               <!-- large parition key - end -->
-              <!-- Provision collection throughput checkox - start -->
+
+              <!-- Provision collection throughput - start -->
+              <!-- ko if: canConfigureThroughput -->
+              <!-- Provision collection throughput checkbox - start -->
               <div class="pkPadding" data-bind="visible: databaseHasSharedOffer() && !databaseCreateNew()">
                   <input type="checkbox" id="collectionSharedThroughput"
                       data-bind="checked: collectionWithThroughputInShared, attr: {title:collectionWithThroughputInSharedTitle}" />
@@ -434,7 +440,8 @@
                           level.</span>
                   </span>
               </div>
-              <!-- Provision collection throughput checkox - end -->
+              <!-- Provision collection throughput checkbox - end -->
+
               <!-- Provision collection throughput spinner - start -->
               <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
               <div data-bind="visible: displayCollectionThroughput" data-test="addCollection-displayCollectionThroughput">
@@ -467,6 +474,7 @@
                   </throughput-input-autopilot-v3>
               </div>
               <!-- /ko -->
+
               <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
               <div data-bind="visible: displayCollectionThroughput" data-test="addCollection-displayCollectionThroughput">
                   <!-- 3 -->
@@ -499,8 +507,10 @@
                   </throughput-input>
               </div>
               <!-- /ko -->
-
               <!-- Provision collection throughput spinner - end -->
+              <!-- /ko -->
+              <!-- Provision collection throughput - end -->
+
               <!-- Enable analytical storage - start -->
               <div class="enableAnalyticalStorage pkPadding" aria-label="Enable Analytical Store"
                   data-bind="visible: isSynapseLinkSupported">

@@ -122,6 +122,10 @@ export default class Database implements ViewModels.Database {
 
   public readSettings(): Q.Promise<void> {
     const deferred: Q.Deferred<void> = Q.defer<void>();
+    if (this.container.isServerlessEnabled()) {
+      deferred.resolve();
+    }
+
     this.container.isRefreshingExplorer(true);
     const databaseDataModel: DataModels.Database = <DataModels.Database>{
       id: this.id(),

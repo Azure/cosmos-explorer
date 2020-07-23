@@ -101,6 +101,7 @@ export class CapabilityNames {
   public static readonly EnableNotebooks: string = "EnableNotebooks";
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
+  public static readonly EnableServerless: string = "EnableServerless";
 }
 
 export class Features {
@@ -377,6 +378,7 @@ export class Urls {
   public static autoscaleMigration = "https://aka.ms/cosmos-autoscale-migration";
   public static freeTierInformation = "https://aka.ms/cosmos-free-tier";
   public static cosmosPricing = "https://aka.ms/azure-cosmos-db-pricing";
+  public static serverlessInformation = "https://aka.ms";
 }
 
 export class HashRoutePrefixes {

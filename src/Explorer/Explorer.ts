@@ -118,6 +118,7 @@ export default class Explorer {
   public isPreferredApiGraph: ko.Computed<boolean>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  public isServerlessEnabled: ko.Computed<boolean>;
   public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -508,6 +509,14 @@ export default class Explorer {
 
       return false;
     });
+
+    this.isServerlessEnabled = ko.computed(
+      () =>
+        this.databaseAccount &&
+        this.databaseAccount()?.properties?.capabilities?.find(
+          item => item.name === Constants.CapabilityNames.EnableServerless
+        ) !== undefined
+    );
 
     this.isPreferredApiMongoDB = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
@@ -1406,87 +1415,97 @@ export default class Explorer {
         dataExplorerArea: Constants.Areas.ResourceTree
       });
     }
+
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    const offerPromise: Q.Promise<DataModels.Offer[]> = this.documentClientUtility.readOffers();
-    this._setLoadingStatusText("Fetching offers...");
 
-    offerPromise.then(
-      (offers: DataModels.Offer[]) => {
-        this._setLoadingStatusText("Successfully fetched offers.");
-        this._setLoadingStatusText("Fetching databases...");
-        this.documentClientUtility.readDatabases(null /*options*/).then(
-          (databases: DataModels.Database[]) => {
-            this._setLoadingStatusText("Successfully fetched databases.");
-            TelemetryProcessor.traceSuccess(
-              Action.LoadDatabases,
-              {
-                databaseAccountName: this.databaseAccount().name,
-                defaultExperience: this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.ResourceTree
+    const refreshDatabases = (offers?: DataModels.Offer[]) => {
+      this._setLoadingStatusText("Fetching databases...");
+      this.documentClientUtility.readDatabases(null /*options*/).then(
+        (databases: DataModels.Database[]) => {
+          this._setLoadingStatusText("Successfully fetched databases.");
+          TelemetryProcessor.traceSuccess(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree
+            },
+            startKey
+          );
+          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+          const deltaDatabases = this.getDeltaDatabases(databases, offers);
+          this.addDatabasesToList(deltaDatabases.toAdd);
+          this.deleteDatabasesFromList(deltaDatabases.toDelete);
+          this.selectedNode(currentlySelectedNode);
+          this._setLoadingStatusText("Fetching containers...");
+          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+            .then(
+              () => {
+                this._setLoadingStatusText("Successfully fetched containers.");
+                deferred.resolve();
               },
-              startKey
-            );
-            const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-            const deltaDatabases = this.getDeltaDatabases(databases, offers);
-            this.addDatabasesToList(deltaDatabases.toAdd);
-            this.deleteDatabasesFromList(deltaDatabases.toDelete);
-            this.selectedNode(currentlySelectedNode);
-            this._setLoadingStatusText("Fetching containers...");
-            this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-              .then(
-                () => {
-                  this._setLoadingStatusText("Successfully fetched containers.");
-                  deferred.resolve();
-                },
-                reason => {
-                  this._setLoadingStatusText("Failed to fetch containers.");
-                  deferred.reject(reason);
-                }
-              )
-              .finally(() => this.isRefreshingExplorer(false));
-          },
-          error => {
-            this._setLoadingStatusText("Failed to fetch databases.");
-            this.isRefreshingExplorer(false);
-            deferred.reject(error);
-            TelemetryProcessor.traceFailure(
-              Action.LoadDatabases,
-              {
-                databaseAccountName: this.databaseAccount().name,
-                defaultExperience: this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.ResourceTree,
-                error: JSON.stringify(error)
-              },
-              startKey
-            );
-            NotificationConsoleUtils.logConsoleMessage(
-              ConsoleDataType.Error,
-              `Error while refreshing databases: ${JSON.stringify(error)}`
-            );
-          }
-        );
-      },
-      error => {
-        this._setLoadingStatusText("Failed to fetch offers.");
-        this.isRefreshingExplorer(false);
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: JSON.stringify(error)
-          },
-          startKey
-        );
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing databases: ${JSON.stringify(error)}`
-        );
-      }
-    );
+              reason => {
+                this._setLoadingStatusText("Failed to fetch containers.");
+                deferred.reject(reason);
+              }
+            )
+            .finally(() => this.isRefreshingExplorer(false));
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch databases.");
+          this.isRefreshingExplorer(false);
+          deferred.reject(error);
+          TelemetryProcessor.traceFailure(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree,
+              error: JSON.stringify(error)
+            },
+            startKey
+          );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${JSON.stringify(error)}`
+          );
+        }
+      );
+    };
+
+    if (this.isServerlessEnabled()) {
+      // Serverless accounts don't support offers call
+      refreshDatabases();
+    } else {
+      const offerPromise: Q.Promise<DataModels.Offer[]> = this.documentClientUtility.readOffers();
+      this._setLoadingStatusText("Fetching offers...");
+      offerPromise.then(
+        (offers: DataModels.Offer[]) => {
+          this._setLoadingStatusText("Successfully fetched offers.");
+          refreshDatabases(offers);
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch offers.");
+          this.isRefreshingExplorer(false);
+          deferred.reject(error);
+          TelemetryProcessor.traceFailure(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree,
+              error: JSON.stringify(error)
+            },
+            startKey
+          );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${JSON.stringify(error)}`
+          );
+        }
+      );
+    }
 
     return deferred.promise.then(
       () => {

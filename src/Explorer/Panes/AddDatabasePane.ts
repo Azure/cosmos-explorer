@@ -49,6 +49,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
+  public canConfigureThroughput: ko.PureComputed<boolean>;
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
@@ -56,6 +57,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseId = ko.observable<string>();
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -229,21 +231,29 @@ export default class AddDatabasePane extends ContextualPaneBase {
       this.resetData();
     });
 
-    this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
-    });
+    this.upsellMessage = ko.pureComputed<string>(() =>
+      PricingUtils.getUpsellMessage(
+        this.container.serverId(),
+        this.isFreeTierAccount(),
+        this.container.isServerlessEnabled()
+      )
+    );
 
-    this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
-      return `${this.upsellMessage()}. Click ${this.isFreeTierAccount() ? "to learn more" : "for more details"}`;
-    });
+    this.upsellMessageAriaLabel = ko.pureComputed<string>(() =>
+      PricingUtils.getUpsellMessageAriaLabel(
+        this.upsellMessage(),
+        this.isFreeTierAccount(),
+        this.container.isServerlessEnabled()
+      )
+    );
 
-    this.upsellAnchorUrl = ko.pureComputed<string>(() => {
-      return this.isFreeTierAccount() ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
-    });
+    this.upsellAnchorUrl = ko.pureComputed<string>(() =>
+      PricingUtils.getUpsellAnchorUrl(this.isFreeTierAccount(), this.container.isServerlessEnabled())
+    );
 
-    this.upsellAnchorText = ko.pureComputed<string>(() => {
-      return this.isFreeTierAccount() ? "Learn more" : "More details";
-    });
+    this.upsellAnchorText = ko.pureComputed<string>(() =>
+      PricingUtils.getUpsellAnchorText(this.isFreeTierAccount(), this.container.isServerlessEnabled())
+    );
   }
 
   public onMoreDetailsKeyPress = (source: any, event: KeyboardEvent): boolean => {
@@ -522,7 +532,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   private _computeOfferThroughput(): number {
-    return this.isAutoPilotSelected() ? undefined : this._getThroughput();
+    if (!this.canConfigureThroughput()) {
+      return undefined;
+    }
+
+    if (this.isAutoPilotSelected()) {
+      return undefined;
+    }
+
+    return this._getThroughput();
   }
 
   private _isValid(): boolean {
