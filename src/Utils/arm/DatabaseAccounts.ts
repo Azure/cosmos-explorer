@@ -68,7 +68,7 @@ export class DatabaseAccountsClient {
   }
 
   /* Deletes an existing Azure Cosmos DB database account. */
-  async delete(subscriptionId: string, resourceGroupName: string, accountName: string): Promise<void | void> {
+  async destroy(subscriptionId: string, resourceGroupName: string, accountName: string): Promise<void | void> {
     const path = `subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
     return window.fetch(this.baseUrl + this.basePath + path, { method: "delete" }).then(response => response.json());
   }
