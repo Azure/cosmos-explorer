@@ -4,19 +4,24 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types"
+import * as Types from "./types";
 
+export class PartitionKeyRangeIdClient {
+  private readonly baseUrl = "https://management.azure.com";
+  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/databases/${this.databaseRid}/collections/${this.collectionRid}/partitionKeyRangeId/${this.partitionKeyRangeId}/metrics`;
 
-        /* Retrieves the metrics determined by the given filter for the given partition key range id. */
-        export async function listMetrics (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseRid: string,
-collectionRid: string,
-partitionKeyRangeId: string
-          
-        ) : Promise<Types.PartitionMetricListResult> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  constructor(
+    private readonly subscriptionId: string,
+    private readonly resourceGroupName: string,
+    private readonly accountName: string,
+    private readonly databaseRid: string,
+    private readonly collectionRid: string,
+    private readonly partitionKeyRangeId: string
+  ) {}
+
+  /* Retrieves the metrics determined by the given filter for the given partition key range id. */
+  async listMetrics(): Promise<Types.PartitionMetricListResult> {
+    const path = ``;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
+}

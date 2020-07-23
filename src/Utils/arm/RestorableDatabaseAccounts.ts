@@ -4,37 +4,34 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types"
+import * as Types from "./types";
 
+export class RestorableDatabaseAccountsClient {
+  private readonly baseUrl = "https://management.azure.com";
+  private readonly basePath = `/subscriptions/${this.subscriptionId}/providers/Microsoft.DocumentDB/`;
 
-        /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription and in a region. */
-        export async function listByLocation (
-          subscriptionId: string,
-location: string
-          
-        ) : Promise<Types.RestorableDatabaseAccountsListResult | Types.ErrorResponseUpdatedFormat> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  constructor(private readonly subscriptionId: string) {}
 
+  /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription and in a region. */
+  async listByLocation(
+    location: string
+  ): Promise<Types.RestorableDatabaseAccountsListResult | Types.ErrorResponseUpdatedFormat> {
+    const path = `locations/${location}/restorableDatabaseAccounts`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
-        /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription. */
-        export async function list (
-          subscriptionId: string
-          
-        ) : Promise<Types.RestorableDatabaseAccountsListResult | Types.ErrorResponseUpdatedFormat> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/restorableDatabaseAccounts`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  /* Retrieves the properties of an existing Azure Cosmos DB restorable database account. */
+  async getByLocation(
+    location: string,
+    instanceId: string
+  ): Promise<Types.RestorableDatabaseAccountGetResult | Types.ErrorResponseUpdatedFormat> {
+    const path = `locations/${location}/restorableDatabaseAccounts/${instanceId}`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
-
-        /* Retrieves the properties of an existing Azure Cosmos DB restorable database account. */
-        export async function getByLocation (
-          subscriptionId: string,
-location: string,
-instanceId: string
-          
-        ) : Promise<Types.RestorableDatabaseAccountGetResult | Types.ErrorResponseUpdatedFormat> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts/${instanceId}`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription. */
+  async list(): Promise<Types.RestorableDatabaseAccountsListResult | Types.ErrorResponseUpdatedFormat> {
+    const path = `restorableDatabaseAccounts`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
+}

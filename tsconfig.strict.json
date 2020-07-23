@@ -47,6 +47,7 @@
 		"./src/Explorer/Controls/Toolbar/KeyCodes.ts",
 		"./src/Explorer/Notebook/FileSystemUtil.ts",
 		"./src/Explorer/Notebook/NTeractUtil.ts",
+		"./src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts",
 		"./src/Explorer/Notebook/NotebookComponent/actions.ts",
 		"./src/Explorer/Notebook/NotebookComponent/loadTransform.ts",
 		"./src/Explorer/Notebook/NotebookComponent/reducers.ts",

@@ -24,7 +24,12 @@ const outputDir = path.join(__dirname, "../../src/Utils/arm/");
 mkdirp.sync(outputDir);
 
 // Buckets for grouping operations based on their name
-const namespaces: { [key: string]: string[] } = {};
+interface Client {
+  paths: string[];
+  functions: string[];
+  constructorParams: string[];
+}
+const clients: { [key: string]: Client } = {};
 
 // Mapping for OpenAPI types to TypeScript types
 const propertyMap: { [key: string]: string } = {
@@ -63,9 +68,7 @@ function parametersFromPath(path: string) {
   // TODO: Remove any. String.matchAll is a real thing.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const matches = (path as any).matchAll(/{(\w+)}/g);
-  return Array.from(matches)
-    .map((match: string[]) => `${match[1]}: string`)
-    .join(",\n");
+  return Array.from(matches).map((match: string[]) => match[1]);
 }
 
 type Operation = { responses: { [key: string]: { schema: { $ref: string } } } };
@@ -168,41 +171,100 @@ async function main() {
     }
   }
 
-  // STEP 2: Convert all paths and operations to simple fetch functions.
-  // Functions are grouped into objects based on resource types
+  // STEP 2: Group all paths by output client and extract common constructor parameters
+  // Functions are grouped into clients based on operation name
   for (const path in schema.paths) {
     for (const method in schema.paths[path]) {
       const operation = schema.paths[path][method];
-      const bodyParameter = operation.parameters.find(
-        (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true
-      );
-      const [namespace, operationName] = operation.operationId.split("_");
-      if (namespaces[namespace] === undefined) {
-        namespaces[namespace] = [];
+      const [namespace] = operation.operationId.split("_");
+      if (clients[namespace] === undefined) {
+        clients[namespace] = { paths: [], functions: [], constructorParams: [] };
+        clients[namespace];
       }
-      namespaces[namespace].push(`
-        /* ${operation.description} */
-        export async function ${camelize(operationName)} (
-          ${parametersFromPath(path)}
-          ${bodyParam(bodyParameter, "Types")}
-        ) : Promise<${responseType(operation, "Types")}> {
-          return window.fetch(\`https://management.azure.com${path.replace(/{/g, "${")}\`, { method: "${method}", ${
-        bodyParameter ? "body: JSON.stringify(body)" : ""
-      } }).then((response) => response.json())
-        }
-      `);
+      if (!clients[namespace].paths.includes(path)) {
+        clients[namespace].paths.push(path);
+      }
     }
   }
 
   // Write all grouped fetch functions to objects
-  for (const namespace in namespaces) {
+  for (const clientName in clients) {
     const outputClient: string[] = [""];
     outputClient.push(`import * as Types from "./types"\n\n`);
-    outputClient.push(namespaces[namespace].join("\n\n"));
-    writeOutputFile(`./${namespace}.ts`, outputClient);
+    outputClient.push(`export class ${clientName}Client {\n\n`);
+    outputClient.push(`private readonly baseUrl = "https://management.azure.com"\n`);
+    const basePath = buildBasePath(clients[clientName].paths);
+    outputClient.push(`private readonly basePath = \`${basePath.replace(/{/g, "${this.")}\`\n\n`);
+    outputClient.push(buildConstructor(clients[clientName]));
+    for (const path of clients[clientName].paths) {
+      for (const method in schema.paths[path]) {
+        const operation = schema.paths[path][method];
+        const [, methodName] = operation.operationId.split("_");
+        const bodyParameter = operation.parameters.find(
+          (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true
+        );
+        const constructorParameters = constructorParams(clients[clientName]);
+        const methodParameters = parametersFromPath(path).filter(p => !constructorParameters.includes(p));
+        outputClient.push(`
+          /* ${operation.description} */
+          async ${camelize(methodName)} (
+            ${methodParameters.map(p => `${p}: string`).join(",\n")}
+            ${bodyParam(bodyParameter, "Types")}
+          ) : Promise<${responseType(operation, "Types")}> {
+            const path = \`${path.replace(basePath, "").replace(/{/g, "${")}\`
+            return window.fetch(this.baseUrl + this.basePath + path, { method: "${method}", ${
+          bodyParameter ? "body: JSON.stringify(body)" : ""
+        } }).then((response) => response.json())
+          }
+          `);
+        //   clients[clientName].functions.push(`
+        //   /* ${operation.description} */
+        //   async ${camelize(methodName)} (
+        //     ${parametersFromPath(path)}
+        //     ${bodyParam(bodyParameter, "Types")}
+        //   ) : Promise<${responseType(operation, "Types")}> {
+        //     return window.fetch(\`https://management.azure.com${path.replace(/{/g, "${")}\`, { method: "${method}", ${
+        //     bodyParameter ? "body: JSON.stringify(body)" : ""
+        //   } }).then((response) => response.json())
+        //   }
+        // `);
+        //   outputClient.push(clients[client].join("\n\n"));
+      }
+    }
+    outputClient.push(`}`);
+    writeOutputFile(`./${clientName}.ts`, outputClient);
   }
 
   writeOutputFile("./types.ts", outputTypes);
+}
+
+function buildBasePath(strings: string[]) {
+  const sortArr = strings.sort();
+  const arrFirstElem = strings[0];
+  const arrLastElem = sortArr[sortArr.length - 1];
+  const arrFirstElemLength = arrFirstElem.length;
+  let i = 0;
+  while (i < arrFirstElemLength && arrFirstElem.charAt(i) === arrLastElem.charAt(i)) {
+    i++;
+  }
+  return arrFirstElem.substring(0, i);
+}
+
+function buildConstructor(client: Client) {
+  const params = constructorParams(client);
+  if (params.length === 0) {
+    return "";
+  }
+  return `\nconstructor(${params.map(p => `private readonly ${p}: string`).join(",")}){}\n`;
+}
+
+function constructorParams(client: Client) {
+  let commonParams = parametersFromPath(client.paths[0]);
+  for (const path of client.paths) {
+    const params = parametersFromPath(path);
+    commonParams = commonParams.filter(p => params.includes(p));
+  }
+  return commonParams;
 }
 
 function writeOutputFile(outputPath: string, components: string[]) {

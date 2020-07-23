@@ -4,164 +4,112 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types"
+import * as Types from "./types";
 
+export class MongoDBResourcesClient {
+  private readonly baseUrl = "https://management.azure.com";
+  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/mongodbDatabases`;
 
-        /* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
-        export async function listMongoDBDatabases (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string
-          
-        ) : Promise<Types.MongoDBDatabaseListResult> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  constructor(
+    private readonly subscriptionId: string,
+    private readonly resourceGroupName: string,
+    private readonly accountName: string
+  ) {}
 
+  /* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
+  async listMongoDBDatabases(): Promise<Types.MongoDBDatabaseListResult> {
+    const path = ``;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
-        /* Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided name. */
-        export async function getMongoDBDatabase (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string
-          
-        ) : Promise<Types.MongoDBDatabaseGetResults> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  /* Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided name. */
+  async getMongoDBDatabase(databaseName: string): Promise<Types.MongoDBDatabaseGetResults> {
+    const path = `/${databaseName}`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
+  /* Create or updates Azure Cosmos DB MongoDB database */
+  async createUpdateMongoDBDatabase(
+    databaseName: string,
+    body: Types.MongoDBDatabaseCreateUpdateParameters
+  ): Promise<Types.MongoDBDatabaseGetResults | void> {
+    const path = `/${databaseName}`;
+    return window
+      .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+      .then(response => response.json());
+  }
 
-        /* Create or updates Azure Cosmos DB MongoDB database */
-        export async function createUpdateMongoDBDatabase (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string
-          ,body: Types.MongoDBDatabaseCreateUpdateParameters
-        ) : Promise<Types.MongoDBDatabaseGetResults | void> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
-        }
-      
+  /* Deletes an existing Azure Cosmos DB MongoDB database. */
+  async deleteMongoDBDatabase(databaseName: string): Promise<void | void> {
+    const path = `/${databaseName}`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "delete" }).then(response => response.json());
+  }
 
+  /* Lists the MongoDB collection under an existing Azure Cosmos DB database account. */
+  async listMongoDBCollections(databaseName: string): Promise<Types.MongoDBCollectionListResult> {
+    const path = `/${databaseName}/collections`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
-        /* Deletes an existing Azure Cosmos DB MongoDB database. */
-        export async function deleteMongoDBDatabase (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string
-          
-        ) : Promise<void | void> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`, { method: "delete",  }).then((response) => response.json())
-        }
-      
+  /* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
+  async getMongoDBCollection(databaseName: string, collectionName: string): Promise<Types.MongoDBCollectionGetResults> {
+    const path = `/${databaseName}/collections/${collectionName}`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
+  /* Create or update an Azure Cosmos DB MongoDB Collection */
+  async createUpdateMongoDBCollection(
+    databaseName: string,
+    collectionName: string,
+    body: Types.MongoDBCollectionCreateUpdateParameters
+  ): Promise<Types.MongoDBCollectionGetResults | void> {
+    const path = `/${databaseName}/collections/${collectionName}`;
+    return window
+      .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+      .then(response => response.json());
+  }
 
-        /* Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database account with the provided name. */
-        export async function getMongoDBDatabaseThroughput (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string
-          
-        ) : Promise<Types.ThroughputSettingsGetResults> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  /* Deletes an existing Azure Cosmos DB MongoDB Collection. */
+  async deleteMongoDBCollection(databaseName: string, collectionName: string): Promise<void | void> {
+    const path = `/${databaseName}/collections/${collectionName}`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "delete" }).then(response => response.json());
+  }
 
+  /* Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database account with the provided name. */
+  async getMongoDBCollectionThroughput(
+    databaseName: string,
+    collectionName: string
+  ): Promise<Types.ThroughputSettingsGetResults> {
+    const path = `/${databaseName}/collections/${collectionName}/throughputSettings/default`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
-        /* Update RUs per second of the an Azure Cosmos DB MongoDB database */
-        export async function updateMongoDBDatabaseThroughput (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string
-          ,body: Types.ThroughputSettingsUpdateParameters
-        ) : Promise<Types.ThroughputSettingsGetResults | void> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
-        }
-      
+  /* Update the RUs per second of an Azure Cosmos DB MongoDB collection */
+  async updateMongoDBCollectionThroughput(
+    databaseName: string,
+    collectionName: string,
+    body: Types.ThroughputSettingsUpdateParameters
+  ): Promise<Types.ThroughputSettingsGetResults | void> {
+    const path = `/${databaseName}/collections/${collectionName}/throughputSettings/default`;
+    return window
+      .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+      .then(response => response.json());
+  }
 
+  /* Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database account with the provided name. */
+  async getMongoDBDatabaseThroughput(databaseName: string): Promise<Types.ThroughputSettingsGetResults> {
+    const path = `/${databaseName}/throughputSettings/default`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 
-        /* Lists the MongoDB collection under an existing Azure Cosmos DB database account. */
-        export async function listMongoDBCollections (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string
-          
-        ) : Promise<Types.MongoDBCollectionListResult> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections`, { method: "get",  }).then((response) => response.json())
-        }
-      
-
-
-        /* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
-        export async function getMongoDBCollection (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string,
-collectionName: string
-          
-        ) : Promise<Types.MongoDBCollectionGetResults> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`, { method: "get",  }).then((response) => response.json())
-        }
-      
-
-
-        /* Create or update an Azure Cosmos DB MongoDB Collection */
-        export async function createUpdateMongoDBCollection (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string,
-collectionName: string
-          ,body: Types.MongoDBCollectionCreateUpdateParameters
-        ) : Promise<Types.MongoDBCollectionGetResults | void> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
-        }
-      
-
-
-        /* Deletes an existing Azure Cosmos DB MongoDB Collection. */
-        export async function deleteMongoDBCollection (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string,
-collectionName: string
-          
-        ) : Promise<void | void> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`, { method: "delete",  }).then((response) => response.json())
-        }
-      
-
-
-        /* Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database account with the provided name. */
-        export async function getMongoDBCollectionThroughput (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string,
-collectionName: string
-          
-        ) : Promise<Types.ThroughputSettingsGetResults> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`, { method: "get",  }).then((response) => response.json())
-        }
-      
-
-
-        /* Update the RUs per second of an Azure Cosmos DB MongoDB collection */
-        export async function updateMongoDBCollectionThroughput (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-databaseName: string,
-collectionName: string
-          ,body: Types.ThroughputSettingsUpdateParameters
-        ) : Promise<Types.ThroughputSettingsGetResults | void> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
-        }
-      
+  /* Update RUs per second of the an Azure Cosmos DB MongoDB database */
+  async updateMongoDBDatabaseThroughput(
+    databaseName: string,
+    body: Types.ThroughputSettingsUpdateParameters
+  ): Promise<Types.ThroughputSettingsGetResults | void> {
+    const path = `/${databaseName}/throughputSettings/default`;
+    return window
+      .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+      .then(response => response.json());
+  }
+}

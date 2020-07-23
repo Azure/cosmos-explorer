@@ -4,19 +4,24 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types"
+import * as Types from "./types";
 
+export class CollectionRegionClient {
+  private readonly baseUrl = "https://management.azure.com";
+  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/region/${this.region}/databases/${this.databaseRid}/collections/${this.collectionRid}/metrics`;
 
-        /* Retrieves the metrics determined by the given filter for the given database account, collection and region. */
-        export async function listMetrics (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-region: string,
-databaseRid: string,
-collectionRid: string
-          
-        ) : Promise<Types.MetricListResult> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/metrics`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  constructor(
+    private readonly subscriptionId: string,
+    private readonly resourceGroupName: string,
+    private readonly accountName: string,
+    private readonly region: string,
+    private readonly databaseRid: string,
+    private readonly collectionRid: string
+  ) {}
+
+  /* Retrieves the metrics determined by the given filter for the given database account, collection and region. */
+  async listMetrics(): Promise<Types.MetricListResult> {
+    const path = ``;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
+}

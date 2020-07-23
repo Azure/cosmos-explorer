@@ -4,17 +4,22 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types"
+import * as Types from "./types";
 
+export class PercentileTargetClient {
+  private readonly baseUrl = "https://management.azure.com";
+  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/targetRegion/${this.targetRegion}/percentile/metrics`;
 
-        /* Retrieves the metrics determined by the given filter for the given account target region. This url is only for PBS and Replication Latency data */
-        export async function listMetrics (
-          subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-targetRegion: string
-          
-        ) : Promise<Types.PercentileMetricListResult> {
-          return window.fetch(`https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/targetRegion/${targetRegion}/percentile/metrics`, { method: "get",  }).then((response) => response.json())
-        }
-      
+  constructor(
+    private readonly subscriptionId: string,
+    private readonly resourceGroupName: string,
+    private readonly accountName: string,
+    private readonly targetRegion: string
+  ) {}
+
+  /* Retrieves the metrics determined by the given filter for the given account target region. This url is only for PBS and Replication Latency data */
+  async listMetrics(): Promise<Types.PercentileMetricListResult> {
+    const path = ``;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
+}

@@ -6,47 +6,32 @@
 
 import * as Types from "./types";
 
-/* Retrieves the metrics determined by the given filter for the given database account and database. */
-export async function listMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string
-): Promise<Types.MetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
+export class DatabaseClient {
+  private readonly baseUrl = "https://management.azure.com";
+  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/databases/${this.databaseRid}/`;
 
-/* Retrieves the usages (most recent data) for the given database. */
-export async function listUsages(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string
-): Promise<Types.UsagesResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/usages`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
+  constructor(
+    private readonly subscriptionId: string,
+    private readonly resourceGroupName: string,
+    private readonly accountName: string,
+    private readonly databaseRid: string
+  ) {}
 
-/* Retrieves metric definitions for the given database. */
-export async function listMetricDefinitions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string
-): Promise<Types.MetricDefinitionsListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metricDefinitions`,
-      { method: "get" }
-    )
-    .then(response => response.json());
+  /* Retrieves metric definitions for the given database. */
+  async listMetricDefinitions(): Promise<Types.MetricDefinitionsListResult> {
+    const path = `metricDefinitions`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
+
+  /* Retrieves the metrics determined by the given filter for the given database account and database. */
+  async listMetrics(): Promise<Types.MetricListResult> {
+    const path = `metrics`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
+
+  /* Retrieves the usages (most recent data) for the given database. */
+  async listUsages(): Promise<Types.UsagesResult> {
+    const path = `usages`;
+    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  }
 }
