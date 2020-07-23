@@ -82,6 +82,19 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       });
       return state;
     }
+
+    case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELTS: {
+      const typedAction = action as cdbActions.UpdateNotebookParentDomEltAction;
+      var parentEltsMap = state.get("currentNotebookParentElements");
+      const contentRef = typedAction.payload.contentRef;
+      const parentElt = typedAction.payload.parentElt;
+      if (parentElt) {
+        parentEltsMap.set(contentRef, parentElt);
+      } else {
+        parentEltsMap.delete(contentRef);
+      }
+      return state.set("currentNotebookParentElements", parentEltsMap);
+    }
   }
   return state;
 };

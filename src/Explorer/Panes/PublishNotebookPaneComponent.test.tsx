@@ -10,6 +10,8 @@ describe("PublishNotebookPaneComponent", () => {
       notebookTags: "tag1, tag2",
       notebookAuthor: "CosmosDB",
       notebookCreatedDate: "2020-07-17T00:00:00Z",
+      notebookObject: undefined,
+      notebookParentDomElement: undefined,
       onChangeDescription: undefined,
       onChangeTags: undefined,
       onChangeImageSrc: undefined,

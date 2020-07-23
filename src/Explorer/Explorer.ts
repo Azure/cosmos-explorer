@@ -2347,9 +2347,9 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public publishNotebook(name: string, content: string): void {
+  public publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): void {
     if (this.notebookManager) {
-      this.notebookManager.openPublishNotebookPane(name, content);
+      this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }

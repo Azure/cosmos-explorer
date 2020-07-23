@@ -3,6 +3,9 @@ import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 import "./PublishNotebookPaneComponent.less";
+import Html2Canvas from "html2canvas";
+import { ImmutableNotebook } from "@nteract/commutable/src";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
 
 export interface PublishNotebookPaneProps {
   notebookName: string;
@@ -10,6 +13,8 @@ export interface PublishNotebookPaneProps {
   notebookTags: string;
   notebookAuthor: string;
   notebookCreatedDate: string;
+  notebookObject: ImmutableNotebook;
+  notebookParentDomElement: HTMLElement;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
   onChangeImageSrc: (newValue: string) => void;
@@ -24,9 +29,15 @@ interface PublishNotebookPaneState {
   imageSrc: string;
 }
 
+enum ImageTypes {
+  Url = "URL",
+  CustomImage = "Custom Image",
+  TakeScreenshot = "Take Screenshot",
+  UseFirstDisplayOutput = "Use First Display Output"
+}
+
 export class PublishNotebookPaneComponent extends React.Component<PublishNotebookPaneProps, PublishNotebookPaneState> {
   private static readonly maxImageSizeInMib = 1.5;
-  private static readonly ImageTypes = ["URL", "Custom Image"];
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionProps: ITextFieldProps;
@@ -34,12 +45,13 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
   private thumbnailUrlProps: ITextFieldProps;
   private thumbnailSelectorProps: IDropdownProps;
   private imageToBase64: (file: File, updateImageSrc: (result: string) => void) => void;
+  private takeScreenshot: (target: HTMLElement, onError: (error: Error) => void) => void;
 
   constructor(props: PublishNotebookPaneProps) {
     super(props);
 
     this.state = {
-      type: PublishNotebookPaneComponent.ImageTypes[0],
+      type: ImageTypes.Url,
       notebookDescription: "",
       notebookTags: "",
       imageSrc: undefined
@@ -61,6 +73,38 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       };
     };
 
+    this.takeScreenshot = (target: HTMLElement, onError: (error: Error) => void): void => {
+      const updateImageSrcWithScreenshot = (canvasUrl: string): void => {
+        this.props.onChangeImageSrc(canvasUrl);
+        this.setState({ imageSrc: canvasUrl });
+      };
+
+      target.scrollIntoView();
+      Html2Canvas(target, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 1,
+        logging: true
+      })
+        .then(canvas => {
+          //redraw canvas to fit Card Cover Image dimensions
+          const originalImageData = canvas.toDataURL();
+          const requiredHeight =
+            parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+          canvas.height = requiredHeight;
+          const context = canvas.getContext("2d");
+          const image = new Image();
+          image.src = originalImageData;
+          image.onload = function() {
+            context.drawImage(image, 0, 0);
+            updateImageSrcWithScreenshot(canvas.toDataURL());
+          };
+        })
+        .catch(error => {
+          onError(error);
+        });
+    };
+
     this.descriptionPara1 =
       "This notebook has your data. Please make sure you delete any sensitive data/output before publishing.";
 
@@ -78,12 +122,45 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       }
     };
 
+    const screenshotErrorHandler = (error: Error) => {
+      const formError = "Failed to take screen shot";
+      const formErrorDetail = `${error}`;
+      const area = "PublishNotebookPaneComponent/takeScreenshot";
+      this.props.onError(formError, formErrorDetail, area);
+    };
+
+    const firstOutputErrorHandler = (error: Error) => {
+      const formError = "Failed to capture first output";
+      const formErrorDetail = `${error}`;
+      const area = "PublishNotebookPaneComponent/UseFirstOutput";
+      this.props.onError(formError, formErrorDetail, area);
+    };
+
     this.thumbnailSelectorProps = {
       label: "Cover image",
-      defaultSelectedKey: PublishNotebookPaneComponent.ImageTypes[0],
+      defaultSelectedKey: ImageTypes.Url,
       ariaLabel: "Cover image",
-      options: PublishNotebookPaneComponent.ImageTypes.map((value: string) => ({ text: value, key: value })),
-      onChange: (event, options) => {
+      options: [
+        ImageTypes.Url,
+        ImageTypes.CustomImage,
+        ImageTypes.TakeScreenshot,
+        ImageTypes.UseFirstDisplayOutput
+      ].map((value: string) => ({ text: value, key: value })),
+      onChange: async (event, options) => {
+        this.props.clearFormError();
+        if (options.text === ImageTypes.TakeScreenshot) {
+          try {
+            await this.takeScreenshot(this.props.notebookParentDomElement, screenshotErrorHandler);
+          } catch (error) {
+            screenshotErrorHandler(error);
+          }
+        } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
+          try {
+            await this.takeScreenshot(this.findFirstOutput(), firstOutputErrorHandler);
+          } catch (error) {
+            firstOutputErrorHandler(error);
+          }
+        }
         this.setState({ type: options.text });
       }
     };
@@ -111,6 +188,51 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     };
   }
 
+  private renderThumbnailSelectors(type: string) {
+    switch (type) {
+      case ImageTypes.Url:
+        return <TextField {...this.thumbnailUrlProps} />;
+      case ImageTypes.CustomImage:
+        return (
+          <input
+            id="selectImageFile"
+            type="file"
+            accept="image/*"
+            onChange={event => {
+              const file = event.target.files[0];
+              if (file.size / 1024 ** 2 > PublishNotebookPaneComponent.maxImageSizeInMib) {
+                event.target.value = "";
+                const formError = `Failed to upload ${file.name}`;
+                const formErrorDetail = `Image is larger than ${PublishNotebookPaneComponent.maxImageSizeInMib} MiB. Please Choose a different image.`;
+                const area = "PublishNotebookPaneComponent/selectImageFile";
+
+                this.props.onError(formError, formErrorDetail, area);
+                this.props.onChangeImageSrc(undefined);
+                this.setState({ imageSrc: undefined });
+                return;
+              } else {
+                this.props.clearFormError();
+              }
+              this.imageToBase64(file, (result: string) => {
+                this.props.onChangeImageSrc(result);
+                this.setState({ imageSrc: result });
+              });
+            }}
+          />
+        );
+      default:
+        return <></>;
+    }
+  }
+
+  private findFirstOutput(): HTMLElement {
+    const indexOfFirstCodeCellWithDisplay = NotebookUtil.findFirstCodeCellWithDisplay(this.props.notebookObject);
+    const cellOutputDomElements = this.props.notebookParentDomElement.querySelectorAll<HTMLElement>(
+      ".nteract-cell-outputs"
+    );
+    return cellOutputDomElements[indexOfFirstCodeCellWithDisplay];
+  }
+
   public render(): JSX.Element {
     return (
       <div className="publishNotebookPanelContent">
@@ -135,39 +257,8 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
             <Dropdown {...this.thumbnailSelectorProps} />
           </Stack.Item>
 
-          {this.state.type === PublishNotebookPaneComponent.ImageTypes[0] ? (
-            <Stack.Item>
-              <TextField {...this.thumbnailUrlProps} />
-            </Stack.Item>
-          ) : (
-            <Stack.Item>
-              <input
-                id="selectImageFile"
-                type="file"
-                accept="image/*"
-                onChange={event => {
-                  const file = event.target.files[0];
-                  if (file.size / 1024 ** 2 > PublishNotebookPaneComponent.maxImageSizeInMib) {
-                    event.target.value = "";
-                    const formError = `Failed to upload ${file.name}`;
-                    const formErrorDetail = `Image is larger than ${PublishNotebookPaneComponent.maxImageSizeInMib} MiB. Please Choose a different image.`;
-                    const area = "PublishNotebookPaneComponent/selectImageFile";
+          <Stack.Item>{this.renderThumbnailSelectors(this.state.type)}</Stack.Item>
 
-                    this.props.onError(formError, formErrorDetail, area);
-                    this.props.onChangeImageSrc(undefined);
-                    this.setState({ imageSrc: undefined });
-                    return;
-                  } else {
-                    this.props.clearFormError();
-                  }
-                  this.imageToBase64(file, (result: string) => {
-                    this.props.onChangeImageSrc(result);
-                    this.setState({ imageSrc: result });
-                  });
-                }}
-              />
-            </Stack.Item>
-          )}
           <Stack.Item>
             <Text>Preview</Text>
           </Stack.Item>
