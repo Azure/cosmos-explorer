@@ -207,7 +207,7 @@ async function main() {
         const methodParameters = parametersFromPath(path).filter(p => !constructorParameters.includes(p));
         outputClient.push(`
           /* ${operation.description} */
-          async ${camelize(methodName)} (
+          async ${sanitize(camelize(methodName))} (
             ${methodParameters.map(p => `${p}: string`).join(",\n")}
             ${bodyParam(bodyParameter, "Types")}
           ) : Promise<${responseType(operation, "Types")}> {
@@ -217,18 +217,6 @@ async function main() {
         } }).then((response) => response.json())
           }
           `);
-        //   clients[clientName].functions.push(`
-        //   /* ${operation.description} */
-        //   async ${camelize(methodName)} (
-        //     ${parametersFromPath(path)}
-        //     ${bodyParam(bodyParameter, "Types")}
-        //   ) : Promise<${responseType(operation, "Types")}> {
-        //     return window.fetch(\`https://management.azure.com${path.replace(/{/g, "${")}\`, { method: "${method}", ${
-        //     bodyParameter ? "body: JSON.stringify(body)" : ""
-        //   } }).then((response) => response.json())
-        //   }
-        // `);
-        //   outputClient.push(clients[client].join("\n\n"));
       }
     }
     outputClient.push(`}`);
@@ -248,6 +236,13 @@ function buildBasePath(strings: string[]) {
     i++;
   }
   return arrFirstElem.substring(0, i);
+}
+
+function sanitize(name: string) {
+  if (name === "delete") {
+    return "destroy";
+  }
+  return name;
 }
 
 function buildConstructor(client: Client) {
