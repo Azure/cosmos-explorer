@@ -54,9 +54,9 @@ async function main() {
         const baseTypes = schema.definitions[interface].allOf
           .map((allof: { $ref: string }) => refToType(allof.$ref))
           .join(" & ");
-        file.push(`export type ${interface} = ${baseTypes} & {`);
+        file.push(`type ${interface} = ${baseTypes} & {`);
       } else {
-        file.push(`export interface ${interface} {`);
+        file.push(`interface ${interface} {`);
       }
       for (const prop in schema.definitions[interface].properties) {
         const property = schema.definitions[interface].properties[prop];
@@ -131,7 +131,6 @@ async function main() {
       const bodyParameter = operation.parameters.find(
         (parameter: any) => parameter.in === "body" && parameter.required === true
       );
-      console.log(bodyParameter);
       file.push(`
         /* ${operation.description} */
         export async function ${operation.operationId} (
