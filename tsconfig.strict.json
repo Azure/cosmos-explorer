@@ -19,6 +19,7 @@
 		"./src/Common/MessageHandler.ts",
 		"./src/Common/MongoUtility.ts",
 		"./src/Common/ObjectCache.ts",
+		"./src/Common/Splitter.ts",
 		"./src/Common/ThemeUtility.ts",
 		"./src/Common/UrlUtility.ts",
 		"./src/Config.ts",
