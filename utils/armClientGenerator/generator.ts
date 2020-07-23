@@ -1,33 +1,51 @@
 /// <reference types="node" />
+import { writeFileSync } from "fs";
+import fetch from "node-fetch";
 
-const { writeFileSync } = require("fs");
-const schema = require("./schema.json");
+/* 
+Open API TypeScript Client Generator 
 
-const file: string[] = [""];
+This is a quickly made bespoke Open API client generator. 
+It is not designed to handle the full OpenAPI spec.
+Many other more general purpose generators exist, but their output is very verbose and overly complex for our use case.
+But it does work well enough to generate a fully typed tree-shakeable client for the Cosmos resource provider.
+Results of this file should be checked into the repo.
+*/
 
+// Array of strings to use for eventual output
+const output: string[] = [""];
+
+const schemaURL =
+  "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2020-06-01-preview/cosmos-db.json";
+
+// Buckets for grouping operations based on their name
 const namespaces: { [key: string]: string[] } = {};
 
+// Mapping for OpenAPI types to TypeScript types
 const propertyMap: { [key: string]: string } = {
   integer: "number"
 };
 
+// Converts a Open API reference: "#/definitions/Foo" to a type name: Foo
 function refToType(path: string | undefined) {
-  // Handles refs pointing to other files. We don't support that yet.
+  // References must be in the same file. Bail to `unknown` types for remote references
   if (path && path.startsWith("#")) {
     return path.split("/").pop();
   }
   return "unknown";
 }
 
+// Converts "Something_Foo" ->  "somethingFoo"
 function camelize(str: string) {
   return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word: any, index: any) {
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word: string, index: number) {
       return index === 0 ? word.toLowerCase() : word.toUpperCase();
     })
     .replace(/\s+/g, "");
 }
 
-function bodyParam(parameter: any) {
+// Converts a body paramter to the equivalent typescript function parameter type
+function bodyParam(parameter: { schema: { $ref: string } }) {
   if (!parameter) {
     return "";
   }
@@ -35,18 +53,22 @@ function bodyParam(parameter: any) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parametersFromPath(path: any) {
+function parametersFromPath(path: string) {
   // TODO: Remove any. String.matchAll is a real thing.
-  const matches = path.matchAll(/{(\w+)}/g);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const matches = (path as any).matchAll(/{(\w+)}/g);
   return Array.from(matches)
     .map((match: string[]) => `${match[1]}: string`)
     .join(",\n");
 }
 
-function responseType(operation: any) {
+type Operation = { responses: { [key: string]: { schema: { $ref: string } } } };
+
+// Converts OpenAPI response definition to TypeScript return type. Uses unions if possible. Bails to unknown
+function responseType(operation: Operation) {
   if (operation.responses) {
     return Object.keys(operation.responses)
-      .map((responseCode: any) => {
+      .map((responseCode: string) => {
         if (!operation.responses[responseCode].schema) {
           return "void";
         }
@@ -58,40 +80,44 @@ function responseType(operation: any) {
 }
 
 async function main() {
-  for (const interface in schema.definitions) {
-    const properties = schema.definitions[interface].properties;
+  const response = await fetch(schemaURL);
+  const schema = await response.json();
+
+  // STEP 1: Convert all definitions to TypeScript types and interfaces
+  for (const definition in schema.definitions) {
+    const properties = schema.definitions[definition].properties;
     if (properties) {
-      if (schema.definitions[interface].allOf) {
-        const baseTypes = schema.definitions[interface].allOf
+      if (schema.definitions[definition].allOf) {
+        const baseTypes = schema.definitions[definition].allOf
           .map((allof: { $ref: string }) => refToType(allof.$ref))
           .join(" & ");
-        file.push(`type ${interface} = ${baseTypes} & {`);
+        output.push(`type ${definition} = ${baseTypes} & {`);
       } else {
-        file.push(`interface ${interface} {`);
+        output.push(`interface ${definition} {`);
       }
-      for (const prop in schema.definitions[interface].properties) {
-        const property = schema.definitions[interface].properties[prop];
+      for (const prop in schema.definitions[definition].properties) {
+        const property = schema.definitions[definition].properties[prop];
         if (property) {
           if (property.$ref) {
             const type = refToType(property.$ref);
-            file.push(`
+            output.push(`
             /* ${property.description} */
             ${property.readOnly ? "readonly " : ""}${prop}: ${type}
             `);
           } else if (property.type === "array") {
             const type = refToType(property.items.$ref);
-            file.push(`
+            output.push(`
             /* ${property.description} */
             ${property.readOnly ? "readonly " : ""}${prop}: ${type}[]
             `);
           } else if (property.type === "object") {
             const type = refToType(property.$ref);
-            file.push(`
+            output.push(`
             /* ${property.description} */
             ${property.readOnly ? "readonly " : ""}${prop}: ${type}
             `);
           } else {
-            file.push(`
+            output.push(`
             /* ${property.description} */
             ${property.readOnly ? "readonly " : ""}${prop}: ${
               propertyMap[property.type] ? propertyMap[property.type] : property.type
@@ -99,48 +125,50 @@ async function main() {
           }
         }
       }
-      file.push(`}`);
-      file.push("\n\n");
+      output.push(`}`);
+      output.push("\n\n");
     } else {
-      const definition = schema.definitions[interface];
-      if (definition.enum) {
-        file.push(`
-        /* ${definition.description} */
-        type ${interface} = ${definition.enum.map((v: string) => `"${v}"`).join(" | ")}`);
-        file.push("\n");
-      } else if (definition.type === "string") {
-        file.push(`
-        /* ${definition.description} */
-        type ${interface} = string
+      const def = schema.definitions[definition];
+      if (def.enum) {
+        output.push(`
+        /* ${def.description} */
+        type ${definition} = ${def.enum.map((v: string) => `"${v}"`).join(" | ")}`);
+        output.push("\n");
+      } else if (def.type === "string") {
+        output.push(`
+        /* ${def.description} */
+        type ${definition} = string
           `);
-      } else if (definition.type === "array") {
-        const type = refToType(definition.items.$ref);
-        file.push(`
-        /* ${definition.description} */
-        type ${interface} = ${type}[]
+      } else if (def.type === "array") {
+        const type = refToType(def.items.$ref);
+        output.push(`
+        /* ${def.description} */
+        type ${definition} = ${type}[]
         `);
-      } else if (definition.type === "object" && definition.additionalProperties) {
-        file.push(`
-        /* ${definition.description} */
-        type ${interface} = { [key: string]: ${definition.additionalProperties.type}}
+      } else if (def.type === "object" && def.additionalProperties) {
+        output.push(`
+        /* ${def.description} */
+        type ${definition} = { [key: string]: ${def.additionalProperties.type}}
         `);
-      } else if (definition.type === "object" && definition.allOf) {
-        const type = refToType(definition.allOf[0].$ref);
-        file.push(`
-        /* ${definition.description} */
-        type ${interface} = ${type}
+      } else if (def.type === "object" && def.allOf) {
+        const type = refToType(def.allOf[0].$ref);
+        output.push(`
+        /* ${def.description} */
+        type ${definition} = ${type}
         `);
       } else {
-        console.log("UNHANDLED MODEL:", interface, schema.definitions[interface]);
+        console.log("UNHANDLED MODEL:", def, schema.definitions[def]);
       }
     }
   }
 
+  // STEP 2: Convert all paths and operations to simple fetch functions.
+  // Functions are grouped into objects based on resource types
   for (const path in schema.paths) {
     for (const method in schema.paths[path]) {
       const operation = schema.paths[path][method];
       const bodyParameter = operation.parameters.find(
-        (parameter: any) => parameter.in === "body" && parameter.required === true
+        (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true
       );
       const [namespace, operationName] = operation.operationId.split("_");
       if (namespaces[namespace] === undefined) {
@@ -160,13 +188,14 @@ async function main() {
     }
   }
 
+  // Write all grouped fetch functions to objects
   for (const namespace in namespaces) {
-    file.push(`export const ${namespace} = {`);
-    file.push(namespaces[namespace].join(",\n"));
-    file.push(`}\n`);
+    output.push(`export const ${namespace} = {`);
+    output.push(namespaces[namespace].join(",\n"));
+    output.push(`}\n`);
   }
 
-  writeFileSync("./models.ts", file.join(""));
+  writeFileSync("./client.ts", output.join(""));
 }
 
 main().catch(e => {
