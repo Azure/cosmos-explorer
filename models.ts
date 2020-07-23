@@ -1307,1597 +1307,1511 @@ interface RestorableDatabaseAccountProperties {
   deletionTime: string;
 }
 
-/* Retrieves the properties of an existing Azure Cosmos DB database account. */
-export async function DatabaseAccounts_Get(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<DatabaseAccountGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Updates the properties of an existing Azure Cosmos DB database account. */
-export async function DatabaseAccounts_Update(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  body: DatabaseAccountUpdateParameters
-): Promise<DatabaseAccountGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
-      { method: "patch", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Creates or updates an Azure Cosmos DB database account. The "Update" method is preferred when performing updates on an account. */
-export async function DatabaseAccounts_CreateOrUpdate(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  body: DatabaseAccountCreateUpdateParameters
-): Promise<DatabaseAccountGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB database account. */
-export async function DatabaseAccounts_Delete(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Changes the failover priority for the Azure Cosmos DB database account. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. */
-export async function DatabaseAccounts_FailoverPriorityChange(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  body: FailoverPolicies
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/failoverPriorityChange`,
-      { method: "post", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists all the Azure Cosmos DB database accounts available under the subscription. */
-export async function DatabaseAccounts_List(subscriptionId: string): Promise<DatabaseAccountsListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/databaseAccounts`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists all the Azure Cosmos DB database accounts available under the given resource group. */
-export async function DatabaseAccounts_ListByResourceGroup(
-  subscriptionId: string,
-  resourceGroupName: string
-): Promise<DatabaseAccountsListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the access keys for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_ListKeys(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<DatabaseAccountListKeysResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listKeys`,
-      { method: "post" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the connection strings for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_ListConnectionStrings(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<DatabaseAccountListConnectionStringsResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listConnectionStrings`,
-      { method: "post" }
-    )
-    .then(response => response.json());
-}
-
-/* Offline the specified region for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_OfflineRegion(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  body: RegionForOnlineOffline
-): Promise<void | void | ErrorResponse> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/offlineRegion`,
-      { method: "post", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Online the specified region for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_OnlineRegion(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  body: RegionForOnlineOffline
-): Promise<void | void | ErrorResponse> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/onlineRegion`,
-      { method: "post", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_GetReadOnlyKeys(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<DatabaseAccountListReadOnlyKeysResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_ListReadOnlyKeys(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<DatabaseAccountListReadOnlyKeysResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`,
-      { method: "post" }
-    )
-    .then(response => response.json());
-}
-
-/* Regenerates an access key for the specified Azure Cosmos DB database account. */
-export async function DatabaseAccounts_RegenerateKey(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  body: DatabaseAccountRegenerateKeyParameters
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/regenerateKey`,
-      { method: "post", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Checks that the Azure Cosmos DB account name already exists. A valid account name may contain only lowercase letters, numbers, and the '-' character, and must be between 3 and 50 characters. */
-export async function DatabaseAccounts_CheckNameExists(accountName: string): Promise<void | void> {
-  return window
-    .fetch(`https://management.azure.com/providers/Microsoft.DocumentDB/databaseAccountNames/${accountName}`, {
-      method: "head"
-    })
-    .then(response => response.json());
-}
-
-/* Lists all of the available Cosmos DB Resource Provider operations. */
-export async function Operations_List(): Promise<OperationListResult> {
-  return window
-    .fetch(`https://management.azure.com/providers/Microsoft.DocumentDB/operations`, { method: "get" })
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given database account. */
-export async function DatabaseAccounts_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<MetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given database account and database. */
-export async function Database_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string
-): Promise<MetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given database account and collection. */
-export async function Collection_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<MetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given database account, collection and region. */
-export async function CollectionRegion_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  region: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<MetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given database account and region. */
-export async function DatabaseAccountRegion_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  region: string
-): Promise<MetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given account, source and target region. This url is only for PBS and Replication Latency data */
-export async function PercentileSourceTarget_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  sourceRegion: string,
-  targetRegion: string
-): Promise<PercentileMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sourceRegion/${sourceRegion}/targetRegion/${targetRegion}/percentile/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given account target region. This url is only for PBS and Replication Latency data */
-export async function PercentileTarget_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  targetRegion: string
-): Promise<PercentileMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/targetRegion/${targetRegion}/percentile/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given database account. This url is only for PBS and Replication Latency data */
-export async function Percentile_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<PercentileMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/percentile/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
-export async function CollectionPartitionRegion_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  region: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<PartitionMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given collection, split by partition. */
-export async function CollectionPartition_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<PartitionMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given partition key range id. */
-export async function PartitionKeyRangeId_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string,
-  partitionKeyRangeId: string
-): Promise<PartitionMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the metrics determined by the given filter for the given partition key range id and region. */
-export async function PartitionKeyRangeIdRegion_ListMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  region: string,
-  databaseRid: string,
-  collectionRid: string,
-  partitionKeyRangeId: string
-): Promise<PartitionMetricListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the usages (most recent data) for the given database account. */
-export async function DatabaseAccounts_ListUsages(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<UsagesResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/usages`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the usages (most recent data) for the given database. */
-export async function Database_ListUsages(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string
-): Promise<UsagesResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/usages`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the usages (most recent storage data) for the given collection. */
-export async function Collection_ListUsages(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<UsagesResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/usages`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the usages (most recent storage data) for the given collection, split by partition. */
-export async function CollectionPartition_ListUsages(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<PartitionUsagesResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitions/usages`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves metric definitions for the given database. */
-export async function Database_ListMetricDefinitions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string
-): Promise<MetricDefinitionsListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metricDefinitions`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves metric definitions for the given collection. */
-export async function Collection_ListMetricDefinitions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<MetricDefinitionsListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metricDefinitions`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves metric definitions for the given database account. */
-export async function DatabaseAccounts_ListMetricDefinitions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<MetricDefinitionsListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metricDefinitions`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the SQL databases under an existing Azure Cosmos DB database account. */
-export async function SqlResources_ListSqlDatabases(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<SqlDatabaseListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the SQL database under an existing Azure Cosmos DB database account with the provided name. */
-export async function SqlResources_GetSqlDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<SqlDatabaseGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL database */
-export async function SqlResources_CreateUpdateSqlDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: SqlDatabaseCreateUpdateParameters
-): Promise<SqlDatabaseGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL database. */
-export async function SqlResources_DeleteSqlDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the SQL database under an existing Azure Cosmos DB database account with the provided name. */
-export async function SqlResources_GetSqlDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB SQL database */
-export async function SqlResources_UpdateSqlDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the SQL container under an existing Azure Cosmos DB database account. */
-export async function SqlResources_ListSqlContainers(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<SqlContainerListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the SQL container under an existing Azure Cosmos DB database account. */
-export async function SqlResources_GetSqlContainer(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<SqlContainerGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL container */
-export async function SqlResources_CreateUpdateSqlContainer(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  body: SqlContainerCreateUpdateParameters
-): Promise<SqlContainerGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL container. */
-export async function SqlResources_DeleteSqlContainer(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database account. */
-export async function SqlResources_GetSqlContainerThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB SQL container */
-export async function SqlResources_UpdateSqlContainerThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */
-export async function SqlResources_ListSqlStoredProcedures(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<SqlStoredProcedureListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the SQL storedProcedure under an existing Azure Cosmos DB database account. */
-export async function SqlResources_GetSqlStoredProcedure(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  storedProcedureName: string
-): Promise<SqlStoredProcedureGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL storedProcedure */
-export async function SqlResources_CreateUpdateSqlStoredProcedure(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  storedProcedureName: string,
-  body: SqlStoredProcedureCreateUpdateParameters
-): Promise<SqlStoredProcedureGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL storedProcedure. */
-export async function SqlResources_DeleteSqlStoredProcedure(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  storedProcedureName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
-export async function SqlResources_ListSqlUserDefinedFunctions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<SqlUserDefinedFunctionListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
-export async function SqlResources_GetSqlUserDefinedFunction(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  userDefinedFunctionName: string
-): Promise<SqlUserDefinedFunctionGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL userDefinedFunction */
-export async function SqlResources_CreateUpdateSqlUserDefinedFunction(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  userDefinedFunctionName: string,
-  body: SqlUserDefinedFunctionCreateUpdateParameters
-): Promise<SqlUserDefinedFunctionGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL userDefinedFunction. */
-export async function SqlResources_DeleteSqlUserDefinedFunction(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  userDefinedFunctionName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the SQL trigger under an existing Azure Cosmos DB database account. */
-export async function SqlResources_ListSqlTriggers(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<SqlTriggerListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the SQL trigger under an existing Azure Cosmos DB database account. */
-export async function SqlResources_GetSqlTrigger(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  triggerName: string
-): Promise<SqlTriggerGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL trigger */
-export async function SqlResources_CreateUpdateSqlTrigger(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  triggerName: string,
-  body: SqlTriggerCreateUpdateParameters
-): Promise<SqlTriggerGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL trigger. */
-export async function SqlResources_DeleteSqlTrigger(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  triggerName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
-export async function MongoDBResources_ListMongoDBDatabases(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<MongoDBDatabaseListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided name. */
-export async function MongoDBResources_GetMongoDBDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<MongoDBDatabaseGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or updates Azure Cosmos DB MongoDB database */
-export async function MongoDBResources_CreateUpdateMongoDBDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: MongoDBDatabaseCreateUpdateParameters
-): Promise<MongoDBDatabaseGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB MongoDB database. */
-export async function MongoDBResources_DeleteMongoDBDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database account with the provided name. */
-export async function MongoDBResources_GetMongoDBDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of the an Azure Cosmos DB MongoDB database */
-export async function MongoDBResources_UpdateMongoDBDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the MongoDB collection under an existing Azure Cosmos DB database account. */
-export async function MongoDBResources_ListMongoDBCollections(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<MongoDBCollectionListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
-export async function MongoDBResources_GetMongoDBCollection(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  collectionName: string
-): Promise<MongoDBCollectionGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB MongoDB Collection */
-export async function MongoDBResources_CreateUpdateMongoDBCollection(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  collectionName: string,
-  body: MongoDBCollectionCreateUpdateParameters
-): Promise<MongoDBCollectionGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB MongoDB Collection. */
-export async function MongoDBResources_DeleteMongoDBCollection(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  collectionName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database account with the provided name. */
-export async function MongoDBResources_GetMongoDBCollectionThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  collectionName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update the RUs per second of an Azure Cosmos DB MongoDB collection */
-export async function MongoDBResources_UpdateMongoDBCollectionThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  collectionName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the Tables under an existing Azure Cosmos DB database account. */
-export async function TableResources_ListTables(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<TableListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the Tables under an existing Azure Cosmos DB database account with the provided name. */
-export async function TableResources_GetTable(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  tableName: string
-): Promise<TableGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB Table */
-export async function TableResources_CreateUpdateTable(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  tableName: string,
-  body: TableCreateUpdateParameters
-): Promise<TableGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB Table. */
-export async function TableResources_DeleteTable(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  tableName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the Table under an existing Azure Cosmos DB database account with the provided name. */
-export async function TableResources_GetTableThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  tableName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB Table */
-export async function TableResources_UpdateTableThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  tableName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the Cassandra keyspaces under an existing Azure Cosmos DB database account. */
-export async function CassandraResources_ListCassandraKeyspaces(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<CassandraKeyspaceListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name. */
-export async function CassandraResources_GetCassandraKeyspace(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string
-): Promise<CassandraKeyspaceGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB Cassandra keyspace */
-export async function CassandraResources_CreateUpdateCassandraKeyspace(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  body: CassandraKeyspaceCreateUpdateParameters
-): Promise<CassandraKeyspaceGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB Cassandra keyspace. */
-export async function CassandraResources_DeleteCassandraKeyspace(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the provided name. */
-export async function CassandraResources_GetCassandraKeyspaceThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB Cassandra Keyspace */
-export async function CassandraResources_UpdateCassandraKeyspaceThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the Cassandra table under an existing Azure Cosmos DB database account. */
-export async function CassandraResources_ListCassandraTables(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string
-): Promise<CassandraTableListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the Cassandra table under an existing Azure Cosmos DB database account. */
-export async function CassandraResources_GetCassandraTable(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  tableName: string
-): Promise<CassandraTableGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB Cassandra Table */
-export async function CassandraResources_CreateUpdateCassandraTable(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  tableName: string,
-  body: CassandraTableCreateUpdateParameters
-): Promise<CassandraTableGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB Cassandra table. */
-export async function CassandraResources_DeleteCassandraTable(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  tableName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the provided name. */
-export async function CassandraResources_GetCassandraTableThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  tableName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB Cassandra table */
-export async function CassandraResources_UpdateCassandraTableThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  keyspaceName: string,
-  tableName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the Gremlin databases under an existing Azure Cosmos DB database account. */
-export async function GremlinResources_ListGremlinDatabases(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<GremlinDatabaseListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the Gremlin databases under an existing Azure Cosmos DB database account with the provided name. */
-export async function GremlinResources_GetGremlinDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<GremlinDatabaseGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB Gremlin database */
-export async function GremlinResources_CreateUpdateGremlinDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: GremlinDatabaseCreateUpdateParameters
-): Promise<GremlinDatabaseGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB Gremlin database. */
-export async function GremlinResources_DeleteGremlinDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the RUs per second of the Gremlin database under an existing Azure Cosmos DB database account with the provided name. */
-export async function GremlinResources_GetGremlinDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB Gremlin database */
-export async function GremlinResources_UpdateGremlinDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists the Gremlin graph under an existing Azure Cosmos DB database account. */
-export async function GremlinResources_ListGremlinGraphs(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<GremlinGraphListResult> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the Gremlin graph under an existing Azure Cosmos DB database account. */
-export async function GremlinResources_GetGremlinGraph(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  graphName: string
-): Promise<GremlinGraphGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB Gremlin graph */
-export async function GremlinResources_CreateUpdateGremlinGraph(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  graphName: string,
-  body: GremlinGraphCreateUpdateParameters
-): Promise<GremlinGraphGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB Gremlin graph. */
-export async function GremlinResources_DeleteGremlinGraph(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  graphName: string
-): Promise<void | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`,
-      { method: "delete" }
-    )
-    .then(response => response.json());
-}
-
-/* Gets the Gremlin graph throughput under an existing Azure Cosmos DB database account with the provided name. */
-export async function GremlinResources_GetGremlinGraphThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  graphName: string
-): Promise<ThroughputSettingsGetResults> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB Gremlin graph */
-export async function GremlinResources_UpdateGremlinGraphThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  graphName: string,
-  body: ThroughputSettingsUpdateParameters
-): Promise<ThroughputSettingsGetResults | void> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`,
-      { method: "put", body: JSON.stringify(body) }
-    )
-    .then(response => response.json());
-}
-
-/* Lists all the restorable Azure Cosmos DB database accounts available under the subscription and in a region. */
-export async function RestorableDatabaseAccounts_ListByLocation(
-  subscriptionId: string,
-  location: string
-): Promise<RestorableDatabaseAccountsListResult | ErrorResponseUpdatedFormat> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Lists all the restorable Azure Cosmos DB database accounts available under the subscription. */
-export async function RestorableDatabaseAccounts_List(
-  subscriptionId: string
-): Promise<RestorableDatabaseAccountsListResult | ErrorResponseUpdatedFormat> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/restorableDatabaseAccounts`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
-
-/* Retrieves the properties of an existing Azure Cosmos DB restorable database account. */
-export async function RestorableDatabaseAccounts_GetByLocation(
-  subscriptionId: string,
-  location: string,
-  instanceId: string
-): Promise<RestorableDatabaseAccountGetResult | ErrorResponseUpdatedFormat> {
-  return window
-    .fetch(
-      `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts/${instanceId}`,
-      { method: "get" }
-    )
-    .then(response => response.json());
-}
+export const DatabaseAccounts = {
+  /* Retrieves the properties of an existing Azure Cosmos DB database account. */
+  async get(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<DatabaseAccountGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Updates the properties of an existing Azure Cosmos DB database account. */
+  async update(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    body: DatabaseAccountUpdateParameters
+  ): Promise<DatabaseAccountGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+        { method: "patch", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Creates or updates an Azure Cosmos DB database account. The "Update" method is preferred when performing updates on an account. */
+  async createOrUpdate(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    body: DatabaseAccountCreateUpdateParameters
+  ): Promise<DatabaseAccountGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB database account. */
+  async delete(subscriptionId: string, resourceGroupName: string, accountName: string): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Changes the failover priority for the Azure Cosmos DB database account. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. */
+  async failoverPriorityChange(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    body: FailoverPolicies
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/failoverPriorityChange`,
+        { method: "post", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists all the Azure Cosmos DB database accounts available under the subscription. */
+  async list(subscriptionId: string): Promise<DatabaseAccountsListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/databaseAccounts`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists all the Azure Cosmos DB database accounts available under the given resource group. */
+  async listByResourceGroup(subscriptionId: string, resourceGroupName: string): Promise<DatabaseAccountsListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the access keys for the specified Azure Cosmos DB database account. */
+  async listKeys(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<DatabaseAccountListKeysResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listKeys`,
+        { method: "post" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the connection strings for the specified Azure Cosmos DB database account. */
+  async listConnectionStrings(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<DatabaseAccountListConnectionStringsResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listConnectionStrings`,
+        { method: "post" }
+      )
+      .then(response => response.json());
+  },
+  /* Offline the specified region for the specified Azure Cosmos DB database account. */
+  async offlineRegion(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    body: RegionForOnlineOffline
+  ): Promise<void | void | ErrorResponse> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/offlineRegion`,
+        { method: "post", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Online the specified region for the specified Azure Cosmos DB database account. */
+  async onlineRegion(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    body: RegionForOnlineOffline
+  ): Promise<void | void | ErrorResponse> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/onlineRegion`,
+        { method: "post", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
+  async getReadOnlyKeys(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<DatabaseAccountListReadOnlyKeysResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
+  async listReadOnlyKeys(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<DatabaseAccountListReadOnlyKeysResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`,
+        { method: "post" }
+      )
+      .then(response => response.json());
+  },
+  /* Regenerates an access key for the specified Azure Cosmos DB database account. */
+  async regenerateKey(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    body: DatabaseAccountRegenerateKeyParameters
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/regenerateKey`,
+        { method: "post", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Checks that the Azure Cosmos DB account name already exists. A valid account name may contain only lowercase letters, numbers, and the '-' character, and must be between 3 and 50 characters. */
+  async checkNameExists(accountName: string): Promise<void | void> {
+    return window
+      .fetch(`https://management.azure.com/providers/Microsoft.DocumentDB/databaseAccountNames/${accountName}`, {
+        method: "head"
+      })
+      .then(response => response.json());
+  },
+  /* Retrieves the metrics determined by the given filter for the given database account. */
+  async listMetrics(subscriptionId: string, resourceGroupName: string, accountName: string): Promise<MetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves the usages (most recent data) for the given database account. */
+  async listUsages(subscriptionId: string, resourceGroupName: string, accountName: string): Promise<UsagesResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/usages`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves metric definitions for the given database account. */
+  async listMetricDefinitions(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<MetricDefinitionsListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metricDefinitions`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const Operations = {
+  /* Lists all of the available Cosmos DB Resource Provider operations. */
+  async list(): Promise<OperationListResult> {
+    return window
+      .fetch(`https://management.azure.com/providers/Microsoft.DocumentDB/operations`, { method: "get" })
+      .then(response => response.json());
+  }
+};
+export const Database = {
+  /* Retrieves the metrics determined by the given filter for the given database account and database. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string
+  ): Promise<MetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves the usages (most recent data) for the given database. */
+  async listUsages(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string
+  ): Promise<UsagesResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/usages`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves metric definitions for the given database. */
+  async listMetricDefinitions(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string
+  ): Promise<MetricDefinitionsListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metricDefinitions`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const Collection = {
+  /* Retrieves the metrics determined by the given filter for the given database account and collection. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<MetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves the usages (most recent storage data) for the given collection. */
+  async listUsages(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<UsagesResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/usages`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves metric definitions for the given collection. */
+  async listMetricDefinitions(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<MetricDefinitionsListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metricDefinitions`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const CollectionRegion = {
+  /* Retrieves the metrics determined by the given filter for the given database account, collection and region. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    region: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<MetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const DatabaseAccountRegion = {
+  /* Retrieves the metrics determined by the given filter for the given database account and region. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    region: string
+  ): Promise<MetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const PercentileSourceTarget = {
+  /* Retrieves the metrics determined by the given filter for the given account, source and target region. This url is only for PBS and Replication Latency data */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    sourceRegion: string,
+    targetRegion: string
+  ): Promise<PercentileMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sourceRegion/${sourceRegion}/targetRegion/${targetRegion}/percentile/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const PercentileTarget = {
+  /* Retrieves the metrics determined by the given filter for the given account target region. This url is only for PBS and Replication Latency data */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    targetRegion: string
+  ): Promise<PercentileMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/targetRegion/${targetRegion}/percentile/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const Percentile = {
+  /* Retrieves the metrics determined by the given filter for the given database account. This url is only for PBS and Replication Latency data */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<PercentileMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/percentile/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const CollectionPartitionRegion = {
+  /* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    region: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<PartitionMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const CollectionPartition = {
+  /* Retrieves the metrics determined by the given filter for the given collection, split by partition. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<PartitionMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves the usages (most recent storage data) for the given collection, split by partition. */
+  async listUsages(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string,
+    collectionRid: string
+  ): Promise<PartitionUsagesResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitions/usages`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const PartitionKeyRangeId = {
+  /* Retrieves the metrics determined by the given filter for the given partition key range id. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseRid: string,
+    collectionRid: string,
+    partitionKeyRangeId: string
+  ): Promise<PartitionMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const PartitionKeyRangeIdRegion = {
+  /* Retrieves the metrics determined by the given filter for the given partition key range id and region. */
+  async listMetrics(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    region: string,
+    databaseRid: string,
+    collectionRid: string,
+    partitionKeyRangeId: string
+  ): Promise<PartitionMetricListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};
+export const SqlResources = {
+  /* Lists the SQL databases under an existing Azure Cosmos DB database account. */
+  async listSqlDatabases(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<SqlDatabaseListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the SQL database under an existing Azure Cosmos DB database account with the provided name. */
+  async getSqlDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<SqlDatabaseGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB SQL database */
+  async createUpdateSqlDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    body: SqlDatabaseCreateUpdateParameters
+  ): Promise<SqlDatabaseGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB SQL database. */
+  async deleteSqlDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the SQL database under an existing Azure Cosmos DB database account with the provided name. */
+  async getSqlDatabaseThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB SQL database */
+  async updateSqlDatabaseThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the SQL container under an existing Azure Cosmos DB database account. */
+  async listSqlContainers(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<SqlContainerListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the SQL container under an existing Azure Cosmos DB database account. */
+  async getSqlContainer(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<SqlContainerGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB SQL container */
+  async createUpdateSqlContainer(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    body: SqlContainerCreateUpdateParameters
+  ): Promise<SqlContainerGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB SQL container. */
+  async deleteSqlContainer(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database account. */
+  async getSqlContainerThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB SQL container */
+  async updateSqlContainerThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */
+  async listSqlStoredProcedures(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<SqlStoredProcedureListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the SQL storedProcedure under an existing Azure Cosmos DB database account. */
+  async getSqlStoredProcedure(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    storedProcedureName: string
+  ): Promise<SqlStoredProcedureGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB SQL storedProcedure */
+  async createUpdateSqlStoredProcedure(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    storedProcedureName: string,
+    body: SqlStoredProcedureCreateUpdateParameters
+  ): Promise<SqlStoredProcedureGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB SQL storedProcedure. */
+  async deleteSqlStoredProcedure(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    storedProcedureName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
+  async listSqlUserDefinedFunctions(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<SqlUserDefinedFunctionListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
+  async getSqlUserDefinedFunction(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    userDefinedFunctionName: string
+  ): Promise<SqlUserDefinedFunctionGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB SQL userDefinedFunction */
+  async createUpdateSqlUserDefinedFunction(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    userDefinedFunctionName: string,
+    body: SqlUserDefinedFunctionCreateUpdateParameters
+  ): Promise<SqlUserDefinedFunctionGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB SQL userDefinedFunction. */
+  async deleteSqlUserDefinedFunction(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    userDefinedFunctionName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the SQL trigger under an existing Azure Cosmos DB database account. */
+  async listSqlTriggers(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<SqlTriggerListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the SQL trigger under an existing Azure Cosmos DB database account. */
+  async getSqlTrigger(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    triggerName: string
+  ): Promise<SqlTriggerGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB SQL trigger */
+  async createUpdateSqlTrigger(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    triggerName: string,
+    body: SqlTriggerCreateUpdateParameters
+  ): Promise<SqlTriggerGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB SQL trigger. */
+  async deleteSqlTrigger(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    containerName: string,
+    triggerName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  }
+};
+export const MongoDBResources = {
+  /* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
+  async listMongoDBDatabases(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<MongoDBDatabaseListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided name. */
+  async getMongoDBDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<MongoDBDatabaseGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or updates Azure Cosmos DB MongoDB database */
+  async createUpdateMongoDBDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    body: MongoDBDatabaseCreateUpdateParameters
+  ): Promise<MongoDBDatabaseGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB MongoDB database. */
+  async deleteMongoDBDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database account with the provided name. */
+  async getMongoDBDatabaseThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of the an Azure Cosmos DB MongoDB database */
+  async updateMongoDBDatabaseThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the MongoDB collection under an existing Azure Cosmos DB database account. */
+  async listMongoDBCollections(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<MongoDBCollectionListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
+  async getMongoDBCollection(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    collectionName: string
+  ): Promise<MongoDBCollectionGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB MongoDB Collection */
+  async createUpdateMongoDBCollection(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    collectionName: string,
+    body: MongoDBCollectionCreateUpdateParameters
+  ): Promise<MongoDBCollectionGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB MongoDB Collection. */
+  async deleteMongoDBCollection(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    collectionName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database account with the provided name. */
+  async getMongoDBCollectionThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    collectionName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update the RUs per second of an Azure Cosmos DB MongoDB collection */
+  async updateMongoDBCollectionThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    collectionName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  }
+};
+export const TableResources = {
+  /* Lists the Tables under an existing Azure Cosmos DB database account. */
+  async listTables(subscriptionId: string, resourceGroupName: string, accountName: string): Promise<TableListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the Tables under an existing Azure Cosmos DB database account with the provided name. */
+  async getTable(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    tableName: string
+  ): Promise<TableGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB Table */
+  async createUpdateTable(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    tableName: string,
+    body: TableCreateUpdateParameters
+  ): Promise<TableGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB Table. */
+  async deleteTable(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    tableName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the Table under an existing Azure Cosmos DB database account with the provided name. */
+  async getTableThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    tableName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB Table */
+  async updateTableThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    tableName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  }
+};
+export const CassandraResources = {
+  /* Lists the Cassandra keyspaces under an existing Azure Cosmos DB database account. */
+  async listCassandraKeyspaces(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<CassandraKeyspaceListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name. */
+  async getCassandraKeyspace(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string
+  ): Promise<CassandraKeyspaceGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB Cassandra keyspace */
+  async createUpdateCassandraKeyspace(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    body: CassandraKeyspaceCreateUpdateParameters
+  ): Promise<CassandraKeyspaceGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB Cassandra keyspace. */
+  async deleteCassandraKeyspace(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the provided name. */
+  async getCassandraKeyspaceThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB Cassandra Keyspace */
+  async updateCassandraKeyspaceThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the Cassandra table under an existing Azure Cosmos DB database account. */
+  async listCassandraTables(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string
+  ): Promise<CassandraTableListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the Cassandra table under an existing Azure Cosmos DB database account. */
+  async getCassandraTable(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    tableName: string
+  ): Promise<CassandraTableGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB Cassandra Table */
+  async createUpdateCassandraTable(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    tableName: string,
+    body: CassandraTableCreateUpdateParameters
+  ): Promise<CassandraTableGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB Cassandra table. */
+  async deleteCassandraTable(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    tableName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the provided name. */
+  async getCassandraTableThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    tableName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB Cassandra table */
+  async updateCassandraTableThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    keyspaceName: string,
+    tableName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  }
+};
+export const GremlinResources = {
+  /* Lists the Gremlin databases under an existing Azure Cosmos DB database account. */
+  async listGremlinDatabases(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string
+  ): Promise<GremlinDatabaseListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the Gremlin databases under an existing Azure Cosmos DB database account with the provided name. */
+  async getGremlinDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<GremlinDatabaseGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB Gremlin database */
+  async createUpdateGremlinDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    body: GremlinDatabaseCreateUpdateParameters
+  ): Promise<GremlinDatabaseGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB Gremlin database. */
+  async deleteGremlinDatabase(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the RUs per second of the Gremlin database under an existing Azure Cosmos DB database account with the provided name. */
+  async getGremlinDatabaseThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB Gremlin database */
+  async updateGremlinDatabaseThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Lists the Gremlin graph under an existing Azure Cosmos DB database account. */
+  async listGremlinGraphs(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string
+  ): Promise<GremlinGraphListResult> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the Gremlin graph under an existing Azure Cosmos DB database account. */
+  async getGremlinGraph(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    graphName: string
+  ): Promise<GremlinGraphGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Create or update an Azure Cosmos DB Gremlin graph */
+  async createUpdateGremlinGraph(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    graphName: string,
+    body: GremlinGraphCreateUpdateParameters
+  ): Promise<GremlinGraphGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  },
+  /* Deletes an existing Azure Cosmos DB Gremlin graph. */
+  async deleteGremlinGraph(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    graphName: string
+  ): Promise<void | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`,
+        { method: "delete" }
+      )
+      .then(response => response.json());
+  },
+  /* Gets the Gremlin graph throughput under an existing Azure Cosmos DB database account with the provided name. */
+  async getGremlinGraphThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    graphName: string
+  ): Promise<ThroughputSettingsGetResults> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Update RUs per second of an Azure Cosmos DB Gremlin graph */
+  async updateGremlinGraphThroughput(
+    subscriptionId: string,
+    resourceGroupName: string,
+    accountName: string,
+    databaseName: string,
+    graphName: string,
+    body: ThroughputSettingsUpdateParameters
+  ): Promise<ThroughputSettingsGetResults | void> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`,
+        { method: "put", body: JSON.stringify(body) }
+      )
+      .then(response => response.json());
+  }
+};
+export const RestorableDatabaseAccounts = {
+  /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription and in a region. */
+  async listByLocation(
+    subscriptionId: string,
+    location: string
+  ): Promise<RestorableDatabaseAccountsListResult | ErrorResponseUpdatedFormat> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription. */
+  async list(subscriptionId: string): Promise<RestorableDatabaseAccountsListResult | ErrorResponseUpdatedFormat> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/restorableDatabaseAccounts`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  },
+  /* Retrieves the properties of an existing Azure Cosmos DB restorable database account. */
+  async getByLocation(
+    subscriptionId: string,
+    location: string,
+    instanceId: string
+  ): Promise<RestorableDatabaseAccountGetResult | ErrorResponseUpdatedFormat> {
+    return window
+      .fetch(
+        `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts/${instanceId}`,
+        { method: "get" }
+      )
+      .then(response => response.json());
+  }
+};

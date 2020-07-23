@@ -1,8 +1,11 @@
 /// <reference types="node" />
+
 const { writeFileSync } = require("fs");
 const schema = require("./schema.json");
 
 const file: string[] = [""];
+
+const namespaces: { [key: string]: string[] } = {};
 
 const propertyMap: { [key: string]: string } = {
   integer: "number"
@@ -14,6 +17,14 @@ function refToType(path: string | undefined) {
     return path.split("/").pop();
   }
   return "unknown";
+}
+
+function camelize(str: string) {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word: any, index: any) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, "");
 }
 
 function bodyParam(parameter: any) {
@@ -131,9 +142,13 @@ async function main() {
       const bodyParameter = operation.parameters.find(
         (parameter: any) => parameter.in === "body" && parameter.required === true
       );
-      file.push(`
+      const [namespace, operationName] = operation.operationId.split("_");
+      if (namespaces[namespace] === undefined) {
+        namespaces[namespace] = [];
+      }
+      namespaces[namespace].push(`
         /* ${operation.description} */
-        export async function ${operation.operationId} (
+        async ${camelize(operationName)} (
           ${parametersFromPath(path)}
           ${bodyParam(bodyParameter)}
         ) : Promise<${responseType(operation)}> {
@@ -143,6 +158,12 @@ async function main() {
         }
       `);
     }
+  }
+
+  for (const namespace in namespaces) {
+    file.push(`export const ${namespace} = {`);
+    file.push(namespaces[namespace].join(",\n"));
+    file.push(`}\n`);
   }
 
   writeFileSync("./models.ts", file.join(""));
