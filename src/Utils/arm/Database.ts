@@ -14,7 +14,7 @@ export async function listMetrics(
   databaseRid: string
 ): Promise<Types.MetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metrics`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Retrieves the usages (most recent data) for the given database. */
@@ -25,7 +25,7 @@ export async function listUsages(
   databaseRid: string
 ): Promise<Types.UsagesResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/usages`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Retrieves metric definitions for the given database. */
@@ -36,5 +36,5 @@ export async function listMetricDefinitions(
   databaseRid: string
 ): Promise<Types.MetricDefinitionsListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metricDefinitions`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }

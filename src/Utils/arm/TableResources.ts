@@ -13,7 +13,7 @@ export async function listTables(
   accountName: string
 ): Promise<Types.TableListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Gets the Tables under an existing Azure Cosmos DB database account with the provided name. */
@@ -24,7 +24,7 @@ export async function getTable(
   tableName: string
 ): Promise<Types.TableGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Create or update an Azure Cosmos DB Table */
@@ -37,7 +37,7 @@ export async function createUpdateTable(
 ): Promise<Types.TableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
   return window
-    .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
     .then(response => response.json());
 }
 
@@ -49,7 +49,7 @@ export async function deleteTable(
   tableName: string
 ): Promise<void | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "delete" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "delete" }).then(response => response.json());
 }
 
 /* Gets the RUs per second of the Table under an existing Azure Cosmos DB database account with the provided name. */
@@ -60,7 +60,7 @@ export async function getTableThroughput(
   tableName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Update RUs per second of an Azure Cosmos DB Table */
@@ -73,6 +73,6 @@ export async function updateTableThroughput(
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
   return window
-    .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
     .then(response => response.json());
 }

@@ -14,5 +14,5 @@ export async function listMetrics(
   targetRegion: string
 ): Promise<Types.PercentileMetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/targetRegion/${targetRegion}/percentile/metrics`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }

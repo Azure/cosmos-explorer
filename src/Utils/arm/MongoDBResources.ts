@@ -13,7 +13,7 @@ export async function listMongoDBDatabases(
   accountName: string
 ): Promise<Types.MongoDBDatabaseListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided name. */
@@ -24,7 +24,7 @@ export async function getMongoDBDatabase(
   databaseName: string
 ): Promise<Types.MongoDBDatabaseGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Create or updates Azure Cosmos DB MongoDB database */
@@ -37,7 +37,7 @@ export async function createUpdateMongoDBDatabase(
 ): Promise<Types.MongoDBDatabaseGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
   return window
-    .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
     .then(response => response.json());
 }
 
@@ -49,7 +49,7 @@ export async function deleteMongoDBDatabase(
   databaseName: string
 ): Promise<void | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "delete" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "delete" }).then(response => response.json());
 }
 
 /* Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database account with the provided name. */
@@ -60,7 +60,7 @@ export async function getMongoDBDatabaseThroughput(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Update RUs per second of the an Azure Cosmos DB MongoDB database */
@@ -73,7 +73,7 @@ export async function updateMongoDBDatabaseThroughput(
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`;
   return window
-    .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
     .then(response => response.json());
 }
 
@@ -85,7 +85,7 @@ export async function listMongoDBCollections(
   databaseName: string
 ): Promise<Types.MongoDBCollectionListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
@@ -97,7 +97,7 @@ export async function getMongoDBCollection(
   collectionName: string
 ): Promise<Types.MongoDBCollectionGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Create or update an Azure Cosmos DB MongoDB Collection */
@@ -111,7 +111,7 @@ export async function createUpdateMongoDBCollection(
 ): Promise<Types.MongoDBCollectionGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
   return window
-    .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
     .then(response => response.json());
 }
 
@@ -124,7 +124,7 @@ export async function deleteMongoDBCollection(
   collectionName: string
 ): Promise<void | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "delete" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "delete" }).then(response => response.json());
 }
 
 /* Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database account with the provided name. */
@@ -136,7 +136,7 @@ export async function getMongoDBCollectionThroughput(
   collectionName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`;
-  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
+  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
 }
 
 /* Update the RUs per second of an Azure Cosmos DB MongoDB collection */
@@ -150,6 +150,6 @@ export async function updateMongoDBCollectionThroughput(
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`;
   return window
-    .fetch(this.baseUrl + this.basePath + path, { method: "put", body: JSON.stringify(body) })
+    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
     .then(response => response.json());
 }
