@@ -3,20 +3,16 @@ import * as MessageHandler from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 
 describe("Message Handler", () => {
-  it.only("should send cached data message", async () => {
-    const mock = jest.fn();
-    window.parent.addEventListener("message", mock);
-    MessageHandler.sendCachedDataMessage(MessageTypes.AllDatabases, ["some param"]);
-
-    await new Promise(r => setTimeout(r, 1000));
-    expect(mock).toHaveBeenCalled();
-  });
-
   it("should handle cached message", async () => {
+    let mockPromise = {
+      id: "123",
+      startTime: new Date(),
+      deferred: Q.defer<any>()
+    };
     let mockMessage = { message: { id: "123", data: "{}" } };
-
+    MessageHandler.RequestMap[mockPromise.id] = mockPromise;
     MessageHandler.handleCachedDataMessage(mockMessage);
-    expect(MessageHandler.RequestMap["123"]).toBeDefined();
+    expect(mockPromise.deferred.promise.isFulfilled()).toBe(true);
   });
 
   it("should delete fulfilled promises on running the garbage collector", async () => {

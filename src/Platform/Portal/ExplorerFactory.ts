@@ -1,4 +1,3 @@
-import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../../Explorer/Explorer";
 
 import { NotificationsClient } from "./NotificationsClient";
