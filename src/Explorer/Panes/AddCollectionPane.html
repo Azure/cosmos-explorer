@@ -56,7 +56,7 @@
   <!-- Add collection errors - End -->
 
   <!-- upsell message - start -->
-  <div class="infoBoxContainer" aria-live="assertive" data-bind="visible: formErrors && !formErrors()">
+  <div class="infoBoxContainer" aria-live="assertive" data-bind="visible: showUpsellMessage && showUpsellMessage() && formErrors && !formErrors()">
       <div class="infoBoxContent">
           <span><img class="infoBoxIcon" src="/info_color.svg" alt="Promo"></span>
           <span class="infoBoxDetails">

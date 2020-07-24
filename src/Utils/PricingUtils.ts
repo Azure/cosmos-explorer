@@ -1,7 +1,6 @@
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
 import { AutopilotTier } from "../Contracts/DataModels";
-import { Urls } from "../Common/Constants";
 
 /**
  * Anything that is not a number should return 0
@@ -280,47 +279,16 @@ export function getEstimatedSpendAcknowledgeString(
       )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
-export function getUpsellMessage(
-  serverId: string = "default",
-  isFreeTier: boolean = false,
-  isServerless: boolean = false
-): string {
+export function getUpsellMessage(serverId: string = "default", isFreeTier: boolean = false): string {
   if (isFreeTier) {
     return `With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s.`;
+  } else {
+    let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
+
+    if (serverId === "mooncake") {
+      price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
+    }
+
+    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
   }
-
-  if (isServerless) {
-    return `With serverless, your collection will only be able to support 5k RU/s traffic and 50GB of storage at max.`;
-  }
-
-  let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
-  if (serverId === "mooncake") {
-    price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
-  }
-
-  return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
-}
-
-export function getUpsellMessageAriaLabel(
-  upsellMessage: string,
-  isFreeTier: boolean = false,
-  isServerless: boolean = false
-): string {
-  return `${upsellMessage}. Click ${isFreeTier || isServerless ? "to learn more" : "for more details"}`;
-}
-
-export function getUpsellAnchorUrl(isFreeTier: boolean = false, isServerless: boolean = false): string {
-  if (isFreeTier) {
-    return Urls.freeTierInformation;
-  }
-
-  if (isServerless) {
-    return Urls.serverlessInformation;
-  }
-
-  return Urls.cosmosPricing;
-}
-
-export function getUpsellAnchorText(isFreeTier: boolean = false, isServerless: boolean = false): string {
-  return isFreeTier || isServerless ? "Learn more" : "More details";
 }
