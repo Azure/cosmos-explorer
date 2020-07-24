@@ -5,7 +5,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import Q from "q";
 import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { DataAccessUtilityBase } from "./DataAccessUtilityBase";
+import * as DataAccessUtilityBase from "./DataAccessUtilityBase";
 import * as Logger from "./Logger";
 import { sendMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -16,15 +16,13 @@ import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 
 // TODO: Log all promise resolutions and errors with verbosity levels
 export default class DocumentClientUtilityBase {
-  constructor(private _dataAccessUtility: DataAccessUtilityBase) {}
-
   public queryDocuments(
     databaseId: string,
     containerId: string,
     query: string,
     options: any
   ): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
-    return this._dataAccessUtility.queryDocuments(databaseId, containerId, query, options);
+    return DataAccessUtilityBase.queryDocuments(databaseId, containerId, query, options);
   }
 
   public queryConflicts(
@@ -33,7 +31,7 @@ export default class DocumentClientUtilityBase {
     query: string,
     options: any
   ): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {
-    return this._dataAccessUtility.queryConflicts(databaseId, containerId, query, options);
+    return DataAccessUtilityBase.queryConflicts(databaseId, containerId, query, options);
   }
 
   public getEntityName() {
@@ -54,8 +52,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Querying stored procedures for container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .readStoredProcedures(collection, options)
+    DataAccessUtilityBase.readStoredProcedures(collection, options)
       .then(
         (storedProcedures: DataModels.StoredProcedure[]) => {
           deferred.resolve(storedProcedures);
@@ -82,7 +79,7 @@ export default class DocumentClientUtilityBase {
     requestedResource: DataModels.Resource,
     options?: any
   ): Q.Promise<DataModels.StoredProcedure> {
-    return this._dataAccessUtility.readStoredProcedure(collection, requestedResource, options);
+    return DataAccessUtilityBase.readStoredProcedure(collection, requestedResource, options);
   }
 
   public readUserDefinedFunctions(
@@ -94,8 +91,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Querying user defined functions for collection ${collection.id()}`
     );
-    this._dataAccessUtility
-      .readUserDefinedFunctions(collection, options)
+    DataAccessUtilityBase.readUserDefinedFunctions(collection, options)
       .then(
         (userDefinedFunctions: DataModels.UserDefinedFunction[]) => {
           deferred.resolve(userDefinedFunctions);
@@ -122,7 +118,7 @@ export default class DocumentClientUtilityBase {
     requestedResource: DataModels.Resource,
     options: any
   ): Q.Promise<DataModels.UserDefinedFunction> {
-    return this._dataAccessUtility.readUserDefinedFunction(collection, requestedResource, options);
+    return DataAccessUtilityBase.readUserDefinedFunction(collection, requestedResource, options);
   }
 
   public readTriggers(collection: ViewModels.Collection, options: any): Q.Promise<DataModels.Trigger[]> {
@@ -132,8 +128,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Querying triggers for container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .readTriggers(collection, options)
+    DataAccessUtilityBase.readTriggers(collection, options)
       .then(
         (triggers: DataModels.Trigger[]) => {
           deferred.resolve(triggers);
@@ -160,7 +155,7 @@ export default class DocumentClientUtilityBase {
     requestedResource: DataModels.Resource,
     options?: any
   ): Q.Promise<DataModels.Trigger> {
-    return this._dataAccessUtility.readTrigger(collection, requestedResource, options);
+    return DataAccessUtilityBase.readTrigger(collection, requestedResource, options);
   }
 
   public executeStoredProcedure(
@@ -175,8 +170,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Executing stored procedure ${storedProcedure.id()}`
     );
-    this._dataAccessUtility
-      .executeStoredProcedure(collection, storedProcedure, partitionKeyValue, params)
+    DataAccessUtilityBase.executeStoredProcedure(collection, storedProcedure, partitionKeyValue, params)
       .then(
         (response: any) => {
           deferred.resolve(response);
@@ -250,8 +244,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Reading ${entityName} ${documentId.id()}`
     );
-    this._dataAccessUtility
-      .readDocument(collection, documentId)
+    DataAccessUtilityBase.readDocument(collection, documentId)
       .then(
         (document: any) => {
           deferred.resolve(document);
@@ -283,8 +276,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Updating container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .updateCollection(databaseId, collection.id(), newCollection)
+    DataAccessUtilityBase.updateCollection(databaseId, collection.id(), newCollection)
       .then(
         (replacedCollection: DataModels.Collection) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -321,8 +313,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Updating ${entityName} ${documentId.id()}`
     );
-    this._dataAccessUtility
-      .updateDocument(collection, documentId, newDocument)
+    DataAccessUtilityBase.updateDocument(collection, documentId, newDocument)
       .then(
         (updatedDocument: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -358,8 +349,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Updating offer for resource ${offer.resource}`
     );
-    this._dataAccessUtility
-      .updateOffer(offer, newOffer, options)
+    DataAccessUtilityBase.updateOffer(offer, newOffer, options)
       .then(
         (replacedOffer: DataModels.Offer) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -402,8 +392,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Requesting increase in throughput to ${requestPayload.throughput} for ${resourceDescriptionInfo}`
     );
-    this._dataAccessUtility
-      .updateOfferThroughputBeyondLimit(requestPayload)
+    DataAccessUtilityBase.updateOfferThroughputBeyondLimit(requestPayload)
       .then(
         () => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -436,8 +425,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Updating stored procedure ${storedProcedure.id}`
     );
-    this._dataAccessUtility
-      .updateStoredProcedure(collection, storedProcedure, options)
+    DataAccessUtilityBase.updateStoredProcedure(collection, storedProcedure, options)
       .then(
         (updatedStoredProcedure: DataModels.StoredProcedure) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -473,8 +461,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Updating user defined function ${userDefinedFunction.id}`
     );
-    this._dataAccessUtility
-      .updateUserDefinedFunction(collection, userDefinedFunction, options)
+    DataAccessUtilityBase.updateUserDefinedFunction(collection, userDefinedFunction, options)
       .then(
         (updatedUserDefinedFunction: DataModels.UserDefinedFunction) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -503,8 +490,7 @@ export default class DocumentClientUtilityBase {
   public updateTrigger(collection: ViewModels.Collection, trigger: DataModels.Trigger): Q.Promise<DataModels.Trigger> {
     var deferred = Q.defer<any>();
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, `Updating trigger ${trigger.id}`);
-    this._dataAccessUtility
-      .updateTrigger(collection, trigger)
+    DataAccessUtilityBase.updateTrigger(collection, trigger)
       .then(
         (updatedTrigger: DataModels.Trigger) => {
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Updated trigger ${trigger.id}`);
@@ -534,8 +520,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Creating new ${entityName} for container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .createDocument(collection, newDocument)
+    DataAccessUtilityBase.createDocument(collection, newDocument)
       .then(
         (savedDocument: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -571,8 +556,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Creating stored procedure for container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .createStoredProcedure(collection, newStoredProcedure, options)
+    DataAccessUtilityBase.createStoredProcedure(collection, newStoredProcedure, options)
       .then(
         (createdStoredProcedure: DataModels.StoredProcedure) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -608,8 +592,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Creating user defined function for container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .createUserDefinedFunction(collection, newUserDefinedFunction, options)
+    DataAccessUtilityBase.createUserDefinedFunction(collection, newUserDefinedFunction, options)
       .then(
         (createdUserDefinedFunction: DataModels.UserDefinedFunction) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -645,8 +628,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Creating trigger for container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .createTrigger(collection, newTrigger, options)
+    DataAccessUtilityBase.createTrigger(collection, newTrigger, options)
       .then(
         (createdTrigger: DataModels.Trigger) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -679,8 +661,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Deleting ${entityName} ${documentId.id()}`
     );
-    this._dataAccessUtility
-      .deleteDocument(collection, documentId)
+    DataAccessUtilityBase.deleteDocument(collection, documentId)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -717,8 +698,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Deleting conflict ${conflictId.id()}`
     );
-    this._dataAccessUtility
-      .deleteConflict(collection, conflictId, options)
+    DataAccessUtilityBase.deleteConflict(collection, conflictId, options)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -751,8 +731,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Deleting container ${collection.id()}`
     );
-    this._dataAccessUtility
-      .deleteCollection(collection, options)
+    DataAccessUtilityBase.deleteCollection(collection, options)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -785,8 +764,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Deleting database ${database.id()}`
     );
-    this._dataAccessUtility
-      .deleteDatabase(database, options)
+    DataAccessUtilityBase.deleteDatabase(database, options)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -823,8 +801,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Deleting stored procedure ${storedProcedure.id}`
     );
-    this._dataAccessUtility
-      .deleteStoredProcedure(collection, storedProcedure, options)
+    DataAccessUtilityBase.deleteStoredProcedure(collection, storedProcedure, options)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -860,8 +837,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Deleting user defined function ${userDefinedFunction.id}`
     );
-    this._dataAccessUtility
-      .deleteUserDefinedFunction(collection, userDefinedFunction, options)
+    DataAccessUtilityBase.deleteUserDefinedFunction(collection, userDefinedFunction, options)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -894,8 +870,7 @@ export default class DocumentClientUtilityBase {
   ): Q.Promise<DataModels.Trigger> {
     var deferred = Q.defer<any>();
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, `Deleting trigger ${trigger.id}`);
-    this._dataAccessUtility
-      .deleteTrigger(collection, trigger, options)
+    DataAccessUtilityBase.deleteTrigger(collection, trigger, options)
       .then(
         (response: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -922,11 +897,11 @@ export default class DocumentClientUtilityBase {
   }
 
   public refreshCachedResources(options: any = {}): Q.Promise<void> {
-    return this._dataAccessUtility.refreshCachedResources(options);
+    return DataAccessUtilityBase.refreshCachedResources(options);
   }
 
   public refreshCachedOffers(): Q.Promise<void> {
-    return this._dataAccessUtility.refreshCachedOffers();
+    return DataAccessUtilityBase.refreshCachedOffers();
   }
 
   public readCollections(database: ViewModels.Database, options: any = {}): Q.Promise<DataModels.Collection[]> {
@@ -935,8 +910,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Querying containers for database ${database.id()}`
     );
-    this._dataAccessUtility
-      .readCollections(database, options)
+    DataAccessUtilityBase.readCollections(database, options)
       .then(
         (collections: DataModels.Collection[]) => {
           deferred.resolve(collections);
@@ -965,8 +939,7 @@ export default class DocumentClientUtilityBase {
       `Querying container ${collectionId}`
     );
 
-    this._dataAccessUtility
-      .readCollection(databaseId, collectionId)
+    DataAccessUtilityBase.readCollection(databaseId, collectionId)
       .then(
         (collection: DataModels.Collection) => {
           deferred.resolve(collection);
@@ -998,8 +971,7 @@ export default class DocumentClientUtilityBase {
       ConsoleDataType.InProgress,
       `Querying quota info for container ${collection.id}`
     );
-    this._dataAccessUtility
-      .readCollectionQuotaInfo(collection, options)
+    DataAccessUtilityBase.readCollectionQuotaInfo(collection, options)
       .then(
         (quota: DataModels.CollectionQuotaInfo) => {
           deferred.resolve(quota);
@@ -1025,8 +997,7 @@ export default class DocumentClientUtilityBase {
     var deferred = Q.defer<DataModels.Offer[]>();
 
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Querying offers");
-    this._dataAccessUtility
-      .readOffers(options)
+    DataAccessUtilityBase.readOffers(options)
       .then(
         (offers: DataModels.Offer[]) => {
           deferred.resolve(offers);
@@ -1052,8 +1023,7 @@ export default class DocumentClientUtilityBase {
     var deferred = Q.defer<DataModels.OfferWithHeaders>();
 
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Querying offer");
-    this._dataAccessUtility
-      .readOffer(requestedResource, options)
+    DataAccessUtilityBase.readOffer(requestedResource, options)
       .then(
         (offer: DataModels.OfferWithHeaders) => {
           deferred.resolve(offer);
@@ -1078,8 +1048,7 @@ export default class DocumentClientUtilityBase {
   public readDatabases(options: any): Q.Promise<DataModels.Database[]> {
     var deferred = Q.defer<any>();
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Querying databases");
-    this._dataAccessUtility
-      .readDatabases(options)
+    DataAccessUtilityBase.readDatabases(options)
       .then(
         (databases: DataModels.Database[]) => {
           deferred.resolve(databases);
@@ -1111,8 +1080,7 @@ export default class DocumentClientUtilityBase {
       `Creating a new container ${request.collectionId} for database ${request.databaseId}`
     );
 
-    this._dataAccessUtility
-      .getOrCreateDatabaseAndCollection(request, options)
+    DataAccessUtilityBase.getOrCreateDatabaseAndCollection(request, options)
       .then(
         (collection: DataModels.Collection) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -1143,8 +1111,7 @@ export default class DocumentClientUtilityBase {
       `Creating a new database ${request.databaseId}`
     );
 
-    this._dataAccessUtility
-      .createDatabase(request, options)
+    DataAccessUtilityBase.createDatabase(request, options)
       .then(
         (database: DataModels.Database) => {
           NotificationConsoleUtils.logConsoleMessage(

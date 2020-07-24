@@ -4,7 +4,6 @@ import * as Constants from "../../Common/Constants";
 import DocumentsTab from "./DocumentsTab";
 import Explorer from "../Explorer";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
-import { DataAccessUtilityBase } from "../../Common/DataAccessUtilityBase";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
@@ -15,7 +14,7 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -98,7 +97,7 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -117,7 +116,7 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -136,7 +135,7 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -155,7 +154,7 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -174,7 +173,7 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),

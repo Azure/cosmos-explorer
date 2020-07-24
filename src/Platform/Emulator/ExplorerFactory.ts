@@ -4,12 +4,11 @@ import Explorer from "../../Explorer/Explorer";
 
 import { NotificationsClient } from "./NotificationsClient";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
-import { DataAccessUtilityBase } from "../../Common/DataAccessUtilityBase";
 
 export default class EmulatorExplorerFactory {
   public static createExplorer(): Explorer {
     DocumentClientUtilityBase;
-    const documentClientUtility: DocumentClientUtilityBase = new DocumentClientUtilityBase(new DataAccessUtilityBase());
+    const documentClientUtility: DocumentClientUtilityBase = new DocumentClientUtilityBase();
 
     const explorer: Explorer = new Explorer({
       documentClientUtility: documentClientUtility,

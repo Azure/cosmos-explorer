@@ -5,7 +5,6 @@ import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import DocumentsTab from "./DocumentsTab";
 import Explorer from "../Explorer";
 import QueryTab from "./QueryTab";
-import { DataAccessUtilityBase } from "../../Common/DataAccessUtilityBase";
 
 describe("Tabs manager tests", () => {
   let tabsManager: TabsManager;
@@ -64,7 +63,7 @@ describe("Tabs manager tests", () => {
       collection,
       title: "",
       tabPath: "",
-      documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+      documentClientUtility: new DocumentClientUtilityBase(),
       selfLink: "",
       hashLocation: "",
       isActive: ko.observable<boolean>(false),

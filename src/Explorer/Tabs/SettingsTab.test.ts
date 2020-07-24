@@ -7,7 +7,6 @@ import Database from "../Tree/Database";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import SettingsTab from "../Tabs/SettingsTab";
-import { DataAccessUtilityBase } from "../../Common/DataAccessUtilityBase";
 
 describe("Settings tab", () => {
   const baseCollection: DataModels.Collection = {
@@ -189,7 +188,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -213,7 +212,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -232,7 +231,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -271,7 +270,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -288,7 +287,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -314,7 +313,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -395,7 +394,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
@@ -541,7 +540,7 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtilityBase()),
+        documentClientUtility: new DocumentClientUtilityBase(),
 
         selfLink: "",
         hashLocation: "",
