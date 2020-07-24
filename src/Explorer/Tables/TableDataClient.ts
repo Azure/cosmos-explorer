@@ -14,7 +14,7 @@ import * as TableConstants from "./Constants";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { MessageHandler } from "../../Common/MessageHandler";
+import { sendMessage } from "../../Common/MessageHandler";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 
@@ -738,7 +738,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private _checkForbiddenError(reason: any) {
     if (reason && reason.code === Constants.HttpStatusCodes.Forbidden) {
-      MessageHandler.sendMessage({
+      sendMessage({
         type: MessageTypes.ForbiddenError,
         reason: typeof reason === "string" ? "reason" : JSON.stringify(reason)
       });

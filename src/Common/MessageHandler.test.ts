@@ -1,65 +1,33 @@
 import Q from "q";
-import { CachedDataPromise, MessageHandler } from "./MessageHandler";
+import * as MessageHandler from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 
-class MockMessageHandler extends MessageHandler {
-  public static addToMap(key: string, value: CachedDataPromise<any>): void {
-    MessageHandler.RequestMap[key] = value;
-  }
-
-  public static mapContainsKey(key: string): boolean {
-    return MessageHandler.RequestMap[key] != null;
-  }
-
-  public static clearAllEntries(): void {
-    MessageHandler.RequestMap = {};
-  }
-
-  public static runGarbageCollector(): void {
-    MessageHandler.runGarbageCollector();
-  }
-}
-
 describe("Message Handler", () => {
-  beforeEach(() => {
-    MockMessageHandler.clearAllEntries();
+  it.only("should send cached data message", async () => {
+    const mock = jest.fn();
+    window.parent.addEventListener("message", mock);
+    MessageHandler.sendCachedDataMessage(MessageTypes.AllDatabases, ["some param"]);
+
+    await new Promise(r => setTimeout(r, 1000));
+    expect(mock).toHaveBeenCalled();
   });
 
-  xit("should send cached data message", (done: any) => {
-    const testValidationCallback = (e: MessageEvent) => {
-      expect(e.data.data).toEqual(
-        jasmine.objectContaining({ type: MessageTypes.AllDatabases, params: ["some param"] })
-      );
-      e.currentTarget.removeEventListener(e.type, testValidationCallback);
-      done();
-    };
-    window.parent.addEventListener("message", testValidationCallback);
-    MockMessageHandler.sendCachedDataMessage(MessageTypes.AllDatabases, ["some param"]);
-  });
-
-  it("should handle cached message", () => {
-    let mockPromise: CachedDataPromise<any> = {
-      id: "123",
-      startTime: new Date(),
-      deferred: Q.defer<any>()
-    };
+  it("should handle cached message", async () => {
     let mockMessage = { message: { id: "123", data: "{}" } };
 
-    MockMessageHandler.addToMap(mockPromise.id, mockPromise);
-    MockMessageHandler.handleCachedDataMessage(mockMessage);
-    expect(mockPromise.deferred.promise.isFulfilled()).toBe(true);
+    MessageHandler.handleCachedDataMessage(mockMessage);
+    expect(MessageHandler.RequestMap["123"]).toBeDefined();
   });
 
-  it("should delete fulfilled promises on running the garbage collector", () => {
-    let mockPromise: CachedDataPromise<any> = {
+  it("should delete fulfilled promises on running the garbage collector", async () => {
+    let message = {
       id: "123",
       startTime: new Date(),
       deferred: Q.defer<any>()
     };
 
-    MockMessageHandler.addToMap(mockPromise.id, mockPromise);
-    mockPromise.deferred.reject("some error");
-    MockMessageHandler.runGarbageCollector();
-    expect(MockMessageHandler.mapContainsKey(mockPromise.id)).toBe(false);
+    MessageHandler.handleCachedDataMessage(message);
+    MessageHandler.runGarbageCollector();
+    expect(MessageHandler.RequestMap["123"]).toBeUndefined();
   });
 });

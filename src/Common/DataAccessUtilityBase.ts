@@ -20,11 +20,13 @@ import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/Contai
 import { CosmosClient } from "./CosmosClient";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
-import { MessageHandler } from "./MessageHandler";
+import { sendCachedDataMessage, canSendMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
+import { Platform, config } from "../Config";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
@@ -44,7 +46,57 @@ export function getCommonQueryOptions(options: FeedOptions): any {
 }
 
 // TODO: Add timeout for all promises
-export abstract class DataAccessUtilityBase {
+
+// export class DataAccessUtility extends DataAccessUtilityBase {
+//   public readDatabases(options: any): Q.Promise<DataModels.Database[]> {
+//     return sendCachedDataMessage<DataModels.Database[]>(MessageTypes.AllDatabases, [
+//       (<any>window).dataExplorer.databaseAccount().id,
+//       Constants.ClientDefaults.portalCacheTimeoutMs
+//     ]).catch(error => {
+//       return super.readDatabases(options);
+//     });
+//   }
+
+//   public readOffers(options: any): Q.Promise<DataModels.Offer[]> {
+//     return sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [
+//       (<any>window).dataExplorer.databaseAccount().id,
+//       Constants.ClientDefaults.portalCacheTimeoutMs
+//     ]).catch(error => {
+//       return super.readOffers(options);
+//     });
+//   }
+
+//   public readOffer(requestedResource: DataModels.Offer, options: any): Q.Promise<DataModels.OfferWithHeaders> {
+//     const deferred: Q.Deferred<DataModels.OfferWithHeaders> = Q.defer<DataModels.OfferWithHeaders>();
+//     super.readOffer(requestedResource, options).then(
+//       (offer: DataModels.OfferWithHeaders) => deferred.resolve(offer),
+//       (reason: any) => {
+//         const isThrottled: boolean =
+//           !!reason &&
+//           !!reason.error &&
+//           !!reason.error.code &&
+//           reason.error.code == Constants.HttpStatusCodes.TooManyRequests;
+//         if (isThrottled && canSendMessage()) {
+//           sendCachedDataMessage<DataModels.OfferWithHeaders>(MessageTypes.SingleOffer, [
+//             (<any>window).dataExplorer.databaseAccount().id,
+//             requestedResource._self,
+//             requestedResource.offerVersion
+//           ]).then(
+//             (offer: DataModels.OfferWithHeaders) => deferred.resolve(offer),
+//             (reason: any) => deferred.reject(reason)
+//           );
+//           return;
+//         }
+
+//         deferred.reject(reason);
+//       }
+//     );
+
+//     return deferred.promise;
+//   }
+// }
+
+export class DataAccessUtilityBase {
   public queryDocuments(
     databaseId: string,
     containerId: string,
@@ -601,16 +653,16 @@ export abstract class DataAccessUtilityBase {
   }
 
   public refreshCachedOffers(): Q.Promise<void> {
-    if (MessageHandler.canSendMessage()) {
-      return MessageHandler.sendCachedDataMessage(MessageTypes.RefreshOffers, []);
+    if (canSendMessage()) {
+      return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
     } else {
       return Q();
     }
   }
 
   public refreshCachedResources(options?: any): Q.Promise<void> {
-    if (MessageHandler.canSendMessage()) {
-      return MessageHandler.sendCachedDataMessage(MessageTypes.RefreshResources, []);
+    if (canSendMessage()) {
+      return sendCachedDataMessage(MessageTypes.RefreshResources, []);
     } else {
       return Q();
     }
@@ -629,11 +681,25 @@ export abstract class DataAccessUtilityBase {
     return Q(documentsIterator);
   }
 
-  public updateOfferThroughputBeyondLimit(
-    request: DataModels.UpdateOfferThroughputRequest,
-    options: any
-  ): Q.Promise<void> {
-    throw new Error("Updating throughput beyond specified limit is not supported on this platform");
+  public async updateOfferThroughputBeyondLimit(request: DataModels.UpdateOfferThroughputRequest): Promise<void> {
+    if (config.platform !== Platform.Portal) {
+      throw new Error("Updating throughput beyond specified limit is not supported on this platform");
+    }
+
+    const explorer = window.dataExplorer;
+    const url = `${explorer.extensionEndpoint()}/api/offerthroughputrequest/updatebeyondspecifiedlimit`;
+    const authorizationHeader = getAuthorizationHeader();
+
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(request),
+      headers: { [authorizationHeader.header]: authorizationHeader.token }
+    });
+
+    if (response.ok) {
+      return undefined;
+    }
+    throw new Error(await response.text());
   }
 
   private _createDatabase(

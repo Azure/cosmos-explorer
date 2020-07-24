@@ -7,7 +7,7 @@ import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@az
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DataAccessUtilityBase } from "./DataAccessUtilityBase";
 import * as Logger from "./Logger";
-import { MessageHandler } from "./MessageHandler";
+import { sendMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
@@ -393,10 +393,7 @@ export default class DocumentClientUtilityBase {
     return deferred.promise;
   }
 
-  public updateOfferThroughputBeyondLimit(
-    requestPayload: DataModels.UpdateOfferThroughputRequest,
-    options: any = {}
-  ): Q.Promise<void> {
+  public updateOfferThroughputBeyondLimit(requestPayload: DataModels.UpdateOfferThroughputRequest): Q.Promise<void> {
     const deferred: Q.Deferred<void> = Q.defer<void>();
     const resourceDescriptionInfo: string = requestPayload.collectionName
       ? `database ${requestPayload.databaseName} and container ${requestPayload.collectionName}`
@@ -406,7 +403,7 @@ export default class DocumentClientUtilityBase {
       `Requesting increase in throughput to ${requestPayload.throughput} for ${resourceDescriptionInfo}`
     );
     this._dataAccessUtility
-      .updateOfferThroughputBeyondLimit(requestPayload, options)
+      .updateOfferThroughputBeyondLimit(requestPayload)
       .then(
         () => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -1175,7 +1172,7 @@ export default class DocumentClientUtilityBase {
       if (error.message && error.message.toLowerCase().indexOf("sharedoffer is disabled for your account") > 0) {
         return;
       }
-      MessageHandler.sendMessage({
+      sendMessage({
         type: MessageTypes.ForbiddenError,
         reason: error && error.message ? error.message : error
       });
