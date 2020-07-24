@@ -8,7 +8,7 @@ import { Text } from "office-ui-fabric-react/lib/Text";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
-import { Link, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import { Link, MessageBar, MessageBarType, Checkbox } from "office-ui-fabric-react";
 
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
@@ -50,6 +50,7 @@ export interface BooleanInput extends BaseInput {
   trueLabel: string;
   falseLabel: string;
   defaultValue: boolean;
+  inputType: "radio" | "checkbox";
 }
 
 export interface StringInput extends BaseInput {
@@ -242,37 +243,49 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderBooleanInput(input: BooleanInput): JSX.Element {
-    const { dataFieldName } = input;
-    return (
-      <div>
-        <div className="inputLabelContainer">
-          <Text variant="small" nowrap className="inputLabel">
-            {input.label}
-          </Text>
-        </div>
-        <RadioSwitchComponent
-          choices={[
-            {
-              label: input.falseLabel,
-              key: "false",
-              onSelect: () => this.onInputChange(false, dataFieldName)
-            },
-            {
-              label: input.trueLabel,
-              key: "true",
-              onSelect: () => this.onInputChange(true, dataFieldName)
+    const { dataFieldName, label, trueLabel, falseLabel, defaultValue } = input;
+
+    if (input.inputType === "radio") {
+      return (
+        <div>
+          <div className="inputLabelContainer">
+            <Text variant="small" nowrap className="inputLabel">
+              {label}
+            </Text>
+          </div>
+          <RadioSwitchComponent
+            choices={[
+              {
+                label: falseLabel,
+                key: "false",
+                onSelect: () => this.onInputChange(false, dataFieldName)
+              },
+              {
+                label: trueLabel,
+                key: "true",
+                onSelect: () => this.onInputChange(true, dataFieldName)
+              }
+            ]}
+            selectedKey={
+              (this.state.currentValues.has(dataFieldName)
+              ? (this.state.currentValues.get(dataFieldName) as boolean)
+              : defaultValue)
+                ? "true"
+                : "false"
             }
-          ]}
-          selectedKey={
-            (this.state.currentValues.has(dataFieldName)
-            ? (this.state.currentValues.get(dataFieldName) as boolean)
-            : input.defaultValue)
-              ? "true"
-              : "false"
-          }
-        />
-      </div>
-    );
+          />
+        </div>
+      );
+    } else if (input.inputType === "checkbox") {
+      return (
+        <Checkbox
+          label={label}
+          defaultChecked={defaultValue}
+          onChange={(_, checked?: boolean) => this.onInputChange(checked, dataFieldName)} />
+      );
+    } else {
+      return <>Unsupported boolean input type {input.inputType}</>;
+    }
   }
 
   private renderEnumInput(input: EnumInput): JSX.Element {

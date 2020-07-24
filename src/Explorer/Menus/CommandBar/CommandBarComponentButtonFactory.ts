@@ -282,7 +282,8 @@ export class CommandBarComponentButtonFactory {
       iconSrc: AddDatabaseIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.addDatabasePane.open();
+        // container.addDatabasePane.open();
+        container.addDatabasePaneAdapter.open();
         document.getElementById("linkAddDatabase").focus();
       },
       commandButtonLabel: label,

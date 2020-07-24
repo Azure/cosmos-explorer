@@ -82,6 +82,7 @@ import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
+import { AddDatabasePaneAdapter } from "./Panes/AddDatabasePaneAdapter";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -191,6 +192,7 @@ export default class Explorer {
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ViewModels.ContextualPane;
   public publishNotebookPaneAdapter: ReactAdapter;
+  public addDatabasePaneAdapter: AddDatabasePaneAdapter;
 
   // features
   public isGalleryPublishEnabled: ko.Computed<boolean>;
@@ -744,6 +746,8 @@ export default class Explorer {
 
       container: this
     });
+
+    this.addDatabasePaneAdapter = new AddDatabasePaneAdapter(this);
 
     this.tabsManager = new TabsManager();
 
