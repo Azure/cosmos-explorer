@@ -52,7 +52,7 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
-import { MessageHandler } from "../Common/MessageHandler";
+import { sendMessage, sendCachedDataMessage, handleCachedDataMessage } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
@@ -1607,7 +1607,7 @@ export default class Explorer {
 
   public async getArcadiaToken(): Promise<string> {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-      MessageHandler.sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
+      sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
         (token: string) => {
           resolve(token);
         },
@@ -1645,11 +1645,11 @@ export default class Explorer {
   }
 
   public async createWorkspace(): Promise<string> {
-    return MessageHandler.sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
+    return sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
   }
 
   public async createSparkPool(workspaceId: string): Promise<string> {
-    return MessageHandler.sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
+    return sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
   }
 
   public async initNotebooks(databaseAccount: DataModels.DatabaseAccount): Promise<void> {
@@ -1845,7 +1845,7 @@ export default class Explorer {
         }
       }
       if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
-        MessageHandler.handleCachedDataMessage(message);
+        handleCachedDataMessage(message);
         return;
       }
       if (message.type) {
@@ -2041,7 +2041,7 @@ export default class Explorer {
 
   public signInAad = () => {
     TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.AadSignIn
     });
   };
@@ -2052,21 +2052,21 @@ export default class Explorer {
   };
 
   public clickHostedAccountSwitch = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateAccountSwitch,
       click: true
     });
   };
 
   public clickHostedDirectorySwitch = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateDirectoryControl,
       click: true
     });
   };
 
   public refreshDatabaseAccount = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.RefreshDatabaseAccount
     });
   };

@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 import { TabsManager } from "./TabsManager";
 import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import DocumentsTab from "./DocumentsTab";
@@ -64,7 +63,7 @@ describe("Tabs manager tests", () => {
       collection,
       title: "",
       tabPath: "",
-      documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
+      documentClientUtility: new DocumentClientUtilityBase(),
       selfLink: "",
       hashLocation: "",
       isActive: ko.observable<boolean>(false),
