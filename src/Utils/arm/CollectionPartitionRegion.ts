@@ -6,22 +6,15 @@
 
 import * as Types from "./types";
 
-export class CollectionPartitionRegionClient {
-  private readonly baseUrl = "https://management.azure.com";
-  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/region/${this.region}/databases/${this.databaseRid}/collections/${this.collectionRid}/partitions/metrics`;
-
-  constructor(
-    private readonly subscriptionId: string,
-    private readonly resourceGroupName: string,
-    private readonly accountName: string,
-    private readonly region: string,
-    private readonly databaseRid: string,
-    private readonly collectionRid: string
-  ) {}
-
-  /* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
-  async listMetrics(): Promise<Types.PartitionMetricListResult> {
-    const path = ``;
-    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
-  }
+/* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
+export async function listMetrics(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  region: string,
+  databaseRid: string,
+  collectionRid: string
+): Promise<Types.PartitionMetricListResult> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`;
+  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
 }

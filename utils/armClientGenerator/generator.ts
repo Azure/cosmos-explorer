@@ -191,11 +191,6 @@ async function main() {
   for (const clientName in clients) {
     const outputClient: string[] = [""];
     outputClient.push(`import * as Types from "./types"\n\n`);
-    outputClient.push(`export class ${clientName}Client {\n\n`);
-    outputClient.push(`private readonly baseUrl = "https://management.azure.com"\n`);
-    const basePath = buildBasePath(clients[clientName].paths);
-    outputClient.push(`private readonly basePath = \`${basePath.replace(/{/g, "${this.")}\`\n\n`);
-    outputClient.push(buildConstructor(clients[clientName]));
     for (const path of clients[clientName].paths) {
       for (const method in schema.paths[path]) {
         const operation = schema.paths[path][method];
@@ -203,15 +198,15 @@ async function main() {
         const bodyParameter = operation.parameters.find(
           (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true
         );
-        const constructorParameters = constructorParams(clients[clientName]);
-        const methodParameters = parametersFromPath(path).filter(p => !constructorParameters.includes(p));
         outputClient.push(`
           /* ${operation.description} */
-          async ${sanitize(camelize(methodName))} (
-            ${methodParameters.map(p => `${p}: string`).join(",\n")}
+          export async function ${sanitize(camelize(methodName))} (
+            ${parametersFromPath(path)
+              .map(p => `${p}: string`)
+              .join(",\n")}
             ${bodyParam(bodyParameter, "Types")}
           ) : Promise<${responseType(operation, "Types")}> {
-            const path = \`${path.replace(basePath, "").replace(/{/g, "${")}\`
+            const path = \`${path.replace(/{/g, "${")}\`
             return window.fetch(this.baseUrl + this.basePath + path, { method: "${method}", ${
           bodyParameter ? "body: JSON.stringify(body)" : ""
         } }).then((response) => response.json())
@@ -219,23 +214,10 @@ async function main() {
           `);
       }
     }
-    outputClient.push(`}`);
     writeOutputFile(`./${clientName}.ts`, outputClient);
   }
 
   writeOutputFile("./types.ts", outputTypes);
-}
-
-function buildBasePath(strings: string[]) {
-  const sortArr = strings.sort();
-  const arrFirstElem = strings[0];
-  const arrLastElem = sortArr[sortArr.length - 1];
-  const arrFirstElemLength = arrFirstElem.length;
-  let i = 0;
-  while (i < arrFirstElemLength && arrFirstElem.charAt(i) === arrLastElem.charAt(i)) {
-    i++;
-  }
-  return arrFirstElem.substring(0, i);
 }
 
 function sanitize(name: string) {
@@ -243,23 +225,6 @@ function sanitize(name: string) {
     return "destroy";
   }
   return name;
-}
-
-function buildConstructor(client: Client) {
-  const params = constructorParams(client);
-  if (params.length === 0) {
-    return "";
-  }
-  return `\nconstructor(${params.map(p => `private readonly ${p}: string`).join(",")}){}\n`;
-}
-
-function constructorParams(client: Client) {
-  let commonParams = parametersFromPath(client.paths[0]);
-  for (const path of client.paths) {
-    const params = parametersFromPath(path);
-    commonParams = commonParams.filter(p => params.includes(p));
-  }
-  return commonParams;
 }
 
 function writeOutputFile(outputPath: string, components: string[]) {

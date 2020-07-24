@@ -6,20 +6,13 @@
 
 import * as Types from "./types";
 
-export class DatabaseAccountRegionClient {
-  private readonly baseUrl = "https://management.azure.com";
-  private readonly basePath = `/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${this.accountName}/region/${this.region}/metrics`;
-
-  constructor(
-    private readonly subscriptionId: string,
-    private readonly resourceGroupName: string,
-    private readonly accountName: string,
-    private readonly region: string
-  ) {}
-
-  /* Retrieves the metrics determined by the given filter for the given database account and region. */
-  async listMetrics(): Promise<Types.MetricListResult> {
-    const path = ``;
-    return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
-  }
+/* Retrieves the metrics determined by the given filter for the given database account and region. */
+export async function listMetrics(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  region: string
+): Promise<Types.MetricListResult> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/metrics`;
+  return window.fetch(this.baseUrl + this.basePath + path, { method: "get" }).then(response => response.json());
 }
