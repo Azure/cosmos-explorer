@@ -235,7 +235,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     });
 
     children.push({
-      label: database.isDatabaseShared() ? "Settings" : "Scale & Settings",
+      label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
       onClick: collection.onSettingsClick.bind(collection),
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Settings)
     });

@@ -553,7 +553,7 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    const tabTitle = "Scale & Settings";
+    const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs: ViewModels.Tab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Settings,
@@ -561,6 +561,7 @@ export default class Collection implements ViewModels.Collection {
         return tab.collection && tab.collection.rid === this.rid;
       }
     );
+
     let settingsTab: SettingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -582,7 +583,6 @@ export default class Collection implements ViewModels.Collection {
             documentClientUtility: this.container.documentClientUtility,
             collection: this,
             node: this,
-
             selfLink: this.self,
             hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
             isActive: ko.observable(false),
@@ -658,7 +658,8 @@ export default class Collection implements ViewModels.Collection {
 
         const collectionOffer = this._getOfferForCollection(offerInfoPromise.valueOf(), collectionDataModel);
         const isDatabaseShared = this.getDatabase() && this.getDatabase().isDatabaseShared();
-        if (isDatabaseShared && !collectionOffer) {
+        const isServerless = this.container.isServerlessEnabled();
+        if ((isDatabaseShared || isServerless) && !collectionOffer) {
           this.quotaInfo(quotaInfo);
           TelemetryProcessor.traceSuccess(
             Action.LoadOffers,

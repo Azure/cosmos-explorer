@@ -101,6 +101,7 @@ export class CapabilityNames {
   public static readonly EnableNotebooks: string = "EnableNotebooks";
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
+  public static readonly EnableServerless: string = "EnableServerless";
 }
 
 export class Features {

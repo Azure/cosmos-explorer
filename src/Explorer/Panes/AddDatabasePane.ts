@@ -49,6 +49,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
+  public canConfigureThroughput: ko.PureComputed<boolean>;
+  public showUpsellMessage: ko.PureComputed<boolean>;
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
@@ -56,6 +58,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseId = ko.observable<string>();
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
+    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -522,7 +526,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   private _computeOfferThroughput(): number {
-    return this.isAutoPilotSelected() ? undefined : this._getThroughput();
+    if (!this.canConfigureThroughput()) {
+      return undefined;
+    }
+
+    if (this.isAutoPilotSelected()) {
+      return undefined;
+    }
+
+    return this._getThroughput();
   }
 
   private _isValid(): boolean {
