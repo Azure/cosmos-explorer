@@ -7,7 +7,7 @@ describe("Settings Pane", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be true for SQL API", () => {

@@ -12,6 +12,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { deleteDatabase } from "../../Common/DocumentClientUtilityBase";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
@@ -59,7 +60,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.container
       );
     } else {
-      promise = this.container.documentClientUtility.deleteDatabase(selectedDatabase);
+      promise = deleteDatabase(selectedDatabase);
     }
     return promise.then(
       () => {

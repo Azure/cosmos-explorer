@@ -1,6 +1,5 @@
 import * as DataModels from "./DataModels";
 import * as monaco from "monaco-editor";
-import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
 import Q from "q";
 import { AccessibleVerticalList } from "../Explorer/Tree/AccessibleVerticalList";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
@@ -18,7 +17,6 @@ import ConflictsTab from "../Explorer/Tabs/ConflictsTab";
 import Trigger from "../Explorer/Tree/Trigger";
 
 export interface ExplorerOptions {
-  documentClientUtility: DocumentClientUtilityBase;
   notificationsClient: NotificationsClient;
   isEmulator: boolean;
 }
@@ -245,13 +243,11 @@ export interface ConflictId {
  */
 export interface PaneOptions {
   id: string;
-  documentClientUtility: DocumentClientUtilityBase;
   visible: ko.Observable<boolean>;
   container?: Explorer;
 }
 
 export interface ContextualPane {
-  documentClientUtility: DocumentClientUtilityBase;
   formErrors: ko.Observable<string>;
   formErrorsDetails: ko.Observable<string>;
   id: string;
@@ -406,7 +402,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  documentClientUtility: DocumentClientUtilityBase;
   selfLink: string;
   isActive: ko.Observable<boolean>;
   hashLocation: string;
@@ -493,11 +488,9 @@ export interface ScriptTabOption extends TabOptions {
 
 // Tabs
 export interface Tab {
-  documentClientUtility: DocumentClientUtilityBase;
   node: TreeNode; // Can be null
   collection: CollectionBase;
   rid: string;
-
   tabKind: CollectionTabKind;
   tabId: string;
   isActive: ko.Observable<boolean>;

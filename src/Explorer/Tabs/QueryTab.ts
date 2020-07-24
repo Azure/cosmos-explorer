@@ -16,6 +16,7 @@ import { QueryUtils } from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import { queryDocuments, queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
 
 enum ToggleState {
   Result,
@@ -290,12 +291,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
     const queryDocuments = (firstItemIndex: number) =>
-      this.documentClientUtility.queryDocumentsPage(
-        this.collection && this.collection.id(),
-        this._iterator,
-        firstItemIndex,
-        options
-      );
+      queryDocumentsPage(this.collection && this.collection.id(), this._iterator, firstItemIndex, options);
     this.isExecuting(true);
     return QueryUtils.queryPagesUntilContentPresent(firstItemIndex, queryDocuments)
       .then(
@@ -497,9 +493,9 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     }
 
     return Q(
-      this.documentClientUtility
-        .queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options)
-        .then(iterator => (this._iterator = iterator))
+      queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options).then(
+        iterator => (this._iterator = iterator)
+      )
     );
   }
 

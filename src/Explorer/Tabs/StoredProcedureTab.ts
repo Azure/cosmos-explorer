@@ -10,6 +10,7 @@ import ScriptTabBase from "./ScriptTabBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import StoredProcedure from "../Tree/StoredProcedure";
+import { createStoredProcedure, updateStoredProcedure } from "../../Common/DocumentClientUtilityBase";
 
 enum ToggleState {
   Result = "result",
@@ -81,8 +82,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle()
     });
-    return this.documentClientUtility
-      .updateStoredProcedure(this.collection, data)
+    return updateStoredProcedure(this.collection, data)
       .then(
         (updatedResource: DataModels.StoredProcedure) => {
           this.resource(updatedResource);
@@ -240,8 +240,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       tabTitle: this.tabTitle()
     });
 
-    return this.documentClientUtility
-      .createStoredProcedure(this.collection, resource)
+    return createStoredProcedure(this.collection, resource)
       .then(
         createdResource => {
           this.tabTitle(createdResource.id);
