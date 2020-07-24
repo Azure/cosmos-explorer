@@ -17,5 +17,5 @@ export async function listMetrics(
   partitionKeyRangeId: string
 ): Promise<Types.PartitionMetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }

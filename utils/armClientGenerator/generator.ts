@@ -207,7 +207,7 @@ async function main() {
             ${bodyParam(bodyParameter, "Types")}
           ) : Promise<${responseType(operation, "Types")}> {
             const path = \`${path.replace(/{/g, "${")}\`
-            return window.fetch(this.baseUrl + path, { method: "${method}", ${
+            return window.fetch(path, { method: "${method}", ${
           bodyParameter ? "body: JSON.stringify(body)" : ""
         } }).then((response) => response.json())
           }

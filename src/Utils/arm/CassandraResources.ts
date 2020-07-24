@@ -13,7 +13,7 @@ export async function listCassandraKeyspaces(
   accountName: string
 ): Promise<Types.CassandraKeyspaceListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Gets the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name. */
@@ -24,7 +24,7 @@ export async function getCassandraKeyspace(
   keyspaceName: string
 ): Promise<Types.CassandraKeyspaceGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Create or update an Azure Cosmos DB Cassandra keyspace */
@@ -36,9 +36,7 @@ export async function createUpdateCassandraKeyspace(
   body: Types.CassandraKeyspaceCreateUpdateParameters
 ): Promise<Types.CassandraKeyspaceGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
-  return window
-    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
-    .then(response => response.json());
+  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
 }
 
 /* Deletes an existing Azure Cosmos DB Cassandra keyspace. */
@@ -49,7 +47,7 @@ export async function deleteCassandraKeyspace(
   keyspaceName: string
 ): Promise<void | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
-  return window.fetch(this.baseUrl + path, { method: "delete" }).then(response => response.json());
+  return window.fetch(path, { method: "delete" }).then(response => response.json());
 }
 
 /* Gets the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the provided name. */
@@ -60,7 +58,7 @@ export async function getCassandraKeyspaceThroughput(
   keyspaceName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Update RUs per second of an Azure Cosmos DB Cassandra Keyspace */
@@ -72,9 +70,7 @@ export async function updateCassandraKeyspaceThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`;
-  return window
-    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
-    .then(response => response.json());
+  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
 }
 
 /* Lists the Cassandra table under an existing Azure Cosmos DB database account. */
@@ -85,7 +81,7 @@ export async function listCassandraTables(
   keyspaceName: string
 ): Promise<Types.CassandraTableListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Gets the Cassandra table under an existing Azure Cosmos DB database account. */
@@ -97,7 +93,7 @@ export async function getCassandraTable(
   tableName: string
 ): Promise<Types.CassandraTableGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Create or update an Azure Cosmos DB Cassandra Table */
@@ -110,9 +106,7 @@ export async function createUpdateCassandraTable(
   body: Types.CassandraTableCreateUpdateParameters
 ): Promise<Types.CassandraTableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
-  return window
-    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
-    .then(response => response.json());
+  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
 }
 
 /* Deletes an existing Azure Cosmos DB Cassandra table. */
@@ -124,7 +118,7 @@ export async function deleteCassandraTable(
   tableName: string
 ): Promise<void | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
-  return window.fetch(this.baseUrl + path, { method: "delete" }).then(response => response.json());
+  return window.fetch(path, { method: "delete" }).then(response => response.json());
 }
 
 /* Gets the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the provided name. */
@@ -136,7 +130,7 @@ export async function getCassandraTableThroughput(
   tableName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Update RUs per second of an Azure Cosmos DB Cassandra table */
@@ -149,7 +143,5 @@ export async function updateCassandraTableThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`;
-  return window
-    .fetch(this.baseUrl + path, { method: "put", body: JSON.stringify(body) })
-    .then(response => response.json());
+  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
 }

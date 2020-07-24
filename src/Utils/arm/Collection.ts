@@ -15,7 +15,7 @@ export async function listMetrics(
   collectionRid: string
 ): Promise<Types.MetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metrics`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Retrieves the usages (most recent storage data) for the given collection. */
@@ -27,7 +27,7 @@ export async function listUsages(
   collectionRid: string
 ): Promise<Types.UsagesResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/usages`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Retrieves metric definitions for the given collection. */
@@ -39,5 +39,5 @@ export async function listMetricDefinitions(
   collectionRid: string
 ): Promise<Types.MetricDefinitionsListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metricDefinitions`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }

@@ -12,7 +12,7 @@ export async function listByLocation(
   location: string
 ): Promise<Types.RestorableDatabaseAccountsListResult | Types.ErrorResponseUpdatedFormat> {
   const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Lists all the restorable Azure Cosmos DB database accounts available under the subscription. */
@@ -20,7 +20,7 @@ export async function list(
   subscriptionId: string
 ): Promise<Types.RestorableDatabaseAccountsListResult | Types.ErrorResponseUpdatedFormat> {
   const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/restorableDatabaseAccounts`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
 
 /* Retrieves the properties of an existing Azure Cosmos DB restorable database account. */
@@ -30,5 +30,5 @@ export async function getByLocation(
   instanceId: string
 ): Promise<Types.RestorableDatabaseAccountGetResult | Types.ErrorResponseUpdatedFormat> {
   const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}/restorableDatabaseAccounts/${instanceId}`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }

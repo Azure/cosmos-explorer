@@ -9,5 +9,5 @@ import * as Types from "./types";
 /* Lists all of the available Cosmos DB Resource Provider operations. */
 export async function list(): Promise<Types.OperationListResult> {
   const path = `/providers/Microsoft.DocumentDB/operations`;
-  return window.fetch(this.baseUrl + path, { method: "get" }).then(response => response.json());
+  return window.fetch(path, { method: "get" }).then(response => response.json());
 }
