@@ -696,7 +696,6 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param cmd
    */
   public submitToBackend(cmd: string): Q.Promise<GremlinClient.GremlinRequestResult> {
-    console.log("submit:", cmd);
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${cmd}`);
     this.setExecuteCounter(this.executeCounter + 1);
 
