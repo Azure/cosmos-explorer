@@ -13,9 +13,7 @@ import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponen
 import { TabsManagerKOComponent } from "./Tabs/TabsManager";
 import { ThroughputInputComponent } from "./Controls/ThroughputInput/ThroughputInputComponent";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
-import { ToolbarComponent } from "./Controls/Toolbar/Toolbar";
 
-ko.components.register("toolbar", new ToolbarComponent());
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
 ko.components.register("error-display", new ErrorDisplayComponent());

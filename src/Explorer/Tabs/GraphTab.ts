@@ -2,7 +2,6 @@ import * as ko from "knockout";
 import * as Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "./TabsBase";
-import Toolbar from "../Controls/Toolbar/Toolbar";
 import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
 import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
 import NewVertexIcon from "../../../images/NewVertex.svg";
@@ -48,7 +47,6 @@ export default class GraphTab extends TabsBase {
   private isPropertyEditing: ko.Observable<boolean>;
   private isGraphDisplayed: ko.Observable<boolean>;
   private graphAccessor: GraphAccessor;
-  public toolbarViewModel: ko.Observable<Toolbar>;
   private graphConfig: GraphConfig;
   private graphConfigUiData: ViewModels.GraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
@@ -110,7 +108,6 @@ export default class GraphTab extends TabsBase {
 
     this.isFilterQueryLoading = ko.observable(false);
     this.isValidQuery = ko.observable(true);
-    this.toolbarViewModel = ko.observable<Toolbar>();
   }
 
   public static getGremlinEndpoint(account: DatabaseAccount): string {

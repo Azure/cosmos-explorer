@@ -14,7 +14,6 @@ import TabsBase from "./TabsBase";
 import { DocumentsGridMetrics } from "../../Common/Constants";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import Toolbar from "../Controls/Toolbar/Toolbar";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -38,7 +37,6 @@ export default class ConflictsTab extends TabsBase {
   public documentContentsContainerId: string;
   public isEditorDirty: ko.Computed<boolean>;
   public editorState: ko.Observable<ViewModels.DocumentExplorerState>;
-  public toolbarViewModel = ko.observable<Toolbar>();
   public acceptChangesButton: ViewModels.Button;
   public discardButton: ViewModels.Button;
   public deleteButton: ViewModels.Button;
