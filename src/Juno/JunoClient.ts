@@ -1,7 +1,7 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import { config } from "../Config";
-import * as ViewModels from "../Contracts/ViewModels";
+import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
@@ -55,7 +55,7 @@ interface IPublishNotebookRequest {
 export class JunoClient {
   private cachedPinnedRepos: ko.Observable<IPinnedRepo[]>;
 
-  constructor(private databaseAccount?: ko.Observable<ViewModels.DatabaseAccount>) {
+  constructor(private databaseAccount?: ko.Observable<DataModels.DatabaseAccount>) {
     this.cachedPinnedRepos = ko.observable<IPinnedRepo[]>([]);
   }
 

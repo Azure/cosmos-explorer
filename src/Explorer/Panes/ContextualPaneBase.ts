@@ -8,7 +8,7 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 
 // TODO: Use specific actions for logging telemetry data
-export abstract class ContextualPaneBase extends WaitsForTemplateViewModel implements ViewModels.ContextualPane {
+export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
   public id: string;
   public container: Explorer;
   public firstFieldHasFocus: ko.Observable<boolean>;

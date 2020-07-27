@@ -19,6 +19,7 @@ import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
 import { updateOfferThroughputBeyondLimit, updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -667,8 +668,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     }
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
     if (this.saveSettingsButton.visible()) {
       buttons.push({

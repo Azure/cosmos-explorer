@@ -6,6 +6,13 @@ import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+
+export interface TerminalTabOptions extends ViewModels.TabOptions {
+  account: DataModels.DatabaseAccount;
+  container: Explorer;
+  kind: ViewModels.TerminalKind;
+}
 
 /**
  * Notebook terminal tab
@@ -30,11 +37,11 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
   }
 }
 
-export default class TerminalTab extends TabsBase implements ViewModels.Tab {
+export default class TerminalTab extends TabsBase {
   private container: Explorer;
   private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
 
-  constructor(options: ViewModels.TerminalTabOptions) {
+  constructor(options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
@@ -53,15 +60,15 @@ export default class TerminalTab extends TabsBase implements ViewModels.Tab {
     return this.container;
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     return buttons;
   }
   protected buildCommandBarOptions(): void {
     this.updateNavbarWithTabsButtons();
   }
 
-  private getNotebookServerInfo(options: ViewModels.TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
+  private getNotebookServerInfo(options: TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
     let endpointSuffix: string;
 
     switch (options.kind) {

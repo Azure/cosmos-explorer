@@ -8,9 +8,10 @@ import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ThemeUtility from "../../Common/ThemeUtility";
 import Explorer from "../Explorer";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 // TODO: Use specific actions for logging telemetry data
-export default class TabsBase extends WaitsForTemplateViewModel implements ViewModels.Tab {
+export default class TabsBase extends WaitsForTemplateViewModel {
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;
@@ -187,7 +188,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
   /**
    * @return buttons that are displayed in the navbar
    */
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     return [];
   }
 

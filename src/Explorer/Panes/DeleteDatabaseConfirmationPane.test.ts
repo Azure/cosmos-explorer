@@ -97,10 +97,10 @@ describe("Delete Database Confirmation Pane", () => {
       fakeExplorer.isSelectedDatabaseShared = () => false;
       const SubscriptionId = "testId";
       const AccountName = "testAccount";
-      fakeExplorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
+      fakeExplorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
         id: SubscriptionId,
         name: AccountName
-      } as ViewModels.DatabaseAccount);
+      } as DataModels.DatabaseAccount);
       fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
       fakeExplorer.isPreferredApiCassandra = ko.computed(() => {
         return false;

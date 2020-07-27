@@ -2,39 +2,37 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsManagerTemplate from "./TabsManager.html";
 import Explorer from "../Explorer";
+import TabsBase from "./TabsBase";
 
 export class TabsManager {
-  public openedTabs: ko.ObservableArray<ViewModels.Tab>;
-  public activeTab: ko.Observable<ViewModels.Tab>;
+  public openedTabs: ko.ObservableArray<TabsBase>;
+  public activeTab: ko.Observable<TabsBase>;
 
   constructor() {
-    this.openedTabs = ko.observableArray<ViewModels.Tab>([]);
-    this.activeTab = ko.observable<ViewModels.Tab>();
+    this.openedTabs = ko.observableArray<TabsBase>([]);
+    this.activeTab = ko.observable<TabsBase>();
   }
 
-  public activateNewTab(tab: ViewModels.Tab): void {
+  public activateNewTab(tab: TabsBase): void {
     this.openedTabs.push(tab);
     this.activateTab(tab);
   }
 
-  public activateTab(tab: ViewModels.Tab): void {
+  public activateTab(tab: TabsBase): void {
     this.activeTab() && this.activeTab().isActive(false);
     tab.isActive(true);
     this.activeTab(tab);
   }
 
-  public getTabs(
-    tabKind: ViewModels.CollectionTabKind,
-    comparator?: (tab: ViewModels.Tab) => boolean
-  ): ViewModels.Tab[] {
-    return this.openedTabs().filter((openedTab: ViewModels.Tab) => {
+  public getTabs(tabKind: ViewModels.CollectionTabKind, comparator?: (tab: TabsBase) => boolean): TabsBase[] {
+    return this.openedTabs().filter((openedTab: TabsBase) => {
       return openedTab.tabKind === tabKind && (!comparator || comparator(openedTab));
     });
   }
 
-  public refreshActiveTab(comparator: (tab: ViewModels.Tab) => boolean): void {
+  public refreshActiveTab(comparator: (tab: TabsBase) => boolean): void {
     // ensures that the tab selects/highlights the right node based on resource tree expand/collapse state
-    this.openedTabs().forEach((tab: ViewModels.Tab) => {
+    this.openedTabs().forEach((tab: TabsBase) => {
       if (comparator(tab) && tab.isActive()) {
         tab.onActivate();
       }
@@ -42,17 +40,17 @@ export class TabsManager {
   }
 
   public removeTabById(tabId: string): void {
-    this.openedTabs.remove((tab: ViewModels.Tab) => tab.tabId === tabId);
+    this.openedTabs.remove((tab: TabsBase) => tab.tabId === tabId);
   }
 
-  public removeTabByComparator(comparator: (tab: ViewModels.Tab) => boolean): void {
-    this.openedTabs.remove((tab: ViewModels.Tab) => comparator(tab));
+  public removeTabByComparator(comparator: (tab: TabsBase) => boolean): void {
+    this.openedTabs.remove((tab: TabsBase) => comparator(tab));
   }
 
-  public closeTabsByComparator(comparator: (tab: ViewModels.Tab) => boolean): void {
+  public closeTabsByComparator(comparator: (tab: TabsBase) => boolean): void {
     this.activeTab() && this.activeTab().isActive(false);
     this.activeTab(undefined);
-    this.openedTabs().forEach((tab: ViewModels.Tab) => {
+    this.openedTabs().forEach((tab: TabsBase) => {
       if (comparator(tab)) {
         tab.onCloseTabButtonClick();
       }
@@ -64,9 +62,9 @@ export class TabsManager {
   }
 
   public closeTab(tabId: string, explorer: Explorer): void {
-    const tabIndex: number = this.openedTabs().findIndex((tab: ViewModels.Tab) => tab.tabId === tabId);
+    const tabIndex: number = this.openedTabs().findIndex((tab: TabsBase) => tab.tabId === tabId);
     if (tabIndex !== -1) {
-      const tabToActive: ViewModels.Tab = this.openedTabs()[tabIndex + 1] || this.openedTabs()[tabIndex - 1];
+      const tabToActive: TabsBase = this.openedTabs()[tabIndex + 1] || this.openedTabs()[tabIndex - 1];
       this.openedTabs()[tabIndex].isActive(false);
       this.removeTabById(tabId);
       if (tabToActive) {

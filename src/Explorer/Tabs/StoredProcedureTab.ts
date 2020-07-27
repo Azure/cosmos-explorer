@@ -11,13 +11,14 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import StoredProcedure from "../Tree/StoredProcedure";
 import { createStoredProcedure, updateStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 enum ToggleState {
   Result = "result",
   Logs = "logs"
 }
 
-export default class StoredProcedureTab extends ScriptTabBase implements ViewModels.StoredProcedureTab {
+export default class StoredProcedureTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
   public node: StoredProcedure;
   public executeResultsEditorId: string;
@@ -204,7 +205,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
     super.buildCommandBarOptions();
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     const label = "Execute";
     return super.getTabsButtons().concat({
       iconSrc: ExecuteQueryIcon,

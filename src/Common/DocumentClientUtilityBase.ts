@@ -13,6 +13,8 @@ import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
+import ConflictId from "../Explorer/Tree/ConflictId";
+import DocumentId from "../Explorer/Tree/DocumentId";
 
 // TODO: Log all promise resolutions and errors with verbosity levels
 export function queryDocuments(
@@ -236,7 +238,7 @@ export function queryDocumentsPage(
   return deferred.promise;
 }
 
-export function readDocument(collection: ViewModels.CollectionBase, documentId: ViewModels.DocumentId): Q.Promise<any> {
+export function readDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
   var deferred = Q.defer<any>();
   const entityName = getEntityName();
   const id = NotificationConsoleUtils.logConsoleMessage(
@@ -303,7 +305,7 @@ export function updateCollection(
 
 export function updateDocument(
   collection: ViewModels.CollectionBase,
-  documentId: ViewModels.DocumentId,
+  documentId: DocumentId,
   newDocument: any
 ): Q.Promise<any> {
   var deferred = Q.defer<any>();
@@ -658,10 +660,7 @@ export function createTrigger(
   return deferred.promise;
 }
 
-export function deleteDocument(
-  collection: ViewModels.CollectionBase,
-  documentId: ViewModels.DocumentId
-): Q.Promise<any> {
+export function deleteDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
   var deferred = Q.defer<any>();
   const entityName = getEntityName();
   const id = NotificationConsoleUtils.logConsoleMessage(
@@ -696,7 +695,7 @@ export function deleteDocument(
 
 export function deleteConflict(
   collection: ViewModels.CollectionBase,
-  conflictId: ViewModels.ConflictId,
+  conflictId: ConflictId,
   options?: any
 ): Q.Promise<any> {
   var deferred = Q.defer<any>();

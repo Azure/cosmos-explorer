@@ -9,7 +9,7 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
 import { createTrigger, updateTrigger } from "../../Common/DocumentClientUtilityBase";
 
-export default class TriggerTab extends ScriptTabBase implements ViewModels.TriggerTab {
+export default class TriggerTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
   public node: Trigger;
   public triggerType: ViewModels.Editable<string>;

@@ -14,6 +14,7 @@ import AddEntityIcon from "../../../images/AddEntity.svg";
 import EditEntityIcon from "../../../images/Edit-entity.svg";
 import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
 import Explorer from "../Explorer";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
@@ -173,8 +174,8 @@ export default class QueryTablesTab extends TabsBase {
     });
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     if (this.queryBuilderButton.visible()) {
       const label = this.container.isPreferredApiCassandra() ? "CQL Query Builder" : "Query Builder";
       buttons.push({
