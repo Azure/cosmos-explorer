@@ -7,6 +7,11 @@ export class AuthorizationEndpoints {
   public static common: string = "https://login.windows.net/";
 }
 
+export class CodeOfConductEndpoints {
+  public static privacyStatement: string = "https://privacy.microsoft.com/privacystatement";
+  public static codeOfConduct: string = "https://azure.microsoft.com/support/legal/devops-code-of-conduct/";
+}
+
 export class BackendEndpoints {
   public static localhost: string = "https://localhost:12900";
   public static dev: string = "https://ext.documents-dev.windows-int.net";
@@ -112,6 +117,7 @@ export class Features {
   public static readonly enableTtl = "enablettl";
   public static readonly enableNotebooks = "enablenotebooks";
   public static readonly enableGalleryPublish = "enablegallerypublish";
+  public static readonly enableCodeOfConduct = "enablecodeofconduct";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
   public static readonly notebookServerUrl = "notebookserverurl";

@@ -104,11 +104,9 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         this.imageSrc,
         this.content
       );
-      if (!response.data) {
-        throw new Error(`Received HTTP ${response.status} when publishing ${name} to gallery`);
+      if (response.data) {
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Published ${name} to gallery`);
       }
-
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Published ${name} to gallery`);
     } catch (error) {
       this.formError = `Failed to publish ${this.name} to gallery`;
       this.formErrorDetail = `${error}`;

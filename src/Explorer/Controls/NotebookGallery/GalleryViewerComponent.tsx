@@ -24,6 +24,8 @@ import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/Gallery
 import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
+import { CodeOfConductComponent } from "./CodeOfConductComponent";
+import { async } from "q";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -60,6 +62,7 @@ interface GalleryViewerComponentState {
   sortBy: SortBy;
   searchText: string;
   dialogProps: DialogProps;
+  acceptedCodeOfConduct: boolean;
 }
 
 interface GalleryTabInfo {
@@ -86,6 +89,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private publicNotebooks: IGalleryItem[];
   private favoriteNotebooks: IGalleryItem[];
   private publishedNotebooks: IGalleryItem[];
+  private acceptedCodeOfConduct: boolean;
   private columnCount: number;
   private rowCount: number;
 
@@ -100,7 +104,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
       searchText: props.searchText,
-      dialogProps: undefined
+      dialogProps: undefined,
+      acceptedCodeOfConduct: undefined
     };
 
     this.sortingOptions = [
@@ -134,7 +139,13 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
     if (this.props.container?.isGalleryPublishEnabled()) {
-      tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
+      tabs.push(
+        this.createPublicGalleryTab(
+          GalleryTab.PublicGallery,
+          this.state.publicNotebooks,
+          this.state.acceptedCodeOfConduct
+        )
+      );
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
       tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
     }
@@ -167,11 +178,35 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   }
 
+  private createPublicGalleryTab(
+    tab: GalleryTab,
+    data: IGalleryItem[],
+    acceptedCodeOfConduct: boolean
+  ): GalleryTabInfo {
+    return {
+      tab,
+      content: this.createPublicGalleryTabContent(data, acceptedCodeOfConduct)
+    };
+  }
+
   private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
     return {
       tab,
       content: this.createTabContent(data)
     };
+  }
+
+  private createPublicGalleryTabContent(data: IGalleryItem[], acceptedCodeOfConduct: boolean): JSX.Element {
+    return acceptedCodeOfConduct === false ? (
+      <CodeOfConductComponent
+        junoClient={this.props.junoClient}
+        onAcceptCodeOfConduct={(result: boolean) => {
+          this.setState({ acceptedCodeOfConduct: result });
+        }}
+      />
+    ) : (
+      this.createTabContent(data)
+    );
   }
 
   private createTabContent(data: IGalleryItem[]): JSX.Element {
@@ -254,12 +289,19 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        const response = await this.props.junoClient.getPublicNotebooks();
+        let response: any
+        if (this.props.container.isCodeOfConductEnabled()) {
+          response = await this.props.junoClient.fetchPublicNotebooks();
+          this.acceptedCodeOfConduct = response.data?.metadata.acceptedCodeOfConduct;
+          this.publicNotebooks = response.data?.notebooksData;  
+        } else {
+          response = await this.props.junoClient.getPublicNotebooks();
+          this.publicNotebooks = response.data  
+        }
+
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
-
-        this.publicNotebooks = response.data;
       } catch (error) {
         const message = `Failed to load public notebooks: ${error}`;
         Logger.logError(message, "GalleryViewerComponent/loadPublicNotebooks");
@@ -268,7 +310,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
 
     this.setState({
-      publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))]
+      publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))],
+      acceptedCodeOfConduct: this.acceptedCodeOfConduct
     });
   }
 
