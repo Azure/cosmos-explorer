@@ -69,7 +69,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
             <Link href={this.link1.url} target="_blank">
               {this.link1.label}
             </Link>
-            and
+            {" and "}
             <Link href={this.link2.url} target="_blank">
               {this.link2.label}
             </Link>
