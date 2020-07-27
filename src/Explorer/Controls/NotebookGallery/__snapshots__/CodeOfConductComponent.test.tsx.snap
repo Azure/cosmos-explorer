@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodeOfConductComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <StackItem>
+    <Text
+      style={
+        Object {
+          "fontSize": "20px",
+          "fontWeight": 500,
+        }
+      }
+    >
+      Azure CosmosDB Notebook Gallery - Code of Conduct and Privacy Statement
+    </Text>
+  </StackItem>
+  <StackItem>
+    <Text>
+      Azure Cosmos DB Notebook Public Gallery contains notebook samples shared by users of Cosmos DB.
+    </Text>
+  </StackItem>
+  <StackItem>
+    <Text>
+      In order to access Azure Cosmos DB Notebook Gallery resources, you must accept the 
+      <StyledLinkBase
+        href="https://azure.microsoft.com/support/legal/devops-code-of-conduct/"
+        target="_blank"
+      >
+        code of conduct
+      </StyledLinkBase>
+      and
+      <StyledLinkBase
+        href="https://privacy.microsoft.com/privacystatement"
+        target="_blank"
+      >
+        privacy statement
+      </StyledLinkBase>
+    </Text>
+  </StackItem>
+  <StackItem>
+    <StyledCheckboxBase
+      label="I have read and accepted the code of conduct and privacy statement"
+      onChange={[Function]}
+      styles={
+        Object {
+          "label": Object {
+            "margin": 0,
+            "padding": "2 0 2 0",
+          },
+          "text": Object {
+            "fontSize": 12,
+          },
+        }
+      }
+    />
+  </StackItem>
+  <StackItem>
+    <CustomizedPrimaryButton
+      ariaLabel="Continue"
+      className="genericPaneSubmitBtn"
+      disabled={true}
+      onClick={[Function]}
+      tabIndex={0}
+      text="Continue"
+      title="Continue"
+    />
+  </StackItem>
+</Stack>
+`;

@@ -15,7 +15,7 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Logger from "../../../Common/Logger";
-import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
+import { IGalleryItem, JunoClient, IJunoResponse, IPublicGalleryData } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
@@ -25,7 +25,7 @@ import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { CodeOfConductComponent } from "./CodeOfConductComponent";
-import { async } from "q";
+import { InfoComponent } from "./InfoComponent/InfoComponent";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -222,8 +222,12 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
+          {this.props.container.isGalleryPublishEnabled() && (
+            <Stack.Item>
+              <InfoComponent />
+            </Stack.Item>
+          )}
         </Stack>
-
         {data && this.createCardsTabContent(data)}
       </Stack>
     );
@@ -289,14 +293,14 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        let response: any
+        let response: IJunoResponse<IPublicGalleryData> | IJunoResponse<IGalleryItem[]>;
         if (this.props.container.isCodeOfConductEnabled()) {
           response = await this.props.junoClient.fetchPublicNotebooks();
           this.acceptedCodeOfConduct = response.data?.metadata.acceptedCodeOfConduct;
-          this.publicNotebooks = response.data?.notebooksData;  
+          this.publicNotebooks = response.data?.notebooksData;
         } else {
           response = await this.props.junoClient.getPublicNotebooks();
-          this.publicNotebooks = response.data  
+          this.publicNotebooks = response.data;
         }
 
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {

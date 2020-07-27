@@ -1,10 +1,10 @@
 import * as React from "react";
-import { JunoClient, IGalleryItem } from "../../../Juno/JunoClient";
+import { JunoClient } from "../../../Juno/JunoClient";
 import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constants";
 import * as Logger from "../../../Common/Logger";
 import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { Stack, Text, Checkbox, PrimaryButton } from "office-ui-fabric-react";
+import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
 
 export interface CodeOfConductComponentProps {
   junoClient: JunoClient;
@@ -19,8 +19,8 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionPara3: string;
-  private link1: any;
-  private link2: any;
+  private link1: { label: string; url: string };
+  private link2: { label: string; url: string };
 
   constructor(props: CodeOfConductComponentProps) {
     super(props);
@@ -30,18 +30,11 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
     };
 
     this.descriptionPara1 = "Azure CosmosDB Notebook Gallery - Code of Conduct and Privacy Statement";
-    this.descriptionPara2 = "Azure Cosmos DB Notebook Public Gallery contains notebook samples shared by users of Cosmos DB.";
+    this.descriptionPara2 =
+      "Azure Cosmos DB Notebook Public Gallery contains notebook samples shared by users of Cosmos DB.";
     this.descriptionPara3 = "In order to access Azure Cosmos DB Notebook Gallery resources, you must accept the ";
-    this.link1 = (
-      <a href={CodeOfConductEndpoints.codeOfConduct} target="_blank">
-        code of conduct
-      </a>
-    );
-    this.link2 = (
-      <a href={CodeOfConductEndpoints.privacyStatement} target="_blank">
-        privacy statement
-      </a>
-    );
+    this.link1 = { label: "code of conduct", url: CodeOfConductEndpoints.codeOfConduct };
+    this.link2 = { label: "privacy statement", url: CodeOfConductEndpoints.privacyStatement };
   }
 
   private async acceptCodeOfConduct(): Promise<void> {
@@ -61,52 +54,56 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
 
   public render(): JSX.Element {
     return (
-      <div className="publishNotebookPanelContent">
-        <Stack tokens={{ childrenGap: 20 }}>
-          <Stack.Item>
-            <Text style={{fontWeight: 500, fontSize: "20px"}}>{this.descriptionPara1}</Text>
-          </Stack.Item>
+      <Stack tokens={{ childrenGap: 20 }}>
+        <Stack.Item>
+          <Text style={{ fontWeight: 500, fontSize: "20px" }}>{this.descriptionPara1}</Text>
+        </Stack.Item>
 
-          <Stack.Item>
-            <Text>{this.descriptionPara2}</Text>
-          </Stack.Item>
+        <Stack.Item>
+          <Text>{this.descriptionPara2}</Text>
+        </Stack.Item>
 
-          <Stack.Item>
-            <Text>
-              {this.descriptionPara3}
-              {this.link1} and {this.link2}
-            </Text>
-          </Stack.Item>
+        <Stack.Item>
+          <Text>
+            {this.descriptionPara3}
+            <Link href={this.link1.url} target="_blank">
+              {this.link1.label}
+            </Link>
+            and
+            <Link href={this.link2.url} target="_blank">
+              {this.link2.label}
+            </Link>
+          </Text>
+        </Stack.Item>
 
-          <Stack.Item>
-            <Checkbox
-              styles={{
-                label: {
-                  margin: 0,
-                  padding: "2 0 2 0"
-                },
-                text: {
-                  fontSize: 12
-                }
-              }}
-              label="I have read and accepted the code of conduct and privacy statement"
-              onChange={() => this.setState({ readCodeOfConduct: !this.state.readCodeOfConduct })}
-            />
-          </Stack.Item>
+        <Stack.Item>
+          <Checkbox
+            styles={{
+              label: {
+                margin: 0,
+                padding: "2 0 2 0"
+              },
+              text: {
+                fontSize: 12
+              }
+            }}
+            label="I have read and accepted the code of conduct and privacy statement"
+            onChange={() => this.setState({ readCodeOfConduct: !this.state.readCodeOfConduct })}
+          />
+        </Stack.Item>
 
-          <Stack.Item>
-            <PrimaryButton
-              ariaLabel="Continue"
-              title="Continue"
-              onClick={async () => await this.acceptCodeOfConduct()}
-              tabIndex={0}
-              className="genericPaneSubmitBtn"
-              text="Continue"
-              disabled={!this.state.readCodeOfConduct}
-            />
-          </Stack.Item>
-        </Stack>
-      </div>
+        <Stack.Item>
+          <PrimaryButton
+            ariaLabel="Continue"
+            title="Continue"
+            onClick={async () => await this.acceptCodeOfConduct()}
+            tabIndex={0}
+            className="genericPaneSubmitBtn"
+            text="Continue"
+            disabled={!this.state.readCodeOfConduct}
+          />
+        </Stack.Item>
+      </Stack>
     );
   }
 }

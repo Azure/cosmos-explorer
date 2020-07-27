@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InfoComponent renders 1`] = `
+<StyledHoverCardBase
+  instantOpenOnClick={true}
+  plainCardProps={
+    Object {
+      "onRenderPlainCard": [Function],
+    }
+  }
+  type="PlainCard"
+>
+  <div
+    className="infoPanelMain"
+  >
+    <Memo(StyledIconBase)
+      className="infoIconMain"
+      iconName="Help"
+      styles={
+        Object {
+          "root": Object {
+            "verticalAlign": "middle",
+          },
+        }
+      }
+    />
+    <StyledLabelBase
+      className="infoLabelMain"
+    >
+      Help
+    </StyledLabelBase>
+  </div>
+</StyledHoverCardBase>
+`;
