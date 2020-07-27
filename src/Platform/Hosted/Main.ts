@@ -18,7 +18,7 @@ import { CosmosClient } from "../../Common/CosmosClient";
 import { DataExplorerInputsFrame } from "../../Contracts/ViewModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { HostedUtils } from "./HostedUtils";
-import { MessageHandler } from "../../Common/MessageHandler";
+import { sendMessage } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { SessionStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { SubscriptionUtilMappings } from "../../Shared/Constants";
@@ -77,7 +77,7 @@ export default class Main {
 
     const explorer: Explorer = this._instantiateExplorer();
     if (authType === AuthType.EncryptedToken) {
-      MessageHandler.sendMessage({
+      sendMessage({
         type: MessageTypes.UpdateAccountSwitch,
         props: {
           authType: AuthType.EncryptedToken,
@@ -102,7 +102,7 @@ export default class Main {
         }
       );
     } else if (authType === AuthType.AAD) {
-      MessageHandler.sendMessage({
+      sendMessage({
         type: MessageTypes.GetAccessAadRequest
       });
       if (this._getAadAccessDeferred != null) {
@@ -287,7 +287,7 @@ export default class Main {
       const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
         Main._accessInputMetadata.apiKind
       );
-      MessageHandler.sendMessage({
+      sendMessage({
         type: MessageTypes.UpdateAccountSwitch,
         props: {
           authType: AuthType.EncryptedToken,
@@ -385,7 +385,7 @@ export default class Main {
       window.addEventListener(
         "click",
         () => {
-          MessageHandler.sendMessage({
+          sendMessage({
             type: MessageTypes.ExplorerClickEvent
           });
         },
@@ -514,7 +514,7 @@ export default class Main {
   ) {
     Main._initDataExplorerFrameInputs(explorer, masterKey, account, authorizationToken);
     explorer.isAccountReady.valueHasMutated();
-    MessageHandler.sendMessage("ready");
+    sendMessage("ready");
   }
 
   private static _shouldProcessMessage(event: MessageEvent): boolean {

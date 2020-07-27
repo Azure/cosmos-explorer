@@ -4,10 +4,8 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Collection from "../Tree/Collection";
 import Database from "../Tree/Database";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import SettingsTab from "../Tabs/SettingsTab";
-import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 
 describe("Settings tab", () => {
   const baseCollection: DataModels.Collection = {
@@ -64,8 +62,6 @@ describe("Settings tab", () => {
           tabKind: ViewModels.CollectionTabKind.Settings,
           title: "Scale & Settings",
           tabPath: "",
-          documentClientUtility: undefined,
-
           selfLink: "",
           hashLocation: "",
           isActive: ko.observable(false),
@@ -81,7 +77,7 @@ describe("Settings tab", () => {
       };
 
       beforeEach(() => {
-        explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+        explorer = new Explorer({ notificationsClient: null, isEmulator: false });
         explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       });
 
@@ -180,7 +176,7 @@ describe("Settings tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
@@ -189,8 +185,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
-
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
@@ -213,7 +207,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",
@@ -232,7 +225,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",
@@ -262,7 +254,7 @@ describe("Settings tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
@@ -271,7 +263,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",
@@ -288,7 +279,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",
@@ -314,7 +304,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",
@@ -347,7 +336,6 @@ describe("Settings tab", () => {
 
     function getCollection(defaultApi: string, partitionKeyOption: PartitionKeyOption) {
       const explorer = new Explorer({
-        documentClientUtility: null,
         notificationsClient: null,
         isEmulator: false
       });
@@ -395,7 +383,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",
@@ -484,7 +471,6 @@ describe("Settings tab", () => {
   describe("AutoPilot", () => {
     function getCollection(autoPilotTier: DataModels.AutopilotTier) {
       const explorer = new Explorer({
-        documentClientUtility: null,
         notificationsClient: null,
         isEmulator: false
       });
@@ -541,7 +527,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
 
         selfLink: "",
         hashLocation: "",

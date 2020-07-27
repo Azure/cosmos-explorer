@@ -11,6 +11,7 @@ import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility"
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { deleteCollection } from "../../Common/DocumentClientUtilityBase";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
@@ -58,7 +59,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         this.container
       );
     } else {
-      promise = this.container.documentClientUtility.deleteCollection(selectedCollection);
+      promise = deleteCollection(selectedCollection);
     }
     return promise.then(
       () => {

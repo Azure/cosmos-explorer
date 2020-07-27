@@ -25,7 +25,6 @@ describe("Query Tab", () => {
       database: database,
       title: "",
       tabPath: "",
-      documentClientUtility: container.documentClientUtility,
       selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
@@ -51,7 +50,7 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be true for accounts using SQL API", () => {
@@ -71,7 +70,7 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be visible when using a supported API", () => {

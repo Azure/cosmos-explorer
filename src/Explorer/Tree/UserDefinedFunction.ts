@@ -6,6 +6,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import { deleteUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
 
 export default class UserDefinedFunction {
   public nodeKind: string;
@@ -40,7 +41,6 @@ export default class UserDefinedFunction {
       tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
       title: `New UDF ${id}`,
       tabPath: "",
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
@@ -77,7 +77,6 @@ export default class UserDefinedFunction {
         tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
         title: userDefinedFunctionData.id,
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -114,7 +113,7 @@ export default class UserDefinedFunction {
       id: this.id(),
       body: this.body()
     };
-    this.container.documentClientUtility.deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
+    deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
       () => {
         this.container.tabsManager.removeTabByComparator(
           (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid

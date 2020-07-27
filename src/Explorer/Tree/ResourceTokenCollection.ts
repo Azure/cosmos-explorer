@@ -91,7 +91,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabKind: ViewModels.CollectionTabKind.Query,
       title: title,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       node: this,
       selfLink: this.self,
@@ -143,8 +142,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        documentClientUtility: this.container.documentClientUtility,
-
         selfLink: this.self,
         isActive: ko.observable<boolean>(false),
         collection: this,

@@ -28,7 +28,7 @@ import * as Constants from "../../../Common/Constants";
 import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
-import DocumentClientUtilityBase from "../../../Common/DocumentClientUtilityBase";
+import { queryDocuments, queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
 
 export interface GraphAccessor {
   applyFilter: () => void;
@@ -47,7 +47,6 @@ export interface GraphExplorerProps {
   onIsValidQueryChange: (isValidQuery: boolean) => void;
 
   collectionPartitionKeyProperty: string;
-  documentClientUtility: DocumentClientUtilityBase;
   collectionRid: string;
   collectionSelfLink: string;
   graphBackendEndpoint: string;
@@ -697,7 +696,6 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param cmd
    */
   public submitToBackend(cmd: string): Q.Promise<GremlinClient.GremlinRequestResult> {
-    console.log("submit:", cmd);
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${cmd}`);
     this.setExecuteCounter(this.executeCounter + 1);
 
@@ -730,26 +728,24 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    */
   public executeNonPagedDocDbQuery(query: string): Q.Promise<DataModels.DocumentId[]> {
     // TODO maxItemCount: this reduces throttling, but won't cap the # of results
-    return this.props.documentClientUtility
-      .queryDocuments(this.props.databaseId, this.props.collectionId, query, {
-        maxItemCount: GraphExplorer.PAGE_ALL,
-        enableCrossPartitionQuery:
-          StorageUtility.LocalStorageUtility.getEntryString(StorageUtility.StorageKey.IsCrossPartitionQueryEnabled) ===
-          "true"
-      })
-      .then(
-        (iterator: QueryIterator<ItemDefinition & Resource>) => {
-          return iterator.fetchNext().then(response => response.resources);
-        },
-        (reason: any) => {
-          GraphExplorer.reportToConsole(
-            ConsoleDataType.Error,
-            `Failed to execute non-paged query ${query}. Reason:${reason}`,
-            reason
-          );
-          return null;
-        }
-      );
+    return queryDocuments(this.props.databaseId, this.props.collectionId, query, {
+      maxItemCount: GraphExplorer.PAGE_ALL,
+      enableCrossPartitionQuery:
+        StorageUtility.LocalStorageUtility.getEntryString(StorageUtility.StorageKey.IsCrossPartitionQueryEnabled) ===
+        "true"
+    }).then(
+      (iterator: QueryIterator<ItemDefinition & Resource>) => {
+        return iterator.fetchNext().then(response => response.resources);
+      },
+      (reason: any) => {
+        GraphExplorer.reportToConsole(
+          ConsoleDataType.Error,
+          `Failed to execute non-paged query ${query}. Reason:${reason}`,
+          reason
+        );
+        return null;
+      }
+    );
   }
 
   /**
@@ -1732,12 +1728,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       query = `select root.id, root.${this.props.collectionPartitionKeyProperty} from root where IS_DEFINED(root._isEdge) = false order by root._ts asc`;
     }
 
-    return this.props.documentClientUtility
-      .queryDocuments(this.props.databaseId, this.props.collectionId, query, {
-        maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
-        enableCrossPartitionQuery:
-          LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-      })
+    return queryDocuments(this.props.databaseId, this.props.collectionId, query, {
+      maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
+      enableCrossPartitionQuery: LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
+    })
       .then(
         (iterator: QueryIterator<ItemDefinition & Resource>) => {
           this.currentDocDBQueryInfo = {
@@ -1766,16 +1760,15 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       .currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE})`;
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${queryInfoStr}`);
 
-    return this.props.documentClientUtility
-      .queryDocumentsPage(
-        this.props.collectionRid,
-        this.currentDocDBQueryInfo.iterator,
-        this.currentDocDBQueryInfo.index,
-        {
-          enableCrossPartitionQuery:
-            LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-        }
-      )
+    return queryDocumentsPage(
+      this.props.collectionRid,
+      this.currentDocDBQueryInfo.iterator,
+      this.currentDocDBQueryInfo.index,
+      {
+        enableCrossPartitionQuery:
+          LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
+      }
+    )
       .then((results: ViewModels.QueryResults) => {
         GraphExplorer.clearConsoleProgress(id);
         this.currentDocDBQueryInfo.index = results.lastItemIndex + 1;

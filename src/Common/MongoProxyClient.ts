@@ -12,7 +12,7 @@ import { config } from "../Config";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import { CosmosClient } from "./CosmosClient";
-import { MessageHandler } from "./MessageHandler";
+import { sendMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
@@ -408,7 +408,7 @@ async function errorHandling(response: Response, action: string, params: unknown
     `Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`
   );
   if (response.status === HttpStatusCodes.Forbidden) {
-    MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
+    sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
     return;
   }
   throw new Error(errorMessage);

@@ -1,8 +1,6 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 import { TabsManager } from "./TabsManager";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import DocumentsTab from "./DocumentsTab";
 import Explorer from "../Explorer";
 import QueryTab from "./QueryTab";
@@ -16,7 +14,7 @@ describe("Tabs manager tests", () => {
   let documentsTab: DocumentsTab;
 
   beforeAll(() => {
-    explorer = new Explorer({ documentClientUtility: undefined, notificationsClient: undefined, isEmulator: false });
+    explorer = new Explorer({ notificationsClient: undefined, isEmulator: false });
     explorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
       id: "test",
       name: "test",
@@ -50,7 +48,6 @@ describe("Tabs manager tests", () => {
       database,
       title: "",
       tabPath: "",
-      documentClientUtility: explorer.documentClientUtility,
       selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
@@ -64,7 +61,6 @@ describe("Tabs manager tests", () => {
       collection,
       title: "",
       tabPath: "",
-      documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
       selfLink: "",
       hashLocation: "",
       isActive: ko.observable<boolean>(false),

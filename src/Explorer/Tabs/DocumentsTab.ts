@@ -26,6 +26,13 @@ import { extractPartitionKey, PartitionKeyDefinition, QueryIterator, ItemDefinit
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import {
+  readDocument,
+  queryDocuments,
+  deleteDocument,
+  updateDocument,
+  createDocument
+} from "../../Common/DocumentClientUtilityBase";
 
 export default class DocumentsTab extends TabsBase implements ViewModels.DocumentsTab {
   public selectedDocumentId: ko.Observable<ViewModels.DocumentId>;
@@ -442,8 +449,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     });
     const document = JSON.parse(this.selectedDocumentContent());
     this.isExecuting(true);
-    return this.documentClientUtility
-      .createDocument(this.collection, document)
+    return createDocument(this.collection, document)
       .then(
         (savedDocument: any) => {
           const value: string = this.renderObjectForEditor(savedDocument || {}, null, 4);
@@ -516,8 +522,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
       tabTitle: this.tabTitle()
     });
     this.isExecuting(true);
-    return this.documentClientUtility
-      .updateDocument(this.collection, selectedDocumentId, documentContent)
+    return updateDocument(this.collection, selectedDocumentId, documentContent)
       .then(
         (updatedDocument: any) => {
           const value: string = this.renderObjectForEditor(updatedDocument || {}, null, 4);
@@ -665,7 +670,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
   };
 
   protected __deleteDocument(documentId: ViewModels.DocumentId): Q.Promise<any> {
-    return this.documentClientUtility.deleteDocument(this.collection, documentId);
+    return deleteDocument(this.collection, documentId);
   }
 
   private _deleteDocument(selectedDocumentId: ViewModels.DocumentId): Q.Promise<any> {
@@ -724,12 +729,12 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
       options.partitionKey = this._resourceTokenPartitionKey;
     }
 
-    return this.documentClientUtility.queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
+    return queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
   public selectDocument(documentId: ViewModels.DocumentId): Q.Promise<any> {
     this.selectedDocumentId(documentId);
-    return this.documentClientUtility.readDocument(this.collection, documentId).then((content: any) => {
+    return readDocument(this.collection, documentId).then((content: any) => {
       this.initDocumentEditor(documentId, content);
     });
   }

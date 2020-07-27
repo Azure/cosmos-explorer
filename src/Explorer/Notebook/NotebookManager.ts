@@ -57,7 +57,6 @@ export default class NotebookManager {
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);
     this.gitHubReposPane = new GitHubReposPane({
-      documentClientUtility: this.params.container.documentClientUtility,
       id: "gitHubReposPane",
       visible: ko.observable<boolean>(false),
       container: this.params.container,

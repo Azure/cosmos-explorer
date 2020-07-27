@@ -83,7 +83,6 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
       onIsFilterQueryLoading: (isFilterQueryLoading: boolean): void => this.isFilterQueryLoading(isFilterQueryLoading),
       onIsValidQuery: (isValidQuery: boolean): void => this.isValidQuery(isValidQuery),
       collectionPartitionKeyProperty: options.collectionPartitionKeyProperty,
-      documentClientUtility: this.documentClientUtility,
       collectionRid: this.rid,
       collectionSelfLink: options.selfLink,
       graphBackendEndpoint: GraphTab.getGremlinEndpoint(options.account),
@@ -101,7 +100,6 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
 
     this.isFilterQueryLoading = ko.observable(false);
     this.isValidQuery = ko.observable(true);
-    this.documentClientUtility = options.documentClientUtility;
     this.toolbarViewModel = ko.observable<Toolbar>();
   }
 

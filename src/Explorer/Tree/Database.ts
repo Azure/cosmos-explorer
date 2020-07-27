@@ -12,6 +12,7 @@ import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
+import { readCollections, readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -71,7 +72,6 @@ export default class Database implements ViewModels.Database {
             tabKind: ViewModels.CollectionTabKind.DatabaseSettings,
             title: "Scale",
             tabPath: "",
-            documentClientUtility: this.container.documentClientUtility,
             node: this,
             rid: this.rid,
             database: this,
@@ -137,7 +137,7 @@ export default class Database implements ViewModels.Database {
       defaultExperience: this.container.defaultExperience()
     });
 
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = this.container.documentClientUtility.readOffers();
+    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
     Q.all([offerInfoPromise]).then(
       () => {
         this.container.isRefreshingExplorer(false);
@@ -146,35 +146,33 @@ export default class Database implements ViewModels.Database {
           offerInfoPromise.valueOf(),
           databaseDataModel
         );
-        this.container.documentClientUtility
-          .readOffer(databaseOffer)
-          .then((offerDetail: DataModels.OfferWithHeaders) => {
-            const offerThroughputInfo: DataModels.OfferThroughputInfo = {
-              minimumRUForCollection:
-                offerDetail.content &&
-                offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
-              numPhysicalPartitions:
-                offerDetail.content &&
-                offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
-            };
+        readOffer(databaseOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
+          const offerThroughputInfo: DataModels.OfferThroughputInfo = {
+            minimumRUForCollection:
+              offerDetail.content &&
+              offerDetail.content.collectionThroughputInfo &&
+              offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
+            numPhysicalPartitions:
+              offerDetail.content &&
+              offerDetail.content.collectionThroughputInfo &&
+              offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
+          };
 
-            databaseOffer.content.collectionThroughputInfo = offerThroughputInfo;
-            (databaseOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
-            this.offer(databaseOffer);
-            this.offer.valueHasMutated();
+          databaseOffer.content.collectionThroughputInfo = offerThroughputInfo;
+          (databaseOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
+          this.offer(databaseOffer);
+          this.offer.valueHasMutated();
 
-            TelemetryProcessor.traceSuccess(
-              Action.LoadOffers,
-              {
-                databaseAccountName: this.container.databaseAccount().name,
-                defaultExperience: this.container.defaultExperience()
-              },
-              startKey
-            );
-            deferred.resolve();
-          });
+          TelemetryProcessor.traceSuccess(
+            Action.LoadOffers,
+            {
+              databaseAccountName: this.container.databaseAccount().name,
+              defaultExperience: this.container.defaultExperience()
+            },
+            startKey
+          );
+          deferred.resolve();
+        });
       },
       (error: any) => {
         this.container.isRefreshingExplorer(false);
@@ -263,7 +261,7 @@ export default class Database implements ViewModels.Database {
     let collectionVMs: Collection[] = [];
     let deferred: Q.Deferred<void> = Q.defer<void>();
 
-    this.container.documentClientUtility.readCollections(this).then(
+    readCollections(this).then(
       (collections: DataModels.Collection[]) => {
         let collectionsToAddVMPromises: Q.Promise<any>[] = [];
         let deltaCollections = this.getDeltaCollections(collections);

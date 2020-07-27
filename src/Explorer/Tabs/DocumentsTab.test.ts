@@ -2,9 +2,7 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import DocumentsTab from "./DocumentsTab";
-import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 import Explorer from "../Explorer";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
@@ -15,7 +13,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -29,13 +26,11 @@ describe("Documents tab", () => {
 
   describe("showPartitionKey", () => {
     const explorer = new Explorer({
-      documentClientUtility: null,
       notificationsClient: null,
       isEmulator: false
     });
 
     const mongoExplorer = new Explorer({
-      documentClientUtility: null,
       notificationsClient: null,
       isEmulator: false
     });
@@ -98,7 +93,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -117,7 +111,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -136,7 +129,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -155,7 +147,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
@@ -174,7 +165,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),

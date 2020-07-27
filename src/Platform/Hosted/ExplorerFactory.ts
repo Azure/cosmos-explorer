@@ -1,15 +1,9 @@
-import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../../Explorer/Explorer";
 import { NotificationsClient } from "./NotificationsClient";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
-import { DataAccessUtility } from "./DataAccessUtility";
 
 export default class HostedExplorerFactory {
   public createExplorer(): Explorer {
-    var documentClientUtility = new DocumentClientUtilityBase(new DataAccessUtility());
-
     const explorer = new Explorer({
-      documentClientUtility: documentClientUtility,
       notificationsClient: new NotificationsClient(),
       isEmulator: false
     });
@@ -19,8 +13,6 @@ export default class HostedExplorerFactory {
 
   public static reInitializeDocumentClientUtilityForExplorer(explorer: Explorer): void {
     if (!!explorer) {
-      const documentClientUtility = new DocumentClientUtilityBase(new DataAccessUtility());
-      explorer.rebindDocumentClientUtility(documentClientUtility);
       explorer.notificationConsoleData([]);
     }
   }

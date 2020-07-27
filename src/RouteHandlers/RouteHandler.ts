@@ -1,5 +1,5 @@
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { MessageHandler } from "../Common/MessageHandler";
+import { sendMessage } from "../Common/MessageHandler";
 import { TabRouteHandler } from "./TabRouteHandler";
 
 export class RouteHandler {
@@ -27,7 +27,7 @@ export class RouteHandler {
   }
 
   public updateRouteHashLocation(hash: string): void {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateLocationHash,
       locationHash: hash
     });
