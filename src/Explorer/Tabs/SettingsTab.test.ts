@@ -6,6 +6,7 @@ import Collection from "../Tree/Collection";
 import Database from "../Tree/Database";
 import Explorer from "../Explorer";
 import SettingsTab from "../Tabs/SettingsTab";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 describe("Settings tab", () => {
   const baseCollection: DataModels.Collection = {
@@ -189,7 +190,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -212,7 +213,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -230,7 +231,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(settingsTab.shouldUpdateCollection()).toBe(false);
@@ -268,7 +269,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -284,7 +285,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -309,7 +310,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(settingsTab.getUpdatedConflictResolutionPolicy()).toBe(null);
@@ -388,7 +389,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(defaultApi, partitionKeyOption),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
     }
 
@@ -532,7 +533,7 @@ describe("Settings tab", () => {
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(autoPilotTier),
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
     }
     describe("Visible", () => {

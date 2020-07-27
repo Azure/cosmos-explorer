@@ -9,6 +9,7 @@ import Q from "q";
 import QueryTab from "../Tabs/QueryTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import TabsBase from "../Tabs/TabsBase";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
   public nodeKind: string;
@@ -120,7 +121,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      (tab: TabsBase) => tab.collection && tab.collection.rid === this.rid
     ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 

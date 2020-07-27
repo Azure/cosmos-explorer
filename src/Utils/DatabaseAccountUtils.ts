@@ -1,12 +1,11 @@
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
 import { StringUtils } from "./StringUtils";
 
 export class DatabaseAccountUtils {
   public static mergeDatabaseAccountWithGateway(
-    databaseAccount: ViewModels.DatabaseAccount,
+    databaseAccount: DataModels.DatabaseAccount,
     gatewayDatabaseAccount: DataModels.GatewayDatabaseAccount
-  ): ViewModels.DatabaseAccount {
+  ): DataModels.DatabaseAccount {
     if (!databaseAccount || !gatewayDatabaseAccount) {
       return databaseAccount;
     }

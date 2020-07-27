@@ -33,9 +33,10 @@ import {
   updateDocument,
   createDocument
 } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
-export default class DocumentsTab extends TabsBase implements ViewModels.DocumentsTab {
-  public selectedDocumentId: ko.Observable<ViewModels.DocumentId>;
+export default class DocumentsTab extends TabsBase {
+  public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;
   public documentContentsGridId: string;
@@ -68,7 +69,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
   public partitionKey: DataModels.PartitionKey;
   public partitionKeyPropertyHeader: string;
   public partitionKeyProperty: string;
-  public documentIds: ko.ObservableArray<ViewModels.DocumentId>;
+  public documentIds: ko.ObservableArray<DocumentId>;
 
   private _documentsIterator: QueryIterator<ItemDefinition & Resource>;
   private _resourceTokenPartitionKey: string;
@@ -87,7 +88,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     this.editorState = ko.observable<ViewModels.DocumentExplorerState>(
       ViewModels.DocumentExplorerState.noDocumentSelected
     );
-    this.selectedDocumentId = ko.observable<ViewModels.DocumentId>();
+    this.selectedDocumentId = ko.observable<DocumentId>();
     this.selectedDocumentContent = editable.observable<string>("");
     this.initialDocumentContent = ko.observable<string>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
@@ -415,7 +416,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     return true;
   };
 
-  public onDocumentIdClick(clickedDocumentId: ViewModels.DocumentId): Q.Promise<any> {
+  public onDocumentIdClick(clickedDocumentId: DocumentId): Q.Promise<any> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
       return Q();
     }
@@ -528,7 +529,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
           const value: string = this.renderObjectForEditor(updatedDocument || {}, null, 4);
           this.selectedDocumentContent.setBaseline(value);
           this.initialDocumentContent(value);
-          this.documentIds().forEach((documentId: ViewModels.DocumentId) => {
+          this.documentIds().forEach((documentId: DocumentId) => {
             if (documentId.rid === updatedDocument._rid) {
               documentId.id(updatedDocument.id);
             }
@@ -669,11 +670,11 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     return window.confirm(msg);
   };
 
-  protected __deleteDocument(documentId: ViewModels.DocumentId): Q.Promise<any> {
+  protected __deleteDocument(documentId: DocumentId): Q.Promise<any> {
     return deleteDocument(this.collection, documentId);
   }
 
-  private _deleteDocument(selectedDocumentId: ViewModels.DocumentId): Q.Promise<any> {
+  private _deleteDocument(selectedDocumentId: DocumentId): Q.Promise<any> {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -685,7 +686,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     return this.__deleteDocument(selectedDocumentId)
       .then(
         (result: any) => {
-          this.documentIds.remove((documentId: ViewModels.DocumentId) => documentId.rid === selectedDocumentId.rid);
+          this.documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
           this.selectedDocumentContent("");
           this.selectedDocumentId(null);
           this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
@@ -732,7 +733,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     return queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
-  public selectDocument(documentId: ViewModels.DocumentId): Q.Promise<any> {
+  public selectDocument(documentId: DocumentId): Q.Promise<any> {
     this.selectedDocumentId(documentId);
     return readDocument(this.collection, documentId).then((content: any) => {
       this.initDocumentEditor(documentId, content);
@@ -755,7 +756,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
             // map raw response to view model
             .map((rawDocument: any) => {
               const partitionKeyValue = rawDocument._partitionKeyValue;
-              return <ViewModels.DocumentId>new DocumentId(this, rawDocument, partitionKeyValue);
+              return new DocumentId(this, rawDocument, partitionKeyValue);
             });
 
           const merged = currentDocuments.concat(nextDocumentIds);
@@ -826,7 +827,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     }
   }
 
-  public initDocumentEditor(documentId: ViewModels.DocumentId, documentContent: any): Q.Promise<any> {
+  public initDocumentEditor(documentId: DocumentId, documentContent: any): Q.Promise<any> {
     if (documentId) {
       const content: string = this.renderObjectForEditor(documentContent, null, 4);
       this.selectedDocumentContent.setBaseline(content);
@@ -844,8 +845,8 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     return QueryUtils.buildDocumentsQuery(filter, this.partitionKeyProperty, this.partitionKey);
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     const label = !this.isPreferredApiMongoDB ? "New Item" : "New Document";
     if (this.newDocumentButton.visible()) {
       buttons.push({
@@ -963,7 +964,7 @@ export default class DocumentsTab extends TabsBase implements ViewModels.Documen
     );
   }
 
-  public static _createUploadButton(container: Explorer): ViewModels.NavbarButtonConfig {
+  public static _createUploadButton(container: Explorer): CommandButtonComponentProps {
     const label = "Upload Item";
     return {
       iconSrc: UploadIcon,

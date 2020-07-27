@@ -1,10 +1,9 @@
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
 import { DatabaseAccountUtils } from "./DatabaseAccountUtils";
 
 describe("DatabaseAccountUtils Tests", () => {
   describe("mergeDatabaseAccountWithGateway", () => {
-    const databaseAccountWithProperties: ViewModels.DatabaseAccount = {
+    const databaseAccountWithProperties: DataModels.DatabaseAccount = {
       id: "test",
       kind: "GlobalDocumentDB",
       name: "test",
@@ -19,7 +18,7 @@ describe("DatabaseAccountUtils Tests", () => {
       }
     };
 
-    const databaseAccountWithLocations: ViewModels.DatabaseAccount = {
+    const databaseAccountWithLocations: DataModels.DatabaseAccount = {
       id: "test",
       kind: "GlobalDocumentDB",
       name: "test",
@@ -55,7 +54,7 @@ describe("DatabaseAccountUtils Tests", () => {
       }
     };
 
-    const databaseAccountWithoutProperties: ViewModels.DatabaseAccount = {
+    const databaseAccountWithoutProperties: DataModels.DatabaseAccount = {
       id: "test",
       kind: "GlobalDocumentDB",
       name: "test",

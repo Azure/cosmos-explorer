@@ -1,14 +1,13 @@
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
 import AddCollectionPane from "./AddCollectionPane";
 import Explorer from "../Explorer";
 import ko from "knockout";
-import { AutopilotTier } from "../../Contracts/DataModels";
+import { AutopilotTier, DatabaseAccount } from "../../Contracts/DataModels";
 
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {
     let explorer: Explorer;
-    const mockDatabaseAccount: ViewModels.DatabaseAccount = {
+    const mockDatabaseAccount: DatabaseAccount = {
       id: "mock",
       kind: "DocumentDB",
       location: "",
@@ -24,7 +23,7 @@ describe("Add Collection Pane", () => {
       tags: []
     };
 
-    const mockFreeTierDatabaseAccount: ViewModels.DatabaseAccount = {
+    const mockFreeTierDatabaseAccount: DatabaseAccount = {
       id: "mock",
       kind: "DocumentDB",
       location: "",

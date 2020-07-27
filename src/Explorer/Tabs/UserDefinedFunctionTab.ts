@@ -8,7 +8,7 @@ import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import UserDefinedFunction from "../Tree/UserDefinedFunction";
 import { createUserDefinedFunction, updateUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
 
-export default class UserDefinedFunctionTab extends ScriptTabBase implements ViewModels.UserDefinedFunctionTab {
+export default class UserDefinedFunctionTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
   public node: UserDefinedFunction;
   constructor(options: ViewModels.ScriptTabOption) {

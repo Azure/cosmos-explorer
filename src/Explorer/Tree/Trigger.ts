@@ -72,7 +72,7 @@ export default class Trigger {
 
     const triggerTabs: TriggerTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Triggers,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+      tab => tab.node && tab.node.rid === this.rid
     ) as TriggerTab[];
     let triggerTab: TriggerTab = triggerTabs && triggerTabs[0];
 
@@ -125,9 +125,7 @@ export default class Trigger {
 
     deleteTrigger(this.collection, triggerData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}

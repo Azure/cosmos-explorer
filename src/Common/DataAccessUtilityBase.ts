@@ -27,6 +27,8 @@ import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import { Platform, config } from "../Config";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import DocumentId from "../Explorer/Tree/DocumentId";
+import ConflictId from "../Explorer/Tree/ConflictId";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
@@ -169,7 +171,7 @@ export function executeStoredProcedure(
   );
 }
 
-export function readDocument(collection: ViewModels.CollectionBase, documentId: ViewModels.DocumentId): Q.Promise<any> {
+export function readDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
 
   return Q(
@@ -182,7 +184,7 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
   );
 }
 
-export function getPartitionKeyHeaderForConflict(conflictId: ViewModels.ConflictId): Object {
+export function getPartitionKeyHeaderForConflict(conflictId: ConflictId): Object {
   const partitionKeyDefinition: DataModels.PartitionKey = conflictId.partitionKey;
   const partitionKeyValue: any = conflictId.partitionKeyValue;
 
@@ -220,7 +222,7 @@ export function updateCollection(
 
 export function updateDocument(
   collection: ViewModels.CollectionBase,
-  documentId: ViewModels.DocumentId,
+  documentId: DocumentId,
   newDocument: any
 ): Q.Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
@@ -347,10 +349,7 @@ export function createTrigger(
   );
 }
 
-export function deleteDocument(
-  collection: ViewModels.CollectionBase,
-  documentId: ViewModels.DocumentId
-): Q.Promise<any> {
+export function deleteDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
 
   return Q(
@@ -364,7 +363,7 @@ export function deleteDocument(
 
 export function deleteConflict(
   collection: ViewModels.CollectionBase,
-  conflictId: ViewModels.ConflictId,
+  conflictId: ConflictId,
   options: any = {}
 ): Q.Promise<any> {
   options.partitionKey = options.partitionKey || getPartitionKeyHeaderForConflict(conflictId);

@@ -30,6 +30,7 @@ import Explorer from "../Explorer";
 import UserDefinedFunction from "./UserDefinedFunction";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
+import TabsBase from "../Tabs/TabsBase";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -50,7 +51,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.tabsManager.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
     this.container.isNotebookEnabled.subscribe(newValue => this.triggerRender());
 
     this.koSubsDatabaseIdMap = new ArrayHashMap();
@@ -176,7 +177,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
           this.container.tabsManager.refreshActiveTab(
-            (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === database.rid
+            (tab: TabsBase) => tab.collection && tab.collection.getDatabase().rid === database.rid
           );
         },
         onContextMenuOpen: () => this.container.selectedNode(database)
@@ -275,7 +276,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
         this.container.tabsManager.refreshActiveTab(
-          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
         );
       },
       onExpanded: () => {
@@ -303,7 +304,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
         this.container.tabsManager.refreshActiveTab(
-          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
         );
       }
     };
@@ -322,7 +323,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
         this.container.tabsManager.refreshActiveTab(
-          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
         );
       }
     };
@@ -340,7 +341,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
         this.container.tabsManager.refreshActiveTab(
-          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
         );
       }
     };

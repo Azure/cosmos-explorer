@@ -8,6 +8,7 @@ import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import { deleteStoredProcedure, executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import TabsBase from "../Tabs/TabsBase";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -96,7 +97,7 @@ export default class StoredProcedure {
 
     const storedProcedureTabs: StoredProcedureTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
     ) as StoredProcedureTab[];
     let storedProcedureTab: StoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
 
@@ -145,9 +146,7 @@ export default class StoredProcedure {
 
     deleteStoredProcedure(this.collection, storedProcedureData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}
@@ -155,11 +154,11 @@ export default class StoredProcedure {
   }
 
   public execute(params: string[], partitionKeyValue?: string): void {
-    const sprocTabs: ViewModels.StoredProcedureTab[] = this.container.tabsManager.getTabs(
+    const sprocTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-    ) as ViewModels.StoredProcedureTab[];
-    const sprocTab: ViewModels.StoredProcedureTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+    ) as StoredProcedureTab[];
+    const sprocTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
     this.container &&
       executeStoredProcedure(this.collection, this, partitionKeyValue, params)
