@@ -27,9 +27,10 @@ import { TextField, ITextFieldProps, ITextField } from "office-ui-fabric-react/l
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
+import { QueriesClient } from "../../../Common/QueriesClient";
 
 export interface QueriesGridComponentProps {
-  queriesClient: ViewModels.QueriesClient;
+  queriesClient: QueriesClient;
   onQuerySelect: (query: DataModels.Query) => void;
   containerVisible: boolean;
   saveQueryEnabled: boolean;

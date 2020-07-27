@@ -4,8 +4,9 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { IPinnedRepo, JunoClient, IGalleryItem } from "./JunoClient";
 import { config } from "../Config";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { DatabaseAccount } from "../Contracts/DataModels";
 
-const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
+const sampleDatabaseAccount: DatabaseAccount = {
   id: "id",
   name: "name",
   location: "location",
@@ -51,7 +52,7 @@ const sampleGalleryItems: IGalleryItem[] = [
 ];
 
 describe("Pinned repos", () => {
-  const junoClient = new JunoClient(ko.observable<ViewModels.DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
 
   beforeEach(() => {
     window.fetch = jest.fn().mockImplementation(() => {
@@ -88,7 +89,7 @@ describe("Pinned repos", () => {
 });
 
 describe("GitHub", () => {
-  const junoClient = new JunoClient(ko.observable<ViewModels.DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -147,7 +148,7 @@ describe("GitHub", () => {
 });
 
 describe("Gallery", () => {
-  const junoClient = new JunoClient(ko.observable<ViewModels.DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
 
   afterEach(() => {
     jest.resetAllMocks();

@@ -240,9 +240,7 @@ export default class Collection implements ViewModels.Collection {
       this.expandCollection();
     }
     this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public collapseCollection() {
@@ -293,7 +291,7 @@ export default class Collection implements ViewModels.Collection {
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
@@ -344,7 +342,7 @@ export default class Collection implements ViewModels.Collection {
 
     const conflictsTabs: ConflictsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Conflicts,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as ConflictsTab[];
     let conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
 
@@ -401,7 +399,7 @@ export default class Collection implements ViewModels.Collection {
 
     const queryTablesTabs: QueryTablesTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.QueryTables,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as QueryTablesTab[];
     let queryTablesTab: QueryTablesTab = queryTablesTabs && queryTablesTabs[0];
 
@@ -455,7 +453,7 @@ export default class Collection implements ViewModels.Collection {
 
     const graphTabs: GraphTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Graph,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as GraphTab[];
     let graphTab: GraphTab = graphTabs && graphTabs[0];
 
@@ -511,7 +509,7 @@ export default class Collection implements ViewModels.Collection {
 
     const mongoDocumentsTabs: MongoDocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as MongoDocumentsTab[];
     let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
@@ -562,12 +560,9 @@ export default class Collection implements ViewModels.Collection {
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
-    const matchingTabs: ViewModels.Tab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Settings,
-      (tab: ViewModels.Tab) => {
-        return tab.collection && tab.collection.rid === this.rid;
-      }
-    );
+    const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
+      return tab.collection && tab.collection.rid === this.rid;
+    });
 
     let settingsTab: SettingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
     if (!settingsTab) {
@@ -902,9 +897,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandStoredProcedures();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public expandStoredProcedures() {
@@ -961,9 +954,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandUserDefinedFunctions();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public expandUserDefinedFunctions() {
@@ -1020,9 +1011,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandTriggers();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public expandTriggers() {

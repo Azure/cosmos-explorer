@@ -52,9 +52,9 @@ export default class Database implements ViewModels.Database {
     });
 
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
-    const matchingTabs: ViewModels.Tab[] = this.container.tabsManager.getTabs(
+    const matchingTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.DatabaseSettings,
-      (tab: ViewModels.Tab) => tab.rid === this.rid
+      tab => tab.rid === this.rid
     );
     let settingsTab: DatabaseSettingsTab = matchingTabs && (matchingTabs[0] as DatabaseSettingsTab);
     if (!settingsTab) {
@@ -223,9 +223,7 @@ export default class Database implements ViewModels.Database {
       this.expandDatabase();
     }
     this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === this.rid);
   }
 
   public expandDatabase() {

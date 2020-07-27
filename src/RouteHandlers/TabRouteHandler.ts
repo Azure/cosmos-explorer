@@ -4,6 +4,8 @@ import * as ViewModels from "../Contracts/ViewModels";
 
 import crossroads from "crossroads";
 import hasher from "hasher";
+import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
+import TabsBase from "../Explorer/Tabs/TabsBase";
 
 export class TabRouteHandler {
   private _tabRouter: any;
@@ -187,7 +189,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.Query
@@ -206,7 +208,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.Query
@@ -228,7 +230,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.MongoShell
@@ -271,7 +273,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.StoredProcedures,
@@ -302,7 +304,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.Triggers,
@@ -333,7 +335,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.UserDefinedFunctions,
@@ -380,15 +382,15 @@ export class TabRouteHandler {
     collectionId: string,
     tabKind: ViewModels.CollectionTabKind,
     isNewScriptTab?: boolean
-  ): ViewModels.Tab {
+  ): TabsBase {
     const explorer = window.dataExplorer;
-    const matchingTabs: ViewModels.Tab[] = explorer.tabsManager.getTabs(
+    const matchingTabs: TabsBase[] = explorer.tabsManager.getTabs(
       tabKind,
-      (tab: ViewModels.Tab) =>
+      (tab: TabsBase) =>
         tab.collection &&
         tab.collection.databaseId === databaseId &&
         tab.collection.id() === collectionId &&
-        (!isNewScriptTab || (tab as ViewModels.ScriptTab).isNew())
+        (!isNewScriptTab || (tab as ScriptTabBase).isNew())
     );
     return matchingTabs && matchingTabs[0];
   }

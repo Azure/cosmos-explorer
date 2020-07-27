@@ -16,10 +16,9 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
-    this.container.resourceTokenCollection.subscribe((collection: ViewModels.CollectionBase) => this.triggerRender());
+    this.container.resourceTokenCollection.subscribe(() => this.triggerRender());
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.tabsManager &&
-      this.container.tabsManager.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.tabsManager && this.container.tabsManager.activeTab.subscribe(() => this.triggerRender());
 
     this.triggerRender();
   }
@@ -65,9 +64,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        this.container.tabsManager.refreshActiveTab(
-          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
-        );
+        this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === collection.rid);
       },
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined)
     };

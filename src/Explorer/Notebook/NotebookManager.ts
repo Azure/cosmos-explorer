@@ -3,7 +3,6 @@
  */
 
 import { JunoClient } from "../../Juno/JunoClient";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { GitHubClient } from "../../GitHub/GitHubClient";
 import * as Logger from "../../Common/Logger";
@@ -25,6 +24,7 @@ import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter"
 import { getFullName } from "../../Utils/UserUtils";
 import { ImmutableNotebook } from "@nteract/commutable";
 import Explorer from "../Explorer";
+import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 
 export interface NotebookManagerOptions {
   container: Explorer;
@@ -40,14 +40,14 @@ export default class NotebookManager {
   public junoClient: JunoClient;
 
   public notebookContentProvider: IContentProvider;
-  public notebookClient: ViewModels.INotebookContainerClient;
-  public notebookContentClient: ViewModels.INotebookContentClient;
+  public notebookClient: NotebookContainerClient;
+  public notebookContentClient: NotebookContentClient;
 
   private gitHubContentProvider: GitHubContentProvider;
   public gitHubOAuthService: GitHubOAuthService;
   private gitHubClient: GitHubClient;
 
-  public gitHubReposPane: ViewModels.ContextualPane;
+  public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {

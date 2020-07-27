@@ -23,6 +23,7 @@ import {
   updateOffer,
   updateCollection
 } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -412,14 +413,14 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.isAutoScaleEnabled = ko.pureComputed<boolean>(() => {
-      const accountCapabilities: ViewModels.Capability[] =
+      const accountCapabilities: DataModels.Capability[] =
         this.container &&
         this.container.databaseAccount() &&
         this.container.databaseAccount().properties &&
         this.container.databaseAccount().properties.capabilities;
-      const enableAutoScaleCapability: ViewModels.Capability =
+      const enableAutoScaleCapability =
         accountCapabilities &&
-        _.find(accountCapabilities, (capability: ViewModels.Capability) => {
+        _.find(accountCapabilities, capability => {
           return (
             capability &&
             capability.name &&
@@ -1692,8 +1693,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     return document.getElementById(this.indexingPolicyEditorId);
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     if (this.saveSettingsButton.visible()) {
       const label = "Save";
       buttons.push({

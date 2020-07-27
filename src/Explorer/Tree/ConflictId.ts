@@ -8,7 +8,7 @@ import { extractPartitionKey } from "@azure/cosmos";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import { readDocument } from "../../Common/DocumentClientUtilityBase";
 
-export default class ConflictId implements ViewModels.ConflictId {
+export default class ConflictId {
   public container: ConflictsTab;
   public rid: string;
   public self: string;
@@ -115,7 +115,7 @@ export default class ConflictId implements ViewModels.ConflictId {
     return JSON.stringify(partitionKeyValue);
   }
 
-  public buildDocumentIdFromConflict(partitionKeyValue: any): ViewModels.DocumentId {
+  public buildDocumentIdFromConflict(partitionKeyValue: any): DocumentId {
     const conflictDocumentRid = Constants.HashRoutePrefixes.docsWithIds(
       this.container.collection.getDatabase().rid,
       this.container.collection.rid,

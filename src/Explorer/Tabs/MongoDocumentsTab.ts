@@ -21,7 +21,7 @@ import { extractPartitionKey } from "@azure/cosmos";
 import * as Logger from "../../Common/Logger";
 import { PartitionKeyDefinition } from "@azure/cosmos";
 
-export default class MongoDocumentsTab extends DocumentsTab implements ViewModels.DocumentsTab {
+export default class MongoDocumentsTab extends DocumentsTab {
   public collection: ViewModels.Collection;
   private continuationToken: string;
 
@@ -151,7 +151,7 @@ export default class MongoDocumentsTab extends DocumentsTab implements ViewModel
           let value: string = this.renderObjectForEditor(updatedDocument || {}, null, 4);
           this.selectedDocumentContent.setBaseline(value);
 
-          this.documentIds().forEach((documentId: ViewModels.DocumentId) => {
+          this.documentIds().forEach((documentId: DocumentId) => {
             if (documentId.rid === updatedDocument._rid) {
               const partitionKeyArray = extractPartitionKey(
                 updatedDocument,
@@ -199,7 +199,7 @@ export default class MongoDocumentsTab extends DocumentsTab implements ViewModel
     return filter || "{}";
   }
 
-  public selectDocument(documentId: ViewModels.DocumentId): Q.Promise<any> {
+  public selectDocument(documentId: DocumentId): Q.Promise<any> {
     this.selectedDocumentId(documentId);
     return Q(
       readDocument(this.collection.databaseId, this.collection, documentId).then((content: any) => {
@@ -226,7 +226,7 @@ export default class MongoDocumentsTab extends DocumentsTab implements ViewModel
             })
             .map((rawDocument: any) => {
               const partitionKeyValue = rawDocument._partitionKeyValue;
-              return <ViewModels.DocumentId>new DocumentId(this, rawDocument, partitionKeyValue);
+              return new DocumentId(this, rawDocument, partitionKeyValue);
             });
 
           const merged = currentDocuments.concat(nextDocumentIds);
@@ -324,7 +324,7 @@ export default class MongoDocumentsTab extends DocumentsTab implements ViewModel
     return partitionKey;
   }
 
-  protected __deleteDocument(documentId: ViewModels.DocumentId): Q.Promise<any> {
+  protected __deleteDocument(documentId: DocumentId): Q.Promise<any> {
     return Q(deleteDocument(this.collection.databaseId, this.collection, documentId));
   }
 }

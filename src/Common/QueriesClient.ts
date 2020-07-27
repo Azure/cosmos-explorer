@@ -18,8 +18,9 @@ import {
   queryDocumentsPage,
   deleteDocument
 } from "./DocumentClientUtilityBase";
+import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
 
-export class QueriesClient implements ViewModels.QueriesClient {
+export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
     paths: [`/${SavedQueries.PartitionKeyProperty}`],
     kind: BackendDefaults.partitionKeyKind,
@@ -216,11 +217,11 @@ export class QueriesClient implements ViewModels.QueriesClient {
       `Deleting query ${query.queryName}`
     );
     query.id = query.queryName;
-    const documentId: ViewModels.DocumentId = new DocumentId(
+    const documentId = new DocumentId(
       {
         partitionKey: QueriesClient.PartitionKey,
         partitionKeyProperty: "id"
-      } as ViewModels.DocumentsTab,
+      } as DocumentsTab,
       query,
       query.queryName
     ); // TODO: Remove DocumentId's dependency on DocumentsTab
@@ -248,7 +249,7 @@ export class QueriesClient implements ViewModels.QueriesClient {
   }
 
   public getResourceId(): string {
-    const databaseAccount: ViewModels.DatabaseAccount = CosmosClient.databaseAccount();
+    const databaseAccount = CosmosClient.databaseAccount();
     const databaseAccountName: string = (databaseAccount && databaseAccount.name) || "";
     const subscriptionId: string = CosmosClient.subscriptionId() || "";
     const resourceGroup: string = CosmosClient.resourceGroup() || "";

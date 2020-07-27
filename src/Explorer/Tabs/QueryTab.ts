@@ -17,13 +17,14 @@ import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { queryDocuments, queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 enum ToggleState {
   Result,
   QueryMetrics
 }
 
-export default class QueryTab extends TabsBase implements ViewModels.QueryTab, ViewModels.WaitsForTemplate {
+export default class QueryTab extends TabsBase implements ViewModels.WaitsForTemplate {
   public queryEditorId: string;
   public executeQueryButton: ViewModels.Button;
   public fetchNextPageButton: ViewModels.Button;
@@ -586,8 +587,8 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     return csvData;
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     if (this.executeQueryButton.visible()) {
       const label = this._executeQueryButtonTitle();
       buttons.push({

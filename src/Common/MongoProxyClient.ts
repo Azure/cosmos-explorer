@@ -1,7 +1,6 @@
 import * as Constants from "../Common/Constants";
 import * as DataExplorerConstants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
 import EnvironmentUtility from "./EnvironmentUtility";
 import queryString from "querystring";
 import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
@@ -17,6 +16,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 import { MinimalQueryIterator } from "./IteratorUtilities";
+import DocumentId from "../Explorer/Tree/DocumentId";
 
 const defaultHeaders = {
   [HttpHeaders.apiType]: ApiType.MongoDB.toString(),
@@ -123,7 +123,7 @@ export function queryDocuments(
 export function readDocument(
   databaseId: string,
   collection: Collection,
-  documentId: ViewModels.DocumentId
+  documentId: DocumentId
 ): Promise<DataModels.DocumentId> {
   const databaseAccount = CosmosClient.databaseAccount();
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -205,7 +205,7 @@ export function createDocument(
 export function updateDocument(
   databaseId: string,
   collection: Collection,
-  documentId: ViewModels.DocumentId,
+  documentId: DocumentId,
   documentContent: unknown
 ): Promise<DataModels.DocumentId> {
   const databaseAccount = CosmosClient.databaseAccount();
@@ -246,11 +246,7 @@ export function updateDocument(
     });
 }
 
-export function deleteDocument(
-  databaseId: string,
-  collection: Collection,
-  documentId: ViewModels.DocumentId
-): Promise<void> {
+export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
   const databaseAccount = CosmosClient.databaseAccount();
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
@@ -385,7 +381,7 @@ export function createMongoCollectionWithARM(
   return _createMongoCollectionWithARM(armEndpoint, params, additionalOptions);
 }
 
-export function getEndpoint(databaseAccount: ViewModels.DatabaseAccount): string {
+export function getEndpoint(databaseAccount: DataModels.DatabaseAccount): string {
   const serverId = window.dataExplorer.serverId();
   const extensionEndpoint = window.dataExplorer.extensionEndpoint();
   let url = config.MONGO_BACKEND_ENDPOINT

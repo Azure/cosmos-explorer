@@ -57,7 +57,7 @@ export default class UserDefinedFunction {
 
     const userDefinedFunctionTabs: UserDefinedFunctionTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.UserDefinedFunctions,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as UserDefinedFunctionTab[];
     let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
 
@@ -115,9 +115,7 @@ export default class UserDefinedFunction {
     };
     deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}

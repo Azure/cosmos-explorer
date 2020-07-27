@@ -14,7 +14,6 @@ import TabsBase from "./TabsBase";
 import { DocumentsGridMetrics } from "../../Common/Constants";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import Toolbar from "../Controls/Toolbar/Toolbar";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -28,16 +27,16 @@ import {
   createDocument,
   updateDocument
 } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 export default class ConflictsTab extends TabsBase {
-  public selectedConflictId: ko.Observable<ViewModels.ConflictId>;
+  public selectedConflictId: ko.Observable<ConflictId>;
   public selectedConflictContent: ViewModels.Editable<string>;
   public selectedConflictCurrent: ViewModels.Editable<string>;
   public documentContentsGridId: string;
   public documentContentsContainerId: string;
   public isEditorDirty: ko.Computed<boolean>;
   public editorState: ko.Observable<ViewModels.DocumentExplorerState>;
-  public toolbarViewModel = ko.observable<Toolbar>();
   public acceptChangesButton: ViewModels.Button;
   public discardButton: ViewModels.Button;
   public deleteButton: ViewModels.Button;
@@ -54,7 +53,7 @@ export default class ConflictsTab extends TabsBase {
   public partitionKeyPropertyHeader: string;
   public partitionKeyProperty: string;
   public conflictOperation: ko.Observable<string> = ko.observable<string>();
-  public conflictIds: ko.ObservableArray<ViewModels.ConflictId>;
+  public conflictIds: ko.ObservableArray<ConflictId>;
 
   private _documentsIterator: MinimalQueryIterator;
   private _container: Explorer;
@@ -70,7 +69,7 @@ export default class ConflictsTab extends TabsBase {
     this.editorState = ko.observable<ViewModels.DocumentExplorerState>(
       ViewModels.DocumentExplorerState.noDocumentSelected
     );
-    this.selectedConflictId = ko.observable<ViewModels.ConflictId>();
+    this.selectedConflictId = ko.observable<ConflictId>();
     this.selectedConflictContent = editable.observable<any>("");
     this.selectedConflictCurrent = editable.observable<any>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
@@ -106,14 +105,14 @@ export default class ConflictsTab extends TabsBase {
 
     this.accessibleDocumentList = new AccessibleVerticalList(this.conflictIds());
     this.accessibleDocumentList.setOnSelect(
-      (selectedDocument: ViewModels.ConflictId) => selectedDocument && selectedDocument.click()
+      (selectedDocument: ConflictId) => selectedDocument && selectedDocument.click()
     );
-    this.selectedConflictId.subscribe((newSelectedDocumentId: ViewModels.ConflictId) => {
+    this.selectedConflictId.subscribe((newSelectedDocumentId: ConflictId) => {
       this.accessibleDocumentList.updateCurrentItem(newSelectedDocumentId);
       this.conflictOperation(newSelectedDocumentId && newSelectedDocumentId.operationType);
     });
 
-    this.conflictIds.subscribe((newDocuments: ViewModels.ConflictId[]) => {
+    this.conflictIds.subscribe((newDocuments: ConflictId[]) => {
       this.accessibleDocumentList.updateItemList(newDocuments);
       this.dataContentsGridScrollHeight(
         newDocuments.length * DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px"
@@ -259,7 +258,7 @@ export default class ConflictsTab extends TabsBase {
     return true;
   };
 
-  public onConflictIdClick(clickedDocumentId: ViewModels.ConflictId): Q.Promise<any> {
+  public onConflictIdClick(clickedDocumentId: ConflictId): Q.Promise<any> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
       return Q();
     }
@@ -319,7 +318,7 @@ export default class ConflictsTab extends TabsBase {
       .then(
         () => {
           return deleteConflict(this.collection, selectedConflict).then(() => {
-            this.conflictIds.remove((conflictId: ViewModels.ConflictId) => conflictId.rid === selectedConflict.rid);
+            this.conflictIds.remove((conflictId: ConflictId) => conflictId.rid === selectedConflict.rid);
             this.selectedConflictContent("");
             this.selectedConflictCurrent("");
             this.selectedConflictId(null);
@@ -380,7 +379,7 @@ export default class ConflictsTab extends TabsBase {
     return deleteConflict(this.collection, selectedConflict)
       .then(
         () => {
-          this.conflictIds.remove((conflictId: ViewModels.ConflictId) => conflictId.rid === selectedConflict.rid);
+          this.conflictIds.remove((conflictId: ConflictId) => conflictId.rid === selectedConflict.rid);
           this.selectedConflictContent("");
           this.selectedConflictCurrent("");
           this.selectedConflictId(null);
@@ -515,7 +514,7 @@ export default class ConflictsTab extends TabsBase {
             })
             // map raw response to view model
             .map((rawDocument: any) => {
-              return <ViewModels.ConflictId>new ConflictId(this, rawDocument);
+              return <ConflictId>new ConflictId(this, rawDocument);
             });
 
           const merged = currentConflicts.concat(nextConflictIds);
@@ -580,7 +579,7 @@ export default class ConflictsTab extends TabsBase {
     }
   }
 
-  public initDocumentEditorForCreate(documentId: ViewModels.ConflictId, documentToInsert: any): Q.Promise<any> {
+  public initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Q.Promise<any> {
     if (documentId) {
       let parsedConflictContent: any = JSON.parse(documentToInsert);
       const renderedConflictContent: string = this.renderObjectForEditor(parsedConflictContent, null, 4);
@@ -592,7 +591,7 @@ export default class ConflictsTab extends TabsBase {
   }
 
   public initDocumentEditorForReplace(
-    documentId: ViewModels.ConflictId,
+    documentId: ConflictId,
     conflictContent: any,
     currentContent: any
   ): Q.Promise<any> {
@@ -612,7 +611,7 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public initDocumentEditorForDelete(documentId: ViewModels.ConflictId, documentToDelete: any): Q.Promise<any> {
+  public initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Q.Promise<any> {
     if (documentId) {
       let parsedDocumentToDelete: any = JSON.parse(documentToDelete);
       parsedDocumentToDelete = ConflictsTab.removeSystemProperties(parsedDocumentToDelete);
@@ -624,15 +623,15 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public initDocumentEditorForNoOp(documentId: ViewModels.ConflictId): Q.Promise<any> {
+  public initDocumentEditorForNoOp(documentId: ConflictId): Q.Promise<any> {
     this.selectedConflictContent(null);
     this.selectedConflictCurrent(null);
     this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
     return Q();
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     const label = this._acceptButtonLabel();
     if (this.acceptChangesButton.visible()) {
       buttons.push({
