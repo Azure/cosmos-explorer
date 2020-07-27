@@ -5,7 +5,6 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { KeyCodes } from "../../Common/Constants";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 
 // TODO: Use specific actions for logging telemetry data
@@ -17,14 +16,12 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel imple
   public formErrors: ko.Observable<string>;
   public title: ko.Observable<string>;
   public visible: ko.Observable<boolean>;
-  public documentClientUtility: DocumentClientUtilityBase;
   public isExecuting: ko.Observable<boolean>;
 
   constructor(options: ViewModels.PaneOptions) {
     super();
     this.id = options.id;
     this.container = options.container;
-    this.documentClientUtility = options.documentClientUtility;
     this.visible = options.visible || ko.observable(false);
     this.firstFieldHasFocus = ko.observable<boolean>(false);
     this.formErrors = ko.observable<string>();

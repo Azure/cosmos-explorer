@@ -20,6 +20,7 @@ import { createMongoCollectionWithARM, createMongoCollectionWithProxy } from "..
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { HashMap } from "../../Common/HashMap";
 import { PlatformType } from "../../PlatformType";
+import { refreshCachedResources, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
 
 export default class AddCollectionPane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -941,8 +942,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
           )
         );
     } else {
-      createCollectionFunc = () =>
-        this.container.documentClientUtility.getOrCreateDatabaseAndCollection(createRequest, options);
+      createCollectionFunc = () => getOrCreateDatabaseAndCollection(createRequest, options);
     }
 
     createCollectionFunc().then(
@@ -978,7 +978,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
         this.resetData();
-        return this.container.documentClientUtility.refreshCachedResources().then(() => {
+        return refreshCachedResources().then(() => {
           this.container.refreshAllDatabases();
         });
       },

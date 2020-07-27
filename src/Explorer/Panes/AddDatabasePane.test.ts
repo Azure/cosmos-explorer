@@ -40,7 +40,6 @@ describe("Add Database Pane", () => {
 
     beforeEach(() => {
       explorer = new Explorer({
-        documentClientUtility: null,
         notificationsClient: null,
         isEmulator: false
       });

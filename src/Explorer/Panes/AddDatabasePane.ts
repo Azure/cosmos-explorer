@@ -16,6 +16,7 @@ import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
+import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -334,10 +335,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   ) {
     AddDbUtilities.createSqlDatabase(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings).then(
       () => {
-        Promise.all([
-          this.container.documentClientUtility.refreshCachedOffers(),
-          this.container.documentClientUtility.refreshCachedResources()
-        ]).then(() => {
+        Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
           this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
         });
       }
@@ -354,10 +352,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       createDatabaseParameters,
       autoPilotSettings
     ).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
     });
@@ -373,10 +368,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       createDatabaseParameters,
       autoPilotSettings
     ).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
     });
@@ -413,7 +405,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       autoPilot,
       hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
     };
-    this.container.documentClientUtility.createDatabase(createRequest).then(
+    createDatabase(createRequest).then(
       (database: DataModels.Database) => {
         this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
       },
@@ -464,10 +456,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     startKey: number
   ): void {
     AddDbUtilities.createCassandraKeyspace(armEndpoint, createKeyspaceParameters, autoPilotSettings).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
       });
     });

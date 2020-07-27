@@ -15,7 +15,7 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
+import { readDatabases, readCollection, readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
@@ -127,7 +127,6 @@ export default class Explorer {
   public extensionEndpoint: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
-  public documentClientUtility: DocumentClientUtilityBase;
   public notificationsClient: ViewModels.NotificationsClient;
   public queriesClient: ViewModels.QueriesClient;
   public tableDataClient: TableDataClient;
@@ -358,7 +357,6 @@ export default class Explorer {
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
-    this.documentClientUtility = options.documentClientUtility;
     this.notificationsClient = options.notificationsClient;
     this.isEmulator = options.isEmulator;
 
@@ -584,7 +582,6 @@ export default class Explorer {
     });
 
     this.addDatabasePane = new AddDatabasePane({
-      documentClientUtility: this.documentClientUtility,
       id: "adddatabasepane",
       visible: ko.observable<boolean>(false),
 
@@ -593,7 +590,6 @@ export default class Explorer {
 
     this.addCollectionPane = new AddCollectionPane({
       isPreferredApiTable: ko.computed(() => this.isPreferredApiTable()),
-      documentClientUtility: this.documentClientUtility,
       id: "addcollectionpane",
       visible: ko.observable<boolean>(false),
 
@@ -601,7 +597,6 @@ export default class Explorer {
     });
 
     this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      documentClientUtility: this.documentClientUtility,
       id: "deletecollectionconfirmationpane",
       visible: ko.observable<boolean>(false),
 
@@ -609,7 +604,6 @@ export default class Explorer {
     });
 
     this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      documentClientUtility: this.documentClientUtility,
       id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
 
@@ -617,7 +611,6 @@ export default class Explorer {
     });
 
     this.graphStylingPane = new GraphStylingPane({
-      documentClientUtility: this.documentClientUtility,
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
 
@@ -625,7 +618,6 @@ export default class Explorer {
     });
 
     this.addTableEntityPane = new AddTableEntityPane({
-      documentClientUtility: this.documentClientUtility,
       id: "addtableentitypane",
       visible: ko.observable<boolean>(false),
 
@@ -633,7 +625,6 @@ export default class Explorer {
     });
 
     this.editTableEntityPane = new EditTableEntityPane({
-      documentClientUtility: this.documentClientUtility,
       id: "edittableentitypane",
       visible: ko.observable<boolean>(false),
 
@@ -641,7 +632,6 @@ export default class Explorer {
     });
 
     this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "tablecolumnoptionspane",
       visible: ko.observable<boolean>(false),
 
@@ -649,7 +639,6 @@ export default class Explorer {
     });
 
     this.querySelectPane = new QuerySelectPane({
-      documentClientUtility: this.documentClientUtility,
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
 
@@ -657,7 +646,6 @@ export default class Explorer {
     });
 
     this.newVertexPane = new NewVertexPane({
-      documentClientUtility: this.documentClientUtility,
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
 
@@ -665,7 +653,6 @@ export default class Explorer {
     });
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      documentClientUtility: this.documentClientUtility,
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
 
@@ -673,7 +660,6 @@ export default class Explorer {
     });
 
     this.settingsPane = new SettingsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "settingspane",
       visible: ko.observable<boolean>(false),
 
@@ -681,7 +667,6 @@ export default class Explorer {
     });
 
     this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "executesprocparamspane",
       visible: ko.observable<boolean>(false),
 
@@ -689,7 +674,6 @@ export default class Explorer {
     });
 
     this.renewAdHocAccessPane = new RenewAdHocAccessPane({
-      documentClientUtility: this.documentClientUtility,
       id: "renewadhocaccesspane",
       visible: ko.observable<boolean>(false),
 
@@ -697,7 +681,6 @@ export default class Explorer {
     });
 
     this.uploadItemsPane = new UploadItemsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
 
@@ -707,7 +690,6 @@ export default class Explorer {
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
-      documentClientUtility: this.documentClientUtility,
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
 
@@ -715,7 +697,6 @@ export default class Explorer {
     });
 
     this.saveQueryPane = new SaveQueryPane({
-      documentClientUtility: this.documentClientUtility,
       id: "savequerypane",
       visible: ko.observable<boolean>(false),
 
@@ -723,7 +704,6 @@ export default class Explorer {
     });
 
     this.browseQueriesPane = new BrowseQueriesPane({
-      documentClientUtility: this.documentClientUtility,
       id: "browsequeriespane",
       visible: ko.observable<boolean>(false),
 
@@ -731,7 +711,6 @@ export default class Explorer {
     });
 
     this.uploadFilePane = new UploadFilePane({
-      documentClientUtility: this.documentClientUtility,
       id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
@@ -739,7 +718,6 @@ export default class Explorer {
     });
 
     this.stringInputPane = new StringInputPane({
-      documentClientUtility: this.documentClientUtility,
       id: "stringinputpane",
       visible: ko.observable<boolean>(false),
 
@@ -747,7 +725,6 @@ export default class Explorer {
     });
 
     this.setupNotebooksPane = new SetupNotebooksPane({
-      documentClientUtility: this.documentClientUtility,
       id: "setupnotebookspane",
       visible: ko.observable<boolean>(false),
 
@@ -780,7 +757,6 @@ export default class Explorer {
       this.setupNotebooksPane
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
-    this.rebindDocumentClientUtility.bind(this);
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
@@ -862,7 +838,7 @@ export default class Explorer {
           this.editTableEntityPane.title("Edit Table Entity");
           this.deleteCollectionConfirmationPane.title("Delete Table");
           this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.tableDataClient = new TablesAPIDataClient(this.documentClientUtility);
+          this.tableDataClient = new TablesAPIDataClient();
           break;
         case Constants.DefaultAccountExperience.Cassandra.toLowerCase():
           this.addCollectionText("New Table");
@@ -881,7 +857,7 @@ export default class Explorer {
           this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
           this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
           this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
-          this.tableDataClient = new CassandraAPIDataClient(this.documentClientUtility);
+          this.tableDataClient = new CassandraAPIDataClient();
           break;
       }
     });
@@ -1064,13 +1040,6 @@ export default class Explorer {
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
-  }
-
-  public rebindDocumentClientUtility(documentClientUtility: DocumentClientUtilityBase): void {
-    this.documentClientUtility = documentClientUtility;
-    this._panes.forEach((pane: ViewModels.ContextualPane) => {
-      pane.documentClientUtility = documentClientUtility;
-    });
   }
 
   public copyUrlLink(src: any, event: MouseEvent): void {
@@ -1391,7 +1360,7 @@ export default class Explorer {
     }
 
     const deferred: Q.Deferred<void> = Q.defer();
-    this.documentClientUtility.readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
       deferred.resolve();
@@ -1421,7 +1390,7 @@ export default class Explorer {
 
     const refreshDatabases = (offers?: DataModels.Offer[]) => {
       this._setLoadingStatusText("Fetching databases...");
-      this.documentClientUtility.readDatabases(null /*options*/).then(
+      readDatabases(null /*options*/).then(
         (databases: DataModels.Database[]) => {
           this._setLoadingStatusText("Successfully fetched databases.");
           TelemetryProcessor.traceSuccess(
@@ -1478,7 +1447,7 @@ export default class Explorer {
       // Serverless accounts don't support offers call
       refreshDatabases();
     } else {
-      const offerPromise: Q.Promise<DataModels.Offer[]> = this.documentClientUtility.readOffers();
+      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
       this._setLoadingStatusText("Fetching offers...");
       offerPromise.then(
         (offers: DataModels.Offer[]) => {
@@ -1554,7 +1523,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    this.documentClientUtility.refreshCachedResources().then(
+    refreshCachedResources().then(
       () => {
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
@@ -2480,8 +2449,6 @@ export default class Explorer {
         node: null,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
-        documentClientUtility: null,
-
         collection: null,
         selfLink: null,
         masterKey: CosmosClient.masterKey() || "",
@@ -2923,8 +2890,6 @@ export default class Explorer {
         node: null,
         title: title,
         tabPath: title,
-        documentClientUtility: null,
-
         collection: null,
         selfLink: null,
         hashLocation: hashLocation,

@@ -7,6 +7,7 @@ import ScriptTabBase from "./ScriptTabBase";
 import editable from "../../Common/EditableUtility";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
+import { createTrigger, updateTrigger } from "../../Common/DocumentClientUtilityBase";
 
 export default class TriggerTab extends ScriptTabBase implements ViewModels.TriggerTab {
   public collection: ViewModels.Collection;
@@ -41,8 +42,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
       tabTitle: this.tabTitle()
     });
 
-    return this.documentClientUtility
-      .updateTrigger(this.collection, data)
+    return updateTrigger(this.collection, data)
       .then(
         (createdResource: DataModels.Trigger) => {
           this.resource(createdResource);
@@ -119,8 +119,7 @@ export default class TriggerTab extends ScriptTabBase implements ViewModels.Trig
       tabTitle: this.tabTitle()
     });
 
-    return this.documentClientUtility
-      .createTrigger(this.collection, resource)
+    return createTrigger(this.collection, resource)
       .then(
         (createdResource: DataModels.Trigger) => {
           this.tabTitle(createdResource.id);

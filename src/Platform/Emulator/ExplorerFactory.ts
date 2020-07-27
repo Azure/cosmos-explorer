@@ -3,15 +3,10 @@ import { AccountKind, TagNames, DefaultAccountExperience } from "../../Common/Co
 import Explorer from "../../Explorer/Explorer";
 
 import { NotificationsClient } from "./NotificationsClient";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 
 export default class EmulatorExplorerFactory {
   public static createExplorer(): Explorer {
-    DocumentClientUtilityBase;
-    const documentClientUtility: DocumentClientUtilityBase = new DocumentClientUtilityBase();
-
     const explorer: Explorer = new Explorer({
-      documentClientUtility: documentClientUtility,
       notificationsClient: new NotificationsClient(),
       isEmulator: true
     });

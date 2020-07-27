@@ -21,6 +21,13 @@ import DeleteIcon from "../../../images/delete.svg";
 import { QueryIterator, ItemDefinition, Resource, ConflictDefinition } from "@azure/cosmos";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import Explorer from "../Explorer";
+import {
+  queryConflicts,
+  deleteConflict,
+  deleteDocument,
+  createDocument,
+  updateDocument
+} from "../../Common/DocumentClientUtilityBase";
 
 export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ViewModels.ConflictId>;
@@ -286,7 +293,7 @@ export default class ConflictsTab extends TabsBase {
     if (selectedConflict.operationType === Constants.ConflictOperationType.Replace) {
       const documentContent = JSON.parse(this.selectedConflictContent());
 
-      operationPromise = this._container.documentClientUtility.updateDocument(
+      operationPromise = updateDocument(
         this.collection,
         selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty]),
         documentContent
@@ -296,13 +303,13 @@ export default class ConflictsTab extends TabsBase {
     if (selectedConflict.operationType === Constants.ConflictOperationType.Create) {
       const documentContent = JSON.parse(this.selectedConflictContent());
 
-      operationPromise = this._container.documentClientUtility.createDocument(this.collection, documentContent);
+      operationPromise = createDocument(this.collection, documentContent);
     }
 
     if (selectedConflict.operationType === Constants.ConflictOperationType.Delete && !!this.selectedConflictContent()) {
       const documentContent = JSON.parse(this.selectedConflictContent());
 
-      operationPromise = this._container.documentClientUtility.deleteDocument(
+      operationPromise = deleteDocument(
         this.collection,
         selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty])
       );
@@ -311,7 +318,7 @@ export default class ConflictsTab extends TabsBase {
     return operationPromise
       .then(
         () => {
-          return this._container.documentClientUtility.deleteConflict(this.collection, selectedConflict).then(() => {
+          return deleteConflict(this.collection, selectedConflict).then(() => {
             this.conflictIds.remove((conflictId: ViewModels.ConflictId) => conflictId.rid === selectedConflict.rid);
             this.selectedConflictContent("");
             this.selectedConflictCurrent("");
@@ -370,8 +377,7 @@ export default class ConflictsTab extends TabsBase {
       conflictResourceId: selectedConflict.resourceId
     });
 
-    return this._container.documentClientUtility
-      .deleteConflict(this.collection, selectedConflict)
+    return deleteConflict(this.collection, selectedConflict)
       .then(
         () => {
           this.conflictIds.remove((conflictId: ViewModels.ConflictId) => conflictId.rid === selectedConflict.rid);
@@ -491,7 +497,7 @@ export default class ConflictsTab extends TabsBase {
     const query: string = undefined;
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-    return this.documentClientUtility.queryConflicts(this.collection.databaseId, this.collection.id(), query, options);
+    return queryConflicts(this.collection.databaseId, this.collection.id(), query, options);
   }
 
   public loadNextPage(): Q.Promise<any> {

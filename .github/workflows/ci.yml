@@ -52,6 +52,7 @@ jobs:
       - run: npm run test
   build:
     runs-on: ubuntu-latest
+    needs: [lint, format, compile, unittest]
     name: "Build"
     steps:
       - uses: actions/checkout@v2
@@ -75,6 +76,7 @@ jobs:
           path: dist/
   endtoendemulator:
     name: "End To End Tests | Emulator | SQL"
+    needs: [lint, format, compile, unittest]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -101,6 +103,7 @@ jobs:
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
   endtoendsql:
     name: "End To End Tests | SQL"
+    needs: [lint, format, compile, unittest]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -129,6 +132,7 @@ jobs:
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
   endtoendmongo:
     name: "End To End Tests | Mongo"
+    needs: [lint, format, compile, unittest]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -157,6 +161,7 @@ jobs:
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
   accessibility:
     name: "Accessibility | Hosted"
+    needs: [lint, format, compile, unittest]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

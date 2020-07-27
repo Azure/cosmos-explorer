@@ -11,6 +11,13 @@ import * as Logger from "./Logger";
 import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
 import Explorer from "../Explorer/Explorer";
+import {
+  getOrCreateDatabaseAndCollection,
+  createDocument,
+  queryDocuments,
+  queryDocumentsPage,
+  deleteDocument
+} from "./DocumentClientUtilityBase";
 
 export class QueriesClient implements ViewModels.QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -33,14 +40,13 @@ export class QueriesClient implements ViewModels.QueriesClient {
       ConsoleDataType.InProgress,
       "Setting up account for saving queries"
     );
-    return this.container.documentClientUtility
-      .getOrCreateDatabaseAndCollection({
-        collectionId: SavedQueries.CollectionName,
-        databaseId: SavedQueries.DatabaseName,
-        partitionKey: QueriesClient.PartitionKey,
-        offerThroughput: SavedQueries.OfferThroughput,
-        databaseLevelThroughput: undefined
-      })
+    return getOrCreateDatabaseAndCollection({
+      collectionId: SavedQueries.CollectionName,
+      databaseId: SavedQueries.DatabaseName,
+      partitionKey: QueriesClient.PartitionKey,
+      offerThroughput: SavedQueries.OfferThroughput,
+      databaseLevelThroughput: undefined
+    })
       .then(
         (collection: DataModels.Collection) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -89,8 +95,7 @@ export class QueriesClient implements ViewModels.QueriesClient {
       `Saving query ${query.queryName}`
     );
     query.id = query.queryName;
-    return this.container.documentClientUtility
-      .createDocument(queriesCollection, query)
+    return createDocument(queriesCollection, query)
       .then(
         (savedQuery: DataModels.Query) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -131,17 +136,11 @@ export class QueriesClient implements ViewModels.QueriesClient {
 
     const options: any = { enableCrossPartitionQuery: true };
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Fetching saved queries");
-    return this.container.documentClientUtility
-      .queryDocuments(SavedQueries.DatabaseName, SavedQueries.CollectionName, this.fetchQueriesQuery(), options)
+    return queryDocuments(SavedQueries.DatabaseName, SavedQueries.CollectionName, this.fetchQueriesQuery(), options)
       .then(
         (queryIterator: QueryIterator<ItemDefinition & Resource>) => {
           const fetchQueries = (firstItemIndex: number): Q.Promise<ViewModels.QueryResults> =>
-            this.container.documentClientUtility.queryDocumentsPage(
-              queriesCollection.id(),
-              queryIterator,
-              firstItemIndex,
-              options
-            );
+            queryDocumentsPage(queriesCollection.id(), queryIterator, firstItemIndex, options);
           return QueryUtils.queryAllPages(fetchQueries).then(
             (results: ViewModels.QueryResults) => {
               let queries: DataModels.Query[] = _.map(results.documents, (document: DataModels.Query) => {
@@ -226,8 +225,7 @@ export class QueriesClient implements ViewModels.QueriesClient {
       query.queryName
     ); // TODO: Remove DocumentId's dependency on DocumentsTab
     const options: any = { partitionKey: query.resourceId };
-    return this.container.documentClientUtility
-      .deleteDocument(queriesCollection, documentId)
+    return deleteDocument(queriesCollection, documentId)
       .then(
         () => {
           NotificationConsoleUtils.logConsoleMessage(
