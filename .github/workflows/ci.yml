@@ -183,7 +183,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
   nuget:
     name: Publish Nuget
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
@@ -207,7 +207,7 @@ jobs:
           path: "*.nupkg"
   nugetmpac:
     name: Publish Nuget MPAC
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
     runs-on: ubuntu-latest
     env:
