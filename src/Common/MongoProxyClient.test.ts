@@ -173,7 +173,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct URL", () => {
-      updateDocument(databaseId, collection, documentId, {});
+      updateDocument(databaseId, collection, documentId, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
         expect.any(Object)
@@ -182,7 +182,7 @@ describe("MongoProxyClient", () => {
 
     it("builds the correct proxy URL in development", () => {
       config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
-      updateDocument(databaseId, collection, documentId, {});
+      updateDocument(databaseId, collection, documentId, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
         expect.any(Object)
