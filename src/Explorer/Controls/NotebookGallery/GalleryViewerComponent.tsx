@@ -222,7 +222,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
-          {this.props.container.isGalleryPublishEnabled() && (
+          {this.props.container?.isGalleryPublishEnabled() && (
             <Stack.Item>
               <InfoComponent />
             </Stack.Item>

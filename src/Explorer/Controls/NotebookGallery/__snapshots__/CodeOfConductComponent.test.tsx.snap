@@ -34,7 +34,7 @@ exports[`CodeOfConductComponent renders 1`] = `
       >
         code of conduct
       </StyledLinkBase>
-      and
+       and 
       <StyledLinkBase
         href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
