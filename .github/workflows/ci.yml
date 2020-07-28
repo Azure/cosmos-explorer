@@ -1,8 +1,13 @@
 name: CI
 on:
   push:
+    branches:
+      - master
+      - hotfix/*
+      - release/*
   pull_request:
-    branches: [master]
+    branches:
+      - master
 jobs:
   compile:
     runs-on: ubuntu-latest

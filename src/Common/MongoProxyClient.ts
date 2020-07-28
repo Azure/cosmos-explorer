@@ -206,7 +206,7 @@ export function updateDocument(
   databaseId: string,
   collection: Collection,
   documentId: ViewModels.DocumentId,
-  documentContent: unknown
+  documentContent: string
 ): Promise<DataModels.DocumentId> {
   const databaseAccount = CosmosClient.databaseAccount();
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -230,7 +230,7 @@ export function updateDocument(
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
       method: "PUT",
-      body: JSON.stringify(documentContent),
+      body: documentContent,
       headers: {
         ...defaultHeaders,
         ...authHeaders(),
