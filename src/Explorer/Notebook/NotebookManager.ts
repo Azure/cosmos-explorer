@@ -3,7 +3,6 @@
  */
 
 import { JunoClient } from "../../Juno/JunoClient";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { GitHubClient } from "../../GitHub/GitHubClient";
 import * as Logger from "../../Common/Logger";
@@ -23,9 +22,12 @@ import { DialogProps } from "../Controls/DialogReactComponent/DialogComponent";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { getFullName } from "../../Utils/UserUtils";
+import { ImmutableNotebook } from "@nteract/commutable";
+import Explorer from "../Explorer";
+import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 
 export interface NotebookManagerOptions {
-  container: ViewModels.Explorer;
+  container: Explorer;
   notebookBasePath: ko.Observable<string>;
   dialogProps: ko.Observable<DialogProps>;
   resourceTree: ResourceTreeAdapter;
@@ -38,14 +40,14 @@ export default class NotebookManager {
   public junoClient: JunoClient;
 
   public notebookContentProvider: IContentProvider;
-  public notebookClient: ViewModels.INotebookContainerClient;
-  public notebookContentClient: ViewModels.INotebookContentClient;
+  public notebookClient: NotebookContainerClient;
+  public notebookContentClient: NotebookContentClient;
 
   private gitHubContentProvider: GitHubContentProvider;
   public gitHubOAuthService: GitHubOAuthService;
   private gitHubClient: GitHubClient;
 
-  public gitHubReposPane: ViewModels.ContextualPane;
+  public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {
@@ -55,7 +57,6 @@ export default class NotebookManager {
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);
     this.gitHubReposPane = new GitHubReposPane({
-      documentClientUtility: this.params.container.documentClientUtility,
       id: "gitHubReposPane",
       visible: ko.observable<boolean>(false),
       container: this.params.container,
@@ -107,8 +108,12 @@ export default class NotebookManager {
     this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
   }
 
-  public openPublishNotebookPane(name: string, content: string): void {
-    this.publishNotebookPaneAdapter.open(name, getFullName(), content);
+  public openPublishNotebookPane(
+    name: string,
+    content: string | ImmutableNotebook,
+    parentDomElement: HTMLElement
+  ): void {
+    this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);
   }
 
   // Octokit's error handler uses any

@@ -12,7 +12,7 @@ import {
   PortalTheme
 } from "./HeatmapDatatypes";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
-import { MessageHandler } from "../../Common/MessageHandler";
+import { sendCachedDataMessage, sendMessage } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { StyleConstants } from "../../Common/Constants";
 import "./Heatmap.less";
@@ -209,7 +209,7 @@ export class Heatmap {
       for (let i = 0; i < this._chartData.dataPoints.length; i++) {
         output.push(this._chartData.dataPoints[i][xAxisIndex]);
       }
-      MessageHandler.sendCachedDataMessage(MessageTypes.LogInfo, output);
+      sendCachedDataMessage(MessageTypes.LogInfo, output);
     });
   }
 }
@@ -266,4 +266,4 @@ export function handleMessage(event: MessageEvent) {
 }
 
 window.addEventListener("message", handleMessage, false);
-MessageHandler.sendMessage("ready");
+sendMessage("ready");

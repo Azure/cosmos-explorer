@@ -3,15 +3,27 @@ import { GalleryAndNotebookViewerComponentProps } from "../Controls/NotebookGall
 import { GalleryAndNotebookViewerComponentAdapter } from "../Controls/NotebookGallery/GalleryAndNotebookViewerComponentAdapter";
 import { GalleryTab as GalleryViewerTab, SortBy } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import TabsBase from "./TabsBase";
+import Explorer from "../Explorer";
+import { DatabaseAccount } from "../../Contracts/DataModels";
+import { JunoClient, IGalleryItem } from "../../Juno/JunoClient";
+
+interface GalleryTabOptions extends ViewModels.TabOptions {
+  account: DatabaseAccount;
+  container: Explorer;
+  junoClient: JunoClient;
+  notebookUrl?: string;
+  galleryItem?: IGalleryItem;
+  isFavorite?: boolean;
+}
 
 /**
  * Notebook gallery tab
  */
-export default class GalleryTab extends TabsBase implements ViewModels.Tab {
-  private container: ViewModels.Explorer;
+export default class GalleryTab extends TabsBase {
+  private container: Explorer;
   public galleryAndNotebookViewerComponentAdapter: GalleryAndNotebookViewerComponentAdapter;
 
-  constructor(options: ViewModels.GalleryTabOptions) {
+  constructor(options: GalleryTabOptions) {
     super(options);
 
     this.container = options.container;
@@ -29,7 +41,7 @@ export default class GalleryTab extends TabsBase implements ViewModels.Tab {
     this.galleryAndNotebookViewerComponentAdapter = new GalleryAndNotebookViewerComponentAdapter(props);
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 }

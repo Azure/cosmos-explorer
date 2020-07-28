@@ -7,10 +7,12 @@ import {
   updateDocument
 } from "./MongoProxyClient";
 import { AuthType } from "../AuthType";
-import { Collection, DatabaseAccount, DocumentId } from "../Contracts/ViewModels";
+import { Collection } from "../Contracts/ViewModels";
 import { config } from "../Config";
 import { CosmosClient } from "./CosmosClient";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import DocumentId from "../Explorer/Tree/DocumentId";
+import { DatabaseAccount } from "../Contracts/DataModels";
 jest.mock("../ResourceProvider/ResourceProviderClient.ts");
 
 const databaseId = "testDB";

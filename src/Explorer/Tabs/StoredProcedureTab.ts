@@ -9,15 +9,18 @@ import editable from "../../Common/EditableUtility";
 import ScriptTabBase from "./ScriptTabBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
+import StoredProcedure from "../Tree/StoredProcedure";
+import { createStoredProcedure, updateStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 enum ToggleState {
   Result = "result",
   Logs = "logs"
 }
 
-export default class StoredProcedureTab extends ScriptTabBase implements ViewModels.StoredProcedureTab {
+export default class StoredProcedureTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
-  public node: ViewModels.StoredProcedure;
+  public node: StoredProcedure;
   public executeResultsEditorId: string;
   public executeLogsEditorId: string;
   public toggleState: ko.Observable<ToggleState>;
@@ -80,8 +83,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle()
     });
-    return this.documentClientUtility
-      .updateStoredProcedure(this.collection, data)
+    return updateStoredProcedure(this.collection, data)
       .then(
         (updatedResource: DataModels.StoredProcedure) => {
           this.resource(updatedResource);
@@ -203,7 +205,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
     super.buildCommandBarOptions();
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     const label = "Execute";
     return super.getTabsButtons().concat({
       iconSrc: ExecuteQueryIcon,
@@ -239,8 +241,7 @@ export default class StoredProcedureTab extends ScriptTabBase implements ViewMod
       tabTitle: this.tabTitle()
     });
 
-    return this.documentClientUtility
-      .createStoredProcedure(this.collection, resource)
+    return createStoredProcedure(this.collection, resource)
       .then(
         createdResource => {
           this.tabTitle(createdResource.id);

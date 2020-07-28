@@ -2,25 +2,24 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import DocumentsTab from "./DocumentsTab";
-import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
 import Explorer from "../Explorer";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
+import DocumentId from "../Tree/DocumentId";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
     it("should generate the right select query for SQL API", () => {
       const documentsTab = new DocumentsTab({
         partitionKey: null,
-        documentIds: ko.observableArray<ViewModels.DocumentId>(),
+        documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -29,13 +28,11 @@ describe("Documents tab", () => {
 
   describe("showPartitionKey", () => {
     const explorer = new Explorer({
-      documentClientUtility: null,
       notificationsClient: null,
       isEmulator: false
     });
 
     const mongoExplorer = new Explorer({
-      documentClientUtility: null,
       notificationsClient: null,
       isEmulator: false
     });
@@ -94,16 +91,15 @@ describe("Documents tab", () => {
     it("should be false for null or undefined collection", () => {
       const documentsTab = new DocumentsTab({
         partitionKey: null,
-        documentIds: ko.observableArray<ViewModels.DocumentId>(),
+        documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -113,16 +109,15 @@ describe("Documents tab", () => {
       const documentsTab = new DocumentsTab({
         collection: collectionWithoutPartitionKey,
         partitionKey: null,
-        documentIds: ko.observableArray<ViewModels.DocumentId>(),
+        documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -132,16 +127,15 @@ describe("Documents tab", () => {
       const documentsTab = new DocumentsTab({
         collection: collectionWithSystemPartitionKey,
         partitionKey: null,
-        documentIds: ko.observableArray<ViewModels.DocumentId>(),
+        documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -151,16 +145,15 @@ describe("Documents tab", () => {
       const documentsTab = new DocumentsTab({
         collection: mongoCollectionWithSystemPartitionKey,
         partitionKey: null,
-        documentIds: ko.observableArray<ViewModels.DocumentId>(),
+        documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -170,16 +163,15 @@ describe("Documents tab", () => {
       const documentsTab = new DocumentsTab({
         collection: collectionWithNonSystemPartitionKey,
         partitionKey: null,
-        documentIds: ko.observableArray<ViewModels.DocumentId>(),
+        documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
         selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

@@ -10,6 +10,7 @@ import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
 import InfoBubbleIcon from "../../../images/info-bubble.svg";
+import Explorer from "../Explorer";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
 
@@ -23,7 +24,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
   private selectedFilesTitle: string;
   private uploadFileData: UploadDetailsRecord[];
 
-  public constructor(private container: ViewModels.Explorer) {
+  public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
     this.reset();
     this.triggerRender();

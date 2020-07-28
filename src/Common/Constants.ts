@@ -101,6 +101,7 @@ export class CapabilityNames {
   public static readonly EnableNotebooks: string = "EnableNotebooks";
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
+  public static readonly EnableServerless: string = "EnableServerless";
 }
 
 export class Features {
@@ -351,6 +352,7 @@ export class HttpStatusCodes {
   public static readonly Created: number = 201;
   public static readonly Accepted: number = 202;
   public static readonly NoContent: number = 204;
+  public static readonly NotModified: number = 304;
   public static readonly Unauthorized: number = 401;
   public static readonly Forbidden: number = 403;
   public static readonly NotFound: number = 404;

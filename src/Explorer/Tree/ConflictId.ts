@@ -5,9 +5,11 @@ import DocumentId from "./DocumentId";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { extractPartitionKey } from "@azure/cosmos";
+import ConflictsTab from "../Tabs/ConflictsTab";
+import { readDocument } from "../../Common/DocumentClientUtilityBase";
 
-export default class ConflictId implements ViewModels.ConflictId {
-  public container: ViewModels.ConflictsTab;
+export default class ConflictId {
+  public container: ConflictsTab;
   public rid: string;
   public self: string;
   public ts: string;
@@ -23,7 +25,7 @@ export default class ConflictId implements ViewModels.ConflictId {
   public parsedContent: any;
   public isDirty: ko.Observable<boolean>;
 
-  constructor(container: ViewModels.ConflictsTab, data: any) {
+  constructor(container: ConflictsTab, data: any) {
     this.container = container;
     this.self = data._self;
     this.rid = data._rid;
@@ -67,33 +69,31 @@ export default class ConflictId implements ViewModels.ConflictId {
     }
 
     this.container.loadingConflictData(true);
-    return conflictsTab.documentClientUtility
-      .readDocument(this.container.collection, this.buildDocumentIdFromConflict(this.partitionKeyValue))
-      .then(
-        (currentDocumentContent: any) => {
-          this.container.loadingConflictData(false);
-          if (this.operationType === Constants.ConflictOperationType.Replace) {
-            this.container.initDocumentEditorForReplace(this, this.content, currentDocumentContent);
-          } else {
-            this.container.initDocumentEditorForDelete(this, currentDocumentContent);
-          }
-        },
-        (reason: any) => {
-          this.container.loadingConflictData(false);
-
-          // Document could be deleted
-          if (
-            reason &&
-            reason.code === Constants.HttpStatusCodes.NotFound &&
-            this.operationType === Constants.ConflictOperationType.Delete
-          ) {
-            this.container.initDocumentEditorForNoOp(this);
-            return Q();
-          }
-
-          return Q.reject(reason);
+    return readDocument(this.container.collection, this.buildDocumentIdFromConflict(this.partitionKeyValue)).then(
+      (currentDocumentContent: any) => {
+        this.container.loadingConflictData(false);
+        if (this.operationType === Constants.ConflictOperationType.Replace) {
+          this.container.initDocumentEditorForReplace(this, this.content, currentDocumentContent);
+        } else {
+          this.container.initDocumentEditorForDelete(this, currentDocumentContent);
         }
-      );
+      },
+      (reason: any) => {
+        this.container.loadingConflictData(false);
+
+        // Document could be deleted
+        if (
+          reason &&
+          reason.code === Constants.HttpStatusCodes.NotFound &&
+          this.operationType === Constants.ConflictOperationType.Delete
+        ) {
+          this.container.initDocumentEditorForNoOp(this);
+          return Q();
+        }
+
+        return Q.reject(reason);
+      }
+    );
   }
 
   public getPartitionKeyValueAsString(): string {
@@ -115,7 +115,7 @@ export default class ConflictId implements ViewModels.ConflictId {
     return JSON.stringify(partitionKeyValue);
   }
 
-  public buildDocumentIdFromConflict(partitionKeyValue: any): ViewModels.DocumentId {
+  public buildDocumentIdFromConflict(partitionKeyValue: any): DocumentId {
     const conflictDocumentRid = Constants.HashRoutePrefixes.docsWithIds(
       this.container.collection.getDatabase().rid,
       this.container.collection.rid,

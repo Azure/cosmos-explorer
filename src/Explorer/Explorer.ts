@@ -15,13 +15,13 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
+import { readDatabases, readCollection, readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import hasher from "hasher";
 import NewVertexPane from "./Panes/NewVertexPane";
-import NotebookV2Tab from "./Tabs/NotebookV2Tab";
+import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -33,7 +33,6 @@ import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
-import { CassandraApi } from "../Api/Apis";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { config } from "../Config";
@@ -52,7 +51,7 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
-import { MessageHandler } from "../Common/MessageHandler";
+import { sendMessage, sendCachedDataMessage, handleCachedDataMessage } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
@@ -79,6 +78,13 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import StoredProcedure from "./Tree/StoredProcedure";
+import Trigger from "./Tree/Trigger";
+import { NotificationsClientBase } from "../Common/NotificationsClientBase";
+import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
+import TabsBase from "./Tabs/TabsBase";
+import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -89,7 +95,16 @@ enum ShareAccessToggleState {
   Read
 }
 
-export default class Explorer implements ViewModels.Explorer {
+interface ExplorerOptions {
+  notificationsClient: NotificationsClientBase;
+  isEmulator: boolean;
+}
+interface AdHocAccessData {
+  readWriteUrl: string;
+  readUrl: string;
+}
+
+export default class Explorer {
   public flight: ko.Observable<string> = ko.observable<string>(
     SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
   );
@@ -104,7 +119,7 @@ export default class Explorer implements ViewModels.Explorer {
   public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  public databaseAccount: ko.Observable<ViewModels.DatabaseAccount>;
+  public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;
   public quotaId: ko.Observable<string>;
@@ -115,6 +130,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isPreferredApiGraph: ko.Computed<boolean>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  public isServerlessEnabled: ko.Computed<boolean>;
   public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -123,9 +139,8 @@ export default class Explorer implements ViewModels.Explorer {
   public extensionEndpoint: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
-  public documentClientUtility: DocumentClientUtilityBase;
-  public notificationsClient: ViewModels.NotificationsClient;
-  public queriesClient: ViewModels.QueriesClient;
+  public notificationsClient: NotificationsClientBase;
+  public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
   public parentFrameDataExplorerVersion: ko.Observable<string> = ko.observable<string>("");
@@ -136,7 +151,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isNotificationConsoleExpanded: ko.Observable<boolean>;
 
   // Panes
-  public contextPanes: ViewModels.ContextualPane[];
+  public contextPanes: ContextualPaneBase[];
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -164,29 +179,29 @@ export default class Explorer implements ViewModels.Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public addDatabasePane: ViewModels.AddDatabasePane;
-  public addCollectionPane: ViewModels.AddCollectionPane;
-  public deleteCollectionConfirmationPane: ViewModels.DeleteCollectionConfirmationPane;
-  public deleteDatabaseConfirmationPane: ViewModels.DeleteDatabaseConfirmationPane;
-  public graphStylingPane: ViewModels.GraphStylingPane;
-  public addTableEntityPane: ViewModels.AddTableEntityPane;
-  public editTableEntityPane: ViewModels.EditTableEntityPane;
+  public addDatabasePane: AddDatabasePane;
+  public addCollectionPane: AddCollectionPane;
+  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
+  public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
+  public graphStylingPane: GraphStylingPane;
+  public addTableEntityPane: AddTableEntityPane;
+  public editTableEntityPane: EditTableEntityPane;
   public tableColumnOptionsPane: TableColumnOptionsPane;
   public querySelectPane: QuerySelectPane;
-  public newVertexPane: ViewModels.NewVertexPane;
-  public cassandraAddCollectionPane: ViewModels.CassandraAddCollectionPane;
-  public settingsPane: ViewModels.SettingsPane;
-  public executeSprocParamsPane: ViewModels.ExecuteSprocParamsPane;
-  public renewAdHocAccessPane: ViewModels.RenewAdHocAccessPane;
-  public uploadItemsPane: ViewModels.UploadItemsPane;
+  public newVertexPane: NewVertexPane;
+  public cassandraAddCollectionPane: CassandraAddCollectionPane;
+  public settingsPane: SettingsPane;
+  public executeSprocParamsPane: ExecuteSprocParamsPane;
+  public renewAdHocAccessPane: RenewAdHocAccessPane;
+  public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
-  public loadQueryPane: ViewModels.LoadQueryPane;
-  public saveQueryPane: ViewModels.ContextualPane;
-  public browseQueriesPane: ViewModels.BrowseQueriesPane;
+  public loadQueryPane: LoadQueryPane;
+  public saveQueryPane: ContextualPaneBase;
+  public browseQueriesPane: BrowseQueriesPane;
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
-  public gitHubReposPane: ViewModels.ContextualPane;
+  public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
@@ -199,8 +214,8 @@ export default class Explorer implements ViewModels.Explorer {
   public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
-  public shareAccessData: ko.Observable<ViewModels.AdHocAccessData>;
-  public renewExplorerShareAccess: (explorer: ViewModels.Explorer, token: string) => Q.Promise<void>;
+  public shareAccessData: ko.Observable<AdHocAccessData>;
+  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
   public renewTokenError: ko.Observable<string>;
   public tokenForRenewal: ko.Observable<string>;
   public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
@@ -214,7 +229,7 @@ export default class Explorer implements ViewModels.Explorer {
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public notebookWorkspaceManager: ViewModels.NotebookWorkspaceManager;
+  public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSparkEnabled: ko.Observable<boolean>;
   public isSparkEnabledForAccount: ko.Observable<boolean>;
@@ -225,13 +240,13 @@ export default class Explorer implements ViewModels.Explorer {
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any; // This is dynamically loaded
 
-  private _panes: ViewModels.ContextualPane[] = [];
+  private _panes: ContextualPaneBase[] = [];
   private _importExplorerConfigComplete: boolean = false;
   private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = database => false;
   private _isInitializingNotebooks: boolean;
   private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
-  private _arcadiaManager: ViewModels.ArcadiaResourceManager;
+  private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
     name: string;
     content: string;
@@ -248,7 +263,7 @@ export default class Explorer implements ViewModels.Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(options: ViewModels.ExplorerOptions) {
+  constructor(options: ExplorerOptions) {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
@@ -261,7 +276,7 @@ export default class Explorer implements ViewModels.Explorer {
     this.deleteDatabaseText = ko.observable<string>("Delete Database");
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
-    this.databaseAccount = ko.observable<ViewModels.DatabaseAccount>();
+    this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.subscriptionType = ko.observable<ViewModels.SubscriptionType>(
       SharedConstants.CollectionCreation.DefaultSubscriptionType
     );
@@ -354,7 +369,6 @@ export default class Explorer implements ViewModels.Explorer {
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
-    this.documentClientUtility = options.documentClientUtility;
     this.notificationsClient = options.notificationsClient;
     this.isEmulator = options.isEmulator;
 
@@ -371,7 +385,7 @@ export default class Explorer implements ViewModels.Explorer {
     this.resourceTokenPartitionKey = ko.observable<string>();
     this.isAuthWithResourceToken = ko.observable<boolean>(false);
 
-    this.shareAccessData = ko.observable<ViewModels.AdHocAccessData>({
+    this.shareAccessData = ko.observable<AdHocAccessData>({
       readWriteUrl: undefined,
       readUrl: undefined
     });
@@ -456,7 +470,7 @@ export default class Explorer implements ViewModels.Explorer {
     });
     this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
-    this.databaseAccount.subscribe((databaseAccount: ViewModels.DatabaseAccount) => {
+    this.databaseAccount.subscribe(databaseAccount => {
       this.defaultExperience(DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount));
     });
 
@@ -506,6 +520,14 @@ export default class Explorer implements ViewModels.Explorer {
       return false;
     });
 
+    this.isServerlessEnabled = ko.computed(
+      () =>
+        this.databaseAccount &&
+        this.databaseAccount()?.properties?.capabilities?.find(
+          item => item.name === Constants.CapabilityNames.EnableServerless
+        ) !== undefined
+    );
+
     this.isPreferredApiMongoDB = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.MongoDB.toLowerCase()) {
@@ -541,8 +563,9 @@ export default class Explorer implements ViewModels.Explorer {
         defaultExperience &&
         defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
       ) {
-        const api = new CassandraApi();
-        this._isSystemDatabasePredicate = api.isSystemDatabasePredicate;
+        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
+          return database.id() === "system";
+        };
       }
     });
 
@@ -572,7 +595,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.addDatabasePane = new AddDatabasePane({
-      documentClientUtility: this.documentClientUtility,
       id: "adddatabasepane",
       visible: ko.observable<boolean>(false),
 
@@ -581,7 +603,6 @@ export default class Explorer implements ViewModels.Explorer {
 
     this.addCollectionPane = new AddCollectionPane({
       isPreferredApiTable: ko.computed(() => this.isPreferredApiTable()),
-      documentClientUtility: this.documentClientUtility,
       id: "addcollectionpane",
       visible: ko.observable<boolean>(false),
 
@@ -589,7 +610,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      documentClientUtility: this.documentClientUtility,
       id: "deletecollectionconfirmationpane",
       visible: ko.observable<boolean>(false),
 
@@ -597,7 +617,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      documentClientUtility: this.documentClientUtility,
       id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
 
@@ -605,7 +624,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.graphStylingPane = new GraphStylingPane({
-      documentClientUtility: this.documentClientUtility,
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
 
@@ -613,7 +631,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.addTableEntityPane = new AddTableEntityPane({
-      documentClientUtility: this.documentClientUtility,
       id: "addtableentitypane",
       visible: ko.observable<boolean>(false),
 
@@ -621,7 +638,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.editTableEntityPane = new EditTableEntityPane({
-      documentClientUtility: this.documentClientUtility,
       id: "edittableentitypane",
       visible: ko.observable<boolean>(false),
 
@@ -629,7 +645,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "tablecolumnoptionspane",
       visible: ko.observable<boolean>(false),
 
@@ -637,7 +652,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.querySelectPane = new QuerySelectPane({
-      documentClientUtility: this.documentClientUtility,
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
 
@@ -645,7 +659,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.newVertexPane = new NewVertexPane({
-      documentClientUtility: this.documentClientUtility,
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
 
@@ -653,7 +666,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      documentClientUtility: this.documentClientUtility,
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
 
@@ -661,7 +673,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.settingsPane = new SettingsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "settingspane",
       visible: ko.observable<boolean>(false),
 
@@ -669,7 +680,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "executesprocparamspane",
       visible: ko.observable<boolean>(false),
 
@@ -677,7 +687,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.renewAdHocAccessPane = new RenewAdHocAccessPane({
-      documentClientUtility: this.documentClientUtility,
       id: "renewadhocaccesspane",
       visible: ko.observable<boolean>(false),
 
@@ -685,7 +694,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.uploadItemsPane = new UploadItemsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
 
@@ -695,7 +703,6 @@ export default class Explorer implements ViewModels.Explorer {
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
-      documentClientUtility: this.documentClientUtility,
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
 
@@ -703,7 +710,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.saveQueryPane = new SaveQueryPane({
-      documentClientUtility: this.documentClientUtility,
       id: "savequerypane",
       visible: ko.observable<boolean>(false),
 
@@ -711,7 +717,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.browseQueriesPane = new BrowseQueriesPane({
-      documentClientUtility: this.documentClientUtility,
       id: "browsequeriespane",
       visible: ko.observable<boolean>(false),
 
@@ -719,7 +724,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.uploadFilePane = new UploadFilePane({
-      documentClientUtility: this.documentClientUtility,
       id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
@@ -727,7 +731,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.stringInputPane = new StringInputPane({
-      documentClientUtility: this.documentClientUtility,
       id: "stringinputpane",
       visible: ko.observable<boolean>(false),
 
@@ -735,7 +738,6 @@ export default class Explorer implements ViewModels.Explorer {
     });
 
     this.setupNotebooksPane = new SetupNotebooksPane({
-      documentClientUtility: this.documentClientUtility,
       id: "setupnotebookspane",
       visible: ko.observable<boolean>(false),
 
@@ -768,7 +770,6 @@ export default class Explorer implements ViewModels.Explorer {
       this.setupNotebooksPane
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
-    this.rebindDocumentClientUtility.bind(this);
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
@@ -850,7 +851,7 @@ export default class Explorer implements ViewModels.Explorer {
           this.editTableEntityPane.title("Edit Table Entity");
           this.deleteCollectionConfirmationPane.title("Delete Table");
           this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.tableDataClient = new TablesAPIDataClient(this.documentClientUtility);
+          this.tableDataClient = new TablesAPIDataClient();
           break;
         case Constants.DefaultAccountExperience.Cassandra.toLowerCase():
           this.addCollectionText("New Table");
@@ -869,7 +870,7 @@ export default class Explorer implements ViewModels.Explorer {
           this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
           this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
           this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
-          this.tableDataClient = new CassandraAPIDataClient(this.documentClientUtility);
+          this.tableDataClient = new CassandraAPIDataClient();
           break;
       }
     });
@@ -1015,7 +1016,7 @@ export default class Explorer implements ViewModels.Explorer {
         );
 
         try {
-          const databaseAccount: ViewModels.DatabaseAccount = await resourceProviderClient.patchAsync(
+          const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
             this.databaseAccount().id,
             "2019-12-12",
             {
@@ -1052,13 +1053,6 @@ export default class Explorer implements ViewModels.Explorer {
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
-  }
-
-  public rebindDocumentClientUtility(documentClientUtility: DocumentClientUtilityBase): void {
-    this.documentClientUtility = documentClientUtility;
-    this._panes.forEach((pane: ViewModels.ContextualPane) => {
-      pane.documentClientUtility = documentClientUtility;
-    });
   }
 
   public copyUrlLink(src: any, event: MouseEvent): void {
@@ -1379,7 +1373,7 @@ export default class Explorer implements ViewModels.Explorer {
     }
 
     const deferred: Q.Deferred<void> = Q.defer();
-    this.documentClientUtility.readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
       deferred.resolve();
@@ -1403,87 +1397,97 @@ export default class Explorer implements ViewModels.Explorer {
         dataExplorerArea: Constants.Areas.ResourceTree
       });
     }
+
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    const offerPromise: Q.Promise<DataModels.Offer[]> = this.documentClientUtility.readOffers();
-    this._setLoadingStatusText("Fetching offers...");
 
-    offerPromise.then(
-      (offers: DataModels.Offer[]) => {
-        this._setLoadingStatusText("Successfully fetched offers.");
-        this._setLoadingStatusText("Fetching databases...");
-        this.documentClientUtility.readDatabases(null /*options*/).then(
-          (databases: DataModels.Database[]) => {
-            this._setLoadingStatusText("Successfully fetched databases.");
-            TelemetryProcessor.traceSuccess(
-              Action.LoadDatabases,
-              {
-                databaseAccountName: this.databaseAccount().name,
-                defaultExperience: this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.ResourceTree
+    const refreshDatabases = (offers?: DataModels.Offer[]) => {
+      this._setLoadingStatusText("Fetching databases...");
+      readDatabases(null /*options*/).then(
+        (databases: DataModels.Database[]) => {
+          this._setLoadingStatusText("Successfully fetched databases.");
+          TelemetryProcessor.traceSuccess(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree
+            },
+            startKey
+          );
+          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+          const deltaDatabases = this.getDeltaDatabases(databases, offers);
+          this.addDatabasesToList(deltaDatabases.toAdd);
+          this.deleteDatabasesFromList(deltaDatabases.toDelete);
+          this.selectedNode(currentlySelectedNode);
+          this._setLoadingStatusText("Fetching containers...");
+          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+            .then(
+              () => {
+                this._setLoadingStatusText("Successfully fetched containers.");
+                deferred.resolve();
               },
-              startKey
-            );
-            const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-            const deltaDatabases = this.getDeltaDatabases(databases, offers);
-            this.addDatabasesToList(deltaDatabases.toAdd);
-            this.deleteDatabasesFromList(deltaDatabases.toDelete);
-            this.selectedNode(currentlySelectedNode);
-            this._setLoadingStatusText("Fetching containers...");
-            this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-              .then(
-                () => {
-                  this._setLoadingStatusText("Successfully fetched containers.");
-                  deferred.resolve();
-                },
-                reason => {
-                  this._setLoadingStatusText("Failed to fetch containers.");
-                  deferred.reject(reason);
-                }
-              )
-              .finally(() => this.isRefreshingExplorer(false));
-          },
-          error => {
-            this._setLoadingStatusText("Failed to fetch databases.");
-            this.isRefreshingExplorer(false);
-            deferred.reject(error);
-            TelemetryProcessor.traceFailure(
-              Action.LoadDatabases,
-              {
-                databaseAccountName: this.databaseAccount().name,
-                defaultExperience: this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.ResourceTree,
-                error: JSON.stringify(error)
-              },
-              startKey
-            );
-            NotificationConsoleUtils.logConsoleMessage(
-              ConsoleDataType.Error,
-              `Error while refreshing databases: ${JSON.stringify(error)}`
-            );
-          }
-        );
-      },
-      error => {
-        this._setLoadingStatusText("Failed to fetch offers.");
-        this.isRefreshingExplorer(false);
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: JSON.stringify(error)
-          },
-          startKey
-        );
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing databases: ${JSON.stringify(error)}`
-        );
-      }
-    );
+              reason => {
+                this._setLoadingStatusText("Failed to fetch containers.");
+                deferred.reject(reason);
+              }
+            )
+            .finally(() => this.isRefreshingExplorer(false));
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch databases.");
+          this.isRefreshingExplorer(false);
+          deferred.reject(error);
+          TelemetryProcessor.traceFailure(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree,
+              error: JSON.stringify(error)
+            },
+            startKey
+          );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${JSON.stringify(error)}`
+          );
+        }
+      );
+    };
+
+    if (this.isServerlessEnabled()) {
+      // Serverless accounts don't support offers call
+      refreshDatabases();
+    } else {
+      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
+      this._setLoadingStatusText("Fetching offers...");
+      offerPromise.then(
+        (offers: DataModels.Offer[]) => {
+          this._setLoadingStatusText("Successfully fetched offers.");
+          refreshDatabases(offers);
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch offers.");
+          this.isRefreshingExplorer(false);
+          deferred.reject(error);
+          TelemetryProcessor.traceFailure(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree,
+              error: JSON.stringify(error)
+            },
+            startKey
+          );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${JSON.stringify(error)}`
+          );
+        }
+      );
+    }
 
     return deferred.promise.then(
       () => {
@@ -1532,7 +1536,7 @@ export default class Explorer implements ViewModels.Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    this.documentClientUtility.refreshCachedResources().then(
+    refreshCachedResources().then(
       () => {
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
@@ -1585,7 +1589,7 @@ export default class Explorer implements ViewModels.Explorer {
 
   public async getArcadiaToken(): Promise<string> {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-      MessageHandler.sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
+      sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
         (token: string) => {
           resolve(token);
         },
@@ -1623,11 +1627,11 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public async createWorkspace(): Promise<string> {
-    return MessageHandler.sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
+    return sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
   }
 
   public async createSparkPool(workspaceId: string): Promise<string> {
-    return MessageHandler.sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
+    return sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
   }
 
   public async initNotebooks(databaseAccount: DataModels.DatabaseAccount): Promise<void> {
@@ -1823,7 +1827,7 @@ export default class Explorer implements ViewModels.Explorer {
         }
       }
       if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
-        MessageHandler.handleCachedDataMessage(message);
+        handleCachedDataMessage(message);
         return;
       }
       if (message.type) {
@@ -1955,12 +1959,12 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
-  public findSelectedStoredProcedure(): ViewModels.StoredProcedure {
+  public findSelectedStoredProcedure(): StoredProcedure {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.storedProcedures(), (storedProcedure: ViewModels.StoredProcedure) => {
+    return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
       const openedSprocTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
-        (tab: ViewModels.Tab) => tab.node && tab.node.rid === storedProcedure.rid
+        tab => tab.node && tab.node.rid === storedProcedure.rid
       );
       return (
         storedProcedure.rid === this.selectedNode().rid ||
@@ -1969,12 +1973,12 @@ export default class Explorer implements ViewModels.Explorer {
     });
   }
 
-  public findSelectedUDF(): ViewModels.UserDefinedFunction {
+  public findSelectedUDF(): UserDefinedFunction {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: ViewModels.UserDefinedFunction) => {
+    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
       const openedUdfTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.UserDefinedFunctions,
-        (tab: ViewModels.Tab) => tab.node && tab.node.rid === userDefinedFunction.rid
+        tab => tab.node && tab.node.rid === userDefinedFunction.rid
       );
       return (
         userDefinedFunction.rid === this.selectedNode().rid ||
@@ -1983,12 +1987,12 @@ export default class Explorer implements ViewModels.Explorer {
     });
   }
 
-  public findSelectedTrigger(): ViewModels.Trigger {
+  public findSelectedTrigger(): Trigger {
     const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.triggers(), (trigger: ViewModels.Trigger) => {
+    return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
       const openedTriggerTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.Triggers,
-        (tab: ViewModels.Tab) => tab.node && tab.node.rid === trigger.rid
+        tab => tab.node && tab.node.rid === trigger.rid
       );
       return (
         trigger.rid === this.selectedNode().rid ||
@@ -1998,7 +2002,7 @@ export default class Explorer implements ViewModels.Explorer {
   }
 
   public closeAllPanes(): void {
-    this._panes.forEach((pane: ViewModels.ContextualPane) => pane.close());
+    this._panes.forEach((pane: ContextualPaneBase) => pane.close());
   }
 
   public getPlatformType(): PlatformType {
@@ -2013,13 +2017,13 @@ export default class Explorer implements ViewModels.Explorer {
     );
   }
 
-  public onUpdateTabsButtons(buttons: ViewModels.NavbarButtonConfig[]): void {
+  public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
 
   public signInAad = () => {
     TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.AadSignIn
     });
   };
@@ -2030,21 +2034,21 @@ export default class Explorer implements ViewModels.Explorer {
   };
 
   public clickHostedAccountSwitch = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateAccountSwitch,
       click: true
     });
   };
 
   public clickHostedDirectorySwitch = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateDirectoryControl,
       click: true
     });
   };
 
   public refreshDatabaseAccount = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.RefreshDatabaseAccount
     });
   };
@@ -2073,9 +2077,7 @@ export default class Explorer implements ViewModels.Explorer {
           if (isNewDatabase) {
             database.expandDatabase();
           }
-          this.tabsManager.refreshActiveTab(
-            (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === database.rid
-          );
+          this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
         })
       );
     });
@@ -2178,7 +2180,7 @@ export default class Explorer implements ViewModels.Explorer {
     }
 
     const urlPrefixWithKeyParam: string = `${config.hostedExplorerURL}?key=`;
-    const currentActiveTab: ViewModels.Tab = this.tabsManager.activeTab();
+    const currentActiveTab = this.tabsManager.activeTab();
 
     return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;
   }
@@ -2344,9 +2346,9 @@ export default class Explorer implements ViewModels.Explorer {
     return Promise.resolve(false);
   }
 
-  public publishNotebook(name: string, content: string): void {
+  public publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): void {
     if (this.notebookManager) {
-      this.notebookManager.openPublishNotebookPane(name, content);
+      this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
@@ -2441,25 +2443,23 @@ export default class Explorer implements ViewModels.Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
 
-    const notebookTabs: NotebookV2Tab[] = this.tabsManager.getTabs(
+    const notebookTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.NotebookV2,
-      (tab: ViewModels.Tab) =>
+      tab =>
         (tab as NotebookV2Tab).notebookPath &&
         FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
     ) as NotebookV2Tab[];
-    let notebookTab: NotebookV2Tab = notebookTabs && notebookTabs[0];
+    let notebookTab = notebookTabs && notebookTabs[0];
 
     if (notebookTab) {
       this.tabsManager.activateTab(notebookTab);
     } else {
-      const options: ViewModels.NotebookTabOptions = {
+      const options: NotebookTabOptions = {
         account: CosmosClient.databaseAccount(),
         tabKind: ViewModels.CollectionTabKind.NotebookV2,
         node: null,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
-        documentClientUtility: null,
-
         collection: null,
         selfLink: null,
         masterKey: CosmosClient.masterKey() || "",
@@ -2518,7 +2518,7 @@ export default class Explorer implements ViewModels.Explorer {
         onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
       })
       .then(newNotebookFile => {
-        const notebookTabs: ViewModels.Tab[] = this.tabsManager.getTabs(
+        const notebookTabs = this.tabsManager.getTabs(
           ViewModels.CollectionTabKind.NotebookV2,
           (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
         );
@@ -2888,7 +2888,7 @@ export default class Explorer implements ViewModels.Explorer {
 
     const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Terminal,
-      (tab: ViewModels.Tab) => tab.hashLocation() == hashLocation
+      tab => tab.hashLocation() == hashLocation
     ) as TerminalTab[];
     let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
@@ -2901,8 +2901,6 @@ export default class Explorer implements ViewModels.Explorer {
         node: null,
         title: title,
         tabPath: title,
-        documentClientUtility: null,
-
         collection: null,
         selfLink: null,
         hashLocation: hashLocation,
@@ -2924,7 +2922,7 @@ export default class Explorer implements ViewModels.Explorer {
 
     const galleryTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Gallery,
-      (tab: ViewModels.Tab) => tab.hashLocation() == hashLocation
+      tab => tab.hashLocation() == hashLocation
     );
     let galleryTab = galleryTabs && galleryTabs[0];
 
@@ -2970,17 +2968,14 @@ export default class Explorer implements ViewModels.Explorer {
 
     const notebookViewerTabModule = this.notebookViewerTab;
 
-    let isNotebookViewerOpen = (tab: ViewModels.Tab) => {
+    let isNotebookViewerOpen = (tab: TabsBase) => {
       const notebookViewerTab = tab as typeof notebookViewerTabModule.default;
       return notebookViewerTab.notebookUrl === notebookUrl;
     };
 
-    const notebookViewerTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.NotebookV2,
-      (tab: ViewModels.Tab) => {
-        return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
-      }
-    );
+    const notebookViewerTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2, tab => {
+      return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
+    });
     let notebookViewerTab = notebookViewerTabs && notebookViewerTabs[0];
 
     if (notebookViewerTab) {

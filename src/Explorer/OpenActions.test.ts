@@ -1,55 +1,43 @@
 import * as ko from "knockout";
 import { handleOpenAction } from "./OpenActions";
 import * as ViewModels from "../Contracts/ViewModels";
-import {
-  ExplorerStub,
-  DatabaseStub,
-  CollectionStub,
-  AddCollectionPaneStub,
-  CassandraAddCollectionPane
-} from "./OpenActionsStubs";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
+import Explorer from "./Explorer";
+import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import AddCollectionPane from "./Panes/AddCollectionPane";
 
 describe("OpenActions", () => {
   describe("handleOpenAction", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
     let database: ViewModels.Database;
     let collection: ViewModels.Collection;
     let databases: ViewModels.Database[];
 
-    let expandCollection: jasmine.Spy;
-    let onDocumentDBDocumentsClick: jasmine.Spy;
-    let onMongoDBDocumentsClick: jasmine.Spy;
-    let onTableEntitiesClick: jasmine.Spy;
-    let onGraphDocumentsClick: jasmine.Spy;
-    let onNewQueryClick: jasmine.Spy;
-    let onSettingsClick: jasmine.Spy;
-    let openAddCollectionPane: jasmine.Spy;
-    let openCassandraAddCollectionPane: jasmine.Spy;
-
     beforeEach(() => {
-      explorer = new ExplorerStub();
-      explorer.addCollectionPane = new AddCollectionPaneStub();
-      explorer.cassandraAddCollectionPane = new CassandraAddCollectionPane();
+      explorer = {} as Explorer;
+      explorer.addCollectionPane = {} as AddCollectionPane;
+      explorer.addCollectionPane.open = jest.fn();
+      explorer.cassandraAddCollectionPane = {} as CassandraAddCollectionPane;
+      explorer.cassandraAddCollectionPane.open = jest.fn();
+      explorer.closeAllPanes = () => {};
+      explorer.isConnectExplorerVisible = () => false;
 
-      database = new DatabaseStub({
+      database = {
         id: ko.observable("db"),
         collections: ko.observableArray<ViewModels.Collection>([])
-      });
+      } as ViewModels.Database;
       databases = [database];
-      collection = new CollectionStub({
+      collection = {
         id: ko.observable("coll")
-      });
+      } as ViewModels.Collection;
 
-      expandCollection = spyOn(collection, "expandCollection");
-      onDocumentDBDocumentsClick = spyOn(collection, "onDocumentDBDocumentsClick");
-      onMongoDBDocumentsClick = spyOn(collection, "onMongoDBDocumentsClick");
-      onTableEntitiesClick = spyOn(collection, "onTableEntitiesClick");
-      onGraphDocumentsClick = spyOn(collection, "onGraphDocumentsClick");
-      onNewQueryClick = spyOn(collection, "onNewQueryClick");
-      onSettingsClick = spyOn(collection, "onSettingsClick");
-      openAddCollectionPane = spyOn(explorer.addCollectionPane, "open");
-      openCassandraAddCollectionPane = spyOn(explorer.cassandraAddCollectionPane, "open");
+      collection.expandCollection = jest.fn();
+      collection.onDocumentDBDocumentsClick = jest.fn();
+      collection.onMongoDBDocumentsClick = jest.fn();
+      collection.onTableEntitiesClick = jest.fn();
+      collection.onGraphDocumentsClick = jest.fn();
+      collection.onNewQueryClick = jest.fn();
+      collection.onSettingsClick = jest.fn();
     });
 
     describe("unknown action type", () => {
@@ -87,7 +75,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openCassandraAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
         });
 
         it("enum value should call cassandraAddCollectionPane.open", () => {
@@ -97,7 +85,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openCassandraAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
         });
       });
 
@@ -109,7 +97,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
         });
 
         it("enum value should call addCollectionPane.open", () => {
@@ -119,7 +107,7 @@ describe("OpenActions", () => {
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(openAddCollectionPane).toHaveBeenCalled();
+          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
         });
       });
     });
@@ -149,10 +137,10 @@ describe("OpenActions", () => {
         };
 
         handleOpenAction(action, [database], explorer);
-        expect(expandCollection).not.toHaveBeenCalled();
+        expect(collection.expandCollection).not.toHaveBeenCalled();
 
         database.collections([collection]);
-        expect(expandCollection).toHaveBeenCalled();
+        expect(collection.expandCollection).toHaveBeenCalled();
       });
 
       it("should expand collection node when handleOpenAction is called", () => {
@@ -164,7 +152,7 @@ describe("OpenActions", () => {
 
         database.collections([collection]);
         handleOpenAction(action, [database], explorer);
-        expect(expandCollection).toHaveBeenCalled();
+        expect(collection.expandCollection).toHaveBeenCalled();
       });
 
       describe("SQLDocuments tab kind", () => {
@@ -177,10 +165,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onDocumentDBDocumentsClick).not.toHaveBeenCalled();
+          expect(collection.onDocumentDBDocumentsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onDocumentDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onDocumentDBDocumentsClick).toHaveBeenCalled();
         });
 
         it("string value should call onDocumentDBDocumentsClick", () => {
@@ -193,7 +181,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onDocumentDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onDocumentDBDocumentsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onDocumentDBDocumentsClick before collections are fetched", () => {
@@ -205,10 +193,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onDocumentDBDocumentsClick).not.toHaveBeenCalled();
+          expect(collection.onDocumentDBDocumentsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onDocumentDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onDocumentDBDocumentsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onDocumentDBDocumentsClick", () => {
@@ -221,7 +209,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onDocumentDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onDocumentDBDocumentsClick).toHaveBeenCalled();
         });
       });
 
@@ -235,10 +223,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onMongoDBDocumentsClick).not.toHaveBeenCalled();
+          expect(collection.onMongoDBDocumentsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onMongoDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onMongoDBDocumentsClick).toHaveBeenCalled();
         });
 
         it("string value should call onMongoDBDocumentsClick", () => {
@@ -251,7 +239,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onMongoDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onMongoDBDocumentsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onMongoDBDocumentsClick before collections are fetched", () => {
@@ -263,10 +251,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onMongoDBDocumentsClick).not.toHaveBeenCalled();
+          expect(collection.onMongoDBDocumentsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onMongoDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onMongoDBDocumentsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onMongoDBDocumentsClick", () => {
@@ -279,7 +267,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onMongoDBDocumentsClick).toHaveBeenCalled();
+          expect(collection.onMongoDBDocumentsClick).toHaveBeenCalled();
         });
       });
 
@@ -293,10 +281,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onTableEntitiesClick).not.toHaveBeenCalled();
+          expect(collection.onTableEntitiesClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onTableEntitiesClick).toHaveBeenCalled();
+          expect(collection.onTableEntitiesClick).toHaveBeenCalled();
         });
 
         it("string value should call onTableEntitiesClick", () => {
@@ -309,7 +297,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onTableEntitiesClick).toHaveBeenCalled();
+          expect(collection.onTableEntitiesClick).toHaveBeenCalled();
         });
 
         it("enum value should call onTableEntitiesClick before collections are fetched", () => {
@@ -322,7 +310,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onTableEntitiesClick).toHaveBeenCalled();
+          expect(collection.onTableEntitiesClick).toHaveBeenCalled();
         });
 
         it("enum value should call onTableEntitiesClick", () => {
@@ -334,10 +322,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onTableEntitiesClick).not.toHaveBeenCalled();
+          expect(collection.onTableEntitiesClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onTableEntitiesClick).toHaveBeenCalled();
+          expect(collection.onTableEntitiesClick).toHaveBeenCalled();
         });
       });
 
@@ -351,10 +339,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onGraphDocumentsClick).not.toHaveBeenCalled();
+          expect(collection.onGraphDocumentsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onGraphDocumentsClick).toHaveBeenCalled();
+          expect(collection.onGraphDocumentsClick).toHaveBeenCalled();
         });
 
         it("string value should call onGraphDocumentsClick", () => {
@@ -367,7 +355,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onGraphDocumentsClick).toHaveBeenCalled();
+          expect(collection.onGraphDocumentsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onGraphDocumentsClick before collections are fetched", () => {
@@ -379,10 +367,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onGraphDocumentsClick).not.toHaveBeenCalled();
+          expect(collection.onGraphDocumentsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onGraphDocumentsClick).toHaveBeenCalled();
+          expect(collection.onGraphDocumentsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onGraphDocumentsClick", () => {
@@ -395,7 +383,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onGraphDocumentsClick).toHaveBeenCalled();
+          expect(collection.onGraphDocumentsClick).toHaveBeenCalled();
         });
       });
 
@@ -409,10 +397,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onNewQueryClick).not.toHaveBeenCalled();
+          expect(collection.onNewQueryClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onNewQueryClick).toHaveBeenCalled();
+          expect(collection.onNewQueryClick).toHaveBeenCalled();
         });
 
         it("string value should call onNewQueryClick", () => {
@@ -425,7 +413,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onNewQueryClick).toHaveBeenCalled();
+          expect(collection.onNewQueryClick).toHaveBeenCalled();
         });
 
         it("enum value should call onNewQueryClick before collections are fetched", () => {
@@ -437,10 +425,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onNewQueryClick).not.toHaveBeenCalled();
+          expect(collection.onNewQueryClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onNewQueryClick).toHaveBeenCalled();
+          expect(collection.onNewQueryClick).toHaveBeenCalled();
         });
 
         it("enum value should call onNewQueryClick", () => {
@@ -453,7 +441,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onNewQueryClick).toHaveBeenCalled();
+          expect(collection.onNewQueryClick).toHaveBeenCalled();
         });
       });
 
@@ -467,10 +455,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onSettingsClick).not.toHaveBeenCalled();
+          expect(collection.onSettingsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onSettingsClick).toHaveBeenCalled();
+          expect(collection.onSettingsClick).toHaveBeenCalled();
         });
 
         it("string value should call onSettingsClick", () => {
@@ -483,7 +471,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onSettingsClick).toHaveBeenCalled();
+          expect(collection.onSettingsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onSettingsClick before collections are fetched", () => {
@@ -495,10 +483,10 @@ describe("OpenActions", () => {
           };
 
           handleOpenAction(action, [database], explorer);
-          expect(onSettingsClick).not.toHaveBeenCalled();
+          expect(collection.onSettingsClick).not.toHaveBeenCalled();
 
           database.collections([collection]);
-          expect(onSettingsClick).toHaveBeenCalled();
+          expect(collection.onSettingsClick).toHaveBeenCalled();
         });
 
         it("enum value should call onSettingsClick", () => {
@@ -511,7 +499,7 @@ describe("OpenActions", () => {
 
           database.collections([collection]);
           handleOpenAction(action, [database], explorer);
-          expect(onSettingsClick).toHaveBeenCalled();
+          expect(collection.onSettingsClick).toHaveBeenCalled();
         });
       });
     });

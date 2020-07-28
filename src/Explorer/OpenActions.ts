@@ -2,11 +2,12 @@
 
 import * as ViewModels from "../Contracts/ViewModels";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
+import Explorer from "./Explorer";
 
 export function handleOpenAction(
   action: ActionContracts.DataExplorerAction,
   databases: ViewModels.Database[],
-  explorer: ViewModels.Explorer
+  explorer: Explorer
 ): boolean {
   if (
     action.actionType === ActionContracts.ActionType.OpenCollectionTab ||
@@ -126,7 +127,7 @@ function openCollectionTab(
   }
 }
 
-function openPane(action: ActionContracts.OpenPane, explorer: ViewModels.Explorer) {
+function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
   if (
     action.paneKind === ActionContracts.PaneKind.AddCollection ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AddCollection]
@@ -154,7 +155,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: ViewModels.Explore
   }
 }
 
-function openFile(action: ActionContracts.OpenSampleNotebook, explorer: ViewModels.Explorer) {
+function openFile(action: ActionContracts.OpenSampleNotebook, explorer: Explorer) {
   explorer.handleOpenFileAction(decodeURIComponent(action.path));
 }
 

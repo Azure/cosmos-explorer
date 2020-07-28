@@ -90,7 +90,7 @@ export default class AuthHeadersUtil {
     const url: string = `${
       AuthHeadersUtil.extensionEndpoint
     }/api/tokens/generateToken${AuthHeadersUtil._generateResourceUrl()}`;
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     const headers: any = { authorization: CosmosClient.authorizationToken() };
     headers[Constants.HttpHeaders.getReadOnlyKey] = !explorer.hasWriteAccess();
 
@@ -272,7 +272,7 @@ export default class AuthHeadersUtil {
   }
 
   private static _generateResourceUrl(): string {
-    const databaseAccount: ViewModels.DatabaseAccount = CosmosClient.databaseAccount();
+    const databaseAccount = CosmosClient.databaseAccount();
     const subscriptionId: string = CosmosClient.subscriptionId();
     const resourceGroup: string = CosmosClient.resourceGroup();
     const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount);

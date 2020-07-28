@@ -71,12 +71,12 @@ describe("Default Experience Utility", () => {
   });
 
   describe("getDefaultExperienceFromDatabaseAccount()", () => {
-    function runScenario(databaseAccount: ViewModels.DatabaseAccount, expectedDefaultExperience: string): void {
+    function runScenario(databaseAccount: DataModels.DatabaseAccount, expectedDefaultExperience: string): void {
       const resolvedExperience = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount);
       expect(resolvedExperience).toEqual(expectedDefaultExperience);
     }
 
-    const databaseAccountWithWrongTagsAndCapabilities: ViewModels.DatabaseAccount = {
+    const databaseAccountWithWrongTagsAndCapabilities: DataModels.DatabaseAccount = {
       id: "test",
       kind: "GlobalDocumentDB",
       name: "test",
@@ -99,7 +99,7 @@ describe("Default Experience Utility", () => {
       }
     };
 
-    const databaseAccountWithApiKind: ViewModels.DatabaseAccount = {
+    const databaseAccountWithApiKind: DataModels.DatabaseAccount = {
       id: "test",
       kind: Constants.AccountKind.MongoDB,
       name: "test",

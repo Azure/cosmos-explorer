@@ -1,24 +1,23 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { CollectionStub, DatabaseStub } from "../../Explorer/OpenActionsStubs";
-import { DataAccessUtility } from "../../Platform/Portal/DataAccessUtility";
+import * as DataModels from "../../Contracts/DataModels";
 import { TabsManager } from "./TabsManager";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import DocumentsTab from "./DocumentsTab";
 import Explorer from "../Explorer";
 import QueryTab from "./QueryTab";
+import DocumentId from "../Tree/DocumentId";
 
 describe("Tabs manager tests", () => {
   let tabsManager: TabsManager;
-  let explorer: ViewModels.Explorer;
+  let explorer: Explorer;
   let database: ViewModels.Database;
   let collection: ViewModels.Collection;
   let queryTab: QueryTab;
   let documentsTab: DocumentsTab;
 
   beforeAll(() => {
-    explorer = new Explorer({ documentClientUtility: undefined, notificationsClient: undefined, isEmulator: false });
-    explorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
+    explorer = new Explorer({ notificationsClient: undefined, isEmulator: false });
+    explorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
       id: "test",
       name: "test",
       location: "",
@@ -28,19 +27,19 @@ describe("Tabs manager tests", () => {
       properties: undefined
     });
 
-    database = new DatabaseStub({
+    database = {
       container: explorer,
       id: ko.observable<string>("test"),
       isDatabaseShared: () => false
-    });
+    } as ViewModels.Database;
     database.isDatabaseExpanded = ko.observable<boolean>(true);
     database.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
 
-    collection = new CollectionStub({
+    collection = {
       container: explorer,
       databaseId: "test",
       id: ko.observable<string>("test")
-    });
+    } as ViewModels.Collection;
     collection.getDatabase = (): ViewModels.Database => database;
     collection.isCollectionExpanded = ko.observable<boolean>(true);
     collection.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
@@ -51,7 +50,6 @@ describe("Tabs manager tests", () => {
       database,
       title: "",
       tabPath: "",
-      documentClientUtility: explorer.documentClientUtility,
       selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
@@ -60,12 +58,11 @@ describe("Tabs manager tests", () => {
 
     documentsTab = new DocumentsTab({
       partitionKey: undefined,
-      documentIds: ko.observableArray<ViewModels.DocumentId>(),
+      documentIds: ko.observableArray<DocumentId>(),
       tabKind: ViewModels.CollectionTabKind.Documents,
       collection,
       title: "",
       tabPath: "",
-      documentClientUtility: new DocumentClientUtilityBase(new DataAccessUtility()),
       selfLink: "",
       hashLocation: "",
       isActive: ko.observable<boolean>(false),
@@ -107,13 +104,13 @@ describe("Tabs manager tests", () => {
     tabsManager.activateNewTab(queryTab);
     tabsManager.activateNewTab(documentsTab);
 
-    const queryTabs: ViewModels.Tab[] = tabsManager.getTabs(ViewModels.CollectionTabKind.Query);
+    const queryTabs = tabsManager.getTabs(ViewModels.CollectionTabKind.Query);
     expect(queryTabs.length).toBe(1);
     expect(queryTabs[0]).toEqual(queryTab);
 
-    const documentsTabs: ViewModels.Tab[] = tabsManager.getTabs(
+    const documentsTabs = tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.tabId === documentsTab.tabId
+      tab => tab.tabId === documentsTab.tabId
     );
     expect(documentsTabs.length).toBe(1);
     expect(documentsTabs[0]).toEqual(documentsTab);
@@ -130,7 +127,7 @@ describe("Tabs manager tests", () => {
     expect(queryTab.isActive()).toBe(true);
     expect(documentsTab.isActive()).toBe(false);
 
-    tabsManager.closeTabsByComparator((tab: ViewModels.Tab) => tab.tabId === queryTab.tabId);
+    tabsManager.closeTabsByComparator(tab => tab.tabId === queryTab.tabId);
     expect(tabsManager.openedTabs().length).toBe(0);
     expect(tabsManager.activeTab()).toEqual(undefined);
     expect(queryTab.isActive()).toBe(false);

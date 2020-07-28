@@ -16,6 +16,11 @@ import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../Controls
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 
+interface GitHubReposPaneOptions extends ViewModels.PaneOptions {
+  gitHubClient: GitHubClient;
+  junoClient: JunoClient;
+}
+
 export class GitHubReposPane extends ContextualPaneBase {
   private static readonly PageSize = 30;
 
@@ -33,7 +38,7 @@ export class GitHubReposPane extends ContextualPaneBase {
   private allGitHubReposLastPageInfo?: IGitHubPageInfo;
   private pinnedReposUpdated: boolean;
 
-  constructor(options: ViewModels.GitHubReposPaneOptions) {
+  constructor(options: GitHubReposPaneOptions) {
     super(options);
 
     this.gitHubClient = options.gitHubClient;

@@ -36,6 +36,8 @@ export interface GalleryCardComponentProps {
 export class GalleryCardComponent extends React.Component<GalleryCardComponentProps> {
   public static readonly CARD_WIDTH = 256;
   private static readonly cardImageHeight = 144;
+  public static readonly cardHeightToWidthRatio =
+    GalleryCardComponent.cardImageHeight / GalleryCardComponent.CARD_WIDTH;
   private static readonly cardDescriptionMaxChars = 88;
   private static readonly cardItemGapBig = 10;
   private static readonly cardItemGapSmall = 8;

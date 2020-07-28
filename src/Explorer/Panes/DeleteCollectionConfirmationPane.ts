@@ -11,9 +11,9 @@ import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility"
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { deleteCollection } from "../../Common/DocumentClientUtilityBase";
 
-export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
-  implements ViewModels.DeleteCollectionConfirmationPane {
+export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
   public collectionIdConfirmation: ko.Observable<string>;
   public containerDeleteFeedback: ko.Observable<string>;
@@ -59,16 +59,14 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         this.container
       );
     } else {
-      promise = this.container.documentClientUtility.deleteCollection(selectedCollection);
+      promise = deleteCollection(selectedCollection);
     }
     return promise.then(
       () => {
         this.isExecuting(false);
         this.close();
         this.container.selectedNode(selectedCollection.database);
-        this.container.tabsManager?.closeTabsByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === selectedCollection.rid
-        );
+        this.container.tabsManager?.closeTabsByComparator(tab => tab.node && tab.node.rid === selectedCollection.rid);
         this.container.refreshAllDatabases();
         this.resetData();
         TelemetryProcessor.traceSuccess(

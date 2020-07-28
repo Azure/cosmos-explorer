@@ -16,13 +16,15 @@ import { QueryUtils } from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import { queryDocuments, queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 enum ToggleState {
   Result,
   QueryMetrics
 }
 
-export default class QueryTab extends TabsBase implements ViewModels.QueryTab, ViewModels.WaitsForTemplate {
+export default class QueryTab extends TabsBase implements ViewModels.WaitsForTemplate {
   public queryEditorId: string;
   public executeQueryButton: ViewModels.Button;
   public fetchNextPageButton: ViewModels.Button;
@@ -115,7 +117,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     };
 
     this._isSaveQueriesEnabled = ko.computed<boolean>(() => {
-      const container: ViewModels.Explorer = this.collection && this.collection.container;
+      const container = this.collection && this.collection.container;
       return (container && (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph())) || false;
     });
 
@@ -290,12 +292,7 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
     const queryDocuments = (firstItemIndex: number) =>
-      this.documentClientUtility.queryDocumentsPage(
-        this.collection && this.collection.id(),
-        this._iterator,
-        firstItemIndex,
-        options
-      );
+      queryDocumentsPage(this.collection && this.collection.id(), this._iterator, firstItemIndex, options);
     this.isExecuting(true);
     return QueryUtils.queryPagesUntilContentPresent(firstItemIndex, queryDocuments)
       .then(
@@ -497,9 +494,9 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     }
 
     return Q(
-      this.documentClientUtility
-        .queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options)
-        .then(iterator => (this._iterator = iterator))
+      queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options).then(
+        iterator => (this._iterator = iterator)
+      )
     );
   }
 
@@ -590,8 +587,8 @@ export default class QueryTab extends TabsBase implements ViewModels.QueryTab, V
     return csvData;
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     if (this.executeQueryButton.visible()) {
       const label = this._executeQueryButtonTitle();
       buttons.push({

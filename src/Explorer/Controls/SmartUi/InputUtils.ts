@@ -1,6 +1,6 @@
 /* Utilities for validation */
 
-export const onValidateValueChange = (newValue: string, minValue?: number, maxValue?: number): number => {
+export const onValidateValueChange = (newValue: string, minValue?: number, maxValue?: number): number | undefined => {
   let numericValue = parseInt(newValue);
   if (!isNaN(numericValue) && isFinite(numericValue)) {
     if (minValue !== undefined && numericValue < minValue) {
@@ -16,7 +16,7 @@ export const onValidateValueChange = (newValue: string, minValue?: number, maxVa
   return undefined;
 };
 
-export const onIncrementValue = (newValue: string, step: number, max?: number): number => {
+export const onIncrementValue = (newValue: string, step: number, max?: number): number | undefined => {
   const numericValue = parseInt(newValue);
   if (!isNaN(numericValue) && isFinite(numericValue)) {
     const newValue = numericValue + step;
@@ -25,7 +25,7 @@ export const onIncrementValue = (newValue: string, step: number, max?: number): 
   return undefined;
 };
 
-export const onDecrementValue = (newValue: string, step: number, min?: number): number => {
+export const onDecrementValue = (newValue: string, step: number, min?: number): number | undefined => {
   const numericValue = parseInt(newValue);
   if (!isNaN(numericValue) && isFinite(numericValue)) {
     const newValue = numericValue - step;

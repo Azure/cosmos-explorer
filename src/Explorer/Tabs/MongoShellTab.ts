@@ -13,10 +13,11 @@ import { CosmosClient } from "../../Common/CosmosClient";
 import { HashMap } from "../../Common/HashMap";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { PlatformType } from "../../PlatformType";
+import Explorer from "../Explorer";
 
-export default class MongoShellTab extends TabsBase implements ViewModels.MongoShellTab {
+export default class MongoShellTab extends TabsBase {
   public url: ko.Computed<string>;
-  private _container: ViewModels.Explorer;
+  private _container: Explorer;
   private _runtimeEndpoint: string;
   private _logTraces: HashMap<number>;
 
@@ -25,7 +26,7 @@ export default class MongoShellTab extends TabsBase implements ViewModels.MongoS
     this._logTraces = new HashMap<number>();
     this._container = options.collection.container;
     this.url = ko.computed<string>(() => {
-      const account: ViewModels.DatabaseAccount = CosmosClient.databaseAccount();
+      const account = CosmosClient.databaseAccount();
       const resourceId: string = account && account.id;
       const accountName = account && account.name;
       const mongoEndpoint = account && (account.properties.mongoEndpoint || account.properties.documentEndpoint);

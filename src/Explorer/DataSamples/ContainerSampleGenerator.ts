@@ -6,6 +6,8 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import { createDocument, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
 
 interface SampleDataFile extends DataModels.CreateDatabaseAndCollectionRequest {
   data: any[];
@@ -14,12 +16,12 @@ interface SampleDataFile extends DataModels.CreateDatabaseAndCollectionRequest {
 export class ContainerSampleGenerator {
   private sampleDataFile: SampleDataFile;
 
-  private constructor(private container: ViewModels.Explorer) {}
+  private constructor(private container: Explorer) {}
 
   /**
    * Factory function to load the json data file
    */
-  public static async createSampleGeneratorAsync(container: ViewModels.Explorer): Promise<ContainerSampleGenerator> {
+  public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
     let dataFileContent: any;
     if (container.isPreferredApiGraph()) {
@@ -63,7 +65,7 @@ export class ContainerSampleGenerator {
       options.initialHeaders[Constants.HttpHeaders.usePolygonsSmallerThanAHemisphere] = true;
     }
 
-    await this.container.documentClientUtility.getOrCreateDatabaseAndCollection(createRequest, options);
+    await getOrCreateDatabaseAndCollection(createRequest, options);
     await this.container.refreshAllDatabases();
     const database = this.container.findDatabaseWithId(this.sampleDataFile.databaseId);
     if (!database) {
@@ -102,7 +104,7 @@ export class ContainerSampleGenerator {
     } else {
       // For SQL all queries are executed at the same time
       this.sampleDataFile.data.forEach(doc => {
-        const subPromise = this.container.documentClientUtility.createDocument(collection, doc);
+        const subPromise = createDocument(collection, doc);
         subPromise.catch(reason => NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, reason));
         promises.push(subPromise);
       });

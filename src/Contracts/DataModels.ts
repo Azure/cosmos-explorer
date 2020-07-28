@@ -437,10 +437,8 @@ export interface Tenant {
 export interface AccountKeys {
   primaryMasterKey: string;
   secondaryMasterKey: string;
-  properties: {
-    primaryReadonlyMasterKey: string;
-    secondaryReadonlyMasterKey: string;
-  };
+  primaryReadonlyMasterKey: string;
+  secondaryReadonlyMasterKey: string;
 }
 
 export interface AfecFeature {

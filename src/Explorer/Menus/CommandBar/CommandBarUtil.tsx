@@ -1,12 +1,11 @@
 import _ from "underscore";
 import * as React from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { Observable } from "knockout";
 import { IconType } from "office-ui-fabric-react/lib/Icon";
 import { IComponentAsProps } from "office-ui-fabric-react/lib/Utilities";
-import { KeyCodes, StyleConstants } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/Constants";
 import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
-import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
+import { Dropdown, IDropdownStyles, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
 import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
@@ -21,13 +20,13 @@ export class CommandBarUtil {
    * Convert our NavbarButtonConfig to UI Fabric buttons
    * @param btns
    */
-  public static convertButton(btns: ViewModels.NavbarButtonConfig[], backgroundColor: string): ICommandBarItemProps[] {
+  public static convertButton(btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] {
     const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
 
     return btns
       .filter(btn => btn)
       .map(
-        (btn: ViewModels.NavbarButtonConfig, index: number): ICommandBarItemProps => {
+        (btn: CommandButtonComponentProps, index: number): ICommandBarItemProps => {
           if (btn.isDivider) {
             return CommandBarUtil.createDivider(btn.commandButtonLabel);
           }

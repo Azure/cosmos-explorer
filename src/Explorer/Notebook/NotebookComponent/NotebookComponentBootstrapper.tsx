@@ -17,7 +17,7 @@ import {
 } from "@nteract/core";
 import * as Immutable from "immutable";
 import { Provider } from "react-redux";
-import { CellType, CellId, toJS } from "@nteract/commutable";
+import { CellType, CellId, ImmutableNotebook } from "@nteract/commutable";
 import { Store, AnyAction } from "redux";
 
 import "./NotebookComponent.less";
@@ -71,14 +71,14 @@ export class NotebookComponentBootstrapper {
     );
   }
 
-  public getContent(): { name: string; content: string } {
+  public getContent(): { name: string; content: string | ImmutableNotebook } {
     const record = this.getStore()
       .getState()
       .core.entities.contents.byRef.get(this.contentRef);
-    let content: string;
+    let content: string | ImmutableNotebook;
     switch (record.model.type) {
       case "notebook":
-        content = JSON.stringify(toJS(record.model.notebook));
+        content = record.model.notebook;
         break;
       case "file":
         content = record.model.text;

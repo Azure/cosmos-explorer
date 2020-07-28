@@ -32,10 +32,20 @@ import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
 import { config } from "../../Config";
+import Explorer from "../Explorer";
+import {
+  createDocument,
+  readTriggers,
+  readUserDefinedFunctions,
+  readStoredProcedures,
+  readCollectionQuotaInfo,
+  readOffer,
+  readOffers
+} from "../../Common/DocumentClientUtilityBase";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public self: string;
   public rid: string;
   public databaseId: string;
@@ -62,9 +72,9 @@ export default class Collection implements ViewModels.Collection {
 
   public documentIds: ko.ObservableArray<DocumentId>;
   public children: ko.ObservableArray<ViewModels.TreeNode>;
-  public storedProcedures: ko.Computed<ViewModels.StoredProcedure[]>;
-  public userDefinedFunctions: ko.Computed<ViewModels.UserDefinedFunction[]>;
-  public triggers: ko.Computed<ViewModels.Trigger[]>;
+  public storedProcedures: ko.Computed<StoredProcedure[]>;
+  public userDefinedFunctions: ko.Computed<UserDefinedFunction[]>;
+  public triggers: ko.Computed<Trigger[]>;
 
   public showStoredProcedures: ko.Observable<boolean>;
   public showTriggers: ko.Observable<boolean>;
@@ -86,7 +96,7 @@ export default class Collection implements ViewModels.Collection {
   public triggersFocused: ko.Observable<boolean>;
 
   constructor(
-    container: ViewModels.Explorer,
+    container: Explorer,
     databaseId: string,
     data: DataModels.Collection,
     quotaInfo: DataModels.CollectionQuotaInfo,
@@ -179,19 +189,19 @@ export default class Collection implements ViewModels.Collection {
     this.storedProcedures = ko.computed(() => {
       return this.children()
         .filter(node => node.nodeKind === "StoredProcedure")
-        .map(node => <ViewModels.StoredProcedure>node);
+        .map(node => <StoredProcedure>node);
     });
 
     this.userDefinedFunctions = ko.computed(() => {
       return this.children()
         .filter(node => node.nodeKind === "UserDefinedFunction")
-        .map(node => <ViewModels.UserDefinedFunction>node);
+        .map(node => <UserDefinedFunction>node);
     });
 
     this.triggers = ko.computed(() => {
       return this.children()
         .filter(node => node.nodeKind === "Trigger")
-        .map(node => <ViewModels.Trigger>node);
+        .map(node => <Trigger>node);
     });
 
     const showScriptsMenus: boolean = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
@@ -230,9 +240,7 @@ export default class Collection implements ViewModels.Collection {
       this.expandCollection();
     }
     this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public collapseCollection() {
@@ -283,7 +291,7 @@ export default class Collection implements ViewModels.Collection {
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
@@ -305,7 +313,6 @@ export default class Collection implements ViewModels.Collection {
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        documentClientUtility: this.container.documentClientUtility,
 
         selfLink: this.self,
         isActive: ko.observable<boolean>(false),
@@ -335,7 +342,7 @@ export default class Collection implements ViewModels.Collection {
 
     const conflictsTabs: ConflictsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Conflicts,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as ConflictsTab[];
     let conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
 
@@ -357,7 +364,6 @@ export default class Collection implements ViewModels.Collection {
         conflictIds: ko.observableArray<ConflictId>([]),
         tabKind: ViewModels.CollectionTabKind.Conflicts,
         title: "Conflicts",
-        documentClientUtility: this.container.documentClientUtility,
 
         selfLink: this.self,
         isActive: ko.observable<boolean>(false),
@@ -393,7 +399,7 @@ export default class Collection implements ViewModels.Collection {
 
     const queryTablesTabs: QueryTablesTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.QueryTables,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as QueryTablesTab[];
     let queryTablesTab: QueryTablesTab = queryTablesTabs && queryTablesTabs[0];
 
@@ -418,7 +424,7 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.QueryTables,
         title: title,
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
+
         collection: this,
 
         node: this,
@@ -447,7 +453,7 @@ export default class Collection implements ViewModels.Collection {
 
     const graphTabs: GraphTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Graph,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as GraphTab[];
     let graphTab: GraphTab = graphTabs && graphTabs[0];
 
@@ -471,7 +477,7 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         title: title,
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
+
         collection: this,
         selfLink: this.self,
         masterKey: CosmosClient.masterKey() || "",
@@ -503,7 +509,7 @@ export default class Collection implements ViewModels.Collection {
 
     const mongoDocumentsTabs: MongoDocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as MongoDocumentsTab[];
     let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
@@ -526,7 +532,7 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Documents",
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
+
         collection: this,
 
         node: this,
@@ -552,14 +558,12 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    const tabTitle = "Scale & Settings";
+    const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
-    const matchingTabs: ViewModels.Tab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Settings,
-      (tab: ViewModels.Tab) => {
-        return tab.collection && tab.collection.rid === this.rid;
-      }
-    );
+    const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
+      return tab.collection && tab.collection.rid === this.rid;
+    });
+
     let settingsTab: SettingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -578,10 +582,9 @@ export default class Collection implements ViewModels.Collection {
             tabKind: ViewModels.CollectionTabKind.Settings,
             title: !this.offer() ? "Settings" : "Scale & Settings",
             tabPath: "",
-            documentClientUtility: this.container.documentClientUtility,
+
             collection: this,
             node: this,
-
             selfLink: this.self,
             hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
             isActive: ko.observable(false),
@@ -644,10 +647,8 @@ export default class Collection implements ViewModels.Collection {
       defaultExperience: this.container.defaultExperience()
     });
     // TODO: Use the collection entity cache to get quota info
-    const quotaInfoPromise: Q.Promise<DataModels.CollectionQuotaInfo> = this.container.documentClientUtility.readCollectionQuotaInfo(
-      this
-    );
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = this.container.documentClientUtility.readOffers();
+    const quotaInfoPromise: Q.Promise<DataModels.CollectionQuotaInfo> = readCollectionQuotaInfo(this);
+    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
     Q.all([quotaInfoPromise, offerInfoPromise]).then(
       () => {
         this.container.isRefreshingExplorer(false);
@@ -657,7 +658,8 @@ export default class Collection implements ViewModels.Collection {
 
         const collectionOffer = this._getOfferForCollection(offerInfoPromise.valueOf(), collectionDataModel);
         const isDatabaseShared = this.getDatabase() && this.getDatabase().isDatabaseShared();
-        if (isDatabaseShared && !collectionOffer) {
+        const isServerless = this.container.isServerlessEnabled();
+        if ((isDatabaseShared || isServerless) && !collectionOffer) {
           this.quotaInfo(quotaInfo);
           TelemetryProcessor.traceSuccess(
             Action.LoadOffers,
@@ -673,41 +675,39 @@ export default class Collection implements ViewModels.Collection {
           return;
         }
 
-        this.container.documentClientUtility
-          .readOffer(collectionOffer)
-          .then((offerDetail: DataModels.OfferWithHeaders) => {
-            if (OfferUtils.isNotOfferV1(collectionOffer)) {
-              const offerThroughputInfo: DataModels.OfferThroughputInfo = {
-                minimumRUForCollection:
-                  offerDetail.content &&
-                  offerDetail.content.collectionThroughputInfo &&
-                  offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
-                numPhysicalPartitions:
-                  offerDetail.content &&
-                  offerDetail.content.collectionThroughputInfo &&
-                  offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
-              };
+        readOffer(collectionOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
+          if (OfferUtils.isNotOfferV1(collectionOffer)) {
+            const offerThroughputInfo: DataModels.OfferThroughputInfo = {
+              minimumRUForCollection:
+                offerDetail.content &&
+                offerDetail.content.collectionThroughputInfo &&
+                offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
+              numPhysicalPartitions:
+                offerDetail.content &&
+                offerDetail.content.collectionThroughputInfo &&
+                offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
+            };
 
-              collectionOffer.content.collectionThroughputInfo = offerThroughputInfo;
-            }
+            collectionOffer.content.collectionThroughputInfo = offerThroughputInfo;
+          }
 
-            (collectionOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
-            this.offer(collectionOffer);
-            this.offer.valueHasMutated();
-            this.quotaInfo(quotaInfo);
-            TelemetryProcessor.traceSuccess(
-              Action.LoadOffers,
-              {
-                databaseAccountName: this.container.databaseAccount().name,
-                databaseName: this.databaseId,
-                collectionName: this.id(),
-                defaultExperience: this.container.defaultExperience(),
-                offerVersion: collectionOffer && collectionOffer.offerVersion
-              },
-              startKey
-            );
-            deferred.resolve();
-          });
+          (collectionOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
+          this.offer(collectionOffer);
+          this.offer.valueHasMutated();
+          this.quotaInfo(quotaInfo);
+          TelemetryProcessor.traceSuccess(
+            Action.LoadOffers,
+            {
+              databaseAccountName: this.container.databaseAccount().name,
+              databaseName: this.databaseId,
+              collectionName: this.id(),
+              defaultExperience: this.container.defaultExperience(),
+              offerVersion: collectionOffer && collectionOffer.offerVersion
+            },
+            startKey
+          );
+          deferred.resolve();
+        });
       },
       (error: any) => {
         this.container.isRefreshingExplorer(false);
@@ -745,7 +745,6 @@ export default class Collection implements ViewModels.Collection {
       tabKind: ViewModels.CollectionTabKind.Query,
       title: title,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       node: this,
       selfLink: this.self,
@@ -778,7 +777,6 @@ export default class Collection implements ViewModels.Collection {
       tabKind: ViewModels.CollectionTabKind.Query,
       title: title,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       node: this,
       selfLink: this.self,
@@ -811,7 +809,6 @@ export default class Collection implements ViewModels.Collection {
       node: this,
       title: title,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       selfLink: this.self,
       masterKey: CosmosClient.masterKey() || "",
@@ -834,7 +831,6 @@ export default class Collection implements ViewModels.Collection {
       tabKind: ViewModels.CollectionTabKind.MongoShell,
       title: "Shell " + id,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
@@ -879,21 +875,18 @@ export default class Collection implements ViewModels.Collection {
     return node;
   }
 
-  public findStoredProcedureWithId(sprocId: string): ViewModels.StoredProcedure {
-    return _.find(
-      this.storedProcedures(),
-      (storedProcedure: ViewModels.StoredProcedure) => storedProcedure.id() === sprocId
-    );
+  public findStoredProcedureWithId(sprocId: string): StoredProcedure {
+    return _.find(this.storedProcedures(), (storedProcedure: StoredProcedure) => storedProcedure.id() === sprocId);
   }
 
-  public findTriggerWithId(triggerId: string): ViewModels.Trigger {
-    return _.find(this.triggers(), (trigger: ViewModels.Trigger) => trigger.id() === triggerId);
+  public findTriggerWithId(triggerId: string): Trigger {
+    return _.find(this.triggers(), (trigger: Trigger) => trigger.id() === triggerId);
   }
 
-  public findUserDefinedFunctionWithId(userDefinedFunctionId: string): ViewModels.UserDefinedFunction {
+  public findUserDefinedFunctionWithId(userDefinedFunctionId: string): UserDefinedFunction {
     return _.find(
       this.userDefinedFunctions(),
-      (userDefinedFunction: ViewModels.Trigger) => userDefinedFunction.id() === userDefinedFunctionId
+      (userDefinedFunction: Trigger) => userDefinedFunction.id() === userDefinedFunctionId
     );
   }
 
@@ -904,9 +897,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandStoredProcedures();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public expandStoredProcedures() {
@@ -963,9 +954,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandUserDefinedFunctions();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public expandUserDefinedFunctions() {
@@ -1022,9 +1011,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandTriggers();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
-    );
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
   }
 
   public expandTriggers() {
@@ -1076,40 +1063,34 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public loadStoredProcedures(): Q.Promise<any> {
-    return this.container.documentClientUtility
-      .readStoredProcedures(this)
-      .then((storedProcedures: DataModels.StoredProcedure[]) => {
-        const storedProceduresNodes: ViewModels.TreeNode[] = storedProcedures.map(
-          storedProcedure => new StoredProcedure(this.container, this, storedProcedure)
-        );
-        const otherNodes = this.children().filter(node => node.nodeKind !== "StoredProcedure");
-        const allNodes = otherNodes.concat(storedProceduresNodes);
-        this.children(allNodes);
-      });
+    return readStoredProcedures(this).then((storedProcedures: DataModels.StoredProcedure[]) => {
+      const storedProceduresNodes: ViewModels.TreeNode[] = storedProcedures.map(
+        storedProcedure => new StoredProcedure(this.container, this, storedProcedure)
+      );
+      const otherNodes = this.children().filter(node => node.nodeKind !== "StoredProcedure");
+      const allNodes = otherNodes.concat(storedProceduresNodes);
+      this.children(allNodes);
+    });
   }
 
   public loadUserDefinedFunctions(): Q.Promise<any> {
-    return this.container.documentClientUtility
-      .readUserDefinedFunctions(this)
-      .then((userDefinedFunctions: DataModels.UserDefinedFunction[]) => {
-        const userDefinedFunctionsNodes: ViewModels.TreeNode[] = userDefinedFunctions.map(
-          udf => new UserDefinedFunction(this.container, this, udf)
-        );
-        const otherNodes = this.children().filter(node => node.nodeKind !== "UserDefinedFunction");
-        const allNodes = otherNodes.concat(userDefinedFunctionsNodes);
-        this.children(allNodes);
-      });
+    return readUserDefinedFunctions(this).then((userDefinedFunctions: DataModels.UserDefinedFunction[]) => {
+      const userDefinedFunctionsNodes: ViewModels.TreeNode[] = userDefinedFunctions.map(
+        udf => new UserDefinedFunction(this.container, this, udf)
+      );
+      const otherNodes = this.children().filter(node => node.nodeKind !== "UserDefinedFunction");
+      const allNodes = otherNodes.concat(userDefinedFunctionsNodes);
+      this.children(allNodes);
+    });
   }
 
   public loadTriggers(): Q.Promise<any> {
-    return this.container.documentClientUtility
-      .readTriggers(this, null /*options*/)
-      .then((triggers: DataModels.Trigger[]) => {
-        const triggerNodes: ViewModels.TreeNode[] = triggers.map(trigger => new Trigger(this.container, this, trigger));
-        const otherNodes = this.children().filter(node => node.nodeKind !== "Trigger");
-        const allNodes = otherNodes.concat(triggerNodes);
-        this.children(allNodes);
-      });
+    return readTriggers(this, null /*options*/).then((triggers: DataModels.Trigger[]) => {
+      const triggerNodes: ViewModels.TreeNode[] = triggers.map(trigger => new Trigger(this.container, this, trigger));
+      const otherNodes = this.children().filter(node => node.nodeKind !== "Trigger");
+      const allNodes = otherNodes.concat(triggerNodes);
+      this.children(allNodes);
+    });
   }
 
   public onDragOver(source: Collection, event: { originalEvent: DragEvent }) {
@@ -1270,7 +1251,7 @@ export default class Collection implements ViewModels.Collection {
       const promises: Array<Q.Promise<any>> = [];
 
       const triggerCreateDocument: (documentContent: any) => Q.Promise<any> = (documentContent: any) => {
-        return this.container.documentClientUtility.createDocument(this, documentContent).then(
+        return createDocument(this, documentContent).then(
           doc => {
             record.numSucceeded++;
             return Q.resolve();

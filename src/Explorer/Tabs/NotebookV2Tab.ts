@@ -27,15 +27,25 @@ import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/Notebook
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { config } from "../../Config";
+import Explorer from "../Explorer";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
-export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
+export interface NotebookTabOptions extends ViewModels.TabOptions {
+  account: DataModels.DatabaseAccount;
+  masterKey: string;
+  container: Explorer;
+  notebookContentItem: NotebookContentItem;
+}
+
+export default class NotebookTabV2 extends TabsBase {
   private static clientManager: NotebookClientV2;
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
 
-  constructor(options: ViewModels.NotebookTabOptions) {
+  constructor(options: NotebookTabOptions) {
     super(options);
 
     this.container = options.container;
@@ -104,11 +114,11 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
 
     const saveLabel = "Save";
@@ -135,7 +145,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     const cellCodeType = "code";
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
-    let buttons: ViewModels.NavbarButtonConfig[] = [
+    let buttons: CommandButtonComponentProps[] = [
       {
         iconSrc: SaveIcon,
         iconAlt: saveLabel,
@@ -187,7 +197,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
               hasPopup: false,
               disabled: false,
               ariaLabel: kernel.displayName
-            } as ViewModels.NavbarButtonConfig)
+            } as CommandButtonComponentProps)
         ),
         ariaLabel: kernelLabel
       },
@@ -362,7 +372,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     ];
 
     if (this.container.hasStorageAnalyticsAfecFeature()) {
-      const arcadiaWorkspaceDropdown: ViewModels.NavbarButtonConfig = {
+      const arcadiaWorkspaceDropdown: CommandButtonComponentProps = {
         iconSrc: null,
         iconAlt: workspaceLabel,
         ariaLabel: workspaceLabel,
@@ -448,7 +458,11 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
 
   private publishToGallery = () => {
     const notebookContent = this.notebookComponentAdapter.getContent();
-    this.container.publishNotebook(notebookContent.name, notebookContent.content);
+    this.container.publishNotebook(
+      notebookContent.name,
+      notebookContent.content,
+      this.notebookComponentAdapter.getNotebookParentElement()
+    );
   };
 
   private traceTelemetry(actionType: number) {

@@ -1,13 +1,14 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
+import * as DataModels from "../Contracts/DataModels";
 import { JunoClient } from "../Juno/JunoClient";
 import { GitHubConnector, IGitHubConnectorParams } from "./GitHubConnector";
 import { GitHubOAuthService } from "./GitHubOAuthService";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import NotebookManager from "../Explorer/Notebook/NotebookManager";
+import Explorer from "../Explorer/Explorer";
 
-const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
+const sampleDatabaseAccount: DataModels.DatabaseAccount = {
   id: "id",
   name: "name",
   location: "location",
@@ -25,17 +26,17 @@ const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
 describe("GitHubOAuthService", () => {
   let junoClient: JunoClient;
   let gitHubOAuthService: GitHubOAuthService;
-  let originalDataExplorer: ViewModels.Explorer;
+  let originalDataExplorer: Explorer;
 
   beforeEach(() => {
-    junoClient = new JunoClient(ko.observable<ViewModels.DatabaseAccount>(sampleDatabaseAccount));
+    junoClient = new JunoClient(ko.observable<DataModels.DatabaseAccount>(sampleDatabaseAccount));
     gitHubOAuthService = new GitHubOAuthService(junoClient);
     originalDataExplorer = window.dataExplorer;
     window.dataExplorer = {
       ...originalDataExplorer,
       logConsoleData: (data): void =>
         data.type === ConsoleDataType.Error ? console.error(data.message) : console.log(data.message)
-    } as ViewModels.Explorer;
+    } as Explorer;
     window.dataExplorer.notebookManager = new NotebookManager();
     window.dataExplorer.notebookManager.junoClient = junoClient;
     window.dataExplorer.notebookManager.gitHubOAuthService = gitHubOAuthService;

@@ -8,7 +8,7 @@ import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import { StringUtility } from "../../Shared/StringUtility";
 import { config } from "../../Config";
 
-export class SettingsPane extends ContextualPaneBase implements ViewModels.SettingsPane {
+export class SettingsPane extends ContextualPaneBase {
   public pageOption: ko.Observable<string>;
   public customItemPerPage: ko.Observable<number>;
   public crossPartitionQueryEnabled: ko.Observable<boolean>;

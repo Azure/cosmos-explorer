@@ -6,6 +6,9 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
+import { deleteStoredProcedure, executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import TabsBase from "../Tabs/TabsBase";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -34,9 +37,9 @@ function sample(prefix) {
     if (!isAccepted) throw new Error('The query was not accepted by the server.');
 }`;
 
-export default class StoredProcedure implements ViewModels.StoredProcedure {
+export default class StoredProcedure {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public collection: ViewModels.Collection;
   public self: string;
   public rid: string;
@@ -44,7 +47,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   public body: ko.Observable<string>;
   public isExecuteEnabled: boolean;
 
-  constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
     this.nodeKind = "StoredProcedure";
     this.container = container;
     this.collection = collection;
@@ -68,7 +71,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       tabKind: ViewModels.CollectionTabKind.StoredProcedures,
       title: `New Stored Procedure ${id}`,
       tabPath: `${source.databaseId}>${source.id()}>New Stored Procedure ${id}`,
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
@@ -95,7 +97,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
 
     const storedProcedureTabs: StoredProcedureTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
     ) as StoredProcedureTab[];
     let storedProcedureTab: StoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
 
@@ -115,7 +117,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
         tabKind: ViewModels.CollectionTabKind.StoredProcedures,
         title: storedProcedureData.id,
         tabPath: `${this.collection.databaseId}>${this.collection.id()}>${storedProcedureData.id}`,
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -143,11 +144,9 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       body: this.body()
     };
 
-    this.container.documentClientUtility.deleteStoredProcedure(this.collection, storedProcedureData).then(
+    deleteStoredProcedure(this.collection, storedProcedureData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}
@@ -155,15 +154,14 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   }
 
   public execute(params: string[], partitionKeyValue?: string): void {
-    const sprocTabs: ViewModels.StoredProcedureTab[] = this.container.tabsManager.getTabs(
+    const sprocTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-    ) as ViewModels.StoredProcedureTab[];
-    const sprocTab: ViewModels.StoredProcedureTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+    ) as StoredProcedureTab[];
+    const sprocTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
     this.container &&
-      this.container.documentClientUtility
-        .executeStoredProcedure(this.collection, this, partitionKeyValue, params)
+      executeStoredProcedure(this.collection, this, partitionKeyValue, params)
         .then(
           (result: any) => {
             sprocTab.onExecuteSprocsResult(result, result.scriptLogs);

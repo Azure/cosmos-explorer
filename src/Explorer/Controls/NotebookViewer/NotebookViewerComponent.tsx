@@ -18,9 +18,10 @@ import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookRe
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
+import Explorer from "../../Explorer";
 
 export interface NotebookViewerComponentProps {
-  container?: ViewModels.Explorer;
+  container?: Explorer;
   junoClient?: JunoClient;
   notebookUrl: string;
   galleryItem?: IGalleryItem;

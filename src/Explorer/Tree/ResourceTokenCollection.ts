@@ -8,10 +8,12 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import Q from "q";
 import QueryTab from "../Tabs/QueryTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
+import TabsBase from "../Tabs/TabsBase";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public databaseId: string;
   public self: string;
   public rid: string;
@@ -24,7 +26,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public isCollectionExpanded: ko.Observable<boolean>;
 
-  constructor(container: ViewModels.Explorer, databaseId: string, data: DataModels.Collection) {
+  constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
     this.nodeKind = "Collection";
     this.container = container;
     this.databaseId = databaseId;
@@ -90,7 +92,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabKind: ViewModels.CollectionTabKind.Query,
       title: title,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       node: this,
       selfLink: this.self,
@@ -120,7 +121,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      (tab: TabsBase) => tab.collection && tab.collection.rid === this.rid
     ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
@@ -142,8 +143,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        documentClientUtility: this.container.documentClientUtility,
-
         selfLink: this.self,
         isActive: ko.observable<boolean>(false),
         collection: this,

@@ -18,6 +18,7 @@ import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
+import Explorer from "../Explorer";
 
 /**
  * TODO Remove this when fully ported to ReactJS
@@ -29,9 +30,9 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
 
   public parameters: ko.Observable<number>;
 
-  constructor(private container: ViewModels.Explorer) {
+  constructor(private container: Explorer) {
     this.parameters = ko.observable<number>(Date.now());
-    this.container.tabsManager.openedTabs.subscribe((tabs: ViewModels.Tab[]) => {
+    this.container.tabsManager.openedTabs.subscribe(tabs => {
       if (tabs.length === 0) {
         this.forceRender();
       }

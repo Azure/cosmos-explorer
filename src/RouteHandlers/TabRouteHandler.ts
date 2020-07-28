@@ -4,6 +4,8 @@ import * as ViewModels from "../Contracts/ViewModels";
 
 import crossroads from "crossroads";
 import hasher from "hasher";
+import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
+import TabsBase from "../Explorer/Tabs/TabsBase";
 
 export class TabRouteHandler {
   private _tabRouter: any;
@@ -183,12 +185,11 @@ export class TabRouteHandler {
 
   private _openQueryTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.Query
@@ -203,12 +204,11 @@ export class TabRouteHandler {
 
   private _openMongoQueryTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.Query
@@ -226,12 +226,11 @@ export class TabRouteHandler {
 
   private _openMongoShellTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.MongoShell
@@ -249,7 +248,7 @@ export class TabRouteHandler {
 
   private _openDatabaseSettingsTabForResource(databaseId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+      const explorer = window.dataExplorer;
       const database: ViewModels.Database = _.find(
         explorer.databases(),
         (database: ViewModels.Database) => database.id() === databaseId
@@ -270,12 +269,11 @@ export class TabRouteHandler {
 
   private _openNewSprocTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.StoredProcedures,
@@ -294,8 +292,7 @@ export class TabRouteHandler {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
       collection &&
         collection.expandCollection().then(() => {
-          const storedProcedure: ViewModels.StoredProcedure =
-            collection && collection.findStoredProcedureWithId(sprocId);
+          const storedProcedure = collection && collection.findStoredProcedureWithId(sprocId);
           storedProcedure && storedProcedure.open();
         });
     });
@@ -303,12 +300,11 @@ export class TabRouteHandler {
 
   private _openNewTriggerTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.Triggers,
@@ -327,7 +323,7 @@ export class TabRouteHandler {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
       collection &&
         collection.expandCollection().then(() => {
-          const trigger: ViewModels.Trigger = collection && collection.findTriggerWithId(triggerId);
+          const trigger = collection && collection.findTriggerWithId(triggerId);
           trigger && trigger.open();
         });
     });
@@ -335,12 +331,11 @@ export class TabRouteHandler {
 
   private _openNewUserDefinedFunctionTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
-      const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
         collectionId
       );
-      const matchingTab: ViewModels.Tab = this._findMatchingTabByTabKind(
+      const matchingTab: TabsBase = this._findMatchingTabByTabKind(
         databaseId,
         collectionId,
         ViewModels.CollectionTabKind.UserDefinedFunctions,
@@ -359,8 +354,7 @@ export class TabRouteHandler {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
       collection &&
         collection.expandCollection().then(() => {
-          const userDefinedFunction: ViewModels.UserDefinedFunction =
-            collection && collection.findUserDefinedFunctionWithId(udfId);
+          const userDefinedFunction = collection && collection.findUserDefinedFunctionWithId(udfId);
           userDefinedFunction && userDefinedFunction.open();
         });
     });
@@ -388,21 +382,21 @@ export class TabRouteHandler {
     collectionId: string,
     tabKind: ViewModels.CollectionTabKind,
     isNewScriptTab?: boolean
-  ): ViewModels.Tab {
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
-    const matchingTabs: ViewModels.Tab[] = explorer.tabsManager.getTabs(
+  ): TabsBase {
+    const explorer = window.dataExplorer;
+    const matchingTabs: TabsBase[] = explorer.tabsManager.getTabs(
       tabKind,
-      (tab: ViewModels.Tab) =>
+      (tab: TabsBase) =>
         tab.collection &&
         tab.collection.databaseId === databaseId &&
         tab.collection.id() === collectionId &&
-        (!isNewScriptTab || (tab as ViewModels.ScriptTab).isNew())
+        (!isNewScriptTab || (tab as ScriptTabBase).isNew())
     );
     return matchingTabs && matchingTabs[0];
   }
 
   private _findMatchingCollectionForResource(databaseId: string, collectionId: string): ViewModels.Collection {
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     const matchedDatabase: ViewModels.Database = explorer.findDatabaseWithId(databaseId);
     const matchedCollection: ViewModels.Collection =
       matchedDatabase && matchedDatabase.findCollectionWithId(collectionId);
@@ -411,7 +405,7 @@ export class TabRouteHandler {
   }
 
   private _executeActionHelper(action: () => void): void {
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
+    const explorer = window.dataExplorer;
     if (!!explorer && (explorer.isRefreshingExplorer() || !explorer.isAccountReady())) {
       const refreshSubscription = explorer.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
         if (!isRefreshing) {

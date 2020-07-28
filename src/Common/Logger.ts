@@ -1,4 +1,4 @@
-import { MessageHandler } from "./MessageHandler";
+import { sendMessage } from "./MessageHandler";
 import { Diagnostics, MessageTypes } from "../Contracts/ExplorerContracts";
 import { appInsights } from "../Shared/appInsights";
 import { SeverityLevel } from "@microsoft/applicationinsights-web";
@@ -33,7 +33,7 @@ export function logError(message: string | Error, area: string, code?: number): 
 }
 
 function _logEntry(entry: Diagnostics.LogEntry): void {
-  MessageHandler.sendMessage({
+  sendMessage({
     type: MessageTypes.LogInfo,
     data: JSON.stringify(entry)
   });
