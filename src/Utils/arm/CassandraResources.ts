@@ -45,7 +45,7 @@ export async function deleteCassandraKeyspace(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string
-): Promise<void | void> {
+): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
   return window.fetch(path, { method: "delete" }).then(response => response.json());
 }
@@ -116,7 +116,7 @@ export async function deleteCassandraTable(
   accountName: string,
   keyspaceName: string,
   tableName: string
-): Promise<void | void> {
+): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
   return window.fetch(path, { method: "delete" }).then(response => response.json());
 }

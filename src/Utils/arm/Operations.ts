@@ -4,10 +4,15 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types";
+import * as Types from "./types"
 
-/* Lists all of the available Cosmos DB Resource Provider operations. */
-export async function list(): Promise<Types.OperationListResult> {
-  const path = `/providers/Microsoft.DocumentDB/operations`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
+
+          /* Lists all of the available Cosmos DB Resource Provider operations. */
+          export async function list (
+            
+            
+          ) : Promise<Types.OperationListResult> {
+            const path = `/providers/Microsoft.DocumentDB/operations`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          

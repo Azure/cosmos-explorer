@@ -83,6 +83,7 @@ function responseType(operation: Operation, namespace: string) {
         }
         return refToType(operation.responses[responseCode].schema.$ref, namespace);
       })
+      .filter((value, index, array) => array.indexOf(value) === index)
       .join(" | ");
   }
   return "unknown";

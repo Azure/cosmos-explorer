@@ -4,40 +4,45 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types";
+import * as Types from "./types"
 
-/* Retrieves the metrics determined by the given filter for the given database account and collection. */
-export async function listMetrics(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<Types.MetricListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metrics`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
 
-/* Retrieves the usages (most recent storage data) for the given collection. */
-export async function listUsages(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<Types.UsagesResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/usages`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Retrieves metric definitions for the given collection. */
-export async function listMetricDefinitions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string
-): Promise<Types.MetricDefinitionsListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metricDefinitions`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
+          /* Retrieves the metrics determined by the given filter for the given database account and collection. */
+          export async function listMetrics (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseRid: string,
+collectionRid: string
+            
+          ) : Promise<Types.MetricListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metrics`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Retrieves the usages (most recent storage data) for the given collection. */
+          export async function listUsages (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseRid: string,
+collectionRid: string
+            
+          ) : Promise<Types.UsagesResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/usages`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Retrieves metric definitions for the given collection. */
+          export async function listMetricDefinitions (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseRid: string,
+collectionRid: string
+            
+          ) : Promise<Types.MetricDefinitionsListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/metricDefinitions`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          

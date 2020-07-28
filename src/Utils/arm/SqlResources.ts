@@ -4,300 +4,319 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import * as Types from "./types";
+import * as Types from "./types"
 
-/* Lists the SQL databases under an existing Azure Cosmos DB database account. */
-export async function listSqlDatabases(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string
-): Promise<Types.SqlDatabaseListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
 
-/* Gets the SQL database under an existing Azure Cosmos DB database account with the provided name. */
-export async function getSqlDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<Types.SqlDatabaseGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL database */
-export async function createUpdateSqlDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: Types.SqlDatabaseCreateUpdateParameters
-): Promise<Types.SqlDatabaseGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL database. */
-export async function deleteSqlDatabase(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<void | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`;
-  return window.fetch(path, { method: "delete" }).then(response => response.json());
-}
-
-/* Gets the RUs per second of the SQL database under an existing Azure Cosmos DB database account with the provided name. */
-export async function getSqlDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<Types.ThroughputSettingsGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB SQL database */
-export async function updateSqlDatabaseThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  body: Types.ThroughputSettingsUpdateParameters
-): Promise<Types.ThroughputSettingsGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Lists the SQL container under an existing Azure Cosmos DB database account. */
-export async function listSqlContainers(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string
-): Promise<Types.SqlContainerListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Gets the SQL container under an existing Azure Cosmos DB database account. */
-export async function getSqlContainer(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<Types.SqlContainerGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL container */
-export async function createUpdateSqlContainer(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  body: Types.SqlContainerCreateUpdateParameters
-): Promise<Types.SqlContainerGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL container. */
-export async function deleteSqlContainer(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<void | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
-  return window.fetch(path, { method: "delete" }).then(response => response.json());
-}
-
-/* Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database account. */
-export async function getSqlContainerThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<Types.ThroughputSettingsGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Update RUs per second of an Azure Cosmos DB SQL container */
-export async function updateSqlContainerThroughput(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  body: Types.ThroughputSettingsUpdateParameters
-): Promise<Types.ThroughputSettingsGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */
-export async function listSqlStoredProcedures(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<Types.SqlStoredProcedureListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Gets the SQL storedProcedure under an existing Azure Cosmos DB database account. */
-export async function getSqlStoredProcedure(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  storedProcedureName: string
-): Promise<Types.SqlStoredProcedureGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL storedProcedure */
-export async function createUpdateSqlStoredProcedure(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  storedProcedureName: string,
-  body: Types.SqlStoredProcedureCreateUpdateParameters
-): Promise<Types.SqlStoredProcedureGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL storedProcedure. */
-export async function deleteSqlStoredProcedure(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  storedProcedureName: string
-): Promise<void | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`;
-  return window.fetch(path, { method: "delete" }).then(response => response.json());
-}
-
-/* Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
-export async function listSqlUserDefinedFunctions(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<Types.SqlUserDefinedFunctionListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Gets the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
-export async function getSqlUserDefinedFunction(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  userDefinedFunctionName: string
-): Promise<Types.SqlUserDefinedFunctionGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL userDefinedFunction */
-export async function createUpdateSqlUserDefinedFunction(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  userDefinedFunctionName: string,
-  body: Types.SqlUserDefinedFunctionCreateUpdateParameters
-): Promise<Types.SqlUserDefinedFunctionGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL userDefinedFunction. */
-export async function deleteSqlUserDefinedFunction(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  userDefinedFunctionName: string
-): Promise<void | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`;
-  return window.fetch(path, { method: "delete" }).then(response => response.json());
-}
-
-/* Lists the SQL trigger under an existing Azure Cosmos DB database account. */
-export async function listSqlTriggers(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string
-): Promise<Types.SqlTriggerListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Gets the SQL trigger under an existing Azure Cosmos DB database account. */
-export async function getSqlTrigger(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  triggerName: string
-): Promise<Types.SqlTriggerGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
-  return window.fetch(path, { method: "get" }).then(response => response.json());
-}
-
-/* Create or update an Azure Cosmos DB SQL trigger */
-export async function createUpdateSqlTrigger(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  triggerName: string,
-  body: Types.SqlTriggerCreateUpdateParameters
-): Promise<Types.SqlTriggerGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
-  return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then(response => response.json());
-}
-
-/* Deletes an existing Azure Cosmos DB SQL trigger. */
-export async function deleteSqlTrigger(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseName: string,
-  containerName: string,
-  triggerName: string
-): Promise<void | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
-  return window.fetch(path, { method: "delete" }).then(response => response.json());
-}
+          /* Lists the SQL databases under an existing Azure Cosmos DB database account. */
+          export async function listSqlDatabases (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string
+            
+          ) : Promise<Types.SqlDatabaseListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Gets the SQL database under an existing Azure Cosmos DB database account with the provided name. */
+          export async function getSqlDatabase (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.SqlDatabaseGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Create or update an Azure Cosmos DB SQL database */
+          export async function createUpdateSqlDatabase (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            ,body: Types.SqlDatabaseCreateUpdateParameters
+          ) : Promise<Types.SqlDatabaseGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Deletes an existing Azure Cosmos DB SQL database. */
+          export async function deleteSqlDatabase (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`
+            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+          }
+          
+          /* Gets the RUs per second of the SQL database under an existing Azure Cosmos DB database account with the provided name. */
+          export async function getSqlDatabaseThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Update RUs per second of an Azure Cosmos DB SQL database */
+          export async function updateSqlDatabaseThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            ,body: Types.ThroughputSettingsUpdateParameters
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Lists the SQL container under an existing Azure Cosmos DB database account. */
+          export async function listSqlContainers (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.SqlContainerListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Gets the SQL container under an existing Azure Cosmos DB database account. */
+          export async function getSqlContainer (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.SqlContainerGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Create or update an Azure Cosmos DB SQL container */
+          export async function createUpdateSqlContainer (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            ,body: Types.SqlContainerCreateUpdateParameters
+          ) : Promise<Types.SqlContainerGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Deletes an existing Azure Cosmos DB SQL container. */
+          export async function deleteSqlContainer (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`
+            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+          }
+          
+          /* Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database account. */
+          export async function getSqlContainerThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Update RUs per second of an Azure Cosmos DB SQL container */
+          export async function updateSqlContainerThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            ,body: Types.ThroughputSettingsUpdateParameters
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */
+          export async function listSqlStoredProcedures (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.SqlStoredProcedureListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Gets the SQL storedProcedure under an existing Azure Cosmos DB database account. */
+          export async function getSqlStoredProcedure (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+storedProcedureName: string
+            
+          ) : Promise<Types.SqlStoredProcedureGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Create or update an Azure Cosmos DB SQL storedProcedure */
+          export async function createUpdateSqlStoredProcedure (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+storedProcedureName: string
+            ,body: Types.SqlStoredProcedureCreateUpdateParameters
+          ) : Promise<Types.SqlStoredProcedureGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Deletes an existing Azure Cosmos DB SQL storedProcedure. */
+          export async function deleteSqlStoredProcedure (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+storedProcedureName: string
+            
+          ) : Promise<void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`
+            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+          }
+          
+          /* Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
+          export async function listSqlUserDefinedFunctions (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.SqlUserDefinedFunctionListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Gets the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
+          export async function getSqlUserDefinedFunction (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+userDefinedFunctionName: string
+            
+          ) : Promise<Types.SqlUserDefinedFunctionGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Create or update an Azure Cosmos DB SQL userDefinedFunction */
+          export async function createUpdateSqlUserDefinedFunction (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+userDefinedFunctionName: string
+            ,body: Types.SqlUserDefinedFunctionCreateUpdateParameters
+          ) : Promise<Types.SqlUserDefinedFunctionGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Deletes an existing Azure Cosmos DB SQL userDefinedFunction. */
+          export async function deleteSqlUserDefinedFunction (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+userDefinedFunctionName: string
+            
+          ) : Promise<void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`
+            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+          }
+          
+          /* Lists the SQL trigger under an existing Azure Cosmos DB database account. */
+          export async function listSqlTriggers (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.SqlTriggerListResult> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Gets the SQL trigger under an existing Azure Cosmos DB database account. */
+          export async function getSqlTrigger (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+triggerName: string
+            
+          ) : Promise<Types.SqlTriggerGetResults> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`
+            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+          }
+          
+          /* Create or update an Azure Cosmos DB SQL trigger */
+          export async function createUpdateSqlTrigger (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+triggerName: string
+            ,body: Types.SqlTriggerCreateUpdateParameters
+          ) : Promise<Types.SqlTriggerGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`
+            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Deletes an existing Azure Cosmos DB SQL trigger. */
+          export async function deleteSqlTrigger (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string,
+triggerName: string
+            
+          ) : Promise<void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`
+            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+          }
+          
