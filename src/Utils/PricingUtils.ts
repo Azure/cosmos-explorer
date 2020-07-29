@@ -7,11 +7,11 @@ import { AutopilotTier } from "../Contracts/DataModels";
  * Otherwise, return numberOfRegions
  * @param number
  */
-export function normalizeNumber(number: null|undefined|string|number): number {
-  if (!number){
+export function normalizeNumber(number: null | undefined | string | number): number {
+  if (!number) {
     return 0;
   }
-  return Number(number);
+  return Math.floor(Number(number));
 }
 
 export function getRuToolTipText(isV2AutoPilot: boolean): string {
