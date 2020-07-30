@@ -147,7 +147,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         )
       );
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-      if (this.state.acceptedCodeOfConduct) {
+      if (this.state.acceptedCodeOfConduct !== false) {
         tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
       }
     }
