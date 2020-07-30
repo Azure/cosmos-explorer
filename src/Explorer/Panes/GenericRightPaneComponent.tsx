@@ -17,6 +17,7 @@ export interface GenericRightPaneProps {
   onSubmit: () => void;
   submitButtonText: string;
   title: string;
+  isSubmitButtonVisible?: boolean;
 }
 
 export interface GenericRightPaneState {
@@ -108,6 +109,7 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
       <div className="paneFooter">
         <div className="leftpanel-okbut">
           <PrimaryButton
+            style={{ visibility: this.props.isSubmitButtonVisible ? "visible" : "hidden" }}
             ariaLabel="Submit"
             title="Submit"
             onClick={this.props.onSubmit}

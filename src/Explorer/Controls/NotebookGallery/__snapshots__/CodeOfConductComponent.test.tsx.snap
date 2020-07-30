@@ -29,14 +29,14 @@ exports[`CodeOfConductComponent renders 1`] = `
     <Text>
       In order to access Azure Cosmos DB Notebook Gallery resources, you must accept the 
       <StyledLinkBase
-        href="https://azure.microsoft.com/support/legal/devops-code-of-conduct/"
+        href="https://aka.ms/cosmos-code-of-conduct"
         target="_blank"
       >
         code of conduct
       </StyledLinkBase>
        and 
       <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
+        href="https://aka.ms/ms-privacy-policy"
         target="_blank"
       >
         privacy statement

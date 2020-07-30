@@ -8,8 +8,9 @@ export class AuthorizationEndpoints {
 }
 
 export class CodeOfConductEndpoints {
-  public static privacyStatement: string = "https://privacy.microsoft.com/privacystatement";
-  public static codeOfConduct: string = "https://azure.microsoft.com/support/legal/devops-code-of-conduct/";
+  public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
+  public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
+  public static termsOfUse: string = "https://aka.ms/ms-terms-of-use";
 }
 
 export class BackendEndpoints {

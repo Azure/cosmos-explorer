@@ -208,6 +208,24 @@ export class JunoClient {
     };
   }
 
+  public async isCodeOfConductAccepted(): Promise<IJunoResponse<boolean>> {
+    const input = `${this.getNotebooksAccountUrl()}/gallery/isCodeOfConductAccepted`;
+    const response = await window.fetch(input, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: boolean;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
   public async getNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(this.getNotebookInfoUrl(id));
 

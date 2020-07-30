@@ -43,10 +43,8 @@ const notebookRecord = makeNotebookRecord({
       source: 'display(HTML("<h1>Sample html</h1>"))',
       outputs: List.of({
         data: Object.freeze({
-          data: {
-            "text/html": "<h1>Sample output</h1>",
-            "text/plain": "<IPython.core.display.HTML object>"
-          }
+          "text/html": "<h1>Sample output</h1>",
+          "text/plain": "<IPython.core.display.HTML object>"
         } as MediaBundle),
         output_type: "display_data",
         metadata: undefined

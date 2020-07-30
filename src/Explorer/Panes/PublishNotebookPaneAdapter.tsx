@@ -10,6 +10,8 @@ import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRight
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 import { ImmutableNotebook } from "@nteract/commutable/src";
 import { toJS } from "@nteract/commutable";
+import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
+import { HttpStatusCodes } from "../../Common/Constants";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -26,6 +28,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private imageSrc: string;
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
+  private acceptedCodeOfConduct: boolean;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
@@ -48,7 +51,8 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       title: "Publish to gallery",
       submitButtonText: "Publish",
       onClose: () => this.close(),
-      onSubmit: () => this.submit()
+      onSubmit: () => this.submit(),
+      isSubmitButtonVisible: this.acceptedCodeOfConduct
     };
 
     return <GenericRightPaneComponent {...props} />;
@@ -58,12 +62,30 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
 
-  public open(
+  public async open(
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
-    parentDomElement: HTMLElement
-  ): void {
+    parentDomElement: HTMLElement,
+    isCodeOfConductEnabled: boolean
+  ): Promise<void> {
+    if (isCodeOfConductEnabled) {
+      try {
+        const response = await this.junoClient.isCodeOfConductAccepted();
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+          throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
+        }
+
+        this.acceptedCodeOfConduct = response.data;
+      } catch (error) {
+        const message = `Failed to check if code of conduct was accepted: ${error}`;
+        Logger.logError(message, "PublishNotebookPaneAdapter/isCodeOfConductAccepted");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      }
+    } else {
+      this.acceptedCodeOfConduct = true;
+    }
+
     this.name = name;
     this.author = author;
     if (typeof notebookContent === "string") {
@@ -156,10 +178,22 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       clearFormError: this.clearFormError
     };
 
-    return <PublishNotebookPaneComponent {...publishNotebookPaneProps} />;
+    return !this.acceptedCodeOfConduct ? (
+      <div style={{ padding: "15px", marginTop: "10px" }}>
+        <CodeOfConductComponent
+          junoClient={this.junoClient}
+          onAcceptCodeOfConduct={() => {
+            this.acceptedCodeOfConduct = true;
+            this.triggerRender();
+          }}
+        />
+      </div>
+    ) : (
+      <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
+    );
   };
 
-  private reset = (): void => {
+  private reset = async (): Promise<void> => {
     this.isOpened = false;
     this.isExecuting = false;
     this.formError = undefined;
@@ -172,5 +206,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.imageSrc = undefined;
     this.notebookObject = undefined;
     this.parentDomElement = undefined;
+    this.acceptedCodeOfConduct = undefined;
   };
 }

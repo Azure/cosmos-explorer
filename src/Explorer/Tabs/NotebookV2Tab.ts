@@ -157,7 +157,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
               },
               {
                 iconName: "PublishContent",
-                onCommandClick: () => this.publishToGallery(),
+                onCommandClick: async () => await this.publishToGallery(),
                 commandButtonLabel: publishLabel,
                 hasPopup: false,
                 disabled: false,
@@ -447,9 +447,9 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     );
   }
 
-  private publishToGallery = () => {
+  private publishToGallery = async () => {
     const notebookContent = this.notebookComponentAdapter.getContent();
-    this.container.publishNotebook(
+    await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
       this.notebookComponentAdapter.getNotebookParentElement()

@@ -22,6 +22,9 @@ export class InfoComponent extends React.Component {
         <Stack.Item>
           {this.getInfoPanel("RedEye", "Privacy Statement", CodeOfConductEndpoints.privacyStatement)}
         </Stack.Item>
+        <Stack.Item>
+          {this.getInfoPanel("KnowledgeArticle", "Microsoft Terms of Use", CodeOfConductEndpoints.termsOfUse)}
+        </Stack.Item>
       </Stack>
     );
   };
