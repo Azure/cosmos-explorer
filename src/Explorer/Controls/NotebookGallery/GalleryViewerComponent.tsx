@@ -147,7 +147,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         )
       );
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-      tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+      if (this.state.acceptedCodeOfConduct) {
+        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+      }
     }
 
     const pivotProps: IPivotProps = {
