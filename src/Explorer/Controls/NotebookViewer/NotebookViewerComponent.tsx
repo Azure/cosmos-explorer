@@ -19,6 +19,7 @@ import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComp
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
 import Explorer from "../../Explorer";
+import { SessionStorageUtility } from "../../../Shared/StorageUtility";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -88,13 +89,13 @@ export class NotebookViewerComponent extends React.Component<
       this.notebookComponentBootstrapper.setContent("json", notebook);
       this.setState({ content: notebook, showProgressBar: false });
 
-      if (this.props.galleryItem) {
+      if (this.props.galleryItem && !SessionStorageUtility.getEntry(this.props.galleryItem.id)) {
         const response = await this.props.junoClient.increaseNotebookViews(this.props.galleryItem.id);
         if (!response.data) {
           throw new Error(`Received HTTP ${response.status} while increasing notebook views`);
         }
-
         this.setState({ galleryItem: response.data });
+        SessionStorageUtility.setEntry(this.props.galleryItem?.id, "true");
       }
     } catch (error) {
       this.setState({ showProgressBar: false });
