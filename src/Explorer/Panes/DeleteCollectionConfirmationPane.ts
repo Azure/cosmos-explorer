@@ -9,9 +9,9 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import DeleteFeedback from "../../Common/DeleteFeedback";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { deleteCollection } from "../../Common/DocumentClientUtilityBase";
+import { deleteCollection } from "../../Common/deleteCollection";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
@@ -29,7 +29,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
     this.resetData();
   }
 
-  public submit(): Q.Promise<any> {
+  public submit(): Promise<any> {
     if (!this._isValid()) {
       const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
       this.formErrors("Input collection name does not match the selected collection");
@@ -37,7 +37,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         ConsoleDataType.Error,
         `Error while deleting collection ${selectedCollection && selectedCollection.id()}: ${this.formErrors()}`
       );
-      return Q.resolve();
+      return Promise.resolve();
     }
 
     this.formErrors("");
@@ -50,14 +50,14 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title()
     });
-    let promise: Q.Promise<any>;
+    let promise: Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
-      promise = (<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
+      promise = ((<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
         this.container.databaseAccount().properties.cassandraEndpoint,
         this.container.databaseAccount().id,
         `DROP TABLE ${selectedCollection.databaseId}.${selectedCollection.id()};`,
         this.container
-      );
+      ) as unknown) as Promise<any>;
     } else {
       promise = deleteCollection(selectedCollection);
     }

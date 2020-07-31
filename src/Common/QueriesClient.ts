@@ -8,7 +8,7 @@ import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/Notificat
 import { CosmosClient } from "./CosmosClient";
 import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as Logger from "./Logger";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
 import Explorer from "../Explorer/Explorer";
 import {

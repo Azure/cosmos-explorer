@@ -4,7 +4,7 @@
 
 import * as Q from "q";
 import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../../Common/HashMap";
 import * as Logger from "../../../Common/Logger";

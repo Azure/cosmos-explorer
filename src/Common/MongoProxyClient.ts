@@ -13,7 +13,7 @@ import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import { CosmosClient } from "./CosmosClient";
 import { sendMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import DocumentId from "../Explorer/Tree/DocumentId";

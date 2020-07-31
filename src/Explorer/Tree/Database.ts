@@ -8,7 +8,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
 import Collection from "./Collection";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";

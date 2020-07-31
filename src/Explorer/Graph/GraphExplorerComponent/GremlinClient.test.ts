@@ -1,6 +1,6 @@
 import * as sinon from "sinon";
 import { GremlinClient, GremlinClientParameters } from "./GremlinClient";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../../Common/Logger";
 
 describe("Gremlin Client", () => {

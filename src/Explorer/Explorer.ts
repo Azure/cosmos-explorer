@@ -56,7 +56,7 @@ import { NotebookContentItem, NotebookContentItemType } from "./Notebook/Noteboo
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { PlatformType } from "../PlatformType";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";

@@ -1,6 +1,6 @@
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import Explorer from "../Explorer";
 

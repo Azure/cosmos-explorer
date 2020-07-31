@@ -6,7 +6,7 @@ import { ConnectionStringParser } from "../../Platform/Hosted/Helpers/Connection
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 
 export class RenewAdHocAccessPane extends ContextualPaneBase {
   public accessKey: ko.Observable<string>;

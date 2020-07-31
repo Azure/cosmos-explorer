@@ -22,7 +22,7 @@ import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
 import { extractPartitionKey, PartitionKeyDefinition, QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import {
   readDocument,

@@ -8,7 +8,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { JunoUtils } from "../../Utils/JunoUtils";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { AuthorizeAccessComponent } from "../Controls/GitHub/AuthorizeAccessComponent";
 import { GitHubReposComponent, GitHubReposComponentProps, RepoListItem } from "../Controls/GitHub/GitHubReposComponent";
 import { GitHubReposComponentAdapter } from "../Controls/GitHub/GitHubReposComponentAdapter";

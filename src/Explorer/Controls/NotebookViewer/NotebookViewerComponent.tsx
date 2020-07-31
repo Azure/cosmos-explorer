@@ -10,7 +10,7 @@ import * as Logger from "../../../Common/Logger";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";

@@ -377,16 +377,6 @@ export function deleteConflict(
   );
 }
 
-export function deleteCollection(collection: ViewModels.Collection, options: any): Q.Promise<any> {
-  return Q(
-    CosmosClient.client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .delete()
-      .then(() => refreshCachedResources())
-  );
-}
-
 export function deleteDatabase(database: ViewModels.Database, options: any): Q.Promise<any> {
   return Q(
     CosmosClient.client()

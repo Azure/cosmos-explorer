@@ -9,7 +9,7 @@ interface Options {
   host: string;
   path: string;
   apiVersion: string;
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
 }
 

@@ -10,7 +10,7 @@ import * as Logger from "./Logger";
 import { sendMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import ConflictId from "../Explorer/Tree/ConflictId";
@@ -719,39 +719,6 @@ export function deleteConflict(
           `Error while deleting conflict ${conflictId.id()}:\n ${JSON.stringify(error)}`
         );
         Logger.logError(JSON.stringify(error), "DeleteConflict", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
-export function deleteCollection(collection: ViewModels.Collection, options: any = {}): Q.Promise<any> {
-  var deferred = Q.defer<any>();
-
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Deleting container ${collection.id()}`
-  );
-  DataAccessUtilityBase.deleteCollection(collection, options)
-    .then(
-      (response: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully deleted container ${collection.id()}`
-        );
-        deferred.resolve(response);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while deleting container ${collection.id()}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "DeleteCollection", error.code);
         sendNotificationForError(error);
         deferred.reject(error);
       }

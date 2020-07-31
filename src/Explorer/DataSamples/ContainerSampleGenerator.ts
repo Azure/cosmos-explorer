@@ -5,7 +5,7 @@ import GraphTab from ".././Tabs/GraphTab";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { createDocument, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
 

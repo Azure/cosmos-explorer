@@ -4,7 +4,7 @@ import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { JunoClient } from "../../Juno/JunoClient";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";

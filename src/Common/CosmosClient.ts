@@ -2,7 +2,7 @@ import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { HttpHeaders, EmulatorMasterKey } from "./Constants";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { config, Platform } from "../Config";
 

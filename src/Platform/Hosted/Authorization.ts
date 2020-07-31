@@ -5,7 +5,7 @@ import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { AuthType } from "../../AuthType";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { CosmosClient } from "../../Common/CosmosClient";

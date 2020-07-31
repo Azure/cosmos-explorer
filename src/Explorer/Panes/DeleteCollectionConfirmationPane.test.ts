@@ -7,10 +7,10 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DeleteCollectionConfirmationPane from "./DeleteCollectionConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
-import { deleteCollection } from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
+import { deleteCollection } from "../../Common/deleteCollection";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
