@@ -2606,7 +2606,11 @@ export default class Explorer {
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
     const authType = window.authType as AuthType;
-    if (authType === AuthType.EncryptedToken || authType === AuthType.ResourceToken) {
+    if (
+      authType === AuthType.EncryptedToken ||
+      authType === AuthType.ResourceToken ||
+      authType === AuthType.MasterKey
+    ) {
       this.isNotebooksEnabledForAccount(false);
       return;
     }
