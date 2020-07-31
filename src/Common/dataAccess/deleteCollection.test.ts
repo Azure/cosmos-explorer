@@ -3,7 +3,7 @@ import { deleteCollection } from "./deleteCollection";
 import { armRequest } from "../../Utils/arm/request";
 import { AuthType } from "../../AuthType";
 
-describe("getCommonQueryOptions", () => {
+describe("deleteCollection", () => {
   it("should call ARM if logged in with AAD", async () => {
     window.authType = AuthType.AAD;
     await deleteCollection("database", "collection");
