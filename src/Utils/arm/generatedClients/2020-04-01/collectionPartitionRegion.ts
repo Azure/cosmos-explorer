@@ -4,23 +4,20 @@
   Run "npm run generateARMClients" to regenerate
 */
 
-import { armRequest } from "../../request"
-import * as Types from "./types"
+import { armRequest } from "../../request";
+import * as Types from "./types";
 import { config } from "../../../../Config";
-const apiVersion = "2020-04-01"
+const apiVersion = "2020-04-01";
 
-
-          /* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
-          export async function listMetrics (
-            subscriptionId: string,
-resourceGroupName: string,
-accountName: string,
-region: string,
-databaseRid: string,
-collectionRid: string
-            
-          ) : Promise<Types.PartitionMetricListResult> {
-            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`
-            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
-          }
-          
+/* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
+export async function listMetrics(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  region: string,
+  databaseRid: string,
+  collectionRid: string
+): Promise<Types.PartitionMetricListResult> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`;
+  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+}
