@@ -10,7 +10,6 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
-import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
@@ -93,7 +92,6 @@ describe("Delete Collection Confirmation Pane", () => {
 
     it("it should log feedback if last collection and database is not shared", () => {
       let selectedCollectionId = "testCol";
-      (deleteCollection as jest.Mock).mockResolvedValue(null);
       let fakeExplorer = {} as Explorer;
       fakeExplorer.findSelectedCollection = () => {
         return {
