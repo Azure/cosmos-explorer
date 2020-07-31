@@ -1,4 +1,4 @@
-jest.mock("../../Common/DocumentClientUtilityBase");
+jest.mock("../../Common/dataAccess/deleteCollection");
 import * as ko from "knockout";
 import * as sinon from "sinon";
 import Q from "q";
@@ -10,7 +10,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
-import { deleteCollection } from "../../Common/deleteCollection";
+import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
