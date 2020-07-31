@@ -111,9 +111,10 @@ export default class NotebookManager {
   public openPublishNotebookPane(
     name: string,
     content: string | ImmutableNotebook,
-    parentDomElement: HTMLElement
+    parentDomElement: HTMLElement,
+    isLinkInjectionEnabled: boolean
   ): void {
-    this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);
+    this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement, isLinkInjectionEnabled);
   }
 
   // Octokit's error handler uses any

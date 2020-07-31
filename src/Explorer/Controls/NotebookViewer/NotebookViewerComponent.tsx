@@ -19,6 +19,7 @@ import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComp
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
 import Explorer from "../../Explorer";
+import { NotebookV4 } from "@nteract/commutable/lib/v4";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -85,6 +86,7 @@ export class NotebookViewerComponent extends React.Component<
       }
 
       const notebook: Notebook = await response.json();
+      this.removeNotebookViewerLink(notebook, this.props.galleryItem?.newCellId);
       this.notebookComponentBootstrapper.setContent("json", notebook);
       this.setState({ content: notebook, showProgressBar: false });
 
@@ -104,10 +106,21 @@ export class NotebookViewerComponent extends React.Component<
     }
   }
 
+  private removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {
+    if (!newCellId) {
+      return;
+    }
+    const notebookV4 = notebook as NotebookV4;
+    if (notebookV4 && notebookV4.cells[0].source[0].search(newCellId)) {
+      delete notebookV4.cells[0];
+      notebook = notebookV4;
+    }
+  };
+
   public render(): JSX.Element {
     return (
       <div className="notebookViewerContainer">
-        {this.props.backNavigationText ? (
+        {this.props.backNavigationText !== undefined ? (
           <Link onClick={this.props.onBackClick}>
             <Icon iconName="Back" /> {this.props.backNavigationText}
           </Link>

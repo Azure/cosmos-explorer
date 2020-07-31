@@ -206,6 +206,7 @@ export default class Explorer {
 
   // features
   public isGalleryPublishEnabled: ko.Computed<boolean>;
+  public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -407,6 +408,9 @@ export default class Explorer {
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
+    );
+    this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -2348,7 +2352,7 @@ export default class Explorer {
 
   public publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): void {
     if (this.notebookManager) {
-      this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
+      this.notebookManager.openPublishNotebookPane(name, content, parentDomElement, this.isLinkInjectionEnabled());
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
