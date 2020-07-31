@@ -78,6 +78,30 @@ databaseName: string
             return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
           }
           
+          /* Migrate an Azure Cosmos DB MongoDB database from manual throughput to autoscale */
+          export async function migrateMongoDBDatabaseToAutoscale (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB MongoDB database from autoscale to manual throughput */
+          export async function migrateMongoDBDatabaseToManualThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
           /* Lists the MongoDB collection under an existing Azure Cosmos DB database account. */
           export async function listMongoDBCollections (
             subscriptionId: string,
@@ -153,5 +177,31 @@ collectionName: string
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`
             return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB MongoDB collection from manual throughput to autoscale */
+          export async function migrateMongoDBCollectionToAutoscale (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+collectionName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/migrateToAutoscale`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB MongoDB collection from autoscale to manual throughput */
+          export async function migrateMongoDBCollectionToManualThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+collectionName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/migrateToManualThroughput`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
           }
           

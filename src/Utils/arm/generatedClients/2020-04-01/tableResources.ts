@@ -78,3 +78,27 @@ tableName: string
             return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
           }
           
+          /* Migrate an Azure Cosmos DB Table from manual throughput to autoscale */
+          export async function migrateTableToAutoscale (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+tableName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default/migrateToAutoscale`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB Table from autoscale to manual throughput */
+          export async function migrateTableToManualThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+tableName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default/migrateToManualThroughput`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          

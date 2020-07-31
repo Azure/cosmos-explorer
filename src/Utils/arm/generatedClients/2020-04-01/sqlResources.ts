@@ -78,6 +78,30 @@ databaseName: string
             return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
           }
           
+          /* Migrate an Azure Cosmos DB SQL database from manual throughput to autoscale */
+          export async function migrateSqlDatabaseToAutoscale (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB SQL database from autoscale to manual throughput */
+          export async function migrateSqlDatabaseToManualThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
           /* Lists the SQL container under an existing Azure Cosmos DB database account. */
           export async function listSqlContainers (
             subscriptionId: string,
@@ -153,6 +177,32 @@ containerName: string
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`
             return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB SQL container from manual throughput to autoscale */
+          export async function migrateSqlContainerToAutoscale (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default/migrateToAutoscale`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+          }
+          
+          /* Migrate an Azure Cosmos DB SQL container from autoscale to manual throughput */
+          export async function migrateSqlContainerToManualThroughput (
+            subscriptionId: string,
+resourceGroupName: string,
+accountName: string,
+databaseName: string,
+containerName: string
+            
+          ) : Promise<Types.ThroughputSettingsGetResults | void> {
+            const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default/migrateToManualThroughput`
+            return window.fetch(path, { method: "post",  }).then((response) => response.json())
           }
           
           /* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */

@@ -75,11 +75,6 @@ export interface ErrorResponse {
             /* Error message indicating why the operation failed. */
             message: string}
 
-export interface ErrorResponseUpdatedFormat {
-            /* undefined */
-            error: unknown
-            }
-
 export interface FailoverPolicies {
             /* List of failover policies. */
             failoverPolicies: FailoverPolicy[]
@@ -123,9 +118,6 @@ export interface ARMResourceProperties {
             location: string
             /* undefined */
             tags: Tags
-            
-            /* undefined */
-            identity: ManagedServiceIdentity
             }
 
 export interface ARMProxyResource {
@@ -141,9 +133,6 @@ export type DatabaseAccountGetResults = ARMResourceProperties & {
             kind: string
             /* undefined */
             properties: DatabaseAccountGetProperties
-            
-            /* The system meta data relating to this resource. */
-            readonly systemData: unknown
             }
 
 export interface ExtendedResourceProperties {
@@ -357,18 +346,7 @@ export interface DatabaseAccountGetProperties {
             apiProperties: ApiProperties
             
             /* Flag to indicate whether to enable storage analytics. */
-            enableAnalyticalStorage: boolean
-            /* A unique identifier assigned to the database account */
-            readonly instanceId: string
-            /* Enum to indicate the mode of account creation. */
-            createMode: CreateMode
-            
-            /* Parameters to indicate the information about the restore. */
-            restoreParameters: RestoreParameters
-            
-            /* The object representing the policy for taking backups on an account. */
-            backupPolicy: BackupPolicy
-            }
+            enableAnalyticalStorage: boolean}
 
 export interface DatabaseAccountCreateUpdateProperties {
             /* The consistency policy for the Cosmos DB account. */
@@ -413,18 +391,7 @@ export interface DatabaseAccountCreateUpdateProperties {
             apiProperties: ApiProperties
             
             /* Flag to indicate whether to enable storage analytics. */
-            enableAnalyticalStorage: boolean
-            /* Enum to indicate the mode of account creation. */
-            createMode: CreateMode
-            
-            /* The object representing the policy for taking backups on an account. */
-            backupPolicy: BackupPolicy
-            }
-
-export type RestoreReqeustDatabaseAccountCreateUpdateProperties = DatabaseAccountCreateUpdateProperties & {
-            /* Parameters to indicate the information about the restore. */
-            restoreParameters: RestoreParameters
-            }
+            enableAnalyticalStorage: boolean}
 
 export type DatabaseAccountCreateUpdateParameters = ARMResourceProperties & {
             /* Indicates the type of database account. This can only be set at database account creation. */
@@ -473,10 +440,7 @@ export interface DatabaseAccountUpdateProperties {
             apiProperties: ApiProperties
             
             /* Flag to indicate whether to enable storage analytics. */
-            enableAnalyticalStorage: boolean
-            /* The object representing the policy for taking backups on an account. */
-            backupPolicy: BackupPolicy
-            }
+            enableAnalyticalStorage: boolean}
 
 export interface DatabaseAccountUpdateParameters {
             /* undefined */
@@ -979,15 +943,7 @@ export interface Capability {
 
         /* Tags are a list of key-value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater than 128 characters and value no greater than 256 characters. For example, the default experience for a template type is set with "defaultExperience": "Cassandra". Current "defaultExperience" values also include "Table", "Graph", "DocumentDB", and "MongoDB". */
         export type Tags = { [key: string]: string}
-        export interface ManagedServiceIdentity {
-            /* The principal id of the system assigned identity. This property will only be provided for a system assigned identity. */
-            readonly principalId: string
-            /* The tenant id of the system assigned identity. This property will only be provided for a system assigned identity. */
-            readonly tenantId: string
-            /* The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the service. */
-            type: string}
-
-
+        
         /* The status of the Cosmos DB account at the time the operation was called. The status can be one of following. 'Creating' – the Cosmos DB account is being created. When an account is in Creating state, only properties that are specified as input for the Create Cosmos DB account operation are returned. 'Succeeded' – the Cosmos DB account is active for use. 'Updating' – the Cosmos DB account is being updated. 'Deleting' – the Cosmos DB account is being deleted. 'Failed' – the Cosmos DB account failed creation. 'DeletionFailed' – the Cosmos DB account deletion failed. */
         export type ProvisioningState = string
           
@@ -1198,64 +1154,4 @@ export type PartitionMetric = Metric & {
 export interface ApiProperties {
             /* Describes the ServerVersion of an a MongoDB account. */
             serverVersion: string}
-
-
-        /* Enum to indicate the mode of account creation. */
-        export type CreateMode = "Default" | "Restore"
-export interface RestoreParameters {
-            /* Describes the mode of the restore. */
-            restoreMode: string
-            /* Path of the source account from which the restore has to be initiated */
-            restoreSource: string
-            /* Time to which the account has to be restored (ISO-8601 format). */
-            restoreTimestampInUtc: string
-            /* List of specific databases to restore. */
-            databasesToRestore: DatabaseRestoreResource[]
-            }
-
-export interface DatabaseRestoreResource {
-            /* The name of the database to restore. */
-            databaseName: string
-            /* The names of the collections to restore. */
-            collectionNames: CollectionName[]
-            }
-
-
-        /* The name of the collection. */
-        export type CollectionName = string
-          export interface BackupPolicy {
-            /* Describes the mode of backups. */
-            type: string}
-
-export type PeriodicModeBackupPolicy = BackupPolicy & {
-            /* Configuration values for periodic mode backup */
-            periodicModeProperties: PeriodicModeProperties
-            }
-
-
-        /* The object representing continuous mode backup policy. */
-        export type ContinuousModeBackupPolicy = BackupPolicy
-        export interface PeriodicModeProperties {
-            /* An integer representing the interval in minutes between two backups */
-            backupIntervalInMinutes: number
-            /* An integer representing the time (in hours) that each backup is retained */
-            backupRetentionIntervalInHours: number}
-
-export interface RestorableDatabaseAccountsListResult {
-            /* List of restorable database accounts and their properties. */
-            readonly value: RestorableDatabaseAccountGetResult[]
-            }
-
-export type RestorableDatabaseAccountGetResult = ARMResourceProperties & {
-            /* The properties of a restorable database account. */
-            properties: RestorableDatabaseAccountProperties
-            }
-
-export interface RestorableDatabaseAccountProperties {
-            /* The name of the global database account */
-            accountName: string
-            /* The creation time of the restorable database account (ISO-8601 format). */
-            creationTime: string
-            /* The time at which the restorable database account has been deleted (ISO-8601 format). */
-            deletionTime: string}
 

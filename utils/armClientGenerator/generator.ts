@@ -1,8 +1,8 @@
 /// <reference types="node" />
 import { writeFileSync } from "fs";
-import * as path from "path";
-import fetch from "node-fetch";
 import mkdirp from "mkdirp";
+import fetch from "node-fetch";
+import * as path from "path";
 
 /* 
 Open API TypeScript Client Generator 
@@ -16,11 +16,10 @@ Results of this file should be checked into the repo.
 
 // Array of strings to use for eventual output
 const outputTypes: string[] = [""];
+const version = "2020-04-01";
+const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/${version}/cosmos-db.json`;
 
-const schemaURL =
-  "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2020-06-01-preview/cosmos-db.json";
-
-const outputDir = path.join(__dirname, "../../src/Utils/arm/");
+const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${version}`);
 mkdirp.sync(outputDir);
 
 // Buckets for grouping operations based on their name
@@ -215,7 +214,7 @@ async function main() {
           `);
       }
     }
-    writeOutputFile(`./${clientName}.ts`, outputClient);
+    writeOutputFile(`./${camelize(clientName)}.ts`, outputClient);
   }
 
   writeOutputFile("./types.ts", outputTypes);
