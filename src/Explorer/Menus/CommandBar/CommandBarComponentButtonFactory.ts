@@ -246,6 +246,11 @@ export class CommandBarComponentButtonFactory {
     if (config.platform === Platform.Emulator) {
       return null;
     }
+
+    if (container.isServerlessEnabled()) {
+      return null;
+    }
+
     if (
       container.databaseAccount &&
       container.databaseAccount() &&

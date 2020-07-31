@@ -45,7 +45,8 @@ export class CommandBarComponentAdapter implements ReactAdapter {
       container.isHostedDataExplorerEnabled,
       container.isSynapseLinkUpdating,
       container.databaseAccount,
-      this.isNotebookTabActive
+      this.isNotebookTabActive,
+      container.isServerlessEnabled
     ];
 
     ko.computed(() => ko.toJSON(toWatch)).subscribe(() => this.triggerRender());
