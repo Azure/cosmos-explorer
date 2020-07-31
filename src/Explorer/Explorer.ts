@@ -1529,7 +1529,6 @@ export default class Explorer {
   };
 
   public onRefreshResourcesClick = (source: any, event: MouseEvent): void => {
-    console.log("HEREREER");
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       description: "Refresh button clicked",
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
