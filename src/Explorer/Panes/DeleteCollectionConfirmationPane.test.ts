@@ -10,6 +10,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
+import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
@@ -83,6 +84,7 @@ describe("Delete Collection Confirmation Pane", () => {
     let telemetryProcessorSpy: sinon.SinonSpy;
 
     beforeEach(() => {
+      (deleteCollection as jest.Mock).mockResolvedValue(undefined);
       telemetryProcessorSpy = sinon.spy(TelemetryProcessor, "trace");
     });
 
