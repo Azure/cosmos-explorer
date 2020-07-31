@@ -1,6 +1,6 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
+import * as DataModels from "../Contracts/DataModels";
 import { JunoClient } from "../Juno/JunoClient";
 import { GitHubConnector, IGitHubConnectorParams } from "./GitHubConnector";
 import { GitHubOAuthService } from "./GitHubOAuthService";
@@ -8,7 +8,7 @@ import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/Notificat
 import NotebookManager from "../Explorer/Notebook/NotebookManager";
 import Explorer from "../Explorer/Explorer";
 
-const sampleDatabaseAccount: ViewModels.DatabaseAccount = {
+const sampleDatabaseAccount: DataModels.DatabaseAccount = {
   id: "id",
   name: "name",
   location: "location",
@@ -29,7 +29,7 @@ describe("GitHubOAuthService", () => {
   let originalDataExplorer: Explorer;
 
   beforeEach(() => {
-    junoClient = new JunoClient(ko.observable<ViewModels.DatabaseAccount>(sampleDatabaseAccount));
+    junoClient = new JunoClient(ko.observable<DataModels.DatabaseAccount>(sampleDatabaseAccount));
     gitHubOAuthService = new GitHubOAuthService(junoClient);
     originalDataExplorer = window.dataExplorer;
     window.dataExplorer = {

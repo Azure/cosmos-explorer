@@ -1,6 +1,11 @@
 import * as DataModels from "../Contracts/DataModels";
-import { KernelConnectionMetadata } from "../Contracts/ViewModels";
 import * as Logger from "../Common/Logger";
+
+interface KernelConnectionMetadata {
+  name: string;
+  configurationEndpoints: DataModels.NotebookConfigurationEndpoints;
+  notebookConnectionInfo: DataModels.NotebookWorkspaceConnectionInfo;
+}
 
 export class NotebookConfigurationUtils {
   private constructor() {}

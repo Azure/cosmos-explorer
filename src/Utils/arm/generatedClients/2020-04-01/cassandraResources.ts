@@ -4,7 +4,10 @@
   Run "npm run generateARMClients" to regenerate
 */
 
+import { armRequest } from "../../request"
 import * as Types from "./types"
+import { config } from "../../../../Config";
+const apiVersion = "2020-04-01"
 
 
           /* Lists the Cassandra keyspaces under an existing Azure Cosmos DB database account. */
@@ -15,7 +18,7 @@ accountName: string
             
           ) : Promise<Types.CassandraKeyspaceListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Gets the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name. */
@@ -27,7 +30,7 @@ keyspaceName: string
             
           ) : Promise<Types.CassandraKeyspaceGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Create or update an Azure Cosmos DB Cassandra keyspace */
@@ -39,7 +42,7 @@ keyspaceName: string
             ,body: Types.CassandraKeyspaceCreateUpdateParameters
           ) : Promise<Types.CassandraKeyspaceGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Deletes an existing Azure Cosmos DB Cassandra keyspace. */
@@ -51,7 +54,7 @@ keyspaceName: string
             
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`
-            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion,  })
           }
           
           /* Gets the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the provided name. */
@@ -63,7 +66,7 @@ keyspaceName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Update RUs per second of an Azure Cosmos DB Cassandra Keyspace */
@@ -75,7 +78,7 @@ keyspaceName: string
             ,body: Types.ThroughputSettingsUpdateParameters
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Migrate an Azure Cosmos DB Cassandra Keyspace from manual throughput to autoscale */
@@ -87,7 +90,7 @@ keyspaceName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default/migrateToAutoscale`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Migrate an Azure Cosmos DB Cassandra Keyspace from autoscale to manual throughput */
@@ -99,7 +102,7 @@ keyspaceName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default/migrateToManualThroughput`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Lists the Cassandra table under an existing Azure Cosmos DB database account. */
@@ -111,7 +114,7 @@ keyspaceName: string
             
           ) : Promise<Types.CassandraTableListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Gets the Cassandra table under an existing Azure Cosmos DB database account. */
@@ -124,7 +127,7 @@ tableName: string
             
           ) : Promise<Types.CassandraTableGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Create or update an Azure Cosmos DB Cassandra Table */
@@ -137,7 +140,7 @@ tableName: string
             ,body: Types.CassandraTableCreateUpdateParameters
           ) : Promise<Types.CassandraTableGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Deletes an existing Azure Cosmos DB Cassandra table. */
@@ -150,7 +153,7 @@ tableName: string
             
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`
-            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion,  })
           }
           
           /* Gets the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the provided name. */
@@ -163,7 +166,7 @@ tableName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Update RUs per second of an Azure Cosmos DB Cassandra table */
@@ -176,7 +179,7 @@ tableName: string
             ,body: Types.ThroughputSettingsUpdateParameters
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Migrate an Azure Cosmos DB Cassandra table from manual throughput to autoscale */
@@ -189,7 +192,7 @@ tableName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default/migrateToAutoscale`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Migrate an Azure Cosmos DB Cassandra table from autoscale to manual throughput */
@@ -202,6 +205,6 @@ tableName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default/migrateToManualThroughput`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           

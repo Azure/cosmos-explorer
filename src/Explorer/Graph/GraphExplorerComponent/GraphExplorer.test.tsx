@@ -1,3 +1,4 @@
+jest.mock("../../../Common/DocumentClientUtilityBase");
 import React from "react";
 import * as sinon from "sinon";
 import { mount, ReactWrapper } from "enzyme";
@@ -7,11 +8,11 @@ import { GraphExplorer, GraphExplorerProps, GraphAccessor, GraphHighlightedNodeD
 import * as D3ForceGraph from "./D3ForceGraph";
 import { GraphData } from "./GraphData";
 import { TabComponent } from "../../Controls/Tabs/TabComponent";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as StorageUtility from "../../../Shared/StorageUtility";
 import GraphTab from "../../Tabs/GraphTab";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import { queryDocuments, queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
 
 describe("Check whether query result is vertex array", () => {
   it("should reject null as vertex array", () => {
@@ -134,7 +135,7 @@ describe("GraphExplorer", () => {
   const COLLECTION_SELF_LINK = "collectionSelfLink";
   const gremlinRU = 789.12;
 
-  const createMockProps = (documentClientUtility?: any): GraphExplorerProps => {
+  const createMockProps = (): GraphExplorerProps => {
     const graphConfig = GraphTab.createGraphConfig();
     const graphConfigUi = GraphTab.createGraphConfigUiData(graphConfig);
 
@@ -149,7 +150,6 @@ describe("GraphExplorer", () => {
       onIsValidQueryChange: (isValidQuery: boolean): void => {},
 
       collectionPartitionKeyProperty: "collectionPartitionKeyProperty",
-      documentClientUtility: documentClientUtility,
       collectionRid: COLLECTION_RID,
       collectionSelfLink: COLLECTION_SELF_LINK,
       graphBackendEndpoint: "graphBackendEndpoint",
@@ -188,7 +188,6 @@ describe("GraphExplorer", () => {
     let wrapper: ReactWrapper;
 
     let connectStub: sinon.SinonSpy;
-    let queryDocStub: sinon.SinonSpy;
     let submitToBackendSpy: sinon.SinonSpy;
     let renderResultAsJsonStub: sinon.SinonSpy;
     let onMiddlePaneInitializedStub: sinon.SinonSpy;
@@ -214,46 +213,6 @@ describe("GraphExplorer", () => {
     interface BackendResponses {
       [query: string]: AjaxResponse;
     }
-
-    const createDocumentClientUtilityMock = (docDBResponse: AjaxResponse) => {
-      const mock = {
-        queryDocuments: () => {},
-        queryDocumentsPage: (
-          rid: string,
-          iterator: any,
-          firstItemIndex: number,
-          options: any
-        ): Q.Promise<ViewModels.QueryResults> => {
-          const qresult = {
-            hasMoreResults: false,
-            firstItemIndex: firstItemIndex,
-            lastItemIndex: 0,
-            itemCount: 0,
-            documents: docDBResponse.response,
-            activityId: "",
-            headers: [] as any[],
-            requestCharge: gVRU
-          };
-
-          return Q.resolve(qresult);
-        }
-      };
-
-      const fakeIterator: any = {
-        nextItem: (callback: (error: any, document: DataModels.DocumentId) => void): void => {},
-        hasMoreResults: () => false,
-        executeNext: (callback: (error: any, documents: DataModels.DocumentId[], headers: any) => void): void => {}
-      };
-
-      queryDocStub = sinon.stub(mock, "queryDocuments").callsFake(
-        (container: ViewModels.DocumentRequestContainer, query: string, options: any): Q.Promise<any> => {
-          (fakeIterator as any)._query = query;
-          return Q.resolve(fakeIterator);
-        }
-      );
-
-      return mock;
-    };
 
     const setupMocks = (
       graphExplorer: GraphExplorer,
@@ -333,7 +292,29 @@ describe("GraphExplorer", () => {
       done: any,
       ignoreD3Update: boolean
     ): GraphExplorer => {
-      const props: GraphExplorerProps = createMockProps(createDocumentClientUtilityMock(docDBResponse));
+      (queryDocuments as jest.Mock).mockImplementation((container: any, query: string, options: any) => {
+        return Q.resolve({
+          _query: query,
+          nextItem: (callback: (error: any, document: DataModels.DocumentId) => void): void => {},
+          hasMoreResults: () => false,
+          executeNext: (callback: (error: any, documents: DataModels.DocumentId[], headers: any) => void): void => {}
+        });
+      });
+      (queryDocumentsPage as jest.Mock).mockImplementation(
+        (rid: string, iterator: any, firstItemIndex: number, options: any) => {
+          return Q.resolve({
+            hasMoreResults: false,
+            firstItemIndex: firstItemIndex,
+            lastItemIndex: 0,
+            itemCount: 0,
+            documents: docDBResponse.response,
+            activityId: "",
+            headers: [] as any[],
+            requestCharge: gVRU
+          });
+        }
+      );
+      const props: GraphExplorerProps = createMockProps();
       wrapper = mount(<GraphExplorer {...props} />);
       graphExplorerInstance = wrapper.instance() as GraphExplorer;
       setupMocks(graphExplorerInstance, backendResponses, done, ignoreD3Update);
@@ -341,7 +322,7 @@ describe("GraphExplorer", () => {
     };
 
     const cleanUpStubsWrapper = () => {
-      queryDocStub.restore();
+      jest.resetAllMocks();
       connectStub.restore();
       submitToBackendSpy.restore();
       renderResultAsJsonStub.restore();
@@ -378,22 +359,11 @@ describe("GraphExplorer", () => {
         expect((graphExplorerInstance.submitToBackend as sinon.SinonSpy).calledWith("g.V()")).toBe(false);
       });
 
-      it("should submit g.V() as docdb query with proper query", () => {
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[2]
-        ).toBe(DOCDB_G_DOT_V_QUERY);
-      });
-
       it("should submit g.V() as docdb query with proper parameters", () => {
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[0]
-        ).toEqual("databaseId");
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[1]
-        ).toEqual("collectionId");
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[3]
-        ).toEqual({ maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE, enableCrossPartitionQuery: true });
+        expect(queryDocuments).toBeCalledWith("databaseId", "collectionId", DOCDB_G_DOT_V_QUERY, {
+          maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
+          enableCrossPartitionQuery: true
+        });
       });
 
       it("should call backend thrice (user query, fetch outE, then fetch inE)", () => {
@@ -426,22 +396,11 @@ describe("GraphExplorer", () => {
         expect((graphExplorerInstance.submitToBackend as sinon.SinonSpy).calledWith("g.V()")).toBe(false);
       });
 
-      it("should submit g.V() as docdb query with proper query", () => {
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[2]
-        ).toBe(DOCDB_G_DOT_V_QUERY);
-      });
-
       it("should submit g.V() as docdb query with proper parameters", () => {
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[0]
-        ).toEqual("databaseId");
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[1]
-        ).toEqual("collectionId");
-        expect(
-          (graphExplorerInstance.props.documentClientUtility.queryDocuments as sinon.SinonSpy).getCall(0).args[3]
-        ).toEqual({ maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE, enableCrossPartitionQuery: true });
+        expect(queryDocuments).toBeCalledWith("databaseId", "collectionId", DOCDB_G_DOT_V_QUERY, {
+          maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
+          enableCrossPartitionQuery: true
+        });
       });
 
       it("should call backend thrice (user query, fetch outE, then fetch inE)", () => {

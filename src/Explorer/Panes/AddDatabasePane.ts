@@ -16,6 +16,7 @@ import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
+import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -49,6 +50,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
+  public canConfigureThroughput: ko.PureComputed<boolean>;
+  public showUpsellMessage: ko.PureComputed<boolean>;
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
@@ -56,6 +59,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseId = ko.observable<string>();
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
+    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -330,10 +335,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   ) {
     AddDbUtilities.createSqlDatabase(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings).then(
       () => {
-        Promise.all([
-          this.container.documentClientUtility.refreshCachedOffers(),
-          this.container.documentClientUtility.refreshCachedResources()
-        ]).then(() => {
+        Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
           this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
         });
       }
@@ -350,10 +352,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       createDatabaseParameters,
       autoPilotSettings
     ).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
     });
@@ -369,10 +368,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       createDatabaseParameters,
       autoPilotSettings
     ).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
     });
@@ -409,7 +405,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       autoPilot,
       hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
     };
-    this.container.documentClientUtility.createDatabase(createRequest).then(
+    createDatabase(createRequest).then(
       (database: DataModels.Database) => {
         this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
       },
@@ -460,10 +456,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     startKey: number
   ): void {
     AddDbUtilities.createCassandraKeyspace(armEndpoint, createKeyspaceParameters, autoPilotSettings).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
       });
     });
@@ -522,7 +515,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   private _computeOfferThroughput(): number {
-    return this.isAutoPilotSelected() ? undefined : this._getThroughput();
+    if (!this.canConfigureThroughput()) {
+      return undefined;
+    }
+
+    if (this.isAutoPilotSelected()) {
+      return undefined;
+    }
+
+    return this._getThroughput();
   }
 
   private _isValid(): boolean {

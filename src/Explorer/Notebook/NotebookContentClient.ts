@@ -1,5 +1,4 @@
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
 import { FileSystemUtil } from "./FileSystemUtil";
@@ -9,7 +8,7 @@ import { ServerConfig, IContent, IContentProvider, FileType, IEmptyContent } fro
 import { AjaxResponse } from "rxjs/ajax";
 import { stringifyNotebook } from "@nteract/commutable";
 
-export class NotebookContentClient implements ViewModels.INotebookContentClient {
+export class NotebookContentClient {
   constructor(
     private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
     private notebookBasePath: ko.Observable<string>,

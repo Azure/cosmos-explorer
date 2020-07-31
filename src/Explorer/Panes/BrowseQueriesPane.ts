@@ -6,6 +6,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import * as Logger from "../../Common/Logger";
 import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import QueryTab from "../Tabs/QueryTab";
 
 export class BrowseQueriesPane extends ContextualPaneBase {
   public queriesGridComponentAdapter: QueriesGridComponentAdapter;
@@ -87,7 +88,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
     } else {
       selectedCollection.onNewQueryClick(selectedCollection, null);
     }
-    const queryTab: ViewModels.QueryTab = this.container.tabsManager.activeTab() as ViewModels.QueryTab;
+    const queryTab = this.container.tabsManager.activeTab() as QueryTab;
     queryTab.tabTitle(savedQuery.queryName);
     queryTab.tabPath(`${selectedCollection.databaseId}>${selectedCollection.id()}>${savedQuery.queryName}`);
     queryTab.initialEditorContent(savedQuery.query);

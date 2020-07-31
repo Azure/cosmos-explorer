@@ -7,13 +7,12 @@ import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ThemeUtility from "../../Common/ThemeUtility";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 // TODO: Use specific actions for logging telemetry data
-export default class TabsBase extends WaitsForTemplateViewModel implements ViewModels.Tab {
+export default class TabsBase extends WaitsForTemplateViewModel {
   public closeTabButton: ViewModels.Button;
-  public documentClientUtility: DocumentClientUtilityBase;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;
   public database: ViewModels.Database;
@@ -39,7 +38,6 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
     const id = new Date().getTime().toString();
 
     this._theme = ThemeUtility.getMonacoTheme(options.theme);
-    this.documentClientUtility = options.documentClientUtility;
     this.node = options.node;
     this.collection = options.collection;
     this.database = options.database;
@@ -190,7 +188,7 @@ export default class TabsBase extends WaitsForTemplateViewModel implements ViewM
   /**
    * @return buttons that are displayed in the navbar
    */
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     return [];
   }
 

@@ -1,3 +1,4 @@
+jest.mock("../../Common/DocumentClientUtilityBase");
 import * as ko from "knockout";
 import * as sinon from "sinon";
 import Q from "q";
@@ -6,7 +7,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DeleteCollectionConfirmationPane from "./DeleteCollectionConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
+import { deleteCollection } from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
@@ -16,7 +17,7 @@ describe("Delete Collection Confirmation Pane", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be true if 1 database and 1 collection", () => {
@@ -55,15 +56,11 @@ describe("Delete Collection Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
-      let fakeDocumentClientUtility = sinon.createStubInstance<DocumentClientUtilityBase>(
-        DocumentClientUtilityBase as any
-      );
-      let fakeExplorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      let fakeExplorer = new Explorer({ notificationsClient: null, isEmulator: false });
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
 
       let pane = new DeleteCollectionConfirmationPane({
-        documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
         container: fakeExplorer
@@ -96,8 +93,7 @@ describe("Delete Collection Confirmation Pane", () => {
 
     it("it should log feedback if last collection and database is not shared", () => {
       let selectedCollectionId = "testCol";
-      let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
-      fakeDocumentClientUtility.deleteCollection = () => Q(null);
+      (deleteCollection as jest.Mock).mockResolvedValue(null);
       let fakeExplorer = {} as Explorer;
       fakeExplorer.findSelectedCollection = () => {
         return {
@@ -110,24 +106,22 @@ describe("Delete Collection Confirmation Pane", () => {
       fakeExplorer.isSelectedDatabaseShared = () => false;
       const SubscriptionId = "testId";
       const AccountName = "testAccount";
-      fakeExplorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
+      fakeExplorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
         id: SubscriptionId,
         name: AccountName
-      } as ViewModels.DatabaseAccount);
+      } as DataModels.DatabaseAccount);
 
       fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
       fakeExplorer.isPreferredApiCassandra = ko.computed(() => {
         return false;
       });
 
-      fakeExplorer.documentClientUtility = fakeDocumentClientUtility;
       fakeExplorer.selectedNode = ko.observable<TreeNode>();
       fakeExplorer.isLastCollection = () => true;
       fakeExplorer.isSelectedDatabaseShared = () => false;
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
 
       let pane = new DeleteCollectionConfirmationPane({
-        documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
         container: fakeExplorer as any

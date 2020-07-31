@@ -56,6 +56,14 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
               "key": "Custom Image",
               "text": "Custom Image",
             },
+            Object {
+              "key": "Take Screenshot",
+              "text": "Take Screenshot",
+            },
+            Object {
+              "key": "Use First Display Output",
+              "text": "Use First Display Output",
+            },
           ]
         }
       />

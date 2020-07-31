@@ -4,7 +4,10 @@
   Run "npm run generateARMClients" to regenerate
 */
 
+import { armRequest } from "../../request"
 import * as Types from "./types"
+import { config } from "../../../../Config";
+const apiVersion = "2020-04-01"
 
 
           /* Retrieves the properties of an existing Azure Cosmos DB database account. */
@@ -15,7 +18,7 @@ accountName: string
             
           ) : Promise<Types.DatabaseAccountGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Updates the properties of an existing Azure Cosmos DB database account. */
@@ -26,7 +29,7 @@ accountName: string
             ,body: Types.DatabaseAccountUpdateParameters
           ) : Promise<Types.DatabaseAccountGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`
-            return window.fetch(path, { method: "patch", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PATCH", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Creates or updates an Azure Cosmos DB database account. The "Update" method is preferred when performing updates on an account. */
@@ -37,7 +40,7 @@ accountName: string
             ,body: Types.DatabaseAccountCreateUpdateParameters
           ) : Promise<Types.DatabaseAccountGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Deletes an existing Azure Cosmos DB database account. */
@@ -48,7 +51,7 @@ accountName: string
             
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`
-            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion,  })
           }
           
           /* Changes the failover priority for the Azure Cosmos DB database account. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. */
@@ -59,7 +62,7 @@ accountName: string
             ,body: Types.FailoverPolicies
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/failoverPriorityChange`
-            return window.fetch(path, { method: "post", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Lists all the Azure Cosmos DB database accounts available under the subscription. */
@@ -68,7 +71,7 @@ accountName: string
             
           ) : Promise<Types.DatabaseAccountsListResult> {
             const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/databaseAccounts`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Lists all the Azure Cosmos DB database accounts available under the given resource group. */
@@ -78,7 +81,7 @@ resourceGroupName: string
             
           ) : Promise<Types.DatabaseAccountsListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Lists the access keys for the specified Azure Cosmos DB database account. */
@@ -89,7 +92,7 @@ accountName: string
             
           ) : Promise<Types.DatabaseAccountListKeysResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listKeys`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Lists the connection strings for the specified Azure Cosmos DB database account. */
@@ -100,7 +103,7 @@ accountName: string
             
           ) : Promise<Types.DatabaseAccountListConnectionStringsResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listConnectionStrings`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Offline the specified region for the specified Azure Cosmos DB database account. */
@@ -111,7 +114,7 @@ accountName: string
             ,body: Types.RegionForOnlineOffline
           ) : Promise<void | Types.ErrorResponse> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/offlineRegion`
-            return window.fetch(path, { method: "post", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Online the specified region for the specified Azure Cosmos DB database account. */
@@ -122,7 +125,7 @@ accountName: string
             ,body: Types.RegionForOnlineOffline
           ) : Promise<void | Types.ErrorResponse> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/onlineRegion`
-            return window.fetch(path, { method: "post", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
@@ -133,7 +136,7 @@ accountName: string
             
           ) : Promise<Types.DatabaseAccountListReadOnlyKeysResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
@@ -144,7 +147,7 @@ accountName: string
             
           ) : Promise<Types.DatabaseAccountListReadOnlyKeysResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Regenerates an access key for the specified Azure Cosmos DB database account. */
@@ -155,7 +158,7 @@ accountName: string
             ,body: Types.DatabaseAccountRegenerateKeyParameters
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/regenerateKey`
-            return window.fetch(path, { method: "post", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Checks that the Azure Cosmos DB account name already exists. A valid account name may contain only lowercase letters, numbers, and the '-' character, and must be between 3 and 50 characters. */
@@ -164,7 +167,7 @@ accountName: string
             
           ) : Promise<void> {
             const path = `/providers/Microsoft.DocumentDB/databaseAccountNames/${accountName}`
-            return window.fetch(path, { method: "head",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "HEAD", apiVersion,  })
           }
           
           /* Retrieves the metrics determined by the given filter for the given database account. */
@@ -175,7 +178,7 @@ accountName: string
             
           ) : Promise<Types.MetricListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metrics`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Retrieves the usages (most recent data) for the given database account. */
@@ -186,7 +189,7 @@ accountName: string
             
           ) : Promise<Types.UsagesResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/usages`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Retrieves metric definitions for the given database account. */
@@ -197,6 +200,6 @@ accountName: string
             
           ) : Promise<Types.MetricDefinitionsListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metricDefinitions`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           

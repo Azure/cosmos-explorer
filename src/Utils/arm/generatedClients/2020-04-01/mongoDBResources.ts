@@ -4,7 +4,10 @@
   Run "npm run generateARMClients" to regenerate
 */
 
+import { armRequest } from "../../request"
 import * as Types from "./types"
+import { config } from "../../../../Config";
+const apiVersion = "2020-04-01"
 
 
           /* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
@@ -15,7 +18,7 @@ accountName: string
             
           ) : Promise<Types.MongoDBDatabaseListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided name. */
@@ -27,7 +30,7 @@ databaseName: string
             
           ) : Promise<Types.MongoDBDatabaseGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Create or updates Azure Cosmos DB MongoDB database */
@@ -39,7 +42,7 @@ databaseName: string
             ,body: Types.MongoDBDatabaseCreateUpdateParameters
           ) : Promise<Types.MongoDBDatabaseGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Deletes an existing Azure Cosmos DB MongoDB database. */
@@ -51,7 +54,7 @@ databaseName: string
             
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`
-            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion,  })
           }
           
           /* Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database account with the provided name. */
@@ -63,7 +66,7 @@ databaseName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Update RUs per second of the an Azure Cosmos DB MongoDB database */
@@ -75,7 +78,7 @@ databaseName: string
             ,body: Types.ThroughputSettingsUpdateParameters
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Migrate an Azure Cosmos DB MongoDB database from manual throughput to autoscale */
@@ -87,7 +90,7 @@ databaseName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Migrate an Azure Cosmos DB MongoDB database from autoscale to manual throughput */
@@ -99,7 +102,7 @@ databaseName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Lists the MongoDB collection under an existing Azure Cosmos DB database account. */
@@ -111,7 +114,7 @@ databaseName: string
             
           ) : Promise<Types.MongoDBCollectionListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
@@ -124,7 +127,7 @@ collectionName: string
             
           ) : Promise<Types.MongoDBCollectionGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Create or update an Azure Cosmos DB MongoDB Collection */
@@ -137,7 +140,7 @@ collectionName: string
             ,body: Types.MongoDBCollectionCreateUpdateParameters
           ) : Promise<Types.MongoDBCollectionGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Deletes an existing Azure Cosmos DB MongoDB Collection. */
@@ -150,7 +153,7 @@ collectionName: string
             
           ) : Promise<void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`
-            return window.fetch(path, { method: "delete",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion,  })
           }
           
           /* Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database account with the provided name. */
@@ -163,7 +166,7 @@ collectionName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
           /* Update the RUs per second of an Azure Cosmos DB MongoDB collection */
@@ -176,7 +179,7 @@ collectionName: string
             ,body: Types.ThroughputSettingsUpdateParameters
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`
-            return window.fetch(path, { method: "put", body: JSON.stringify(body) }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) })
           }
           
           /* Migrate an Azure Cosmos DB MongoDB collection from manual throughput to autoscale */
@@ -189,7 +192,7 @@ collectionName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/migrateToAutoscale`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           
           /* Migrate an Azure Cosmos DB MongoDB collection from autoscale to manual throughput */
@@ -202,6 +205,6 @@ collectionName: string
             
           ) : Promise<Types.ThroughputSettingsGetResults | void> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/migrateToManualThroughput`
-            return window.fetch(path, { method: "post",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion,  })
           }
           

@@ -3,11 +3,10 @@ import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
 import QueryTab from "./QueryTab";
-import { View } from "@nteract/data-explorer/lib/utilities/types";
-import { PartitionKey } from "../../Contracts/DataModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 describe("Query Tab", () => {
-  function getNewQueryTabForContainer(container: Explorer): ViewModels.QueryTab {
+  function getNewQueryTabForContainer(container: Explorer): QueryTab {
     const database = {
       container: container,
       id: ko.observable<string>("test"),
@@ -25,11 +24,10 @@ describe("Query Tab", () => {
       database: database,
       title: "",
       tabPath: "",
-      documentClientUtility: container.documentClientUtility,
       selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
-      onUpdateTabsButtons: (buttons: ViewModels.NavbarButtonConfig[]): void => {}
+      onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
     });
   }
 
@@ -51,18 +49,18 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be true for accounts using SQL API", () => {
       explorer.defaultExperience(Constants.DefaultAccountExperience.DocumentDB.toLowerCase());
-      const queryTab: ViewModels.QueryTab = getNewQueryTabForContainer(explorer);
+      const queryTab = getNewQueryTabForContainer(explorer);
       expect(queryTab.isQueryMetricsEnabled()).toBe(true);
     });
 
     it("should be false for accounts using other APIs", () => {
       explorer.defaultExperience(Constants.DefaultAccountExperience.Graph.toLowerCase());
-      const queryTab: ViewModels.QueryTab = getNewQueryTabForContainer(explorer);
+      const queryTab = getNewQueryTabForContainer(explorer);
       expect(queryTab.isQueryMetricsEnabled()).toBe(false);
     });
   });
@@ -71,18 +69,18 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be visible when using a supported API", () => {
       explorer.defaultExperience(Constants.DefaultAccountExperience.DocumentDB);
-      const queryTab: ViewModels.QueryTab = getNewQueryTabForContainer(explorer);
+      const queryTab = getNewQueryTabForContainer(explorer);
       expect(queryTab.saveQueryButton.visible()).toBe(true);
     });
 
     it("should not be visible when using an unsupported API", () => {
       explorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
-      const queryTab: ViewModels.QueryTab = getNewQueryTabForContainer(explorer);
+      const queryTab = getNewQueryTabForContainer(explorer);
       expect(queryTab.saveQueryButton.visible()).toBe(false);
     });
   });

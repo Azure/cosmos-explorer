@@ -6,7 +6,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { CosmosClient } from "./CosmosClient";
 
-export class NotificationsClientBase implements ViewModels.NotificationsClient {
+export class NotificationsClientBase {
   private _extensionEndpoint: string;
   private _notificationsApiSuffix: string;
 
@@ -16,7 +16,7 @@ export class NotificationsClientBase implements ViewModels.NotificationsClient {
 
   public fetchNotifications(): Q.Promise<DataModels.Notification[]> {
     const deferred: Q.Deferred<DataModels.Notification[]> = Q.defer<DataModels.Notification[]>();
-    const databaseAccount: ViewModels.DatabaseAccount = CosmosClient.databaseAccount();
+    const databaseAccount = CosmosClient.databaseAccount();
     const subscriptionId: string = CosmosClient.subscriptionId();
     const resourceGroup: string = CosmosClient.resourceGroup();
     const url: string = `${this._extensionEndpoint}${this._notificationsApiSuffix}?accountName=${databaseAccount.name}&subscriptionId=${subscriptionId}&resourceGroup=${resourceGroup}`;

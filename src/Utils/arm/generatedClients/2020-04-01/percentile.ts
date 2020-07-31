@@ -4,7 +4,10 @@
   Run "npm run generateARMClients" to regenerate
 */
 
+import { armRequest } from "../../request"
 import * as Types from "./types"
+import { config } from "../../../../Config";
+const apiVersion = "2020-04-01"
 
 
           /* Retrieves the metrics determined by the given filter for the given database account. This url is only for PBS and Replication Latency data */
@@ -15,6 +18,6 @@ accountName: string
             
           ) : Promise<Types.PercentileMetricListResult> {
             const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/percentile/metrics`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           

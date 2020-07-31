@@ -12,6 +12,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 
 import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { deleteDatabase } from "../../Common/DocumentClientUtilityBase";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
@@ -59,23 +60,19 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.container
       );
     } else {
-      promise = this.container.documentClientUtility.deleteDatabase(selectedDatabase);
+      promise = deleteDatabase(selectedDatabase);
     }
     return promise.then(
       () => {
         this.isExecuting(false);
         this.close();
         this.container.refreshAllDatabases();
-        this.container.tabsManager.closeTabsByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === selectedDatabase.rid
-        );
+        this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === selectedDatabase.rid);
         this.container.selectedNode(null);
         selectedDatabase
           .collections()
           .forEach((collection: ViewModels.Collection) =>
-            this.container.tabsManager.closeTabsByComparator(
-              (tab: ViewModels.Tab) => tab.node && tab.node.rid === collection.rid
-            )
+            this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === collection.rid)
           );
         this.resetData();
         TelemetryProcessor.traceSuccess(

@@ -44,7 +44,11 @@ export class SessionStorageUtility {
   }
 
   public static getEntryNumber(key: StorageKey): number {
-    return StringUtility.toNumber(localStorage.getItem(StorageKey[key]));
+    return StringUtility.toNumber(sessionStorage.getItem(StorageKey[key]));
+  }
+
+  public static getEntry(key: string): string | null {
+    return sessionStorage.getItem(key);
   }
 
   public static removeEntry(key: StorageKey): void {
@@ -53,6 +57,10 @@ export class SessionStorageUtility {
 
   public static setEntryString(key: StorageKey, value: string): void {
     sessionStorage.setItem(StorageKey[key], value);
+  }
+
+  public static setEntry(key: string, value: string): void {
+    sessionStorage.setItem(key, value);
   }
 
   public static setEntryNumber(key: StorageKey, value: number): void {

@@ -18,6 +18,8 @@ import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
+import { updateOfferThroughputBeyondLimit, updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -499,13 +501,13 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         delete newOffer.content.offerAutopilotSettings;
       }
 
-      const updateOfferPromise = this.container.documentClientUtility
-        .updateOffer(this.database.offer(), newOffer, headerOptions)
-        .then((updatedOffer: DataModels.Offer) => {
+      const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
+        (updatedOffer: DataModels.Offer) => {
           this.database.offer(updatedOffer);
           this.database.offer.valueHasMutated();
           this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-        });
+        }
+      );
       promises.push(updateOfferPromise);
     } else {
       if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
@@ -527,32 +529,30 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
             throughput: newThroughput,
             offerIsRUPerMinuteThroughputEnabled: false
           };
-          const updateOfferBeyondLimitPromise: Q.Promise<void> = this.documentClientUtility
-            .updateOfferThroughputBeyondLimit(requestPayload)
-            .then(
-              () => {
-                this.database.offer().content.offerThroughput = originalThroughputValue;
-                this.throughput(originalThroughputValue);
-                this.notificationStatusInfo(
-                  throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
-                );
-                this.throughput.valueHasMutated(); // force component re-render
-              },
-              (error: any) => {
-                TelemetryProcessor.traceFailure(
-                  Action.UpdateSettings,
-                  {
-                    databaseAccountName: this.container.databaseAccount().name,
-                    databaseName: this.database && this.database.id(),
-                    defaultExperience: this.container.defaultExperience(),
-                    dataExplorerArea: Constants.Areas.Tab,
-                    tabTitle: this.tabTitle(),
-                    error: error
-                  },
-                  startKey
-                );
-              }
-            );
+          const updateOfferBeyondLimitPromise: Q.Promise<void> = updateOfferThroughputBeyondLimit(requestPayload).then(
+            () => {
+              this.database.offer().content.offerThroughput = originalThroughputValue;
+              this.throughput(originalThroughputValue);
+              this.notificationStatusInfo(
+                throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
+              );
+              this.throughput.valueHasMutated(); // force component re-render
+            },
+            (error: any) => {
+              TelemetryProcessor.traceFailure(
+                Action.UpdateSettings,
+                {
+                  databaseAccountName: this.container.databaseAccount().name,
+                  databaseName: this.database && this.database.id(),
+                  defaultExperience: this.container.defaultExperience(),
+                  dataExplorerArea: Constants.Areas.Tab,
+                  tabTitle: this.tabTitle(),
+                  error: error
+                },
+                startKey
+              );
+            }
+          );
           promises.push(updateOfferBeyondLimitPromise);
         } else {
           const newOffer: DataModels.Offer = {
@@ -577,13 +577,13 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
             newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
           }
 
-          const updateOfferPromise = this.container.documentClientUtility
-            .updateOffer(this.database.offer(), newOffer, headerOptions)
-            .then((updatedOffer: DataModels.Offer) => {
+          const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
+            (updatedOffer: DataModels.Offer) => {
               this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
               this.database.offer(updatedOffer);
               this.database.offer.valueHasMutated();
-            });
+            }
+          );
 
           promises.push(updateOfferPromise);
         }
@@ -668,8 +668,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     }
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
     if (this.saveSettingsButton.visible()) {
       buttons.push({

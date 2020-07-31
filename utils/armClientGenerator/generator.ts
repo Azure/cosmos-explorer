@@ -190,7 +190,10 @@ async function main() {
   // Write all grouped fetch functions to objects
   for (const clientName in clients) {
     const outputClient: string[] = [""];
-    outputClient.push(`import * as Types from "./types"\n\n`);
+    outputClient.push(`import { armRequest } from "../../request"\n`);
+    outputClient.push(`import * as Types from "./types"\n`);
+    outputClient.push(`import { config } from "../../../../Config";\n`);
+    outputClient.push(`const apiVersion = "${version}"\n\n`);
     for (const path of clients[clientName].paths) {
       for (const method in schema.paths[path]) {
         const operation = schema.paths[path][method];
@@ -207,9 +210,9 @@ async function main() {
             ${bodyParam(bodyParameter, "Types")}
           ) : Promise<${responseType(operation, "Types")}> {
             const path = \`${path.replace(/{/g, "${")}\`
-            return window.fetch(path, { method: "${method}", ${
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "${method.toLocaleUpperCase()}", apiVersion, ${
           bodyParameter ? "body: JSON.stringify(body)" : ""
-        } }).then((response) => response.json())
+        } })
           }
           `);
       }

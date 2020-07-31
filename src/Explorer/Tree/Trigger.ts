@@ -6,6 +6,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import TriggerTab from "../Tabs/TriggerTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import { deleteTrigger } from "../../Common/DocumentClientUtilityBase";
 
 export default class Trigger {
   public nodeKind: string;
@@ -55,7 +56,6 @@ export default class Trigger {
       tabKind: ViewModels.CollectionTabKind.Triggers,
       title: `New Trigger ${id}`,
       tabPath: "",
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
@@ -72,7 +72,7 @@ export default class Trigger {
 
     const triggerTabs: TriggerTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Triggers,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+      tab => tab.node && tab.node.rid === this.rid
     ) as TriggerTab[];
     let triggerTab: TriggerTab = triggerTabs && triggerTabs[0];
 
@@ -94,7 +94,6 @@ export default class Trigger {
         tabKind: ViewModels.CollectionTabKind.Triggers,
         title: triggerData.id,
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -124,11 +123,9 @@ export default class Trigger {
       triggerType: this.triggerType()
     };
 
-    this.container.documentClientUtility.deleteTrigger(this.collection, triggerData).then(
+    deleteTrigger(this.collection, triggerData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}

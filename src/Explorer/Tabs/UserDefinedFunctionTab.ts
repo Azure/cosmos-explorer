@@ -6,8 +6,9 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import ScriptTabBase from "./ScriptTabBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import UserDefinedFunction from "../Tree/UserDefinedFunction";
+import { createUserDefinedFunction, updateUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
 
-export default class UserDefinedFunctionTab extends ScriptTabBase implements ViewModels.UserDefinedFunctionTab {
+export default class UserDefinedFunctionTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
   public node: UserDefinedFunction;
   constructor(options: ViewModels.ScriptTabOption) {
@@ -34,8 +35,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase implements Vie
       tabTitle: this.tabTitle()
     });
 
-    return this.documentClientUtility
-      .updateUserDefinedFunction(this.collection, data)
+    return updateUserDefinedFunction(this.collection, data)
       .then(
         (createdResource: DataModels.UserDefinedFunction) => {
           this.resource(createdResource);
@@ -104,8 +104,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase implements Vie
       tabTitle: this.tabTitle()
     });
 
-    return this.documentClientUtility
-      .createUserDefinedFunction(this.collection, resource)
+    return createUserDefinedFunction(this.collection, resource)
       .then(
         (createdResource: DataModels.UserDefinedFunction) => {
           this.tabTitle(createdResource.id);

@@ -4,7 +4,10 @@
   Run "npm run generateARMClients" to regenerate
 */
 
+import { armRequest } from "../../request"
 import * as Types from "./types"
+import { config } from "../../../../Config";
+const apiVersion = "2020-04-01"
 
 
           /* Lists all of the available Cosmos DB Resource Provider operations. */
@@ -13,6 +16,6 @@ import * as Types from "./types"
             
           ) : Promise<Types.OperationListResult> {
             const path = `/providers/Microsoft.DocumentDB/operations`
-            return window.fetch(path, { method: "get",  }).then((response) => response.json())
+            return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
           }
           
