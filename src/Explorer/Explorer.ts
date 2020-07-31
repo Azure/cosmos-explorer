@@ -1529,6 +1529,7 @@ export default class Explorer {
   };
 
   public onRefreshResourcesClick = (source: any, event: MouseEvent): void => {
+    console.log("HEREREER");
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       description: "Refresh button clicked",
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
@@ -2606,7 +2607,11 @@ export default class Explorer {
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
     const authType = window.authType as AuthType;
-    if (authType === AuthType.EncryptedToken || authType === AuthType.ResourceToken) {
+    if (
+      authType === AuthType.EncryptedToken ||
+      authType === AuthType.ResourceToken ||
+      authType === AuthType.MasterKey
+    ) {
       this.isNotebooksEnabledForAccount(false);
       return;
     }
