@@ -49,8 +49,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                   editor: {
                     codemirror: (props: PassedEditorProps) =>
                       this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
-                  },
-                  prompt: ({ id, contentRef }) => <></>
+                  }
                 }}
               </CodeCell>
             ),
