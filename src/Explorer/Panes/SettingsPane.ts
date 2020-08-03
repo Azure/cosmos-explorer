@@ -4,7 +4,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { StringUtility } from "../../Shared/StringUtility";
 import { config } from "../../Config";
 

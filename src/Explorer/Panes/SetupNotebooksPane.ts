@@ -3,7 +3,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas, KeyCodes } from "../../Common/Constants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as ko from "knockout";
 

@@ -8,7 +8,7 @@ import * as D3ForceGraph from "./D3ForceGraph";
 import { GraphVizComponentProps } from "./GraphVizComponent";
 import * as GraphData from "./GraphData";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { GraphUtil } from "./GraphUtil";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";

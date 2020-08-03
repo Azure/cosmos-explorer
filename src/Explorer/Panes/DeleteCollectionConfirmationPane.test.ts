@@ -1,4 +1,4 @@
-jest.mock("../../Common/DocumentClientUtilityBase");
+jest.mock("../../Common/dataAccess/deleteCollection");
 import * as ko from "knockout";
 import * as sinon from "sinon";
 import Q from "q";
@@ -7,10 +7,10 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DeleteCollectionConfirmationPane from "./DeleteCollectionConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
-import { deleteCollection } from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
+import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
@@ -84,6 +84,7 @@ describe("Delete Collection Confirmation Pane", () => {
     let telemetryProcessorSpy: sinon.SinonSpy;
 
     beforeEach(() => {
+      (deleteCollection as jest.Mock).mockResolvedValue(undefined);
       telemetryProcessorSpy = sinon.spy(TelemetryProcessor, "trace");
     });
 
@@ -93,7 +94,6 @@ describe("Delete Collection Confirmation Pane", () => {
 
     it("it should log feedback if last collection and database is not shared", () => {
       let selectedCollectionId = "testCol";
-      (deleteCollection as jest.Mock).mockResolvedValue(null);
       let fakeExplorer = {} as Explorer;
       fakeExplorer.findSelectedCollection = () => {
         return {

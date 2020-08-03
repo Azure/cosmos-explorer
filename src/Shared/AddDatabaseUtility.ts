@@ -6,7 +6,7 @@ import { CosmosClient } from "../Common/CosmosClient";
 import { HttpStatusCodes } from "../Common/Constants";
 import { sendMessage } from "../Common/MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 
 export class AddDbUtilities {

@@ -6,7 +6,7 @@ import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeA
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { GitHubConnectorMsgType, IGitHubConnectorParams } from "./GitHubConnector";
 
 window.addEventListener("message", (event: MessageEvent) => {

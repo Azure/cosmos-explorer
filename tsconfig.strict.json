@@ -68,6 +68,7 @@
 		"./src/Utils/MessageValidation.ts",
 		"./src/Utils/OfferUtils.ts",
 		"./src/Utils/StringUtils.ts",
+		"./src/Utils/arm/generatedClients/2020-04-01/types.ts",
 		"./src/quickstart.ts",
 		"./src/setupTests.ts",
 		"./src/workers/upload/definitions.ts"

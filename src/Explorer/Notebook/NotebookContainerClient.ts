@@ -4,7 +4,7 @@
 import * as DataModels from "../../Contracts/DataModels";
 import * as Constants from "../../Common/Constants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../Common/Logger";
 
 export class NotebookContainerClient {

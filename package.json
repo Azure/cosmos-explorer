@@ -34,6 +34,8 @@
     "@nteract/transform-vega": "7.0.6",
     "@octokit/rest": "17.9.2",
     "@phosphor/widgets": "1.9.3",
+    "@types/mkdirp": "1.0.1",
+    "@types/node-fetch": "2.5.7",
     "@uifabric/react-cards": "0.109.110",
     "@uifabric/styling": "7.13.7",
     "abort-controller": "3.0.0",
@@ -61,9 +63,11 @@
     "jquery-typeahead": "2.10.6",
     "jquery-ui-dist": "1.12.1",
     "knockout": "3.5.1",
+    "mkdirp": "1.0.4",
     "monaco-editor": "0.15.6",
     "object.entries": "1.1.0",
     "office-ui-fabric-react": "7.121.10",
+    "p-retry": "4.2.0",
     "plotly.js-cartesian-dist-min": "1.52.3",
     "promise-polyfill": "8.1.0",
     "promise.prototype.finally": "3.1.0",
@@ -149,6 +153,7 @@
     "less-vars-loader": "1.1.0",
     "mini-css-extract-plugin": "0.4.3",
     "monaco-editor-webpack-plugin": "1.7.0",
+    "node-fetch": "2.6.0",
     "prettier": "1.19.1",
     "puppeteer": "4.0.0",
     "raw-loader": "0.5.1",
@@ -189,7 +194,8 @@
     "build:contracts": "npm run compile:contracts",
     "strictEligibleFiles": "node ./strict-migration-tools/index.js",
     "autoAddStrictEligibleFiles": "node ./strict-migration-tools/autoAdd.js",
-    "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks"
+    "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
+    "generateARMClients": "ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts"
   },
   "repository": {
     "type": "git",
