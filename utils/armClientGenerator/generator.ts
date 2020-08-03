@@ -197,6 +197,7 @@ async function main() {
     for (const path of clients[clientName].paths) {
       for (const method in schema.paths[path]) {
         const operation = schema.paths[path][method];
+        console.log(operation["x-ms-long-running-operation"]);
         const [, methodName] = operation.operationId.split("_");
         const bodyParameter = operation.parameters.find(
           (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true

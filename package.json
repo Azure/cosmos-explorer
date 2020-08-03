@@ -67,6 +67,7 @@
     "monaco-editor": "0.15.6",
     "object.entries": "1.1.0",
     "office-ui-fabric-react": "7.121.10",
+    "p-retry": "4.2.0",
     "plotly.js-cartesian-dist-min": "1.52.3",
     "promise-polyfill": "8.1.0",
     "promise.prototype.finally": "3.1.0",
