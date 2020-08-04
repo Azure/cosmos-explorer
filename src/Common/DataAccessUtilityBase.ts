@@ -377,15 +377,6 @@ export function deleteConflict(
   );
 }
 
-export function deleteDatabase(database: ViewModels.Database, options: any): Q.Promise<any> {
-  return Q(
-    CosmosClient.client()
-      .database(database.id())
-      .delete()
-      .then(() => refreshCachedResources())
-  );
-}
-
 export function deleteStoredProcedure(
   collection: ViewModels.Collection,
   storedProcedure: DataModels.StoredProcedure,

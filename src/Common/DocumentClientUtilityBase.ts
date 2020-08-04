@@ -7,14 +7,13 @@ import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@az
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import * as DataAccessUtilityBase from "./DataAccessUtilityBase";
 import * as Logger from "./Logger";
-import { sendMessage } from "./MessageHandler";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { sendNotificationForError } from "./dataAccess/sendNotificationForError";
 
 // TODO: Log all promise resolutions and errors with verbosity levels
 export function queryDocuments(
@@ -730,39 +729,6 @@ export function deleteConflict(
   return deferred.promise;
 }
 
-export function deleteDatabase(database: ViewModels.Database, options: any = {}): Q.Promise<any> {
-  var deferred = Q.defer<any>();
-
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Deleting database ${database.id()}`
-  );
-  DataAccessUtilityBase.deleteDatabase(database, options)
-    .then(
-      (response: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully deleted database ${database.id()}`
-        );
-        deferred.resolve(response);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while deleting database ${database.id()}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "DeleteDatabase", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
 export function deleteStoredProcedure(
   collection: ViewModels.Collection,
   storedProcedure: DataModels.StoredProcedure,
@@ -1108,16 +1074,4 @@ export function createDatabase(
     .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
 
   return deferred.promise;
-}
-
-export function sendNotificationForError(error: any) {
-  if (error && error.code === Constants.HttpStatusCodes.Forbidden) {
-    if (error.message && error.message.toLowerCase().indexOf("sharedoffer is disabled for your account") > 0) {
-      return;
-    }
-    sendMessage({
-      type: MessageTypes.ForbiddenError,
-      reason: error && error.message ? error.message : error
-    });
-  }
 }

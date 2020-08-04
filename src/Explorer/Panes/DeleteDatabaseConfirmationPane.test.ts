@@ -1,4 +1,4 @@
-jest.mock("../../Common/DocumentClientUtilityBase");
+jest.mock("../../Common/dataAccess/deleteDatabase");
 jest.mock("../../Shared/Telemetry/TelemetryProcessor");
 import * as ko from "knockout";
 import Q from "q";
@@ -11,7 +11,7 @@ import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
-import { deleteDatabase } from "../../Common/DocumentClientUtilityBase";
+import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 
 describe("Delete Database Confirmation Pane", () => {
   describe("Explorer.isLastDatabase() and Explorer.isLastNonEmptyDatabase()", () => {

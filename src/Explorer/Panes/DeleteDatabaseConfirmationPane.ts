@@ -12,7 +12,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { deleteDatabase } from "../../Common/DocumentClientUtilityBase";
+import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
@@ -51,6 +51,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title()
     });
+    // TODO: Should not be a Q promise anymore, but the Cassandra code requires it
     let promise: Q.Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
       promise = (<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
@@ -60,7 +61,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.container
       );
     } else {
-      promise = deleteDatabase(selectedDatabase);
+      promise = Q(deleteDatabase(selectedDatabase.id()));
     }
     return promise.then(
       () => {
