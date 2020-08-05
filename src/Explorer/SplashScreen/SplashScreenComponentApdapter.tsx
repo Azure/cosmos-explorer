@@ -45,7 +45,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   };
 
   private clearMostRecent = (): void => {
-    this.container.mostRecentActivity.clear(userContext.databaseAccount.id);
+    this.container.mostRecentActivity.clear(userContext.databaseAccount?.id);
     this.forceRender();
   };
 
@@ -194,7 +194,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return this.container.mostRecentActivity.getItems(userContext.databaseAccount.id).map(item => ({
+    return this.container.mostRecentActivity.getItems(userContext.databaseAccount?.id).map(item => ({
       iconSrc: MostRecentActivity.MostRecentActivity.getItemIcon(item),
       title: item.title,
       description: item.description,

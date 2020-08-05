@@ -1706,7 +1706,7 @@ export default class Explorer {
     }
 
     try {
-      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount.id);
+      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
       return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
     } catch (error) {
       Logger.logError(error, "Explorer/_containsDefaultNotebookWorkspace");
