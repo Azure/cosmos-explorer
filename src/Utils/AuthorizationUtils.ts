@@ -4,7 +4,7 @@ import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
 import * as Logger from "../Common/Logger";
 import { PlatformType } from "../PlatformType";
-import { config } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
@@ -22,7 +22,7 @@ export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMet
 }
 
 export async function getArcadiaAuthToken(
-  arcadiaEndpoint: string = config.ARCADIA_ENDPOINT,
+  arcadiaEndpoint: string = configContext.ARCADIA_ENDPOINT,
   tenantId?: string
 ): Promise<string> {
   try {

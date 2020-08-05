@@ -13,7 +13,7 @@ import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import Q from "q";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { config, Platform } from "../../ConfigContext";
+import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createMongoCollectionWithARM, createMongoCollectionWithProxy } from "../../Common/MongoProxyClient";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
@@ -599,7 +599,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.isSynapseLinkSupported = ko.computed(() => {
-      if (config.platform === Platform.Emulator) {
+      if (configContext.platform === Platform.Emulator) {
         return false;
       }
 

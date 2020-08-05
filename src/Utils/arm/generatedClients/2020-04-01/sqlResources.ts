@@ -6,7 +6,7 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../ConfigContext";
+import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Lists the SQL databases under an existing Azure Cosmos DB database account. */
@@ -16,7 +16,7 @@ export async function listSqlDatabases(
   accountName: string
 ): Promise<Types.SqlDatabaseListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the SQL database under an existing Azure Cosmos DB database account with the provided name. */
@@ -27,7 +27,7 @@ export async function getSqlDatabase(
   databaseName: string
 ): Promise<Types.SqlDatabaseGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB SQL database */
@@ -39,7 +39,7 @@ export async function createUpdateSqlDatabase(
   body: Types.SqlDatabaseCreateUpdateParameters
 ): Promise<Types.SqlDatabaseGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB SQL database. */
@@ -50,7 +50,7 @@ export async function deleteSqlDatabase(
   databaseName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Gets the RUs per second of the SQL database under an existing Azure Cosmos DB database account with the provided name. */
@@ -61,7 +61,7 @@ export async function getSqlDatabaseThroughput(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Update RUs per second of an Azure Cosmos DB SQL database */
@@ -73,7 +73,7 @@ export async function updateSqlDatabaseThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Migrate an Azure Cosmos DB SQL database from manual throughput to autoscale */
@@ -84,7 +84,7 @@ export async function migrateSqlDatabaseToAutoscale(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Migrate an Azure Cosmos DB SQL database from autoscale to manual throughput */
@@ -95,7 +95,7 @@ export async function migrateSqlDatabaseToManualThroughput(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Lists the SQL container under an existing Azure Cosmos DB database account. */
@@ -106,7 +106,7 @@ export async function listSqlContainers(
   databaseName: string
 ): Promise<Types.SqlContainerListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the SQL container under an existing Azure Cosmos DB database account. */
@@ -118,7 +118,7 @@ export async function getSqlContainer(
   containerName: string
 ): Promise<Types.SqlContainerGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB SQL container */
@@ -131,7 +131,7 @@ export async function createUpdateSqlContainer(
   body: Types.SqlContainerCreateUpdateParameters
 ): Promise<Types.SqlContainerGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB SQL container. */
@@ -143,7 +143,7 @@ export async function deleteSqlContainer(
   containerName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database account. */
@@ -155,7 +155,7 @@ export async function getSqlContainerThroughput(
   containerName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Update RUs per second of an Azure Cosmos DB SQL container */
@@ -168,7 +168,7 @@ export async function updateSqlContainerThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Migrate an Azure Cosmos DB SQL container from manual throughput to autoscale */
@@ -180,7 +180,7 @@ export async function migrateSqlContainerToAutoscale(
   containerName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default/migrateToAutoscale`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Migrate an Azure Cosmos DB SQL container from autoscale to manual throughput */
@@ -192,7 +192,7 @@ export async function migrateSqlContainerToManualThroughput(
   containerName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default/migrateToManualThroughput`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */
@@ -204,7 +204,7 @@ export async function listSqlStoredProcedures(
   containerName: string
 ): Promise<Types.SqlStoredProcedureListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the SQL storedProcedure under an existing Azure Cosmos DB database account. */
@@ -217,7 +217,7 @@ export async function getSqlStoredProcedure(
   storedProcedureName: string
 ): Promise<Types.SqlStoredProcedureGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB SQL storedProcedure */
@@ -231,7 +231,7 @@ export async function createUpdateSqlStoredProcedure(
   body: Types.SqlStoredProcedureCreateUpdateParameters
 ): Promise<Types.SqlStoredProcedureGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB SQL storedProcedure. */
@@ -244,7 +244,7 @@ export async function deleteSqlStoredProcedure(
   storedProcedureName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures/${storedProcedureName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
@@ -256,7 +256,7 @@ export async function listSqlUserDefinedFunctions(
   containerName: string
 ): Promise<Types.SqlUserDefinedFunctionListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the SQL userDefinedFunction under an existing Azure Cosmos DB database account. */
@@ -269,7 +269,7 @@ export async function getSqlUserDefinedFunction(
   userDefinedFunctionName: string
 ): Promise<Types.SqlUserDefinedFunctionGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB SQL userDefinedFunction */
@@ -283,7 +283,7 @@ export async function createUpdateSqlUserDefinedFunction(
   body: Types.SqlUserDefinedFunctionCreateUpdateParameters
 ): Promise<Types.SqlUserDefinedFunctionGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB SQL userDefinedFunction. */
@@ -296,7 +296,7 @@ export async function deleteSqlUserDefinedFunction(
   userDefinedFunctionName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/userDefinedFunctions/${userDefinedFunctionName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Lists the SQL trigger under an existing Azure Cosmos DB database account. */
@@ -308,7 +308,7 @@ export async function listSqlTriggers(
   containerName: string
 ): Promise<Types.SqlTriggerListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the SQL trigger under an existing Azure Cosmos DB database account. */
@@ -321,7 +321,7 @@ export async function getSqlTrigger(
   triggerName: string
 ): Promise<Types.SqlTriggerGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB SQL trigger */
@@ -335,7 +335,7 @@ export async function createUpdateSqlTrigger(
   body: Types.SqlTriggerCreateUpdateParameters
 ): Promise<Types.SqlTriggerGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB SQL trigger. */
@@ -348,5 +348,5 @@ export async function deleteSqlTrigger(
   triggerName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }

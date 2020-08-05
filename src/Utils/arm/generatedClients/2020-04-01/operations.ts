@@ -6,11 +6,11 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../ConfigContext";
+import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Lists all of the available Cosmos DB Resource Provider operations. */
 export async function list(): Promise<Types.OperationListResult> {
   const path = `/providers/Microsoft.DocumentDB/operations`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }

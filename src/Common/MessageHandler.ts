@@ -2,7 +2,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import Q from "q";
 import * as _ from "underscore";
 import * as Constants from "./Constants";
-import { config, Platform } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 
 export interface CachedDataPromise<T> {
   deferred: Q.Deferred<T>;
@@ -60,7 +60,7 @@ export function sendMessage(data: any): void {
 }
 
 export function canSendMessage(): boolean {
-  return config.platform === Platform.Portal && window.parent !== window;
+  return configContext.platform === Platform.Portal && window.parent !== window;
 }
 
 // TODO: This is exported just for testing. It should not be.

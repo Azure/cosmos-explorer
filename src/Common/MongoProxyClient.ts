@@ -3,7 +3,7 @@ import queryString from "querystring";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as DataExplorerConstants from "../Common/Constants";
-import { config } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
@@ -384,8 +384,8 @@ export function createMongoCollectionWithARM(
 export function getEndpoint(databaseAccount: DataModels.DatabaseAccount): string {
   const serverId = window.dataExplorer.serverId();
   const extensionEndpoint = window.dataExplorer.extensionEndpoint();
-  let url = config.MONGO_BACKEND_ENDPOINT
-    ? config.MONGO_BACKEND_ENDPOINT + "/api/mongo/explorer"
+  let url = configContext.MONGO_BACKEND_ENDPOINT
+    ? configContext.MONGO_BACKEND_ENDPOINT + "/api/mongo/explorer"
     : EnvironmentUtility.getMongoBackendEndpoint(serverId, databaseAccount.location, extensionEndpoint);
 
   if (window.authType === AuthType.EncryptedToken) {

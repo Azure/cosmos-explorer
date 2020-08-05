@@ -6,7 +6,7 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../ConfigContext";
+import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Lists the Gremlin databases under an existing Azure Cosmos DB database account. */
@@ -16,7 +16,7 @@ export async function listGremlinDatabases(
   accountName: string
 ): Promise<Types.GremlinDatabaseListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the Gremlin databases under an existing Azure Cosmos DB database account with the provided name. */
@@ -27,7 +27,7 @@ export async function getGremlinDatabase(
   databaseName: string
 ): Promise<Types.GremlinDatabaseGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB Gremlin database */
@@ -39,7 +39,7 @@ export async function createUpdateGremlinDatabase(
   body: Types.GremlinDatabaseCreateUpdateParameters
 ): Promise<Types.GremlinDatabaseGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB Gremlin database. */
@@ -50,7 +50,7 @@ export async function deleteGremlinDatabase(
   databaseName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Gets the RUs per second of the Gremlin database under an existing Azure Cosmos DB database account with the provided name. */
@@ -61,7 +61,7 @@ export async function getGremlinDatabaseThroughput(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Update RUs per second of an Azure Cosmos DB Gremlin database */
@@ -73,7 +73,7 @@ export async function updateGremlinDatabaseThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Migrate an Azure Cosmos DB Gremlin database from manual throughput to autoscale */
@@ -84,7 +84,7 @@ export async function migrateGremlinDatabaseToAutoscale(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Migrate an Azure Cosmos DB Gremlin database from autoscale to manual throughput */
@@ -95,7 +95,7 @@ export async function migrateGremlinDatabaseToManualThroughput(
   databaseName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Lists the Gremlin graph under an existing Azure Cosmos DB database account. */
@@ -106,7 +106,7 @@ export async function listGremlinGraphs(
   databaseName: string
 ): Promise<Types.GremlinGraphListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the Gremlin graph under an existing Azure Cosmos DB database account. */
@@ -118,7 +118,7 @@ export async function getGremlinGraph(
   graphName: string
 ): Promise<Types.GremlinGraphGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB Gremlin graph */
@@ -131,7 +131,7 @@ export async function createUpdateGremlinGraph(
   body: Types.GremlinGraphCreateUpdateParameters
 ): Promise<Types.GremlinGraphGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB Gremlin graph. */
@@ -143,7 +143,7 @@ export async function deleteGremlinGraph(
   graphName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Gets the Gremlin graph throughput under an existing Azure Cosmos DB database account with the provided name. */
@@ -155,7 +155,7 @@ export async function getGremlinGraphThroughput(
   graphName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Update RUs per second of an Azure Cosmos DB Gremlin graph */
@@ -168,7 +168,7 @@ export async function updateGremlinGraphThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Migrate an Azure Cosmos DB Gremlin graph from manual throughput to autoscale */
@@ -180,7 +180,7 @@ export async function migrateGremlinGraphToAutoscale(
   graphName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default/migrateToAutoscale`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Migrate an Azure Cosmos DB Gremlin graph from autoscale to manual throughput */
@@ -192,5 +192,5 @@ export async function migrateGremlinGraphToManualThroughput(
   graphName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default/migrateToManualThroughput`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }

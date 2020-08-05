@@ -24,7 +24,7 @@ import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import GitHubIcon from "../../../../images/github.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
-import { config, Platform } from "../../../ConfigContext";
+import { configContext, Platform } from "../../../ConfigContext";
 import Explorer from "../../Explorer";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
@@ -243,7 +243,7 @@ export class CommandBarComponentButtonFactory {
   }
 
   private static createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
-    if (config.platform === Platform.Emulator) {
+    if (configContext.platform === Platform.Emulator) {
       return null;
     }
 
@@ -469,7 +469,7 @@ export class CommandBarComponentButtonFactory {
   }
 
   private static createEnableNotebooksButton(container: Explorer): CommandButtonComponentProps {
-    if (config.platform === Platform.Emulator) {
+    if (configContext.platform === Platform.Emulator) {
       return null;
     }
     const label = "Enable Notebooks (Preview)";

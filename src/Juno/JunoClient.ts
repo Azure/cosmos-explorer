@@ -1,6 +1,6 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import { config } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";
@@ -341,11 +341,11 @@ export class JunoClient {
   }
 
   private getNotebooksUrl(): string {
-    return `${config.JUNO_ENDPOINT}/api/notebooks`;
+    return `${configContext.JUNO_ENDPOINT}/api/notebooks`;
   }
 
   private getNotebooksAccountUrl(): string {
-    return `${config.JUNO_ENDPOINT}/api/notebooks/${this.databaseAccount().name}`;
+    return `${configContext.JUNO_ENDPOINT}/api/notebooks/${this.databaseAccount().name}`;
   }
 
   private static getHeaders(): HeadersInit {
@@ -358,11 +358,11 @@ export class JunoClient {
 
   private static getGitHubClientParams(): URLSearchParams {
     const githubParams = new URLSearchParams({
-      client_id: config.GITHUB_CLIENT_ID
+      client_id: configContext.GITHUB_CLIENT_ID
     });
 
-    if (config.GITHUB_CLIENT_SECRET) {
-      githubParams.append("client_secret", config.GITHUB_CLIENT_SECRET);
+    if (configContext.GITHUB_CLIENT_SECRET) {
+      githubParams.append("client_secret", configContext.GITHUB_CLIENT_SECRET);
     }
 
     return githubParams;

@@ -2,13 +2,13 @@ import AuthHeadersUtil from "./Authorization";
 import * as Constants from "../../Common/Constants";
 import * as Logger from "../../Common/Logger";
 import { Tenant, Subscription, DatabaseAccount, AccountKeys } from "../../Contracts/DataModels";
-import { config } from "../../ConfigContext";
+import { configContext } from "../../ConfigContext";
 
 // TODO: 421864 - add a fetch wrapper
 export abstract class ArmResourceUtils {
-  private static readonly _armEndpoint: string = config.ARM_ENDPOINT;
-  private static readonly _armApiVersion: string = config.ARM_API_VERSION;
-  private static readonly _armAuthArea: string = config.ARM_AUTH_AREA;
+  private static readonly _armEndpoint: string = configContext.ARM_ENDPOINT;
+  private static readonly _armApiVersion: string = configContext.ARM_API_VERSION;
+  private static readonly _armAuthArea: string = configContext.ARM_AUTH_AREA;
 
   // TODO: 422867 - return continuation token instead of read through
   public static async listTenants(): Promise<Array<Tenant>> {

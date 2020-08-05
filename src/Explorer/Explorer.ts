@@ -35,7 +35,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { config } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -1808,8 +1808,8 @@ export default class Explorer {
 
     const isRunningInPortal = window.dataExplorerPlatform == PlatformType.Portal;
     const isRunningInDevMode = process.env.NODE_ENV === "development";
-    if (inputs && config.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
-      inputs.extensionEndpoint = config.PROXY_PATH;
+    if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
+      inputs.extensionEndpoint = configContext.PROXY_PATH;
     }
 
     const initPromise: Q.Promise<void> = inputs ? this.initDataExplorerWithFrameInputs(inputs) : Q();
@@ -1914,7 +1914,7 @@ export default class Explorer {
       this.features(inputs.features);
       this.serverId(inputs.serverId);
       this.extensionEndpoint(inputs.extensionEndpoint || "");
-      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || config.ARM_ENDPOINT));
+      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
       this.notificationsClient.setExtensionEndpoint(this.extensionEndpoint());
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
@@ -2180,7 +2180,7 @@ export default class Explorer {
       return undefined;
     }
 
-    const urlPrefixWithKeyParam: string = `${config.hostedExplorerURL}?key=`;
+    const urlPrefixWithKeyParam: string = `${configContext.hostedExplorerURL}?key=`;
     const currentActiveTab = this.tabsManager.activeTab();
 
     return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;

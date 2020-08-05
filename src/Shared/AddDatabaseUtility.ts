@@ -1,6 +1,6 @@
 import * as DataExplorerConstants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import { config } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { HttpStatusCodes } from "../Common/Constants";
 import { sendMessage } from "../Common/MessageHandler";
@@ -115,7 +115,7 @@ export class AddDbUtilities {
   }
 
   public static getRpClient<T>(armEndpoint?: string): ResourceProviderClient<T> {
-    return new ResourceProviderClient<T>(armEndpoint || config.ARM_ENDPOINT);
+    return new ResourceProviderClient<T>(armEndpoint || configContext.ARM_ENDPOINT);
   }
 
   public static async createGremlinDatabase(

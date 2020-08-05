@@ -1,6 +1,6 @@
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
-import { config, Platform } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { userContext } from "../UserContext";
@@ -9,7 +9,7 @@ const _global = typeof self === "undefined" ? window : self;
 
 export const tokenProvider = async (requestInfo: RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
-  if (config.platform === Platform.Emulator) {
+  if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
     return decodeURIComponent(headers.authorization);
@@ -31,16 +31,16 @@ export const tokenProvider = async (requestInfo: RequestInfo) => {
 };
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
-  requestContext.endpoint = config.PROXY_PATH;
+  requestContext.endpoint = configContext.PROXY_PATH;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   return next(requestContext);
 };
 
 export const endpoint = () => {
-  if (config.platform === Platform.Emulator) {
+  if (configContext.platform === Platform.Emulator) {
     // In worker scope, _global(self).parent does not exist
     const location = _global.parent ? _global.parent.location : _global.location;
-    return config.EMULATOR_ENDPOINT || location.origin;
+    return configContext.EMULATOR_ENDPOINT || location.origin;
   }
   return (
     userContext.endpoint ||
@@ -52,7 +52,7 @@ export const endpoint = () => {
 
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
   try {
-    const host = config.BACKEND_ENDPOINT || _global.dataExplorer.extensionEndpoint();
+    const host = configContext.BACKEND_ENDPOINT || _global.dataExplorer.extensionEndpoint();
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
       method: "POST",
       headers: {

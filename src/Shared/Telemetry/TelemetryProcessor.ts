@@ -2,7 +2,7 @@
 import { sendMessage } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { appInsights } from "../appInsights";
-import { config } from "../../ConfigContext";
+import { configContext } from "../../ConfigContext";
 
 /**
  * Class that persists telemetry data to the portal tables.
@@ -115,7 +115,7 @@ export default class TelemetryProcessor {
 
   private static getData(data?: any): any {
     return {
-      platform: config.platform,
+      platform: configContext.platform,
       ...(data ? data : [])
     };
   }

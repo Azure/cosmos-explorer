@@ -25,7 +25,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
-import { Platform, config } from "../ConfigContext";
+import { Platform, configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import ConflictId from "../Explorer/Tree/ConflictId";
@@ -476,7 +476,7 @@ export function readCollectionQuotaInfo(
 
 export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
   try {
-    if (config.platform === Platform.Portal) {
+    if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [
         (<any>window).dataExplorer.databaseAccount().id,
         Constants.ClientDefaults.portalCacheTimeoutMs
@@ -510,7 +510,7 @@ export function readOffer(requestedResource: DataModels.Offer, options: any): Q.
 
 export function readDatabases(options: any): Q.Promise<DataModels.Database[]> {
   try {
-    if (config.platform === Platform.Portal) {
+    if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<DataModels.Database[]>(MessageTypes.AllDatabases, [
         (<any>window).dataExplorer.databaseAccount().id,
         Constants.ClientDefaults.portalCacheTimeoutMs
@@ -643,7 +643,7 @@ export function queryConflicts(
 export async function updateOfferThroughputBeyondLimit(
   request: DataModels.UpdateOfferThroughputRequest
 ): Promise<void> {
-  if (config.platform !== Platform.Portal) {
+  if (configContext.platform !== Platform.Portal) {
     throw new Error("Updating throughput beyond specified limit is not supported on this platform");
   }
 

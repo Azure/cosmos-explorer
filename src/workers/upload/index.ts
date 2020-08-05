@@ -1,7 +1,7 @@
 import "babel-polyfill";
 import { DocumentClientParams, UploadDetailsRecord, UploadDetails } from "./definitions";
 import { client } from "../../Common/CosmosClient";
-import { config } from "../../ConfigContext";
+import { configContext, updateConfigContext } from "../../ConfigContext";
 import { updateUserContext } from "../../UserContext";
 
 let numUploadsSuccessful = 0;
@@ -37,7 +37,9 @@ onmessage = (event: MessageEvent) => {
     accessToken: clientParams.accessToken,
     databaseAccount: clientParams.databaseAccount
   });
-  config.platform = clientParams.platform;
+  updateConfigContext({
+    platform: clientParams.platform
+  });
   if (!!files && files.length > 0) {
     numFiles = files.length;
     for (let i = 0; i < numFiles; i++) {

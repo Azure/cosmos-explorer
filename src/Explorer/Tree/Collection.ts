@@ -30,7 +30,7 @@ import SettingsTab from "../Tabs/SettingsTab";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-import { config } from "../../ConfigContext";
+import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import {
   createDocument,
@@ -1184,7 +1184,7 @@ export default class Collection implements ViewModels.Collection {
         masterKey: userContext.masterKey,
         endpoint: userContext.endpoint,
         accessToken: userContext.accessToken,
-        platform: config.platform,
+        platform: configContext.platform,
         databaseAccount: userContext.databaseAccount
       }
     };

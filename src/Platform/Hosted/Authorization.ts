@@ -8,7 +8,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import * as Logger from "../../Common/Logger";
-import { config } from "../../ConfigContext";
+import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
 
 export default class AuthHeadersUtil {
@@ -17,12 +17,12 @@ export default class AuthHeadersUtil {
   public static serverId: string = Constants.ServerIds.productionPortal;
 
   private static readonly _firstPartyAppId: string = "203f1145-856a-4232-83d4-a43568fba23d";
-  private static readonly _aadEndpoint: string = config.AAD_ENDPOINT;
-  private static readonly _armEndpoint: string = config.ARM_ENDPOINT;
-  private static readonly _arcadiaEndpoint: string = config.ARCADIA_ENDPOINT;
-  private static readonly _armAuthArea: string = config.ARM_AUTH_AREA;
-  private static readonly _graphEndpoint: string = config.GRAPH_ENDPOINT;
-  private static readonly _graphApiVersion: string = config.GRAPH_API_VERSION;
+  private static readonly _aadEndpoint: string = configContext.AAD_ENDPOINT;
+  private static readonly _armEndpoint: string = configContext.ARM_ENDPOINT;
+  private static readonly _arcadiaEndpoint: string = configContext.ARCADIA_ENDPOINT;
+  private static readonly _armAuthArea: string = configContext.ARM_AUTH_AREA;
+  private static readonly _graphEndpoint: string = configContext.GRAPH_ENDPOINT;
+  private static readonly _graphApiVersion: string = configContext.GRAPH_API_VERSION;
 
   private static _authContext: AuthenticationContext = new AuthenticationContext({
     instance: AuthHeadersUtil._aadEndpoint,

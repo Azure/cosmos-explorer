@@ -6,7 +6,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { StringUtility } from "../../Shared/StringUtility";
-import { config } from "../../ConfigContext";
+import { configContext } from "../../ConfigContext";
 
 export class SettingsPane extends ContextualPaneBase {
   public pageOption: ko.Observable<string>;
@@ -46,7 +46,7 @@ export class SettingsPane extends ContextualPaneBase {
       : false;
     this.graphAutoVizDisabled = ko.observable<string>(`${isGraphAutoVizDisabled}`);
 
-    this.explorerVersion = config.gitSha;
+    this.explorerVersion = configContext.gitSha;
     this.shouldShowQueryPageOptions = ko.computed<boolean>(() => this.container.isPreferredApiDocumentDB());
     this.shouldShowCrossPartitionOption = ko.computed<boolean>(() => !this.container.isPreferredApiGraph());
     this.shouldShowParallelismOption = ko.computed<boolean>(() => !this.container.isPreferredApiGraph());
