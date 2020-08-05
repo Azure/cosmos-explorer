@@ -60,7 +60,7 @@ export function sendMessage(data: any): void {
 }
 
 export function canSendMessage(): boolean {
-  return config.platform === Platform.Portal && window.parent !== window;
+  return window.parent !== window;
 }
 
 // TODO: This is exported just for testing. It should not be.

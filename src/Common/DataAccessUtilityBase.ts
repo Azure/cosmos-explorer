@@ -20,7 +20,7 @@ import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/Contai
 import { CosmosClient } from "./CosmosClient";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
-import { sendCachedDataMessage, canSendMessage } from "./MessageHandler";
+import { sendCachedDataMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
@@ -612,7 +612,7 @@ export function createDatabase(
 }
 
 export function refreshCachedOffers(): Q.Promise<void> {
-  if (canSendMessage()) {
+  if (config.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
   } else {
     return Q();
@@ -620,7 +620,7 @@ export function refreshCachedOffers(): Q.Promise<void> {
 }
 
 export function refreshCachedResources(options?: any): Q.Promise<void> {
-  if (canSendMessage()) {
+  if (config.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshResources, []);
   } else {
     return Q();
