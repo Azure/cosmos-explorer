@@ -1,4 +1,4 @@
-import { config } from "../Config";
+import { config } from "../ConfigContext";
 
 export function isInvalidParentFrameOrigin(event: MessageEvent): boolean {
   return !isValidOrigin(config.allowedParentFrameOrigins, event);

@@ -73,7 +73,7 @@ import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { applyExplorerBindings } from "./applyExplorerBindings";
-import { initializeConfiguration, Platform } from "./Config";
+import { initializeConfiguration, Platform } from "./ConfigContext";
 import Explorer from "./Explorer/Explorer";
 
 initializeIcons(/* optional base url */);

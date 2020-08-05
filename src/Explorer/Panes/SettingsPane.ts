@@ -6,7 +6,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { StringUtility } from "../../Shared/StringUtility";
-import { config } from "../../Config";
+import { config } from "../../ConfigContext";
 
 export class SettingsPane extends ContextualPaneBase {
   public pageOption: ko.Observable<string>;

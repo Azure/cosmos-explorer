@@ -3,7 +3,7 @@ import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { Text, Link } from "office-ui-fabric-react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { initializeConfiguration } from "../Config";
+import { initializeConfiguration } from "../ConfigContext";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
   GalleryAndNotebookViewerComponent,

@@ -7,7 +7,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import { CosmosClient } from "../../Common/CosmosClient";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -31,6 +30,7 @@ import UserDefinedFunction from "./UserDefinedFunction";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import TabsBase from "../Tabs/TabsBase";
+import { userContext } from "../../UserContext";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   private static readonly DataTitle = "DATA";
@@ -224,7 +224,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+        this.container.mostRecentActivity.addItem(userContext.databaseAccount.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
@@ -490,7 +490,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private pushItemToMostRecent(item: NotebookContentItem) {
-    this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+    this.container.mostRecentActivity.addItem(userContext.databaseAccount.id, {
       type: MostRecentActivity.Type.OpenNotebook,
       title: item.name,
       description: "Notebook",

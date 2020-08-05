@@ -1,24 +1,24 @@
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
-import DocumentId from "../Explorer/Tree/DocumentId";
-import * as ErrorParserUtility from "./ErrorParserUtility";
-import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
+import Explorer from "../Explorer/Explorer";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "./CosmosClient";
-import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import * as Logger from "./Logger";
+import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
+import DocumentId from "../Explorer/Tree/DocumentId";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
-import Explorer from "../Explorer/Explorer";
+import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
+import { userContext } from "../UserContext";
 import {
-  getOrCreateDatabaseAndCollection,
   createDocument,
+  deleteDocument,
+  getOrCreateDatabaseAndCollection,
   queryDocuments,
-  queryDocumentsPage,
-  deleteDocument
+  queryDocumentsPage
 } from "./DocumentClientUtilityBase";
-import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
+import * as ErrorParserUtility from "./ErrorParserUtility";
+import * as Logger from "./Logger";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -249,10 +249,10 @@ export class QueriesClient {
   }
 
   public getResourceId(): string {
-    const databaseAccount = CosmosClient.databaseAccount();
-    const databaseAccountName: string = (databaseAccount && databaseAccount.name) || "";
-    const subscriptionId: string = CosmosClient.subscriptionId() || "";
-    const resourceGroup: string = CosmosClient.resourceGroup() || "";
+    const databaseAccount = userContext.databaseAccount;
+    const databaseAccountName = (databaseAccount && databaseAccount.name) || "";
+    const subscriptionId = userContext.subscriptionId || "";
+    const resourceGroup = userContext.resourceGroup || "";
 
     return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}`;
   }

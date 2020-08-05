@@ -1,6 +1,6 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import { config } from "../Config";
+import { config } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";

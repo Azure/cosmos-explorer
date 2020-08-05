@@ -9,11 +9,11 @@ import TabsBase from "./TabsBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { HashMap } from "../../Common/HashMap";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { PlatformType } from "../../PlatformType";
 import Explorer from "../Explorer";
+import { userContext } from "../../UserContext";
 
 export default class MongoShellTab extends TabsBase {
   public url: ko.Computed<string>;
@@ -26,8 +26,8 @@ export default class MongoShellTab extends TabsBase {
     this._logTraces = new HashMap<number>();
     this._container = options.collection.container;
     this.url = ko.computed<string>(() => {
-      const account = CosmosClient.databaseAccount();
-      const resourceId: string = account && account.id;
+      const account = userContext.databaseAccount;
+      const resourceId = account && account.id;
       const accountName = account && account.name;
       const mongoEndpoint = account && (account.properties.mongoEndpoint || account.properties.documentEndpoint);
 
@@ -95,7 +95,7 @@ export default class MongoShellTab extends TabsBase {
       return;
     }
 
-    const authorization: string = CosmosClient.authorizationToken() || "";
+    const authorization: string = userContext.authorizationToken || "";
     const resourceId = this._container.databaseAccount().id;
     const accountName = this._container.databaseAccount().name;
     const documentEndpoint =
@@ -111,10 +111,10 @@ export default class MongoShellTab extends TabsBase {
     const collectionId = this.collection.id();
     const apiEndpoint = EnvironmentUtility.getMongoBackendEndpoint(
       this._container.serverId(),
-      CosmosClient.databaseAccount().location,
+      userContext.databaseAccount.location,
       this._container.extensionEndpoint()
     ).replace("/api/mongo/explorer", "");
-    const encryptedAuthToken: string = CosmosClient.accessToken();
+    const encryptedAuthToken: string = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(
       {

@@ -1,5 +1,5 @@
 import { AutopilotTier } from "../Contracts/DataModels";
-import { config } from "../Config";
+import { config } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {

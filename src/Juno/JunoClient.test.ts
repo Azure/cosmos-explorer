@@ -2,7 +2,7 @@ import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IPinnedRepo, JunoClient, IGalleryItem } from "./JunoClient";
-import { config } from "../Config";
+import { config } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DatabaseAccount } from "../Contracts/DataModels";
 

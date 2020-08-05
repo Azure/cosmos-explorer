@@ -2,12 +2,12 @@ import * as ko from "knockout";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import Explorer from "../Explorer";
+import { userContext } from "../../UserContext";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -44,7 +44,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       onClick: () => {
         collection.onDocumentDBDocumentsClick();
         // push to most recent
-        this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+        this.container.mostRecentActivity.addItem(userContext.databaseAccount.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",

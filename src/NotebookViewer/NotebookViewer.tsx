@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React from "react";
 import * as ReactDOM from "react-dom";
-import { initializeConfiguration } from "../Config";
+import { initializeConfiguration } from "../ConfigContext";
 import {
   NotebookViewerComponent,
   NotebookViewerComponentProps

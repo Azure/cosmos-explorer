@@ -14,7 +14,6 @@ import {
 import { AuthType } from "../../AuthType";
 import { CollectionCreation } from "../../Shared/Constants";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { DataExplorerInputsFrame } from "../../Contracts/ViewModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { HostedUtils } from "./HostedUtils";
@@ -24,6 +23,7 @@ import { SessionStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { SubscriptionUtilMappings } from "../../Shared/Constants";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
 import Explorer from "../../Explorer/Explorer";
+import { updateUserContext } from "../../UserContext";
 
 export default class Main {
   private static _databaseAccountId: string;
@@ -84,7 +84,9 @@ export default class Main {
           displayText: "Loading..."
         }
       });
-      CosmosClient.accessToken(Main._encryptedToken);
+      updateUserContext({
+        accessToken: Main._encryptedToken
+      });
       Main._getAccessInputMetadata(Main._encryptedToken).then(
         () => {
           const expiryTimestamp: number =
@@ -203,7 +205,9 @@ export default class Main {
         Main._encryptedToken = encryptedToken.readWrite;
         window.authType = AuthType.EncryptedToken;
 
-        CosmosClient.accessToken(Main._encryptedToken);
+        updateUserContext({
+          accessToken: Main._encryptedToken
+        });
         Main._getAccessInputMetadata(Main._encryptedToken).then(
           () => {
             if (explorer.isConnectExplorerVisible()) {
@@ -472,8 +476,10 @@ export default class Main {
       console.error("Invalid connection string input");
       Q.reject("Invalid connection string input");
     }
-    CosmosClient.resourceToken(properties.resourceToken);
-    CosmosClient.endpoint(properties.accountEndpoint);
+    updateUserContext({
+      resourceToken: properties.resourceToken,
+      endpoint: properties.accountEndpoint
+    });
     explorer.resourceTokenDatabaseId(properties.databaseId);
     explorer.resourceTokenCollectionId(properties.collectionId);
     if (properties.partitionKey) {

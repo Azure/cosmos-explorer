@@ -6,7 +6,7 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../Config";
+import { config } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Lists the Gremlin databases under an existing Azure Cosmos DB database account. */

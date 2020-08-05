@@ -2,7 +2,7 @@ import AuthHeadersUtil from "./Authorization";
 import * as Constants from "../../Common/Constants";
 import * as Logger from "../../Common/Logger";
 import { Tenant, Subscription, DatabaseAccount, AccountKeys } from "../../Contracts/DataModels";
-import { config } from "../../Config";
+import { config } from "../../ConfigContext";
 
 // TODO: 421864 - add a fetch wrapper
 export abstract class ArmResourceUtils {

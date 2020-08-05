@@ -1,7 +1,7 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
-import { config } from "../Config";
+import { config } from "../ConfigContext";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { JunoClient } from "../Juno/JunoClient";

@@ -2,7 +2,7 @@
 import { sendMessage } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { appInsights } from "../appInsights";
-import { config } from "../../Config";
+import { config } from "../../ConfigContext";
 
 /**
  * Class that persists telemetry data to the portal tables.

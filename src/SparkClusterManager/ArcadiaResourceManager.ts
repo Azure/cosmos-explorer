@@ -9,7 +9,7 @@ import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
 import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { config } from "../Config";
+import { config } from "../ConfigContext";
 
 export class ArcadiaResourceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;

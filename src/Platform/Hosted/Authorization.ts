@@ -3,14 +3,13 @@ import "expose-loader?AuthenticationContext!../../../externals/adal";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { AuthType } from "../../AuthType";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import { CosmosClient } from "../../Common/CosmosClient";
 import * as Logger from "../../Common/Logger";
-import { config } from "../../Config";
+import { config } from "../../ConfigContext";
+import { userContext } from "../../UserContext";
 
 export default class AuthHeadersUtil {
   // TODO: Figure out a way to determine the extension endpoint and serverId at runtime
@@ -91,7 +90,7 @@ export default class AuthHeadersUtil {
       AuthHeadersUtil.extensionEndpoint
     }/api/tokens/generateToken${AuthHeadersUtil._generateResourceUrl()}`;
     const explorer = window.dataExplorer;
-    const headers: any = { authorization: CosmosClient.authorizationToken() };
+    const headers: any = { authorization: userContext.authorizationToken };
     headers[Constants.HttpHeaders.getReadOnlyKey] = !explorer.hasWriteAccess();
 
     return AuthHeadersUtil._initiateGenerateTokenRequest({
@@ -272,9 +271,9 @@ export default class AuthHeadersUtil {
   }
 
   private static _generateResourceUrl(): string {
-    const databaseAccount = CosmosClient.databaseAccount();
-    const subscriptionId: string = CosmosClient.subscriptionId();
-    const resourceGroup: string = CosmosClient.resourceGroup();
+    const databaseAccount = userContext.databaseAccount;
+    const subscriptionId: string = userContext.subscriptionId;
+    const resourceGroup = userContext.resourceGroup;
     const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount);
     const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
     const accountEndpoint = (databaseAccount && databaseAccount.properties.documentEndpoint) || "";

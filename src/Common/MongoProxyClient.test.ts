@@ -1,18 +1,18 @@
+import { AuthType } from "../AuthType";
+import { config } from "../ConfigContext";
+import { DatabaseAccount } from "../Contracts/DataModels";
+import { Collection } from "../Contracts/ViewModels";
+import DocumentId from "../Explorer/Tree/DocumentId";
+import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import { updateUserContext } from "../UserContext";
 import {
-  _createMongoCollectionWithARM,
   deleteDocument,
   getEndpoint,
   queryDocuments,
   readDocument,
-  updateDocument
+  updateDocument,
+  _createMongoCollectionWithARM
 } from "./MongoProxyClient";
-import { AuthType } from "../AuthType";
-import { Collection } from "../Contracts/ViewModels";
-import { config } from "../Config";
-import { CosmosClient } from "./CosmosClient";
-import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
-import DocumentId from "../Explorer/Tree/DocumentId";
-import { DatabaseAccount } from "../Contracts/DataModels";
 jest.mock("../ResourceProvider/ResourceProviderClient.ts");
 
 const databaseId = "testDB";
@@ -62,13 +62,15 @@ const databaseAccount = {
     tableEndpoint: "foo",
     cassandraEndpoint: "foo"
   }
-};
+} as DatabaseAccount;
 
 describe("MongoProxyClient", () => {
   describe("queryDocuments", () => {
     beforeEach(() => {
       delete config.BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -99,7 +101,9 @@ describe("MongoProxyClient", () => {
   describe("readDocument", () => {
     beforeEach(() => {
       delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -130,7 +134,9 @@ describe("MongoProxyClient", () => {
   describe("createDocument", () => {
     beforeEach(() => {
       delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -161,7 +167,9 @@ describe("MongoProxyClient", () => {
   describe("updateDocument", () => {
     beforeEach(() => {
       delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -192,7 +200,9 @@ describe("MongoProxyClient", () => {
   describe("deleteDocument", () => {
     beforeEach(() => {
       delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -224,7 +234,9 @@ describe("MongoProxyClient", () => {
     beforeEach(() => {
       delete config.MONGO_BACKEND_ENDPOINT;
       delete window.authType;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""

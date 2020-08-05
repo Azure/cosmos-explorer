@@ -26,7 +26,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
-import { config } from "../../Config";
+import { config } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";

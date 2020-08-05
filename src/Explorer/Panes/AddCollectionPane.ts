@@ -13,14 +13,14 @@ import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import Q from "q";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { config, Platform } from "../../Config";
+import { config, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { createMongoCollectionWithARM, createMongoCollectionWithProxy } from "../../Common/MongoProxyClient";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { HashMap } from "../../Common/HashMap";
 import { PlatformType } from "../../PlatformType";
 import { refreshCachedResources, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -920,9 +920,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
             partitionKey.version,
             databaseCreateNew,
             useDatabaseSharedOffer,
-            CosmosClient.subscriptionId(),
-            CosmosClient.resourceGroup(),
-            CosmosClient.databaseAccount().name,
+            userContext.subscriptionId,
+            userContext.resourceGroup,
+            userContext.databaseAccount.name,
             autopilotSettings
           )
         );
@@ -940,9 +940,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
             partitionKey.version,
             databaseCreateNew,
             useDatabaseSharedOffer,
-            CosmosClient.subscriptionId(),
-            CosmosClient.resourceGroup(),
-            CosmosClient.databaseAccount().name,
+            userContext.subscriptionId,
+            userContext.resourceGroup,
+            userContext.databaseAccount.name,
             uniqueKeyPolicy,
             autopilotSettings
           )

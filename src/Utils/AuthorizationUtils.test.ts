@@ -1,30 +1,18 @@
-import * as ko from "knockout";
 import * as Constants from "../Common/Constants";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 import { AuthType } from "../AuthType";
 import { PlatformType } from "../PlatformType";
-import { CosmosClient } from "../Common/CosmosClient";
 import Explorer from "../Explorer/Explorer";
+import { updateUserContext } from "../UserContext";
 jest.mock("../Explorer/Explorer");
 
 describe("AuthorizationUtils", () => {
-  let originalAuthorizationToken: string;
-  let originalAccessToken: string;
-
-  beforeAll(() => {
-    originalAuthorizationToken = CosmosClient.authorizationToken();
-    originalAccessToken = CosmosClient.accessToken();
-  });
-
-  afterAll(() => {
-    CosmosClient.authorizationToken && CosmosClient.authorizationToken(originalAuthorizationToken);
-    CosmosClient.accessToken(originalAccessToken);
-  });
-
   describe("getAuthorizationHeader()", () => {
     it("should return authorization header if authentication type is AAD", () => {
       window.authType = AuthType.AAD;
-      CosmosClient.authorizationToken = ko.observable("some-token");
+      updateUserContext({
+        authorizationToken: "some-token"
+      });
 
       expect(AuthorizationUtils.getAuthorizationHeader().header).toBe(Constants.HttpHeaders.authorization);
       expect(AuthorizationUtils.getAuthorizationHeader().token).toBe("some-token");
@@ -32,7 +20,9 @@ describe("AuthorizationUtils", () => {
 
     it("should return guest access header if authentication type is EncryptedToken", () => {
       window.authType = AuthType.EncryptedToken;
-      CosmosClient.accessToken = ko.observable("some-token");
+      updateUserContext({
+        accessToken: "some-token"
+      });
 
       expect(AuthorizationUtils.getAuthorizationHeader().header).toBe(Constants.HttpHeaders.guestAccessToken);
       expect(AuthorizationUtils.getAuthorizationHeader().token).toBe("some-token");

@@ -6,7 +6,7 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../Config";
+import { config } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Retrieves the metrics determined by the given filter for the given partition key range id. */
