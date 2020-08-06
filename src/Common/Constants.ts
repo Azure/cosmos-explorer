@@ -14,7 +14,7 @@ export class BackendEndpoints {
 }
 
 export class EndpointsRegex {
-  public static readonly cassandra = "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com";
+  public static readonly cassandra = ["AccountEndpoint=(.*).cassandra.cosmosdb.azure.com", "HostName=(.*).cassandra.cosmos.azure.com"];
   public static readonly mongo = "mongodb://.*:(.*)@(.*).documents.azure.com";
   public static readonly mongoCompute = "mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com";
   public static readonly sql = "AccountEndpoint=https://(.*).documents.azure.com";
