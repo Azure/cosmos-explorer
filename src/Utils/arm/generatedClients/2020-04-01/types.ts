@@ -4,71 +4,85 @@
   Run "npm run generateARMClients" to regenerate
 */
 
+/* The List operation response, that contains the database accounts and their properties. */
 export interface DatabaseAccountsListResult {
   /* List of database account and their properties. */
   readonly value: DatabaseAccountGetResults[];
 }
 
+/* The List operation response, that contains the SQL databases and their properties. */
 export interface SqlDatabaseListResult {
   /* List of SQL databases and their properties. */
   readonly value: SqlDatabaseGetResults[];
 }
 
+/* The List operation response, that contains the containers and their properties. */
 export interface SqlContainerListResult {
   /* List of containers and their properties. */
   readonly value: SqlContainerGetResults[];
 }
 
+/* The List operation response, that contains the storedProcedures and their properties. */
 export interface SqlStoredProcedureListResult {
   /* List of storedProcedures and their properties. */
   readonly value: SqlStoredProcedureGetResults[];
 }
 
+/* The List operation response, that contains the userDefinedFunctions and their properties. */
 export interface SqlUserDefinedFunctionListResult {
   /* List of userDefinedFunctions and their properties. */
   readonly value: SqlUserDefinedFunctionGetResults[];
 }
 
+/* The List operation response, that contains the triggers and their properties. */
 export interface SqlTriggerListResult {
   /* List of triggers and their properties. */
   readonly value: SqlTriggerGetResults[];
 }
 
+/* The List operation response, that contains the MongoDB databases and their properties. */
 export interface MongoDBDatabaseListResult {
   /* List of MongoDB databases and their properties. */
   readonly value: MongoDBDatabaseGetResults[];
 }
 
+/* The List operation response, that contains the MongoDB collections and their properties. */
 export interface MongoDBCollectionListResult {
   /* List of MongoDB collections and their properties. */
   readonly value: MongoDBCollectionGetResults[];
 }
 
+/* The List operation response, that contains the Table and their properties. */
 export interface TableListResult {
   /* List of Table and their properties. */
   readonly value: TableGetResults[];
 }
 
+/* The List operation response, that contains the Cassandra keyspaces and their properties. */
 export interface CassandraKeyspaceListResult {
   /* List of Cassandra keyspaces and their properties. */
   readonly value: CassandraKeyspaceGetResults[];
 }
 
+/* The List operation response, that contains the Cassandra tables and their properties. */
 export interface CassandraTableListResult {
   /* List of Cassandra tables and their properties. */
   readonly value: CassandraTableGetResults[];
 }
 
+/* The List operation response, that contains the Gremlin databases and their properties. */
 export interface GremlinDatabaseListResult {
   /* List of Gremlin databases and their properties. */
   readonly value: GremlinDatabaseGetResults[];
 }
 
+/* The List operation response, that contains the graphs and their properties. */
 export interface GremlinGraphListResult {
   /* List of graphs and their properties. */
   readonly value: GremlinGraphGetResults[];
 }
 
+/* Error Response. */
 export interface ErrorResponse {
   /* Error code. */
   code: string;
@@ -76,11 +90,13 @@ export interface ErrorResponse {
   message: string;
 }
 
+/* The list of new failover policies for the failover priority change. */
 export interface FailoverPolicies {
   /* List of failover policies. */
   failoverPolicies: FailoverPolicy[];
 }
 
+/* The failover policy for a given region of a database account. */
 export interface FailoverPolicy {
   /* The unique identifier of the region in which the database account replicates to. Example: &lt;accountName&gt;-&lt;locationName&gt;. */
   readonly id: string;
@@ -90,11 +106,13 @@ export interface FailoverPolicy {
   failoverPriority: number;
 }
 
+/* Cosmos DB region to online or offline. */
 export interface RegionForOnlineOffline {
   /* Cosmos DB region, with spaces between words and each word capitalized. */
   region: string;
 }
 
+/* A region in which the Azure Cosmos DB database account is deployed. */
 export interface Location {
   /* The unique identifier of the region within the database account. Example: &lt;accountName&gt;-&lt;locationName&gt;. */
   readonly id: string;
@@ -102,7 +120,7 @@ export interface Location {
   locationName: string;
   /* The connection endpoint for the specific region. Example: https://&lt;accountName&gt;-&lt;locationName&gt;.documents.azure.com:443/ */
   readonly documentEndpoint: string;
-  /* undefined */
+  /* undocumented */
   provisioningState: ProvisioningState;
 
   /* The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. */
@@ -111,6 +129,7 @@ export interface Location {
   isZoneRedundant: boolean;
 }
 
+/* The core properties of ARM resources. */
 export interface ARMResourceProperties {
   /* The unique resource identifier of the ARM resource. */
   readonly id: string;
@@ -120,10 +139,11 @@ export interface ARMResourceProperties {
   readonly type: string;
   /* The location of the resource group to which the resource belongs. */
   location: string;
-  /* undefined */
+  /* undocumented */
   tags: Tags;
 }
 
+/* The resource model definition for a ARM proxy resource. It will have everything other than required location and tags */
 export interface ARMProxyResource {
   /* The unique resource identifier of the database account. */
   readonly id: string;
@@ -133,170 +153,199 @@ export interface ARMProxyResource {
   readonly type: string;
 }
 
+/* An Azure Cosmos DB database account. */
 export type DatabaseAccountGetResults = ARMResourceProperties & {
   /* Indicates the type of database account. This can only be set at database account creation. */
   kind: string;
-  /* undefined */
+  /* undocumented */
   properties: DatabaseAccountGetProperties;
 };
 
+/* The system generated resource properties associated with SQL databases, SQL containers, Gremlin databases and Gremlin graphs. */
 export interface ExtendedResourceProperties {
   /* A system generated property. A unique identifier. */
   readonly _rid: string;
   /* A system generated property that denotes the last updated timestamp of the resource. */
-  readonly _ts: undefined;
+  readonly _ts: unknown;
   /* A system generated property representing the resource etag required for optimistic concurrency control. */
   readonly _etag: string;
 }
 
+/* An Azure Cosmos DB resource throughput. */
 export type ThroughputSettingsGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB resource throughput */
   properties: ThroughputSettingsGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB resource throughput */
 export interface ThroughputSettingsGetProperties {
-  /* undefined */
-  resource: undefined;
+  /* undocumented */
+  resource: ThroughputSettingsResource & ExtendedResourceProperties;
 }
 
+/* An Azure Cosmos DB SQL database. */
 export type SqlDatabaseGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB SQL database */
   properties: SqlDatabaseGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB SQL database */
 export interface SqlDatabaseGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: SqlDatabaseResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB container. */
 export type SqlContainerGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB container */
   properties: SqlContainerGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB container */
 export interface SqlContainerGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: SqlContainerResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB storedProcedure. */
 export type SqlStoredProcedureGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB storedProcedure */
   properties: SqlStoredProcedureGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB StoredProcedure */
 export interface SqlStoredProcedureGetProperties {
-  /* undefined */
-  resource: undefined;
+  /* undocumented */
+  resource: SqlStoredProcedureResource & ExtendedResourceProperties;
 }
 
+/* An Azure Cosmos DB userDefinedFunction. */
 export type SqlUserDefinedFunctionGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB userDefinedFunction */
   properties: SqlUserDefinedFunctionGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB userDefinedFunction */
 export interface SqlUserDefinedFunctionGetProperties {
-  /* undefined */
-  resource: undefined;
+  /* undocumented */
+  resource: SqlUserDefinedFunctionResource & ExtendedResourceProperties;
 }
 
+/* An Azure Cosmos DB trigger. */
 export type SqlTriggerGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB trigger */
   properties: SqlTriggerGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB trigger */
 export interface SqlTriggerGetProperties {
-  /* undefined */
-  resource: undefined;
+  /* undocumented */
+  resource: SqlTriggerResource & ExtendedResourceProperties;
 }
 
+/* An Azure Cosmos DB MongoDB database. */
 export type MongoDBDatabaseGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB MongoDB database */
   properties: MongoDBDatabaseGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB MongoDB database */
 export interface MongoDBDatabaseGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: MongoDBDatabaseResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB MongoDB collection. */
 export type MongoDBCollectionGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB MongoDB collection */
   properties: MongoDBCollectionGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB MongoDB collection */
 export interface MongoDBCollectionGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: MongoDBCollectionResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB Table. */
 export type TableGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB Table */
   properties: TableGetProperties;
 };
 
+/* The properties of an Azure Cosmos Table */
 export interface TableGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: TableResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB Cassandra keyspace. */
 export type CassandraKeyspaceGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB Cassandra keyspace */
   properties: CassandraKeyspaceGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB Cassandra keyspace */
 export interface CassandraKeyspaceGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: CassandraKeyspaceResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB Cassandra table. */
 export type CassandraTableGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB Cassandra table */
   properties: CassandraTableGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB Cassandra table */
 export interface CassandraTableGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: CassandraTableResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB Gremlin database. */
 export type GremlinDatabaseGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB SQL database */
   properties: GremlinDatabaseGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB SQL database */
 export interface GremlinDatabaseGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: GremlinDatabaseResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* An Azure Cosmos DB Gremlin graph. */
 export type GremlinGraphGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB Gremlin graph */
   properties: GremlinGraphGetProperties;
 };
 
+/* The properties of an Azure Cosmos DB Gremlin graph */
 export interface GremlinGraphGetProperties {
-  /* undefined */
-  resource: undefined;
-  /* undefined */
-  options: undefined;
+  /* undocumented */
+  resource: GremlinGraphResource & ExtendedResourceProperties;
+  /* undocumented */
+  options: OptionsResource;
 }
 
+/* The consistency policy for the Cosmos DB database account. */
 export interface ConsistencyPolicy {
   /* The default consistency level and configuration settings of the Cosmos DB account. */
   defaultConsistencyLevel: string;
@@ -306,8 +355,9 @@ export interface ConsistencyPolicy {
   maxIntervalInSeconds: number;
 }
 
+/* Properties for the database account. */
 export interface DatabaseAccountGetProperties {
-  /* undefined */
+  /* undocumented */
   provisioningState: ProvisioningState;
 
   /* The connection endpoint for the Cosmos DB database account. */
@@ -369,6 +419,7 @@ export interface DatabaseAccountGetProperties {
   enableAnalyticalStorage: boolean;
 }
 
+/* Properties to create and update Azure Cosmos DB database accounts. */
 export interface DatabaseAccountCreateUpdateProperties {
   /* The consistency policy for the Cosmos DB account. */
   consistencyPolicy: ConsistencyPolicy;
@@ -415,13 +466,15 @@ export interface DatabaseAccountCreateUpdateProperties {
   enableAnalyticalStorage: boolean;
 }
 
+/* Parameters to create and update Cosmos DB database accounts. */
 export type DatabaseAccountCreateUpdateParameters = ARMResourceProperties & {
   /* Indicates the type of database account. This can only be set at database account creation. */
   kind: string;
-  /* undefined */
+  /* undocumented */
   properties: DatabaseAccountCreateUpdateProperties;
 };
 
+/* Properties to update Azure Cosmos DB database accounts. */
 export interface DatabaseAccountUpdateProperties {
   /* The consistency policy for the Cosmos DB account. */
   consistencyPolicy: ConsistencyPolicy;
@@ -465,16 +518,18 @@ export interface DatabaseAccountUpdateProperties {
   enableAnalyticalStorage: boolean;
 }
 
+/* Parameters for patching Azure Cosmos DB database account properties. */
 export interface DatabaseAccountUpdateParameters {
-  /* undefined */
+  /* undocumented */
   tags: Tags;
 
   /* The location of the resource group to which the resource belongs. */
   location: string;
-  /* undefined */
+  /* undocumented */
   properties: DatabaseAccountUpdateProperties;
 }
 
+/* The read-only access keys for the given database account. */
 export interface DatabaseAccountListReadOnlyKeysResult {
   /* Base 64 encoded value of the primary read-only key. */
   readonly primaryReadonlyMasterKey: string;
@@ -482,6 +537,7 @@ export interface DatabaseAccountListReadOnlyKeysResult {
   readonly secondaryReadonlyMasterKey: string;
 }
 
+/* The access keys for the given database account. */
 export type DatabaseAccountListKeysResult = DatabaseAccountListReadOnlyKeysResult & {
   /* Base 64 encoded value of the primary read-write key. */
   readonly primaryMasterKey: string;
@@ -489,6 +545,7 @@ export type DatabaseAccountListKeysResult = DatabaseAccountListReadOnlyKeysResul
   readonly secondaryMasterKey: string;
 };
 
+/* Connection string for the Cosmos DB account */
 export interface DatabaseAccountConnectionString {
   /* Value of the connection string */
   readonly connectionString: string;
@@ -496,11 +553,13 @@ export interface DatabaseAccountConnectionString {
   readonly description: string;
 }
 
+/* The connection strings for the given database account. */
 export interface DatabaseAccountListConnectionStringsResult {
   /* An array that contains the connection strings for the Cosmos DB account. */
   connectionStrings: DatabaseAccountConnectionString[];
 }
 
+/* Parameters to regenerate the keys within the database account. */
 export interface DatabaseAccountRegenerateKeyParameters {
   /* The access key to regenerate. */
   keyKind: string;
@@ -508,21 +567,26 @@ export interface DatabaseAccountRegenerateKeyParameters {
 
 /* The offer type for the Cosmos DB database account. */
 export type DatabaseAccountOfferType = "Standard";
+
+/* Parameters to update Cosmos DB resource throughput. */
 export type ThroughputSettingsUpdateParameters = ARMResourceProperties & {
   /* Properties to update Azure Cosmos DB resource throughput. */
   properties: ThroughputSettingsUpdateProperties;
 };
 
+/* Properties to update Azure Cosmos DB resource throughput. */
 export interface ThroughputSettingsUpdateProperties {
   /* The standard JSON format of a resource throughput */
   resource: ThroughputSettingsResource;
 }
 
+/* Parameters to create and update Cosmos DB SQL database. */
 export type SqlDatabaseCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB SQL database. */
   properties: SqlDatabaseCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB SQL database. */
 export interface SqlDatabaseCreateUpdateProperties {
   /* The standard JSON format of a SQL database */
   resource: SqlDatabaseResource;
@@ -531,11 +595,13 @@ export interface SqlDatabaseCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB container. */
 export type SqlContainerCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB container. */
   properties: SqlContainerCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB container. */
 export interface SqlContainerCreateUpdateProperties {
   /* The standard JSON format of a container */
   resource: SqlContainerResource;
@@ -544,11 +610,13 @@ export interface SqlContainerCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB storedProcedure. */
 export type SqlStoredProcedureCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB storedProcedure. */
   properties: SqlStoredProcedureCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB storedProcedure. */
 export interface SqlStoredProcedureCreateUpdateProperties {
   /* The standard JSON format of a storedProcedure */
   resource: SqlStoredProcedureResource;
@@ -557,11 +625,13 @@ export interface SqlStoredProcedureCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB userDefinedFunction. */
 export type SqlUserDefinedFunctionCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB userDefinedFunction. */
   properties: SqlUserDefinedFunctionCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB userDefinedFunction. */
 export interface SqlUserDefinedFunctionCreateUpdateProperties {
   /* The standard JSON format of a userDefinedFunction */
   resource: SqlUserDefinedFunctionResource;
@@ -570,11 +640,13 @@ export interface SqlUserDefinedFunctionCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB trigger. */
 export type SqlTriggerCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB trigger. */
   properties: SqlTriggerCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB trigger. */
 export interface SqlTriggerCreateUpdateProperties {
   /* The standard JSON format of a trigger */
   resource: SqlTriggerResource;
@@ -583,11 +655,13 @@ export interface SqlTriggerCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB MongoDB database. */
 export type MongoDBDatabaseCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB MongoDB database. */
   properties: MongoDBDatabaseCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB MongoDB database. */
 export interface MongoDBDatabaseCreateUpdateProperties {
   /* The standard JSON format of a MongoDB database */
   resource: MongoDBDatabaseResource;
@@ -596,11 +670,13 @@ export interface MongoDBDatabaseCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB MongoDB collection. */
 export type MongoDBCollectionCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB MongoDB collection. */
   properties: MongoDBCollectionCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB MongoDB collection. */
 export interface MongoDBCollectionCreateUpdateProperties {
   /* The standard JSON format of a MongoDB collection */
   resource: MongoDBCollectionResource;
@@ -609,11 +685,13 @@ export interface MongoDBCollectionCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB Table. */
 export type TableCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB Table. */
   properties: TableCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB Table. */
 export interface TableCreateUpdateProperties {
   /* The standard JSON format of a Table */
   resource: TableResource;
@@ -622,11 +700,13 @@ export interface TableCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB Cassandra keyspace. */
 export type CassandraKeyspaceCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB Cassandra keyspace. */
   properties: CassandraKeyspaceCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB Cassandra keyspace. */
 export interface CassandraKeyspaceCreateUpdateProperties {
   /* The standard JSON format of a Cassandra keyspace */
   resource: CassandraKeyspaceResource;
@@ -635,11 +715,13 @@ export interface CassandraKeyspaceCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB Cassandra table. */
 export type CassandraTableCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB Cassandra table. */
   properties: CassandraTableCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB Cassandra table. */
 export interface CassandraTableCreateUpdateProperties {
   /* The standard JSON format of a Cassandra table */
   resource: CassandraTableResource;
@@ -648,11 +730,13 @@ export interface CassandraTableCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB Gremlin database. */
 export type GremlinDatabaseCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB Gremlin database. */
   properties: GremlinDatabaseCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB Gremlin database. */
 export interface GremlinDatabaseCreateUpdateProperties {
   /* The standard JSON format of a Gremlin database */
   resource: GremlinDatabaseResource;
@@ -661,11 +745,13 @@ export interface GremlinDatabaseCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB Gremlin graph. */
 export type GremlinGraphCreateUpdateParameters = ARMResourceProperties & {
   /* Properties to create and update Azure Cosmos DB Gremlin graph. */
   properties: GremlinGraphCreateUpdateProperties;
 };
 
+/* Properties to create and update Azure Cosmos DB Gremlin graph. */
 export interface GremlinGraphCreateUpdateProperties {
   /* The standard JSON format of a Gremlin graph */
   resource: GremlinGraphResource;
@@ -674,6 +760,7 @@ export interface GremlinGraphCreateUpdateProperties {
   options: CreateUpdateOptions;
 }
 
+/* Cosmos DB resource throughput object. Either throughput is required or autoscaleSettings is required, but not both. */
 export interface ThroughputSettingsResource {
   /* Value of the Cosmos DB resource throughput. Either throughput is required or autoscaleSettings is required, but not both. */
   throughput: number;
@@ -686,6 +773,7 @@ export interface ThroughputSettingsResource {
   readonly offerReplacePending: string;
 }
 
+/* Cosmos DB provisioned throughput settings object */
 export interface AutoscaleSettingsResource {
   /* Represents maximum throughput container can scale up to. */
   maxThroughput: number;
@@ -696,11 +784,13 @@ export interface AutoscaleSettingsResource {
   readonly targetMaxThroughput: number;
 }
 
+/* Cosmos DB resource auto-upgrade policy */
 export interface AutoUpgradePolicyResource {
   /* Represents throughput policy which service must adhere to for auto-upgrade */
   throughputPolicy: ThroughputPolicyResource;
 }
 
+/* Cosmos DB resource throughput policy */
 export interface ThroughputPolicyResource {
   /* Determines whether the ThroughputPolicy is active or not */
   isEnabled: boolean;
@@ -708,6 +798,7 @@ export interface ThroughputPolicyResource {
   incrementPercent: number;
 }
 
+/* Cosmos DB options resource object */
 export interface OptionsResource {
   /* Value of the Cosmos DB resource throughput or autoscaleSettings. Use the ThroughputSetting resource when retrieving offer details. */
   throughput: number;
@@ -715,11 +806,13 @@ export interface OptionsResource {
   autoscaleSettings: AutoscaleSettings;
 }
 
+/* Cosmos DB SQL database resource object */
 export interface SqlDatabaseResource {
   /* Name of the Cosmos DB SQL database */
   id: string;
 }
 
+/* Cosmos DB SQL container resource object */
 export interface SqlContainerResource {
   /* Name of the Cosmos DB SQL container */
   id: string;
@@ -738,6 +831,7 @@ export interface SqlContainerResource {
   conflictResolutionPolicy: ConflictResolutionPolicy;
 }
 
+/* Cosmos DB indexing policy */
 export interface IndexingPolicy {
   /* Indicates if the indexing policy is automatic */
   automatic: boolean;
@@ -756,11 +850,13 @@ export interface IndexingPolicy {
   spatialIndexes: SpatialSpec[];
 }
 
+/* undocumented */
 export interface ExcludedPath {
   /* The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*) */
   path: string;
 }
 
+/* The paths that are included in indexing */
 export interface IncludedPath {
   /* The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*) */
   path: string;
@@ -768,6 +864,7 @@ export interface IncludedPath {
   indexes: Indexes[];
 }
 
+/* The indexes for the path. */
 export interface Indexes {
   /* The datatype for which the indexing behavior is applied to. */
   dataType: string;
@@ -779,6 +876,8 @@ export interface Indexes {
 
 /* List of composite path */
 export type CompositePathList = CompositePath[];
+
+/* undocumented */
 export interface CompositePath {
   /* The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*) */
   path: string;
@@ -786,6 +885,7 @@ export interface CompositePath {
   order: string;
 }
 
+/* undocumented */
 export interface SpatialSpec {
   /* The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*) */
   path: string;
@@ -795,6 +895,8 @@ export interface SpatialSpec {
 
 /* Indicates the spatial type of index. */
 export type SpatialType = "Point" | "LineString" | "Polygon" | "MultiPolygon";
+
+/* The configuration of the partition key to be used for partitioning data into multiple partitions */
 export interface ContainerPartitionKey {
   /* List of paths using which data within the container can be partitioned */
   paths: Path[];
@@ -807,16 +909,20 @@ export interface ContainerPartitionKey {
 
 /* A path. These typically start with root (/path) */
 export type Path = string;
+
+/* The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service. */
 export interface UniqueKeyPolicy {
   /* List of unique keys on that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. */
   uniqueKeys: UniqueKey[];
 }
 
+/* The unique key on that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. */
 export interface UniqueKey {
   /* List of paths must be unique for each document in the Azure Cosmos DB service */
   paths: Path[];
 }
 
+/* The conflict resolution policy for the container. */
 export interface ConflictResolutionPolicy {
   /* Indicates the conflict resolution mode. */
   mode: string;
@@ -826,6 +932,7 @@ export interface ConflictResolutionPolicy {
   conflictResolutionProcedure: string;
 }
 
+/* Cosmos DB SQL storedProcedure resource object */
 export interface SqlStoredProcedureResource {
   /* Name of the Cosmos DB SQL storedProcedure */
   id: string;
@@ -833,6 +940,7 @@ export interface SqlStoredProcedureResource {
   body: string;
 }
 
+/* Cosmos DB SQL userDefinedFunction resource object */
 export interface SqlUserDefinedFunctionResource {
   /* Name of the Cosmos DB SQL userDefinedFunction */
   id: string;
@@ -840,6 +948,7 @@ export interface SqlUserDefinedFunctionResource {
   body: string;
 }
 
+/* Cosmos DB SQL trigger resource object */
 export interface SqlTriggerResource {
   /* Name of the Cosmos DB SQL trigger */
   id: string;
@@ -851,11 +960,13 @@ export interface SqlTriggerResource {
   triggerOperation: string;
 }
 
+/* Cosmos DB MongoDB database resource object */
 export interface MongoDBDatabaseResource {
   /* Name of the Cosmos DB MongoDB database */
   id: string;
 }
 
+/* Cosmos DB MongoDB collection resource object */
 export interface MongoDBCollectionResource {
   /* Name of the Cosmos DB MongoDB collection */
   id: string;
@@ -871,6 +982,8 @@ export interface MongoDBCollectionResource {
 
 /* The shard key and partition kind pair, only support "Hash" partition kind */
 export type ShardKeys = { [key: string]: string };
+
+/* Cosmos DB MongoDB collection index key */
 export interface MongoIndex {
   /* Cosmos DB MongoDB collection index keys */
   key: MongoIndexKeys;
@@ -879,6 +992,7 @@ export interface MongoIndex {
   options: MongoIndexOptions;
 }
 
+/* Cosmos DB MongoDB collection resource object */
 export interface MongoIndexKeys {
   /* List of keys for each MongoDB collection in the Azure Cosmos DB service */
   keys: Key[];
@@ -886,6 +1000,8 @@ export interface MongoIndexKeys {
 
 /* A Key. */
 export type Key = string;
+
+/* Cosmos DB MongoDB collection index options */
 export interface MongoIndexOptions {
   /* Expire after seconds */
   expireAfterSeconds: number;
@@ -893,16 +1009,19 @@ export interface MongoIndexOptions {
   unique: boolean;
 }
 
+/* Cosmos DB table resource object */
 export interface TableResource {
   /* Name of the Cosmos DB table */
   id: string;
 }
 
+/* Cosmos DB Cassandra keyspace resource object */
 export interface CassandraKeyspaceResource {
   /* Name of the Cosmos DB Cassandra keyspace */
   id: string;
 }
 
+/* Cosmos DB Cassandra table resource object */
 export interface CassandraTableResource {
   /* Name of the Cosmos DB Cassandra table */
   id: string;
@@ -915,6 +1034,7 @@ export interface CassandraTableResource {
   analyticalStorageTtl: number;
 }
 
+/* Cosmos DB Cassandra table schema */
 export interface CassandraSchema {
   /* List of Cassandra table columns. */
   columns: Column[];
@@ -926,6 +1046,7 @@ export interface CassandraSchema {
   clusterKeys: ClusterKey[];
 }
 
+/* Cosmos DB Cassandra table column */
 export interface Column {
   /* Name of the Cosmos DB Cassandra table column */
   name: string;
@@ -933,11 +1054,13 @@ export interface Column {
   type: string;
 }
 
+/* Cosmos DB Cassandra table partition key */
 export interface CassandraPartitionKey {
   /* Name of the Cosmos DB Cassandra table partition key */
   name: string;
 }
 
+/* Cosmos DB Cassandra table cluster key */
 export interface ClusterKey {
   /* Name of the Cosmos DB Cassandra table cluster key */
   name: string;
@@ -945,11 +1068,13 @@ export interface ClusterKey {
   orderBy: string;
 }
 
+/* Cosmos DB Gremlin database resource object */
 export interface GremlinDatabaseResource {
   /* Name of the Cosmos DB Gremlin database */
   id: string;
 }
 
+/* Cosmos DB Gremlin graph resource object */
 export interface GremlinGraphResource {
   /* Name of the Cosmos DB Gremlin graph */
   id: string;
@@ -968,6 +1093,7 @@ export interface GremlinGraphResource {
   conflictResolutionPolicy: ConflictResolutionPolicy;
 }
 
+/* CreateUpdateOptions are a list of key-value pairs that describe the resource. Supported keys are "If-Match", "If-None-Match", "Session-Token" and "Throughput" */
 export interface CreateUpdateOptions {
   /* Request Units per second. For example, "throughput": 10000. */
   throughput: number;
@@ -975,11 +1101,13 @@ export interface CreateUpdateOptions {
   autoscaleSettings: AutoscaleSettings;
 }
 
+/* undocumented */
 export interface AutoscaleSettings {
   /* Represents maximum throughput, the resource can scale up to. */
   maxThroughput: number;
 }
 
+/* Cosmos DB capability object */
 export interface Capability {
   /* Name of the Cosmos DB capability. For example, "name": "EnableCassandra". Current values also include "EnableTable" and "EnableGremlin". */
   name: string;
@@ -993,11 +1121,14 @@ export type ProvisioningState = string;
 
 /* Array of IpAddressOrRange objects. */
 export type IPRules = IpAddressOrRange[];
+
+/* IpAddressOrRange object */
 export interface IpAddressOrRange {
   /* A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: “23.40.210.245” or “23.40.210.0/8”. */
   ipAddressOrRange: string;
 }
 
+/* Virtual Network ACL Rule object */
 export interface VirtualNetworkRule {
   /* Resource ID of a subnet, for example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. */
   id: string;
@@ -1005,11 +1136,13 @@ export interface VirtualNetworkRule {
   ignoreMissingVNetServiceEndpoint: boolean;
 }
 
+/* A private endpoint connection */
 export type PrivateEndpointConnection = unknown & {
   /* Resource properties. */
   properties: PrivateEndpointConnectionProperties;
 };
 
+/* Properties of a private endpoint connection. */
 export interface PrivateEndpointConnectionProperties {
   /* Private endpoint which the connection belongs to. */
   privateEndpoint: PrivateEndpointProperty;
@@ -1018,11 +1151,13 @@ export interface PrivateEndpointConnectionProperties {
   privateLinkServiceConnectionState: PrivateLinkServiceConnectionStateProperty;
 }
 
+/* Private endpoint which the connection belongs to. */
 export interface PrivateEndpointProperty {
   /* Resource id of the private endpoint. */
   id: string;
 }
 
+/* Connection State of the Private Endpoint Connection. */
 export interface PrivateLinkServiceConnectionStateProperty {
   /* The private link service connection status. */
   status: string;
@@ -1030,13 +1165,15 @@ export interface PrivateLinkServiceConnectionStateProperty {
   readonly actionsRequired: string;
 }
 
+/* REST API operation */
 export interface Operation {
   /* Operation name: {provider}/{resource}/{operation} */
   name: string;
   /* The object that represents the operation. */
-  display: undefined;
+  display: unknown;
 }
 
+/* Result of the request to list Resource Provider operations. It contains a list of operations and a URL link to get the next set of results. */
 export interface OperationListResult {
   /* List of operations supported by the Resource Provider. */
   value: Operation[];
@@ -1045,11 +1182,13 @@ export interface OperationListResult {
   nextLink: string;
 }
 
+/* The response to a list usage request. */
 export interface UsagesResult {
   /* The list of usages for the database. A usage is a point in time metric */
   readonly value: Usage[];
 }
 
+/* The usage data for a usage request. */
 export interface Usage {
   /* The unit of the metric. */
   unit: UnitType;
@@ -1065,11 +1204,13 @@ export interface Usage {
   readonly currentValue: number;
 }
 
+/* The response to a list partition level usage request. */
 export interface PartitionUsagesResult {
   /* The list of partition-level usages for the database. A usage is a point in time metric */
   readonly value: PartitionUsage[];
 }
 
+/* The partition level usage data for a usage request. */
 export type PartitionUsage = Usage & {
   /* The partition id (GUID identifier) of the usages. */
   readonly partitionId: string;
@@ -1077,11 +1218,13 @@ export type PartitionUsage = Usage & {
   readonly partitionKeyRangeId: string;
 };
 
+/* The response to a list metric definitions request. */
 export interface MetricDefinitionsListResult {
   /* The list of metric definitions for the account. */
   readonly value: MetricDefinition[];
 }
 
+/* The definition of a metric. */
 export interface MetricDefinition {
   /* The list of metric availabilities for the account. */
   readonly metricAvailabilities: MetricAvailability[];
@@ -1097,6 +1240,7 @@ export interface MetricDefinition {
   readonly name: MetricName;
 }
 
+/* The availability of the metric. */
 export interface MetricAvailability {
   /* The time grain to be used to summarize the metric values. */
   readonly timeGrain: string;
@@ -1104,11 +1248,13 @@ export interface MetricAvailability {
   readonly retention: string;
 }
 
+/* The response to a list metrics request. */
 export interface MetricListResult {
   /* The list of metrics for the account. */
   readonly value: Metric[];
 }
 
+/* Metric data */
 export interface Metric {
   /* The start time for the metric (ISO-8601 format). */
   readonly startTime: string;
@@ -1126,6 +1272,7 @@ export interface Metric {
   readonly metricValues: MetricValue[];
 }
 
+/* A metric name. */
 export interface MetricName {
   /* The name of the metric. */
   readonly value: string;
@@ -1133,6 +1280,7 @@ export interface MetricName {
   readonly localizedValue: string;
 }
 
+/* Represents metrics values. */
 export interface MetricValue {
   /* The number of values for the metric. */
   readonly _count: number;
@@ -1148,11 +1296,13 @@ export interface MetricValue {
   readonly total: number;
 }
 
+/* The response to a list percentile metrics request. */
 export interface PercentileMetricListResult {
   /* The list of percentile metrics for the account. */
   readonly value: PercentileMetric[];
 }
 
+/* Percentile Metric data */
 export interface PercentileMetric {
   /* The start time for the metric (ISO-8601 format). */
   readonly startTime: string;
@@ -1170,6 +1320,7 @@ export interface PercentileMetric {
   readonly metricValues: PercentileMetricValue[];
 }
 
+/* Represents percentile metrics values. */
 export type PercentileMetricValue = MetricValue & {
   /* The 10th percentile value for the metric. */
   readonly P10: number;
@@ -1187,11 +1338,13 @@ export type PercentileMetricValue = MetricValue & {
   readonly P99: number;
 };
 
+/* The response to a list partition metrics request. */
 export interface PartitionMetricListResult {
   /* The list of partition-level metrics for the account. */
   readonly value: PartitionMetric[];
 }
 
+/* The metric values for a single partition. */
 export type PartitionMetric = Metric & {
   /* The partition id (GUID identifier) of the metric values. */
   readonly partitionId: string;
@@ -1207,6 +1360,8 @@ export type ConnectorOffer = "Small";
 
 /* Whether requests from Public Network are allowed */
 export type PublicNetworkAccess = "Enabled" | "Disabled";
+
+/* undocumented */
 export interface ApiProperties {
   /* Describes the ServerVersion of an a MongoDB account. */
   serverVersion: string;
