@@ -2,6 +2,7 @@ import { Platform, configContext } from "../../ConfigContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AutoPilotOfferSettings } from "../../Contracts/DataModels";
 import { logConsoleProgress, logConsoleInfo, logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { HttpHeaders } from "../Constants";
 
 interface UpdateOfferThroughputRequest {
   subscriptionId: string;
@@ -34,7 +35,7 @@ export async function updateOfferThroughputBeyondLimit(request: UpdateOfferThrou
   const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(request),
-    headers: { [authorizationHeader.header]: authorizationHeader.token, "Content-Type": "application/json" }
+    headers: { [authorizationHeader.header]: authorizationHeader.token, [HttpHeaders.contentType]: "application/json" }
   });
 
   if (response.ok) {
