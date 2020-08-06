@@ -22,7 +22,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
         rpResponse &&
         rpResponse.value &&
         rpResponse.value.map(collection => {
-          return collection.properties && collection.properties.resource as DataModels.Collection;
+          return collection.properties && (collection.properties.resource as DataModels.Collection);
         });
     } else {
       const sdkResponse = await client()

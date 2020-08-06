@@ -21,7 +21,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
         rpResponse &&
         rpResponse.value &&
         rpResponse.value.map(database => {
-          return database.properties && database.properties.resource as DataModels.Database;
+          return database.properties && (database.properties.resource as DataModels.Database);
         });
     } else {
       const sdkResponse = await client()
