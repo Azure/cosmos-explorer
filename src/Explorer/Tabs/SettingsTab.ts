@@ -17,13 +17,10 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import {
-  updateOfferThroughputBeyondLimit,
-  updateOffer,
-  updateCollection
-} from "../../Common/DocumentClientUtilityBase";
+import { updateOffer, updateCollection } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
+import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -1144,7 +1141,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
         this.container != null
       ) {
-        const requestPayload: DataModels.UpdateOfferThroughputRequest = {
+        const requestPayload = {
           subscriptionId: userContext.subscriptionId,
           databaseAccountName: userContext.databaseAccount.name,
           resourceGroup: userContext.resourceGroup,
@@ -1153,7 +1150,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           throughput: newThroughput,
           offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
         };
-        const updateOfferBeyondLimitPromise: Q.Promise<void> = updateOfferThroughputBeyondLimit(requestPayload).then(
+        const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
           () => {
             this.collection.offer().content.offerThroughput = originalThroughputValue;
             this.throughput(originalThroughputValue);
@@ -1185,7 +1182,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
             );
           }
         );
-        promises.push(updateOfferBeyondLimitPromise);
+        promises.push(Q(updateOfferBeyondLimitPromise));
       } else {
         const updateOfferPromise = updateOffer(this.collection.offer(), newOffer, headerOptions).then(
           (updatedOffer: DataModels.Offer) => {
