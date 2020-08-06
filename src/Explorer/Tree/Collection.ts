@@ -4,7 +4,6 @@ import * as _ from "underscore";
 import UploadWorker from "worker-loader!../../workers/upload";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
-import { CosmosClient } from "../../Common/CosmosClient";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -31,7 +30,7 @@ import SettingsTab from "../Tabs/SettingsTab";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-import { config } from "../../Config";
+import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import {
   createDocument,
@@ -42,6 +41,7 @@ import {
   readOffer,
   readOffers
 } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -472,7 +472,7 @@ export default class Collection implements ViewModels.Collection {
       });
 
       graphTab = new GraphTab({
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Graph,
         node: this,
         title: title,
@@ -480,7 +480,7 @@ export default class Collection implements ViewModels.Collection {
 
         collection: this,
         selfLink: this.self,
-        masterKey: CosmosClient.masterKey() || "",
+        masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperty,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
         collectionId: this.id(),
@@ -804,14 +804,14 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const graphTab: GraphTab = new GraphTab({
-      account: CosmosClient.databaseAccount(),
+      account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Graph,
       node: this,
       title: title,
       tabPath: "",
       collection: this,
       selfLink: this.self,
-      masterKey: CosmosClient.masterKey() || "",
+      masterKey: userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperty,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
       collectionId: this.id(),
@@ -1181,11 +1181,11 @@ export default class Collection implements ViewModels.Collection {
       documentClientParams: {
         databaseId: this.databaseId,
         containerId: this.id(),
-        masterKey: CosmosClient.masterKey(),
-        endpoint: CosmosClient.endpoint(),
-        accessToken: CosmosClient.accessToken(),
-        platform: config.platform,
-        databaseAccount: CosmosClient.databaseAccount()
+        masterKey: userContext.masterKey,
+        endpoint: userContext.endpoint,
+        accessToken: userContext.accessToken,
+        platform: configContext.platform,
+        databaseAccount: userContext.databaseAccount
       }
     };
 

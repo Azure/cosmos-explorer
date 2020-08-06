@@ -4,25 +4,25 @@ import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
 import * as Logger from "../Common/Logger";
 import { PlatformType } from "../PlatformType";
-import { CosmosClient } from "../Common/CosmosClient";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
+import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
   if (window.authType === AuthType.EncryptedToken) {
     return {
       header: Constants.HttpHeaders.guestAccessToken,
-      token: CosmosClient.accessToken()
+      token: userContext.accessToken
     };
   } else {
     return {
       header: Constants.HttpHeaders.authorization,
-      token: CosmosClient.authorizationToken() || ""
+      token: userContext.authorizationToken || ""
     };
   }
 }
 
 export async function getArcadiaAuthToken(
-  arcadiaEndpoint: string = config.ARCADIA_ENDPOINT,
+  arcadiaEndpoint: string = configContext.ARCADIA_ENDPOINT,
   tenantId?: string
 ): Promise<string> {
   try {

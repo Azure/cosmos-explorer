@@ -1,7 +1,7 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { JunoClient } from "../Juno/JunoClient";
@@ -55,7 +55,7 @@ export class GitHubOAuthService {
 
     const params = {
       scope,
-      client_id: config.GITHUB_CLIENT_ID,
+      client_id: configContext.GITHUB_CLIENT_ID,
       redirect_uri: new URL("./connectToGitHub.html", window.location.href).href,
       state: this.resetState()
     };

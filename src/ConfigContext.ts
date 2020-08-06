@@ -4,7 +4,7 @@ export enum Platform {
   Emulator = "Emulator"
 }
 
-interface Config {
+interface ConfigContext {
   platform: Platform;
   allowedParentFrameOrigins: RegExp;
   gitSha?: string;
@@ -28,7 +28,7 @@ interface Config {
 }
 
 // Default configuration
-let config: Config = {
+let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedParentFrameOrigins: /^https:\/\/portal\.azure\.com$|^https:\/\/portal\.azure\.us$|^https:\/\/portal\.azure\.cn$|^https:\/\/portal\.microsoftazure\.de$|^https:\/\/.+\.portal\.azure\.com$|^https:\/\/.+\.portal\.azure\.us$|^https:\/\/.+\.portal\.azure\.cn$|^https:\/\/.+\.portal\.microsoftazure\.de$|^https:\/\/main\.documentdb\.ext\.azure\.com$|^https:\/\/main\.documentdb\.ext\.microsoftazure\.de$|^https:\/\/main\.documentdb\.ext\.azure\.cn$|^https:\/\/main\.documentdb\.ext\.azure\.us$/,
   // Webpack injects this at build time
@@ -46,22 +46,35 @@ let config: Config = {
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com"
 };
 
+export function resetConfigContext(): void {
+  if (process.env.NODE_ENV !== "test") {
+    throw new Error("resetConfigContext can only becalled in a test environment");
+  }
+  configContext = {} as ConfigContext;
+}
+
+export function updateConfigContext(newContext: Partial<ConfigContext>): void {
+  Object.assign(configContext, newContext);
+}
+
 // Injected for local develpment. These will be removed in the production bundle by webpack
 if (process.env.NODE_ENV === "development") {
   const port: string = process.env.PORT || "1234";
-  config.BACKEND_ENDPOINT = "https://localhost:" + port;
-  config.MONGO_BACKEND_ENDPOINT = "https://localhost:" + port;
-  config.PROXY_PATH = "/proxy";
-  config.EMULATOR_ENDPOINT = "https://localhost:8081";
+  updateConfigContext({
+    BACKEND_ENDPOINT: "https://localhost:" + port,
+    MONGO_BACKEND_ENDPOINT: "https://localhost:" + port,
+    PROXY_PATH: "/proxy",
+    EMULATOR_ENDPOINT: "https://localhost:8081"
+  });
 }
 
-export async function initializeConfiguration(): Promise<Config> {
+export async function initializeConfiguration(): Promise<ConfigContext> {
   try {
     const response = await fetch("./config.json");
     if (response.status === 200) {
       try {
         const externalConfig = await response.json();
-        config = Object.assign({}, config, externalConfig);
+        Object.assign(configContext, externalConfig);
       } catch (error) {
         console.error("Unable to parse json in config file");
         console.error(error);
@@ -70,12 +83,13 @@ export async function initializeConfiguration(): Promise<Config> {
     // Allow override of any config value with URL query parameters
     const params = new URLSearchParams(window.location.search);
     params.forEach((value, key) => {
-      (config as any)[key] = value;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (configContext as any)[key] = value;
     });
   } catch (error) {
     console.log("No configuration file found using defaults");
   }
-  return config;
+  return configContext;
 }
 
-export { config };
+export { configContext };

@@ -1,8 +1,9 @@
-import { CosmosClient } from "../CosmosClient";
-import { refreshCachedResources } from "../DataAccessUtilityBase";
-import { logConsoleProgress, logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { AuthType } from "../../AuthType";
+import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { refreshCachedResources } from "../DataAccessUtilityBase";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
 
@@ -12,13 +13,13 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
   try {
     if (window.authType === AuthType.AAD) {
       await deleteSqlDatabase(
-        CosmosClient.subscriptionId(),
-        CosmosClient.resourceGroup(),
-        CosmosClient.databaseAccount().name,
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
         databaseId
       );
     } else {
-      await CosmosClient.client()
+      await client()
         .database(databaseId)
         .delete();
     }

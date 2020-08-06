@@ -37,9 +37,8 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../Common/CosmosClient";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { DialogComponentAdapter } from "./Controls/DialogReactComponent/DialogComponentAdapter";
@@ -87,6 +86,7 @@ import { NotificationsClientBase } from "../Common/NotificationsClientBase";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
+import { updateUserContext, userContext } from "../UserContext";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -1605,7 +1605,7 @@ export default class Explorer {
 
   private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {
     try {
-      const workspaces = await this._arcadiaManager.listWorkspacesAsync([CosmosClient.subscriptionId()]);
+      const workspaces = await this._arcadiaManager.listWorkspacesAsync([userContext.subscriptionId]);
       let workspaceItems: ArcadiaWorkspaceItem[] = new Array(workspaces.length);
       const sparkPromises: Promise<void>[] = [];
       workspaces.forEach((workspace, i) => {
@@ -1708,7 +1708,7 @@ export default class Explorer {
     }
 
     try {
-      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount.id);
+      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
       return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
     } catch (error) {
       Logger.logError(error, "Explorer/_containsDefaultNotebookWorkspace");
@@ -1810,8 +1810,8 @@ export default class Explorer {
 
     const isRunningInPortal = window.dataExplorerPlatform == PlatformType.Portal;
     const isRunningInDevMode = process.env.NODE_ENV === "development";
-    if (inputs && config.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
-      inputs.extensionEndpoint = config.PROXY_PATH;
+    if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
+      inputs.extensionEndpoint = configContext.PROXY_PATH;
     }
 
     const initPromise: Q.Promise<void> = inputs ? this.initDataExplorerWithFrameInputs(inputs) : Q();
@@ -1916,7 +1916,7 @@ export default class Explorer {
       this.features(inputs.features);
       this.serverId(inputs.serverId);
       this.extensionEndpoint(inputs.extensionEndpoint || "");
-      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || config.ARM_ENDPOINT));
+      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
       this.notificationsClient.setExtensionEndpoint(this.extensionEndpoint());
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
@@ -1932,11 +1932,12 @@ export default class Explorer {
 
       this._importExplorerConfigComplete = true;
 
-      CosmosClient.authorizationToken(authorizationToken);
-      CosmosClient.masterKey(masterKey);
-      CosmosClient.databaseAccount(databaseAccount);
-      CosmosClient.subscriptionId(inputs.subscriptionId);
-      CosmosClient.resourceGroup(inputs.resourceGroup);
+      updateUserContext({
+        authorizationToken,
+        masterKey,
+        databaseAccount
+      });
+      updateUserContext({ resourceGroup: inputs.resourceGroup, subscriptionId: inputs.subscriptionId });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
@@ -2181,7 +2182,7 @@ export default class Explorer {
       return undefined;
     }
 
-    const urlPrefixWithKeyParam: string = `${config.hostedExplorerURL}?key=`;
+    const urlPrefixWithKeyParam: string = `${configContext.hostedExplorerURL}?key=`;
     const currentActiveTab = this.tabsManager.activeTab();
 
     return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;
@@ -2457,14 +2458,14 @@ export default class Explorer {
       this.tabsManager.activateTab(notebookTab);
     } else {
       const options: NotebookTabOptions = {
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookV2,
         node: null,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
         collection: null,
         selfLink: null,
-        masterKey: CosmosClient.masterKey() || "",
+        masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
@@ -2654,7 +2655,7 @@ export default class Explorer {
   }
 
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const subscriptionId = CosmosClient.subscriptionId();
+    const subscriptionId = userContext.subscriptionId;
     const armEndpoint = this.armEndpoint();
     const authType = window.authType as AuthType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
@@ -2683,7 +2684,7 @@ export default class Explorer {
   };
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const subscriptionId = CosmosClient.subscriptionId();
+    const subscriptionId = userContext.subscriptionId;
     const armEndpoint = this.armEndpoint();
     const authType = window.authType as AuthType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
@@ -2902,7 +2903,7 @@ export default class Explorer {
       this.tabsManager.activateTab(terminalTab);
     } else {
       const newTab = new TerminalTab({
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Terminal,
         node: null,
         title: title,
@@ -2941,7 +2942,7 @@ export default class Explorer {
 
       const newTab = new this.galleryTab.default({
         // GalleryTabOptions
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         container: this,
         junoClient: this.notebookManager?.junoClient,
         notebookUrl,
@@ -2988,7 +2989,7 @@ export default class Explorer {
       this.tabsManager.activateNewTab(notebookViewerTab);
     } else {
       notebookViewerTab = new this.notebookViewerTab.default({
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookViewer,
         node: null,
         title: title,

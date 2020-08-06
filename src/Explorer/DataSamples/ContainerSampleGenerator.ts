@@ -3,11 +3,11 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import GraphTab from ".././Tabs/GraphTab";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { createDocument, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
 interface SampleDataFile extends DataModels.CreateDatabaseAndCollectionRequest {
   data: any[];
@@ -87,14 +87,14 @@ export class ContainerSampleGenerator {
       if (!queries || queries.length < 1) {
         return;
       }
-      const account = CosmosClient.databaseAccount();
+      const account = userContext.databaseAccount;
       const databaseId = collection.databaseId;
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({
         endpoint: `wss://${GraphTab.getGremlinEndpoint(account)}`,
         databaseId: databaseId,
         collectionId: collection.id(),
-        masterKey: CosmosClient.masterKey() || "",
+        masterKey: userContext.masterKey || "",
         maxResultSize: 100
       });
 

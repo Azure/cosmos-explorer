@@ -17,7 +17,7 @@ import {
   TriggerDefinition
 } from "@azure/cosmos";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
-import { CosmosClient } from "./CosmosClient";
+import { client } from "./CosmosClient";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
 import { sendCachedDataMessage } from "./MessageHandler";
@@ -25,7 +25,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
-import { Platform, config } from "../Config";
+import { Platform, configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import ConflictId from "../Explorer/Tree/ConflictId";
@@ -54,7 +54,7 @@ export function queryDocuments(
   options: any
 ): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
   options = getCommonQueryOptions(options);
-  const documentsIterator = CosmosClient.client()
+  const documentsIterator = client()
     .database(databaseId)
     .container(containerId)
     .items.query(query, options);
@@ -66,7 +66,7 @@ export function readStoredProcedures(
   options?: any
 ): Q.Promise<DataModels.StoredProcedure[]> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.storedProcedures.readAll(options)
@@ -81,7 +81,7 @@ export function readStoredProcedure(
   options?: any
 ): Q.Promise<DataModels.StoredProcedure> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.storedProcedure(requestedResource.id)
@@ -94,7 +94,7 @@ export function readUserDefinedFunctions(
   options: any
 ): Q.Promise<DataModels.UserDefinedFunction[]> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.userDefinedFunctions.readAll(options)
@@ -108,7 +108,7 @@ export function readUserDefinedFunction(
   options?: any
 ): Q.Promise<DataModels.UserDefinedFunction> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.userDefinedFunction(requestedResource.id)
@@ -119,7 +119,7 @@ export function readUserDefinedFunction(
 
 export function readTriggers(collection: ViewModels.Collection, options: any): Q.Promise<DataModels.Trigger[]> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.triggers.readAll(options)
@@ -134,7 +134,7 @@ export function readTrigger(
   options?: any
 ): Q.Promise<DataModels.Trigger> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.trigger(requestedResource.id)
@@ -152,7 +152,7 @@ export function executeStoredProcedure(
   // TODO remove this deferred. Kept it because of timeout code at bottom of function
   const deferred = Q.defer<any>();
 
-  CosmosClient.client()
+  client()
     .database(collection.databaseId)
     .container(collection.id())
     .scripts.storedProcedure(storedProcedure.id())
@@ -175,7 +175,7 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
   const partitionKey = documentId.partitionKeyValue;
 
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .item(documentId.id(), partitionKey)
@@ -210,7 +210,7 @@ export function updateCollection(
   options: any = {}
 ): Q.Promise<DataModels.Collection> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(databaseId)
       .container(collectionId)
       .replace(newCollection as ContainerDefinition, options)
@@ -228,7 +228,7 @@ export function updateDocument(
   const partitionKey = documentId.partitionKeyValue;
 
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .item(documentId.id(), partitionKey)
@@ -243,7 +243,7 @@ export function updateOffer(
   options?: RequestOptions
 ): Q.Promise<DataModels.Offer> {
   return Q(
-    CosmosClient.client()
+    client()
       .offer(offer.id)
       .replace(newOffer, options)
       .then(response => {
@@ -258,7 +258,7 @@ export function updateStoredProcedure(
   options: any
 ): Q.Promise<DataModels.StoredProcedure> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.storedProcedure(storedProcedure.id)
@@ -273,7 +273,7 @@ export function updateUserDefinedFunction(
   options?: any
 ): Q.Promise<DataModels.UserDefinedFunction> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.userDefinedFunction(userDefinedFunction.id)
@@ -288,7 +288,7 @@ export function updateTrigger(
   options?: any
 ): Q.Promise<DataModels.Trigger> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.trigger(trigger.id)
@@ -299,7 +299,7 @@ export function updateTrigger(
 
 export function createDocument(collection: ViewModels.CollectionBase, newDocument: any): Q.Promise<any> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .items.create(newDocument)
@@ -313,7 +313,7 @@ export function createStoredProcedure(
   options?: any
 ): Q.Promise<DataModels.StoredProcedure> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.storedProcedures.create(newStoredProcedure, options)
@@ -327,7 +327,7 @@ export function createUserDefinedFunction(
   options: any
 ): Q.Promise<DataModels.UserDefinedFunction> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.userDefinedFunctions.create(newUserDefinedFunction, options)
@@ -341,7 +341,7 @@ export function createTrigger(
   options?: any
 ): Q.Promise<DataModels.Trigger> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.triggers.create(newTrigger as TriggerDefinition, options)
@@ -353,7 +353,7 @@ export function deleteDocument(collection: ViewModels.CollectionBase, documentId
   const partitionKey = documentId.partitionKeyValue;
 
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .item(documentId.id(), partitionKey)
@@ -369,7 +369,7 @@ export function deleteConflict(
   options.partitionKey = options.partitionKey || getPartitionKeyHeaderForConflict(conflictId);
 
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .conflict(conflictId.id())
@@ -383,7 +383,7 @@ export function deleteStoredProcedure(
   options: any
 ): Q.Promise<any> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.storedProcedure(storedProcedure.id)
@@ -397,7 +397,7 @@ export function deleteUserDefinedFunction(
   options: any
 ): Q.Promise<any> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.userDefinedFunction(userDefinedFunction.id)
@@ -411,7 +411,7 @@ export function deleteTrigger(
   options: any
 ): Q.Promise<any> {
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.trigger(trigger.id)
@@ -429,7 +429,7 @@ export function readCollectionQuotaInfo(
   options.initialHeaders[Constants.HttpHeaders.populatePartitionStatistics] = true;
 
   return Q(
-    CosmosClient.client()
+    client()
       .database(collection.databaseId)
       .container(collection.id())
       .read(options)
@@ -456,7 +456,7 @@ export function readCollectionQuotaInfo(
 
 export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
   try {
-    if (config.platform === Platform.Portal) {
+    if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [
         (<any>window).dataExplorer.databaseAccount().id,
         Constants.ClientDefaults.portalCacheTimeoutMs
@@ -466,7 +466,7 @@ export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
     // If error getting cached Offers, continue on and read via SDK
   }
   return Q(
-    CosmosClient.client()
+    client()
       .offers.readAll()
       .fetchAll()
       .then(response => response.resources)
@@ -481,7 +481,7 @@ export function readOffer(requestedResource: DataModels.Offer, options: any): Q.
   }
 
   return Q(
-    CosmosClient.client()
+    client()
       .offer(requestedResource.id)
       .read(options)
       .then(response => ({ ...response.resource, headers: response.headers }))
@@ -529,7 +529,7 @@ export function getOrCreateDatabaseAndCollection(
   }
 
   return Q(
-    CosmosClient.client()
+    client()
       .databases.createIfNotExists(createBody, databaseOptions)
       .then(response => {
         return response.database.containers.create(
@@ -572,7 +572,7 @@ export function createDatabase(
 }
 
 export function refreshCachedOffers(): Q.Promise<void> {
-  if (config.platform === Platform.Portal) {
+  if (configContext.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
   } else {
     return Q();
@@ -580,7 +580,7 @@ export function refreshCachedOffers(): Q.Promise<void> {
 }
 
 export function refreshCachedResources(options?: any): Q.Promise<void> {
-  if (config.platform === Platform.Portal) {
+  if (configContext.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshResources, []);
   } else {
     return Q();
@@ -593,7 +593,7 @@ export function queryConflicts(
   query: string,
   options: any
 ): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {
-  const documentsIterator = CosmosClient.client()
+  const documentsIterator = client()
     .database(databaseId)
     .container(containerId)
     .conflicts.query(query, options);
@@ -603,7 +603,7 @@ export function queryConflicts(
 export async function updateOfferThroughputBeyondLimit(
   request: DataModels.UpdateOfferThroughputRequest
 ): Promise<void> {
-  if (config.platform !== Platform.Portal) {
+  if (configContext.platform !== Platform.Portal) {
     throw new Error("Updating throughput beyond specified limit is not supported on this platform");
   }
 
@@ -645,7 +645,7 @@ function _createDatabase(request: DataModels.CreateDatabaseRequest, options: any
   }
 
   return Q(
-    CosmosClient.client()
+    client()
       .databases.create(createBody, databaseOptions)
       .then((response: DatabaseResponse) => {
         return refreshCachedResources(databaseOptions).then(() => response.resource);

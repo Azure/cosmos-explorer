@@ -6,7 +6,7 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../Config";
+import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
@@ -19,5 +19,5 @@ export async function listMetrics(
   collectionRid: string
 ): Promise<Types.PartitionMetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }

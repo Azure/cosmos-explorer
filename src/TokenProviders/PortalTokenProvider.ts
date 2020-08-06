@@ -1,11 +1,11 @@
 import * as ViewModels from "../Contracts/ViewModels";
-import { CosmosClient } from "../Common/CosmosClient";
+import { userContext } from "../UserContext";
 
 export class PortalTokenProvider implements ViewModels.TokenProvider {
   constructor() {}
 
   public async getAuthHeader(): Promise<Headers> {
-    const bearerToken = CosmosClient.authorizationToken();
+    const bearerToken = userContext.authorizationToken;
     let fetchHeaders = new Headers();
     fetchHeaders.append("authorization", bearerToken);
     return fetchHeaders;

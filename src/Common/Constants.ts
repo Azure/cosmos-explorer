@@ -1,5 +1,5 @@
 import { AutopilotTier } from "../Contracts/DataModels";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -10,7 +10,7 @@ export class AuthorizationEndpoints {
 export class BackendEndpoints {
   public static localhost: string = "https://localhost:12900";
   public static dev: string = "https://ext.documents-dev.windows-int.net";
-  public static productionPortal: string = config.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
+  public static productionPortal: string = configContext.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
 }
 
 export class EndpointsRegex {
