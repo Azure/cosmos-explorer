@@ -654,10 +654,7 @@ export async function updateOfferThroughputBeyondLimit(
   const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(request),
-    headers: {
-      [Constants.HttpHeaders.contentType]: "application/json",
-      [authorizationHeader.header]: authorizationHeader.token
-    }
+    headers: { [authorizationHeader.header]: authorizationHeader.token }
   });
 
   if (response.ok) {
