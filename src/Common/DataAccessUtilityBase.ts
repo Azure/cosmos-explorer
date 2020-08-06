@@ -454,6 +454,10 @@ export function readCollectionQuotaInfo(
 }
 
 export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
+  if (options.isServerless) {
+    return Q([]); // Reading offers is not supported for serverless accounts
+  }
+
   try {
     if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [

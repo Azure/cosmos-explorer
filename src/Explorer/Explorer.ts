@@ -1475,38 +1475,33 @@ export default class Explorer {
       );
     };
 
-    if (this.isServerlessEnabled()) {
-      // Serverless accounts don't support offers call
-      refreshDatabases();
-    } else {
-      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
-      this._setLoadingStatusText("Fetching offers...");
-      offerPromise.then(
-        (offers: DataModels.Offer[]) => {
-          this._setLoadingStatusText("Successfully fetched offers.");
-          refreshDatabases(offers);
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch offers.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    }
+    const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers({ isServerless: this.isServerlessEnabled() });
+    this._setLoadingStatusText("Fetching offers...");
+    offerPromise.then(
+      (offers: DataModels.Offer[]) => {
+        this._setLoadingStatusText("Successfully fetched offers.");
+        refreshDatabases(offers);
+      },
+      error => {
+        this._setLoadingStatusText("Failed to fetch offers.");
+        this.isRefreshingExplorer(false);
+        deferred.reject(error);
+        TelemetryProcessor.traceFailure(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree,
+            error: JSON.stringify(error)
+          },
+          startKey
+        );
+        NotificationConsoleUtils.logConsoleMessage(
+          ConsoleDataType.Error,
+          `Error while refreshing databases: ${JSON.stringify(error)}`
+        );
+      }
+    );
 
     return deferred.promise.then(
       () => {
