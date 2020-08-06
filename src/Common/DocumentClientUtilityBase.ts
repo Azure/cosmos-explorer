@@ -383,40 +383,6 @@ export function updateOffer(
   return deferred.promise;
 }
 
-export function updateOfferThroughputBeyondLimit(
-  requestPayload: DataModels.UpdateOfferThroughputRequest
-): Q.Promise<void> {
-  const deferred: Q.Deferred<void> = Q.defer<void>();
-  const resourceDescriptionInfo: string = requestPayload.collectionName
-    ? `database ${requestPayload.databaseName} and container ${requestPayload.collectionName}`
-    : `database ${requestPayload.databaseName}`;
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Requesting increase in throughput to ${requestPayload.throughput} for ${resourceDescriptionInfo}`
-  );
-  DataAccessUtilityBase.updateOfferThroughputBeyondLimit(requestPayload)
-    .then(
-      () => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully requested an increase in throughput to ${requestPayload.throughput} for ${resourceDescriptionInfo}`
-        );
-        deferred.resolve();
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to request an increase in throughput for ${requestPayload.throughput}: ${JSON.stringify(error)}`
-        );
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-
-  return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
-}
-
 export function updateStoredProcedure(
   collection: ViewModels.Collection,
   storedProcedure: DataModels.StoredProcedure,
