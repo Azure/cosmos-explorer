@@ -20,9 +20,13 @@ export class ConnectionStringParser {
             const matches: string[] = connectionStringPart.match(Constants.EndpointsRegex.mongoCompute);
             accessInput.accountName = matches && matches.length > 1 && matches[2];
             accessInput.apiKind = DataModels.ApiKind.MongoDBCompute;
-          } else if (RegExp(Constants.EndpointsRegex.cassandra).test(connectionStringPart)) {
-            accessInput.accountName = connectionStringPart.match(Constants.EndpointsRegex.cassandra)[1];
-            accessInput.apiKind = DataModels.ApiKind.Cassandra;
+          } else if (Constants.EndpointsRegex.cassandra.some(regex => RegExp(regex).test(connectionStringPart))) {
+            Constants.EndpointsRegex.cassandra.forEach(regex => {
+              if (RegExp(regex).test(connectionStringPart)) {
+                accessInput.accountName = connectionStringPart.match(regex)[1];
+                accessInput.apiKind = DataModels.ApiKind.Cassandra;
+              }
+            });
           } else if (RegExp(Constants.EndpointsRegex.table).test(connectionStringPart)) {
             accessInput.accountName = connectionStringPart.match(Constants.EndpointsRegex.table)[1];
             accessInput.apiKind = DataModels.ApiKind.Table;
