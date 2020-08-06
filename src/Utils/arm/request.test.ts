@@ -1,6 +1,13 @@
 import { armRequest } from "./request";
+import { updateUserContext } from "../../UserContext";
 
 describe("ARM request", () => {
+  beforeAll(() => {
+    updateUserContext({
+      authorizationToken: "foo"
+    });
+  });
+
   it("should call window.fetch", async () => {
     window.fetch = jest.fn().mockResolvedValue({
       ok: true,
