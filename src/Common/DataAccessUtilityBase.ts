@@ -655,7 +655,7 @@ export async function updateOfferThroughputBeyondLimit(
     method: "POST",
     body: JSON.stringify(request),
     headers: {
-      [Constants.HttpHeaders.contentType]: "application/json", 
+      [Constants.HttpHeaders.contentType]: "application/json",
       [authorizationHeader.header]: authorizationHeader.token
     }
   });
