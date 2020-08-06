@@ -373,12 +373,12 @@ describe("PricingUtils Tests", () => {
       expect(value).toBe(1);
     });
 
-    it("should return 1 for -1", () => {
+    it("should return -1 for -1", () => {
       const value = PricingUtils.normalizeNumber(-1);
       expect(value).toBe(-1);
     });
 
-    it("should return 1 for 0.1", () => {
+    it("should return 0 for 0.1", () => {
       const value = PricingUtils.normalizeNumber(0.1);
       expect(value).toBe(0);
     });

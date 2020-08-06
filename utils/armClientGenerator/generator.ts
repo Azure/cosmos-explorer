@@ -88,6 +88,60 @@ function responseType(operation: Operation, namespace: string) {
   return "unknown";
 }
 
+interface Property {
+  $ref?: string;
+  description?: string;
+  readOnly?: boolean;
+  type: "array" | "object" | "unknown";
+  properties: Property[];
+  items?: {
+    $ref: string;
+  };
+  allOf?: {
+    $ref: string;
+  }[];
+}
+
+const propertyToType = (property: Property, prop: string) => {
+  if (property) {
+    if (property.allOf) {
+      outputTypes.push(`
+      /* ${property.description || "undocumented"} */
+      ${property.readOnly ? "readonly " : ""}${prop}: ${property.allOf
+        .map((allof: { $ref: string }) => refToType(allof.$ref))
+        .join(" & ")}`);
+    } else if (property.$ref) {
+      const type = refToType(property.$ref);
+      outputTypes.push(`
+          /* ${property.description || "undocumented"} */
+          ${property.readOnly ? "readonly " : ""}${prop}: ${type}
+          `);
+    } else if (property.type === "array") {
+      const type = refToType(property.items.$ref);
+      outputTypes.push(`
+          /* ${property.description || "undocumented"} */
+          ${property.readOnly ? "readonly " : ""}${prop}: ${type}[]
+          `);
+    } else if (property.type === "object") {
+      const type = refToType(property.$ref);
+      outputTypes.push(`
+          /* ${property.description || "undocumented"} */
+          ${property.readOnly ? "readonly " : ""}${prop}: ${type}
+          `);
+    } else {
+      if (property.type === undefined) {
+        console.log(`UHANDLED TYPE: ${prop}. Falling back to unknown`);
+        property.type = "unknown";
+      }
+      outputTypes.push(`
+          /* ${property.description || "undocumented"} */
+          ${property.readOnly ? "readonly " : ""}${prop}: ${
+        propertyMap[property.type] ? propertyMap[property.type] : property.type
+      }`);
+    }
+  }
+};
+
 async function main() {
   const response = await fetch(schemaURL);
   const schema = await response.json();
@@ -96,6 +150,9 @@ async function main() {
   for (const definition in schema.definitions) {
     const properties = schema.definitions[definition].properties;
     if (properties) {
+      outputTypes.push(`
+      /* ${schema.definitions[definition].description || "undocumented"} */
+      `);
       if (schema.definitions[definition].allOf) {
         const baseTypes = schema.definitions[definition].allOf
           .map((allof: { $ref: string }) => refToType(allof.$ref))
@@ -104,35 +161,12 @@ async function main() {
       } else {
         outputTypes.push(`export interface ${definition} {`);
       }
+      if (definition === "SqlDatabaseGetProperties") {
+        console.log(schema.definitions[definition]);
+      }
       for (const prop in schema.definitions[definition].properties) {
         const property = schema.definitions[definition].properties[prop];
-        if (property) {
-          if (property.$ref) {
-            const type = refToType(property.$ref);
-            outputTypes.push(`
-            /* ${property.description} */
-            ${property.readOnly ? "readonly " : ""}${prop}: ${type}
-            `);
-          } else if (property.type === "array") {
-            const type = refToType(property.items.$ref);
-            outputTypes.push(`
-            /* ${property.description} */
-            ${property.readOnly ? "readonly " : ""}${prop}: ${type}[]
-            `);
-          } else if (property.type === "object") {
-            const type = refToType(property.$ref);
-            outputTypes.push(`
-            /* ${property.description} */
-            ${property.readOnly ? "readonly " : ""}${prop}: ${type}
-            `);
-          } else {
-            outputTypes.push(`
-            /* ${property.description} */
-            ${property.readOnly ? "readonly " : ""}${prop}: ${
-              propertyMap[property.type] ? propertyMap[property.type] : property.type
-            }`);
-          }
-        }
+        propertyToType(property, prop);
       }
       outputTypes.push(`}`);
       outputTypes.push("\n\n");
@@ -140,23 +174,23 @@ async function main() {
       const def = schema.definitions[definition];
       if (def.enum) {
         outputTypes.push(`
-        /* ${def.description} */
+        /* ${def.description || "undocumented"} */
         export type ${definition} = ${def.enum.map((v: string) => `"${v}"`).join(" | ")}`);
         outputTypes.push("\n");
       } else if (def.type === "string") {
         outputTypes.push(`
-        /* ${def.description} */
+        /* ${def.description || "undocumented"} */
         export type ${definition} = string
           `);
       } else if (def.type === "array") {
         const type = refToType(def.items.$ref);
         outputTypes.push(`
-        /* ${def.description} */
+        /* ${def.description || "undocumented"} */
         export type ${definition} = ${type}[]
         `);
       } else if (def.type === "object" && def.additionalProperties) {
         outputTypes.push(`
-        /* ${def.description} */
+        /* ${def.description || "undocumented"} */
         export type ${definition} = { [key: string]: ${def.additionalProperties.type}}
         `);
       } else if (def.type === "object" && def.allOf) {
@@ -197,13 +231,12 @@ async function main() {
     for (const path of clients[clientName].paths) {
       for (const method in schema.paths[path]) {
         const operation = schema.paths[path][method];
-        console.log(operation["x-ms-long-running-operation"]);
         const [, methodName] = operation.operationId.split("_");
         const bodyParameter = operation.parameters.find(
           (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true
         );
         outputClient.push(`
-          /* ${operation.description} */
+          /* ${operation.description || "undocumented"} */
           export async function ${sanitize(camelize(methodName))} (
             ${parametersFromPath(path)
               .map(p => `${p}: string`)

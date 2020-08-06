@@ -68,6 +68,10 @@ describe("Tabs manager tests", () => {
       isActive: ko.observable<boolean>(false),
       onUpdateTabsButtons: undefined
     });
+
+    // make sure tabs have different tabId
+    queryTab.tabId = "1";
+    documentsTab.tabId = "2";
   });
 
   beforeEach(() => {

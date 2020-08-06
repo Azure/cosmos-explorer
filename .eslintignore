@@ -301,7 +301,6 @@ src/Utils/NotebookConfigurationUtils.ts
 src/Utils/OfferUtils.test.ts
 src/Utils/OfferUtils.ts
 src/Utils/PricingUtils.test.ts
-src/Utils/PricingUtils.ts
 src/Utils/QueryUtils.test.ts
 src/Utils/QueryUtils.ts
 src/Utils/StringUtils.test.ts
