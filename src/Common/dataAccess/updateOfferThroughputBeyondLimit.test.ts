@@ -1,5 +1,4 @@
 import { updateOfferThroughputBeyondLimit } from "./updateOfferThroughputBeyondLimit";
-import Explorer from "../../Explorer/Explorer";
 
 describe("updateOfferThroughputBeyondLimit", () => {
   it("should call fetch", async () => {
