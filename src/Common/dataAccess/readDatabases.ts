@@ -1,10 +1,11 @@
 import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
-import { CosmosClient } from "../CosmosClient";
+import { client } from "../CosmosClient";
 import { listSqlDatabases } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
+import { userContext } from "../../UserContext";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
@@ -12,15 +13,18 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   try {
     if (window.authType === AuthType.AAD) {
       const rpResponse = await listSqlDatabases(
-        CosmosClient.subscriptionId(),
-        CosmosClient.resourceGroup(),
-        CosmosClient.databaseAccount().name
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name
       );
-      databases = rpResponse && rpResponse.value && rpResponse.value.map(database => {
-        return database.properties && database.properties.resource;
-      });
+      databases =
+        rpResponse &&
+        rpResponse.value &&
+        rpResponse.value.map(database => {
+          return database.properties && database.properties.resource as DataModels.Database;
+        });
     } else {
-      const sdkResponse = await CosmosClient.client()
+      const sdkResponse = await client()
         .databases.readAll()
         .fetchAll();
       databases = sdkResponse.resources as DataModels.Database[];

@@ -1,11 +1,11 @@
-
 import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
-import { CosmosClient } from "../CosmosClient";
+import { client } from "../CosmosClient";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
+import { userContext } from "../../UserContext";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   let collections: DataModels.Collection[];
@@ -13,16 +13,19 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
   try {
     if (window.authType === AuthType.AAD) {
       const rpResponse = await listSqlContainers(
-        CosmosClient.subscriptionId(),
-        CosmosClient.resourceGroup(),
-        CosmosClient.databaseAccount().name,
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
         databaseId
       );
-      collections = rpResponse && rpResponse.value && rpResponse.value.map(collection => {
-        return collection.properties && collection.properties.resource;
-      });
+      collections =
+        rpResponse &&
+        rpResponse.value &&
+        rpResponse.value.map(collection => {
+          return collection.properties && collection.properties.resource as DataModels.Collection;
+        });
     } else {
-      const sdkResponse = await CosmosClient.client()
+      const sdkResponse = await client()
         .database(databaseId)
         .containers.readAll()
         .fetchAll();
