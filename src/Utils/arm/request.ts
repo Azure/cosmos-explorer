@@ -30,11 +30,15 @@ interface Options {
 // TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
 export async function armRequest<T>({ host, path, apiVersion, method, body: requestBody }: Options): Promise<T> {
   const url = new URL(path, host);
+  const authHeader = userContext.authorizationToken;
+  if (!authHeader) {
+    throw new Error("No ARM authorization header provided");
+  }
   url.searchParams.append("api-version", apiVersion);
   const response = await window.fetch(url.href, {
     method,
     headers: {
-      Authorization: userContext.authorizationToken
+      Authorization: authHeader
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined
   });
@@ -77,9 +81,13 @@ interface OperationResponse {
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
+  const authHeader = userContext.authorizationToken;
+  if (!authHeader) {
+    throw new Error("No ARM authorization header provided");
+  }
   const response = await window.fetch(operationStatusUrl, {
     headers: {
-      Authorization: userContext.authorizationToken
+      Authorization: authHeader
     }
   });
   if (!response.ok) {
