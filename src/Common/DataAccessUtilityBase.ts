@@ -612,7 +612,7 @@ export function createDatabase(
 }
 
 export function refreshCachedOffers(): Q.Promise<void> {
-  if (config.platform === Platform.Portal) {
+  if (configContext.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
   } else {
     return Q();
@@ -620,7 +620,7 @@ export function refreshCachedOffers(): Q.Promise<void> {
 }
 
 export function refreshCachedResources(options?: any): Q.Promise<void> {
-  if (config.platform === Platform.Portal) {
+  if (configContext.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshResources, []);
   } else {
     return Q();
