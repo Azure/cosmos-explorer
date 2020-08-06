@@ -226,7 +226,7 @@ async function main() {
     const outputClient: string[] = [""];
     outputClient.push(`import { armRequest } from "../../request"\n`);
     outputClient.push(`import * as Types from "./types"\n`);
-    outputClient.push(`import { config } from "../../../../Config";\n`);
+    outputClient.push(`import { configContext } from "../../../../ConfigContext";\n`);
     outputClient.push(`const apiVersion = "${version}"\n\n`);
     for (const path of clients[clientName].paths) {
       for (const method in schema.paths[path]) {
@@ -244,7 +244,7 @@ async function main() {
             ${bodyParam(bodyParameter, "Types")}
           ) : Promise<${responseType(operation, "Types")}> {
             const path = \`${path.replace(/{/g, "${")}\`
-            return armRequest({ host: config.ARM_ENDPOINT, path, method: "${method.toLocaleUpperCase()}", apiVersion, ${
+            return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "${method.toLocaleUpperCase()}", apiVersion, ${
           bodyParameter ? "body: JSON.stringify(body)" : ""
         } })
           }

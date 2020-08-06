@@ -4,10 +4,10 @@ import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Q from "q";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import { CosmosClient } from "../../Common/CosmosClient";
 import * as DocumentClientUtility from "../../Common/DocumentClientUtilityBase";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import Explorer from "../Explorer";
+import { updateUserContext } from "../../UserContext";
 
 describe("ContainerSampleGenerator", () => {
   const createExplorerStub = (database: ViewModels.Database): Explorer => {
@@ -75,8 +75,21 @@ describe("ContainerSampleGenerator", () => {
     sinon.stub(GremlinClient.prototype, "initialize").callsFake(() => {});
     const executeStub = sinon.stub(GremlinClient.prototype, "execute").returns(Q.resolve());
 
-    sinon.stub(CosmosClient, "databaseAccount").returns({
-      properties: {}
+    updateUserContext({
+      databaseAccount: {
+        id: "foo",
+        name: "foo",
+        location: "foo",
+        type: "foo",
+        kind: "foo",
+        tags: [],
+        properties: {
+          documentEndpoint: "bar",
+          gremlinEndpoint: "foo",
+          tableEndpoint: "foo",
+          cassandraEndpoint: "foo"
+        }
+      }
     });
 
     const sampleCollectionId = "SampleCollection";

@@ -6,7 +6,7 @@
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { config } from "../../../../Config";
+import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
 /* Lists the Tables under an existing Azure Cosmos DB database account. */
@@ -16,7 +16,7 @@ export async function listTables(
   accountName: string
 ): Promise<Types.TableListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the Tables under an existing Azure Cosmos DB database account with the provided name. */
@@ -27,7 +27,7 @@ export async function getTable(
   tableName: string
 ): Promise<Types.TableGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Create or update an Azure Cosmos DB Table */
@@ -39,7 +39,7 @@ export async function createUpdateTable(
   body: Types.TableCreateUpdateParameters
 ): Promise<Types.TableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Deletes an existing Azure Cosmos DB Table. */
@@ -50,7 +50,7 @@ export async function deleteTable(
   tableName: string
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 /* Gets the RUs per second of the Table under an existing Azure Cosmos DB database account with the provided name. */
@@ -61,7 +61,7 @@ export async function getTableThroughput(
   tableName: string
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Update RUs per second of an Azure Cosmos DB Table */
@@ -73,7 +73,7 @@ export async function updateTableThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
 }
 
 /* Migrate an Azure Cosmos DB Table from manual throughput to autoscale */
@@ -84,7 +84,7 @@ export async function migrateTableToAutoscale(
   tableName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default/migrateToAutoscale`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
 /* Migrate an Azure Cosmos DB Table from autoscale to manual throughput */
@@ -95,5 +95,5 @@ export async function migrateTableToManualThroughput(
   tableName: string
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default/migrateToManualThroughput`;
-  return armRequest({ host: config.ARM_ENDPOINT, path, method: "POST", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }

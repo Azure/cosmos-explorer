@@ -1,4 +1,3 @@
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
@@ -14,12 +13,12 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
 import { updateOfferThroughputBeyondLimit, updateOffer } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { userContext } from "../../UserContext";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -521,9 +520,9 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
         ) {
           const requestPayload: DataModels.UpdateOfferThroughputRequest = {
-            subscriptionId: CosmosClient.subscriptionId(),
-            databaseAccountName: CosmosClient.databaseAccount().name,
-            resourceGroup: CosmosClient.resourceGroup(),
+            subscriptionId: userContext.subscriptionId,
+            databaseAccountName: userContext.databaseAccount.name,
+            resourceGroup: userContext.resourceGroup,
             databaseName: this.database.id(),
             collectionName: undefined,
             throughput: newThroughput,

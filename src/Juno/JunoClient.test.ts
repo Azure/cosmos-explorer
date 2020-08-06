@@ -2,7 +2,7 @@ import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IPinnedRepo, JunoClient, IGalleryItem } from "./JunoClient";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DatabaseAccount } from "../Contracts/DataModels";
 
@@ -163,7 +163,7 @@ describe("Gallery", () => {
     const response = await junoClient.getSampleNotebooks();
 
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/samples`, undefined);
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/samples`, undefined);
   });
 
   it("getPublicNotebooks", async () => {
@@ -175,7 +175,7 @@ describe("Gallery", () => {
     const response = await junoClient.getPublicNotebooks();
 
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/public`, undefined);
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/public`, undefined);
   });
 
   it("getNotebook", async () => {
@@ -188,7 +188,7 @@ describe("Gallery", () => {
     const response = await junoClient.getNotebook(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/${id}`);
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}`);
   });
 
   it("getNotebookContent", async () => {
@@ -201,7 +201,7 @@ describe("Gallery", () => {
     const response = await junoClient.getNotebookContent(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/content`);
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/content`);
   });
 
   it("increaseNotebookViews", async () => {
@@ -214,7 +214,7 @@ describe("Gallery", () => {
     const response = await junoClient.increaseNotebookViews(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/views`, {
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/views`, {
       method: "PATCH"
     });
   });
@@ -231,7 +231,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${config.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery/${id}/downloads`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery/${id}/downloads`,
       {
         method: "PATCH",
         headers: {
@@ -254,7 +254,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${config.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery/${id}/favorite`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery/${id}/favorite`,
       {
         method: "PATCH",
         headers: {
@@ -276,7 +276,7 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/unfavorite`, {
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/unfavorite`, {
       method: "PATCH",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
@@ -295,7 +295,7 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/favorites`, {
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/favorites`, {
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
         "content-type": "application/json"
@@ -313,7 +313,7 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/published`, {
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/published`, {
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
         "content-type": "application/json"
@@ -332,7 +332,7 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/gallery/${id}`, {
+    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}`, {
       method: "DELETE",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
@@ -357,20 +357,23 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${config.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery`, {
-      method: "PUT",
-      headers: {
-        [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        name,
-        description,
-        tags,
-        author,
-        thumbnailUrl,
-        content: JSON.parse(content)
-      })
-    });
+    expect(window.fetch).toBeCalledWith(
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery`,
+      {
+        method: "PUT",
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          tags,
+          author,
+          thumbnailUrl,
+          content: JSON.parse(content)
+        })
+      }
+    );
   });
 });

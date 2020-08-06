@@ -14,7 +14,6 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
@@ -24,6 +23,7 @@ import {
   updateCollection
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { userContext } from "../../UserContext";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -1145,9 +1145,9 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         this.container != null
       ) {
         const requestPayload: DataModels.UpdateOfferThroughputRequest = {
-          subscriptionId: CosmosClient.subscriptionId(),
-          databaseAccountName: CosmosClient.databaseAccount().name,
-          resourceGroup: CosmosClient.resourceGroup(),
+          subscriptionId: userContext.subscriptionId,
+          databaseAccountName: userContext.databaseAccount.name,
+          resourceGroup: userContext.resourceGroup,
           databaseName: this.collection.databaseId,
           collectionName: this.collection.id(),
           throughput: newThroughput,

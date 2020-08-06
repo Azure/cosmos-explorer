@@ -1,13 +1,13 @@
 import * as DataExplorerConstants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../Common/CosmosClient";
 import { HttpStatusCodes } from "../Common/Constants";
 import { sendMessage } from "../Common/MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import { userContext } from "../UserContext";
 
 export class AddDbUtilities {
   // todo - remove any
@@ -115,7 +115,7 @@ export class AddDbUtilities {
   }
 
   public static getRpClient<T>(armEndpoint?: string): ResourceProviderClient<T> {
-    return new ResourceProviderClient<T>(armEndpoint || config.ARM_ENDPOINT);
+    return new ResourceProviderClient<T>(armEndpoint || configContext.ARM_ENDPOINT);
   }
 
   public static async createGremlinDatabase(
@@ -171,15 +171,11 @@ export class AddDbUtilities {
   }
 
   private static _getMongoDatabaseUri(params: DataModels.RpParameters): string {
-    return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${
-      CosmosClient.databaseAccount().name
-    }/mongodbDatabases/${params.db}`;
+    return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}`;
   }
 
   private static _getCassandraKeyspaceUri(params: DataModels.RpParameters): string {
-    return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${
-      CosmosClient.databaseAccount().name
-    }/cassandraKeyspaces/${params.db}`;
+    return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/cassandraKeyspaces/${params.db}`;
   }
 
   public static getGremlinDatabaseUri(params: DataModels.RpParameters): string {

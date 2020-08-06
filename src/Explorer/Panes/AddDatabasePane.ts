@@ -14,9 +14,9 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { AddDbUtilities } from "../../Shared/AddDatabaseUtility";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -308,8 +308,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
       db: addDatabasePaneStartMessage.database.id,
       st: addDatabasePaneStartMessage.database.shared,
       offerThroughput: addDatabasePaneStartMessage.offerThroughput,
-      sid: CosmosClient.subscriptionId(),
-      rg: CosmosClient.resourceGroup(),
+      sid: userContext.subscriptionId,
+      rg: userContext.resourceGroup,
       dba: addDatabasePaneStartMessage.databaseAccountName
     };
 

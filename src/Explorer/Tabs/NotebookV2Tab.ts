@@ -26,7 +26,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
-import { config } from "../../Config";
+import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -423,7 +423,7 @@ export default class NotebookTabV2 extends TabsBase {
                 password: undefined,
                 endpoints: [
                   {
-                    endpoint: `https://${workspace.name}.${config.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
+                    endpoint: `https://${workspace.name}.${configContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
                     kind: DataModels.SparkClusterEndpointKind.Livy
                   }
                 ]

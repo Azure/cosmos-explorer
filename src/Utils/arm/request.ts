@@ -5,8 +5,8 @@ Instead, generate ARM clients that consume this function with stricter typing.
 
 */
 
-import { CosmosClient } from "../../Common/CosmosClient";
 import promiseRetry, { AbortError } from "p-retry";
+import { userContext } from "../../UserContext";
 
 interface ErrorResponse {
   error: {
@@ -34,7 +34,7 @@ export async function armRequest<T>({ host, path, apiVersion, method, body: requ
   const response = await window.fetch(url.href, {
     method,
     headers: {
-      Authorization: CosmosClient.authorizationToken()
+      Authorization: userContext.authorizationToken
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined
   });
@@ -79,7 +79,7 @@ interface OperationResponse {
 async function getOperationStatus(operationStatusUrl: string) {
   const response = await window.fetch(operationStatusUrl, {
     headers: {
-      Authorization: CosmosClient.authorizationToken()
+      Authorization: userContext.authorizationToken
     }
   });
   if (!response.ok) {
