@@ -24,15 +24,15 @@ describe("deleteDatabase", () => {
     await deleteDatabase("database");
     expect(armRequest).toHaveBeenCalled();
   });
-  
+
   it("should call SDK if not logged in with non-AAD method", async () => {
     window.authType = AuthType.MasterKey;
     (client as jest.Mock).mockReturnValue({
-        database: () => {
-            return {
-              delete: (): unknown => undefined
-            };
-        }
+      database: () => {
+        return {
+          delete: (): unknown => undefined
+        };
+      }
     });
     await deleteDatabase("database");
     expect(client).toHaveBeenCalled();

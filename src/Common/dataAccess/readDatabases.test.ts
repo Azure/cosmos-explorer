@@ -8,13 +8,13 @@ import { readDatabases } from "./readDatabases";
 import { updateUserContext } from "../../UserContext";
 
 describe("readDatabases", () => {
-    beforeAll(() => {
-        updateUserContext({
-            databaseAccount: {
-              name: "test"
-            } as DatabaseAccount
-        });
+  beforeAll(() => {
+    updateUserContext({
+      databaseAccount: {
+        name: "test"
+      } as DatabaseAccount
     });
+  });
 
   it("should call ARM if logged in with AAD", async () => {
     window.authType = AuthType.AAD;
@@ -25,13 +25,13 @@ describe("readDatabases", () => {
   it("should call SDK if not logged in with non-AAD method", async () => {
     window.authType = AuthType.MasterKey;
     (client as jest.Mock).mockReturnValue({
-        databases: {
-            readAll: () => {
-                return {
-                    fetchAll: (): unknown => []
-                };
-            }
+      databases: {
+        readAll: () => {
+          return {
+            fetchAll: (): unknown => []
+          };
         }
+      }
     });
     await readDatabases();
     expect(client).toHaveBeenCalled();

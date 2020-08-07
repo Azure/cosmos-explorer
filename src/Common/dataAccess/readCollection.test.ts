@@ -6,26 +6,26 @@ import { readCollection } from "./readCollection";
 import { updateUserContext } from "../../UserContext";
 
 describe("readCollection", () => {
-    beforeAll(() => {
-        updateUserContext({
-            databaseAccount: {
-              name: "test"
-            } as DatabaseAccount
-        });
+  beforeAll(() => {
+    updateUserContext({
+      databaseAccount: {
+        name: "test"
+      } as DatabaseAccount
     });
+  });
 
   it("should call SDK if logged in with resource token", async () => {
     window.authType = AuthType.ResourceToken;
     (client as jest.Mock).mockReturnValue({
-        database: () => {
+      database: () => {
+        return {
+          container: () => {
             return {
-                container: () => {
-                    return {
-                        read: (): unknown => ({})
-                    };
-                }
+              read: (): unknown => ({})
             };
-        }
+          }
+        };
+      }
     });
     await readCollection("database", "collection");
     expect(client).toHaveBeenCalled();

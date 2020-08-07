@@ -24,19 +24,19 @@ describe("deleteCollection", () => {
     await deleteCollection("database", "collection");
     expect(armRequest).toHaveBeenCalled();
   });
-  
+
   it("should call SDK if not logged in with non-AAD method", async () => {
     window.authType = AuthType.MasterKey;
     (client as jest.Mock).mockReturnValue({
-        database: () => {
+      database: () => {
+        return {
+          container: () => {
             return {
-                container: () => {
-                    return {
-                      delete: (): unknown => undefined
-                    };
-                }
+              delete: (): unknown => undefined
             };
-        }
+          }
+        };
+      }
     });
     await deleteCollection("database", "collection");
     expect(client).toHaveBeenCalled();
