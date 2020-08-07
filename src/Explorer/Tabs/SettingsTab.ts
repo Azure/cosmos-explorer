@@ -344,7 +344,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       if (!this.isAutoPilotSelected()) {
         return false;
       }
-      const originalAutoPilotSettings = this.collection.offer().content.offerAutopilotSettings;
+      const originalAutoPilotSettings = this.collection?.offer()?.content?.offerAutopilotSettings;
       if (!originalAutoPilotSettings) {
         return false;
       }
