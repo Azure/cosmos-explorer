@@ -1,4 +1,4 @@
-﻿import * as DataModels from "../Contracts/DataModels";
+import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
 export function replaceKnownError(err: string): string {
