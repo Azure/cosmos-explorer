@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React from "react";
 import * as ReactDOM from "react-dom";
-import { initializeConfiguration } from "../ConfigContext";
+import { initializeConfiguration, configContext } from "../ConfigContext";
 import {
   NotebookViewerComponent,
   NotebookViewerComponentProps
@@ -11,7 +11,6 @@ import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import { FileSystemUtil } from "../Explorer/Notebook/FileSystemUtil";
-import { config } from "../Config";
 
 const onInit = async () => {
   initializeIcons();
@@ -22,7 +21,7 @@ const onInit = async () => {
   let onBackClick: () => void;
   if (galleryViewerProps.selectedTab !== undefined) {
     backNavigationText = GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
-    onBackClick = () => (window.location.href = `${config.hostedExplorerURL}gallery.html`);
+    onBackClick = () => (window.location.href = `${configContext.hostedExplorerURL}gallery.html`);
   }
   const hideInputs = notebookViewerProps.hideInputs;
 
