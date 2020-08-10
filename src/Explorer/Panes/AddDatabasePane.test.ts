@@ -2,11 +2,12 @@ import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
 import AddDatabasePane from "./AddDatabasePane";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {
     let explorer: Explorer;
-    const mockDatabaseAccount: ViewModels.DatabaseAccount = {
+    const mockDatabaseAccount: DatabaseAccount = {
       id: "mock",
       kind: "DocumentDB",
       location: "",
@@ -22,7 +23,7 @@ describe("Add Database Pane", () => {
       tags: []
     };
 
-    const mockFreeTierDatabaseAccount: ViewModels.DatabaseAccount = {
+    const mockFreeTierDatabaseAccount: DatabaseAccount = {
       id: "mock",
       kind: "DocumentDB",
       location: "",
@@ -40,7 +41,6 @@ describe("Add Database Pane", () => {
 
     beforeEach(() => {
       explorer = new Explorer({
-        documentClientUtility: null,
         notificationsClient: null,
         isEmulator: false
       });

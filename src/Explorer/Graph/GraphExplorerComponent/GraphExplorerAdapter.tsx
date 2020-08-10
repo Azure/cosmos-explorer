@@ -3,7 +3,6 @@ import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { GraphConfig } from "../../Tabs/GraphTab";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { GraphExplorer, GraphAccessor } from "./GraphExplorer";
-import DocumentClientUtilityBase from "../../../Common/DocumentClientUtilityBase";
 
 interface Parameter {
   onIsNewVertexDisabledChange: (isEnabled: boolean) => void;
@@ -18,7 +17,6 @@ interface Parameter {
   graphConfig?: GraphConfig;
 
   collectionPartitionKeyProperty: string;
-  documentClientUtility: DocumentClientUtilityBase;
   collectionRid: string;
   collectionSelfLink: string;
   graphBackendEndpoint: string;
@@ -51,7 +49,6 @@ export class GraphExplorerAdapter implements ReactAdapter {
         onIsGraphDisplayed={this.params.onIsGraphDisplayed}
         onResetDefaultGraphConfigValues={this.params.onResetDefaultGraphConfigValues}
         collectionPartitionKeyProperty={this.params.collectionPartitionKeyProperty}
-        documentClientUtility={this.params.documentClientUtility}
         collectionRid={this.params.collectionRid}
         collectionSelfLink={this.params.collectionSelfLink}
         graphBackendEndpoint={this.params.graphBackendEndpoint}

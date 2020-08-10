@@ -27,7 +27,6 @@ import * as Logger from "./Common/Logger";
 import { MeControlComponentProps } from "./Explorer/Menus/NavBar/MeControlComponent";
 import { MeControlComponentAdapter } from "./Explorer/Menus/NavBar/MeControlComponentAdapter";
 import { MessageTypes } from "./Contracts/ExplorerContracts";
-import { NavbarButtonConfig } from "./Contracts/ViewModels";
 import * as ReactBindingHandler from "./Bindings/ReactBindingHandler";
 import { SwitchDirectoryPane, SwitchDirectoryPaneComponent } from "./Explorer/Panes/SwitchDirectoryPane";
 import TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
@@ -38,6 +37,7 @@ import ConnectIcon from "../images/HostedConnectwhite.svg";
 import SettingsIcon from "../images/HostedSettings.svg";
 import FeedbackIcon from "../images/Feedback.svg";
 import SwitchDirectoryIcon from "../images/DirectorySwitch.svg";
+import { CommandButtonComponentProps } from "./Explorer/Controls/CommandButton/CommandButtonComponent";
 
 ReactBindingHandler.Registerer.register();
 ko.components.register("switch-directory-pane", new SwitchDirectoryPaneComponent());
@@ -56,7 +56,7 @@ class HostedExplorer {
   private _dialogProps: ko.Observable<DialogProps>;
   private _meControlProps: ko.Observable<MeControlComponentProps>;
   private _accountSwitchProps: ko.Observable<AccountSwitchComponentProps>;
-  private _controlbarCommands: ko.ObservableArray<NavbarButtonConfig>;
+  private _controlbarCommands: ko.ObservableArray<CommandButtonComponentProps>;
   private _directoryDropdownProps: ko.Observable<DefaultDirectoryDropdownProps>;
   private _directoryListProps: ko.Observable<DirectoryListProps>;
 
@@ -1086,7 +1086,7 @@ class HostedExplorer {
   }
 
   private _setAadControlBar() {
-    const switchDirectoryCommand: NavbarButtonConfig = {
+    const switchDirectoryCommand: CommandButtonComponentProps = {
       iconSrc: SwitchDirectoryIcon,
       iconAlt: "switch directory button",
       onCommandClick: () => this.openDirectoryPane(),

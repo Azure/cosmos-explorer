@@ -5,7 +5,7 @@
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as Logger from "../../../Common/Logger";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { StringUtils } from "../../../Utils/StringUtils";
 

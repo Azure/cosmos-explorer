@@ -5,7 +5,8 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import QueryTab from "../Tabs/QueryTab";
 
 export class LoadQueryPane extends ContextualPaneBase {
   public selectedFilesTitle: ko.Observable<string>;
@@ -111,7 +112,7 @@ export class LoadQueryPane extends ContextualPaneBase {
     const reader = new FileReader();
     reader.onload = (evt: any): void => {
       const fileData: string = evt.target.result;
-      const queryTab: ViewModels.QueryTab = this.container.tabsManager.activeTab() as ViewModels.QueryTab;
+      const queryTab = this.container.tabsManager.activeTab() as QueryTab;
       queryTab.initialEditorContent(fileData);
       queryTab.sqlQueryEditorContent(fileData);
       deferred.resolve();

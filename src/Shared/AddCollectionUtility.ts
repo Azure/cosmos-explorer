@@ -5,13 +5,13 @@ import * as SharedConstants from "./Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../Common/CosmosClient";
 import { HttpStatusCodes } from "../Common/Constants";
-import { MessageHandler } from "../Common/MessageHandler";
+import { sendMessage } from "../Common/MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 import Explorer from "../Explorer/Explorer";
+import { userContext } from "../UserContext";
 
 export class CreateSqlCollectionUtilities {
   public static createSqlCollection(
@@ -108,7 +108,7 @@ export class CreateSqlCollectionUtilities {
         `Error creating collection: ${JSON.stringify(response)}`
       );
       if (response.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
+        sendMessage({ type: MessageTypes.ForbiddenError });
       }
       throw new Error(`Error creating collection`);
     }
@@ -202,7 +202,7 @@ export class CreateCollectionUtilities {
         `Error creating graph: ${JSON.stringify(response)}`
       );
       if (response.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
+        sendMessage({ type: MessageTypes.ForbiddenError });
       }
       throw new Error(`Error creating graph`);
     }
@@ -248,7 +248,7 @@ export class Utilities {
         `Error creating table: ${JSON.stringify(reason)}, Payload: ${params}`
       );
       if (reason.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
+        sendMessage({ type: MessageTypes.ForbiddenError });
         return;
       }
       throw new Error(`Error creating table`);
@@ -298,8 +298,6 @@ export class Utilities {
   }
 
   private static _getAzureTableUri(params: DataModels.CreateDatabaseAndCollectionRequest): string {
-    return `subscriptions/${CosmosClient.subscriptionId()}/resourceGroups/${CosmosClient.resourceGroup()}/providers/Microsoft.DocumentDB/databaseAccounts/${
-      CosmosClient.databaseAccount().name
-    }/tables/${params.collectionId}`;
+    return `subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/tables/${params.collectionId}`;
   }
 }

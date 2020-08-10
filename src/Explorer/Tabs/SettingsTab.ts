@@ -14,10 +14,13 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
+import { updateOffer, updateCollection } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { userContext } from "../../UserContext";
+import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -407,14 +410,14 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.isAutoScaleEnabled = ko.pureComputed<boolean>(() => {
-      const accountCapabilities: ViewModels.Capability[] =
+      const accountCapabilities: DataModels.Capability[] =
         this.container &&
         this.container.databaseAccount() &&
         this.container.databaseAccount().properties &&
         this.container.databaseAccount().properties.capabilities;
-      const enableAutoScaleCapability: ViewModels.Capability =
+      const enableAutoScaleCapability =
         accountCapabilities &&
-        _.find(accountCapabilities, (capability: ViewModels.Capability) => {
+        _.find(accountCapabilities, capability => {
           return (
             capability &&
             capability.name &&
@@ -1062,9 +1065,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       }
 
       const newCollection: DataModels.Collection = _.extend({}, this.collection.rawDataModel, newCollectionAttributes);
-      const updateCollectionPromise = this.container.documentClientUtility
-        .updateCollection(this.collection.databaseId, this.collection, newCollection)
-        .then((updatedCollection: DataModels.Collection) => {
+      const updateCollectionPromise = updateCollection(this.collection.databaseId, this.collection, newCollection).then(
+        (updatedCollection: DataModels.Collection) => {
           this.collection.rawDataModel = updatedCollection;
           this.collection.defaultTtl(updatedCollection.defaultTtl);
           this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
@@ -1073,7 +1075,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
           this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
           this.collection.geospatialConfig(updatedCollection.geospatialConfig);
-        });
+        }
+      );
 
       promises.push(updateCollectionPromise);
     }
@@ -1138,57 +1141,55 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
         this.container != null
       ) {
-        const requestPayload: DataModels.UpdateOfferThroughputRequest = {
-          subscriptionId: CosmosClient.subscriptionId(),
-          databaseAccountName: CosmosClient.databaseAccount().name,
-          resourceGroup: CosmosClient.resourceGroup(),
+        const requestPayload = {
+          subscriptionId: userContext.subscriptionId,
+          databaseAccountName: userContext.databaseAccount.name,
+          resourceGroup: userContext.resourceGroup,
           databaseName: this.collection.databaseId,
           collectionName: this.collection.id(),
           throughput: newThroughput,
           offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
         };
-        const updateOfferBeyondLimitPromise: Q.Promise<void> = this.documentClientUtility
-          .updateOfferThroughputBeyondLimit(requestPayload)
-          .then(
-            () => {
-              this.collection.offer().content.offerThroughput = originalThroughputValue;
-              this.throughput(originalThroughputValue);
-              this.notificationStatusInfo(
-                throughputApplyDelayedMessage(
-                  this.isAutoPilotSelected(),
-                  originalThroughputValue,
-                  this._getThroughputUnit(),
-                  this.collection.databaseId,
-                  this.collection.id(),
-                  newThroughput
-                )
-              );
-              this.throughput.valueHasMutated(); // force component re-render
-            },
-            (error: any) => {
-              TelemetryProcessor.traceFailure(
-                Action.UpdateSettings,
-                {
-                  databaseAccountName: this.container.databaseAccount().name,
-                  databaseName: this.collection && this.collection.databaseId,
-                  collectionName: this.collection && this.collection.id(),
-                  defaultExperience: this.container.defaultExperience(),
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle: this.tabTitle(),
-                  error: error
-                },
-                startKey
-              );
-            }
-          );
-        promises.push(updateOfferBeyondLimitPromise);
+        const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
+          () => {
+            this.collection.offer().content.offerThroughput = originalThroughputValue;
+            this.throughput(originalThroughputValue);
+            this.notificationStatusInfo(
+              throughputApplyDelayedMessage(
+                this.isAutoPilotSelected(),
+                originalThroughputValue,
+                this._getThroughputUnit(),
+                this.collection.databaseId,
+                this.collection.id(),
+                newThroughput
+              )
+            );
+            this.throughput.valueHasMutated(); // force component re-render
+          },
+          (error: any) => {
+            TelemetryProcessor.traceFailure(
+              Action.UpdateSettings,
+              {
+                databaseAccountName: this.container.databaseAccount().name,
+                databaseName: this.collection && this.collection.databaseId,
+                collectionName: this.collection && this.collection.id(),
+                defaultExperience: this.container.defaultExperience(),
+                dataExplorerArea: Constants.Areas.Tab,
+                tabTitle: this.tabTitle(),
+                error: error
+              },
+              startKey
+            );
+          }
+        );
+        promises.push(Q(updateOfferBeyondLimitPromise));
       } else {
-        const updateOfferPromise = this.documentClientUtility
-          .updateOffer(this.collection.offer(), newOffer, headerOptions)
-          .then((updatedOffer: DataModels.Offer) => {
+        const updateOfferPromise = updateOffer(this.collection.offer(), newOffer, headerOptions).then(
+          (updatedOffer: DataModels.Offer) => {
             this.collection.offer(updatedOffer);
             this.collection.offer.valueHasMutated();
-          });
+          }
+        );
 
         promises.push(updateOfferPromise);
       }
@@ -1689,8 +1690,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     return document.getElementById(this.indexingPolicyEditorId);
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     if (this.saveSettingsButton.visible()) {
       const label = "Save";
       buttons.push({

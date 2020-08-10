@@ -1,18 +1,26 @@
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
-import DocumentId from "../Explorer/Tree/DocumentId";
-import * as ErrorParserUtility from "./ErrorParserUtility";
-import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "./CosmosClient";
-import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import * as Logger from "./Logger";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
-import { QueryUtils } from "../Utils/QueryUtils";
 import Explorer from "../Explorer/Explorer";
+import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
+import DocumentId from "../Explorer/Tree/DocumentId";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import { QueryUtils } from "../Utils/QueryUtils";
+import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
+import { userContext } from "../UserContext";
+import {
+  createDocument,
+  deleteDocument,
+  getOrCreateDatabaseAndCollection,
+  queryDocuments,
+  queryDocumentsPage
+} from "./DocumentClientUtilityBase";
+import * as ErrorParserUtility from "./ErrorParserUtility";
+import * as Logger from "./Logger";
 
-export class QueriesClient implements ViewModels.QueriesClient {
+export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
     paths: [`/${SavedQueries.PartitionKeyProperty}`],
     kind: BackendDefaults.partitionKeyKind,
@@ -33,14 +41,13 @@ export class QueriesClient implements ViewModels.QueriesClient {
       ConsoleDataType.InProgress,
       "Setting up account for saving queries"
     );
-    return this.container.documentClientUtility
-      .getOrCreateDatabaseAndCollection({
-        collectionId: SavedQueries.CollectionName,
-        databaseId: SavedQueries.DatabaseName,
-        partitionKey: QueriesClient.PartitionKey,
-        offerThroughput: SavedQueries.OfferThroughput,
-        databaseLevelThroughput: undefined
-      })
+    return getOrCreateDatabaseAndCollection({
+      collectionId: SavedQueries.CollectionName,
+      databaseId: SavedQueries.DatabaseName,
+      partitionKey: QueriesClient.PartitionKey,
+      offerThroughput: SavedQueries.OfferThroughput,
+      databaseLevelThroughput: undefined
+    })
       .then(
         (collection: DataModels.Collection) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -89,8 +96,7 @@ export class QueriesClient implements ViewModels.QueriesClient {
       `Saving query ${query.queryName}`
     );
     query.id = query.queryName;
-    return this.container.documentClientUtility
-      .createDocument(queriesCollection, query)
+    return createDocument(queriesCollection, query)
       .then(
         (savedQuery: DataModels.Query) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -131,17 +137,11 @@ export class QueriesClient implements ViewModels.QueriesClient {
 
     const options: any = { enableCrossPartitionQuery: true };
     const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Fetching saved queries");
-    return this.container.documentClientUtility
-      .queryDocuments(SavedQueries.DatabaseName, SavedQueries.CollectionName, this.fetchQueriesQuery(), options)
+    return queryDocuments(SavedQueries.DatabaseName, SavedQueries.CollectionName, this.fetchQueriesQuery(), options)
       .then(
         (queryIterator: QueryIterator<ItemDefinition & Resource>) => {
           const fetchQueries = (firstItemIndex: number): Q.Promise<ViewModels.QueryResults> =>
-            this.container.documentClientUtility.queryDocumentsPage(
-              queriesCollection.id(),
-              queryIterator,
-              firstItemIndex,
-              options
-            );
+            queryDocumentsPage(queriesCollection.id(), queryIterator, firstItemIndex, options);
           return QueryUtils.queryAllPages(fetchQueries).then(
             (results: ViewModels.QueryResults) => {
               let queries: DataModels.Query[] = _.map(results.documents, (document: DataModels.Query) => {
@@ -217,17 +217,16 @@ export class QueriesClient implements ViewModels.QueriesClient {
       `Deleting query ${query.queryName}`
     );
     query.id = query.queryName;
-    const documentId: ViewModels.DocumentId = new DocumentId(
+    const documentId = new DocumentId(
       {
         partitionKey: QueriesClient.PartitionKey,
         partitionKeyProperty: "id"
-      } as ViewModels.DocumentsTab,
+      } as DocumentsTab,
       query,
       query.queryName
     ); // TODO: Remove DocumentId's dependency on DocumentsTab
     const options: any = { partitionKey: query.resourceId };
-    return this.container.documentClientUtility
-      .deleteDocument(queriesCollection, documentId)
+    return deleteDocument(queriesCollection, documentId)
       .then(
         () => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -250,10 +249,10 @@ export class QueriesClient implements ViewModels.QueriesClient {
   }
 
   public getResourceId(): string {
-    const databaseAccount: ViewModels.DatabaseAccount = CosmosClient.databaseAccount();
-    const databaseAccountName: string = (databaseAccount && databaseAccount.name) || "";
-    const subscriptionId: string = CosmosClient.subscriptionId() || "";
-    const resourceGroup: string = CosmosClient.resourceGroup() || "";
+    const databaseAccount = userContext.databaseAccount;
+    const databaseAccountName = (databaseAccount && databaseAccount.name) || "";
+    const subscriptionId = userContext.subscriptionId || "";
+    const resourceGroup = userContext.resourceGroup || "";
 
     return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}`;
   }

@@ -1,23 +1,28 @@
+jest.mock("../../Common/dataAccess/deleteDatabase");
+jest.mock("../../Shared/Telemetry/TelemetryProcessor");
 import * as ko from "knockout";
-import * as sinon from "sinon";
 import Q from "q";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
+import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 
 describe("Delete Database Confirmation Pane", () => {
   describe("Explorer.isLastDatabase() and Explorer.isLastNonEmptyDatabase()", () => {
     let explorer: Explorer;
 
+    beforeAll(() => {
+      (deleteDatabase as jest.Mock).mockResolvedValue(undefined);
+    });
+
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be true if only 1 database", () => {
@@ -49,12 +54,10 @@ describe("Delete Database Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last non empty database or is last database that has shared throughput, else false", () => {
-      let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
       let fakeExplorer = {} as Explorer;
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
       let pane = new DeleteDatabaseConfirmationPane({
-        documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletedatabaseconfirmationpane",
         visible: ko.observable<boolean>(false),
         container: fakeExplorer as any
@@ -78,20 +81,8 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   describe("submit()", () => {
-    let telemetryProcessorSpy: sinon.SinonSpy;
-
-    beforeEach(() => {
-      telemetryProcessorSpy = sinon.spy(TelemetryProcessor, "trace");
-    });
-
-    afterEach(() => {
-      telemetryProcessorSpy.restore();
-    });
-
     it("on submit() it should log feedback if last non empty database or is last database that has shared throughput", () => {
       let selectedDatabaseId = "testDB";
-      let fakeDocumentClientUtility = {} as DocumentClientUtilityBase;
-      fakeDocumentClientUtility.deleteDatabase = () => Q.resolve(null);
       let fakeExplorer = {} as Explorer;
       fakeExplorer.findSelectedDatabase = () => {
         return {
@@ -106,21 +97,19 @@ describe("Delete Database Confirmation Pane", () => {
       fakeExplorer.isSelectedDatabaseShared = () => false;
       const SubscriptionId = "testId";
       const AccountName = "testAccount";
-      fakeExplorer.databaseAccount = ko.observable<ViewModels.DatabaseAccount>({
+      fakeExplorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
         id: SubscriptionId,
         name: AccountName
-      } as ViewModels.DatabaseAccount);
+      } as DataModels.DatabaseAccount);
       fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
       fakeExplorer.isPreferredApiCassandra = ko.computed(() => {
         return false;
       });
-      fakeExplorer.documentClientUtility = fakeDocumentClientUtility;
       fakeExplorer.selectedNode = ko.observable<TreeNode>();
       fakeExplorer.tabsManager = new TabsManager();
       fakeExplorer.isLastNonEmptyDatabase = () => true;
 
       let pane = new DeleteDatabaseConfirmationPane({
-        documentClientUtility: fakeDocumentClientUtility as any,
         id: "deletedatabaseconfirmationpane",
         visible: ko.observable<boolean>(false),
         container: fakeExplorer as any
@@ -130,15 +119,12 @@ describe("Delete Database Confirmation Pane", () => {
       pane.databaseDeleteFeedback(Feedback);
 
       return pane.submit().then(() => {
-        expect(telemetryProcessorSpy.called).toBe(true);
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
-        expect(
-          telemetryProcessorSpy.calledWith(
-            Action.DeleteDatabase,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          )
-        ).toBe(true);
+        expect(TelemetryProcessor.trace).toHaveBeenCalledWith(
+          Action.DeleteDatabase,
+          ActionModifiers.Mark,
+          JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+        );
       });
     });
   });

@@ -16,7 +16,8 @@ const galleryItem: IGalleryItem = {
   isSample: false,
   downloads: 0,
   favorites: 0,
-  views: 0
+  views: 0,
+  newCellId: undefined
 };
 
 describe("GalleryUtils", () => {

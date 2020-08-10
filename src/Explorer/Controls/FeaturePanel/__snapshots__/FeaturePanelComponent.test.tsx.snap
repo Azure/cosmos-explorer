@@ -165,6 +165,8 @@ exports[`Feature panel renders all flags 1`] = `
           checked={false}
           key="feature.enablecodeofconduct"
           label="Enable Code Of Conduct Acknowledgement"
+          key="feature.enableLinkInjection"
+          label="Enable Injecting Notebook Viewer Link into the first cell"
           onChange={[Function]}
         />
       </Stack>

@@ -1,7 +1,8 @@
 import "babel-polyfill";
 import { DocumentClientParams, UploadDetailsRecord, UploadDetails } from "./definitions";
-import { CosmosClient } from "../../Common/CosmosClient";
-import { config } from "../../Config";
+import { client } from "../../Common/CosmosClient";
+import { configContext, updateConfigContext } from "../../ConfigContext";
+import { updateUserContext } from "../../UserContext";
 
 let numUploadsSuccessful = 0;
 let numUploadsFailed = 0;
@@ -30,11 +31,15 @@ onmessage = (event: MessageEvent) => {
   const clientParams: DocumentClientParams = event.data.documentClientParams;
   containerId = clientParams.containerId;
   databaseId = clientParams.databaseId;
-  CosmosClient.masterKey(clientParams.masterKey);
-  CosmosClient.endpoint(clientParams.endpoint);
-  CosmosClient.accessToken(clientParams.accessToken);
-  CosmosClient.databaseAccount(clientParams.databaseAccount);
-  config.platform = clientParams.platform;
+  updateUserContext({
+    masterKey: clientParams.masterKey,
+    endpoint: clientParams.endpoint,
+    accessToken: clientParams.accessToken,
+    databaseAccount: clientParams.databaseAccount
+  });
+  updateConfigContext({
+    platform: clientParams.platform
+  });
   if (!!files && files.length > 0) {
     numFiles = files.length;
     for (let i = 0; i < numFiles; i++) {
@@ -78,7 +83,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
   try {
     const content = JSON.parse(documentContent);
     const triggerCreateDocument: (documentContent: any) => void = (documentContent: any) => {
-      CosmosClient.client()
+      client()
         .database(databaseId)
         .container(containerId)
         .items.create(documentContent)

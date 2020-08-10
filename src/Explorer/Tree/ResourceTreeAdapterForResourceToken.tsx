@@ -2,12 +2,12 @@ import * as ko from "knockout";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import Explorer from "../Explorer";
+import { userContext } from "../../UserContext";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -16,10 +16,9 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
-    this.container.resourceTokenCollection.subscribe((collection: ViewModels.CollectionBase) => this.triggerRender());
+    this.container.resourceTokenCollection.subscribe(() => this.triggerRender());
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.tabsManager &&
-      this.container.tabsManager.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.tabsManager && this.container.tabsManager.activeTab.subscribe(() => this.triggerRender());
 
     this.triggerRender();
   }
@@ -45,7 +44,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       onClick: () => {
         collection.onDocumentDBDocumentsClick();
         // push to most recent
-        this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
@@ -65,9 +64,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        this.container.tabsManager.refreshActiveTab(
-          (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === collection.rid
-        );
+        this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === collection.rid);
       },
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", undefined)
     };

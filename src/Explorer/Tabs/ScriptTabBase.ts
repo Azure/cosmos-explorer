@@ -9,9 +9,9 @@ import editable from "../../Common/EditableUtility";
 import * as monaco from "monaco-editor";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
-export default abstract class ScriptTabBase extends TabsBase
-  implements ViewModels.ScriptTab, ViewModels.WaitsForTemplate {
+export default abstract class ScriptTabBase extends TabsBase implements ViewModels.WaitsForTemplate {
   public ariaLabel: ko.Observable<string>;
   public editorState: ko.Observable<ViewModels.ScriptEditorState>;
   public id: ViewModels.Editable<string>;
@@ -216,8 +216,8 @@ export default abstract class ScriptTabBase extends TabsBase
     return Q();
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
     if (this.saveButton.visible()) {
       buttons.push({

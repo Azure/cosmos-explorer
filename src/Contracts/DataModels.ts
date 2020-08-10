@@ -312,17 +312,6 @@ export interface Query {
   query: string;
 }
 
-export interface UpdateOfferThroughputRequest {
-  subscriptionId: string;
-  resourceGroup: string;
-  databaseAccountName: string;
-  databaseName: string;
-  collectionName: string;
-  throughput: number;
-  offerIsRUPerMinuteThroughputEnabled: boolean;
-  offerAutopilotSettings?: AutoPilotOfferSettings;
-}
-
 export interface AutoPilotOfferSettings {
   tier?: AutopilotTier;
   maximumTierThroughput?: number;

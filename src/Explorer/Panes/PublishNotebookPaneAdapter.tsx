@@ -4,7 +4,7 @@ import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { JunoClient } from "../../Juno/JunoClient";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
@@ -29,6 +29,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
   private acceptedCodeOfConduct: boolean;
+  private isLinkInjectionEnabled: boolean;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
@@ -67,7 +68,8 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     author: string,
     notebookContent: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
-    isCodeOfConductEnabled: boolean
+    isCodeOfConductEnabled: boolean,
+    isLinkInjectionEnabled: boolean
   ): Promise<void> {
     if (isCodeOfConductEnabled) {
       try {
@@ -91,12 +93,13 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     if (typeof notebookContent === "string") {
       this.content = notebookContent as string;
     } else {
-      this.content = JSON.stringify(toJS(notebookContent as ImmutableNotebook));
+      this.content = JSON.stringify(toJS(notebookContent));
       this.notebookObject = notebookContent;
     }
     this.parentDomElement = parentDomElement;
 
     this.isOpened = true;
+    this.isLinkInjectionEnabled = isLinkInjectionEnabled;
     this.triggerRender();
   }
 
@@ -124,7 +127,8 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         this.tags?.split(","),
         this.author,
         this.imageSrc,
-        this.content
+        this.content,
+        this.isLinkInjectionEnabled
       );
       if (response.data) {
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Published ${name} to gallery`);

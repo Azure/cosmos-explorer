@@ -1,5 +1,5 @@
 import { AutopilotTier } from "../Contracts/DataModels";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -16,11 +16,14 @@ export class CodeOfConductEndpoints {
 export class BackendEndpoints {
   public static localhost: string = "https://localhost:12900";
   public static dev: string = "https://ext.documents-dev.windows-int.net";
-  public static productionPortal: string = config.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
+  public static productionPortal: string = configContext.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
 }
 
 export class EndpointsRegex {
-  public static readonly cassandra = "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com";
+  public static readonly cassandra = [
+    "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com",
+    "HostName=(.*).cassandra.cosmos.azure.com"
+  ];
   public static readonly mongo = "mongodb://.*:(.*)@(.*).documents.azure.com";
   public static readonly mongoCompute = "mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com";
   public static readonly sql = "AccountEndpoint=https://(.*).documents.azure.com";
@@ -107,6 +110,7 @@ export class CapabilityNames {
   public static readonly EnableNotebooks: string = "EnableNotebooks";
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
+  public static readonly EnableServerless: string = "EnableServerless";
 }
 
 export class Features {
@@ -119,6 +123,7 @@ export class Features {
   public static readonly enableNotebooks = "enablenotebooks";
   public static readonly enableGalleryPublish = "enablegallerypublish";
   public static readonly enableCodeOfConduct = "enablecodeofconduct";
+  public static readonly enableLinkInjection = "enablelinkinjection";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
   public static readonly notebookServerUrl = "notebookserverurl";

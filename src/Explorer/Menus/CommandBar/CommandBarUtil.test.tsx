@@ -1,9 +1,10 @@
 import { CommandBarUtil } from "./CommandBarUtil";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
 describe("CommandBarUtil tests", () => {
-  const createButton = (): ViewModels.NavbarButtonConfig => {
+  const createButton = (): CommandButtonComponentProps => {
     return {
       iconSrc: "icon",
       iconAlt: "label",
@@ -54,7 +55,7 @@ describe("CommandBarUtil tests", () => {
   });
 
   it("should create buttons with unique keys", () => {
-    const btns: ViewModels.NavbarButtonConfig[] = [];
+    const btns: CommandButtonComponentProps[] = [];
     for (let i = 0; i < 5; i++) {
       btns.push(createButton());
     }

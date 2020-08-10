@@ -12,11 +12,12 @@ import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/Com
 import { StyleConstants } from "../../../Common/Constants";
 import { CommandBarUtil } from "./CommandBarUtil";
 import Explorer from "../../Explorer";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
 export class CommandBarComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
   public container: Explorer;
-  private tabsButtons: ViewModels.NavbarButtonConfig[];
+  private tabsButtons: CommandButtonComponentProps[];
   private isNotebookTabActive: ko.Computed<boolean>;
 
   constructor(container: Explorer) {
@@ -44,14 +45,15 @@ export class CommandBarComponentAdapter implements ReactAdapter {
       container.isHostedDataExplorerEnabled,
       container.isSynapseLinkUpdating,
       container.databaseAccount,
-      this.isNotebookTabActive
+      this.isNotebookTabActive,
+      container.isServerlessEnabled
     ];
 
     ko.computed(() => ko.toJSON(toWatch)).subscribe(() => this.triggerRender());
     this.parameters = ko.observable(Date.now());
   }
 
-  public onUpdateTabsButtons(buttons: ViewModels.NavbarButtonConfig[]): void {
+  public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.tabsButtons = buttons;
     this.triggerRender();
   }

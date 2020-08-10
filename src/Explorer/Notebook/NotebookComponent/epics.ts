@@ -34,7 +34,7 @@ import { sessions, kernels } from "rx-jupyter";
 import { RecordOf } from "immutable";
 
 import * as Constants from "../../../Common/Constants";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as CdbActions from "./actions";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";

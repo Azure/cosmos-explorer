@@ -118,6 +118,8 @@
               <option data-bind="value: $data.id"> </option>
             </datalist>
 
+            <!-- Database provisioned throughput - Start -->
+            <!-- ko if: canConfigureThroughput -->
             <div
               class="databaseProvision"
               aria-label="New database provision support"
@@ -202,6 +204,8 @@
               </throughput-input>
             </div>
             <!-- /ko -->
+            <!-- /ko -->
+            <!-- Database provisioned throughput - End -->
           </div>
           <div class="seconddivpadding">
             <p>
@@ -231,6 +235,9 @@
               style="height:125px; width: calc(100% - 80px); resize: vertical;"
             ></textarea>
           </div>
+
+          <!-- Provision table throughput - start -->
+          <!-- ko if: canConfigureThroughput -->
           <div class="seconddivpadding" data-bind="visible: keyspaceHasSharedOffer() && !keyspaceCreateNew()">
             <input
               type="checkbox"
@@ -315,6 +322,8 @@
             </throughput-input>
           </div>
           <!-- /ko -->
+          <!-- /ko -->
+          <!-- Provision table throughput - end -->
         </div>
         <div class="paneFooter">
           <div class="leftpanel-okbut">

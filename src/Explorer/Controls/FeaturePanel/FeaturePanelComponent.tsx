@@ -50,6 +50,11 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     { key: "feature.enablettl", label: "Enable TTL", value: "true" },
     { key: "feature.enablegallerypublish", label: "Enable Notebook Gallery Publishing", value: "true" },
     { key: "feature.enablecodeofconduct", label: "Enable Code Of Conduct Acknowledgement", value: "true" },
+    {
+      key: "feature.enableLinkInjection",
+      label: "Enable Injecting Notebook Viewer Link into the first cell",
+      value: "true"
+    },
     { key: "feature.canexceedmaximumvalue", label: "Can exceed max value", value: "true" },
     {
       key: "feature.enablefixedcollectionwithsharedthroughput",

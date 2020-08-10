@@ -7,6 +7,8 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import { deleteStoredProcedure, executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import TabsBase from "../Tabs/TabsBase";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -69,7 +71,6 @@ export default class StoredProcedure {
       tabKind: ViewModels.CollectionTabKind.StoredProcedures,
       title: `New Stored Procedure ${id}`,
       tabPath: `${source.databaseId}>${source.id()}>New Stored Procedure ${id}`,
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
@@ -96,7 +97,7 @@ export default class StoredProcedure {
 
     const storedProcedureTabs: StoredProcedureTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
     ) as StoredProcedureTab[];
     let storedProcedureTab: StoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
 
@@ -116,7 +117,6 @@ export default class StoredProcedure {
         tabKind: ViewModels.CollectionTabKind.StoredProcedures,
         title: storedProcedureData.id,
         tabPath: `${this.collection.databaseId}>${this.collection.id()}>${storedProcedureData.id}`,
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -144,11 +144,9 @@ export default class StoredProcedure {
       body: this.body()
     };
 
-    this.container.documentClientUtility.deleteStoredProcedure(this.collection, storedProcedureData).then(
+    deleteStoredProcedure(this.collection, storedProcedureData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}
@@ -156,15 +154,14 @@ export default class StoredProcedure {
   }
 
   public execute(params: string[], partitionKeyValue?: string): void {
-    const sprocTabs: ViewModels.StoredProcedureTab[] = this.container.tabsManager.getTabs(
+    const sprocTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-    ) as ViewModels.StoredProcedureTab[];
-    const sprocTab: ViewModels.StoredProcedureTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+    ) as StoredProcedureTab[];
+    const sprocTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
     this.container &&
-      this.container.documentClientUtility
-        .executeStoredProcedure(this.collection, this, partitionKeyValue, params)
+      executeStoredProcedure(this.collection, this, partitionKeyValue, params)
         .then(
           (result: any) => {
             sprocTab.onExecuteSprocsResult(result, result.scriptLogs);

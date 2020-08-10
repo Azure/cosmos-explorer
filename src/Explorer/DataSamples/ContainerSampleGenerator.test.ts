@@ -1,12 +1,13 @@
+jest.mock("../../Common/DocumentClientUtilityBase");
 import * as ko from "knockout";
 import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Q from "q";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import { CosmosClient } from "../../Common/CosmosClient";
+import * as DocumentClientUtility from "../../Common/DocumentClientUtilityBase";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import Explorer from "../Explorer";
+import { updateUserContext } from "../../UserContext";
 
 describe("ContainerSampleGenerator", () => {
   const createExplorerStub = (database: ViewModels.Database): Explorer => {
@@ -62,27 +63,33 @@ describe("ContainerSampleGenerator", () => {
 
     const explorerStub = createExplorerStub(database);
     explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => true);
-
-    const fakeDocumentClientUtility = sinon.createStubInstance(DocumentClientUtilityBase);
-    fakeDocumentClientUtility.getOrCreateDatabaseAndCollection.returns(Q.resolve(collection));
-    fakeDocumentClientUtility.createDocument.returns(Q.resolve());
-
-    explorerStub.documentClientUtility = fakeDocumentClientUtility;
-
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
 
-    expect(fakeDocumentClientUtility.createDocument.called).toBe(true);
+    expect(DocumentClientUtility.createDocument).toHaveBeenCalled();
   });
 
   it("should send gremlin queries for Graph API account", async () => {
     sinon.stub(GremlinClient.prototype, "initialize").callsFake(() => {});
     const executeStub = sinon.stub(GremlinClient.prototype, "execute").returns(Q.resolve());
 
-    sinon.stub(CosmosClient, "databaseAccount").returns({
-      properties: {}
+    updateUserContext({
+      databaseAccount: {
+        id: "foo",
+        name: "foo",
+        location: "foo",
+        type: "foo",
+        kind: "foo",
+        tags: [],
+        properties: {
+          documentEndpoint: "bar",
+          gremlinEndpoint: "foo",
+          tableEndpoint: "foo",
+          cassandraEndpoint: "foo"
+        }
+      }
     });
 
     const sampleCollectionId = "SampleCollection";
@@ -109,18 +116,12 @@ describe("ContainerSampleGenerator", () => {
     const explorerStub = createExplorerStub(database);
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => true);
 
-    const fakeDocumentClientUtility = sinon.createStubInstance(DocumentClientUtilityBase);
-    fakeDocumentClientUtility.getOrCreateDatabaseAndCollection.returns(Q.resolve(collection));
-    fakeDocumentClientUtility.createDocument.returns(Q.resolve());
-
-    explorerStub.documentClientUtility = fakeDocumentClientUtility;
-
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
 
-    expect(fakeDocumentClientUtility.createDocument.called).toBe(false);
+    expect(DocumentClientUtility.createDocument).toHaveBeenCalled();
     expect(executeStub.called).toBe(true);
   });
 

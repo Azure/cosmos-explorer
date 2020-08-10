@@ -51,6 +51,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public isFreeTierAccount: ko.Computed<boolean>;
   public ruToolTipText: ko.Computed<string>;
+  public canConfigureThroughput: ko.PureComputed<boolean>;
 
   private keyspaceOffers: HashMap<DataModels.Offer>;
 
@@ -61,6 +62,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.keyspaceCreateNew = ko.observable<boolean>(true);
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.keyspaceOffers = new HashMap<DataModels.Offer>();
     this.keyspaceIds = ko.observableArray<string>();
     this.keyspaceHasSharedOffer = ko.observable<boolean>(false);
@@ -365,7 +367,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     const createTableQueryPrefix: string = `${this.createTableQuery()}${this.tableId().trim()} ${this.userTableQuery()}`;
     let createTableQuery: string;
 
-    if (this.dedicateTableThroughput() || !this.keyspaceHasSharedOffer()) {
+    if (this.canConfigureThroughput() && (this.dedicateTableThroughput() || !this.keyspaceHasSharedOffer())) {
       if (this.isAutoPilotSelected() && this.selectedAutoPilotThroughput()) {
         createTableQuery = `${createTableQueryPrefix} WITH ${autoPilotCommand}=${this.selectedAutoPilotThroughput()};`;
       } else {

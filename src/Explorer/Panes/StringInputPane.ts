@@ -3,13 +3,24 @@ import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+
+export interface StringInputPaneOpenOptions {
+  paneTitle: string;
+  inputLabel: string;
+  errorMessage: string;
+  inProgressMessage: string;
+  successMessage: string;
+  onSubmit: (input: string) => Promise<any>;
+  submitButtonLabel: string;
+  defaultInput?: string;
+}
 
 /**
  * Generic pane to get a single string input from user
  */
 export class StringInputPane extends ContextualPaneBase {
-  private openOptions: ViewModels.StringInputPaneOpenOptions;
+  private openOptions: StringInputPaneOpenOptions;
   private submitButtonLabel: ko.Observable<string>;
   private inputLabel: ko.Observable<string>;
   private stringInput: ko.Observable<string>;
@@ -78,7 +89,7 @@ export class StringInputPane extends ContextualPaneBase {
     this.resetFileInput();
   }
 
-  public openWithOptions<T>(options: ViewModels.StringInputPaneOpenOptions): Q.Promise<T> {
+  public openWithOptions<T>(options: StringInputPaneOpenOptions): Q.Promise<T> {
     this.openOptions = options;
     this.title(this.openOptions.paneTitle);
     if (this.openOptions.submitButtonLabel) {

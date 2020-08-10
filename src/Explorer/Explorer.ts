@@ -15,13 +15,13 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import DocumentClientUtilityBase from "../Common/DocumentClientUtilityBase";
+import { readDatabases, readCollection, readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import hasher from "hasher";
 import NewVertexPane from "./Panes/NewVertexPane";
-import NotebookV2Tab from "./Tabs/NotebookV2Tab";
+import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -33,12 +33,10 @@ import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
-import { CassandraApi } from "../Api/Apis";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../Common/CosmosClient";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { DialogComponentAdapter } from "./Controls/DialogReactComponent/DialogComponentAdapter";
@@ -52,12 +50,12 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
-import { MessageHandler } from "../Common/MessageHandler";
+import { sendMessage, sendCachedDataMessage, handleCachedDataMessage } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { PlatformType } from "../PlatformType";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
@@ -82,6 +80,11 @@ import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
+import { NotificationsClientBase } from "../Common/NotificationsClientBase";
+import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
+import TabsBase from "./Tabs/TabsBase";
+import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
+import { updateUserContext, userContext } from "../UserContext";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -90,6 +93,15 @@ var tmp = ComponentRegisterer;
 enum ShareAccessToggleState {
   ReadWrite,
   Read
+}
+
+interface ExplorerOptions {
+  notificationsClient: NotificationsClientBase;
+  isEmulator: boolean;
+}
+interface AdHocAccessData {
+  readWriteUrl: string;
+  readUrl: string;
 }
 
 export default class Explorer {
@@ -107,7 +119,7 @@ export default class Explorer {
   public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  public databaseAccount: ko.Observable<ViewModels.DatabaseAccount>;
+  public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;
   public quotaId: ko.Observable<string>;
@@ -118,6 +130,7 @@ export default class Explorer {
   public isPreferredApiGraph: ko.Computed<boolean>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  public isServerlessEnabled: ko.Computed<boolean>;
   public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -126,9 +139,8 @@ export default class Explorer {
   public extensionEndpoint: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
-  public documentClientUtility: DocumentClientUtilityBase;
-  public notificationsClient: ViewModels.NotificationsClient;
-  public queriesClient: ViewModels.QueriesClient;
+  public notificationsClient: NotificationsClientBase;
+  public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
   public parentFrameDataExplorerVersion: ko.Observable<string> = ko.observable<string>("");
@@ -139,7 +151,7 @@ export default class Explorer {
   public isNotificationConsoleExpanded: ko.Observable<boolean>;
 
   // Panes
-  public contextPanes: ViewModels.ContextualPane[];
+  public contextPanes: ContextualPaneBase[];
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -184,17 +196,18 @@ export default class Explorer {
   public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
-  public saveQueryPane: ViewModels.ContextualPane;
+  public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
-  public gitHubReposPane: ViewModels.ContextualPane;
+  public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
+  public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -203,7 +216,7 @@ export default class Explorer {
   public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
-  public shareAccessData: ko.Observable<ViewModels.AdHocAccessData>;
+  public shareAccessData: ko.Observable<AdHocAccessData>;
   public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
   public renewTokenError: ko.Observable<string>;
   public tokenForRenewal: ko.Observable<string>;
@@ -229,7 +242,7 @@ export default class Explorer {
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any; // This is dynamically loaded
 
-  private _panes: ViewModels.ContextualPane[] = [];
+  private _panes: ContextualPaneBase[] = [];
   private _importExplorerConfigComplete: boolean = false;
   private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = database => false;
   private _isInitializingNotebooks: boolean;
@@ -252,7 +265,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(options: ViewModels.ExplorerOptions) {
+  constructor(options: ExplorerOptions) {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
@@ -265,7 +278,7 @@ export default class Explorer {
     this.deleteDatabaseText = ko.observable<string>("Delete Database");
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
-    this.databaseAccount = ko.observable<ViewModels.DatabaseAccount>();
+    this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.subscriptionType = ko.observable<ViewModels.SubscriptionType>(
       SharedConstants.CollectionCreation.DefaultSubscriptionType
     );
@@ -358,7 +371,6 @@ export default class Explorer {
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
-    this.documentClientUtility = options.documentClientUtility;
     this.notificationsClient = options.notificationsClient;
     this.isEmulator = options.isEmulator;
 
@@ -375,7 +387,7 @@ export default class Explorer {
     this.resourceTokenPartitionKey = ko.observable<string>();
     this.isAuthWithResourceToken = ko.observable<boolean>(false);
 
-    this.shareAccessData = ko.observable<ViewModels.AdHocAccessData>({
+    this.shareAccessData = ko.observable<AdHocAccessData>({
       readWriteUrl: undefined,
       readUrl: undefined
     });
@@ -400,6 +412,9 @@ export default class Explorer {
     );
     this.isCodeOfConductEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableCodeOfConduct)
+    );
+    this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -463,7 +478,7 @@ export default class Explorer {
     });
     this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
-    this.databaseAccount.subscribe((databaseAccount: ViewModels.DatabaseAccount) => {
+    this.databaseAccount.subscribe(databaseAccount => {
       this.defaultExperience(DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount));
     });
 
@@ -513,6 +528,14 @@ export default class Explorer {
       return false;
     });
 
+    this.isServerlessEnabled = ko.computed(
+      () =>
+        this.databaseAccount &&
+        this.databaseAccount()?.properties?.capabilities?.find(
+          item => item.name === Constants.CapabilityNames.EnableServerless
+        ) !== undefined
+    );
+
     this.isPreferredApiMongoDB = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.MongoDB.toLowerCase()) {
@@ -548,8 +571,9 @@ export default class Explorer {
         defaultExperience &&
         defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
       ) {
-        const api = new CassandraApi();
-        this._isSystemDatabasePredicate = api.isSystemDatabasePredicate;
+        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
+          return database.id() === "system";
+        };
       }
     });
 
@@ -579,7 +603,6 @@ export default class Explorer {
     });
 
     this.addDatabasePane = new AddDatabasePane({
-      documentClientUtility: this.documentClientUtility,
       id: "adddatabasepane",
       visible: ko.observable<boolean>(false),
 
@@ -588,7 +611,6 @@ export default class Explorer {
 
     this.addCollectionPane = new AddCollectionPane({
       isPreferredApiTable: ko.computed(() => this.isPreferredApiTable()),
-      documentClientUtility: this.documentClientUtility,
       id: "addcollectionpane",
       visible: ko.observable<boolean>(false),
 
@@ -596,7 +618,6 @@ export default class Explorer {
     });
 
     this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      documentClientUtility: this.documentClientUtility,
       id: "deletecollectionconfirmationpane",
       visible: ko.observable<boolean>(false),
 
@@ -604,7 +625,6 @@ export default class Explorer {
     });
 
     this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      documentClientUtility: this.documentClientUtility,
       id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
 
@@ -612,7 +632,6 @@ export default class Explorer {
     });
 
     this.graphStylingPane = new GraphStylingPane({
-      documentClientUtility: this.documentClientUtility,
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
 
@@ -620,7 +639,6 @@ export default class Explorer {
     });
 
     this.addTableEntityPane = new AddTableEntityPane({
-      documentClientUtility: this.documentClientUtility,
       id: "addtableentitypane",
       visible: ko.observable<boolean>(false),
 
@@ -628,7 +646,6 @@ export default class Explorer {
     });
 
     this.editTableEntityPane = new EditTableEntityPane({
-      documentClientUtility: this.documentClientUtility,
       id: "edittableentitypane",
       visible: ko.observable<boolean>(false),
 
@@ -636,7 +653,6 @@ export default class Explorer {
     });
 
     this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "tablecolumnoptionspane",
       visible: ko.observable<boolean>(false),
 
@@ -644,7 +660,6 @@ export default class Explorer {
     });
 
     this.querySelectPane = new QuerySelectPane({
-      documentClientUtility: this.documentClientUtility,
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
 
@@ -652,7 +667,6 @@ export default class Explorer {
     });
 
     this.newVertexPane = new NewVertexPane({
-      documentClientUtility: this.documentClientUtility,
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
 
@@ -660,7 +674,6 @@ export default class Explorer {
     });
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      documentClientUtility: this.documentClientUtility,
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
 
@@ -668,7 +681,6 @@ export default class Explorer {
     });
 
     this.settingsPane = new SettingsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "settingspane",
       visible: ko.observable<boolean>(false),
 
@@ -676,7 +688,6 @@ export default class Explorer {
     });
 
     this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "executesprocparamspane",
       visible: ko.observable<boolean>(false),
 
@@ -684,7 +695,6 @@ export default class Explorer {
     });
 
     this.renewAdHocAccessPane = new RenewAdHocAccessPane({
-      documentClientUtility: this.documentClientUtility,
       id: "renewadhocaccesspane",
       visible: ko.observable<boolean>(false),
 
@@ -692,7 +702,6 @@ export default class Explorer {
     });
 
     this.uploadItemsPane = new UploadItemsPane({
-      documentClientUtility: this.documentClientUtility,
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
 
@@ -702,7 +711,6 @@ export default class Explorer {
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
-      documentClientUtility: this.documentClientUtility,
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
 
@@ -710,7 +718,6 @@ export default class Explorer {
     });
 
     this.saveQueryPane = new SaveQueryPane({
-      documentClientUtility: this.documentClientUtility,
       id: "savequerypane",
       visible: ko.observable<boolean>(false),
 
@@ -718,7 +725,6 @@ export default class Explorer {
     });
 
     this.browseQueriesPane = new BrowseQueriesPane({
-      documentClientUtility: this.documentClientUtility,
       id: "browsequeriespane",
       visible: ko.observable<boolean>(false),
 
@@ -726,7 +732,6 @@ export default class Explorer {
     });
 
     this.uploadFilePane = new UploadFilePane({
-      documentClientUtility: this.documentClientUtility,
       id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
@@ -734,7 +739,6 @@ export default class Explorer {
     });
 
     this.stringInputPane = new StringInputPane({
-      documentClientUtility: this.documentClientUtility,
       id: "stringinputpane",
       visible: ko.observable<boolean>(false),
 
@@ -742,7 +746,6 @@ export default class Explorer {
     });
 
     this.setupNotebooksPane = new SetupNotebooksPane({
-      documentClientUtility: this.documentClientUtility,
       id: "setupnotebookspane",
       visible: ko.observable<boolean>(false),
 
@@ -775,7 +778,6 @@ export default class Explorer {
       this.setupNotebooksPane
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
-    this.rebindDocumentClientUtility.bind(this);
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
@@ -857,7 +859,7 @@ export default class Explorer {
           this.editTableEntityPane.title("Edit Table Entity");
           this.deleteCollectionConfirmationPane.title("Delete Table");
           this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.tableDataClient = new TablesAPIDataClient(this.documentClientUtility);
+          this.tableDataClient = new TablesAPIDataClient();
           break;
         case Constants.DefaultAccountExperience.Cassandra.toLowerCase():
           this.addCollectionText("New Table");
@@ -876,7 +878,7 @@ export default class Explorer {
           this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
           this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
           this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
-          this.tableDataClient = new CassandraAPIDataClient(this.documentClientUtility);
+          this.tableDataClient = new CassandraAPIDataClient();
           break;
       }
     });
@@ -1022,7 +1024,7 @@ export default class Explorer {
         );
 
         try {
-          const databaseAccount: ViewModels.DatabaseAccount = await resourceProviderClient.patchAsync(
+          const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
             this.databaseAccount().id,
             "2019-12-12",
             {
@@ -1059,13 +1061,6 @@ export default class Explorer {
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
-  }
-
-  public rebindDocumentClientUtility(documentClientUtility: DocumentClientUtilityBase): void {
-    this.documentClientUtility = documentClientUtility;
-    this._panes.forEach((pane: ViewModels.ContextualPane) => {
-      pane.documentClientUtility = documentClientUtility;
-    });
   }
 
   public copyUrlLink(src: any, event: MouseEvent): void {
@@ -1386,7 +1381,7 @@ export default class Explorer {
     }
 
     const deferred: Q.Deferred<void> = Q.defer();
-    this.documentClientUtility.readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
       deferred.resolve();
@@ -1410,87 +1405,97 @@ export default class Explorer {
         dataExplorerArea: Constants.Areas.ResourceTree
       });
     }
+
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    const offerPromise: Q.Promise<DataModels.Offer[]> = this.documentClientUtility.readOffers();
-    this._setLoadingStatusText("Fetching offers...");
 
-    offerPromise.then(
-      (offers: DataModels.Offer[]) => {
-        this._setLoadingStatusText("Successfully fetched offers.");
-        this._setLoadingStatusText("Fetching databases...");
-        this.documentClientUtility.readDatabases(null /*options*/).then(
-          (databases: DataModels.Database[]) => {
-            this._setLoadingStatusText("Successfully fetched databases.");
-            TelemetryProcessor.traceSuccess(
-              Action.LoadDatabases,
-              {
-                databaseAccountName: this.databaseAccount().name,
-                defaultExperience: this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.ResourceTree
+    const refreshDatabases = (offers?: DataModels.Offer[]) => {
+      this._setLoadingStatusText("Fetching databases...");
+      readDatabases(null /*options*/).then(
+        (databases: DataModels.Database[]) => {
+          this._setLoadingStatusText("Successfully fetched databases.");
+          TelemetryProcessor.traceSuccess(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree
+            },
+            startKey
+          );
+          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+          const deltaDatabases = this.getDeltaDatabases(databases, offers);
+          this.addDatabasesToList(deltaDatabases.toAdd);
+          this.deleteDatabasesFromList(deltaDatabases.toDelete);
+          this.selectedNode(currentlySelectedNode);
+          this._setLoadingStatusText("Fetching containers...");
+          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+            .then(
+              () => {
+                this._setLoadingStatusText("Successfully fetched containers.");
+                deferred.resolve();
               },
-              startKey
-            );
-            const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-            const deltaDatabases = this.getDeltaDatabases(databases, offers);
-            this.addDatabasesToList(deltaDatabases.toAdd);
-            this.deleteDatabasesFromList(deltaDatabases.toDelete);
-            this.selectedNode(currentlySelectedNode);
-            this._setLoadingStatusText("Fetching containers...");
-            this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-              .then(
-                () => {
-                  this._setLoadingStatusText("Successfully fetched containers.");
-                  deferred.resolve();
-                },
-                reason => {
-                  this._setLoadingStatusText("Failed to fetch containers.");
-                  deferred.reject(reason);
-                }
-              )
-              .finally(() => this.isRefreshingExplorer(false));
-          },
-          error => {
-            this._setLoadingStatusText("Failed to fetch databases.");
-            this.isRefreshingExplorer(false);
-            deferred.reject(error);
-            TelemetryProcessor.traceFailure(
-              Action.LoadDatabases,
-              {
-                databaseAccountName: this.databaseAccount().name,
-                defaultExperience: this.defaultExperience(),
-                dataExplorerArea: Constants.Areas.ResourceTree,
-                error: JSON.stringify(error)
-              },
-              startKey
-            );
-            NotificationConsoleUtils.logConsoleMessage(
-              ConsoleDataType.Error,
-              `Error while refreshing databases: ${JSON.stringify(error)}`
-            );
-          }
-        );
-      },
-      error => {
-        this._setLoadingStatusText("Failed to fetch offers.");
-        this.isRefreshingExplorer(false);
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: JSON.stringify(error)
-          },
-          startKey
-        );
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing databases: ${JSON.stringify(error)}`
-        );
-      }
-    );
+              reason => {
+                this._setLoadingStatusText("Failed to fetch containers.");
+                deferred.reject(reason);
+              }
+            )
+            .finally(() => this.isRefreshingExplorer(false));
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch databases.");
+          this.isRefreshingExplorer(false);
+          deferred.reject(error);
+          TelemetryProcessor.traceFailure(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree,
+              error: JSON.stringify(error)
+            },
+            startKey
+          );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${JSON.stringify(error)}`
+          );
+        }
+      );
+    };
+
+    if (this.isServerlessEnabled()) {
+      // Serverless accounts don't support offers call
+      refreshDatabases();
+    } else {
+      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
+      this._setLoadingStatusText("Fetching offers...");
+      offerPromise.then(
+        (offers: DataModels.Offer[]) => {
+          this._setLoadingStatusText("Successfully fetched offers.");
+          refreshDatabases(offers);
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch offers.");
+          this.isRefreshingExplorer(false);
+          deferred.reject(error);
+          TelemetryProcessor.traceFailure(
+            Action.LoadDatabases,
+            {
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
+              dataExplorerArea: Constants.Areas.ResourceTree,
+              error: JSON.stringify(error)
+            },
+            startKey
+          );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${JSON.stringify(error)}`
+          );
+        }
+      );
+    }
 
     return deferred.promise.then(
       () => {
@@ -1539,7 +1544,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    this.documentClientUtility.refreshCachedResources().then(
+    refreshCachedResources().then(
       () => {
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
@@ -1592,7 +1597,7 @@ export default class Explorer {
 
   public async getArcadiaToken(): Promise<string> {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-      MessageHandler.sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
+      sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
         (token: string) => {
           resolve(token);
         },
@@ -1606,7 +1611,7 @@ export default class Explorer {
 
   private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {
     try {
-      const workspaces = await this._arcadiaManager.listWorkspacesAsync([CosmosClient.subscriptionId()]);
+      const workspaces = await this._arcadiaManager.listWorkspacesAsync([userContext.subscriptionId]);
       let workspaceItems: ArcadiaWorkspaceItem[] = new Array(workspaces.length);
       const sparkPromises: Promise<void>[] = [];
       workspaces.forEach((workspace, i) => {
@@ -1630,11 +1635,11 @@ export default class Explorer {
   }
 
   public async createWorkspace(): Promise<string> {
-    return MessageHandler.sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
+    return sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
   }
 
   public async createSparkPool(workspaceId: string): Promise<string> {
-    return MessageHandler.sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
+    return sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
   }
 
   public async initNotebooks(databaseAccount: DataModels.DatabaseAccount): Promise<void> {
@@ -1709,7 +1714,7 @@ export default class Explorer {
     }
 
     try {
-      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount.id);
+      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
       return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
     } catch (error) {
       Logger.logError(error, "Explorer/_containsDefaultNotebookWorkspace");
@@ -1811,8 +1816,8 @@ export default class Explorer {
 
     const isRunningInPortal = window.dataExplorerPlatform == PlatformType.Portal;
     const isRunningInDevMode = process.env.NODE_ENV === "development";
-    if (inputs && config.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
-      inputs.extensionEndpoint = config.PROXY_PATH;
+    if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
+      inputs.extensionEndpoint = configContext.PROXY_PATH;
     }
 
     const initPromise: Q.Promise<void> = inputs ? this.initDataExplorerWithFrameInputs(inputs) : Q();
@@ -1830,7 +1835,7 @@ export default class Explorer {
         }
       }
       if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
-        MessageHandler.handleCachedDataMessage(message);
+        handleCachedDataMessage(message);
         return;
       }
       if (message.type) {
@@ -1917,7 +1922,7 @@ export default class Explorer {
       this.features(inputs.features);
       this.serverId(inputs.serverId);
       this.extensionEndpoint(inputs.extensionEndpoint || "");
-      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || config.ARM_ENDPOINT));
+      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
       this.notificationsClient.setExtensionEndpoint(this.extensionEndpoint());
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
@@ -1933,11 +1938,12 @@ export default class Explorer {
 
       this._importExplorerConfigComplete = true;
 
-      CosmosClient.authorizationToken(authorizationToken);
-      CosmosClient.masterKey(masterKey);
-      CosmosClient.databaseAccount(databaseAccount);
-      CosmosClient.subscriptionId(inputs.subscriptionId);
-      CosmosClient.resourceGroup(inputs.resourceGroup);
+      updateUserContext({
+        authorizationToken,
+        masterKey,
+        databaseAccount
+      });
+      updateUserContext({ resourceGroup: inputs.resourceGroup, subscriptionId: inputs.subscriptionId });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
@@ -1967,7 +1973,7 @@ export default class Explorer {
     return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
       const openedSprocTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
-        (tab: ViewModels.Tab) => tab.node && tab.node.rid === storedProcedure.rid
+        tab => tab.node && tab.node.rid === storedProcedure.rid
       );
       return (
         storedProcedure.rid === this.selectedNode().rid ||
@@ -1981,7 +1987,7 @@ export default class Explorer {
     return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
       const openedUdfTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.UserDefinedFunctions,
-        (tab: ViewModels.Tab) => tab.node && tab.node.rid === userDefinedFunction.rid
+        tab => tab.node && tab.node.rid === userDefinedFunction.rid
       );
       return (
         userDefinedFunction.rid === this.selectedNode().rid ||
@@ -1995,7 +2001,7 @@ export default class Explorer {
     return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
       const openedTriggerTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.Triggers,
-        (tab: ViewModels.Tab) => tab.node && tab.node.rid === trigger.rid
+        tab => tab.node && tab.node.rid === trigger.rid
       );
       return (
         trigger.rid === this.selectedNode().rid ||
@@ -2005,7 +2011,7 @@ export default class Explorer {
   }
 
   public closeAllPanes(): void {
-    this._panes.forEach((pane: ViewModels.ContextualPane) => pane.close());
+    this._panes.forEach((pane: ContextualPaneBase) => pane.close());
   }
 
   public getPlatformType(): PlatformType {
@@ -2020,13 +2026,13 @@ export default class Explorer {
     );
   }
 
-  public onUpdateTabsButtons(buttons: ViewModels.NavbarButtonConfig[]): void {
+  public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
 
   public signInAad = () => {
     TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.AadSignIn
     });
   };
@@ -2037,21 +2043,21 @@ export default class Explorer {
   };
 
   public clickHostedAccountSwitch = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateAccountSwitch,
       click: true
     });
   };
 
   public clickHostedDirectorySwitch = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.UpdateDirectoryControl,
       click: true
     });
   };
 
   public refreshDatabaseAccount = () => {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.RefreshDatabaseAccount
     });
   };
@@ -2080,9 +2086,7 @@ export default class Explorer {
           if (isNewDatabase) {
             database.expandDatabase();
           }
-          this.tabsManager.refreshActiveTab(
-            (tab: ViewModels.Tab) => tab.collection && tab.collection.getDatabase().rid === database.rid
-          );
+          this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
         })
       );
     });
@@ -2184,8 +2188,8 @@ export default class Explorer {
       return undefined;
     }
 
-    const urlPrefixWithKeyParam: string = `${config.hostedExplorerURL}?key=`;
-    const currentActiveTab: ViewModels.Tab = this.tabsManager.activeTab();
+    const urlPrefixWithKeyParam: string = `${configContext.hostedExplorerURL}?key=`;
+    const currentActiveTab = this.tabsManager.activeTab();
 
     return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;
   }
@@ -2357,7 +2361,8 @@ export default class Explorer {
         name,
         content,
         parentDomElement,
-        this.isCodeOfConductEnabled()
+        this.isCodeOfConductEnabled(),
+        this.isLinkInjectionEnabled()
       );
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
@@ -2453,28 +2458,26 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
 
-    const notebookTabs: NotebookV2Tab[] = this.tabsManager.getTabs(
+    const notebookTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.NotebookV2,
-      (tab: ViewModels.Tab) =>
+      tab =>
         (tab as NotebookV2Tab).notebookPath &&
         FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
     ) as NotebookV2Tab[];
-    let notebookTab: NotebookV2Tab = notebookTabs && notebookTabs[0];
+    let notebookTab = notebookTabs && notebookTabs[0];
 
     if (notebookTab) {
       this.tabsManager.activateTab(notebookTab);
     } else {
-      const options: ViewModels.NotebookTabOptions = {
-        account: CosmosClient.databaseAccount(),
+      const options: NotebookTabOptions = {
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookV2,
         node: null,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
-        documentClientUtility: null,
-
         collection: null,
         selfLink: null,
-        masterKey: CosmosClient.masterKey() || "",
+        masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
@@ -2530,7 +2533,7 @@ export default class Explorer {
         onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
       })
       .then(newNotebookFile => {
-        const notebookTabs: ViewModels.Tab[] = this.tabsManager.getTabs(
+        const notebookTabs = this.tabsManager.getTabs(
           ViewModels.CollectionTabKind.NotebookV2,
           (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
         );
@@ -2618,7 +2621,11 @@ export default class Explorer {
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
     const authType = window.authType as AuthType;
-    if (authType === AuthType.EncryptedToken || authType === AuthType.ResourceToken) {
+    if (
+      authType === AuthType.EncryptedToken ||
+      authType === AuthType.ResourceToken ||
+      authType === AuthType.MasterKey
+    ) {
       this.isNotebooksEnabledForAccount(false);
       return;
     }
@@ -2660,7 +2667,7 @@ export default class Explorer {
   }
 
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const subscriptionId = CosmosClient.subscriptionId();
+    const subscriptionId = userContext.subscriptionId;
     const armEndpoint = this.armEndpoint();
     const authType = window.authType as AuthType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
@@ -2689,7 +2696,7 @@ export default class Explorer {
   };
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const subscriptionId = CosmosClient.subscriptionId();
+    const subscriptionId = userContext.subscriptionId;
     const armEndpoint = this.armEndpoint();
     const authType = window.authType as AuthType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
@@ -2900,7 +2907,7 @@ export default class Explorer {
 
     const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Terminal,
-      (tab: ViewModels.Tab) => tab.hashLocation() == hashLocation
+      tab => tab.hashLocation() == hashLocation
     ) as TerminalTab[];
     let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
@@ -2908,13 +2915,11 @@ export default class Explorer {
       this.tabsManager.activateTab(terminalTab);
     } else {
       const newTab = new TerminalTab({
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Terminal,
         node: null,
         title: title,
         tabPath: title,
-        documentClientUtility: null,
-
         collection: null,
         selfLink: null,
         hashLocation: hashLocation,
@@ -2936,7 +2941,7 @@ export default class Explorer {
 
     const galleryTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Gallery,
-      (tab: ViewModels.Tab) => tab.hashLocation() == hashLocation
+      tab => tab.hashLocation() == hashLocation
     );
     let galleryTab = galleryTabs && galleryTabs[0];
 
@@ -2949,7 +2954,7 @@ export default class Explorer {
 
       const newTab = new this.galleryTab.default({
         // GalleryTabOptions
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         container: this,
         junoClient: this.notebookManager?.junoClient,
         notebookUrl,
@@ -2982,24 +2987,21 @@ export default class Explorer {
 
     const notebookViewerTabModule = this.notebookViewerTab;
 
-    let isNotebookViewerOpen = (tab: ViewModels.Tab) => {
+    let isNotebookViewerOpen = (tab: TabsBase) => {
       const notebookViewerTab = tab as typeof notebookViewerTabModule.default;
       return notebookViewerTab.notebookUrl === notebookUrl;
     };
 
-    const notebookViewerTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.NotebookV2,
-      (tab: ViewModels.Tab) => {
-        return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
-      }
-    );
+    const notebookViewerTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2, tab => {
+      return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
+    });
     let notebookViewerTab = notebookViewerTabs && notebookViewerTabs[0];
 
     if (notebookViewerTab) {
       this.tabsManager.activateNewTab(notebookViewerTab);
     } else {
       notebookViewerTab = new this.notebookViewerTab.default({
-        account: CosmosClient.databaseAccount(),
+        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookViewer,
         node: null,
         title: title,

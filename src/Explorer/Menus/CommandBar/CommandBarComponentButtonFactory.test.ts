@@ -7,6 +7,47 @@ import Explorer from "../../Explorer";
 describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
 
+  describe("Enable Azure Synapse Link Button", () => {
+    const enableAzureSynapseLinkBtnLabel = "Enable Azure Synapse Link (Preview)";
+
+    beforeAll(() => {
+      mockExplorer = {} as Explorer;
+      mockExplorer.addCollectionText = ko.observable("mockText");
+      mockExplorer.isAuthWithResourceToken = ko.observable(false);
+      mockExplorer.isPreferredApiTable = ko.computed(() => true);
+      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
+      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
+      mockExplorer.isSparkEnabled = ko.observable(true);
+      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
+      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
+      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+      mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
+      mockExplorer.isNotebookEnabled = ko.observable(false);
+      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
+      mockExplorer.isRunningOnNationalCloud = () => false;
+    });
+
+    it("Account is not serverless - button should be visible", () => {
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
+      const enableAzureSynapseLinkBtn = buttons.find(
+        button => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+      );
+      expect(enableAzureSynapseLinkBtn).toBeDefined();
+    });
+
+    it("Account is serverless - button should be hidden", () => {
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => true);
+
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
+      const enableAzureSynapseLinkBtn = buttons.find(
+        button => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+      );
+      expect(enableAzureSynapseLinkBtn).toBeUndefined();
+    });
+  });
+
   describe("Enable notebook button", () => {
     const enableNotebookBtnLabel = "Enable Notebooks (Preview)";
 
@@ -23,6 +64,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     it("Notebooks is already enabled - button should be hidden", () => {
@@ -86,6 +128,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -167,6 +210,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -254,6 +298,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.notebookManager = new NotebookManager();
       mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -305,6 +350,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
+      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     it("should only show New SQL Query and Open Query buttons", () => {

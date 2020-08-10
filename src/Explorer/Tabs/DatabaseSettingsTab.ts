@@ -1,4 +1,3 @@
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
@@ -14,10 +13,13 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
+import { updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { userContext } from "../../UserContext";
+import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -499,13 +501,13 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         delete newOffer.content.offerAutopilotSettings;
       }
 
-      const updateOfferPromise = this.container.documentClientUtility
-        .updateOffer(this.database.offer(), newOffer, headerOptions)
-        .then((updatedOffer: DataModels.Offer) => {
+      const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
+        (updatedOffer: DataModels.Offer) => {
           this.database.offer(updatedOffer);
           this.database.offer.valueHasMutated();
           this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-        });
+        }
+      );
       promises.push(updateOfferPromise);
     } else {
       if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
@@ -518,42 +520,39 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
           this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
         ) {
-          const requestPayload: DataModels.UpdateOfferThroughputRequest = {
-            subscriptionId: CosmosClient.subscriptionId(),
-            databaseAccountName: CosmosClient.databaseAccount().name,
-            resourceGroup: CosmosClient.resourceGroup(),
+          const requestPayload = {
+            subscriptionId: userContext.subscriptionId,
+            databaseAccountName: userContext.databaseAccount.name,
+            resourceGroup: userContext.resourceGroup,
             databaseName: this.database.id(),
-            collectionName: undefined,
             throughput: newThroughput,
             offerIsRUPerMinuteThroughputEnabled: false
           };
-          const updateOfferBeyondLimitPromise: Q.Promise<void> = this.documentClientUtility
-            .updateOfferThroughputBeyondLimit(requestPayload)
-            .then(
-              () => {
-                this.database.offer().content.offerThroughput = originalThroughputValue;
-                this.throughput(originalThroughputValue);
-                this.notificationStatusInfo(
-                  throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
-                );
-                this.throughput.valueHasMutated(); // force component re-render
-              },
-              (error: any) => {
-                TelemetryProcessor.traceFailure(
-                  Action.UpdateSettings,
-                  {
-                    databaseAccountName: this.container.databaseAccount().name,
-                    databaseName: this.database && this.database.id(),
-                    defaultExperience: this.container.defaultExperience(),
-                    dataExplorerArea: Constants.Areas.Tab,
-                    tabTitle: this.tabTitle(),
-                    error: error
-                  },
-                  startKey
-                );
-              }
-            );
-          promises.push(updateOfferBeyondLimitPromise);
+          const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
+            () => {
+              this.database.offer().content.offerThroughput = originalThroughputValue;
+              this.throughput(originalThroughputValue);
+              this.notificationStatusInfo(
+                throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
+              );
+              this.throughput.valueHasMutated(); // force component re-render
+            },
+            (error: any) => {
+              TelemetryProcessor.traceFailure(
+                Action.UpdateSettings,
+                {
+                  databaseAccountName: this.container.databaseAccount().name,
+                  databaseName: this.database && this.database.id(),
+                  defaultExperience: this.container.defaultExperience(),
+                  dataExplorerArea: Constants.Areas.Tab,
+                  tabTitle: this.tabTitle(),
+                  error: error
+                },
+                startKey
+              );
+            }
+          );
+          promises.push(Q(updateOfferBeyondLimitPromise));
         } else {
           const newOffer: DataModels.Offer = {
             content: {
@@ -577,13 +576,13 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
             newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
           }
 
-          const updateOfferPromise = this.container.documentClientUtility
-            .updateOffer(this.database.offer(), newOffer, headerOptions)
-            .then((updatedOffer: DataModels.Offer) => {
+          const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
+            (updatedOffer: DataModels.Offer) => {
               this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
               this.database.offer(updatedOffer);
               this.database.offer.valueHasMutated();
-            });
+            }
+          );
 
           promises.push(updateOfferPromise);
         }
@@ -668,8 +667,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     }
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  protected getTabsButtons(): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
     if (this.saveSettingsButton.visible()) {
       buttons.push({

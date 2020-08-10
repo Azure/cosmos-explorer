@@ -6,7 +6,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { IconButton } from "office-ui-fabric-react/lib/Button";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
 import InfoBubbleIcon from "../../../images/info-bubble.svg";

@@ -9,14 +9,20 @@ import * as Entities from "./Entities";
 import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import * as Logger from "../../Common/Logger";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TableConstants from "./Constants";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { MessageHandler } from "../../Common/MessageHandler";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
+import { sendMessage } from "../../Common/MessageHandler";
 import Explorer from "../Explorer";
+import {
+  queryDocuments,
+  refreshCachedResources,
+  deleteDocument,
+  updateDocument,
+  createDocument
+} from "../../Common/DocumentClientUtilityBase";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -29,11 +35,7 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  public documentClientUtility: DocumentClientUtilityBase;
-
-  constructor(documentClientUtility: DocumentClientUtilityBase) {
-    this.documentClientUtility = documentClientUtility;
-  }
+  constructor() {}
 
   public abstract createDocument(
     collection: ViewModels.Collection,
@@ -65,20 +67,18 @@ export class TablesAPIDataClient extends TableDataClient {
     entity: Entities.ITableEntity
   ): Q.Promise<Entities.ITableEntity> {
     const deferred = Q.defer<Entities.ITableEntity>();
-    this.documentClientUtility
-      .createDocument(
-        collection,
-        TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
-      )
-      .then(
-        (newDocument: any) => {
-          const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
-          deferred.resolve(newEntity);
-        },
-        reason => {
-          deferred.reject(reason);
-        }
-      );
+    createDocument(
+      collection,
+      TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
+    ).then(
+      (newDocument: any) => {
+        const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
+        deferred.resolve(newEntity);
+      },
+      reason => {
+        deferred.reject(reason);
+      }
+    );
     return deferred.promise;
   }
 
@@ -88,21 +88,20 @@ export class TablesAPIDataClient extends TableDataClient {
     entity: Entities.ITableEntity
   ): Q.Promise<Entities.ITableEntity> {
     const deferred = Q.defer<Entities.ITableEntity>();
-    this.documentClientUtility
-      .updateDocument(
-        collection,
-        originalDocument,
-        TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
-      )
-      .then(
-        (newDocument: any) => {
-          const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
-          deferred.resolve(newEntity);
-        },
-        reason => {
-          deferred.reject(reason);
-        }
-      );
+
+    updateDocument(
+      collection,
+      originalDocument,
+      TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
+    ).then(
+      (newDocument: any) => {
+        const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
+        deferred.resolve(newEntity);
+      },
+      reason => {
+        deferred.reject(reason);
+      }
+    );
     return deferred.promise;
   }
 
@@ -114,7 +113,7 @@ export class TablesAPIDataClient extends TableDataClient {
 
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-    this.documentClientUtility.queryDocuments(collection.databaseId, collection.id(), query, options).then(
+    queryDocuments(collection.databaseId, collection.id(), query, options).then(
       iterator => {
         iterator
           .fetchNext()
@@ -150,7 +149,7 @@ export class TablesAPIDataClient extends TableDataClient {
     documentsToDelete &&
       documentsToDelete.forEach(document => {
         document.id = ko.observable<string>(document.id);
-        let promise: Q.Promise<any> = this.documentClientUtility.deleteDocument(collection, document);
+        let promise: Q.Promise<any> = deleteDocument(collection, document);
         promiseArray.push(promise);
       });
     return Q.all(promiseArray);
@@ -425,7 +424,7 @@ export class CassandraAPIDataClient extends TableDataClient {
             ConsoleDataType.Info,
             `Successfully created a keyspace with query ${createKeyspaceQuery}`
           );
-          explorer.documentClientUtility.refreshCachedResources().finally(() => deferred.resolve());
+          refreshCachedResources().finally(() => deferred.resolve());
         },
         reason => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -472,7 +471,7 @@ export class CassandraAPIDataClient extends TableDataClient {
                 ConsoleDataType.Info,
                 `Successfully created a table with query ${createTableQuery}`
               );
-              this.documentClientUtility.refreshCachedResources(null).then(
+              refreshCachedResources(null).then(
                 () => {
                   deferred.resolve();
                 },
@@ -521,7 +520,7 @@ export class CassandraAPIDataClient extends TableDataClient {
             ConsoleDataType.Info,
             `Successfully deleted resource with query ${deleteQuery}`
           );
-          this.documentClientUtility.refreshCachedResources(null).then(
+          refreshCachedResources(null).then(
             () => {
               deferred.resolve();
             },
@@ -738,7 +737,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private _checkForbiddenError(reason: any) {
     if (reason && reason.code === Constants.HttpStatusCodes.Forbidden) {
-      MessageHandler.sendMessage({
+      sendMessage({
         type: MessageTypes.ForbiddenError,
         reason: typeof reason === "string" ? "reason" : JSON.stringify(reason)
       });

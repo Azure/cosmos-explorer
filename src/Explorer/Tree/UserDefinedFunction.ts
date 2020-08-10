@@ -6,6 +6,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import { deleteUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
 
 export default class UserDefinedFunction {
   public nodeKind: string;
@@ -40,7 +41,6 @@ export default class UserDefinedFunction {
       tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
       title: `New UDF ${id}`,
       tabPath: "",
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
@@ -57,7 +57,7 @@ export default class UserDefinedFunction {
 
     const userDefinedFunctionTabs: UserDefinedFunctionTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.UserDefinedFunctions,
-      (tab: ViewModels.Tab) => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.rid === this.rid
     ) as UserDefinedFunctionTab[];
     let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
 
@@ -77,7 +77,6 @@ export default class UserDefinedFunction {
         tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
         title: userDefinedFunctionData.id,
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -114,11 +113,9 @@ export default class UserDefinedFunction {
       id: this.id(),
       body: this.body()
     };
-    this.container.documentClientUtility.deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
+    deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
       () => {
-        this.container.tabsManager.removeTabByComparator(
-          (tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid
-        );
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}

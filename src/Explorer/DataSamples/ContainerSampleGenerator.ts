@@ -3,10 +3,11 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import GraphTab from ".././Tabs/GraphTab";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import { createDocument, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
 interface SampleDataFile extends DataModels.CreateDatabaseAndCollectionRequest {
   data: any[];
@@ -64,7 +65,7 @@ export class ContainerSampleGenerator {
       options.initialHeaders[Constants.HttpHeaders.usePolygonsSmallerThanAHemisphere] = true;
     }
 
-    await this.container.documentClientUtility.getOrCreateDatabaseAndCollection(createRequest, options);
+    await getOrCreateDatabaseAndCollection(createRequest, options);
     await this.container.refreshAllDatabases();
     const database = this.container.findDatabaseWithId(this.sampleDataFile.databaseId);
     if (!database) {
@@ -86,14 +87,14 @@ export class ContainerSampleGenerator {
       if (!queries || queries.length < 1) {
         return;
       }
-      const account = CosmosClient.databaseAccount();
+      const account = userContext.databaseAccount;
       const databaseId = collection.databaseId;
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({
         endpoint: `wss://${GraphTab.getGremlinEndpoint(account)}`,
         databaseId: databaseId,
         collectionId: collection.id(),
-        masterKey: CosmosClient.masterKey() || "",
+        masterKey: userContext.masterKey || "",
         maxResultSize: 100
       });
 
@@ -103,7 +104,7 @@ export class ContainerSampleGenerator {
     } else {
       // For SQL all queries are executed at the same time
       this.sampleDataFile.data.forEach(doc => {
-        const subPromise = this.container.documentClientUtility.createDocument(collection, doc);
+        const subPromise = createDocument(collection, doc);
         subPromise.catch(reason => NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, reason));
         promises.push(subPromise);
       });

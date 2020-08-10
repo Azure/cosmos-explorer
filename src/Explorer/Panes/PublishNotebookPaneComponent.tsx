@@ -60,12 +60,12 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     this.imageToBase64 = (file: File, updateImageSrc: (result: string) => void) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = function() {
+      reader.onload = () => {
         updateImageSrc(reader.result.toString());
       };
 
       const onError = this.props.onError;
-      reader.onerror = function(error) {
+      reader.onerror = error => {
         const formError = `Failed to convert ${file.name} to base64 format`;
         const formErrorDetail = `${error}`;
         const area = "PublishNotebookPaneComponent/selectImageFile";
@@ -95,7 +95,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
           const context = canvas.getContext("2d");
           const image = new Image();
           image.src = originalImageData;
-          image.onload = function() {
+          image.onload = () => {
             context.drawImage(image, 0, 0);
             updateImageSrcWithScreenshot(canvas.toDataURL());
           };
@@ -276,7 +276,8 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 isSample: false,
                 downloads: 0,
                 favorites: 0,
-                views: 0
+                views: 0,
+                newCellId: undefined
               }}
               isFavorite={false}
               showDownload={true}
