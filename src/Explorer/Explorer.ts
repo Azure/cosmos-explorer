@@ -1723,6 +1723,7 @@ export default class Explorer {
       return;
     }
 
+    let clearMessage;
     try {
       const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
         this.databaseAccount().id,
@@ -1734,10 +1735,14 @@ export default class Explorer {
         notebookWorkspace.properties.status &&
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
+        clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
         await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
       }
     } catch (error) {
       Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
+      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${JSON.stringify(error)}`);
+    } finally {
+      clearMessage && clearMessage();
     }
   }
 
