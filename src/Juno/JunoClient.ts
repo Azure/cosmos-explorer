@@ -36,6 +36,7 @@ export interface IGalleryItem {
   downloads: number;
   favorites: number;
   views: number;
+  newCellId: string;
 }
 
 export interface IUserGallery {
@@ -162,7 +163,7 @@ export class JunoClient {
     return this.getNotebooks(`${this.getNotebooksUrl()}/gallery/public`);
   }
 
-  public async getNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
+  public async getNotebookInfo(id: string): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(this.getNotebookInfoUrl(id));
 
     let data: IGalleryItem;
@@ -292,19 +293,31 @@ export class JunoClient {
     tags: string[],
     author: string,
     thumbnailUrl: string,
-    content: string
+    content: string,
+    isLinkInjectionEnabled: boolean
   ): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery`, {
       method: "PUT",
       headers: JunoClient.getHeaders(),
-      body: JSON.stringify({
-        name,
-        description,
-        tags,
-        author,
-        thumbnailUrl,
-        content: JSON.parse(content)
-      } as IPublishNotebookRequest)
+
+      body: isLinkInjectionEnabled
+        ? JSON.stringify({
+            name,
+            description,
+            tags,
+            author,
+            thumbnailUrl,
+            content: JSON.parse(content),
+            addLinkToNotebookViewer: isLinkInjectionEnabled
+          } as IPublishNotebookRequest)
+        : JSON.stringify({
+            name,
+            description,
+            tags,
+            author,
+            thumbnailUrl,
+            content: JSON.parse(content)
+          } as IPublishNotebookRequest)
     });
 
     let data: IGalleryItem;

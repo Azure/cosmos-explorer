@@ -47,7 +47,8 @@ const sampleGalleryItems: IGalleryItem[] = [
     isSample: false,
     downloads: 0,
     favorites: 0,
-    views: 0
+    views: 0,
+    newCellId: undefined
   }
 ];
 
@@ -185,7 +186,7 @@ describe("Gallery", () => {
       json: () => undefined as any
     });
 
-    const response = await junoClient.getNotebook(id);
+    const response = await junoClient.getNotebookInfo(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}`);
@@ -353,7 +354,7 @@ describe("Gallery", () => {
       json: () => undefined as any
     });
 
-    const response = await junoClient.publishNotebook(name, description, tags, author, thumbnailUrl, content);
+    const response = await junoClient.publishNotebook(name, description, tags, author, thumbnailUrl, content, false);
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
