@@ -116,7 +116,8 @@ export default class TelemetryProcessor {
 
   private static getData(data?: any): any {
     return {
-      authType: window.authType,
+      // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
+      authType: (window as any).authType,
       subscriptionId: userContext.subscriptionId,
       platform: configContext.platform,
       ...(data ? data : [])
