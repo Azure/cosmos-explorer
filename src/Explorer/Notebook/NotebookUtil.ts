@@ -102,7 +102,7 @@ export class NotebookUtil {
   }
 
   public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): number {
-    let codeCellCount = 0;
+    let codeCellIndex = 0;
     for (let i = 0; i < notebookObject.cellOrder.size; i++) {
       const cellId = notebookObject.cellOrder.get(i);
       if (cellId) {
@@ -112,9 +112,9 @@ export class NotebookUtil {
             output => output.output_type === "display_data" || output.output_type === "execute_result"
           );
           if (displayOutput) {
-            return codeCellCount;
+            return codeCellIndex;
           }
-          codeCellCount++;
+          codeCellIndex++;
         }
       }
     }

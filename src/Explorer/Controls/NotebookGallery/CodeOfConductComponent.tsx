@@ -3,7 +3,6 @@ import { JunoClient } from "../../../Juno/JunoClient";
 import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constants";
 import * as Logger from "../../../Common/Logger";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
 
 export interface CodeOfConductComponentProps {

@@ -62,7 +62,7 @@ interface GalleryViewerComponentState {
   sortBy: SortBy;
   searchText: string;
   dialogProps: DialogProps;
-  acceptedCodeOfConduct: boolean;
+  isCodeOfConductAccepted: boolean;
 }
 
 interface GalleryTabInfo {
@@ -89,7 +89,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private publicNotebooks: IGalleryItem[];
   private favoriteNotebooks: IGalleryItem[];
   private publishedNotebooks: IGalleryItem[];
-  private acceptedCodeOfConduct: boolean;
+  private isCodeOfConductAccepted: boolean;
   private columnCount: number;
   private rowCount: number;
 
@@ -105,7 +105,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       sortBy: props.sortBy,
       searchText: props.searchText,
       dialogProps: undefined,
-      acceptedCodeOfConduct: undefined
+      isCodeOfConductAccepted: undefined
     };
 
     this.sortingOptions = [
@@ -143,11 +143,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         this.createPublicGalleryTab(
           GalleryTab.PublicGallery,
           this.state.publicNotebooks,
-          this.state.acceptedCodeOfConduct
+          this.state.isCodeOfConductAccepted
         )
       );
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-      if (this.state.acceptedCodeOfConduct !== false) {
+      if (this.state.isCodeOfConductAccepted !== false) {
         tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
       }
     }
@@ -203,7 +203,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       <CodeOfConductComponent
         junoClient={this.props.junoClient}
         onAcceptCodeOfConduct={(result: boolean) => {
-          this.setState({ acceptedCodeOfConduct: result });
+          this.setState({ isCodeOfConductAccepted: result });
         }}
       />
     ) : (
@@ -298,7 +298,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         let response: IJunoResponse<IPublicGalleryData> | IJunoResponse<IGalleryItem[]>;
         if (this.props.container.isCodeOfConductEnabled()) {
           response = await this.props.junoClient.fetchPublicNotebooks();
-          this.acceptedCodeOfConduct = response.data?.metadata.acceptedCodeOfConduct;
+          this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
           this.publicNotebooks = response.data?.notebooksData;
         } else {
           response = await this.props.junoClient.getPublicNotebooks();
@@ -317,7 +317,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     this.setState({
       publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))],
-      acceptedCodeOfConduct: this.acceptedCodeOfConduct
+      isCodeOfConductAccepted: this.isCodeOfConductAccepted
     });
   }
 

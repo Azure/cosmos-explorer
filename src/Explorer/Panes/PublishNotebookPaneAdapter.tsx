@@ -28,7 +28,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private imageSrc: string;
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
-  private acceptedCodeOfConduct: boolean;
+  private isCodeOfConductAccepted: boolean;
   private isLinkInjectionEnabled: boolean;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
@@ -53,7 +53,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       submitButtonText: "Publish",
       onClose: () => this.close(),
       onSubmit: () => this.submit(),
-      isSubmitButtonVisible: this.acceptedCodeOfConduct
+      isSubmitButtonVisible: this.isCodeOfConductAccepted
     };
 
     return <GenericRightPaneComponent {...props} />;
@@ -78,14 +78,14 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
           throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
         }
 
-        this.acceptedCodeOfConduct = response.data;
+        this.isCodeOfConductAccepted = response.data;
       } catch (error) {
         const message = `Failed to check if code of conduct was accepted: ${error}`;
         Logger.logError(message, "PublishNotebookPaneAdapter/isCodeOfConductAccepted");
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
       }
     } else {
-      this.acceptedCodeOfConduct = true;
+      this.isCodeOfConductAccepted = true;
     }
 
     this.name = name;
@@ -182,12 +182,12 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       clearFormError: this.clearFormError
     };
 
-    return !this.acceptedCodeOfConduct ? (
+    return !this.isCodeOfConductAccepted ? (
       <div style={{ padding: "15px", marginTop: "10px" }}>
         <CodeOfConductComponent
           junoClient={this.junoClient}
           onAcceptCodeOfConduct={() => {
-            this.acceptedCodeOfConduct = true;
+            this.isCodeOfConductAccepted = true;
             this.triggerRender();
           }}
         />
@@ -197,7 +197,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     );
   };
 
-  private reset = async (): Promise<void> => {
+  private reset = (): void => {
     this.isOpened = false;
     this.isExecuting = false;
     this.formError = undefined;
@@ -210,6 +210,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.imageSrc = undefined;
     this.notebookObject = undefined;
     this.parentDomElement = undefined;
-    this.acceptedCodeOfConduct = undefined;
+    this.isCodeOfConductAccepted = undefined;
+    this.isLinkInjectionEnabled = undefined;
   };
 }

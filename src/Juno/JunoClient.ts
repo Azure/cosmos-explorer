@@ -174,8 +174,8 @@ export class JunoClient {
 
   // will be renamed once feature.enableCodeOfConduct flag is removed
   public async fetchPublicNotebooks(): Promise<IJunoResponse<IPublicGalleryData>> {
-    const input = `${this.getNotebooksAccountUrl()}/gallery/public`;
-    const response = await window.fetch(input, {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/public`;
+    const response = await window.fetch(url, {
       method: "PATCH",
       headers: JunoClient.getHeaders()
     });
@@ -192,8 +192,8 @@ export class JunoClient {
   }
 
   public async acceptCodeOfConduct(): Promise<IJunoResponse<boolean>> {
-    const input = `${this.getNotebooksAccountUrl()}/gallery/acceptCodeOfConduct`;
-    const response = await window.fetch(input, {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/acceptCodeOfConduct`;
+    const response = await window.fetch(url, {
       method: "PATCH",
       headers: JunoClient.getHeaders()
     });
@@ -210,8 +210,8 @@ export class JunoClient {
   }
 
   public async isCodeOfConductAccepted(): Promise<IJunoResponse<boolean>> {
-    const input = `${this.getNotebooksAccountUrl()}/gallery/isCodeOfConductAccepted`;
-    const response = await window.fetch(input, {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/isCodeOfConductAccepted`;
+    const response = await window.fetch(url, {
       method: "PATCH",
       headers: JunoClient.getHeaders()
     });
@@ -363,7 +363,6 @@ export class JunoClient {
     const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery`, {
       method: "PUT",
       headers: JunoClient.getHeaders(),
-
       body: isLinkInjectionEnabled
         ? JSON.stringify({
             name,

@@ -115,7 +115,14 @@ export default class NotebookManager {
     isCodeOfConductEnabled: boolean,
     isLinkInjectionEnabled: boolean
   ): Promise<void> {
-    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement, isCodeOfConductEnabled, isLinkInjectionEnabled);
+    await this.publishNotebookPaneAdapter.open(
+      name,
+      getFullName(),
+      content,
+      parentDomElement,
+      isCodeOfConductEnabled,
+      isLinkInjectionEnabled
+    );
   }
 
   // Octokit's error handler uses any
