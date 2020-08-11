@@ -108,13 +108,21 @@ export default class NotebookManager {
     this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
   }
 
-  public openPublishNotebookPane(
+  public async openPublishNotebookPane(
     name: string,
     content: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
+    isCodeOfConductEnabled: boolean,
     isLinkInjectionEnabled: boolean
-  ): void {
-    this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement, isLinkInjectionEnabled);
+  ): Promise<void> {
+    await this.publishNotebookPaneAdapter.open(
+      name,
+      getFullName(),
+      content,
+      parentDomElement,
+      isCodeOfConductEnabled,
+      isLinkInjectionEnabled
+    );
   }
 
   // Octokit's error handler uses any

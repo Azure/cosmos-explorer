@@ -1,5 +1,5 @@
 import path from "path";
-import { ImmutableNotebook, ImmutableCodeCell, ImmutableOutput } from "@nteract/commutable";
+import { ImmutableNotebook, ImmutableCodeCell } from "@nteract/commutable";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
@@ -102,25 +102,19 @@ export class NotebookUtil {
   }
 
   public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): number {
-    let codeCellCount = -1;
+    let codeCellIndex = 0;
     for (let i = 0; i < notebookObject.cellOrder.size; i++) {
       const cellId = notebookObject.cellOrder.get(i);
       if (cellId) {
         const cell = notebookObject.cellMap.get(cellId);
-        if (cell && cell.cell_type === "code") {
-          codeCellCount++;
-          const codeCell = cell as ImmutableCodeCell;
-          if (codeCell.outputs) {
-            const displayOutput = codeCell.outputs.find((output: ImmutableOutput) => {
-              if (output.output_type === "display_data" || output.output_type === "execute_result") {
-                return true;
-              }
-              return false;
-            });
-            if (displayOutput) {
-              return codeCellCount;
-            }
+        if (cell?.cell_type === "code") {
+          const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
+            output => output.output_type === "display_data" || output.output_type === "execute_result"
+          );
+          if (displayOutput) {
+            return codeCellIndex;
           }
+          codeCellIndex++;
         }
       }
     }

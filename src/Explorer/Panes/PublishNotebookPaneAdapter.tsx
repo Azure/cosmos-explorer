@@ -10,6 +10,8 @@ import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRight
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 import { ImmutableNotebook } from "@nteract/commutable/src";
 import { toJS } from "@nteract/commutable";
+import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
+import { HttpStatusCodes } from "../../Common/Constants";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -26,6 +28,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private imageSrc: string;
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
+  private isCodeOfConductAccepted: boolean;
   private isLinkInjectionEnabled: boolean;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
@@ -49,7 +52,8 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       title: "Publish to gallery",
       submitButtonText: "Publish",
       onClose: () => this.close(),
-      onSubmit: () => this.submit()
+      onSubmit: () => this.submit(),
+      isSubmitButtonVisible: this.isCodeOfConductAccepted
     };
 
     return <GenericRightPaneComponent {...props} />;
@@ -59,13 +63,31 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
 
-  public open(
+  public async open(
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
+    isCodeOfConductEnabled: boolean,
     isLinkInjectionEnabled: boolean
-  ): void {
+  ): Promise<void> {
+    if (isCodeOfConductEnabled) {
+      try {
+        const response = await this.junoClient.isCodeOfConductAccepted();
+        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+          throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
+        }
+
+        this.isCodeOfConductAccepted = response.data;
+      } catch (error) {
+        const message = `Failed to check if code of conduct was accepted: ${error}`;
+        Logger.logError(message, "PublishNotebookPaneAdapter/isCodeOfConductAccepted");
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      }
+    } else {
+      this.isCodeOfConductAccepted = true;
+    }
+
     this.name = name;
     this.author = author;
     if (typeof notebookContent === "string") {
@@ -108,11 +130,9 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         this.content,
         this.isLinkInjectionEnabled
       );
-      if (!response.data) {
-        throw new Error(`Received HTTP ${response.status} when publishing ${name} to gallery`);
+      if (response.data) {
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Published ${name} to gallery`);
       }
-
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Published ${name} to gallery`);
     } catch (error) {
       this.formError = `Failed to publish ${this.name} to gallery`;
       this.formErrorDetail = `${error}`;
@@ -162,7 +182,19 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       clearFormError: this.clearFormError
     };
 
-    return <PublishNotebookPaneComponent {...publishNotebookPaneProps} />;
+    return !this.isCodeOfConductAccepted ? (
+      <div style={{ padding: "15px", marginTop: "10px" }}>
+        <CodeOfConductComponent
+          junoClient={this.junoClient}
+          onAcceptCodeOfConduct={() => {
+            this.isCodeOfConductAccepted = true;
+            this.triggerRender();
+          }}
+        />
+      </div>
+    ) : (
+      <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
+    );
   };
 
   private reset = (): void => {
@@ -178,5 +210,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.imageSrc = undefined;
     this.notebookObject = undefined;
     this.parentDomElement = undefined;
+    this.isCodeOfConductAccepted = undefined;
+    this.isLinkInjectionEnabled = undefined;
   };
 }
