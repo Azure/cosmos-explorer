@@ -31,10 +31,10 @@ export async function deleteCollection(databaseId: string, collectionId: string)
 }
 
 function deleteCollectionWithARM(databaseId: string, collectionId: string): Promise<void> {
-  const subscriptionId: string = userContext.subscriptionId;
-  const resourceGroup: string = userContext.resourceGroup;
-  const accountName: string = userContext.databaseAccount.name;
-  const defaultExperience: DefaultAccountExperienceType = userContext.defaultExperience;
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroup = userContext.resourceGroup;
+  const accountName = userContext.databaseAccount.name;
+  const defaultExperience = userContext.defaultExperience;
 
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
