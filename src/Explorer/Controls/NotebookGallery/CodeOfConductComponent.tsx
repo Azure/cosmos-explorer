@@ -51,6 +51,10 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
     }
   }
 
+  private onChangeCheckbox = (): void => {
+    this.setState({ readCodeOfConduct: !this.state.readCodeOfConduct });
+  };
+
   public render(): JSX.Element {
     return (
       <Stack tokens={{ childrenGap: 20 }}>
@@ -87,7 +91,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
               }
             }}
             label="I have read and accepted the code of conduct and privacy statement"
-            onChange={() => this.setState({ readCodeOfConduct: !this.state.readCodeOfConduct })}
+            onChange={this.onChangeCheckbox}
           />
         </Stack.Item>
 

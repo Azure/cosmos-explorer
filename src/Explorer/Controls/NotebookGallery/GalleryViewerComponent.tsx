@@ -148,7 +148,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       );
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
 
-      // explicitely checking if isCodeOfConductAccepted is not false, as it is initially undefined.
+      // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
       // Displaying code of conduct component on gallery load should not be the default behavior.
       if (this.state.isCodeOfConductAccepted !== false) {
         tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
