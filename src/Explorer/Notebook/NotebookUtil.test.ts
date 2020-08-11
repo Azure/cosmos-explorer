@@ -13,8 +13,10 @@ import { List, Map } from "immutable";
 
 const fileName = "file";
 const notebookName = "file.ipynb";
-const filePath = `folder/${fileName}`;
-const notebookPath = `folder/${notebookName}`;
+const folderPath = "folder";
+const filePath = `${folderPath}/${fileName}`;
+const notebookPath = `${folderPath}/${notebookName}`;
+const gitHubFolderUri = GitHubUtils.toContentUri("owner", "repo", "branch", folderPath);
 const gitHubFileUri = GitHubUtils.toContentUri("owner", "repo", "branch", filePath);
 const gitHubNotebookUri = GitHubUtils.toContentUri("owner", "repo", "branch", notebookPath);
 const notebookRecord = makeNotebookRecord({
@@ -77,6 +79,26 @@ describe("NotebookUtil", () => {
     it("works for github file uris", () => {
       expect(NotebookUtil.isNotebookFile(gitHubFileUri)).toBeFalsy();
       expect(NotebookUtil.isNotebookFile(gitHubNotebookUri)).toBeTruthy();
+    });
+  });
+
+  describe("getFilePath", () => {
+    it("works for jupyter file paths", () => {
+      expect(NotebookUtil.getFilePath(folderPath, fileName)).toEqual(filePath);
+    });
+
+    it("works for github file uris", () => {
+      expect(NotebookUtil.getFilePath(gitHubFolderUri, fileName)).toEqual(gitHubFileUri);
+    });
+  });
+
+  describe("getParentPath", () => {
+    it("works for jupyter file paths", () => {
+      expect(NotebookUtil.getParentPath(filePath)).toEqual(folderPath);
+    });
+
+    it("works for github file uris", () => {
+      expect(NotebookUtil.getParentPath(gitHubFileUri)).toEqual(gitHubFolderUri);
     });
   });
 
