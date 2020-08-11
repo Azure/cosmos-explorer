@@ -25,6 +25,7 @@ import { getFullName } from "../../Utils/UserUtils";
 import { ImmutableNotebook } from "@nteract/commutable";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
+import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
 
 export interface NotebookManagerOptions {
   container: Explorer;
@@ -49,6 +50,7 @@ export default class NotebookManager {
 
   public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
+  public copyNotebookPaneAdapter: CopyNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
@@ -90,6 +92,8 @@ export default class NotebookManager {
       this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
     }
 
+    this.copyNotebookPaneAdapter = new CopyNotebookPaneAdapter(this.params.container, this.junoClient, this.gitHubOAuthService);
+
     this.gitHubOAuthService.getTokenObservable().subscribe(token => {
       this.gitHubClient.setToken(token?.access_token);
 
@@ -108,6 +112,10 @@ export default class NotebookManager {
     this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
   }
 
+  public refreshPinnedRepos(): void {
+    this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
+  }
+
   public async openPublishNotebookPane(
     name: string,
     content: string | ImmutableNotebook,
@@ -123,6 +131,10 @@ export default class NotebookManager {
       isCodeOfConductEnabled,
       isLinkInjectionEnabled
     );
+  }
+
+  public openCopyNotebookPane(name: string, content: string): void {
+    this.copyNotebookPaneAdapter.open(name, content);
   }
 
   // Octokit's error handler uses any

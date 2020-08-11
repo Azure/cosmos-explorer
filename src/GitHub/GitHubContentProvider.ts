@@ -195,7 +195,17 @@ export class GitHubContentProvider implements IContentProvider {
     return from(
       this.getContent(uri).then(async (content: IGitHubResponse<IGitHubFile | IGitHubFile[]>) => {
         try {
-          const commitMsg = await this.validateContentAndGetCommitMsg(content, "Save", "Save");
+          let commitMsg: string;
+          if (content.status === HttpStatusCodes.NotFound) {
+            // We'll create a new file since it doesn't exist
+            commitMsg = await this.params.promptForCommitMsg("Save", "Save");
+            if (!commitMsg) {
+              throw new GitHubContentProviderError("Couldn't get a commit message");
+            }
+          } else {
+            commitMsg = await this.validateContentAndGetCommitMsg(content, "Save", "Save");
+          }
+          
           let updatedContent: string;
           if (model.type === "notebook") {
             updatedContent = btoa(stringifyNotebook(model.content as Notebook));
@@ -208,21 +218,35 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError("Unsupported content type");
           }
 
-          const gitHubFile = content.data as IGitHubFile;
-          const response = await this.params.gitHubClient.createOrUpdateFileAsync(
-            gitHubFile.repo.owner,
-            gitHubFile.repo.name,
-            gitHubFile.branch.name,
-            gitHubFile.path,
-            commitMsg,
-            updatedContent,
-            gitHubFile.sha
-          );
-          if (response.status !== HttpStatusCodes.OK) {
-            throw new GitHubContentProviderError("Failed to update", response.status);
+          const contentInfo = GitHubUtils.fromContentUri(uri);
+          let gitHubFile: IGitHubFile;
+          if (content.data) {
+            gitHubFile = content.data as IGitHubFile;
           }
 
-          gitHubFile.commit = response.data;
+          const response = await this.params.gitHubClient.createOrUpdateFileAsync(
+            contentInfo.owner,
+            contentInfo.repo,
+            contentInfo.branch,
+            contentInfo.path,
+            commitMsg,
+            updatedContent,
+            gitHubFile?.sha
+          );
+          if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.Created) {
+            throw new GitHubContentProviderError("Failed to create or update", response.status);
+          }
+
+          if (gitHubFile) {
+            gitHubFile.commit = response.data; 
+          } else {
+            const contentResponse = await this.params.gitHubClient.getContentsAsync(contentInfo.owner, contentInfo.repo, contentInfo.branch, contentInfo.path);
+            if (contentResponse.status !== HttpStatusCodes.OK) {
+              throw new GitHubContentProviderError("Failed to get content", response.status);
+            }
+            
+            gitHubFile = contentResponse.data as IGitHubFile;
+          }
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.OK,

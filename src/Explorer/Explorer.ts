@@ -203,6 +203,7 @@ export default class Explorer {
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
+  public copyNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGalleryPublishEnabled: ko.Computed<boolean>;
@@ -210,6 +211,7 @@ export default class Explorer {
   public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
+  public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
@@ -418,6 +420,7 @@ export default class Explorer {
     );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
+    this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
@@ -2305,7 +2308,7 @@ export default class Explorer {
     return _.find(offers, (offer: DataModels.Offer) => offer.resource === resourceId);
   }
 
-  private uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
+  public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
       Logger.logError(error, "Explorer/uploadFile");
@@ -2371,6 +2374,14 @@ export default class Explorer {
       );
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
+    }
+  }
+
+  public copyNotebook(name: string, content: string): void {
+    if (this.notebookManager) {
+      this.notebookManager.openCopyNotebookPane(name, content);
+      this.copyNotebookPaneAdapter = this.notebookManager.copyNotebookPaneAdapter;
+      this.isCopyNotebookPaneEnabled(true);
     }
   }
 
@@ -2730,6 +2741,7 @@ export default class Explorer {
     }
 
     await this.resourceTree.initialize();
+    this.notebookManager?.refreshPinnedRepos();
     if (this.notebookToImport) {
       this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
     }
