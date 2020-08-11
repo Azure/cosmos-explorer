@@ -34,6 +34,9 @@ import TabsBase from "../Tabs/TabsBase";
 import { userContext } from "../../UserContext";
 
 export class ResourceTreeAdapter implements ReactAdapter {
+  public static readonly MyNotebooksTitle = "My Notebooks";
+  public static readonly GitHubReposTitle = "GitHub repos";
+
   private static readonly DataTitle = "DATA";
   private static readonly NotebooksTitle = "NOTEBOOKS";
   private static readonly PseudoDirPath = "PsuedoDir";
@@ -105,7 +108,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
 
     this.myNotebooksContentRoot = {
-      name: "My Notebooks",
+      name: ResourceTreeAdapter.MyNotebooksTitle,
       path: this.container.getNotebookBasePath(),
       type: NotebookContentItemType.Directory
     };
@@ -119,7 +122,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       this.gitHubNotebooksContentRoot = {
-        name: "GitHub repos",
+        name: ResourceTreeAdapter.GitHubReposTitle,
         path: ResourceTreeAdapter.PseudoDirPath,
         type: NotebookContentItemType.Directory
       };

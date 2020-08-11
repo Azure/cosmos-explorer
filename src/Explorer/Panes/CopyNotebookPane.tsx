@@ -21,9 +21,10 @@ import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { HttpStatusCodes } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItemType, NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 
 interface Location {
-  type: "My Notebooks" | "GitHub";
+  type: "MyNotebooks" | "GitHub";
 
   // GitHub
   owner?: string;
@@ -32,6 +33,8 @@ interface Location {
 }
 
 export class CopyNotebookPaneAdapter implements ReactAdapter {
+  private static readonly BranchNameWhiteSpace = "   ";
+
   parameters: ko.Observable<number>;
   private isOpened: boolean;
   private isExecuting: boolean;
@@ -92,7 +95,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
         NotificationConsoleUtils.logConsoleError(message);
       }
 
-      if (response.data && response.data.length > 0) {
+      if (response.data?.length > 0) {
         this.pinnedRepos = response.data;
         this.triggerRender();
       }
@@ -150,9 +153,9 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
   private copyNotebook = async (location: Location): Promise<NotebookContentItem> => {
     let parent: NotebookContentItem;
     switch (location.type) {
-      case "My Notebooks":
+      case "MyNotebooks":
         parent = {
-          name: "My Notebooks",
+          name: ResourceTreeAdapter.MyNotebooksTitle,
           path: this.container.getNotebookBasePath(),
           type: NotebookContentItemType.Directory
         };
@@ -160,7 +163,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
 
       case "GitHub":
         parent = {
-          name: "GitHub repos",
+          name: ResourceTreeAdapter.GitHubReposTitle,
           path: GitHubUtils.toContentUri(
             this.selectedLocation.owner,
             this.selectedLocation.repo,
@@ -192,10 +195,10 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     return (
       <div className="paneMainContent">
         <Stack tokens={{ childrenGap: 10 }}>
-          <div>
+          <Stack.Item>
             <Label htmlFor="notebookName">Name</Label>
             <Text id="notebookName">{this.name}</Text>
-          </div>
+          </Stack.Item>
 
           <Dropdown {...dropDownProps} />
         </Stack>
@@ -204,7 +207,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
   };
 
   private onRenderDropDownTitle: IRenderFunction<IDropdownOption[]> = (options: IDropdownOption[]): JSX.Element => {
-    return <span>{options[0].title}</span>;
+    return <span>{options.length && options[0].title}</span>;
   };
 
   private onRenderDropDownOption: IRenderFunction<ISelectableOption> = (option: ISelectableOption): JSX.Element => {
@@ -215,11 +218,11 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     const options: IDropdownOption[] = [];
 
     options.push({
-      key: "My Notebooks",
-      text: "My Notebooks",
-      title: "My Notebooks",
+      key: "MyNotebooks-Item",
+      text: ResourceTreeAdapter.MyNotebooksTitle,
+      title: ResourceTreeAdapter.MyNotebooksTitle,
       data: {
-        type: "My Notebooks"
+        type: "MyNotebooks"
       } as Location
     });
 
@@ -232,7 +235,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
 
       options.push({
         key: "GitHub-Header",
-        text: "GitHub repos",
+        text: ResourceTreeAdapter.GitHubReposTitle,
         itemType: SelectableOptionMenuItemType.Header
       });
 
@@ -247,7 +250,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
         pinnedRepo.branches.forEach(branch =>
           options.push({
             key: `GitHub-Repo-${repoFullName}-${branch.name}`,
-            text: `   ${branch.name}`,
+            text: `${CopyNotebookPaneAdapter.BranchNameWhiteSpace}${branch.name}`,
             title: `${repoFullName} - ${branch.name}`,
             data: {
               type: "GitHub",
