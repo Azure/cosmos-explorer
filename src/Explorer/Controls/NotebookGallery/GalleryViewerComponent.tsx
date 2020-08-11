@@ -385,12 +385,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private isGalleryItemPresent(searchText: string, item: IGalleryItem): boolean {
     const toSearch = searchText.trim().toUpperCase();
-    const searchData: string[] = [
-      item.author.toUpperCase(),
-      item.description.toUpperCase(),
-      item.name.toUpperCase(),
-      ...item.tags?.map(tag => tag.toUpperCase())
-    ];
+    const searchData: string[] = [item.author.toUpperCase(), item.description.toUpperCase(), item.name.toUpperCase()];
+
+    if (item.tags) {
+      searchData.push(...item.tags.map(tag => tag.toUpperCase()));
+    }
 
     for (const data of searchData) {
       if (data?.indexOf(toSearch) !== -1) {

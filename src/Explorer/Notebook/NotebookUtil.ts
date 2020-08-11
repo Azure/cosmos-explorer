@@ -89,14 +89,16 @@ export class NotebookUtil {
       const contentInfo = GitHubUtils.fromContentUri(filepath);
       if (contentInfo) {
         const parentPath = contentInfo.path.split(basename).shift();
-        if (parentPath) {
-          return GitHubUtils.toContentUri(
-            contentInfo.owner,
-            contentInfo.repo,
-            contentInfo.branch,
-            parentPath.replace(/\/$/, "") // no trailling slash
-          );
+        if (parentPath === undefined) {
+          return undefined;
         }
+
+        return GitHubUtils.toContentUri(
+          contentInfo.owner,
+          contentInfo.repo,
+          contentInfo.branch,
+          parentPath.replace(/\/$/, "") // no trailling slash
+        );
       }
 
       const parentPath = filepath.split(basename).shift();

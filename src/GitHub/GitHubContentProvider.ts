@@ -2,10 +2,11 @@ import { Notebook, stringifyNotebook, makeNotebookRecord, toJS } from "@nteract/
 import { FileType, IContent, IContentProvider, IEmptyContent, IGetParams, ServerConfig } from "@nteract/core";
 import { from, Observable, of } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
+import * as Base64Utils from "../Utils/Base64Utils";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
-import { GitHubClient, IGitHubFile, IGitHubResponse, IGitHubCommit, IGitHubBranch } from "./GitHubClient";
+import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 import * as GitHubUtils from "../Utils/GitHubUtils";
 import UrlUtility from "../Common/UrlUtility";
 
@@ -131,7 +132,7 @@ export class GitHubContentProvider implements IContentProvider {
             throw new GitHubContentProviderError(`Failed to parse ${uri}`);
           }
 
-          const content = btoa(stringifyNotebook(toJS(makeNotebookRecord())));
+          const content = Base64Utils.utf8ToB64(stringifyNotebook(toJS(makeNotebookRecord())));
           const options: Intl.DateTimeFormatOptions = {
             year: "numeric",
             month: "short",
@@ -208,11 +209,11 @@ export class GitHubContentProvider implements IContentProvider {
 
           let updatedContent: string;
           if (model.type === "notebook") {
-            updatedContent = btoa(stringifyNotebook(model.content as Notebook));
+            updatedContent = Base64Utils.utf8ToB64(stringifyNotebook(model.content as Notebook));
           } else if (model.type === "file") {
             updatedContent = model.content as string;
             if (model.format !== "base64") {
-              updatedContent = btoa(updatedContent);
+              updatedContent = Base64Utils.utf8ToB64(updatedContent);
             }
           } else {
             throw new GitHubContentProviderError("Unsupported content type");
