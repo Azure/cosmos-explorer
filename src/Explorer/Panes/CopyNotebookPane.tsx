@@ -18,7 +18,7 @@ import {
   ISelectableOption
 } from "office-ui-fabric-react";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
-import { HttpStatusCodes, Notebook } from "../../Common/Constants";
+import { HttpStatusCodes } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItemType, NotebookContentItem } from "../Notebook/NotebookContentItem";
 
@@ -77,7 +77,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
 
-  public async open(name: string, content: string) {
+  public async open(name: string, content: string): Promise<void> {
     this.name = name;
     this.content = content;
 
@@ -263,11 +263,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     return options;
   };
 
-  private onDropDownChange = (
-    event: React.FormEvent<HTMLDivElement>,
-    option?: IDropdownOption,
-    index?: number
-  ): void => {
+  private onDropDownChange = (_: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
     this.selectedLocation = option?.data;
   };
 

@@ -83,22 +83,29 @@ export class NotebookUtil {
     return `${path}/${fileName}`;
   }
 
-  public static getParentPath(filepath: string): string {
+  public static getParentPath(filepath: string): undefined | string {
     const basename = NotebookUtil.getName(filepath);
-    const contentInfo = GitHubUtils.fromContentUri(filepath);
-    if (contentInfo) {
-      const parentPath = contentInfo.path
-        .split(basename)
-        .shift()
-        .replace(/\/$/, ""); // no trailling slash
+    if (basename) {
+      const contentInfo = GitHubUtils.fromContentUri(filepath);
+      if (contentInfo) {
+        const parentPath = contentInfo.path.split(basename).shift();
+        if (parentPath) {
+          return GitHubUtils.toContentUri(
+            contentInfo.owner,
+            contentInfo.repo,
+            contentInfo.branch,
+            parentPath.replace(/\/$/, "") // no trailling slash
+          );
+        }
+      }
 
-      return GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, parentPath);
+      const parentPath = filepath.split(basename).shift();
+      if (parentPath) {
+        return parentPath.replace(/\/$/, ""); // no trailling slash
+      }
     }
 
-    return filepath
-      .split(basename)
-      .shift()
-      .replace(/\/$/, ""); // no trailling slash
+    return undefined;
   }
 
   public static getName(path: string): undefined | string {
