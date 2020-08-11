@@ -1,16 +1,26 @@
-import ko from 'knockout';
-import * as React from 'react';
-import { ReactAdapter } from '../../Bindings/ReactBindingHandler';
-import * as Logger from '../../Common/Logger';
-import { JunoClient, IPinnedRepo } from '../../Juno/JunoClient';
-import * as NotificationConsoleUtils from '../../Utils/NotificationConsoleUtils';
-import Explorer from '../Explorer';
-import { GenericRightPaneComponent, GenericRightPaneProps } from './GenericRightPaneComponent';
-import { Stack, Label, Text, Dropdown, IDropdownProps, IDropdownOption, SelectableOptionMenuItemType, IRenderFunction, ISelectableOption } from 'office-ui-fabric-react';
-import { GitHubOAuthService } from '../../GitHub/GitHubOAuthService';
-import { HttpStatusCodes, Notebook } from '../../Common/Constants';
+import ko from "knockout";
+import * as React from "react";
+import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import * as Logger from "../../Common/Logger";
+import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
+import {
+  Stack,
+  Label,
+  Text,
+  Dropdown,
+  IDropdownProps,
+  IDropdownOption,
+  SelectableOptionMenuItemType,
+  IRenderFunction,
+  ISelectableOption
+} from "office-ui-fabric-react";
+import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
+import { HttpStatusCodes, Notebook } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
-import { NotebookContentItemType, NotebookContentItem } from '../Notebook/NotebookContentItem';
+import { NotebookContentItemType, NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 interface Location {
   type: "My Notebooks" | "GitHub";
@@ -32,7 +42,11 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
   private pinnedRepos: IPinnedRepo[];
   private selectedLocation: Location;
 
-  constructor(private container: Explorer, private junoClient: JunoClient, private gitHubOAuthService: GitHubOAuthService) {
+  constructor(
+    private container: Explorer,
+    private junoClient: JunoClient,
+    private gitHubOAuthService: GitHubOAuthService
+  ) {
     this.parameters = ko.observable(Date.now());
     this.reset();
     this.triggerRender();
@@ -58,7 +72,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
 
     return <GenericRightPaneComponent {...props} />;
   }
-  
+
   public triggerRender(): void {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
@@ -77,7 +91,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
         Logger.logError(message, "CopyNotebookPaneAdapter/submit");
         NotificationConsoleUtils.logConsoleError(message);
       }
-  
+
       if (response.data && response.data.length > 0) {
         this.pinnedRepos = response.data;
         this.triggerRender();
@@ -102,7 +116,10 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       }
 
       if (this.selectedLocation.type === "GitHub") {
-        destination = `${destination} - ${GitHubUtils.toRepoFullName(this.selectedLocation.owner, this.selectedLocation.repo)} - ${this.selectedLocation.branch}`
+        destination = `${destination} - ${GitHubUtils.toRepoFullName(
+          this.selectedLocation.owner,
+          this.selectedLocation.repo
+        )} - ${this.selectedLocation.branch}`;
       }
 
       clearMessage = NotificationConsoleUtils.logConsoleProgress(`Copying ${this.name} to ${destination}`);
@@ -144,9 +161,14 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       case "GitHub":
         parent = {
           name: "GitHub repos",
-          path: GitHubUtils.toContentUri(this.selectedLocation.owner, this.selectedLocation.repo, this.selectedLocation.branch, ""),
+          path: GitHubUtils.toContentUri(
+            this.selectedLocation.owner,
+            this.selectedLocation.repo,
+            this.selectedLocation.branch,
+            ""
+          ),
           type: NotebookContentItemType.Directory
-        }
+        };
         break;
 
       default:
@@ -154,7 +176,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     }
 
     return this.container.uploadFile(this.name, this.content, parent);
-  }
+  };
 
   private createContent = (): JSX.Element => {
     const dropDownProps: IDropdownProps = {
@@ -179,15 +201,15 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
         </Stack>
       </div>
     );
-  }
+  };
 
   private onRenderDropDownTitle: IRenderFunction<IDropdownOption[]> = (options: IDropdownOption[]): JSX.Element => {
     return <span>{options[0].title}</span>;
-  }
+  };
 
   private onRenderDropDownOption: IRenderFunction<ISelectableOption> = (option: ISelectableOption): JSX.Element => {
     return <span style={{ whiteSpace: "pre-wrap" }}>{option.text}</span>;
-  }
+  };
 
   private getDropDownOptions = (): IDropdownOption[] => {
     const options: IDropdownOption[] = [];
@@ -222,26 +244,32 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
           disabled: true
         });
 
-        pinnedRepo.branches.forEach(branch => options.push({
-          key: `GitHub-Repo-${repoFullName}-${branch.name}`,
-          text: `   ${branch.name}`,
-          title: `${repoFullName} - ${branch.name}`,
-          data: {
-            type: "GitHub",
-            owner: pinnedRepo.owner,
-            repo: pinnedRepo.name,
-            branch: branch.name
-          } as Location
-        }));
+        pinnedRepo.branches.forEach(branch =>
+          options.push({
+            key: `GitHub-Repo-${repoFullName}-${branch.name}`,
+            text: `   ${branch.name}`,
+            title: `${repoFullName} - ${branch.name}`,
+            data: {
+              type: "GitHub",
+              owner: pinnedRepo.owner,
+              repo: pinnedRepo.name,
+              branch: branch.name
+            } as Location
+          })
+        );
       });
     }
 
     return options;
-  }
+  };
 
-  private onDropDownChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number): void => {
+  private onDropDownChange = (
+    event: React.FormEvent<HTMLDivElement>,
+    option?: IDropdownOption,
+    index?: number
+  ): void => {
     this.selectedLocation = option?.data;
-  }
+  };
 
   private reset = (): void => {
     this.isOpened = false;

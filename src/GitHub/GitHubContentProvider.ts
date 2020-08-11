@@ -205,7 +205,7 @@ export class GitHubContentProvider implements IContentProvider {
           } else {
             commitMsg = await this.validateContentAndGetCommitMsg(content, "Save", "Save");
           }
-          
+
           let updatedContent: string;
           if (model.type === "notebook") {
             updatedContent = btoa(stringifyNotebook(model.content as Notebook));
@@ -238,13 +238,18 @@ export class GitHubContentProvider implements IContentProvider {
           }
 
           if (gitHubFile) {
-            gitHubFile.commit = response.data; 
+            gitHubFile.commit = response.data;
           } else {
-            const contentResponse = await this.params.gitHubClient.getContentsAsync(contentInfo.owner, contentInfo.repo, contentInfo.branch, contentInfo.path);
+            const contentResponse = await this.params.gitHubClient.getContentsAsync(
+              contentInfo.owner,
+              contentInfo.repo,
+              contentInfo.branch,
+              contentInfo.path
+            );
             if (contentResponse.status !== HttpStatusCodes.OK) {
               throw new GitHubContentProviderError("Failed to get content", response.status);
             }
-            
+
             gitHubFile = contentResponse.data as IGitHubFile;
           }
 

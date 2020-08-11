@@ -485,7 +485,7 @@ export default class NotebookTabV2 extends TabsBase {
     }
 
     this.container.copyNotebook(notebookContent.name, content);
-  }
+  };
 
   private traceTelemetry(actionType: number) {
     TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {

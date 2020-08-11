@@ -583,9 +583,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private copyNotebook = async (item: NotebookContentItem) => {
     const content = await this.container.readFile(item);
     if (content) {
-      this.container.copyNotebook(item.name, content)
+      this.container.copyNotebook(item.name, content);
     }
-  }
+  };
 
   private createDirectoryContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
     let items: TreeNodeMenuItem[] = [

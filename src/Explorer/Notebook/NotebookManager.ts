@@ -92,7 +92,11 @@ export default class NotebookManager {
       this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
     }
 
-    this.copyNotebookPaneAdapter = new CopyNotebookPaneAdapter(this.params.container, this.junoClient, this.gitHubOAuthService);
+    this.copyNotebookPaneAdapter = new CopyNotebookPaneAdapter(
+      this.params.container,
+      this.junoClient,
+      this.gitHubOAuthService
+    );
 
     this.gitHubOAuthService.getTokenObservable().subscribe(token => {
       this.gitHubClient.setToken(token?.access_token);
