@@ -1,4 +1,5 @@
 import { DatabaseAccount } from "./Contracts/DataModels";
+import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 
 interface UserContext {
   masterKey?: string;
@@ -9,6 +10,7 @@ interface UserContext {
   accessToken?: string;
   authorizationToken?: string;
   resourceToken?: string;
+  defaultExperience?: DefaultAccountExperienceType;
 }
 
 const userContext: Readonly<UserContext> = {} as const;

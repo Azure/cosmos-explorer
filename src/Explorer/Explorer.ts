@@ -482,7 +482,11 @@ export default class Explorer {
     this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
     this.databaseAccount.subscribe(databaseAccount => {
-      this.defaultExperience(DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount));
+      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
+        databaseAccount
+      );
+      this.defaultExperience(defaultExperience);
+      updateUserContext({ defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience) });
     });
 
     this.isPreferredApiDocumentDB = ko.computed(() => {

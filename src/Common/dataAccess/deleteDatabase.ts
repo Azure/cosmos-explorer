@@ -1,5 +1,9 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 import { client } from "../CosmosClient";
@@ -12,12 +16,7 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
 
   try {
     if (window.authType === AuthType.AAD) {
-      await deleteSqlDatabase(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-        databaseId
-      );
+      await deleteDatabaseWithARM(databaseId);
     } else {
       await client()
         .database(databaseId)
@@ -32,4 +31,24 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
   logConsoleInfo(`Successfully deleted database ${databaseId}`);
   clearMessage();
   await refreshCachedResources();
+}
+
+function deleteDatabaseWithARM(databaseId: string): Promise<void> {
+  const subscriptionId: string = userContext.subscriptionId;
+  const resourceGroup: string = userContext.resourceGroup;
+  const accountName: string = userContext.databaseAccount.name;
+  const defaultExperience: DefaultAccountExperienceType = userContext.defaultExperience;
+
+  switch (defaultExperience) {
+    case DefaultAccountExperienceType.DocumentDB:
+      return deleteSqlDatabase(subscriptionId, resourceGroup, accountName, databaseId);
+    case DefaultAccountExperienceType.MongoDB:
+      return deleteMongoDBDatabase(subscriptionId, resourceGroup, accountName, databaseId);
+    case DefaultAccountExperienceType.Cassandra:
+      return deleteCassandraKeyspace(subscriptionId, resourceGroup, accountName, databaseId);
+    case DefaultAccountExperienceType.Graph:
+      return deleteGremlinDatabase(subscriptionId, resourceGroup, accountName, databaseId);
+    default:
+      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+  }
 }
