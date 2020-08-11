@@ -39,7 +39,7 @@ export async function createUpdateCassandraKeyspace(
   body: Types.CassandraKeyspaceCreateUpdateParameters
 ): Promise<Types.CassandraKeyspaceGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Deletes an existing Azure Cosmos DB Cassandra keyspace. */
@@ -73,7 +73,7 @@ export async function updateCassandraKeyspaceThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Migrate an Azure Cosmos DB Cassandra Keyspace from manual throughput to autoscale */
@@ -131,7 +131,7 @@ export async function createUpdateCassandraTable(
   body: Types.CassandraTableCreateUpdateParameters
 ): Promise<Types.CassandraTableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Deletes an existing Azure Cosmos DB Cassandra table. */
@@ -168,7 +168,7 @@ export async function updateCassandraTableThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Migrate an Azure Cosmos DB Cassandra table from manual throughput to autoscale */

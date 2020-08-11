@@ -8,6 +8,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 import { userContext } from "../UserContext";
+import { createUpdateCassandraKeyspace } from "../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 
 export class AddDbUtilities {
   // todo - remove any
@@ -47,7 +48,6 @@ export class AddDbUtilities {
 
   // todo - remove any
   public static async createCassandraKeyspace(
-    armEndpoint: string,
     params: DataModels.RpParameters,
     rpOptions: DataModels.RpOptions
   ): Promise<any> {
@@ -70,9 +70,11 @@ export class AddDbUtilities {
     }
 
     try {
-      await AddDbUtilities.getRpClient<DataModels.CreateDatabaseWithRpResponse>(armEndpoint).putAsync(
-        AddDbUtilities._getCassandraKeyspaceUri(params),
-        DataExplorerConstants.ArmApiVersions.publicVersion,
+      await createUpdateCassandraKeyspace(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount?.name,
+        params.db,
         rpPayloadToCreateKeyspace
       );
     } catch (reason) {
@@ -159,10 +161,7 @@ export class AddDbUtilities {
   }
 
   private static _handleCreationError(reason: any, params: DataModels.RpParameters, dbType: string = "database") {
-    NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.Error,
-      `Error creating ${dbType}: ${JSON.stringify(reason)}, Payload: ${params}`
-    );
+    NotificationConsoleUtils.logConsoleError(`Error creating ${dbType}: ${JSON.stringify(reason)}, Payload: ${params}`);
     if (reason.status === HttpStatusCodes.Forbidden) {
       sendMessage({ type: MessageTypes.ForbiddenError });
       return;

@@ -421,7 +421,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     startKey: number
   ): void {
     if (EnvironmentUtility.isAadUser()) {
-      this._createKeyspaceUsingRP(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings, startKey);
+      this._createKeyspaceUsingRP(createDatabaseParameters, autoPilotSettings, startKey);
     } else {
       this._createKeyspaceUsingProxy(createDatabaseParameters.offerThroughput, startKey);
     }
@@ -450,12 +450,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   private _createKeyspaceUsingRP(
-    armEndpoint: string,
     createKeyspaceParameters: DataModels.RpParameters,
     autoPilotSettings: DataModels.RpOptions,
     startKey: number
   ): void {
-    AddDbUtilities.createCassandraKeyspace(armEndpoint, createKeyspaceParameters, autoPilotSettings).then(() => {
+    AddDbUtilities.createCassandraKeyspace(createKeyspaceParameters, autoPilotSettings).then(() => {
       Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
       });
