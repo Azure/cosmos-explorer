@@ -486,7 +486,9 @@ export default class Explorer {
         databaseAccount
       );
       this.defaultExperience(defaultExperience);
-      updateUserContext({ defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience) });
+      updateUserContext({
+        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience)
+      });
     });
 
     this.isPreferredApiDocumentDB = ko.computed(() => {
