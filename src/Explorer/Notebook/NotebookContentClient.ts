@@ -89,7 +89,7 @@ export class NotebookContentClient {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
 
-    const filepath = `${parent.path}/${name}`;
+    const filepath = NotebookUtil.getFilePath(parent.path, name);
     if (await this.checkIfFilepathExists(filepath)) {
       throw new Error(`File already exists: ${filepath}`);
     }
@@ -116,12 +116,7 @@ export class NotebookContentClient {
   }
 
   private async checkIfFilepathExists(filepath: string): Promise<boolean> {
-    const basename = filepath.split("/").pop();
-    let parentDirPath = filepath
-      .split(basename)
-      .shift()
-      .replace(/\/$/, ""); // no trailling slash
-
+    const parentDirPath = NotebookUtil.getParentPath(filepath);
     const items = await this.fetchNotebookFiles(parentDirPath);
     return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
   }

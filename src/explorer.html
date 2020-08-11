@@ -296,6 +296,10 @@
       <div data-bind="react: publishNotebookPaneAdapter"></div>
       <!-- /ko -->
 
+      <!-- ko if: isCopyNotebookPaneEnabled -->
+      <div data-bind="react: copyNotebookPaneAdapter"></div>
+      <!-- /ko -->
+
       <!-- Global access token expiration dialog - Start -->
       <div
         id="dataAccessTokenModal"

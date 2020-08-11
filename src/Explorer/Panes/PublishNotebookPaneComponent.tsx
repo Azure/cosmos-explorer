@@ -15,6 +15,7 @@ export interface PublishNotebookPaneProps {
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
   notebookParentDomElement: HTMLElement;
+  onChangeName: (newValue: string) => void;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
   onChangeImageSrc: (newValue: string) => void;
@@ -24,6 +25,7 @@ export interface PublishNotebookPaneProps {
 
 interface PublishNotebookPaneState {
   type: string;
+  notebookName: string;
   notebookDescription: string;
   notebookTags: string;
   imageSrc: string;
@@ -40,6 +42,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
   private static readonly maxImageSizeInMib = 1.5;
   private descriptionPara1: string;
   private descriptionPara2: string;
+  private nameProps: ITextFieldProps;
   private descriptionProps: ITextFieldProps;
   private tagsProps: ITextFieldProps;
   private thumbnailUrlProps: ITextFieldProps;
@@ -52,6 +55,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
     this.state = {
       type: ImageTypes.Url,
+      notebookName: props.notebookName,
       notebookDescription: "",
       notebookTags: "",
       imageSrc: undefined
@@ -165,6 +169,17 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       }
     };
 
+    this.nameProps = {
+      label: "Name",
+      ariaLabel: "Name",
+      defaultValue: this.props.notebookName,
+      required: true,
+      onChange: (event, newValue) => {
+        this.props.onChangeName(newValue);
+        this.setState({ notebookName: newValue });
+      }
+    };
+
     this.descriptionProps = {
       label: "Description",
       ariaLabel: "Description",
@@ -243,6 +258,10 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
           <Stack.Item>
             <Text>{this.descriptionPara2}</Text>
+          </Stack.Item>
+
+          <Stack.Item>
+            <TextField {...this.nameProps} />
           </Stack.Item>
 
           <Stack.Item>

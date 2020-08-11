@@ -70,6 +70,46 @@ export class NotebookUtil {
     };
   }
 
+  public static getFilePath(path: string, fileName: string): string {
+    const contentInfo = GitHubUtils.fromContentUri(path);
+    if (contentInfo) {
+      let path = fileName;
+      if (contentInfo.path) {
+        path = `${contentInfo.path}/${path}`;
+      }
+      return GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, path);
+    }
+
+    return `${path}/${fileName}`;
+  }
+
+  public static getParentPath(filepath: string): undefined | string {
+    const basename = NotebookUtil.getName(filepath);
+    if (basename) {
+      const contentInfo = GitHubUtils.fromContentUri(filepath);
+      if (contentInfo) {
+        const parentPath = contentInfo.path.split(basename).shift();
+        if (parentPath === undefined) {
+          return undefined;
+        }
+
+        return GitHubUtils.toContentUri(
+          contentInfo.owner,
+          contentInfo.repo,
+          contentInfo.branch,
+          parentPath.replace(/\/$/, "") // no trailling slash
+        );
+      }
+
+      const parentPath = filepath.split(basename).shift();
+      if (parentPath) {
+        return parentPath.replace(/\/$/, ""); // no trailling slash
+      }
+    }
+
+    return undefined;
+  }
+
   public static getName(path: string): undefined | string {
     let relativePath: string = path;
     const contentInfo = GitHubUtils.fromContentUri(path);

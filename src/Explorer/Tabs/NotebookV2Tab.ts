@@ -30,6 +30,7 @@ import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { toJS, stringifyNotebook } from "@nteract/commutable";
 
 export interface NotebookTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -122,6 +123,7 @@ export default class NotebookTabV2 extends TabsBase {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
 
     const saveLabel = "Save";
+    const copyToLabel = "Copy to ...";
     const publishLabel = "Publish to gallery";
     const workspaceLabel = "No Workspace";
     const kernelLabel = "No Kernel";
@@ -163,6 +165,14 @@ export default class NotebookTabV2 extends TabsBase {
                 hasPopup: false,
                 disabled: false,
                 ariaLabel: saveLabel
+              },
+              {
+                iconName: "Copy",
+                onCommandClick: () => this.copyNotebook(),
+                commandButtonLabel: copyToLabel,
+                hasPopup: false,
+                disabled: false,
+                ariaLabel: copyToLabel
               },
               {
                 iconName: "PublishContent",
@@ -463,6 +473,18 @@ export default class NotebookTabV2 extends TabsBase {
       notebookContent.content,
       this.notebookComponentAdapter.getNotebookParentElement()
     );
+  };
+
+  private copyNotebook = () => {
+    const notebookContent = this.notebookComponentAdapter.getContent();
+    let content: string;
+    if (typeof notebookContent.content === "string") {
+      content = notebookContent.content;
+    } else {
+      content = stringifyNotebook(toJS(notebookContent.content));
+    }
+
+    this.container.copyNotebook(notebookContent.name, content);
   };
 
   private traceTelemetry(actionType: number) {
