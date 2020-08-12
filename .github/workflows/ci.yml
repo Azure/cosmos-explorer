@@ -167,6 +167,10 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
+      - uses: actions/upload-artifact@v2
+        name: videos
+        with:
+          path: "~/cypress/**/*.mp4"
   accessibility:
     name: "Accessibility | Hosted"
     needs: [lint, format, compile, unittest]
