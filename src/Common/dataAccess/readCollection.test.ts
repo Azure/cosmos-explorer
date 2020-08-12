@@ -1,6 +1,7 @@
 jest.mock("../CosmosClient");
 import { AuthType } from "../../AuthType";
 import { DatabaseAccount } from "../../Contracts/DataModels";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { client } from "../CosmosClient";
 import { readCollection } from "./readCollection";
 import { updateUserContext } from "../../UserContext";
@@ -10,7 +11,8 @@ describe("readCollection", () => {
     updateUserContext({
       databaseAccount: {
         name: "test"
-      } as DatabaseAccount
+      } as DatabaseAccount,
+      defaultExperience: DefaultAccountExperienceType.DocumentDB
     });
   });
 

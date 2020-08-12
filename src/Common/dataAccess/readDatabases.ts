@@ -1,7 +1,11 @@
 import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { client } from "../CosmosClient";
 import { listSqlDatabases } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { listGremlinDatabases } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
@@ -12,17 +16,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
     if (window.authType === AuthType.AAD) {
-      const rpResponse = await listSqlDatabases(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name
-      );
-      databases =
-        rpResponse &&
-        rpResponse.value &&
-        rpResponse.value.map(database => {
-          return database.properties && (database.properties.resource as DataModels.Database);
-        });
+      databases = await readDatabasesWithARM();
     } else {
       const sdkResponse = await client()
         .databases.readAll()
@@ -37,4 +31,31 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   }
   clearMessage();
   return databases;
+}
+
+async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
+  let rpResponse;
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroup = userContext.resourceGroup;
+  const accountName = userContext.databaseAccount.name;
+  const defaultExperience = userContext.defaultExperience;
+
+  switch (defaultExperience) {
+    case DefaultAccountExperienceType.DocumentDB:
+      rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
+      break;
+    case DefaultAccountExperienceType.MongoDB:
+      rpResponse = await listMongoDBDatabases(subscriptionId, resourceGroup, accountName);
+      break;
+    case DefaultAccountExperienceType.Cassandra:
+      rpResponse = await listCassandraKeyspaces(subscriptionId, resourceGroup, accountName);
+      break;
+    case DefaultAccountExperienceType.Graph:
+      rpResponse = await listGremlinDatabases(subscriptionId, resourceGroup, accountName);
+      break;
+    default:
+      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+  }
+
+  return rpResponse?.value?.map(database => database.properties?.resource as DataModels.Database);
 }
