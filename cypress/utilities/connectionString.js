@@ -22,8 +22,7 @@ module.exports = {
         .last()
         .click({ force: true });
 
-      const secret =
-        "AccountEndpoint=https://portal-runner-sql.documents.azure.com:443/;AccountKey=WrCL9mLWE3dg8KJXW1z32qx2BEa2jhsd8eNUSFCMoNlW9KK4xrJLeCUq3nS9bRzfrkibV5KCAgxUN7kgTGZ3SA==;";
+      const secret = Cypress.env("CONNECTION_STRING");
 
       cy.wrap($body)
         .find("input[class='inputToken']")
