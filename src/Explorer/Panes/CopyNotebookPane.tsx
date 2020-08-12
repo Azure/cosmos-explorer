@@ -51,7 +51,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const generatePaneProps: GenericRightPaneProps = {
+    const genericPaneProps: GenericRightPaneProps = {
       container: this.container,
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
@@ -70,7 +70,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     };
 
     return (
-      <GenericRightPaneComponent {...generatePaneProps}>
+      <GenericRightPaneComponent {...genericPaneProps}>
         <CopyNotebookPaneComponent {...copyNotebookPaneProps} />
       </GenericRightPaneComponent>
     );
