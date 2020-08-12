@@ -215,6 +215,7 @@ module.exports = function(env = {}, argv = {}) {
       ]
     },
     devServer: {
+      liveReload: process.env.WEBPACK_LIVE_RELOAD === "false" ? false : true,
       hot: false,
       https: true,
       host: "0.0.0.0",
