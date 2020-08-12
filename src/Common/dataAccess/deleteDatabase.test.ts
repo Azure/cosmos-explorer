@@ -8,13 +8,15 @@ import { client } from "../CosmosClient";
 import { updateUserContext } from "../../UserContext";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import { sendCachedDataMessage } from "../MessageHandler";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 
 describe("deleteDatabase", () => {
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
         name: "test"
-      } as DatabaseAccount
+      } as DatabaseAccount,
+      defaultExperience: DefaultAccountExperienceType.DocumentDB
     });
     (sendCachedDataMessage as jest.Mock).mockResolvedValue(undefined);
   });

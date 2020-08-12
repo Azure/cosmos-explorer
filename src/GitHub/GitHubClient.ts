@@ -317,6 +317,13 @@ export class GitHubClient {
         objectExpression: `refs/heads/${branch}:${path || ""}`
       } as ContentsQueryParams)) as ContentsQueryResponse;
 
+      if (!response.repository.object) {
+        return {
+          status: HttpStatusCodes.NotFound,
+          data: undefined
+        };
+      }
+
       let data: IGitHubFile | IGitHubFile[];
       const entries = response.repository.object.entries;
       const gitHubRepo = GitHubClient.toGitHubRepo(response.repository);

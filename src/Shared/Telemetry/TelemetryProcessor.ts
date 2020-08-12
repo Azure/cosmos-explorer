@@ -3,6 +3,7 @@ import { sendMessage } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { appInsights } from "../appInsights";
 import { configContext } from "../../ConfigContext";
+import { userContext } from "../../UserContext";
 
 /**
  * Class that persists telemetry data to the portal tables.
@@ -115,6 +116,9 @@ export default class TelemetryProcessor {
 
   private static getData(data?: any): any {
     return {
+      // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
+      authType: (window as any).authType,
+      subscriptionId: userContext.subscriptionId,
       platform: configContext.platform,
       ...(data ? data : [])
     };

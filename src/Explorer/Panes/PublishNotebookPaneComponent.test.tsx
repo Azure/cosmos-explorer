@@ -12,6 +12,7 @@ describe("PublishNotebookPaneComponent", () => {
       notebookCreatedDate: "2020-07-17T00:00:00Z",
       notebookObject: undefined,
       notebookParentDomElement: undefined,
+      onChangeName: undefined,
       onChangeDescription: undefined,
       onChangeTags: undefined,
       onChangeImageSrc: undefined,

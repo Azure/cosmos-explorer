@@ -26,7 +26,6 @@ import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import { Platform, configContext } from "../ConfigContext";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import ConflictId from "../Explorer/Tree/ConflictId";
 
@@ -598,29 +597,6 @@ export function queryConflicts(
     .container(containerId)
     .conflicts.query(query, options);
   return Q(documentsIterator);
-}
-
-export async function updateOfferThroughputBeyondLimit(
-  request: DataModels.UpdateOfferThroughputRequest
-): Promise<void> {
-  if (configContext.platform !== Platform.Portal) {
-    throw new Error("Updating throughput beyond specified limit is not supported on this platform");
-  }
-
-  const explorer = window.dataExplorer;
-  const url = `${explorer.extensionEndpoint()}/api/offerthroughputrequest/updatebeyondspecifiedlimit`;
-  const authorizationHeader = getAuthorizationHeader();
-
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(request),
-    headers: { [authorizationHeader.header]: authorizationHeader.token }
-  });
-
-  if (response.ok) {
-    return undefined;
-  }
-  throw new Error(await response.text());
 }
 
 function _createDatabase(request: DataModels.CreateDatabaseRequest, options: any = {}): Q.Promise<DataModels.Database> {

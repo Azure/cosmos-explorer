@@ -16,9 +16,10 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import { updateOfferThroughputBeyondLimit, updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
+import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -519,16 +520,15 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
           this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
         ) {
-          const requestPayload: DataModels.UpdateOfferThroughputRequest = {
+          const requestPayload = {
             subscriptionId: userContext.subscriptionId,
             databaseAccountName: userContext.databaseAccount.name,
             resourceGroup: userContext.resourceGroup,
             databaseName: this.database.id(),
-            collectionName: undefined,
             throughput: newThroughput,
             offerIsRUPerMinuteThroughputEnabled: false
           };
-          const updateOfferBeyondLimitPromise: Q.Promise<void> = updateOfferThroughputBeyondLimit(requestPayload).then(
+          const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
             () => {
               this.database.offer().content.offerThroughput = originalThroughputValue;
               this.throughput(originalThroughputValue);
@@ -552,7 +552,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
               );
             }
           );
-          promises.push(updateOfferBeyondLimitPromise);
+          promises.push(Q(updateOfferBeyondLimitPromise));
         } else {
           const newOffer: DataModels.Offer = {
             content: {
