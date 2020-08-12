@@ -102,7 +102,6 @@ jobs:
           npm run test:ci --prefix ./cypress -- --spec ./integration/dataexplorer/ci-tests/createDatabase.spec.ts
         shell: bash
         env:
-          WEBPACK_LIVE_RELOAD: false
           EMULATOR_ENDPOINT: https://0.0.0.0:8081/
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
@@ -133,7 +132,6 @@ jobs:
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-          WEBPACK_LIVE_RELOAD: false
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
   endtoendmongo:
@@ -162,7 +160,6 @@ jobs:
           npx cypress run --browser chrome --headless --spec "./integration/dataexplorer/MONGO/*"
         shell: bash
         env:
-          WEBPACK_LIVE_RELOAD: false
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}

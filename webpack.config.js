@@ -10,6 +10,7 @@ const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const isCI = require("is-ci");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -214,9 +215,12 @@ module.exports = function(env = {}, argv = {}) {
         })
       ]
     },
+    watch: isCI || mode === "production" ? false : true,
+    watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
-      liveReload: process.env.WEBPACK_LIVE_RELOAD === "false" ? false : true,
-      hot: false,
+      hot: isCI ? false : true,
+      inline: isCI ? false : true,
+      liveReload: isCI ? false : true,
       https: true,
       host: "0.0.0.0",
       port: envVars.PORT,
