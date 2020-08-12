@@ -220,7 +220,7 @@ module.exports = function(env = {}, argv = {}) {
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
       hot: isCI ? false : true,
-      inline: isCI ? false : true,
+      inline: !isCI,
       liveReload: !isCI,
       https: true,
       host: "0.0.0.0",
