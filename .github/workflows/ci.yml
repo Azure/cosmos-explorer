@@ -138,7 +138,7 @@ jobs:
         name: videos
         if: ${{ failure() }}
         with:
-          path: "~/cypress/**/*.mp4"
+          path: "**/*.mp4"
   endtoendmongo:
     name: "End To End Tests | Mongo"
     needs: [lint, format, compile, unittest]
@@ -172,7 +172,7 @@ jobs:
         if: ${{ failure() }}
         name: videos
         with:
-          path: "~/cypress/**/*.mp4"
+          path: "**/*.mp4"
   accessibility:
     name: "Accessibility | Hosted"
     needs: [lint, format, compile, unittest]
