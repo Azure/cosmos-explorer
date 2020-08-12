@@ -221,7 +221,7 @@ module.exports = function(env = {}, argv = {}) {
     devServer: {
       hot: isCI ? false : true,
       inline: isCI ? false : true,
-      liveReload: isCI ? false : true,
+      liveReload: !isCI,
       https: true,
       host: "0.0.0.0",
       port: envVars.PORT,
