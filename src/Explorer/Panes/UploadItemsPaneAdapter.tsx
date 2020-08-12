@@ -1,15 +1,13 @@
-import * as Constants from "../../Common/Constants";
 import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { IconButton } from "office-ui-fabric-react/lib/Button";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
-import InfoBubbleIcon from "../../../images/info-bubble.svg";
+import { UploadItemsPaneComponent, UploadItemsPaneProps } from "./UploadItemsPaneComponent";
 import Explorer from "../Explorer";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
@@ -35,19 +33,30 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const props: GenericRightPaneProps = {
+    const genericPaneProps: GenericRightPaneProps = {
       container: this.container,
-      content: this.createContent(),
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
       id: "uploaditemspane",
       isExecuting: this.isExecuting,
+      isSubmitButtonVisible: true,
       title: "Upload Items",
       submitButtonText: "Upload",
       onClose: () => this.close(),
       onSubmit: () => this.submit()
     };
-    return <GenericRightPaneComponent {...props} />;
+
+    const uploadItemsPaneProps: UploadItemsPaneProps = {
+      selectedFilesTitle: this.selectedFilesTitle,
+      updateSelectedFiles: this.updateSelectedFiles,
+      uploadFileData: this.uploadFileData
+    };
+
+    return (
+      <GenericRightPaneComponent {...genericPaneProps}>
+        <UploadItemsPaneComponent {...uploadItemsPaneProps} />
+      </GenericRightPaneComponent>
+    );
   }
 
   public triggerRender(): void {
@@ -110,77 +119,6 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
         });
   }
 
-  private createContent = (): JSX.Element => {
-    return <div className="panelContent">{this.createMainContentSection()}</div>;
-  };
-
-  private createMainContentSection = (): JSX.Element => {
-    return (
-      <div className="paneMainContent">
-        <div className="renewUploadItemsHeader">
-          <span> Select JSON Files </span>
-          <span className="infoTooltip" role="tooltip" tabIndex={0}>
-            <img className="infoImg" src={InfoBubbleIcon} alt="More information" />
-            <span className="tooltiptext infoTooltipWidth">
-              Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON
-              documents. The combined size of all files in an individual upload operation must be less than 2 MB. You
-              can perform multiple upload operations for larger data sets.
-            </span>
-          </span>
-        </div>
-        <input
-          className="importFilesTitle"
-          type="text"
-          disabled
-          value={this.selectedFilesTitle}
-          aria-label="Select JSON Files"
-        />
-        <input
-          type="file"
-          id="importDocsInput"
-          title="Upload Icon"
-          multiple
-          accept="application/json"
-          role="button"
-          tabIndex={0}
-          style={{ display: "none" }}
-          onChange={this.updateSelectedFiles}
-        />
-        <IconButton
-          iconProps={{ iconName: "FolderHorizontal" }}
-          className="fileImportButton"
-          alt="Select JSON files to upload"
-          title="Select JSON files to upload"
-          onClick={this.onImportButtonClick}
-          onKeyPress={this.onImportButtonKeyPress}
-        />
-        <div className="fileUploadSummaryContainer" hidden={this.uploadFileData.length === 0}>
-          <b>File upload status</b>
-          <table className="fileUploadSummary">
-            <thead>
-              <tr className="fileUploadSummaryHeader fileUploadSummaryTuple">
-                <th>FILE NAME</th>
-                <th>STATUS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.uploadFileData.map(
-                (data: UploadDetailsRecord): JSX.Element => {
-                  return (
-                    <tr className="fileUploadSummaryTuple" key={data.fileName}>
-                      <td>{data.fileName}</td>
-                      <td>{this.fileUploadSummaryText(data.numSucceeded, data.numFailed)}</td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
   private updateSelectedFiles = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.selectedFiles = event.target.files;
     this._updateSelectedFilesTitle();
@@ -211,21 +149,6 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
 
     return totalFileSize;
   }
-
-  private fileUploadSummaryText = (numSucceeded: number, numFailed: number): string => {
-    return `${numSucceeded} items created, ${numFailed} errors`;
-  };
-
-  private onImportButtonClick = (): void => {
-    document.getElementById("importDocsInput").click();
-  };
-
-  private onImportButtonKeyPress = (event: React.KeyboardEvent<HTMLButtonElement>): void => {
-    if (event.charCode === Constants.KeyCodes.Enter || event.charCode === Constants.KeyCodes.Space) {
-      this.onImportButtonClick();
-      event.stopPropagation();
-    }
-  };
 
   private reset = (): void => {
     this.isOpened = false;
