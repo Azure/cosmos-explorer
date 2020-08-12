@@ -134,6 +134,10 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
+      - uses: actions/upload-artifact@v2
+        name: videos
+        with:
+          path: "~/cypress/**/*.mp4"
   endtoendmongo:
     name: "End To End Tests | Mongo"
     needs: [lint, format, compile, unittest]
