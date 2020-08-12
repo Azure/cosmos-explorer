@@ -136,6 +136,7 @@ jobs:
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
       - uses: actions/upload-artifact@v2
         name: videos
+        if: ${{ failure() }}
         with:
           path: "~/cypress/**/*.mp4"
   endtoendmongo:
@@ -168,6 +169,7 @@ jobs:
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           CYPRESS_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
       - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
         name: videos
         with:
           path: "~/cypress/**/*.mp4"
