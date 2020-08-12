@@ -44,7 +44,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
     const props: GenericRightPaneProps = {
       container: this.container,
-      content: this.createContent(),
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
       id: "publishnotebookpane",
@@ -56,7 +55,39 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       isSubmitButtonVisible: this.isCodeOfConductAccepted
     };
 
-    return <GenericRightPaneComponent {...props} />;
+    const publishNotebookPaneProps: PublishNotebookPaneProps = {
+      notebookName: this.name,
+      notebookDescription: "",
+      notebookTags: "",
+      notebookAuthor: this.author,
+      notebookCreatedDate: new Date().toISOString(),
+      notebookObject: this.notebookObject,
+      notebookParentDomElement: this.parentDomElement,
+      onChangeName: (newValue: string) => (this.name = newValue),
+      onChangeDescription: (newValue: string) => (this.description = newValue),
+      onChangeTags: (newValue: string) => (this.tags = newValue),
+      onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
+      onError: this.createFormErrorForLargeImageSelection,
+      clearFormError: this.clearFormError
+    };
+
+    return (
+      <GenericRightPaneComponent {...props}>
+        {!this.isCodeOfConductAccepted ? (
+          <div style={{ padding: "15px", marginTop: "10px" }}>
+            <CodeOfConductComponent
+              junoClient={this.junoClient}
+              onAcceptCodeOfConduct={() => {
+                this.isCodeOfConductAccepted = true;
+                this.triggerRender();
+              }}
+            />
+          </div>
+        ) : (
+          <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
+        )}
+      </GenericRightPaneComponent>
+    );
   }
 
   public triggerRender(): void {
@@ -164,38 +195,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.formError = undefined;
     this.formErrorDetail = undefined;
     this.triggerRender();
-  };
-
-  private createContent = (): JSX.Element => {
-    const publishNotebookPaneProps: PublishNotebookPaneProps = {
-      notebookName: this.name,
-      notebookDescription: "",
-      notebookTags: "",
-      notebookAuthor: this.author,
-      notebookCreatedDate: new Date().toISOString(),
-      notebookObject: this.notebookObject,
-      notebookParentDomElement: this.parentDomElement,
-      onChangeName: (newValue: string) => (this.name = newValue),
-      onChangeDescription: (newValue: string) => (this.description = newValue),
-      onChangeTags: (newValue: string) => (this.tags = newValue),
-      onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
-      onError: this.createFormErrorForLargeImageSelection,
-      clearFormError: this.clearFormError
-    };
-
-    return !this.isCodeOfConductAccepted ? (
-      <div style={{ padding: "15px", marginTop: "10px" }}>
-        <CodeOfConductComponent
-          junoClient={this.junoClient}
-          onAcceptCodeOfConduct={() => {
-            this.isCodeOfConductAccepted = true;
-            this.triggerRender();
-          }}
-        />
-      </div>
-    ) : (
-      <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
-    );
   };
 
   private reset = (): void => {

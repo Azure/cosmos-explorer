@@ -6,17 +6,8 @@ import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
-import {
-  Stack,
-  Label,
-  Text,
-  Dropdown,
-  IDropdownProps,
-  IDropdownOption,
-  SelectableOptionMenuItemType,
-  IRenderFunction,
-  ISelectableOption
-} from "office-ui-fabric-react";
+import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
+import { IDropdownOption } from "office-ui-fabric-react";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { HttpStatusCodes } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
@@ -60,9 +51,8 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const props: GenericRightPaneProps = {
+    const generatePaneProps: GenericRightPaneProps = {
       container: this.container,
-      content: this.createContent(),
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
       id: "copynotebookpane",
@@ -73,7 +63,17 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       onSubmit: () => this.submit()
     };
 
-    return <GenericRightPaneComponent {...props} />;
+    const copyNotebookPaneProps: CopyNotebookPaneProps = {
+      name: this.name,
+      pinnedRepos: this.pinnedRepos,
+      onDropDownChange: this.onDropDownChange
+    };
+
+    return (
+      <GenericRightPaneComponent {...generatePaneProps}>
+        <CopyNotebookPaneComponent {...copyNotebookPaneProps} />
+      </GenericRightPaneComponent>
+    );
   }
 
   public triggerRender(): void {
@@ -179,91 +179,6 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     }
 
     return this.container.uploadFile(this.name, this.content, parent);
-  };
-
-  private createContent = (): JSX.Element => {
-    const dropDownProps: IDropdownProps = {
-      label: "Location",
-      ariaLabel: "Location",
-      placeholder: "Select an option",
-      onRenderTitle: this.onRenderDropDownTitle,
-      onRenderOption: this.onRenderDropDownOption,
-      options: this.getDropDownOptions(),
-      onChange: this.onDropDownChange
-    };
-
-    return (
-      <div className="paneMainContent">
-        <Stack tokens={{ childrenGap: 10 }}>
-          <Stack.Item>
-            <Label htmlFor="notebookName">Name</Label>
-            <Text id="notebookName">{this.name}</Text>
-          </Stack.Item>
-
-          <Dropdown {...dropDownProps} />
-        </Stack>
-      </div>
-    );
-  };
-
-  private onRenderDropDownTitle: IRenderFunction<IDropdownOption[]> = (options: IDropdownOption[]): JSX.Element => {
-    return <span>{options.length && options[0].title}</span>;
-  };
-
-  private onRenderDropDownOption: IRenderFunction<ISelectableOption> = (option: ISelectableOption): JSX.Element => {
-    return <span style={{ whiteSpace: "pre-wrap" }}>{option.text}</span>;
-  };
-
-  private getDropDownOptions = (): IDropdownOption[] => {
-    const options: IDropdownOption[] = [];
-
-    options.push({
-      key: "MyNotebooks-Item",
-      text: ResourceTreeAdapter.MyNotebooksTitle,
-      title: ResourceTreeAdapter.MyNotebooksTitle,
-      data: {
-        type: "MyNotebooks"
-      } as Location
-    });
-
-    if (this.pinnedRepos && this.pinnedRepos.length > 0) {
-      options.push({
-        key: "GitHub-Header-Divider",
-        text: undefined,
-        itemType: SelectableOptionMenuItemType.Divider
-      });
-
-      options.push({
-        key: "GitHub-Header",
-        text: ResourceTreeAdapter.GitHubReposTitle,
-        itemType: SelectableOptionMenuItemType.Header
-      });
-
-      this.pinnedRepos.forEach(pinnedRepo => {
-        const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
-        options.push({
-          key: `GitHub-Repo-${repoFullName}`,
-          text: repoFullName,
-          disabled: true
-        });
-
-        pinnedRepo.branches.forEach(branch =>
-          options.push({
-            key: `GitHub-Repo-${repoFullName}-${branch.name}`,
-            text: `${CopyNotebookPaneAdapter.BranchNameWhiteSpace}${branch.name}`,
-            title: `${repoFullName} - ${branch.name}`,
-            data: {
-              type: "GitHub",
-              owner: pinnedRepo.owner,
-              repo: pinnedRepo.name,
-              branch: branch.name
-            } as Location
-          })
-        );
-      });
-    }
-
-    return options;
   };
 
   private onDropDownChange = (_: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
