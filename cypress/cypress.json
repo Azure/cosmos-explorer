@@ -3,7 +3,7 @@
   "pluginsFile": false,
   "fixturesFolder": false,
   "supportFile": "./support/index.js",
-  "defaultCommandTimeout": 80000,
+  "defaultCommandTimeout": 90000,
   "chromeWebSecurity": false,
   "reporter": "mochawesome",
   "reporterOptions": {
