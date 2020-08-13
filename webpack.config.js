@@ -219,7 +219,7 @@ module.exports = function(env = {}, argv = {}) {
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
-      hot: !isCI,
+      hot: false,
       inline: !isCI,
       liveReload: !isCI,
       https: true,
