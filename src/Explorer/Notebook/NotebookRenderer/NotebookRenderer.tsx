@@ -30,11 +30,8 @@ import { CellType } from "@nteract/commutable/src";
 import "./NotebookRenderer.less";
 import HoverableCell from "./decorators/HoverableCell";
 import CellLabeler from "./decorators/CellLabeler";
-<<<<<<< HEAD
 import MonacoEditor from "../MonacoEditor/MonacoEditor";
-=======
 import * as cdbActions from "../NotebookComponent/actions";
->>>>>>> master
 
 export interface NotebookRendererBaseProps {
   contentRef: any;
