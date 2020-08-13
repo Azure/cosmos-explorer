@@ -17,7 +17,8 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import { updateOffer, updateCollection } from "../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { updateCollection } from "../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
@@ -1065,18 +1066,20 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       }
 
       const newCollection: DataModels.Collection = _.extend({}, this.collection.rawDataModel, newCollectionAttributes);
-      const updateCollectionPromise = updateCollection(this.collection.databaseId, this.collection, newCollection).then(
-        (updatedCollection: DataModels.Collection) => {
-          this.collection.rawDataModel = updatedCollection;
-          this.collection.defaultTtl(updatedCollection.defaultTtl);
-          this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
-          this.collection.id(updatedCollection.id);
-          this.collection.indexingPolicy(updatedCollection.indexingPolicy);
-          this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
-          this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
-          this.collection.geospatialConfig(updatedCollection.geospatialConfig);
-        }
-      );
+      const updateCollectionPromise = updateCollection(
+        this.collection.databaseId,
+        this.collection.id(),
+        newCollection
+      ).then((updatedCollection: DataModels.Collection) => {
+        this.collection.rawDataModel = updatedCollection;
+        this.collection.defaultTtl(updatedCollection.defaultTtl);
+        this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
+        this.collection.id(updatedCollection.id);
+        this.collection.indexingPolicy(updatedCollection.indexingPolicy);
+        this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
+        this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
+        this.collection.geospatialConfig(updatedCollection.geospatialConfig);
+      });
 
       promises.push(updateCollectionPromise);
     }

@@ -1,3 +1,5 @@
+import { IndexingPolicy } from "../Utils/arm/generatedClients/2020-04-01/types";
+
 export interface DatabaseAccount {
   id: string;
   name: string;
@@ -153,7 +155,14 @@ export interface KeyResource {
   Token: string;
 }
 
-export interface IndexingPolicy {}
+// export interface IndexingPolicy {
+//   automatic: boolean;
+//   indexingMode: string;
+//   includedPaths: any;
+//   excludedPaths: any;
+//   compositeIndexes: any;
+//   spatialIndexes: any;
+// }
 
 export interface PartitionKey {
   paths: string[];
