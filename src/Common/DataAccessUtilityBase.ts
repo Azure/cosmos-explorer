@@ -418,26 +418,6 @@ export function deleteTrigger(
   );
 }
 
-export function readCollections(database: ViewModels.Database, options: any): Q.Promise<DataModels.Collection[]> {
-  return Q(
-    client()
-      .database(database.id())
-      .containers.readAll()
-      .fetchAll()
-      .then(response => response.resources as DataModels.Collection[])
-  );
-}
-
-export function readCollection(databaseId: string, collectionId: string): Q.Promise<DataModels.Collection> {
-  return Q(
-    client()
-      .database(databaseId)
-      .container(collectionId)
-      .read()
-      .then(response => response.resource as DataModels.Collection)
-  );
-}
-
 export function readCollectionQuotaInfo(
   collection: ViewModels.Collection,
   options: any
@@ -504,26 +484,6 @@ export function readOffer(requestedResource: DataModels.Offer, options: any): Q.
       .offer(requestedResource.id)
       .read(options)
       .then(response => ({ ...response.resource, headers: response.headers }))
-  );
-}
-
-export function readDatabases(options: any): Q.Promise<DataModels.Database[]> {
-  try {
-    if (configContext.platform === Platform.Portal) {
-      return sendCachedDataMessage<DataModels.Database[]>(MessageTypes.AllDatabases, [
-        (<any>window).dataExplorer.databaseAccount().id,
-        Constants.ClientDefaults.portalCacheTimeoutMs
-      ]);
-    }
-  } catch (error) {
-    // If error getting cached DBs, continue on and read via SDK
-  }
-
-  return Q(
-    client()
-      .databases.readAll()
-      .fetchAll()
-      .then(response => response.resources as DataModels.Database[])
   );
 }
 

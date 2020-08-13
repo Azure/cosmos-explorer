@@ -1,16 +1,14 @@
 jest.mock("../../Utils/arm/request");
-jest.mock("../MessageHandler");
 jest.mock("../CosmosClient");
-import { deleteDatabase } from "./deleteDatabase";
-import { armRequest } from "../../Utils/arm/request";
 import { AuthType } from "../../AuthType";
-import { client } from "../CosmosClient";
-import { updateUserContext } from "../../UserContext";
 import { DatabaseAccount } from "../../Contracts/DataModels";
-import { sendCachedDataMessage } from "../MessageHandler";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { armRequest } from "../../Utils/arm/request";
+import { client } from "../CosmosClient";
+import { readDatabases } from "./readDatabases";
+import { updateUserContext } from "../../UserContext";
 
-describe("deleteDatabase", () => {
+describe("readDatabases", () => {
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
@@ -18,25 +16,26 @@ describe("deleteDatabase", () => {
       } as DatabaseAccount,
       defaultExperience: DefaultAccountExperienceType.DocumentDB
     });
-    (sendCachedDataMessage as jest.Mock).mockResolvedValue(undefined);
   });
 
   it("should call ARM if logged in with AAD", async () => {
     window.authType = AuthType.AAD;
-    await deleteDatabase("database");
+    await readDatabases();
     expect(armRequest).toHaveBeenCalled();
   });
 
   it("should call SDK if not logged in with non-AAD method", async () => {
     window.authType = AuthType.MasterKey;
     (client as jest.Mock).mockReturnValue({
-      database: () => {
-        return {
-          delete: (): unknown => undefined
-        };
+      databases: {
+        readAll: () => {
+          return {
+            fetchAll: (): unknown => []
+          };
+        }
       }
     });
-    await deleteDatabase("database");
+    await readDatabases();
     expect(client).toHaveBeenCalled();
   });
 });

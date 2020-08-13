@@ -15,7 +15,9 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readDatabases, readCollection, readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
@@ -1420,7 +1422,7 @@ export default class Explorer {
 
     const refreshDatabases = (offers?: DataModels.Offer[]) => {
       this._setLoadingStatusText("Fetching databases...");
-      readDatabases(null /*options*/).then(
+      readDatabases().then(
         (databases: DataModels.Database[]) => {
           this._setLoadingStatusText("Successfully fetched databases.");
           TelemetryProcessor.traceSuccess(
