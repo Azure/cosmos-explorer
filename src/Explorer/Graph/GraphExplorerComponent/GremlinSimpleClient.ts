@@ -136,7 +136,6 @@ export class GremlinSimpleClient {
       const data = typeof msg.data === "string" ? msg.data : new TextDecoder("utf-8").decode(msg.data);
       return JSON.parse(data);
     } catch (e) {
-      console.error(e, msg);
       if (this.params.failureCallback) {
         this.params.failureCallback(
           null,

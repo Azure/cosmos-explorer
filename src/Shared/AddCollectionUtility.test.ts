@@ -7,7 +7,7 @@ const armEndpoint = "https://management.azure.com";
 
 describe("Add Collection Utitlity", () => {
   describe("createSqlCollection", () => {
-    it("should invoke createSqlCollectionWithARM if create database is false", () => {
+    it("should invoke createSqlCollectionWithARM if create database is false", async () => {
       const properties = {
         uniqueKeyPolicy: { uniqueKeys: [{ paths: [""] }] },
         cd: false,
@@ -24,8 +24,8 @@ describe("Add Collection Utitlity", () => {
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
-      const createSqlCollectionWithARMSpy = jest.spyOn(CreateSqlCollectionUtilities, "createSqlCollectionWithARM");
-      CreateSqlCollectionUtilities.createSqlCollection(
+      CreateSqlCollectionUtilities.createSqlCollectionWithARM = jest.fn().mockResolvedValue(undefined);
+      await CreateSqlCollectionUtilities.createSqlCollection(
         armEndpoint,
         properties.db,
         properties.defaultTtl,
@@ -42,10 +42,10 @@ describe("Add Collection Utitlity", () => {
         properties.uniqueKeyPolicy,
         additionalOptions
       );
-      expect(createSqlCollectionWithARMSpy).toHaveBeenCalled();
+      expect(CreateSqlCollectionUtilities.createSqlCollectionWithARM).toHaveBeenCalled();
     });
 
-    it("should invoke createSqlDatabase + createSqlCollectionWithARM if create database is true", () => {
+    it("should invoke createSqlDatabase + createSqlCollectionWithARM if create database is true", async () => {
       const properties = {
         uniqueKeyPolicy: { uniqueKeys: [{ paths: [""] }] },
         cd: true,
@@ -62,9 +62,11 @@ describe("Add Collection Utitlity", () => {
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
-      const createSqlCollectionWithARMSpy = jest.spyOn(CreateSqlCollectionUtilities, "createSqlCollectionWithARM");
-      const createSqlDatabaseSpy = jest.spyOn(AddDbUtilities, "createSqlDatabase");
-      CreateSqlCollectionUtilities.createSqlCollection(
+      const createSqlCollectionWithARMSpy = (CreateSqlCollectionUtilities.createSqlCollectionWithARM = jest
+        .fn()
+        .mockResolvedValue(undefined));
+      const createSqlDatabaseSpy = (AddDbUtilities.createSqlDatabase = jest.fn().mockResolvedValue(undefined));
+      await CreateSqlCollectionUtilities.createSqlCollection(
         armEndpoint,
         properties.db,
         properties.analyticalStorageTtl,
@@ -89,7 +91,7 @@ describe("Add Collection Utitlity", () => {
 
 describe("Add Collection Utitlity", () => {
   describe("createGremlinGraph", () => {
-    it("should invoke createGremlinGraphWithARM if create database is false", () => {
+    it("should invoke createGremlinGraphWithARM if create database is false", async () => {
       const properties = {
         cd: false,
         coll: "abc-collection",
@@ -104,8 +106,8 @@ describe("Add Collection Utitlity", () => {
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
-      const createGremlinGraphWithARMSpy = jest.spyOn(CreateCollectionUtilities, "createGremlinGraphWithARM");
-      CreateCollectionUtilities.createGremlinGraph(
+      CreateCollectionUtilities.createGremlinGraphWithARM = jest.fn().mockResolvedValue(undefined);
+      await CreateCollectionUtilities.createGremlinGraph(
         armEndpoint,
         properties.db,
         properties.coll,
@@ -120,10 +122,10 @@ describe("Add Collection Utitlity", () => {
         properties.dba,
         additionalOptions
       );
-      expect(createGremlinGraphWithARMSpy).toHaveBeenCalled();
+      expect(CreateCollectionUtilities.createGremlinGraphWithARM).toHaveBeenCalled();
     });
 
-    it("should invoke createGremlinDatabase + createGremlinGraphWithARM if create database is true", () => {
+    it("should invoke createGremlinDatabase + createGremlinGraphWithARM if create database is true", async () => {
       const properties = {
         cd: true,
         coll: "abc-collection",
@@ -138,9 +140,9 @@ describe("Add Collection Utitlity", () => {
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
-      const createGremlinGraphWithARMSpy = jest.spyOn(CreateCollectionUtilities, "createGremlinGraphWithARM");
-      const createGremlinDatabaseSpy = jest.spyOn(AddDbUtilities, "createGremlinDatabase");
-      CreateCollectionUtilities.createGremlinGraph(
+      CreateCollectionUtilities.createGremlinGraphWithARM = jest.fn().mockResolvedValue(undefined);
+      AddDbUtilities.createGremlinDatabase = jest.fn().mockResolvedValue(undefined);
+      await CreateCollectionUtilities.createGremlinGraph(
         armEndpoint,
         properties.db,
         properties.coll,
@@ -155,8 +157,8 @@ describe("Add Collection Utitlity", () => {
         properties.dba,
         additionalOptions
       );
-      expect(createGremlinDatabaseSpy).toHaveBeenCalled();
-      expect(createGremlinGraphWithARMSpy).toHaveBeenCalled();
+      expect(CreateCollectionUtilities.createGremlinGraphWithARM).toHaveBeenCalled();
+      expect(AddDbUtilities.createGremlinDatabase).toHaveBeenCalled();
     });
   });
 });

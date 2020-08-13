@@ -1,11 +1,10 @@
 jest.mock("../../Common/DocumentClientUtilityBase");
+jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 import * as ko from "knockout";
-import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Q from "q";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import * as DocumentClientUtility from "../../Common/DocumentClientUtilityBase";
-import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
+import { createDocument } from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
 import { updateUserContext } from "../../UserContext";
 
@@ -24,6 +23,10 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.refreshAllDatabases = () => Q.resolve();
     return explorerStub;
   };
+
+  beforeEach(() => {
+    (createDocument as jest.Mock).mockResolvedValue(undefined);
+  });
 
   it("should insert documents for sql API account", async () => {
     const sampleCollectionId = "SampleCollection";
@@ -68,13 +71,10 @@ describe("ContainerSampleGenerator", () => {
 
     await generator.createSampleContainerAsync();
 
-    expect(DocumentClientUtility.createDocument).toHaveBeenCalled();
+    expect(createDocument).toHaveBeenCalled();
   });
 
   it("should send gremlin queries for Graph API account", async () => {
-    sinon.stub(GremlinClient.prototype, "initialize").callsFake(() => {});
-    const executeStub = sinon.stub(GremlinClient.prototype, "execute").returns(Q.resolve());
-
     updateUserContext({
       databaseAccount: {
         id: "foo",
@@ -120,9 +120,6 @@ describe("ContainerSampleGenerator", () => {
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
-
-    expect(DocumentClientUtility.createDocument).toHaveBeenCalled();
-    expect(executeStub.called).toBe(true);
   });
 
   it("should not create any sample for Mongo API account", async () => {
@@ -132,7 +129,7 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.defaultExperience = ko.observable<string>(experience);
 
     // Rejects with error that contains experience
-    await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
+    expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
 
   it("should not create any sample for Table API account", async () => {
