@@ -20,6 +20,7 @@ import { updateOffer } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
+import { configContext, Platform } from "../../ConfigContext";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -196,7 +197,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.costsVisible = ko.computed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(
@@ -207,7 +208,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     );
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !!this.container.isEmulator ||
+        configContext.platform === Platform.Emulator ||
         this.container.getPlatformType() === PlatformType.Hosted ||
         this.canThroughputExceedMaximumValue()
       ) {

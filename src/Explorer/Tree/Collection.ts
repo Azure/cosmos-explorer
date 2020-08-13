@@ -559,7 +559,6 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
-    const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
       return tab.collection && tab.collection.rid === this.rid;
     });
@@ -575,9 +574,8 @@ export default class Collection implements ViewModels.Collection {
         tabTitle: tabTitle
       });
 
-      Q.all([pendingNotificationsPromise, this.readSettings()]).then(
+      Q.all([this.readSettings()]).then(
         (data: any) => {
-          const pendingNotification: DataModels.Notification = data && data[0];
           settingsTab = new SettingsTab({
             tabKind: ViewModels.CollectionTabKind.Settings,
             title: !this.offer() ? "Settings" : "Scale & Settings",
@@ -592,7 +590,6 @@ export default class Collection implements ViewModels.Collection {
             onUpdateTabsButtons: this.container.onUpdateTabsButtons
           });
           this.container.tabsManager.activateNewTab(settingsTab);
-          settingsTab.pendingNotification(pendingNotification);
         },
         (error: any) => {
           TelemetryProcessor.traceFailure(
@@ -616,16 +613,7 @@ export default class Collection implements ViewModels.Collection {
         }
       );
     } else {
-      pendingNotificationsPromise.then(
-        (pendingNotification: DataModels.Notification) => {
-          settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateTab(settingsTab);
-        },
-        (error: any) => {
-          settingsTab.pendingNotification(undefined);
-          this.container.tabsManager.activateTab(settingsTab);
-        }
-      );
+      this.container.tabsManager.activateTab(settingsTab);
     }
   };
 
@@ -1280,48 +1268,6 @@ export default class Collection implements ViewModels.Collection {
       record.errors = [...record.errors, e.message];
       deferred.resolve(record);
     }
-    return deferred.promise;
-  }
-
-  private _getPendingThroughputSplitNotification(): Q.Promise<DataModels.Notification> {
-    if (!this.container) {
-      return Q.resolve(undefined);
-    }
-
-    const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    this.container.notificationsClient.fetchNotifications().then(
-      (notifications: DataModels.Notification[]) => {
-        if (!notifications || notifications.length === 0) {
-          deferred.resolve(undefined);
-          return;
-        }
-
-        const pendingNotification = _.find(notifications, (notification: DataModels.Notification) => {
-          const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
-          return (
-            notification.kind === "message" &&
-            notification.collectionName === this.id() &&
-            notification.description &&
-            throughputUpdateRegExp.test(notification.description)
-          );
-        });
-
-        deferred.resolve(pendingNotification);
-      },
-      (error: any) => {
-        Logger.logError(
-          JSON.stringify({
-            error: JSON.stringify(error),
-            accountName: this.container && this.container.databaseAccount(),
-            databaseName: this.databaseId,
-            collectionName: this.id()
-          }),
-          "Settings tree node"
-        );
-        deferred.resolve(undefined);
-      }
-    );
-
     return deferred.promise;
   }
 

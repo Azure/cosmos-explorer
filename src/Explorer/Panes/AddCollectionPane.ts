@@ -329,7 +329,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !this.container.isEmulator &&
+        configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
         this.container.getPlatformType() !== PlatformType.Portal
       ) {
@@ -341,7 +341,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.maxCollectionsReached = ko.computed<boolean>(() => {

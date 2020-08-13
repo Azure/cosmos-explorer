@@ -17,6 +17,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { PlatformType } from "../../PlatformType";
 import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
 import { userContext } from "../../UserContext";
+import { configContext, Platform } from "../../ConfigContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -179,7 +180,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !this.container.isEmulator &&
+        configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
         this.container.getPlatformType() !== PlatformType.Portal
       ) {
@@ -202,7 +203,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.throughputSpendAckVisible = ko.pureComputed<boolean>(() => {

@@ -52,7 +52,6 @@ export default class Database implements ViewModels.Database {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.DatabaseSettings,
       tab => tab.rid === this.rid
@@ -66,9 +65,8 @@ export default class Database implements ViewModels.Database {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Scale"
       });
-      Q.all([pendingNotificationsPromise, this.readSettings()]).then(
-        (data: any) => {
-          const pendingNotification: DataModels.Notification = data && data[0];
+      Q.all([this.readSettings()]).then(
+        () => {
           settingsTab = new DatabaseSettingsTab({
             tabKind: ViewModels.CollectionTabKind.DatabaseSettings,
             title: "Scale",
@@ -83,7 +81,6 @@ export default class Database implements ViewModels.Database {
             onUpdateTabsButtons: this.container.onUpdateTabsButtons
           });
 
-          settingsTab.pendingNotification(pendingNotification);
           this.container.tabsManager.activateNewTab(settingsTab);
         },
         (error: any) => {
@@ -108,16 +105,7 @@ export default class Database implements ViewModels.Database {
         }
       );
     } else {
-      pendingNotificationsPromise.then(
-        (pendingNotification: DataModels.Notification) => {
-          settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateTab(settingsTab);
-        },
-        (error: any) => {
-          settingsTab.pendingNotification(undefined);
-          this.container.tabsManager.activateTab(settingsTab);
-        }
-      );
+      this.container.tabsManager.activateTab(settingsTab);
     }
   };
 
@@ -291,49 +279,6 @@ export default class Database implements ViewModels.Database {
 
   public findCollectionWithId(collectionId: string): ViewModels.Collection {
     return _.find(this.collections(), (collection: ViewModels.Collection) => collection.id() === collectionId);
-  }
-
-  private _getPendingThroughputSplitNotification(): Q.Promise<DataModels.Notification> {
-    if (!this.container) {
-      return Q.resolve(undefined);
-    }
-
-    const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    this.container.notificationsClient.fetchNotifications().then(
-      (notifications: DataModels.Notification[]) => {
-        if (!notifications || notifications.length === 0) {
-          deferred.resolve(undefined);
-          return;
-        }
-
-        const pendingNotification = _.find(notifications, (notification: DataModels.Notification) => {
-          const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
-          return (
-            notification.kind === "message" &&
-            !notification.collectionName &&
-            notification.databaseName === this.id() &&
-            notification.description &&
-            throughputUpdateRegExp.test(notification.description)
-          );
-        });
-
-        deferred.resolve(pendingNotification);
-      },
-      (error: any) => {
-        Logger.logError(
-          JSON.stringify({
-            error: JSON.stringify(error),
-            accountName: this.container && this.container.databaseAccount(),
-            databaseName: this.id(),
-            collectionName: this.id()
-          }),
-          "Settings tree node"
-        );
-        deferred.resolve(undefined);
-      }
-    );
-
-    return deferred.promise;
   }
 
   private getDeltaCollections(

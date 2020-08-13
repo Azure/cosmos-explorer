@@ -12,6 +12,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { HashMap } from "../../Common/HashMap";
+import { configContext, Platform } from "../../ConfigContext";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -231,11 +232,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.canRequestSupport = ko.pureComputed(() => {
-      if (!this.container.isEmulator && !this.container.isTryCosmosDBSubscription()) {
+      if (configContext.platform !== Platform.Emulator && !this.container.isTryCosmosDBSubscription()) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
       }
