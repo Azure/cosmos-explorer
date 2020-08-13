@@ -87,13 +87,26 @@ describe("getPkIdFromDocumentId", () => {
     expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("['pkvalue', 'id']");
   });
 
+  it("should create pkid pair from partitioned graph (pk as number)", () => {
+    const doc = createFakeDoc({ id: "id", mypk: 234 });
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("[234, 'id']");
+  });
+
   it("should create pkid pair from partitioned graph (pk as valid array value)", () => {
     const doc = createFakeDoc({ id: "id", mypk: [{ id: "someid", _value: "pkvalue" }] });
     expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("['pkvalue', 'id']");
   });
 
-  it("should error if id is not a string", () => {
-    const doc = createFakeDoc({ id: { foo: 1 } });
+  it("should error if id is not a string or number", () => {
+    let doc = createFakeDoc({ id: { foo: 1 } });
+    try {
+      GraphExplorer.getPkIdFromDocumentId(doc, undefined);
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(true).toBe(true);
+    }
+
+    doc = createFakeDoc({ id: true });
     try {
       GraphExplorer.getPkIdFromDocumentId(doc, undefined);
       expect(true).toBe(false);
@@ -102,16 +115,8 @@ describe("getPkIdFromDocumentId", () => {
     }
   });
 
-  it("should error if pk not string nor non-empty array", () => {
-    let doc = createFakeDoc({ mypk: { foo: 1 } });
-
-    try {
-      GraphExplorer.getPkIdFromDocumentId(doc, "mypk");
-    } catch (e) {
-      expect(true).toBe(true);
-    }
-
-    doc = createFakeDoc({ mypk: [] });
+  it("should error if pk is empty array", () => {
+    let doc = createFakeDoc({ mypk: [] });
     try {
       GraphExplorer.getPkIdFromDocumentId(doc, "mypk");
       expect(true).toBe(false);

@@ -10,6 +10,7 @@ const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const isCI = require("is-ci");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -214,8 +215,13 @@ module.exports = function(env = {}, argv = {}) {
         })
       ]
     },
+    watch: isCI || mode === "production" ? false : true,
+    // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
+    watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
       hot: false,
+      inline: !isCI,
+      liveReload: !isCI,
       https: true,
       host: "0.0.0.0",
       port: envVars.PORT,
