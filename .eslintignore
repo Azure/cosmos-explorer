@@ -88,6 +88,7 @@ src/Explorer/Controls/Toolbar/ToolbarDropDown.ts
 src/Explorer/Controls/Toolbar/ToolbarToggle.ts
 src/Explorer/Controls/Toolbar/Utilities.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
+src/Explorer/DataSamples/ContainerSampleGenerator.ts
 src/Explorer/DataSamples/DataSamplesUtil.test.ts
 src/Explorer/DataSamples/DataSamplesUtil.ts
 src/Explorer/Explorer.ts
