@@ -13,8 +13,10 @@ import { List, Map } from "immutable";
 
 const fileName = "file";
 const notebookName = "file.ipynb";
-const filePath = `folder/${fileName}`;
-const notebookPath = `folder/${notebookName}`;
+const folderPath = "folder";
+const filePath = `${folderPath}/${fileName}`;
+const notebookPath = `${folderPath}/${notebookName}`;
+const gitHubFolderUri = GitHubUtils.toContentUri("owner", "repo", "branch", folderPath);
 const gitHubFileUri = GitHubUtils.toContentUri("owner", "repo", "branch", filePath);
 const gitHubNotebookUri = GitHubUtils.toContentUri("owner", "repo", "branch", notebookPath);
 const notebookRecord = makeNotebookRecord({
@@ -43,10 +45,8 @@ const notebookRecord = makeNotebookRecord({
       source: 'display(HTML("<h1>Sample html</h1>"))',
       outputs: List.of({
         data: Object.freeze({
-          data: {
-            "text/html": "<h1>Sample output</h1>",
-            "text/plain": "<IPython.core.display.HTML object>"
-          }
+          "text/html": "<h1>Sample output</h1>",
+          "text/plain": "<IPython.core.display.HTML object>"
         } as MediaBundle),
         output_type: "display_data",
         metadata: undefined
@@ -79,6 +79,26 @@ describe("NotebookUtil", () => {
     it("works for github file uris", () => {
       expect(NotebookUtil.isNotebookFile(gitHubFileUri)).toBeFalsy();
       expect(NotebookUtil.isNotebookFile(gitHubNotebookUri)).toBeTruthy();
+    });
+  });
+
+  describe("getFilePath", () => {
+    it("works for jupyter file paths", () => {
+      expect(NotebookUtil.getFilePath(folderPath, fileName)).toEqual(filePath);
+    });
+
+    it("works for github file uris", () => {
+      expect(NotebookUtil.getFilePath(gitHubFolderUri, fileName)).toEqual(gitHubFileUri);
+    });
+  });
+
+  describe("getParentPath", () => {
+    it("works for jupyter file paths", () => {
+      expect(NotebookUtil.getParentPath(filePath)).toEqual(folderPath);
+    });
+
+    it("works for github file uris", () => {
+      expect(NotebookUtil.getParentPath(gitHubFileUri)).toEqual(gitHubFolderUri);
     });
   });
 

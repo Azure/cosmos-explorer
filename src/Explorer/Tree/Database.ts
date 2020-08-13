@@ -12,7 +12,8 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
-import { readCollections, readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
+import { readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
+import { readCollections } from "../../Common/dataAccess/readCollections";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -259,7 +260,7 @@ export default class Database implements ViewModels.Database {
     let collectionVMs: Collection[] = [];
     let deferred: Q.Deferred<void> = Q.defer<void>();
 
-    readCollections(this).then(
+    readCollections(this.id()).then(
       (collections: DataModels.Collection[]) => {
         let collectionsToAddVMPromises: Q.Promise<any>[] = [];
         let deltaCollections = this.getDeltaCollections(collections);

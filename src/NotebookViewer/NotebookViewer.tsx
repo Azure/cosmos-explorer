@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React from "react";
 import * as ReactDOM from "react-dom";
-import { initializeConfiguration } from "../ConfigContext";
+import { initializeConfiguration, configContext } from "../ConfigContext";
 import {
   NotebookViewerComponent,
   NotebookViewerComponentProps
@@ -17,28 +17,41 @@ const onInit = async () => {
   await initializeConfiguration();
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
   const notebookViewerProps = GalleryUtils.getNotebookViewerProps(window.location.search);
-  const backNavigationText = galleryViewerProps.selectedTab && GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
+  let backNavigationText: string;
+  let onBackClick: () => void;
+  if (galleryViewerProps.selectedTab !== undefined) {
+    backNavigationText = GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
+    onBackClick = () => (window.location.href = `${configContext.hostedExplorerURL}gallery.html`);
+  }
   const hideInputs = notebookViewerProps.hideInputs;
 
   const notebookUrl = decodeURIComponent(notebookViewerProps.notebookUrl);
-  render(notebookUrl, backNavigationText, hideInputs);
 
   const galleryItemId = notebookViewerProps.galleryItemId;
+  let galleryItem: IGalleryItem;
+
   if (galleryItemId) {
     const junoClient = new JunoClient();
-    const notebook = await junoClient.getNotebook(galleryItemId);
-    render(notebookUrl, backNavigationText, hideInputs, notebook.data);
+    const galleryItemJunoResponse = await junoClient.getNotebookInfo(galleryItemId);
+    galleryItem = galleryItemJunoResponse.data;
   }
+  render(notebookUrl, backNavigationText, hideInputs, galleryItem, onBackClick);
 };
 
-const render = (notebookUrl: string, backNavigationText: string, hideInputs: boolean, galleryItem?: IGalleryItem) => {
+const render = (
+  notebookUrl: string,
+  backNavigationText: string,
+  hideInputs: boolean,
+  galleryItem?: IGalleryItem,
+  onBackClick?: () => void
+) => {
   const props: NotebookViewerComponentProps = {
     junoClient: galleryItem ? new JunoClient() : undefined,
     notebookUrl,
     galleryItem,
     backNavigationText,
     hideInputs,
-    onBackClick: undefined,
+    onBackClick: onBackClick,
     onTagClick: undefined
   };
 

@@ -162,6 +162,7 @@ export type DatabaseAccountGetResults = ARMResourceProperties & {
 };
 
 /* The system generated resource properties associated with SQL databases, SQL containers, Gremlin databases and Gremlin graphs. */
+// TODO: ExtendedResourceProperties was missing some properties such as _self which was manually added. Need to fix this in the RP spec.
 export interface ExtendedResourceProperties {
   /* A system generated property. A unique identifier. */
   readonly _rid: string;
@@ -169,6 +170,8 @@ export interface ExtendedResourceProperties {
   readonly _ts: unknown;
   /* A system generated property representing the resource etag required for optimistic concurrency control. */
   readonly _etag: string;
+  // TODO: This property was manually added. It should be auto-generated like the other properties.
+  readonly _self: string;
 }
 
 /* An Azure Cosmos DB resource throughput. */

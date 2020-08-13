@@ -15,7 +15,9 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readDatabases, readCollection, readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
@@ -203,11 +205,15 @@ export default class Explorer {
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
+  public copyNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGalleryPublishEnabled: ko.Computed<boolean>;
+  public isCodeOfConductEnabled: ko.Computed<boolean>;
+  public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
+  public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
@@ -408,8 +414,15 @@ export default class Explorer {
     this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );
+    this.isCodeOfConductEnabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableCodeOfConduct)
+    );
+    this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
+      this.isFeatureEnabled(Constants.Features.enableLinkInjection)
+    );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
+    this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
@@ -471,7 +484,13 @@ export default class Explorer {
     this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
     this.databaseAccount.subscribe(databaseAccount => {
-      this.defaultExperience(DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount));
+      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
+        databaseAccount
+      );
+      this.defaultExperience(defaultExperience);
+      updateUserContext({
+        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience)
+      });
     });
 
     this.isPreferredApiDocumentDB = ko.computed(() => {
@@ -1403,7 +1422,7 @@ export default class Explorer {
 
     const refreshDatabases = (offers?: DataModels.Offer[]) => {
       this._setLoadingStatusText("Fetching databases...");
-      readDatabases(null /*options*/).then(
+      readDatabases().then(
         (databases: DataModels.Database[]) => {
           this._setLoadingStatusText("Successfully fetched databases.");
           TelemetryProcessor.traceSuccess(
@@ -1719,6 +1738,7 @@ export default class Explorer {
       return;
     }
 
+    let clearMessage;
     try {
       const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
         this.databaseAccount().id,
@@ -1730,10 +1750,14 @@ export default class Explorer {
         notebookWorkspace.properties.status &&
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
+        clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
         await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
       }
     } catch (error) {
       Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
+      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${JSON.stringify(error)}`);
+    } finally {
+      clearMessage && clearMessage();
     }
   }
 
@@ -2292,7 +2316,7 @@ export default class Explorer {
     return _.find(offers, (offer: DataModels.Offer) => offer.resource === resourceId);
   }
 
-  private uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
+  public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
       Logger.logError(error, "Explorer/uploadFile");
@@ -2347,11 +2371,25 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): void {
+  public async publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): Promise<void> {
     if (this.notebookManager) {
-      this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
+      await this.notebookManager.openPublishNotebookPane(
+        name,
+        content,
+        parentDomElement,
+        this.isCodeOfConductEnabled(),
+        this.isLinkInjectionEnabled()
+      );
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
+    }
+  }
+
+  public copyNotebook(name: string, content: string): void {
+    if (this.notebookManager) {
+      this.notebookManager.openCopyNotebookPane(name, content);
+      this.copyNotebookPaneAdapter = this.notebookManager.copyNotebookPaneAdapter;
+      this.isCopyNotebookPaneEnabled(true);
     }
   }
 
@@ -2711,6 +2749,7 @@ export default class Explorer {
     }
 
     await this.resourceTree.initialize();
+    this.notebookManager?.refreshPinnedRepos();
     if (this.notebookToImport) {
       this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
     }

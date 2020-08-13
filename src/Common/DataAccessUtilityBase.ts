@@ -26,7 +26,6 @@ import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import { Platform, configContext } from "../ConfigContext";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import ConflictId from "../Explorer/Tree/ConflictId";
 
@@ -419,26 +418,6 @@ export function deleteTrigger(
   );
 }
 
-export function readCollections(database: ViewModels.Database, options: any): Q.Promise<DataModels.Collection[]> {
-  return Q(
-    client()
-      .database(database.id())
-      .containers.readAll()
-      .fetchAll()
-      .then(response => response.resources as DataModels.Collection[])
-  );
-}
-
-export function readCollection(databaseId: string, collectionId: string): Q.Promise<DataModels.Collection> {
-  return Q(
-    client()
-      .database(databaseId)
-      .container(collectionId)
-      .read()
-      .then(response => response.resource as DataModels.Collection)
-  );
-}
-
 export function readCollectionQuotaInfo(
   collection: ViewModels.Collection,
   options: any
@@ -505,26 +484,6 @@ export function readOffer(requestedResource: DataModels.Offer, options: any): Q.
       .offer(requestedResource.id)
       .read(options)
       .then(response => ({ ...response.resource, headers: response.headers }))
-  );
-}
-
-export function readDatabases(options: any): Q.Promise<DataModels.Database[]> {
-  try {
-    if (configContext.platform === Platform.Portal) {
-      return sendCachedDataMessage<DataModels.Database[]>(MessageTypes.AllDatabases, [
-        (<any>window).dataExplorer.databaseAccount().id,
-        Constants.ClientDefaults.portalCacheTimeoutMs
-      ]);
-    }
-  } catch (error) {
-    // If error getting cached DBs, continue on and read via SDK
-  }
-
-  return Q(
-    client()
-      .databases.readAll()
-      .fetchAll()
-      .then(response => response.resources as DataModels.Database[])
   );
 }
 
@@ -638,29 +597,6 @@ export function queryConflicts(
     .container(containerId)
     .conflicts.query(query, options);
   return Q(documentsIterator);
-}
-
-export async function updateOfferThroughputBeyondLimit(
-  request: DataModels.UpdateOfferThroughputRequest
-): Promise<void> {
-  if (configContext.platform !== Platform.Portal) {
-    throw new Error("Updating throughput beyond specified limit is not supported on this platform");
-  }
-
-  const explorer = window.dataExplorer;
-  const url = `${explorer.extensionEndpoint()}/api/offerthroughputrequest/updatebeyondspecifiedlimit`;
-  const authorizationHeader = getAuthorizationHeader();
-
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(request),
-    headers: { [authorizationHeader.header]: authorizationHeader.token }
-  });
-
-  if (response.ok) {
-    return undefined;
-  }
-  throw new Error(await response.text());
 }
 
 function _createDatabase(request: DataModels.CreateDatabaseRequest, options: any = {}): Q.Promise<DataModels.Database> {

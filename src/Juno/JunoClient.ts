@@ -36,6 +36,16 @@ export interface IGalleryItem {
   downloads: number;
   favorites: number;
   views: number;
+  newCellId: string;
+}
+
+export interface IPublicGalleryData {
+  metadata: IPublicGalleryMetaData;
+  notebooksData: IGalleryItem[];
+}
+
+export interface IPublicGalleryMetaData {
+  acceptedCodeOfConduct: boolean;
 }
 
 export interface IUserGallery {
@@ -162,7 +172,62 @@ export class JunoClient {
     return this.getNotebooks(`${this.getNotebooksUrl()}/gallery/public`);
   }
 
-  public async getNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
+  // will be renamed once feature.enableCodeOfConduct flag is removed
+  public async fetchPublicNotebooks(): Promise<IJunoResponse<IPublicGalleryData>> {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/public`;
+    const response = await window.fetch(url, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: IPublicGalleryData;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async acceptCodeOfConduct(): Promise<IJunoResponse<boolean>> {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/acceptCodeOfConduct`;
+    const response = await window.fetch(url, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: boolean;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async isCodeOfConductAccepted(): Promise<IJunoResponse<boolean>> {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/isCodeOfConductAccepted`;
+    const response = await window.fetch(url, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: boolean;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async getNotebookInfo(id: string): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(this.getNotebookInfoUrl(id));
 
     let data: IGalleryItem;
@@ -292,24 +357,37 @@ export class JunoClient {
     tags: string[],
     author: string,
     thumbnailUrl: string,
-    content: string
+    content: string,
+    isLinkInjectionEnabled: boolean
   ): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery`, {
       method: "PUT",
       headers: JunoClient.getHeaders(),
-      body: JSON.stringify({
-        name,
-        description,
-        tags,
-        author,
-        thumbnailUrl,
-        content: JSON.parse(content)
-      } as IPublishNotebookRequest)
+      body: isLinkInjectionEnabled
+        ? JSON.stringify({
+            name,
+            description,
+            tags,
+            author,
+            thumbnailUrl,
+            content: JSON.parse(content),
+            addLinkToNotebookViewer: isLinkInjectionEnabled
+          } as IPublishNotebookRequest)
+        : JSON.stringify({
+            name,
+            description,
+            tags,
+            author,
+            thumbnailUrl,
+            content: JSON.parse(content)
+          } as IPublishNotebookRequest)
     });
 
     let data: IGalleryItem;
     if (response.status === HttpStatusCodes.OK) {
       data = await response.json();
+    } else {
+      throw new Error(`HTTP status ${response.status} thrown. ${(await response.json()).Message}`);
     }
 
     return {

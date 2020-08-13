@@ -383,40 +383,6 @@ export function updateOffer(
   return deferred.promise;
 }
 
-export function updateOfferThroughputBeyondLimit(
-  requestPayload: DataModels.UpdateOfferThroughputRequest
-): Q.Promise<void> {
-  const deferred: Q.Deferred<void> = Q.defer<void>();
-  const resourceDescriptionInfo: string = requestPayload.collectionName
-    ? `database ${requestPayload.databaseName} and container ${requestPayload.collectionName}`
-    : `database ${requestPayload.databaseName}`;
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Requesting increase in throughput to ${requestPayload.throughput} for ${resourceDescriptionInfo}`
-  );
-  DataAccessUtilityBase.updateOfferThroughputBeyondLimit(requestPayload)
-    .then(
-      () => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully requested an increase in throughput to ${requestPayload.throughput} for ${resourceDescriptionInfo}`
-        );
-        deferred.resolve();
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to request an increase in throughput for ${requestPayload.throughput}: ${JSON.stringify(error)}`
-        );
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-
-  return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
-}
-
 export function updateStoredProcedure(
   collection: ViewModels.Collection,
   storedProcedure: DataModels.StoredProcedure,
@@ -840,63 +806,6 @@ export function refreshCachedOffers(): Q.Promise<void> {
   return DataAccessUtilityBase.refreshCachedOffers();
 }
 
-export function readCollections(database: ViewModels.Database, options: any = {}): Q.Promise<DataModels.Collection[]> {
-  var deferred = Q.defer<DataModels.Collection[]>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Querying containers for database ${database.id()}`
-  );
-  DataAccessUtilityBase.readCollections(database, options)
-    .then(
-      (collections: DataModels.Collection[]) => {
-        deferred.resolve(collections);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while querying containers for database ${database.id()}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "ReadCollections", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
-export function readCollection(databaseId: string, collectionId: string): Q.Promise<DataModels.Collection> {
-  const deferred = Q.defer<DataModels.Collection>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Querying container ${collectionId}`
-  );
-
-  DataAccessUtilityBase.readCollection(databaseId, collectionId)
-    .then(
-      (collection: DataModels.Collection) => {
-        deferred.resolve(collection);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while querying containers for database ${databaseId}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "ReadCollections", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
 export function readCollectionQuotaInfo(
   collection: ViewModels.Collection,
   options?: any
@@ -973,31 +882,6 @@ export function readOffer(
           `Error while querying offer:\n ${JSON.stringify(error)}`
         );
         Logger.logError(JSON.stringify(error), "ReadOffer", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
-export function readDatabases(options: any): Q.Promise<DataModels.Database[]> {
-  var deferred = Q.defer<any>();
-  const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Querying databases");
-  DataAccessUtilityBase.readDatabases(options)
-    .then(
-      (databases: DataModels.Database[]) => {
-        deferred.resolve(databases);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while querying databases:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "ReadDatabases", error.code);
         sendNotificationForError(error);
         deferred.reject(error);
       }
