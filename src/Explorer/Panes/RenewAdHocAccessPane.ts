@@ -6,9 +6,9 @@ import { ConnectionStringParser } from "../../Platform/Hosted/Helpers/Connection
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 
-export class RenewAdHocAccessPane extends ContextualPaneBase implements ViewModels.RenewAdHocAccessPane {
+export class RenewAdHocAccessPane extends ContextualPaneBase {
   public accessKey: ko.Observable<string>;
   public isHelperImageVisible: ko.Observable<boolean>;
 
@@ -53,7 +53,7 @@ export class RenewAdHocAccessPane extends ContextualPaneBase implements ViewMode
     const apiKind: DataModels.ApiKind =
       this.container && DefaultExperienceUtility.getApiKindFromDefaultExperience(this.container.defaultExperience());
     const hasOpenedTabs: boolean =
-      (this.container && this.container.openedTabs() && this.container.openedTabs().length > 0) || false;
+      (this.container && this.container.tabsManager && this.container.tabsManager.openedTabs().length > 0) || false;
 
     if (!inputMetadata || inputMetadata.apiKind == null || !inputMetadata.accountName) {
       this.formErrors("Invalid connection string input");

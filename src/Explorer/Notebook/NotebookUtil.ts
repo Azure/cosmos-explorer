@@ -1,5 +1,5 @@
 import path from "path";
-import { ImmutableNotebook } from "@nteract/commutable";
+import { ImmutableNotebook, ImmutableCodeCell } from "@nteract/commutable";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
@@ -70,6 +70,46 @@ export class NotebookUtil {
     };
   }
 
+  public static getFilePath(path: string, fileName: string): string {
+    const contentInfo = GitHubUtils.fromContentUri(path);
+    if (contentInfo) {
+      let path = fileName;
+      if (contentInfo.path) {
+        path = `${contentInfo.path}/${path}`;
+      }
+      return GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, path);
+    }
+
+    return `${path}/${fileName}`;
+  }
+
+  public static getParentPath(filepath: string): undefined | string {
+    const basename = NotebookUtil.getName(filepath);
+    if (basename) {
+      const contentInfo = GitHubUtils.fromContentUri(filepath);
+      if (contentInfo) {
+        const parentPath = contentInfo.path.split(basename).shift();
+        if (parentPath === undefined) {
+          return undefined;
+        }
+
+        return GitHubUtils.toContentUri(
+          contentInfo.owner,
+          contentInfo.repo,
+          contentInfo.branch,
+          parentPath.replace(/\/$/, "") // no trailling slash
+        );
+      }
+
+      const parentPath = filepath.split(basename).shift();
+      if (parentPath) {
+        return parentPath.replace(/\/$/, ""); // no trailling slash
+      }
+    }
+
+    return undefined;
+  }
+
   public static getName(path: string): undefined | string {
     let relativePath: string = path;
     const contentInfo = GitHubUtils.fromContentUri(path);
@@ -99,5 +139,25 @@ export class NotebookUtil {
 
     const basePath = path.split(contentName).shift();
     return `${basePath}${newName}`;
+  }
+
+  public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): number {
+    let codeCellIndex = 0;
+    for (let i = 0; i < notebookObject.cellOrder.size; i++) {
+      const cellId = notebookObject.cellOrder.get(i);
+      if (cellId) {
+        const cell = notebookObject.cellMap.get(cellId);
+        if (cell?.cell_type === "code") {
+          const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
+            output => output.output_type === "display_data" || output.output_type === "execute_result"
+          );
+          if (displayOutput) {
+            return codeCellIndex;
+          }
+          codeCellIndex++;
+        }
+      }
+    }
+    throw new Error("Output does not exist for any of the cells.");
   }
 }

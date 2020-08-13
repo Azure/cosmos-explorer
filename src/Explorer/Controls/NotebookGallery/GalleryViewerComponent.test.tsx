@@ -9,6 +9,7 @@ describe("GalleryViewerComponent", () => {
       selectedTab: GalleryTab.OfficialSamples,
       sortBy: SortBy.MostViewed,
       searchText: undefined,
+      openNotebook: undefined,
       onSelectedTabChange: undefined,
       onSortByChange: undefined,
       onSearchTextChange: undefined

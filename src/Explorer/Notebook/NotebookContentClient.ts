@@ -1,5 +1,4 @@
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
 import { FileSystemUtil } from "./FileSystemUtil";
@@ -9,7 +8,7 @@ import { ServerConfig, IContent, IContentProvider, FileType, IEmptyContent } fro
 import { AjaxResponse } from "rxjs/ajax";
 import { stringifyNotebook } from "@nteract/commutable";
 
-export class NotebookContentClient implements ViewModels.INotebookContentClient {
+export class NotebookContentClient {
   constructor(
     private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
     private notebookBasePath: ko.Observable<string>,
@@ -90,7 +89,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
       throw new Error(`Parent must be a directory: ${parent}`);
     }
 
-    const filepath = `${parent.path}/${name}`;
+    const filepath = NotebookUtil.getFilePath(parent.path, name);
     if (await this.checkIfFilepathExists(filepath)) {
       throw new Error(`File already exists: ${filepath}`);
     }
@@ -117,12 +116,7 @@ export class NotebookContentClient implements ViewModels.INotebookContentClient 
   }
 
   private async checkIfFilepathExists(filepath: string): Promise<boolean> {
-    const basename = filepath.split("/").pop();
-    let parentDirPath = filepath
-      .split(basename)
-      .shift()
-      .replace(/\/$/, ""); // no trailling slash
-
+    const parentDirPath = NotebookUtil.getParentPath(filepath);
     const items = await this.fetchNotebookFiles(parentDirPath);
     return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
   }

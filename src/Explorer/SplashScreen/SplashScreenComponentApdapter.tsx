@@ -5,8 +5,6 @@ import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { CosmosClient } from "../../Common/CosmosClient";
-
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
@@ -18,6 +16,8 @@ import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
+import Explorer from "../Explorer";
+import { userContext } from "../../UserContext";
 
 /**
  * TODO Remove this when fully ported to ReactJS
@@ -29,9 +29,9 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
 
   public parameters: ko.Observable<number>;
 
-  constructor(private container: ViewModels.Explorer) {
+  constructor(private container: Explorer) {
     this.parameters = ko.observable<number>(Date.now());
-    this.container.openedTabs.subscribe(tabs => {
+    this.container.tabsManager.openedTabs.subscribe(tabs => {
       if (tabs.length === 0) {
         this.forceRender();
       }
@@ -45,7 +45,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   };
 
   private clearMostRecent = (): void => {
-    this.container.mostRecentActivity.clear(CosmosClient.databaseAccount().id);
+    this.container.mostRecentActivity.clear(userContext.databaseAccount?.id);
     this.forceRender();
   };
 
@@ -194,7 +194,7 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return this.container.mostRecentActivity.getItems(CosmosClient.databaseAccount().id).map(item => ({
+    return this.container.mostRecentActivity.getItems(userContext.databaseAccount?.id).map(item => ({
       iconSrc: MostRecentActivity.MostRecentActivity.getItemIcon(item),
       title: item.title,
       description: item.description,

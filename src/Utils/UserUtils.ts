@@ -1,6 +1,6 @@
 import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { decryptJWTToken } from "./AuthorizationUtils";
-import { CosmosClient } from "../Common/CosmosClient";
+import { userContext } from "../UserContext";
 
 export function getFullName(): string {
   let fullName: string;
@@ -8,7 +8,7 @@ export function getFullName(): string {
   if (user) {
     fullName = user.profile.name;
   } else {
-    const authToken = CosmosClient.authorizationToken();
+    const authToken = userContext.authorizationToken;
     const props = decryptJWTToken(authToken);
     fullName = props.name;
   }

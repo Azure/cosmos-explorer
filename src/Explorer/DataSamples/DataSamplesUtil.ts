@@ -1,11 +1,12 @@
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import Explorer from "../Explorer";
 
 export class DataSamplesUtil {
   private static readonly DialogTitle = "Create Sample Container";
-  constructor(private container: ViewModels.Explorer) {}
+  constructor(private container: Explorer) {}
 
   /**
    * Check if Database/Container is already there: if so, show modal to delete

@@ -8,6 +8,7 @@ import { actions, createContentRef, createKernelRef, selectors } from "@nteract/
 import VirtualCommandBarComponent from "./VirtualCommandBarComponent";
 import { NotebookContentItem } from "../NotebookContentItem";
 import { NotebookComponentBootstrapper } from "./NotebookComponentBootstrapper";
+import { CdbAppState } from "./types";
 
 export interface NotebookComponentAdapterOptions {
   contentItem: NotebookContentItem;
@@ -18,6 +19,7 @@ export interface NotebookComponentAdapterOptions {
 
 export class NotebookComponentAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
   private onUpdateKernelInfo: () => void;
+  public getNotebookParentElement: () => HTMLElement;
   public parameters: any;
 
   constructor(options: NotebookComponentAdapterOptions) {
@@ -44,6 +46,11 @@ export class NotebookComponentAdapter extends NotebookComponentBootstrapper impl
         })
       );
     }
+
+    this.getNotebookParentElement = () => {
+      const cdbAppState = this.getStore().getState() as CdbAppState;
+      return cdbAppState.cdb.currentNotebookParentElements.get(this.contentRef);
+    };
   }
 
   protected renderExtraComponent = (): JSX.Element => {

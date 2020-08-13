@@ -48,14 +48,13 @@
   <!-- Add database errors - End -->
 
   <!-- upsell message - start -->
-  <div class="infoBoxContainer" aria-live="assertive" data-bind="visible: formErrors && !formErrors()">
+  <div class="infoBoxContainer" aria-live="assertive" data-bind="visible: showUpsellMessage && showUpsellMessage() && formErrors && !formErrors()">
       <div class="infoBoxContent">
           <span><img class="infoBoxIcon" src="/info_color.svg" alt="Promo"></span>
           <span class="infoBoxDetails">
               <span class="infoBoxMessage" data-bind="text: upsellMessage, attr: { title: upsellMessage }"></span>
-              <a class="underlinedLink" id="linkAddDatabase" data-bind="attr: { 'aria-label': upsellMessageAriaLabel }"
-                  target="_blank" href="https://aka.ms/azure-cosmos-db-pricing" tabindex="0">
-                  More details</a>
+              <a class="underlinedLink" id="linkAddDatabase" data-bind="text: upsellAnchorText, attr: { 'href': upsellAnchorUrl, 'aria-label': upsellMessageAriaLabel }"
+                  target="_blank" href="" tabindex="0"></a>
           </span>
       </div>
   </div>
@@ -77,6 +76,9 @@
               title="May not end with space nor contain characters '\' '/' '#' '?'" placeholder="Type a new database id"
               size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus"
               aria-label="Database id" autofocus>
+
+          <!-- Database provisioned throughput - Start -->
+          <!-- ko if: canConfigureThroughput -->
           <div class="databaseProvision" aria-label="New database provision support">
               <input tabindex="0" type="checkbox" id="addDatabasePane-databaseSharedThroughput"
                   title="Provision shared throughput" data-bind="checked: databaseCreateNewShared" />
@@ -156,6 +158,7 @@
                       href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">Contact
                       support</a> for more than <span data-bind="text: maxThroughputRUText"></span> RU/s.</p>
           </div>
+          <!-- /ko -->
           <!-- /ko -->
           <!-- Database provisioned throughput - End -->
       </div>

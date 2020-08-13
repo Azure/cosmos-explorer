@@ -7,20 +7,19 @@ import ResourceTokenCollection from "./ResourceTokenCollection";
 import { ResourceTreeAdapterForResourceToken } from "./ResourceTreeAdapterForResourceToken";
 import { shallow } from "enzyme";
 import { TreeComponent, TreeNode, TreeComponentProps } from "../Controls/TreeComponent/TreeComponent";
+import Explorer from "../Explorer";
 
-const createMockContainer = (): ViewModels.Explorer => {
-  let mockContainer = {} as ViewModels.Explorer;
+const createMockContainer = (): Explorer => {
+  let mockContainer = {} as Explorer;
   mockContainer.resourceTokenCollection = createMockCollection(mockContainer);
   mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-  mockContainer.activeTab = ko.observable<ViewModels.Tab>();
   mockContainer.mostRecentActivity = new MostRecentActivity.MostRecentActivity(mockContainer);
-  mockContainer.openedTabs = ko.observableArray<ViewModels.Tab>([]);
   mockContainer.onUpdateTabsButtons = () => {};
 
   return mockContainer;
 };
 
-const createMockCollection = (container: ViewModels.Explorer): ko.Observable<ViewModels.CollectionBase> => {
+const createMockCollection = (container: Explorer): ko.Observable<ViewModels.CollectionBase> => {
   let mockCollection = {} as DataModels.Collection;
   mockCollection._rid = "fakeRid";
   mockCollection._self = "fakeSelf";
@@ -35,7 +34,7 @@ const createMockCollection = (container: ViewModels.Explorer): ko.Observable<Vie
 };
 
 describe("Resource tree for resource token", () => {
-  const mockContainer: ViewModels.Explorer = createMockContainer();
+  const mockContainer: Explorer = createMockContainer();
   const resourceTree = new ResourceTreeAdapterForResourceToken(mockContainer);
 
   it("should render", () => {

@@ -14,10 +14,11 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { AddDbUtilities } from "../../Shared/AddDatabaseUtility";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { PlatformType } from "../../PlatformType";
+import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
-export default class AddDatabasePane extends ContextualPaneBase implements ViewModels.AddDatabasePane {
+export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIdLabel: ko.Computed<string>;
   public databaseId: ko.Observable<string>;
@@ -38,6 +39,8 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
   public costsVisible: ko.PureComputed<boolean>;
   public upsellMessage: ko.PureComputed<string>;
   public upsellMessageAriaLabel: ko.PureComputed<string>;
+  public upsellAnchorUrl: ko.PureComputed<string>;
+  public upsellAnchorText: ko.PureComputed<string>;
   public isAutoPilotSelected: ko.Observable<boolean>;
   public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
   public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
@@ -47,6 +50,8 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
   public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
+  public canConfigureThroughput: ko.PureComputed<boolean>;
+  public showUpsellMessage: ko.PureComputed<boolean>;
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
@@ -54,6 +59,8 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     this.databaseId = ko.observable<string>();
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
+    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -228,11 +235,19 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     });
 
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId());
+      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
-      return `${this.upsellMessage()}. Click for more details`;
+      return `${this.upsellMessage()}. Click ${this.isFreeTierAccount() ? "to learn more" : "for more details"}`;
+    });
+
+    this.upsellAnchorUrl = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
+    });
+
+    this.upsellAnchorText = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? "Learn more" : "More details";
     });
   }
 
@@ -293,8 +308,8 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       db: addDatabasePaneStartMessage.database.id,
       st: addDatabasePaneStartMessage.database.shared,
       offerThroughput: addDatabasePaneStartMessage.offerThroughput,
-      sid: CosmosClient.subscriptionId(),
-      rg: CosmosClient.resourceGroup(),
+      sid: userContext.subscriptionId,
+      rg: userContext.resourceGroup,
       dba: addDatabasePaneStartMessage.databaseAccountName
     };
 
@@ -320,10 +335,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
   ) {
     AddDbUtilities.createSqlDatabase(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings).then(
       () => {
-        Promise.all([
-          this.container.documentClientUtility.refreshCachedOffers(),
-          this.container.documentClientUtility.refreshCachedResources()
-        ]).then(() => {
+        Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
           this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
         });
       }
@@ -340,10 +352,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       createDatabaseParameters,
       autoPilotSettings
     ).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
     });
@@ -359,10 +368,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       createDatabaseParameters,
       autoPilotSettings
     ).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
       });
     });
@@ -399,7 +405,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
       autoPilot,
       hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
     };
-    this.container.documentClientUtility.createDatabase(createRequest).then(
+    createDatabase(createRequest).then(
       (database: DataModels.Database) => {
         this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
       },
@@ -450,10 +456,7 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
     startKey: number
   ): void {
     AddDbUtilities.createCassandraKeyspace(armEndpoint, createKeyspaceParameters, autoPilotSettings).then(() => {
-      Promise.all([
-        this.container.documentClientUtility.refreshCachedOffers(),
-        this.container.documentClientUtility.refreshCachedResources()
-      ]).then(() => {
+      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
         this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
       });
     });
@@ -512,7 +515,15 @@ export default class AddDatabasePane extends ContextualPaneBase implements ViewM
   }
 
   private _computeOfferThroughput(): number {
-    return this.isAutoPilotSelected() ? undefined : this._getThroughput();
+    if (!this.canConfigureThroughput()) {
+      return undefined;
+    }
+
+    if (this.isAutoPilotSelected()) {
+      return undefined;
+    }
+
+    return this._getThroughput();
   }
 
   private _isValid(): boolean {

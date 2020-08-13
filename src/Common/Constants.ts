@@ -1,5 +1,5 @@
 import { AutopilotTier } from "../Contracts/DataModels";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -7,14 +7,23 @@ export class AuthorizationEndpoints {
   public static common: string = "https://login.windows.net/";
 }
 
+export class CodeOfConductEndpoints {
+  public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
+  public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
+  public static termsOfUse: string = "https://aka.ms/ms-terms-of-use";
+}
+
 export class BackendEndpoints {
   public static localhost: string = "https://localhost:12900";
   public static dev: string = "https://ext.documents-dev.windows-int.net";
-  public static productionPortal: string = config.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
+  public static productionPortal: string = configContext.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
 }
 
 export class EndpointsRegex {
-  public static readonly cassandra = "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com";
+  public static readonly cassandra = [
+    "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com",
+    "HostName=(.*).cassandra.cosmos.azure.com"
+  ];
   public static readonly mongo = "mongodb://.*:(.*)@(.*).documents.azure.com";
   public static readonly mongoCompute = "mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com";
   public static readonly sql = "AccountEndpoint=https://(.*).documents.azure.com";
@@ -101,6 +110,7 @@ export class CapabilityNames {
   public static readonly EnableNotebooks: string = "EnableNotebooks";
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
+  public static readonly EnableServerless: string = "EnableServerless";
 }
 
 export class Features {
@@ -112,6 +122,8 @@ export class Features {
   public static readonly enableTtl = "enablettl";
   public static readonly enableNotebooks = "enablenotebooks";
   public static readonly enableGalleryPublish = "enablegallerypublish";
+  public static readonly enableCodeOfConduct = "enablecodeofconduct";
+  public static readonly enableLinkInjection = "enablelinkinjection";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
   public static readonly notebookServerUrl = "notebookserverurl";
@@ -351,6 +363,7 @@ export class HttpStatusCodes {
   public static readonly Created: number = 201;
   public static readonly Accepted: number = 202;
   public static readonly NoContent: number = 204;
+  public static readonly NotModified: number = 304;
   public static readonly Unauthorized: number = 401;
   public static readonly Forbidden: number = 403;
   public static readonly NotFound: number = 404;
@@ -374,6 +387,8 @@ export class HttpStatusCodes {
 export class Urls {
   public static feedbackEmail = "https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Data%20Explorer%20Feedback";
   public static autoscaleMigration = "https://aka.ms/cosmos-autoscale-migration";
+  public static freeTierInformation = "https://aka.ms/cosmos-free-tier";
+  public static cosmosPricing = "https://aka.ms/azure-cosmos-db-pricing";
 }
 
 export class HashRoutePrefixes {

@@ -84,3 +84,22 @@ export const traceNotebookTelemetry = (payload: {
     payload
   };
 };
+
+export const UPDATE_NOTEBOOK_PARENT_DOM_ELTS = "UPDATE_NOTEBOOK_PARENT_DOM_ELTS";
+export interface UpdateNotebookParentDomEltAction {
+  type: "UPDATE_NOTEBOOK_PARENT_DOM_ELTS";
+  payload: {
+    contentRef: ContentRef;
+    parentElt: HTMLElement;
+  };
+}
+
+export const UpdateNotebookParentDomElt = (payload: {
+  contentRef: ContentRef;
+  parentElt: HTMLElement;
+}): UpdateNotebookParentDomEltAction => {
+  return {
+    type: UPDATE_NOTEBOOK_PARENT_DOM_ELTS,
+    payload
+  };
+};

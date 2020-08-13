@@ -2,13 +2,13 @@ import AuthHeadersUtil from "./Authorization";
 import * as Constants from "../../Common/Constants";
 import * as Logger from "../../Common/Logger";
 import { Tenant, Subscription, DatabaseAccount, AccountKeys } from "../../Contracts/DataModels";
-import { config } from "../../Config";
+import { configContext } from "../../ConfigContext";
 
 // TODO: 421864 - add a fetch wrapper
 export abstract class ArmResourceUtils {
-  private static readonly _armEndpoint: string = config.ARM_ENDPOINT;
-  private static readonly _armApiVersion: string = config.ARM_API_VERSION;
-  private static readonly _armAuthArea: string = config.ARM_AUTH_AREA;
+  private static readonly _armEndpoint: string = configContext.ARM_ENDPOINT;
+  private static readonly _armApiVersion: string = configContext.ARM_API_VERSION;
+  private static readonly _armAuthArea: string = configContext.ARM_AUTH_AREA;
 
   // TODO: 422867 - return continuation token instead of read through
   public static async listTenants(): Promise<Array<Tenant>> {
@@ -123,10 +123,18 @@ export abstract class ArmResourceUtils {
 
     try {
       const fetchHeaders = await ArmResourceUtils._getAuthHeader(ArmResourceUtils._armAuthArea, tenantId);
-      const url = `${ArmResourceUtils._armEndpoint}/${cosmosdbResourceId}/listKeys?api-version=${Constants.ArmApiVersions.documentDB}`;
-
-      const response: Response = await fetch(url, { headers: fetchHeaders, method: "POST" });
-      const result: AccountKeys = response.status === 204 || response.status === 304 ? null : await response.json();
+      const readWriteKeysUrl = `${ArmResourceUtils._armEndpoint}/${cosmosdbResourceId}/listKeys?api-version=${Constants.ArmApiVersions.documentDB}`;
+      const readOnlyKeysUrl = `${ArmResourceUtils._armEndpoint}/${cosmosdbResourceId}/readOnlyKeys?api-version=${Constants.ArmApiVersions.documentDB}`;
+      let response: Response = await fetch(readWriteKeysUrl, { headers: fetchHeaders, method: "POST" });
+      if (response.status === Constants.HttpStatusCodes.Forbidden) {
+        // fetch read only keys for readers
+        response = await fetch(readOnlyKeysUrl, { headers: fetchHeaders, method: "POST" });
+      }
+      const result: AccountKeys =
+        response.status === Constants.HttpStatusCodes.NoContent ||
+        response.status === Constants.HttpStatusCodes.NotModified
+          ? null
+          : await response.json();
       if (!response.ok) {
         throw result;
       }

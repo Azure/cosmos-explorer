@@ -22,20 +22,31 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { Areas, ArmApiVersions } from "../../Common/Constants";
 import { CommandBarComponentButtonFactory } from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
-import { config } from "../../Config";
+import { configContext } from "../../ConfigContext";
+import Explorer from "../Explorer";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { toJS, stringifyNotebook } from "@nteract/commutable";
 
-export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
+export interface NotebookTabOptions extends ViewModels.TabOptions {
+  account: DataModels.DatabaseAccount;
+  masterKey: string;
+  container: Explorer;
+  notebookContentItem: NotebookContentItem;
+}
+
+export default class NotebookTabV2 extends TabsBase {
   private static clientManager: NotebookClientV2;
-  private container: ViewModels.Explorer;
+  private container: Explorer;
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
 
-  constructor(options: ViewModels.NotebookTabOptions) {
+  constructor(options: NotebookTabOptions) {
     super(options);
 
     this.container = options.container;
@@ -104,14 +115,15 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
 
     const saveLabel = "Save";
+    const copyToLabel = "Copy to ...";
     const publishLabel = "Publish to gallery";
     const workspaceLabel = "No Workspace";
     const kernelLabel = "No Kernel";
@@ -135,7 +147,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     const cellCodeType = "code";
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
-    let buttons: ViewModels.NavbarButtonConfig[] = [
+    let buttons: CommandButtonComponentProps[] = [
       {
         iconSrc: SaveIcon,
         iconAlt: saveLabel,
@@ -155,8 +167,16 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
                 ariaLabel: saveLabel
               },
               {
+                iconName: "Copy",
+                onCommandClick: () => this.copyNotebook(),
+                commandButtonLabel: copyToLabel,
+                hasPopup: false,
+                disabled: false,
+                ariaLabel: copyToLabel
+              },
+              {
                 iconName: "PublishContent",
-                onCommandClick: () => this.publishToGallery(),
+                onCommandClick: async () => await this.publishToGallery(),
                 commandButtonLabel: publishLabel,
                 hasPopup: false,
                 disabled: false,
@@ -187,7 +207,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
               hasPopup: false,
               disabled: false,
               ariaLabel: kernel.displayName
-            } as ViewModels.NavbarButtonConfig)
+            } as CommandButtonComponentProps)
         ),
         ariaLabel: kernelLabel
       },
@@ -362,7 +382,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     ];
 
     if (this.container.hasStorageAnalyticsAfecFeature()) {
-      const arcadiaWorkspaceDropdown: ViewModels.NavbarButtonConfig = {
+      const arcadiaWorkspaceDropdown: CommandButtonComponentProps = {
         iconSrc: null,
         iconAlt: workspaceLabel,
         ariaLabel: workspaceLabel,
@@ -413,7 +433,7 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
                 password: undefined,
                 endpoints: [
                   {
-                    endpoint: `https://${workspace.name}.${config.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
+                    endpoint: `https://${workspace.name}.${configContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
                     kind: DataModels.SparkClusterEndpointKind.Livy
                   }
                 ]
@@ -446,9 +466,25 @@ export default class NotebookTabV2 extends TabsBase implements ViewModels.Tab {
     );
   }
 
-  private publishToGallery = () => {
+  private publishToGallery = async () => {
     const notebookContent = this.notebookComponentAdapter.getContent();
-    this.container.publishNotebook(notebookContent.name, notebookContent.content);
+    await this.container.publishNotebook(
+      notebookContent.name,
+      notebookContent.content,
+      this.notebookComponentAdapter.getNotebookParentElement()
+    );
+  };
+
+  private copyNotebook = () => {
+    const notebookContent = this.notebookComponentAdapter.getContent();
+    let content: string;
+    if (typeof notebookContent.content === "string") {
+      content = notebookContent.content;
+    } else {
+      content = stringifyNotebook(toJS(notebookContent.content));
+    }
+
+    this.container.copyNotebook(notebookContent.name, content);
   };
 
   private traceTelemetry(actionType: number) {

@@ -2,11 +2,14 @@ import * as ko from "knockout";
 import * as Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "./TabsBase";
-import Toolbar from "../Controls/Toolbar/Toolbar";
 import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
 import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
 import NewVertexIcon from "../../../images/NewVertex.svg";
 import StyleIcon from "../../../images/Style.svg";
+import GraphStylingPane from "../Panes/GraphStylingPane";
+import NewVertexPane from "../Panes/NewVertexPane";
+import { DatabaseAccount } from "../../Contracts/DataModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -24,7 +27,15 @@ export interface GraphConfig {
   iconsMap: ko.Observable<GraphIconMap>;
 }
 
-export default class GraphTab extends TabsBase implements ViewModels.Tab {
+interface GraphTabOptions extends ViewModels.TabOptions {
+  account: DatabaseAccount;
+  masterKey: string;
+  collectionId: string;
+  databaseId: string;
+  collectionPartitionKeyProperty: string;
+}
+
+export default class GraphTab extends TabsBase {
   // Graph default configuration
   public static readonly DEFAULT_NODE_CAPTION = "id";
   private static readonly LINK_COLOR = "#aaa";
@@ -36,16 +47,15 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
   private isPropertyEditing: ko.Observable<boolean>;
   private isGraphDisplayed: ko.Observable<boolean>;
   private graphAccessor: GraphAccessor;
-  public toolbarViewModel: ko.Observable<Toolbar>;
   private graphConfig: GraphConfig;
   private graphConfigUiData: ViewModels.GraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
-  private newVertexPane: ViewModels.NewVertexPane;
-  private graphStylingPane: ViewModels.GraphStylingPane;
+  private newVertexPane: NewVertexPane;
+  private graphStylingPane: GraphStylingPane;
   private collectionPartitionKeyProperty: string;
 
-  constructor(options: ViewModels.GraphTabOptions) {
+  constructor(options: GraphTabOptions) {
     super(options);
 
     this.newVertexPane = options.collection && options.collection.container.newVertexPane;
@@ -81,7 +91,6 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
       onIsFilterQueryLoading: (isFilterQueryLoading: boolean): void => this.isFilterQueryLoading(isFilterQueryLoading),
       onIsValidQuery: (isValidQuery: boolean): void => this.isValidQuery(isValidQuery),
       collectionPartitionKeyProperty: options.collectionPartitionKeyProperty,
-      documentClientUtility: this.documentClientUtility,
       collectionRid: this.rid,
       collectionSelfLink: options.selfLink,
       graphBackendEndpoint: GraphTab.getGremlinEndpoint(options.account),
@@ -99,11 +108,9 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
 
     this.isFilterQueryLoading = ko.observable(false);
     this.isValidQuery = ko.observable(true);
-    this.documentClientUtility = options.documentClientUtility;
-    this.toolbarViewModel = ko.observable<Toolbar>();
   }
 
-  public static getGremlinEndpoint(account: ViewModels.DatabaseAccount): string {
+  public static getGremlinEndpoint(account: DatabaseAccount): string {
     return account.properties.gremlinEndpoint
       ? GraphTab.sanitizeHost(account.properties.gremlinEndpoint)
       : `${account.name}.graphs.azure.com:443/`;
@@ -202,9 +209,9 @@ export default class GraphTab extends TabsBase implements ViewModels.Tab {
       this.graphConfigUiData.nodeIconChoice(this.graphConfigUiData.nodePropertiesWithNone()[0]);
     }
   }
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     const label = "New Vertex";
-    const buttons: ViewModels.NavbarButtonConfig[] = [
+    const buttons: CommandButtonComponentProps[] = [
       {
         iconSrc: NewVertexIcon,
         iconAlt: label,

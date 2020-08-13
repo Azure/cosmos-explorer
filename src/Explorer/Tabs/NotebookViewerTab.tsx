@@ -7,6 +7,15 @@ import {
   NotebookViewerComponentProps
 } from "../Controls/NotebookViewer/NotebookViewerComponent";
 import TabsBase from "./TabsBase";
+import Explorer from "../Explorer";
+import { DatabaseAccount } from "../../Contracts/DataModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+
+interface NotebookViewerTabOptions extends ViewModels.TabOptions {
+  account: DatabaseAccount;
+  container: Explorer;
+  notebookUrl: string;
+}
 
 /**
  * Notebook Viewer tab
@@ -28,13 +37,13 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
   }
 }
 
-export default class NotebookViewerTab extends TabsBase implements ViewModels.Tab {
-  private container: ViewModels.Explorer;
+export default class NotebookViewerTab extends TabsBase {
+  private container: Explorer;
   public notebookUrl: string;
 
   public notebookViewerComponentAdapter: NotebookViewerComponentAdapter;
 
-  constructor(options: ViewModels.NotebookViewerTabOptions) {
+  constructor(options: NotebookViewerTabOptions) {
     super(options);
     this.container = options.container;
     this.notebookUrl = options.notebookUrl;
@@ -49,11 +58,11 @@ export default class NotebookViewerTab extends TabsBase implements ViewModels.Ta
     });
   }
 
-  protected getContainer(): ViewModels.Explorer {
+  protected getContainer(): Explorer {
     return this.container;
   }
 
-  protected getTabsButtons(): ViewModels.NavbarButtonConfig[] {
+  protected getTabsButtons(): CommandButtonComponentProps[] {
     return [];
   }
 

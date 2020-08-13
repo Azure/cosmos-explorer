@@ -6,7 +6,7 @@ import * as HeadersUtility from "../../Common/HeadersUtility";
 import { queryIterator } from "../../Common/MongoProxyClient";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 
-export default class MongoQueryTab extends QueryTab implements ViewModels.QueryTab {
+export default class MongoQueryTab extends QueryTab {
   public collection: ViewModels.Collection;
 
   constructor(options: ViewModels.QueryTabOptions) {

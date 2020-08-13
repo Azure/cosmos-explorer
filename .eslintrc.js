@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es6: true
   },
-  plugins: ["@typescript-eslint", "no-null"],
+  plugins: ["@typescript-eslint", "no-null", "prefer-arrow"],
   extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   globals: {
     Atomics: "readonly",
@@ -39,6 +39,8 @@ module.exports = {
     curly: "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-extraneous-class": "error",
-    "no-null/no-null": "error"
+    "no-null/no-null": "error",
+    "@typescript-eslint/no-explicit-any": "error",
+    "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }]
   }
 };

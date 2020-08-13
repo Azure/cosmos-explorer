@@ -13,15 +13,22 @@ import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import Q from "q";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { config, Platform } from "../../Config";
+import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { CosmosClient } from "../../Common/CosmosClient";
 import { createMongoCollectionWithARM, createMongoCollectionWithProxy } from "../../Common/MongoProxyClient";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { HashMap } from "../../Common/HashMap";
 import { PlatformType } from "../../PlatformType";
+import { refreshCachedResources, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
+import { userContext } from "../../UserContext";
 
-export default class AddCollectionPane extends ContextualPaneBase implements ViewModels.AddCollectionPane {
+export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
+  isPreferredApiTable: ko.Computed<boolean>;
+  databaseId?: string;
+  databaseSelfLink?: string;
+}
+
+export default class AddCollectionPane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIds: ko.ObservableArray<string>;
   public collectionId: ko.Observable<string>;
@@ -69,6 +76,8 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
   public uniqueKeysPlaceholder: ko.Computed<string>;
   public upsellMessage: ko.PureComputed<string>;
   public upsellMessageAriaLabel: ko.PureComputed<string>;
+  public upsellAnchorUrl: ko.PureComputed<string>;
+  public upsellAnchorText: ko.PureComputed<string>;
   public debugstring: ko.Computed<string>;
   public displayCollectionThroughput: ko.Computed<boolean>;
   public isAutoPilotSelected: ko.Observable<boolean>;
@@ -91,15 +100,19 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
   public canExceedMaximumValue: ko.PureComputed<boolean>;
   public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
+  public canConfigureThroughput: ko.PureComputed<boolean>;
+  public showUpsellMessage: ko.PureComputed<boolean>;
 
   private _databaseOffers: HashMap<DataModels.Offer>;
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
 
-  constructor(options: ViewModels.AddCollectionPaneOptions) {
+  constructor(options: AddCollectionPaneOptions) {
     super(options);
     this._databaseOffers = new HashMap<DataModels.Offer>();
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
+    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.formWarnings = ko.observable<string>();
     this.collectionId = ko.observable<string>();
     this.databaseId = ko.observable<string>();
@@ -508,11 +521,19 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     });
 
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId());
+      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
-      return `${this.upsellMessage()}. Click for more details`;
+      return `${this.upsellMessage()}. Click ${this.isFreeTierAccount() ? "to learn more" : "for more details"}`;
+    });
+
+    this.upsellAnchorUrl = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
+    });
+
+    this.upsellAnchorText = ko.pureComputed<string>(() => {
+      return this.isFreeTierAccount() ? "Learn more" : "More details";
     });
 
     this.displayCollectionThroughput = ko.computed<boolean>(() => {
@@ -578,9 +599,14 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     });
 
     this.isSynapseLinkSupported = ko.computed(() => {
-      if (config.platform === Platform.Emulator) {
+      if (configContext.platform === Platform.Emulator) {
         return false;
       }
+
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
       if (this.container.isPreferredApiDocumentDB()) {
         return true;
       }
@@ -599,7 +625,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     this._isSynapseLinkEnabled = ko.computed(() => {
       const databaseAccount =
         (this.container && this.container.databaseAccount && this.container.databaseAccount()) ||
-        ({} as ViewModels.DatabaseAccount);
+        ({} as DataModels.DatabaseAccount);
       const properties = databaseAccount.properties || ({} as DataModels.DatabaseAccountExtendedProperties);
 
       // TODO: remove check for capability once all accounts have been migrated
@@ -713,10 +739,19 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
   }
 
   private _computeOfferThroughput(): number {
-    if (this.databaseCreateNewShared()) {
-      return this.isSharedAutoPilotSelected() ? undefined : this._getThroughput();
+    if (!this.canConfigureThroughput()) {
+      return undefined;
     }
-    return this.isAutoPilotSelected() ? undefined : this._getThroughput();
+
+    if (this.isAutoPilotSelected()) {
+      return undefined;
+    }
+
+    if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) {
+      return undefined;
+    }
+
+    return this._getThroughput();
   }
 
   public submit() {
@@ -879,14 +914,15 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
             this.container.armEndpoint(),
             databaseId,
             collectionId,
+            indexingPolicy,
             offerThroughput,
             partitionKeyPath,
             partitionKey.version,
             databaseCreateNew,
             useDatabaseSharedOffer,
-            CosmosClient.subscriptionId(),
-            CosmosClient.resourceGroup(),
-            CosmosClient.databaseAccount().name,
+            userContext.subscriptionId,
+            userContext.resourceGroup,
+            userContext.databaseAccount.name,
             autopilotSettings
           )
         );
@@ -898,21 +934,21 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
             databaseId,
             this._getAnalyticalStorageTtl(),
             collectionId,
+            indexingPolicy,
             offerThroughput,
             partitionKeyPath,
             partitionKey.version,
             databaseCreateNew,
             useDatabaseSharedOffer,
-            CosmosClient.subscriptionId(),
-            CosmosClient.resourceGroup(),
-            CosmosClient.databaseAccount().name,
+            userContext.subscriptionId,
+            userContext.resourceGroup,
+            userContext.databaseAccount.name,
             uniqueKeyPolicy,
             autopilotSettings
           )
         );
     } else {
-      createCollectionFunc = () =>
-        this.container.documentClientUtility.getOrCreateDatabaseAndCollection(createRequest, options);
+      createCollectionFunc = () => getOrCreateDatabaseAndCollection(createRequest, options);
     }
 
     createCollectionFunc().then(
@@ -948,7 +984,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
         this.resetData();
-        return this.container.documentClientUtility.refreshCachedResources().then(() => {
+        return refreshCachedResources().then(() => {
           this.container.refreshAllDatabases();
         });
       },
@@ -1236,10 +1272,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
       : SharedConstants.CollectionCreation.NumberOfPartitionsInUnlimitedCollection;
   }
 
-  private _convertShardKeyToPartitionKey(
-    shardKey: string,
-    configurationOverrides: ViewModels.ConfigurationOverrides
-  ): string {
+  private _convertShardKeyToPartitionKey(shardKey: string): string {
     if (!shardKey) {
       return shardKey;
     }
@@ -1301,10 +1334,7 @@ export default class AddCollectionPane extends ContextualPaneBase implements Vie
     };
     if (this.container.isPreferredApiMongoDB()) {
       transform = (value: string) => {
-        return this._convertShardKeyToPartitionKey(
-          value,
-          this.container.databaseAccount().properties.configurationOverrides
-        );
+        return this._convertShardKeyToPartitionKey(value);
       };
     }
 

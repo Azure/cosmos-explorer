@@ -1,18 +1,17 @@
 import * as _ from "underscore";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
+import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 
 export class DefaultExperienceUtility {
-  public static getDefaultExperienceFromDatabaseAccount(databaseAccount: ViewModels.DatabaseAccount): string {
+  public static getDefaultExperienceFromDatabaseAccount(databaseAccount: DataModels.DatabaseAccount): string {
     if (!databaseAccount) {
       return null;
     }
 
     const kind: string =
       databaseAccount && databaseAccount.kind && databaseAccount.kind && databaseAccount.kind.toLowerCase();
-    const capabilities: ViewModels.Capability[] =
-      (databaseAccount.properties && databaseAccount.properties.capabilities) || [];
+    const capabilities = (databaseAccount.properties && databaseAccount.properties.capabilities) || [];
 
     return DefaultExperienceUtility._getDefaultExperience(kind, capabilities);
   }
@@ -61,7 +60,26 @@ export class DefaultExperienceUtility {
     }
   }
 
-  private static _getDefaultExperience(kind: string, capabilities: ViewModels.Capability[]): string {
+  public static mapDefaultExperienceStringToEnum(defaultExperience: string): DefaultAccountExperienceType {
+    switch (defaultExperience) {
+      case Constants.DefaultAccountExperience.DocumentDB:
+        return DefaultAccountExperienceType.DocumentDB;
+      case Constants.DefaultAccountExperience.Graph:
+        return DefaultAccountExperienceType.Graph;
+      case Constants.DefaultAccountExperience.MongoDB:
+        return DefaultAccountExperienceType.MongoDB;
+      case Constants.DefaultAccountExperience.Table:
+        return DefaultAccountExperienceType.Table;
+      case Constants.DefaultAccountExperience.Cassandra:
+        return DefaultAccountExperienceType.Cassandra;
+      case Constants.DefaultAccountExperience.ApiForMongoDB:
+        return DefaultAccountExperienceType.ApiForMongoDB;
+      default:
+        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+    }
+  }
+
+  private static _getDefaultExperience(kind: string, capabilities: DataModels.Capability[]): string {
     const defaultDefaultExperience: string = Constants.DefaultAccountExperience.DocumentDB;
     const defaultExperienceFromKind: string = DefaultExperienceUtility._getDefaultExperienceFromAccountKind(kind);
     const defaultExperienceFromCapabilities: string = DefaultExperienceUtility._getDefaultExperienceFromAccountCapabilities(
@@ -95,7 +113,7 @@ export class DefaultExperienceUtility {
     return null;
   }
 
-  private static _getDefaultExperienceFromAccountCapabilities(capabilities: ViewModels.Capability[]): string {
+  private static _getDefaultExperienceFromAccountCapabilities(capabilities: DataModels.Capability[]): string {
     if (!capabilities) {
       return null;
     }
@@ -104,15 +122,12 @@ export class DefaultExperienceUtility {
       return null;
     }
 
-    const enableTable: ViewModels.Capability = DefaultExperienceUtility._findCapability(
-      capabilities,
-      Constants.CapabilityNames.EnableTable
-    );
+    const enableTable = DefaultExperienceUtility._findCapability(capabilities, Constants.CapabilityNames.EnableTable);
     if (enableTable) {
       return Constants.DefaultAccountExperience.Table;
     }
 
-    const enableGremlin: ViewModels.Capability = DefaultExperienceUtility._findCapability(
+    const enableGremlin = DefaultExperienceUtility._findCapability(
       capabilities,
       Constants.CapabilityNames.EnableGremlin
     );
@@ -120,7 +135,7 @@ export class DefaultExperienceUtility {
       return Constants.DefaultAccountExperience.Graph;
     }
 
-    const enableCassandra: ViewModels.Capability = DefaultExperienceUtility._findCapability(
+    const enableCassandra = DefaultExperienceUtility._findCapability(
       capabilities,
       Constants.CapabilityNames.EnableCassandra
     );
@@ -131,8 +146,8 @@ export class DefaultExperienceUtility {
     return null;
   }
 
-  private static _findCapability(capabilities: ViewModels.Capability[], capabilityName: string): ViewModels.Capability {
-    return _.find(capabilities, (capability: ViewModels.Capability) => {
+  private static _findCapability(capabilities: DataModels.Capability[], capabilityName: string): DataModels.Capability {
+    return _.find(capabilities, capability => {
       return capability && capability.name && capability.name.toLowerCase() === capabilityName.toLowerCase();
     });
   }

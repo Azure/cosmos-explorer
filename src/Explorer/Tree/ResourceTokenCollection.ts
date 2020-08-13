@@ -8,10 +8,12 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import Q from "q";
 import QueryTab from "../Tabs/QueryTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
+import TabsBase from "../Tabs/TabsBase";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public databaseId: string;
   public self: string;
   public rid: string;
@@ -24,7 +26,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public isCollectionExpanded: ko.Observable<boolean>;
 
-  constructor(container: ViewModels.Explorer, databaseId: string, data: DataModels.Collection) {
+  constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
     this.nodeKind = "Collection";
     this.container = container;
     this.databaseId = databaseId;
@@ -73,24 +75,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     });
   }
 
-  public refreshActiveTab(): void {
-    // ensures that the tab selects/highlights the right node based on resource tree expand/collapse state
-    const openedRelevantTabs: ViewModels.Tab[] = this.container
-      .openedTabs()
-      .filter((tab: ViewModels.Tab) => tab && tab.collection && tab.collection.rid === this.rid);
-
-    openedRelevantTabs.forEach((tab: ViewModels.Tab) => {
-      if (tab.isActive()) {
-        tab.onActivate();
-      }
-    });
-  }
-
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
-    const explorer: ViewModels.Explorer = source.container;
-    const openedTabs = explorer.openedTabs();
-    const id = openedTabs.filter(t => t.tabKind === ViewModels.CollectionTabKind.Query).length + 1;
+    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseAccountName: this.container.databaseAccount().name,
@@ -101,11 +88,10 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabTitle: title
     });
 
-    let queryTab: ViewModels.Tab = new QueryTab({
+    const queryTab: QueryTab = new QueryTab({
       tabKind: ViewModels.CollectionTabKind.Query,
       title: title,
       tabPath: "",
-      documentClientUtility: this.container.documentClientUtility,
       collection: this,
       node: this,
       selfLink: this.self,
@@ -115,13 +101,10 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       partitionKey: collection.partitionKey,
       resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
       onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      openedTabs: this.container.openedTabs()
+      onUpdateTabsButtons: this.container.onUpdateTabsButtons
     });
-    this.container.openedTabs.push(queryTab);
 
-    // Activate
-    queryTab.onTabClick();
+    this.container.tabsManager.activateNewTab(queryTab);
   }
 
   public onDocumentDBDocumentsClick() {
@@ -136,14 +119,15 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    // create documents tab if not created yet
-    const openedTabs = this.container.openedTabs();
+    const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.Documents,
+      (tab: TabsBase) => tab.collection && tab.collection.rid === this.rid
+    ) as DocumentsTab[];
+    let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
-    let documentsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.collection && tab.collection.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.Documents)[0];
-
-    if (!documentsTab) {
+    if (documentsTab) {
+      this.container.tabsManager.activateTab(documentsTab);
+    } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
         databaseName: this.databaseId,
@@ -152,14 +136,13 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Items"
       });
+
       documentsTab = new DocumentsTab({
         partitionKey: this.partitionKey,
         resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        documentClientUtility: this.container.documentClientUtility,
-
         selfLink: this.self,
         isActive: ko.observable<boolean>(false),
         collection: this,
@@ -167,14 +150,11 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
-      this.container.openedTabs.push(documentsTab);
-    }
 
-    // Activate
-    documentsTab.onTabClick();
+      this.container.tabsManager.activateNewTab(documentsTab);
+    }
   }
 
   public getDatabase(): ViewModels.Database {

@@ -5,8 +5,9 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import QueryTab from "../Tabs/QueryTab";
 
 export class SaveQueryPane extends ContextualPaneBase {
   public queryName: ko.Observable<string>;
@@ -34,7 +35,7 @@ export class SaveQueryPane extends ContextualPaneBase {
     }
 
     const queryName: string = this.queryName();
-    const queryTab: ViewModels.QueryTab = this.container && (this.container.findActiveTab() as ViewModels.QueryTab);
+    const queryTab = this.container && (this.container.tabsManager.activeTab() as QueryTab);
     const query: string = queryTab && queryTab.sqlQueryEditorContent();
     if (!queryName || queryName.length === 0) {
       this.formErrors("No query name specified");

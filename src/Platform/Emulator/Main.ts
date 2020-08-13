@@ -1,7 +1,6 @@
-import * as ViewModels from "../../Contracts/ViewModels";
 import EmulatorExplorerFactory from "./ExplorerFactory";
+import Explorer from "../../Explorer/Explorer";
 
-export function initializeExplorer(): ViewModels.Explorer {
-  const explorer = EmulatorExplorerFactory.createExplorer();
-  return explorer;
+export function initializeExplorer(): Explorer {
+  return EmulatorExplorerFactory.createExplorer();
 }

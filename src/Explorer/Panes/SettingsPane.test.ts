@@ -4,10 +4,10 @@ import Explorer from "../Explorer";
 
 describe("Settings Pane", () => {
   describe("shouldShowQueryPageOptions()", () => {
-    let explorer: ViewModels.Explorer;
+    let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ documentClientUtility: null, notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
     });
 
     it("should be true for SQL API", () => {

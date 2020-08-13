@@ -1,16 +1,17 @@
+jest.mock("../../Common/DocumentClientUtilityBase");
 import * as ko from "knockout";
 import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
-import DocumentClientUtilityBase from "../../Common/DocumentClientUtilityBase";
 import Q from "q";
-import { CollectionStub, DatabaseStub, ExplorerStub } from "../OpenActionsStubs";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import { CosmosClient } from "../../Common/CosmosClient";
+import * as DocumentClientUtility from "../../Common/DocumentClientUtilityBase";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
+import Explorer from "../Explorer";
+import { updateUserContext } from "../../UserContext";
 
 describe("ContainerSampleGenerator", () => {
-  const createExplorerStub = (database: ViewModels.Database): ExplorerStub => {
-    const explorerStub = new ExplorerStub();
+  const createExplorerStub = (database: ViewModels.Database): Explorer => {
+    const explorerStub = {} as Explorer;
     explorerStub.nonSystemDatabases = ko.computed(() => [database]);
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
@@ -53,36 +54,42 @@ describe("ContainerSampleGenerator", () => {
         }
       ]
     };
-    const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
-    const database = new DatabaseStub({
+    const collection = { id: ko.observable(sampleCollectionId) } as ViewModels.Collection;
+    const database = {
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray([collection])
-    });
+      collections: ko.observableArray<ViewModels.Collection>([collection])
+    } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
 
     const explorerStub = createExplorerStub(database);
     explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => true);
-
-    const fakeDocumentClientUtility = sinon.createStubInstance(DocumentClientUtilityBase);
-    fakeDocumentClientUtility.getOrCreateDatabaseAndCollection.returns(Q.resolve(collection));
-    fakeDocumentClientUtility.createDocument.returns(Q.resolve());
-
-    explorerStub.documentClientUtility = fakeDocumentClientUtility;
-
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
 
-    expect(fakeDocumentClientUtility.createDocument.called).toBe(true);
+    expect(DocumentClientUtility.createDocument).toHaveBeenCalled();
   });
 
   it("should send gremlin queries for Graph API account", async () => {
     sinon.stub(GremlinClient.prototype, "initialize").callsFake(() => {});
     const executeStub = sinon.stub(GremlinClient.prototype, "execute").returns(Q.resolve());
 
-    sinon.stub(CosmosClient, "databaseAccount").returns({
-      properties: {}
+    updateUserContext({
+      databaseAccount: {
+        id: "foo",
+        name: "foo",
+        location: "foo",
+        type: "foo",
+        kind: "foo",
+        tags: [],
+        properties: {
+          documentEndpoint: "bar",
+          gremlinEndpoint: "foo",
+          tableEndpoint: "foo",
+          cassandraEndpoint: "foo"
+        }
+      }
     });
 
     const sampleCollectionId = "SampleCollection";
@@ -98,29 +105,23 @@ describe("ContainerSampleGenerator", () => {
         "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)"
       ]
     };
-    const collection = new CollectionStub({ id: ko.observable(sampleCollectionId) });
-    const database = new DatabaseStub({
+    const collection = { id: ko.observable(sampleCollectionId) } as ViewModels.Collection;
+    const database = {
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray([collection])
-    });
+      collections: ko.observableArray<ViewModels.Collection>([collection])
+    } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
     collection.databaseId = database.id();
 
     const explorerStub = createExplorerStub(database);
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => true);
 
-    const fakeDocumentClientUtility = sinon.createStubInstance(DocumentClientUtilityBase);
-    fakeDocumentClientUtility.getOrCreateDatabaseAndCollection.returns(Q.resolve(collection));
-    fakeDocumentClientUtility.createDocument.returns(Q.resolve());
-
-    explorerStub.documentClientUtility = fakeDocumentClientUtility;
-
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
 
-    expect(fakeDocumentClientUtility.createDocument.called).toBe(false);
+    expect(DocumentClientUtility.createDocument).toHaveBeenCalled();
     expect(executeStub.called).toBe(true);
   });
 

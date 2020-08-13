@@ -1,9 +1,9 @@
 import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
+import DocumentsTab from "../Tabs/DocumentsTab";
 
-export default class DocumentId implements ViewModels.DocumentId {
-  public container: ViewModels.DocumentsTab;
+export default class DocumentId {
+  public container: DocumentsTab;
   public rid: string;
   public self: string;
   public ts: string;
@@ -14,7 +14,7 @@ export default class DocumentId implements ViewModels.DocumentId {
   public stringPartitionKeyValue: string;
   public isDirty: ko.Observable<boolean>;
 
-  constructor(container: ViewModels.DocumentsTab, data: any, partitionKeyValue: any) {
+  constructor(container: DocumentsTab, data: any, partitionKeyValue: any) {
     this.container = container;
     this.self = data._self;
     this.rid = data._rid;

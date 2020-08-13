@@ -1,5 +1,6 @@
 **/node_modules/
 dist/
+Contracts/
 src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
@@ -137,7 +138,6 @@ src/Explorer/Panes/AddDatabasePane.test.ts
 src/Explorer/Panes/AddDatabasePane.ts
 src/Explorer/Panes/BrowseQueriesPane.ts
 src/Explorer/Panes/CassandraAddCollectionPane.ts
-src/Explorer/Panes/ClusterLibraryPane.ts
 src/Explorer/Panes/ContextualPaneBase.ts
 src/Explorer/Panes/DeleteCollectionConfirmationPane.test.ts
 src/Explorer/Panes/DeleteCollectionConfirmationPane.ts
@@ -145,9 +145,7 @@ src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
 src/Explorer/Panes/ExecuteSprocParamsPane.ts
 src/Explorer/Panes/GraphStylingPane.ts
-src/Explorer/Panes/LibraryManagePane.ts
 src/Explorer/Panes/LoadQueryPane.ts
-src/Explorer/Panes/ManageSparkClusterPane.ts
 src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
@@ -155,7 +153,6 @@ src/Explorer/Panes/SaveQueryPane.ts
 src/Explorer/Panes/SettingsPane.test.ts
 src/Explorer/Panes/SettingsPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts
-src/Explorer/Panes/SetupSparkClusterPane.ts
 src/Explorer/Panes/StringInputPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts
 src/Explorer/Panes/Tables/AddTableEntityPane.ts
@@ -273,7 +270,6 @@ src/Shared/AddCollectionUtility.test.ts
 src/Shared/AddCollectionUtility.ts
 src/Shared/AddDatabaseUtility.test.ts
 src/Shared/AddDatabaseUtility.ts
-src/Shared/Ajax.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
@@ -302,11 +298,9 @@ src/Utils/DatabaseAccountUtils.ts
 src/Utils/JunoUtils.ts
 src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
-src/Utils/NotificationConsoleUtils.ts
 src/Utils/OfferUtils.test.ts
 src/Utils/OfferUtils.ts
 src/Utils/PricingUtils.test.ts
-src/Utils/PricingUtils.ts
 src/Utils/QueryUtils.test.ts
 src/Utils/QueryUtils.ts
 src/Utils/StringUtils.test.ts
@@ -334,10 +328,6 @@ src/Explorer/Controls/Directory/DirectoryListComponent.test.tsx
 src/Explorer/Controls/Directory/DirectoryListComponent.tsx
 src/Explorer/Controls/Editor/EditorReact.tsx
 src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx
-src/Explorer/Controls/LibraryManagement/ClusterLibraryGrid.tsx
-src/Explorer/Controls/LibraryManagement/ClusterLibraryGridAdapter.tsx
-src/Explorer/Controls/LibraryManagement/LibraryManage.tsx
-src/Explorer/Controls/LibraryManagement/LibraryManageComponentAdapter.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookMetadataComponent.tsx
@@ -411,7 +401,6 @@ src/Explorer/Tabs/NotebookViewerTab.tsx
 src/Explorer/Tabs/TerminalTab.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.tsx
-src/GalleryViewer/Cards/CardStyleConstants.tsx
 src/GalleryViewer/Cards/GalleryCardComponent.tsx
 src/GalleryViewer/GalleryViewer.tsx
 src/GalleryViewer/GalleryViewerComponent.tsx

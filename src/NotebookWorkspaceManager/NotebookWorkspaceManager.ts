@@ -1,4 +1,3 @@
-import * as ViewModels from "../Contracts/ViewModels";
 import { ArmApiVersions } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
 import * as Logger from "../Common/Logger";
@@ -9,7 +8,7 @@ import {
 } from "../Contracts/DataModels";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 
-export class NotebookWorkspaceManager implements ViewModels.NotebookWorkspaceManager {
+export class NotebookWorkspaceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
 
   constructor(private _armEndpoint: string) {
@@ -83,7 +82,9 @@ export class NotebookWorkspaceManager implements ViewModels.NotebookWorkspaceMan
   public async startNotebookWorkspaceAsync(cosmosdbResourceId: string, notebookWorkspaceId: string): Promise<void> {
     const uri = `${cosmosdbResourceId}/notebookWorkspaces/${notebookWorkspaceId}/start`;
     try {
-      return await this.rpClient(uri).postAsync(uri, ArmApiVersions.documentDB, undefined);
+      return await this.rpClient(uri).postAsync(uri, ArmApiVersions.documentDB, undefined, {
+        skipResourceValidation: true
+      });
     } catch (error) {
       Logger.logError(error, "NotebookWorkspaceManager/startNotebookWorkspaceAsync");
       throw error;

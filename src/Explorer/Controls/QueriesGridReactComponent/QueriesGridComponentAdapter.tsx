@@ -8,11 +8,12 @@ import * as React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { QueriesGridComponent, QueriesGridComponentProps } from "./QueriesGridComponent";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
+import Explorer from "../../Explorer";
 
 export class QueriesGridComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
 
-  constructor(private container: ViewModels.Explorer) {
+  constructor(private container: Explorer) {
     this.parameters = ko.observable<number>(Date.now());
   }
 

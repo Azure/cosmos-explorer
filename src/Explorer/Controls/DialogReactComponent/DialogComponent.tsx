@@ -3,6 +3,7 @@ import { Dialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric
 import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
 import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
 import { Link } from "office-ui-fabric-react/lib/Link";
+import { FontIcon } from "office-ui-fabric-react";
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -31,6 +32,8 @@ export interface DialogProps {
   onSecondaryButtonClick: () => void;
   primaryButtonDisabled?: boolean;
   type?: DialogType;
+  showCloseButton?: boolean;
+  onDismiss?: () => void;
 }
 
 const DIALOG_MIN_WIDTH = "400px";
@@ -55,7 +58,8 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
           title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
           subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE }
         },
-        showCloseButton: false
+        showCloseButton: this.props.showCloseButton || false,
+        onDismiss: this.props.onDismiss
       },
       modalProps: { isBlocking: this.props.isModal },
       minWidth: DIALOG_MIN_WIDTH,
@@ -81,7 +85,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         {textFieldProps && <TextField {...textFieldProps} />}
         {linkProps && (
           <Link href={linkProps.linkUrl} target="_blank">
-            {linkProps.linkText}
+            {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
           </Link>
         )}
         <DialogFooter>

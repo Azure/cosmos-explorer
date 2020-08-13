@@ -3,14 +3,13 @@ import "expose-loader?AuthenticationContext!../../../externals/adal";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { AuthType } from "../../AuthType";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import { CosmosClient } from "../../Common/CosmosClient";
 import * as Logger from "../../Common/Logger";
-import { config } from "../../Config";
+import { configContext } from "../../ConfigContext";
+import { userContext } from "../../UserContext";
 
 export default class AuthHeadersUtil {
   // TODO: Figure out a way to determine the extension endpoint and serverId at runtime
@@ -18,12 +17,12 @@ export default class AuthHeadersUtil {
   public static serverId: string = Constants.ServerIds.productionPortal;
 
   private static readonly _firstPartyAppId: string = "203f1145-856a-4232-83d4-a43568fba23d";
-  private static readonly _aadEndpoint: string = config.AAD_ENDPOINT;
-  private static readonly _armEndpoint: string = config.ARM_ENDPOINT;
-  private static readonly _arcadiaEndpoint: string = config.ARCADIA_ENDPOINT;
-  private static readonly _armAuthArea: string = config.ARM_AUTH_AREA;
-  private static readonly _graphEndpoint: string = config.GRAPH_ENDPOINT;
-  private static readonly _graphApiVersion: string = config.GRAPH_API_VERSION;
+  private static readonly _aadEndpoint: string = configContext.AAD_ENDPOINT;
+  private static readonly _armEndpoint: string = configContext.ARM_ENDPOINT;
+  private static readonly _arcadiaEndpoint: string = configContext.ARCADIA_ENDPOINT;
+  private static readonly _armAuthArea: string = configContext.ARM_AUTH_AREA;
+  private static readonly _graphEndpoint: string = configContext.GRAPH_ENDPOINT;
+  private static readonly _graphApiVersion: string = configContext.GRAPH_API_VERSION;
 
   private static _authContext: AuthenticationContext = new AuthenticationContext({
     instance: AuthHeadersUtil._aadEndpoint,
@@ -90,8 +89,8 @@ export default class AuthHeadersUtil {
     const url: string = `${
       AuthHeadersUtil.extensionEndpoint
     }/api/tokens/generateToken${AuthHeadersUtil._generateResourceUrl()}`;
-    const explorer: ViewModels.Explorer = (<any>window).dataExplorer;
-    const headers: any = { authorization: CosmosClient.authorizationToken() };
+    const explorer = window.dataExplorer;
+    const headers: any = { authorization: userContext.authorizationToken };
     headers[Constants.HttpHeaders.getReadOnlyKey] = !explorer.hasWriteAccess();
 
     return AuthHeadersUtil._initiateGenerateTokenRequest({
@@ -272,9 +271,9 @@ export default class AuthHeadersUtil {
   }
 
   private static _generateResourceUrl(): string {
-    const databaseAccount: ViewModels.DatabaseAccount = CosmosClient.databaseAccount();
-    const subscriptionId: string = CosmosClient.subscriptionId();
-    const resourceGroup: string = CosmosClient.resourceGroup();
+    const databaseAccount = userContext.databaseAccount;
+    const subscriptionId: string = userContext.subscriptionId;
+    const resourceGroup = userContext.resourceGroup;
     const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount);
     const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
     const accountEndpoint = (databaseAccount && databaseAccount.properties.documentEndpoint) || "";

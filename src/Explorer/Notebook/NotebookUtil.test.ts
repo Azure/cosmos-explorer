@@ -1,12 +1,73 @@
 import { NotebookUtil } from "./NotebookUtil";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import {
+  ImmutableNotebook,
+  MediaBundle,
+  CodeCellParams,
+  MarkdownCellParams,
+  makeCodeCell,
+  makeMarkdownCell,
+  makeNotebookRecord
+} from "@nteract/commutable";
+import { List, Map } from "immutable";
 
 const fileName = "file";
 const notebookName = "file.ipynb";
-const filePath = `folder/${fileName}`;
-const notebookPath = `folder/${notebookName}`;
+const folderPath = "folder";
+const filePath = `${folderPath}/${fileName}`;
+const notebookPath = `${folderPath}/${notebookName}`;
+const gitHubFolderUri = GitHubUtils.toContentUri("owner", "repo", "branch", folderPath);
 const gitHubFileUri = GitHubUtils.toContentUri("owner", "repo", "branch", filePath);
 const gitHubNotebookUri = GitHubUtils.toContentUri("owner", "repo", "branch", notebookPath);
+const notebookRecord = makeNotebookRecord({
+  cellOrder: List.of("0", "1", "2", "3"),
+  cellMap: Map({
+    "0": makeMarkdownCell({
+      cell_type: "markdown",
+      source: "abc",
+      metadata: undefined
+    } as MarkdownCellParams),
+    "1": makeCodeCell({
+      cell_type: "code",
+      execution_count: undefined,
+      metadata: undefined,
+      source: "print(5)",
+      outputs: List.of({
+        name: "stdout",
+        output_type: "stream",
+        text: "5"
+      })
+    } as CodeCellParams),
+    "2": makeCodeCell({
+      cell_type: "code",
+      execution_count: undefined,
+      metadata: undefined,
+      source: 'display(HTML("<h1>Sample html</h1>"))',
+      outputs: List.of({
+        data: Object.freeze({
+          "text/html": "<h1>Sample output</h1>",
+          "text/plain": "<IPython.core.display.HTML object>"
+        } as MediaBundle),
+        output_type: "display_data",
+        metadata: undefined
+      })
+    } as CodeCellParams),
+    "3": makeCodeCell({
+      cell_type: "code",
+      execution_count: undefined,
+      metadata: undefined,
+      source: 'print("hello world")',
+      outputs: List.of({
+        name: "stdout",
+        output_type: "stream",
+        text: "hello world"
+      })
+    } as CodeCellParams)
+  }),
+  nbformat_minor: 2,
+  nbformat: 2,
+  metadata: undefined
+});
 
 describe("NotebookUtil", () => {
   describe("isNotebookFile", () => {
@@ -18,6 +79,26 @@ describe("NotebookUtil", () => {
     it("works for github file uris", () => {
       expect(NotebookUtil.isNotebookFile(gitHubFileUri)).toBeFalsy();
       expect(NotebookUtil.isNotebookFile(gitHubNotebookUri)).toBeTruthy();
+    });
+  });
+
+  describe("getFilePath", () => {
+    it("works for jupyter file paths", () => {
+      expect(NotebookUtil.getFilePath(folderPath, fileName)).toEqual(filePath);
+    });
+
+    it("works for github file uris", () => {
+      expect(NotebookUtil.getFilePath(gitHubFolderUri, fileName)).toEqual(gitHubFileUri);
+    });
+  });
+
+  describe("getParentPath", () => {
+    it("works for jupyter file paths", () => {
+      expect(NotebookUtil.getParentPath(filePath)).toEqual(folderPath);
+    });
+
+    it("works for github file uris", () => {
+      expect(NotebookUtil.getParentPath(gitHubFileUri)).toEqual(gitHubFolderUri);
     });
   });
 
@@ -44,6 +125,13 @@ describe("NotebookUtil", () => {
       expect(NotebookUtil.replaceName(gitHubNotebookUri, "newName")).toEqual(
         gitHubNotebookUri.replace(notebookName, "newName")
       );
+    });
+  });
+
+  describe("findFirstCodeCellWithDisplay", () => {
+    it("works for Notebook file", () => {
+      const notebookObject = notebookRecord as ImmutableNotebook;
+      expect(NotebookUtil.findFirstCodeCellWithDisplay(notebookObject)).toEqual(1);
     });
   });
 });

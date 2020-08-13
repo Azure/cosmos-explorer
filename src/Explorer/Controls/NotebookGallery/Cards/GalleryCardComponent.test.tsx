@@ -17,9 +17,11 @@ describe("GalleryCardComponent", () => {
         isSample: false,
         downloads: 0,
         favorites: 0,
-        views: 0
+        views: 0,
+        newCellId: undefined
       },
       isFavorite: false,
+      showDownload: true,
       showDelete: true,
       onClick: undefined,
       onTagClick: undefined,

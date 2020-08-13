@@ -15,7 +15,7 @@ import { GraphData, D3Node, D3Link } from "./GraphData";
 import { HashMap } from "../../../Common/HashMap";
 import { BaseType } from "d3";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { GraphConfig } from "../../Tabs/GraphTab";
 import { GraphExplorer } from "./GraphExplorer";
 import * as Constants from "../../../Common/Constants";

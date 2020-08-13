@@ -4,14 +4,11 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { Areas } from "../../../Common/Constants";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-import ApacheSparkIcon from "../../../../images/notebook/Apache-spark.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import * as Constants from "../../../Common/Constants";
-import DeleteIcon from "../../../../images/delete.svg";
-import EditIcon from "../../../../images/edit.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
@@ -25,21 +22,22 @@ import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import EnableNotebooksIcon from "../../../../images/notebook/Notebook-enable.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
-import LibraryManageIcon from "../../../../images/notebook/Spark-library-manage.svg";
 import GitHubIcon from "../../../../images/github.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
-import { config, Platform } from "../../../Config";
+import { configContext, Platform } from "../../../ConfigContext";
+import Explorer from "../../Explorer";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
 export class CommandBarComponentButtonFactory {
   private static counter: number = 0;
 
-  public static createStaticCommandBarButtons(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig[] {
+  public static createStaticCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
     if (container.isAuthWithResourceToken()) {
       return CommandBarComponentButtonFactory.createStaticCommandBarButtonsForResourceToken(container);
     }
 
     const newCollectionBtn = CommandBarComponentButtonFactory.createNewCollectionGroup(container);
-    const buttons: ViewModels.NavbarButtonConfig[] = [newCollectionBtn];
+    const buttons: CommandButtonComponentProps[] = [newCollectionBtn];
 
     const addSynapseLink = CommandBarComponentButtonFactory.createOpenSynapseLinkDialogButton(container);
     if (addSynapseLink) {
@@ -88,25 +86,6 @@ export class CommandBarComponentButtonFactory {
       buttons.push(CommandBarComponentButtonFactory.createNotebookWorkspaceResetButton(container));
     }
 
-    // TODO: Should be replaced with the create arcadia spark pool button
-    // if (!container.isSparkEnabled() && container.isSparkEnabledForAccount()) {
-    //   const createSparkClusterButton = CommandBarComponentButtonFactory.createSparkClusterButton(container);
-    //   buttons.push(createSparkClusterButton);
-    // }
-
-    // TODO: Should be replaced with the edit/manage/delete arcadia spark pool button
-    // if (container.isSparkEnabled()) {
-    //   const manageSparkClusterButton = CommandBarComponentButtonFactory.createMonitorClusterButton(container);
-    //   manageSparkClusterButton.children = [
-    //     CommandBarComponentButtonFactory.createMonitorClusterButton(container),
-    //     CommandBarComponentButtonFactory.createEditClusterButton(container),
-    //     CommandBarComponentButtonFactory.createDeleteClusterButton(container),
-    //     CommandBarComponentButtonFactory.createLibraryManageButton(container),
-    //     CommandBarComponentButtonFactory.createClusterLibraryButton(container)
-    //   ];
-    //   buttons.push(manageSparkClusterButton);
-    // }
-
     if (!container.isDatabaseNodeOrNoneSelected()) {
       if (container.isNotebookEnabled()) {
         buttons.push(CommandBarComponentButtonFactory.createDivider());
@@ -134,7 +113,7 @@ export class CommandBarComponentButtonFactory {
 
       if (CommandBarComponentButtonFactory.areScriptsSupported(container)) {
         const label = "New Stored Procedure";
-        const newStoredProcedureBtn: ViewModels.NavbarButtonConfig = {
+        const newStoredProcedureBtn: CommandButtonComponentProps = {
           iconSrc: AddStoredProcedureIcon,
           iconAlt: label,
           onCommandClick: () => {
@@ -155,12 +134,12 @@ export class CommandBarComponentButtonFactory {
     return buttons;
   }
 
-  public static createContextCommandBarButtons(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  public static createContextCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
 
     if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
       const label = "New Shell";
-      const newMongoShellBtn: ViewModels.NavbarButtonConfig = {
+      const newMongoShellBtn: CommandButtonComponentProps = {
         iconSrc: HostedTerminalIcon,
         iconAlt: label,
         onCommandClick: () => {
@@ -178,15 +157,15 @@ export class CommandBarComponentButtonFactory {
     return buttons;
   }
 
-  public static createControlCommandBarButtons(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  public static createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
     if (window.dataExplorerPlatform === PlatformType.Hosted) {
       return buttons;
     }
 
     if (!container.isPreferredApiCassandra()) {
       const label = "Settings";
-      const settingsPaneButton: ViewModels.NavbarButtonConfig = {
+      const settingsPaneButton: CommandButtonComponentProps = {
         iconSrc: SettingsIcon,
         iconAlt: label,
         onCommandClick: () => container.settingsPane.open(),
@@ -201,7 +180,7 @@ export class CommandBarComponentButtonFactory {
 
     if (container.isHostedDataExplorerEnabled()) {
       const label = "Open Full Screen";
-      const fullScreenButton: ViewModels.NavbarButtonConfig = {
+      const fullScreenButton: CommandButtonComponentProps = {
         iconSrc: OpenInTabIcon,
         iconAlt: label,
         onCommandClick: () => container.generateSharedAccessData(),
@@ -217,7 +196,7 @@ export class CommandBarComponentButtonFactory {
 
     if (!container.hasOwnProperty("isEmulator") || !container.isEmulator) {
       const label = "Feedback";
-      const feedbackButtonOptions: ViewModels.NavbarButtonConfig = {
+      const feedbackButtonOptions: CommandButtonComponentProps = {
         iconSrc: FeedbackIcon,
         iconAlt: label,
         onCommandClick: () => container.provideFeedbackEmail(),
@@ -233,7 +212,7 @@ export class CommandBarComponentButtonFactory {
     return buttons;
   }
 
-  public static createDivider(): ViewModels.NavbarButtonConfig {
+  public static createDivider(): CommandButtonComponentProps {
     const label = `divider${CommandBarComponentButtonFactory.counter++}`;
     return {
       isDivider: true,
@@ -246,11 +225,11 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static areScriptsSupported(container: ViewModels.Explorer): boolean {
+  private static areScriptsSupported(container: Explorer): boolean {
     return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
   }
 
-  private static createNewCollectionGroup(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
     const label = container.addCollectionText();
     return {
       iconSrc: AddCollectionIcon,
@@ -263,10 +242,15 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createOpenSynapseLinkDialogButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    if (config.platform === Platform.Emulator) {
+  private static createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
+    if (configContext.platform === Platform.Emulator) {
       return null;
     }
+
+    if (container.isServerlessEnabled()) {
+      return null;
+    }
+
     if (
       container.databaseAccount &&
       container.databaseAccount() &&
@@ -298,7 +282,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createNewDatabase(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createNewDatabase(container: Explorer): CommandButtonComponentProps {
     const label = container.addDatabaseText();
     return {
       iconSrc: AddDatabaseIcon,
@@ -313,7 +297,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createNewSQLQueryButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
     if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
       const label = "New SQL Query";
       return {
@@ -347,15 +331,15 @@ export class CommandBarComponentButtonFactory {
     return null;
   }
 
-  public static createScriptCommandButtons(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig[] {
-    const buttons: ViewModels.NavbarButtonConfig[] = [];
+  public static createScriptCommandButtons(container: Explorer): CommandButtonComponentProps[] {
+    const buttons: CommandButtonComponentProps[] = [];
 
     const shouldEnableScriptsCommands: boolean =
       !container.isDatabaseNodeOrNoneSelected() && CommandBarComponentButtonFactory.areScriptsSupported(container);
 
     if (shouldEnableScriptsCommands) {
       const label = "New Stored Procedure";
-      const newStoredProcedureBtn: ViewModels.NavbarButtonConfig = {
+      const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
         iconAlt: label,
         onCommandClick: () => {
@@ -372,7 +356,7 @@ export class CommandBarComponentButtonFactory {
 
     if (shouldEnableScriptsCommands) {
       const label = "New UDF";
-      const newUserDefinedFunctionBtn: ViewModels.NavbarButtonConfig = {
+      const newUserDefinedFunctionBtn: CommandButtonComponentProps = {
         iconSrc: AddUdfIcon,
         iconAlt: label,
         onCommandClick: () => {
@@ -389,7 +373,7 @@ export class CommandBarComponentButtonFactory {
 
     if (shouldEnableScriptsCommands) {
       const label = "New Trigger";
-      const newTriggerBtn: ViewModels.NavbarButtonConfig = {
+      const newTriggerBtn: CommandButtonComponentProps = {
         iconSrc: AddTriggerIcon,
         iconAlt: label,
         onCommandClick: () => {
@@ -407,7 +391,7 @@ export class CommandBarComponentButtonFactory {
     return buttons;
   }
 
-  private static createScaleAndSettingsButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createScaleAndSettingsButton(container: Explorer): CommandButtonComponentProps {
     let isShared = false;
     if (container.isDatabaseNodeSelected()) {
       isShared = container.findSelectedDatabase().isDatabaseShared();
@@ -432,7 +416,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createNewNotebookButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
     const label = "New Notebook";
     return {
       iconSrc: NewNotebookIcon,
@@ -445,7 +429,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createuploadNotebookButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createuploadNotebookButton(container: Explorer): CommandButtonComponentProps {
     const label = "Upload to Notebook Server";
     return {
       iconSrc: NewNotebookIcon,
@@ -458,7 +442,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createOpenQueryButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createOpenQueryButton(container: Explorer): CommandButtonComponentProps {
     const label = "Open Query";
     return {
       iconSrc: BrowseQueriesIcon,
@@ -471,7 +455,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createOpenQueryFromDiskButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createOpenQueryFromDiskButton(container: Explorer): CommandButtonComponentProps {
     const label = "Open Query From Disk";
     return {
       iconSrc: OpenQueryFromDiskIcon,
@@ -484,8 +468,8 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createEnableNotebooksButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    if (config.platform === Platform.Emulator) {
+  private static createEnableNotebooksButton(container: Explorer): CommandButtonComponentProps {
+    if (configContext.platform === Platform.Emulator) {
       return null;
     }
     const label = "Enable Notebooks (Preview)";
@@ -505,59 +489,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createSparkClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Enable Spark";
-    return {
-      iconSrc: ApacheSparkIcon,
-      iconAlt: "Enable spark icon",
-      onCommandClick: () => container.setupSparkClusterPane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createEditClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Edit Cluster";
-    return {
-      iconSrc: EditIcon,
-      iconAlt: "Edit cluster icon",
-      onCommandClick: () => container.manageSparkClusterPane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createDeleteClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Delete Cluster";
-    return {
-      iconSrc: DeleteIcon,
-      iconAlt: "Delete cluster icon",
-      onCommandClick: () => container.deleteCluster(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createMonitorClusterButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Monitor Cluster";
-    return {
-      iconSrc: ApacheSparkIcon,
-      iconAlt: "Monitor cluster icon",
-      onCommandClick: () => container.openSparkMasterTab(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createOpenTerminalButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createOpenTerminalButton(container: Explorer): CommandButtonComponentProps {
     const label = "Open Terminal";
     return {
       iconSrc: CosmosTerminalIcon,
@@ -570,7 +502,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createOpenMongoTerminalButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createOpenMongoTerminalButton(container: Explorer): CommandButtonComponentProps {
     const label = "Open Mongo Shell";
     const tooltip =
       "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
@@ -596,7 +528,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createOpenCassandraTerminalButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createOpenCassandraTerminalButton(container: Explorer): CommandButtonComponentProps {
     const label = "Open Cassandra Shell";
     const tooltip =
       "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
@@ -622,7 +554,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createNotebookWorkspaceResetButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createNotebookWorkspaceResetButton(container: Explorer): CommandButtonComponentProps {
     const label = "Reset Workspace";
     return {
       iconSrc: ResetWorkspaceIcon,
@@ -635,7 +567,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createManageGitHubAccountButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
+  private static createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
     let connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
     const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
     return {
@@ -658,35 +590,7 @@ export class CommandBarComponentButtonFactory {
     };
   }
 
-  private static createLibraryManageButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Manage Libraries";
-    return {
-      iconSrc: LibraryManageIcon,
-      iconAlt: label,
-      onCommandClick: () => container.libraryManagePane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createClusterLibraryButton(container: ViewModels.Explorer): ViewModels.NavbarButtonConfig {
-    const label = "Manage Cluster Libraries";
-    return {
-      iconSrc: LibraryManageIcon,
-      iconAlt: label,
-      onCommandClick: () => container.clusterLibraryPane.open(),
-      commandButtonLabel: label,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: label
-    };
-  }
-
-  private static createStaticCommandBarButtonsForResourceToken(
-    container: ViewModels.Explorer
-  ): ViewModels.NavbarButtonConfig[] {
+  private static createStaticCommandBarButtonsForResourceToken(container: Explorer): CommandButtonComponentProps[] {
     const newSqlQueryBtn = CommandBarComponentButtonFactory.createNewSQLQueryButton(container);
     const openQueryBtn = CommandBarComponentButtonFactory.createOpenQueryButton(container);
 

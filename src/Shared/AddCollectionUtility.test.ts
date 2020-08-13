@@ -1,3 +1,4 @@
+import * as SharedConstants from "../Shared/Constants";
 import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
 import { CreateCollectionUtilities, CreateSqlCollectionUtilities, Utilities } from "./AddCollectionUtility";
 jest.mock("AddDatabaseUtility");
@@ -19,6 +20,7 @@ describe("Add Collection Utitlity", () => {
         rg: "b1",
         st: true,
         defaultTtl: -1,
+        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
@@ -28,6 +30,7 @@ describe("Add Collection Utitlity", () => {
         properties.db,
         properties.defaultTtl,
         properties.coll,
+        properties.indexingPolicy,
         properties.offerThroughput,
         properties.pk,
         properties.partitionKeyVersion,
@@ -55,6 +58,7 @@ describe("Add Collection Utitlity", () => {
         rg: "b1",
         st: true,
         analyticalStorageTtl: -1,
+        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
@@ -65,6 +69,7 @@ describe("Add Collection Utitlity", () => {
         properties.db,
         properties.analyticalStorageTtl,
         properties.coll,
+        properties.indexingPolicy,
         properties.offerThroughput,
         properties.pk,
         properties.partitionKeyVersion,
@@ -95,6 +100,7 @@ describe("Add Collection Utitlity", () => {
         sid: "a1",
         rg: "b1",
         st: true,
+        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
@@ -103,6 +109,7 @@ describe("Add Collection Utitlity", () => {
         armEndpoint,
         properties.db,
         properties.coll,
+        properties.indexingPolicy,
         properties.offerThroughput,
         properties.pk,
         properties.partitionKeyVersion,
@@ -127,6 +134,7 @@ describe("Add Collection Utitlity", () => {
         sid: "a1",
         rg: "b1",
         st: true,
+        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
         partitionKeyVersion: 2
       };
       const additionalOptions = {};
@@ -136,6 +144,7 @@ describe("Add Collection Utitlity", () => {
         armEndpoint,
         properties.db,
         properties.coll,
+        properties.indexingPolicy,
         properties.offerThroughput,
         properties.pk,
         properties.partitionKeyVersion,

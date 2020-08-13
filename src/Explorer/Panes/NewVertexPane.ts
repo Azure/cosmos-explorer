@@ -2,9 +2,10 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { KeyCodes } from "../../Common/Constants";
+import Explorer from "../Explorer";
 
-export default class NewVertexPane extends ContextualPaneBase implements ViewModels.NewVertexPane {
-  public container: ViewModels.Explorer;
+export default class NewVertexPane extends ContextualPaneBase {
+  public container: Explorer;
   public visible: ko.Observable<boolean>;
   public formErrors: ko.Observable<string>;
   public formErrorsDetails: ko.Observable<string>;

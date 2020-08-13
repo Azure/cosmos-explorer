@@ -9,12 +9,12 @@ import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
 import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 
-export class ArcadiaResourceManager implements ViewModels.ArcadiaResourceManager {
+export class ArcadiaResourceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
 
-  constructor(private armEndpoint = config.ARM_ENDPOINT) {
+  constructor(private armEndpoint = configContext.ARM_ENDPOINT) {
     this.resourceProviderClientFactory = new ResourceProviderClientFactory(this.armEndpoint);
   }
 

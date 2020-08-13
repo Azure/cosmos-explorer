@@ -8,13 +8,18 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { JunoUtils } from "../../Utils/JunoUtils";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { AuthorizeAccessComponent } from "../Controls/GitHub/AuthorizeAccessComponent";
 import { GitHubReposComponent, GitHubReposComponentProps, RepoListItem } from "../Controls/GitHub/GitHubReposComponent";
 import { GitHubReposComponentAdapter } from "../Controls/GitHub/GitHubReposComponentAdapter";
 import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../Controls/GitHub/ReposListComponent";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
+
+interface GitHubReposPaneOptions extends ViewModels.PaneOptions {
+  gitHubClient: GitHubClient;
+  junoClient: JunoClient;
+}
 
 export class GitHubReposPane extends ContextualPaneBase {
   private static readonly PageSize = 30;
@@ -33,7 +38,7 @@ export class GitHubReposPane extends ContextualPaneBase {
   private allGitHubReposLastPageInfo?: IGitHubPageInfo;
   private pinnedReposUpdated: boolean;
 
-  constructor(options: ViewModels.GitHubReposPaneOptions) {
+  constructor(options: GitHubReposPaneOptions) {
     super(options);
 
     this.gitHubClient = options.gitHubClient;

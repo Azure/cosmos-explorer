@@ -15,22 +15,25 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Logger from "../../../Common/Logger";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
+import { IGalleryItem, JunoClient, IJunoResponse, IPublicGalleryData } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import { NotificationConsoleUtils } from "../../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
+import Explorer from "../../Explorer";
+import { CodeOfConductComponent } from "./CodeOfConductComponent";
+import { InfoComponent } from "./InfoComponent/InfoComponent";
 
 export interface GalleryViewerComponentProps {
-  container?: ViewModels.Explorer;
+  container?: Explorer;
   junoClient: JunoClient;
   selectedTab: GalleryTab;
   sortBy: SortBy;
   searchText: string;
+  openNotebook: (data: IGalleryItem, isFavorite: boolean) => void;
   onSelectedTabChange: (newTab: GalleryTab) => void;
   onSortByChange: (sortBy: SortBy) => void;
   onSearchTextChange: (searchText: string) => void;
@@ -59,6 +62,7 @@ interface GalleryViewerComponentState {
   sortBy: SortBy;
   searchText: string;
   dialogProps: DialogProps;
+  isCodeOfConductAccepted: boolean;
 }
 
 interface GalleryTabInfo {
@@ -66,12 +70,13 @@ interface GalleryTabInfo {
   content: JSX.Element;
 }
 
-export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps, GalleryViewerComponentState>
-  implements GalleryUtils.DialogEnabledComponent {
+export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps, GalleryViewerComponentState> {
   public static readonly OfficialSamplesTitle = "Official samples";
   public static readonly PublicGalleryTitle = "Public gallery";
   public static readonly FavoritesTitle = "Liked";
   public static readonly PublishedTitle = "Your published work";
+
+  private static readonly rowsPerPage = 5;
 
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
@@ -84,6 +89,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private publicNotebooks: IGalleryItem[];
   private favoriteNotebooks: IGalleryItem[];
   private publishedNotebooks: IGalleryItem[];
+  private isCodeOfConductAccepted: boolean;
   private columnCount: number;
   private rowCount: number;
 
@@ -98,7 +104,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
       searchText: props.searchText,
-      dialogProps: undefined
+      dialogProps: undefined,
+      isCodeOfConductAccepted: undefined
     };
 
     this.sortingOptions = [
@@ -128,17 +135,24 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
   }
 
-  setDialogProps = (dialogProps: DialogProps): void => {
-    this.setState({ dialogProps });
-  };
-
   public render(): JSX.Element {
     const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
     if (this.props.container?.isGalleryPublishEnabled()) {
-      tabs.push(this.createTab(GalleryTab.PublicGallery, this.state.publicNotebooks));
+      tabs.push(
+        this.createPublicGalleryTab(
+          GalleryTab.PublicGallery,
+          this.state.publicNotebooks,
+          this.state.isCodeOfConductAccepted
+        )
+      );
       tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-      tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+
+      // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
+      // Displaying code of conduct component on gallery load should not be the default behavior.
+      if (this.state.isCodeOfConductAccepted !== false) {
+        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+      }
     }
 
     const pivotProps: IPivotProps = {
@@ -169,6 +183,17 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   }
 
+  private createPublicGalleryTab(
+    tab: GalleryTab,
+    data: IGalleryItem[],
+    acceptedCodeOfConduct: boolean
+  ): GalleryTabInfo {
+    return {
+      tab,
+      content: this.createPublicGalleryTabContent(data, acceptedCodeOfConduct)
+    };
+  }
+
   private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
     return {
       tab,
@@ -176,10 +201,23 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
   }
 
+  private createPublicGalleryTabContent(data: IGalleryItem[], acceptedCodeOfConduct: boolean): JSX.Element {
+    return acceptedCodeOfConduct === false ? (
+      <CodeOfConductComponent
+        junoClient={this.props.junoClient}
+        onAcceptCodeOfConduct={(result: boolean) => {
+          this.setState({ isCodeOfConductAccepted: result });
+        }}
+      />
+    ) : (
+      this.createTabContent(data)
+    );
+  }
+
   private createTabContent(data: IGalleryItem[]): JSX.Element {
     return (
-      <Stack tokens={{ childrenGap: 20 }}>
-        <Stack horizontal tokens={{ childrenGap: 20 }}>
+      <Stack tokens={{ childrenGap: 10 }}>
+        <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
           <Stack.Item grow>
             <SearchBox value={this.state.searchText} placeholder="Search" onChange={this.onSearchBoxChange} />
           </Stack.Item>
@@ -189,8 +227,12 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
+          {this.props.container?.isGalleryPublishEnabled() && (
+            <Stack.Item>
+              <InfoComponent />
+            </Stack.Item>
+          )}
         </Stack>
-
         {data && this.createCardsTabContent(data)}
       </Stack>
     );
@@ -256,12 +298,19 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        const response = await this.props.junoClient.getPublicNotebooks();
+        let response: IJunoResponse<IPublicGalleryData> | IJunoResponse<IGalleryItem[]>;
+        if (this.props.container.isCodeOfConductEnabled()) {
+          response = await this.props.junoClient.fetchPublicNotebooks();
+          this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
+          this.publicNotebooks = response.data?.notebooksData;
+        } else {
+          response = await this.props.junoClient.getPublicNotebooks();
+          this.publicNotebooks = response.data;
+        }
+
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
-
-        this.publicNotebooks = response.data;
       } catch (error) {
         const message = `Failed to load public notebooks: ${error}`;
         Logger.logError(message, "GalleryViewerComponent/loadPublicNotebooks");
@@ -270,7 +319,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
 
     this.setState({
-      publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))]
+      publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))],
+      isCodeOfConductAccepted: this.isCodeOfConductAccepted
     });
   }
 
@@ -335,12 +385,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private isGalleryItemPresent(searchText: string, item: IGalleryItem): boolean {
     const toSearch = searchText.trim().toUpperCase();
-    const searchData: string[] = [
-      item.author.toUpperCase(),
-      item.description.toUpperCase(),
-      item.name.toUpperCase(),
-      ...item.tags?.map(tag => tag.toUpperCase())
-    ];
+    const searchData: string[] = [item.author.toUpperCase(), item.description.toUpperCase(), item.name.toUpperCase()];
+
+    if (item.tags) {
+      searchData.push(...item.tags.map(tag => tag.toUpperCase()));
+    }
 
     for (const data of searchData) {
       if (data?.indexOf(toSearch) !== -1) {
@@ -389,8 +438,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
-    this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH);
-    this.rowCount = Math.floor(visibleRect.height / GalleryCardComponent.CARD_HEIGHT);
+    if (itemIndex === 0) {
+      this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH) || this.columnCount;
+      this.rowCount = GalleryViewerComponent.rowsPerPage;
+    }
 
     return {
       height: visibleRect.height,
@@ -406,8 +457,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,
+      showDownload: !!this.props.container,
       showDelete: this.state.selectedTab === GalleryTab.Published,
-      onClick: () => this.openNotebook(data, isFavorite),
+      onClick: () => this.props.openNotebook(data, isFavorite),
       onTagClick: this.loadTaggedItems,
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
@@ -420,20 +472,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         <GalleryCardComponent {...props} />
       </div>
     );
-  };
-
-  private openNotebook = (data: IGalleryItem, isFavorite: boolean): void => {
-    if (this.props.container && this.props.junoClient) {
-      this.props.container.openGallery(this.props.junoClient.getNotebookContentUrl(data.id), data, isFavorite);
-    } else {
-      const params = new URLSearchParams({
-        [GalleryUtils.NotebookViewerParams.NotebookUrl]: this.props.junoClient.getNotebookContentUrl(data.id),
-        [GalleryUtils.NotebookViewerParams.GalleryItemId]: data.id
-      });
-
-      const location = new URL("./notebookViewer.html", window.location.href).href;
-      window.open(`${location}?${params.toString()}`);
-    }
   };
 
   private loadTaggedItems = (tag: string): void => {
@@ -465,9 +503,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private downloadItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.downloadItem(this, this.props.container, this.props.junoClient, data, item =>
-      this.refreshSelectedTab(item)
-    );
+    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, data, item => this.refreshSelectedTab(item));
   };
 
   private deleteItem = async (data: IGalleryItem): Promise<void> => {

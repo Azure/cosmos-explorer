@@ -1,21 +1,22 @@
+import { Constants as CosmosSDKConstants } from "@azure/cosmos";
+import queryString from "querystring";
+import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as DataExplorerConstants from "../Common/Constants";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
-import EnvironmentUtility from "./EnvironmentUtility";
-import queryString from "querystring";
-import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
-import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
-import { AuthType } from "../AuthType";
-import { Collection } from "../Contracts/ViewModels";
-import { config } from "../Config";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { Constants as CosmosSDKConstants } from "@azure/cosmos";
-import { CosmosClient } from "./CosmosClient";
-import { MessageHandler } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import { Collection } from "../Contracts/ViewModels";
+import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import DocumentId from "../Explorer/Tree/DocumentId";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
+import { userContext } from "../UserContext";
+import EnvironmentUtility from "./EnvironmentUtility";
+import { MinimalQueryIterator } from "./IteratorUtilities";
+import { sendMessage } from "./MessageHandler";
 
 const defaultHeaders = {
   [HttpHeaders.apiType]: ApiType.MongoDB.toString(),
@@ -23,29 +24,29 @@ const defaultHeaders = {
   [CosmosSDKConstants.HttpHeaders.Version]: "2017-11-15"
 };
 
-function authHeaders(): any {
+function authHeaders() {
   if (window.authType === AuthType.EncryptedToken) {
-    return { [HttpHeaders.guestAccessToken]: CosmosClient.accessToken() };
+    return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
   } else {
-    return { [HttpHeaders.authorization]: CosmosClient.authorizationToken() };
+    return { [HttpHeaders.authorization]: userContext.authorizationToken };
   }
 }
 
-export function queryIterator(databaseId: string, collection: Collection, query: string): any {
+export function queryIterator(databaseId: string, collection: Collection, query: string): MinimalQueryIterator {
   let continuationToken: string;
   return {
     fetchNext: () => {
       return queryDocuments(databaseId, collection, false, query).then(response => {
         continuationToken = response.continuationToken;
-        const headers = {} as any;
-        response.headers.forEach((value: any, key: any) => {
+        const headers: { [key: string]: string | number } = {};
+        response.headers.forEach((value, key) => {
           headers[key] = value;
         });
         return {
           resources: response.documents,
           headers,
-          requestCharge: headers[CosmosSDKConstants.HttpHeaders.RequestCharge],
-          activityId: headers[CosmosSDKConstants.HttpHeaders.ActivityId],
+          requestCharge: Number(headers[CosmosSDKConstants.HttpHeaders.RequestCharge]),
+          activityId: String(headers[CosmosSDKConstants.HttpHeaders.ActivityId]),
           hasMoreResults: !!continuationToken
         };
       });
@@ -66,7 +67,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string
 ): Promise<QueryResponse> {
-  const databaseAccount = CosmosClient.databaseAccount();
+  const databaseAccount = userContext.databaseAccount;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
     db: databaseId,
@@ -74,8 +75,8 @@ export function queryDocuments(
     resourceUrl: `${resourceEndpoint}dbs/${databaseId}/colls/${collection.id()}/docs/`,
     rid: collection.rid,
     rtype: "docs",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
       collection && collection.partitionKey && !collection.partitionKey.systemKey ? collection.partitionKeyProperty : ""
@@ -114,16 +115,17 @@ export function queryDocuments(
           headers: response.headers
         };
       }
-      return errorHandling(response, "querying documents", params);
+      errorHandling(response, "querying documents", params);
+      return undefined;
     });
 }
 
 export function readDocument(
   databaseId: string,
   collection: Collection,
-  documentId: ViewModels.DocumentId
+  documentId: DocumentId
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = CosmosClient.databaseAccount();
+  const databaseAccount = userContext.databaseAccount;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 4).join("/");
@@ -134,8 +136,8 @@ export function readDocument(
     resourceUrl: `${resourceEndpoint}${path}/${rid}`,
     rid,
     rtype: "docs",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
@@ -165,9 +167,9 @@ export function createDocument(
   databaseId: string,
   collection: Collection,
   partitionKeyProperty: string,
-  documentContent: any
+  documentContent: unknown
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = CosmosClient.databaseAccount();
+  const databaseAccount = userContext.databaseAccount;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
     db: databaseId,
@@ -175,8 +177,8 @@ export function createDocument(
     resourceUrl: `${resourceEndpoint}dbs/${databaseId}/colls/${collection.id()}/docs/`,
     rid: collection.rid,
     rtype: "docs",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : ""
   };
@@ -203,10 +205,10 @@ export function createDocument(
 export function updateDocument(
   databaseId: string,
   collection: Collection,
-  documentId: ViewModels.DocumentId,
-  documentContent: any
+  documentId: DocumentId,
+  documentContent: string
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = CosmosClient.databaseAccount();
+  const databaseAccount = userContext.databaseAccount;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 5).join("/");
@@ -217,8 +219,8 @@ export function updateDocument(
     resourceUrl: `${resourceEndpoint}${path}/${rid}`,
     rid,
     rtype: "docs",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
@@ -244,12 +246,8 @@ export function updateDocument(
     });
 }
 
-export function deleteDocument(
-  databaseId: string,
-  collection: Collection,
-  documentId: ViewModels.DocumentId
-): Promise<any> {
-  const databaseAccount = CosmosClient.databaseAccount();
+export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
+  const databaseAccount = userContext.databaseAccount;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 5).join("/");
@@ -260,8 +258,8 @@ export function deleteDocument(
     resourceUrl: `${resourceEndpoint}${path}/${rid}`,
     rid,
     rtype: "docs",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
@@ -295,8 +293,8 @@ export function createMongoCollectionWithProxy(
   sharedThroughput: boolean,
   isSharded: boolean,
   autopilotOptions?: DataModels.RpOptions
-): Promise<any> {
-  const databaseAccount = CosmosClient.databaseAccount();
+): Promise<DataModels.Collection> {
+  const databaseAccount = userContext.databaseAccount;
   const params: DataModels.MongoParameters = {
     resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
     db: databaseId,
@@ -308,8 +306,8 @@ export function createMongoCollectionWithProxy(
     is: isSharded,
     rid: "",
     rtype: "colls",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     isAutoPilot: false
   };
@@ -335,7 +333,7 @@ export function createMongoCollectionWithProxy(
     )
     .then(response => {
       if (response.ok) {
-        return undefined;
+        return response.json();
       }
       return errorHandling(response, "creating collection", params);
     });
@@ -352,8 +350,8 @@ export function createMongoCollectionWithARM(
   sharedThroughput: boolean,
   isSharded: boolean,
   additionalOptions?: DataModels.RpOptions
-): Promise<any> {
-  const databaseAccount = CosmosClient.databaseAccount();
+): Promise<DataModels.CreateCollectionWithRpResponse> {
+  const databaseAccount = userContext.databaseAccount;
   const params: DataModels.MongoParameters = {
     resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
     db: databaseId,
@@ -365,8 +363,8 @@ export function createMongoCollectionWithARM(
     is: isSharded,
     rid: "",
     rtype: "colls",
-    sid: CosmosClient.subscriptionId(),
-    rg: CosmosClient.resourceGroup(),
+    sid: userContext.subscriptionId,
+    rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     analyticalStorageTtl
   };
@@ -383,11 +381,11 @@ export function createMongoCollectionWithARM(
   return _createMongoCollectionWithARM(armEndpoint, params, additionalOptions);
 }
 
-export function getEndpoint(databaseAccount: ViewModels.DatabaseAccount): string {
+export function getEndpoint(databaseAccount: DataModels.DatabaseAccount): string {
   const serverId = window.dataExplorer.serverId();
   const extensionEndpoint = window.dataExplorer.extensionEndpoint();
-  let url = config.MONGO_BACKEND_ENDPOINT
-    ? config.MONGO_BACKEND_ENDPOINT + "/api/mongo/explorer"
+  let url = configContext.MONGO_BACKEND_ENDPOINT
+    ? configContext.MONGO_BACKEND_ENDPOINT + "/api/mongo/explorer"
     : EnvironmentUtility.getMongoBackendEndpoint(serverId, databaseAccount.location, extensionEndpoint);
 
   if (window.authType === AuthType.EncryptedToken) {
@@ -396,7 +394,9 @@ export function getEndpoint(databaseAccount: ViewModels.DatabaseAccount): string
   return url;
 }
 
-async function errorHandling(response: any, action: string, params: any): Promise<any> {
+// TODO: This function throws most of the time except on Forbidden which is a bit strange
+// It causes problems for TypeScript understanding the types
+async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
   const errorMessage = await response.text();
   // Log the error where the user can see it
   NotificationConsoleUtils.logConsoleMessage(
@@ -404,23 +404,21 @@ async function errorHandling(response: any, action: string, params: any): Promis
     `Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`
   );
   if (response.status === HttpStatusCodes.Forbidden) {
-    MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
+    sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
     return;
   }
   throw new Error(errorMessage);
 }
 
 export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameters): string {
-  return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${
-    CosmosClient.databaseAccount().name
-  }/mongodbDatabases/${params.db}/collections/${params.coll}`;
+  return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}/collections/${params.coll}`;
 }
 
 export async function _createMongoCollectionWithARM(
   armEndpoint: string,
   params: DataModels.MongoParameters,
   rpOptions: DataModels.RpOptions
-): Promise<any> {
+): Promise<DataModels.CreateCollectionWithRpResponse> {
   const rpPayloadToCreateCollection: DataModels.MongoCreationRequest = {
     properties: {
       resource: {
@@ -448,12 +446,13 @@ export async function _createMongoCollectionWithARM(
   }
 
   try {
-    await new ResourceProviderClient(armEndpoint).putAsync(
+    return new ResourceProviderClient<DataModels.CreateCollectionWithRpResponse>(armEndpoint).putAsync(
       getARMCreateCollectionEndpoint(params),
       DataExplorerConstants.ArmApiVersions.publicVersion,
       rpPayloadToCreateCollection
     );
   } catch (response) {
-    return errorHandling(response, "creating collection", undefined);
+    errorHandling(response, "creating collection", undefined);
+    return undefined;
   }
 }

@@ -1,16 +1,18 @@
+import { AuthType } from "../AuthType";
+import { configContext, resetConfigContext, updateConfigContext } from "../ConfigContext";
+import { DatabaseAccount } from "../Contracts/DataModels";
+import { Collection } from "../Contracts/ViewModels";
+import DocumentId from "../Explorer/Tree/DocumentId";
+import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import { updateUserContext } from "../UserContext";
 import {
-  _createMongoCollectionWithARM,
   deleteDocument,
   getEndpoint,
   queryDocuments,
   readDocument,
-  updateDocument
+  updateDocument,
+  _createMongoCollectionWithARM
 } from "./MongoProxyClient";
-import { AuthType } from "../AuthType";
-import { Collection, DatabaseAccount, DocumentId } from "../Contracts/ViewModels";
-import { config } from "../Config";
-import { CosmosClient } from "./CosmosClient";
-import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 jest.mock("../ResourceProvider/ResourceProviderClient.ts");
 
 const databaseId = "testDB";
@@ -60,13 +62,15 @@ const databaseAccount = {
     tableEndpoint: "foo",
     cassandraEndpoint: "foo"
   }
-};
+} as DatabaseAccount;
 
 describe("MongoProxyClient", () => {
   describe("queryDocuments", () => {
     beforeEach(() => {
-      delete config.BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      resetConfigContext();
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -86,7 +90,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct proxy URL in development", () => {
-      config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
+      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
       queryDocuments(databaseId, collection, true, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer/resourcelist?db=testDB&coll=testCollection&resourceUrl=bardbs%2FtestDB%2Fcolls%2FtestCollection%2Fdocs%2F&rid=testCollectionrid&rtype=docs&sid=&rg=&dba=foo&pk=pk",
@@ -96,8 +100,10 @@ describe("MongoProxyClient", () => {
   });
   describe("readDocument", () => {
     beforeEach(() => {
-      delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      resetConfigContext();
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -117,7 +123,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct proxy URL in development", () => {
-      config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
+      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
@@ -127,8 +133,10 @@ describe("MongoProxyClient", () => {
   });
   describe("createDocument", () => {
     beforeEach(() => {
-      delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      resetConfigContext();
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -148,7 +156,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct proxy URL in development", () => {
-      config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
+      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
@@ -158,8 +166,10 @@ describe("MongoProxyClient", () => {
   });
   describe("updateDocument", () => {
     beforeEach(() => {
-      delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      resetConfigContext();
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -171,7 +181,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct URL", () => {
-      updateDocument(databaseId, collection, documentId, {});
+      updateDocument(databaseId, collection, documentId, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
         expect.any(Object)
@@ -179,8 +189,8 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct proxy URL in development", () => {
-      config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
-      updateDocument(databaseId, collection, documentId, {});
+      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
+      updateDocument(databaseId, collection, documentId, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
         expect.any(Object)
@@ -189,8 +199,10 @@ describe("MongoProxyClient", () => {
   });
   describe("deleteDocument", () => {
     beforeEach(() => {
-      delete config.MONGO_BACKEND_ENDPOINT;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      resetConfigContext();
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -210,7 +222,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct proxy URL in development", () => {
-      config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
+      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
       deleteDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
@@ -220,9 +232,11 @@ describe("MongoProxyClient", () => {
   });
   describe("getEndpoint", () => {
     beforeEach(() => {
-      delete config.MONGO_BACKEND_ENDPOINT;
+      resetConfigContext();
       delete window.authType;
-      CosmosClient.databaseAccount(databaseAccount as any);
+      updateUserContext({
+        databaseAccount
+      });
       window.dataExplorer = {
         extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
         serverId: () => ""
@@ -235,7 +249,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("returns a development endpoint", () => {
-      config.MONGO_BACKEND_ENDPOINT = "https://localhost:1234";
+      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
       const endpoint = getEndpoint(databaseAccount as DatabaseAccount);
       expect(endpoint).toEqual("https://localhost:1234/api/mongo/explorer");
     });

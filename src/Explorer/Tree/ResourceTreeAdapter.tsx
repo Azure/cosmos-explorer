@@ -7,7 +7,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import { CosmosClient } from "../../Common/CosmosClient";
+import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -26,8 +26,17 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import Explorer from "../Explorer";
+import UserDefinedFunction from "./UserDefinedFunction";
+import StoredProcedure from "./StoredProcedure";
+import Trigger from "./Trigger";
+import TabsBase from "../Tabs/TabsBase";
+import { userContext } from "../../UserContext";
 
 export class ResourceTreeAdapter implements ReactAdapter {
+  public static readonly MyNotebooksTitle = "My Notebooks";
+  public static readonly GitHubReposTitle = "GitHub repos";
+
   private static readonly DataTitle = "DATA";
   private static readonly NotebooksTitle = "NOTEBOOKS";
   private static readonly PseudoDirPath = "PsuedoDir";
@@ -42,11 +51,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
 
-  public constructor(private container: ViewModels.Explorer) {
+  public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.activeTab.subscribe((newValue: ViewModels.Tab) => this.triggerRender());
+    this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
     this.container.isNotebookEnabled.subscribe(newValue => this.triggerRender());
 
     this.koSubsDatabaseIdMap = new ArrayHashMap();
@@ -99,7 +108,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
 
     this.myNotebooksContentRoot = {
-      name: "My Notebooks",
+      name: ResourceTreeAdapter.MyNotebooksTitle,
       path: this.container.getNotebookBasePath(),
       type: NotebookContentItemType.Directory
     };
@@ -113,7 +122,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       this.gitHubNotebooksContentRoot = {
-        name: "GitHub repos",
+        name: ResourceTreeAdapter.GitHubReposTitle,
         path: ResourceTreeAdapter.PseudoDirPath,
         type: NotebookContentItemType.Directory
       };
@@ -171,7 +180,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
           }
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
-          database.refreshTabSelectedState();
+          this.container.tabsManager.refreshActiveTab(
+            (tab: TabsBase) => tab.collection && tab.collection.getDatabase().rid === database.rid
+          );
         },
         onContextMenuOpen: () => this.container.selectedNode(database)
       };
@@ -206,7 +217,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
    * This is a rewrite of Collection.ts : showScriptsMenu, showStoredProcedures, showTriggers, showUserDefinedFunctions
    * @param container
    */
-  private static showScriptNodes(container: ViewModels.Explorer): boolean {
+  private static showScriptNodes(container: Explorer): boolean {
     return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
   }
 
@@ -217,7 +228,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
@@ -229,7 +240,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     });
 
     children.push({
-      label: database.isDatabaseShared() ? "Settings" : "Scale & Settings",
+      label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
       onClick: collection.onSettingsClick.bind(collection),
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Settings)
     });
@@ -268,7 +279,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
+        );
       },
       onExpanded: () => {
         if (ResourceTreeAdapter.showScriptNodes(this.container)) {
@@ -285,7 +298,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildStoredProcedureNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "Stored Procedures",
-      children: collection.storedProcedures().map((sp: ViewModels.StoredProcedure) => ({
+      children: collection.storedProcedures().map((sp: StoredProcedure) => ({
         label: sp.id(),
         onClick: sp.open.bind(sp),
         isSelected: () =>
@@ -294,7 +307,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
+        );
       }
     };
   }
@@ -302,7 +317,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "User Defined Functions",
-      children: collection.userDefinedFunctions().map((udf: ViewModels.UserDefinedFunction) => ({
+      children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
         label: udf.id(),
         onClick: udf.open.bind(udf),
         isSelected: () =>
@@ -311,7 +326,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
+        );
       }
     };
   }
@@ -319,7 +336,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildTriggerNode(collection: ViewModels.Collection): TreeNode {
     return {
       label: "Triggers",
-      children: collection.triggers().map((trigger: ViewModels.Trigger) => ({
+      children: collection.triggers().map((trigger: Trigger) => ({
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
         isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),
@@ -327,7 +344,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
-        collection.refreshActiveTab();
+        this.container.tabsManager.refreshActiveTab(
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
+        );
       }
     };
   }
@@ -409,7 +428,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       className: "notebookHeader galleryHeader",
       onClick: () => this.container.openGallery(),
       isSelected: () => {
-        const activeTab = this.container.findActiveTab();
+        const activeTab = this.container.tabsManager.activeTab();
         return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
       }
     };
@@ -475,7 +494,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private pushItemToMostRecent(item: NotebookContentItem) {
-    this.container.mostRecentActivity.addItem(CosmosClient.databaseAccount().id, {
+    this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
       type: MostRecentActivity.Type.OpenNotebook,
       title: item.name,
       description: "Notebook",
@@ -517,7 +536,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       className: "notebookHeader",
       onClick: () => onFileClick(item),
       isSelected: () => {
-        const activeTab = this.container.findActiveTab();
+        const activeTab = this.container.tabsManager.activeTab();
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
@@ -549,6 +568,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
               }
             },
             {
+              label: "Copy to ...",
+              iconSrc: CopyIcon,
+              onClick: () => this.copyNotebook(item)
+            },
+            {
               label: "Download",
               iconSrc: NotebookIcon,
               onClick: () => this.container.downloadFile(item)
@@ -558,6 +582,13 @@ export class ResourceTreeAdapter implements ReactAdapter {
       data: item
     };
   }
+
+  private copyNotebook = async (item: NotebookContentItem) => {
+    const content = await this.container.readFile(item);
+    if (content) {
+      this.container.copyNotebook(item.name, content);
+    }
+  };
 
   private createDirectoryContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
     let items: TreeNodeMenuItem[] = [
@@ -634,7 +665,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         }
       },
       isSelected: () => {
-        const activeTab = this.container.findActiveTab();
+        const activeTab = this.container.tabsManager.activeTab();
         return (
           activeTab &&
           activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
@@ -657,14 +688,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
 
-  private getActiveTab(): ViewModels.Tab {
-    const activeTabs: ViewModels.Tab[] = this.container.openedTabs().filter((tab: ViewModels.Tab) => tab.isActive());
-    if (activeTabs.length) {
-      return activeTabs[0];
-    }
-    return undefined;
-  }
-
   private isDataNodeSelected(rid: string, nodeKind: string, subnodeKind: ViewModels.CollectionTabKind): boolean {
     if (!this.container.selectedNode || !this.container.selectedNode()) {
       return false;
@@ -674,7 +697,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     if (subnodeKind === undefined) {
       return selectedNode.rid === rid && selectedNode.nodeKind === nodeKind;
     } else {
-      const activeTab = this.getActiveTab();
+      const activeTab = this.container.tabsManager.activeTab();
       let selectedSubnodeKind;
       if (nodeKind === "Database" && (selectedNode as ViewModels.Database).selectedSubnodeKind) {
         selectedSubnodeKind = (selectedNode as ViewModels.Database).selectedSubnodeKind();

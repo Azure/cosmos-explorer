@@ -1,7 +1,7 @@
-import { config } from "../Config";
+import { configContext } from "../ConfigContext";
 
 export function isInvalidParentFrameOrigin(event: MessageEvent): boolean {
-  return !isValidOrigin(config.allowedParentFrameOrigins, event);
+  return !isValidOrigin(configContext.allowedParentFrameOrigins, event);
 }
 
 function isValidOrigin(allowedOrigins: RegExp, event: MessageEvent): boolean {

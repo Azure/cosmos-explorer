@@ -6,6 +6,9 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
+import { deleteStoredProcedure, executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import TabsBase from "../Tabs/TabsBase";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -34,9 +37,9 @@ function sample(prefix) {
     if (!isAccepted) throw new Error('The query was not accepted by the server.');
 }`;
 
-export default class StoredProcedure implements ViewModels.StoredProcedure {
+export default class StoredProcedure {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public collection: ViewModels.Collection;
   public self: string;
   public rid: string;
@@ -44,7 +47,7 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   public body: ko.Observable<string>;
   public isExecuteEnabled: boolean;
 
-  constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
     this.nodeKind = "StoredProcedure";
     this.container = container;
     this.collection = collection;
@@ -56,33 +59,27 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const openedTabs = source.container.openedTabs();
-    const id =
-      openedTabs.filter((tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures).length +
-      1;
+    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.StoredProcedures).length + 1;
     const storedProcedure = <DataModels.StoredProcedure>{
       id: "",
       body: sampleStoredProcedureBody
     };
-    let storedProcedureTab: ViewModels.Tab = new StoredProcedureTab({
+
+    const storedProcedureTab: StoredProcedureTab = new StoredProcedureTab({
       resource: storedProcedure,
       isNew: true,
       tabKind: ViewModels.CollectionTabKind.StoredProcedures,
       title: `New Stored Procedure ${id}`,
       tabPath: `${source.databaseId}>${source.id()}>New Stored Procedure ${id}`,
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
       selfLink: "",
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
-    source.container.openedTabs.push(storedProcedureTab);
 
-    // Activate
-    storedProcedureTab.onTabClick();
+    source.container.tabsManager.activateNewTab(storedProcedureTab);
   }
 
   public select() {
@@ -98,15 +95,15 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   public open = () => {
     this.select();
 
-    const openedTabs = this.container.openedTabs();
-    const storedProcedureTabsOpen: ViewModels.Tab[] =
-      openedTabs &&
-      openedTabs.filter(
-        tab => tab.node && tab.node.rid === this.rid && tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
-      );
-    let storedProcedureTab: ViewModels.Tab =
-      storedProcedureTabsOpen && storedProcedureTabsOpen.length > 0 && storedProcedureTabsOpen[0];
-    if (!storedProcedureTab) {
+    const storedProcedureTabs: StoredProcedureTab[] = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.StoredProcedures,
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+    ) as StoredProcedureTab[];
+    let storedProcedureTab: StoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
+
+    if (storedProcedureTab) {
+      this.container.tabsManager.activateTab(storedProcedureTab);
+    } else {
       const storedProcedureData = <DataModels.StoredProcedure>{
         _rid: this.rid,
         _self: this.self,
@@ -120,7 +117,6 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
         tabKind: ViewModels.CollectionTabKind.StoredProcedures,
         title: storedProcedureData.id,
         tabPath: `${this.collection.databaseId}>${this.collection.id()}>${storedProcedureData.id}`,
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -129,14 +125,11 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
         )}/sprocs/${this.id()}`,
         selfLink: this.self,
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
-      this.container.openedTabs.push(storedProcedureTab);
-    }
 
-    // Activate
-    storedProcedureTab.onTabClick();
+      this.container.tabsManager.activateNewTab(storedProcedureTab);
+    }
   };
 
   public delete() {
@@ -151,9 +144,9 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
       body: this.body()
     };
 
-    this.container.documentClientUtility.deleteStoredProcedure(this.collection, storedProcedureData).then(
+    deleteStoredProcedure(this.collection, storedProcedureData).then(
       () => {
-        this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}
@@ -161,11 +154,14 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   }
 
   public execute(params: string[], partitionKeyValue?: string): void {
-    const sprocTab: ViewModels.StoredProcedureTab = this._getCurrentStoredProcedureTab();
+    const sprocTabs = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.StoredProcedures,
+      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+    ) as StoredProcedureTab[];
+    const sprocTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
     this.container &&
-      this.container.documentClientUtility
-        .executeStoredProcedure(this.collection, this, partitionKeyValue, params)
+      executeStoredProcedure(this.collection, this, partitionKeyValue, params)
         .then(
           (result: any) => {
             sprocTab.onExecuteSprocsResult(result, result.scriptLogs);
@@ -183,18 +179,5 @@ export default class StoredProcedure implements ViewModels.StoredProcedure {
   public onFocusAfterExecute(): void {
     const focusElement = document.getElementById("execute-storedproc-toggles");
     focusElement && focusElement.focus();
-  }
-
-  private _getCurrentStoredProcedureTab(): ViewModels.StoredProcedureTab {
-    const openedTabs = this.container.openedTabs();
-    const storedProcedureTabsOpen: ViewModels.Tab[] =
-      openedTabs &&
-      openedTabs.filter(
-        tab => tab.node && tab.node.rid === this.rid && tab.tabKind === ViewModels.CollectionTabKind.StoredProcedures
-      );
-
-    return (storedProcedureTabsOpen &&
-      storedProcedureTabsOpen.length > 0 &&
-      storedProcedureTabsOpen[0]) as ViewModels.StoredProcedureTab;
   }
 }

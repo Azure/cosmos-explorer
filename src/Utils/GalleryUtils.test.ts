@@ -1,8 +1,8 @@
 import * as GalleryUtils from "./GalleryUtils";
 import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
-import { ExplorerStub } from "../Explorer/OpenActionsStubs";
 import { HttpStatusCodes } from "../Common/Constants";
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer/Explorer";
 
 const galleryItem: IGalleryItem = {
   id: "id",
@@ -16,7 +16,8 @@ const galleryItem: IGalleryItem = {
   isSample: false,
   downloads: 0,
   favorites: 0,
-  views: 0
+  views: 0,
+  newCellId: undefined
 };
 
 describe("GalleryUtils", () => {
@@ -24,27 +25,17 @@ describe("GalleryUtils", () => {
     jest.resetAllMocks();
   });
 
-  it("downloadItem shows dialog in standalone gallery", () => {
-    const setDialogProps = jest.fn().mockImplementation();
-
-    GalleryUtils.downloadItem({ setDialogProps }, undefined, undefined, galleryItem, undefined);
-
-    expect(setDialogProps).toBeCalled();
-  });
-
   it("downloadItem shows dialog in data explorer", () => {
-    const setDialogProps = jest.fn().mockImplementation();
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     container.showOkCancelModalDialog = jest.fn().mockImplementation();
 
-    GalleryUtils.downloadItem({ setDialogProps }, container, undefined, galleryItem, undefined);
+    GalleryUtils.downloadItem(container, undefined, galleryItem, undefined);
 
-    expect(setDialogProps).not.toBeCalled();
     expect(container.showOkCancelModalDialog).toBeCalled();
   });
 
   it("favoriteItem favorites item", async () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     const junoClient = new JunoClient();
     junoClient.favoriteNotebook = jest
       .fn()
@@ -58,7 +49,7 @@ describe("GalleryUtils", () => {
   });
 
   it("unfavoriteItem unfavorites item", async () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     const junoClient = new JunoClient();
     junoClient.unfavoriteNotebook = jest
       .fn()
@@ -72,7 +63,7 @@ describe("GalleryUtils", () => {
   });
 
   it("deleteItem shows dialog in data explorer", () => {
-    const container = new ExplorerStub();
+    const container = {} as Explorer;
     container.showOkCancelModalDialog = jest.fn().mockImplementation();
 
     GalleryUtils.deleteItem(container, undefined, galleryItem, undefined);
@@ -93,21 +84,23 @@ describe("GalleryUtils", () => {
       selectedTab,
       sortBy,
       searchText: decodeURIComponent(searchText)
-    });
+    } as GalleryUtils.GalleryViewerProps);
   });
 
   it("getNotebookViewerProps gets notebook viewer props correctly", () => {
     const notebookUrl = "https%3A%2F%2Fnotebook.url";
     const galleryItemId = "1234-abcd-efgh";
+    const hideInputs = "true";
 
     const response = GalleryUtils.getNotebookViewerProps(
-      `?${GalleryUtils.NotebookViewerParams.NotebookUrl}=${notebookUrl}&${GalleryUtils.NotebookViewerParams.GalleryItemId}=${galleryItemId}`
+      `?${GalleryUtils.NotebookViewerParams.NotebookUrl}=${notebookUrl}&${GalleryUtils.NotebookViewerParams.GalleryItemId}=${galleryItemId}&${GalleryUtils.NotebookViewerParams.HideInputs}=${hideInputs}`
     );
 
     expect(response).toEqual({
       notebookUrl: decodeURIComponent(notebookUrl),
-      galleryItemId
-    });
+      galleryItemId,
+      hideInputs: true
+    } as GalleryUtils.NotebookViewerProps);
   });
 
   it("getTabTitle returns correct title for official samples", () => {

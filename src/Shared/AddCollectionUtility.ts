@@ -5,12 +5,13 @@ import * as SharedConstants from "./Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { CosmosClient } from "../Common/CosmosClient";
 import { HttpStatusCodes } from "../Common/Constants";
-import { MessageHandler } from "../Common/MessageHandler";
+import { sendMessage } from "../Common/MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { NotificationConsoleUtils } from "../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
+import Explorer from "../Explorer/Explorer";
+import { userContext } from "../UserContext";
 
 export class CreateSqlCollectionUtilities {
   public static createSqlCollection(
@@ -18,6 +19,7 @@ export class CreateSqlCollectionUtilities {
     databaseId: string,
     analyticalStorageTtl: number,
     collectionId: string,
+    indexingPolicy: DataModels.IndexingPolicy,
     offerThroughput: number,
     partitionKey: string,
     partitionKeyVersion: number,
@@ -41,6 +43,7 @@ export class CreateSqlCollectionUtilities {
       rg,
       dba,
       analyticalStorageTtl,
+      indexingPolicy,
       partitionKeyVersion
     };
 
@@ -75,6 +78,10 @@ export class CreateSqlCollectionUtilities {
       rpPayloadToCreateCollection.properties.resource.analyticalStorageTtl = params.analyticalStorageTtl;
     }
 
+    if (params.indexingPolicy) {
+      rpPayloadToCreateCollection.properties.resource.indexingPolicy = params.indexingPolicy;
+    }
+
     if (!params.st) {
       if (rpOptions) {
         rpPayloadToCreateCollection.properties.options = rpOptions;
@@ -101,7 +108,7 @@ export class CreateSqlCollectionUtilities {
         `Error creating collection: ${JSON.stringify(response)}`
       );
       if (response.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
+        sendMessage({ type: MessageTypes.ForbiddenError });
       }
       throw new Error(`Error creating collection`);
     }
@@ -117,6 +124,7 @@ export class CreateCollectionUtilities {
     armEndpoint: string,
     databaseId: string,
     collectionId: string,
+    indexingPolicy: DataModels.IndexingPolicy,
     offerThroughput: number,
     partitionKey: string,
     partitionKeyVersion: number,
@@ -137,6 +145,7 @@ export class CreateCollectionUtilities {
       sid,
       rg,
       dba,
+      indexingPolicy,
       partitionKeyVersion
     };
 
@@ -167,6 +176,10 @@ export class CreateCollectionUtilities {
       }
     };
 
+    if (params.indexingPolicy) {
+      rpPayloadToCreateCollection.properties.resource.indexingPolicy = params.indexingPolicy;
+    }
+
     if (!params.st) {
       if (rpOptions) {
         rpPayloadToCreateCollection.properties.options = rpOptions;
@@ -189,7 +202,7 @@ export class CreateCollectionUtilities {
         `Error creating graph: ${JSON.stringify(response)}`
       );
       if (response.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
+        sendMessage({ type: MessageTypes.ForbiddenError });
       }
       throw new Error(`Error creating graph`);
     }
@@ -235,7 +248,7 @@ export class Utilities {
         `Error creating table: ${JSON.stringify(reason)}, Payload: ${params}`
       );
       if (reason.status === HttpStatusCodes.Forbidden) {
-        MessageHandler.sendMessage({ type: MessageTypes.ForbiddenError });
+        sendMessage({ type: MessageTypes.ForbiddenError });
         return;
       }
       throw new Error(`Error creating table`);
@@ -264,10 +277,7 @@ export class Utilities {
     return defaults.throughput.unlimitedmin;
   }
 
-  public static getMaxThroughput(
-    defaults: ViewModels.CollectionCreationDefaults,
-    container: ViewModels.Explorer
-  ): number {
+  public static getMaxThroughput(defaults: ViewModels.CollectionCreationDefaults, container: Explorer): number {
     const throughput = defaults.throughput.unlimited;
     if (typeof throughput === "number") {
       return throughput;
@@ -278,7 +288,7 @@ export class Utilities {
     }
   }
 
-  private static _exceedsThreshold(unlimitedThreshold: number, container: ViewModels.Explorer): boolean {
+  private static _exceedsThreshold(unlimitedThreshold: number, container: Explorer): boolean {
     const databases = (container && container.databases && container.databases()) || [];
     return _.any(
       databases,
@@ -288,8 +298,6 @@ export class Utilities {
   }
 
   private static _getAzureTableUri(params: DataModels.CreateDatabaseAndCollectionRequest): string {
-    return `subscriptions/${CosmosClient.subscriptionId()}/resourceGroups/${CosmosClient.resourceGroup()}/providers/Microsoft.DocumentDB/databaseAccounts/${
-      CosmosClient.databaseAccount().name
-    }/tables/${params.collectionId}`;
+    return `subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/tables/${params.collectionId}`;
   }
 }

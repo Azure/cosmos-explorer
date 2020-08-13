@@ -1,6 +1,7 @@
-import { CosmosClient, tokenProvider, endpoint, requestPlugin, getTokenFromAuthService } from "./CosmosClient";
 import { ResourceType } from "@azure/cosmos/dist-esm/common/constants";
-import { config, Platform } from "../Config";
+import { configContext, Platform, updateConfigContext, resetConfigContext } from "../ConfigContext";
+import { updateUserContext } from "../UserContext";
+import { endpoint, getTokenFromAuthService, requestPlugin, tokenProvider } from "./CosmosClient";
 
 describe("tokenProvider", () => {
   const options = {
@@ -32,7 +33,9 @@ describe("tokenProvider", () => {
   });
 
   it("does not call the auth service if a master key is set", async () => {
-    CosmosClient.masterKey("foo");
+    updateUserContext({
+      masterKey: "foo"
+    });
     await tokenProvider(options);
     expect((window.fetch as any).mock.calls.length).toBe(0);
   });
@@ -41,7 +44,7 @@ describe("tokenProvider", () => {
 describe("getTokenFromAuthService", () => {
   beforeEach(() => {
     delete window.dataExplorer;
-    delete config.BACKEND_ENDPOINT;
+    resetConfigContext();
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         json: () => "{}",
@@ -64,7 +67,9 @@ describe("getTokenFromAuthService", () => {
   });
 
   it("builds the correct URL in dev", () => {
-    config.BACKEND_ENDPOINT = "https://localhost:1234";
+    updateConfigContext({
+      BACKEND_ENDPOINT: "https://localhost:1234"
+    });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
       "https://localhost:1234/api/guest/runtimeproxy/authorizationTokens",
@@ -75,24 +80,28 @@ describe("getTokenFromAuthService", () => {
 
 describe("endpoint", () => {
   it("falls back to _databaseAccount", () => {
-    CosmosClient.databaseAccount({
-      id: "foo",
-      name: "foo",
-      location: "foo",
-      type: "foo",
-      kind: "foo",
-      tags: [],
-      properties: {
-        documentEndpoint: "bar",
-        gremlinEndpoint: "foo",
-        tableEndpoint: "foo",
-        cassandraEndpoint: "foo"
+    updateUserContext({
+      databaseAccount: {
+        id: "foo",
+        name: "foo",
+        location: "foo",
+        type: "foo",
+        kind: "foo",
+        tags: [],
+        properties: {
+          documentEndpoint: "bar",
+          gremlinEndpoint: "foo",
+          tableEndpoint: "foo",
+          cassandraEndpoint: "foo"
+        }
       }
     });
     expect(endpoint()).toEqual("bar");
   });
   it("uses _endpoint if set", () => {
-    CosmosClient.endpoint("baz");
+    updateUserContext({
+      endpoint: "baz"
+    });
     expect(endpoint()).toEqual("baz");
   });
 });
@@ -100,17 +109,17 @@ describe("endpoint", () => {
 describe("requestPlugin", () => {
   beforeEach(() => {
     delete window.dataExplorerPlatform;
-    delete config.PROXY_PATH;
-    delete config.BACKEND_ENDPOINT;
-    delete config.PROXY_PATH;
+    resetConfigContext();
   });
 
   describe("Hosted", () => {
     it("builds a proxy URL in development", () => {
       const next = jest.fn();
-      config.platform = Platform.Hosted;
-      config.BACKEND_ENDPOINT = "https://localhost:1234";
-      config.PROXY_PATH = "/proxy";
+      updateConfigContext({
+        platform: Platform.Hosted,
+        BACKEND_ENDPOINT: "https://localhost:1234",
+        PROXY_PATH: "/proxy"
+      });
       const headers = {};
       const endpoint = "https://docs.azure.com";
       const path = "/dbs/foo";
@@ -122,8 +131,7 @@ describe("requestPlugin", () => {
   describe("Emulator", () => {
     it("builds a url for emulator proxy via webpack", () => {
       const next = jest.fn();
-      config.platform = Platform.Emulator;
-      config.PROXY_PATH = "/proxy";
+      updateConfigContext({ platform: Platform.Emulator, PROXY_PATH: "/proxy" });
       const headers = {};
       const endpoint = "";
       const path = "/dbs/foo";

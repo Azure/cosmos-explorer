@@ -12,6 +12,10 @@ import AddTriggerIcon from "../../images/AddTrigger.svg";
 import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import DeleteSprocIcon from "../../images/DeleteSproc.svg";
+import Explorer from "./Explorer";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import StoredProcedure from "./Tree/StoredProcedure";
+import Trigger from "./Tree/Trigger";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -26,7 +30,7 @@ export interface DatabaseContextMenuButtonParams {
  */
 export class ResourceTreeContextMenuButtonFactory {
   public static createDatabaseContextMenu(
-    container: ViewModels.Explorer,
+    container: Explorer,
     selectedDatabase: ViewModels.Database
   ): TreeNodeMenuItem[] {
     const newCollectionMenuItem: TreeNodeMenuItem = {
@@ -44,7 +48,7 @@ export class ResourceTreeContextMenuButtonFactory {
   }
 
   public static createCollectionContextMenuButton(
-    container: ViewModels.Explorer,
+    container: Explorer,
     selectedCollection: ViewModels.Collection
   ): TreeNodeMenuItem[] {
     const items: TreeNodeMenuItem[] = [];
@@ -115,8 +119,8 @@ export class ResourceTreeContextMenuButtonFactory {
   }
 
   public static createStoreProcedureContextMenuItems(
-    container: ViewModels.Explorer,
-    storedProcedure: ViewModels.StoredProcedure
+    container: Explorer,
+    storedProcedure: StoredProcedure
   ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
@@ -131,10 +135,7 @@ export class ResourceTreeContextMenuButtonFactory {
     ];
   }
 
-  public static createTriggerContextMenuItems(
-    container: ViewModels.Explorer,
-    trigger: ViewModels.Trigger
-  ): TreeNodeMenuItem[] {
+  public static createTriggerContextMenuItems(container: Explorer, trigger: Trigger): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];
     }
@@ -149,8 +150,8 @@ export class ResourceTreeContextMenuButtonFactory {
   }
 
   public static createUserDefinedFunctionContextMenuItems(
-    container: ViewModels.Explorer,
-    userDefinedFunction: ViewModels.UserDefinedFunction
+    container: Explorer,
+    userDefinedFunction: UserDefinedFunction
   ): TreeNodeMenuItem[] {
     if (container.isPreferredApiCassandra()) {
       return [];

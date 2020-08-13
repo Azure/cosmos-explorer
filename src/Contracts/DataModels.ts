@@ -312,17 +312,6 @@ export interface Query {
   query: string;
 }
 
-export interface UpdateOfferThroughputRequest {
-  subscriptionId: string;
-  resourceGroup: string;
-  databaseAccountName: string;
-  databaseName: string;
-  collectionName: string;
-  throughput: number;
-  offerIsRUPerMinuteThroughputEnabled: boolean;
-  offerAutopilotSettings?: AutoPilotOfferSettings;
-}
-
 export interface AutoPilotOfferSettings {
   tier?: AutopilotTier;
   maximumTierThroughput?: number;
@@ -437,10 +426,8 @@ export interface Tenant {
 export interface AccountKeys {
   primaryMasterKey: string;
   secondaryMasterKey: string;
-  properties: {
-    primaryReadonlyMasterKey: string;
-    secondaryReadonlyMasterKey: string;
-  };
+  primaryReadonlyMasterKey: string;
+  secondaryReadonlyMasterKey: string;
 }
 
 export interface AfecFeature {
@@ -553,6 +540,7 @@ export interface GraphParameters extends RpParameters {
   pk: string;
   coll: string;
   cd: Boolean;
+  indexingPolicy?: IndexingPolicy;
 }
 
 export interface CreationRequest {
@@ -570,6 +558,7 @@ export interface SqlCollectionParameters extends RpParameters {
   coll: string;
   cd: Boolean;
   analyticalStorageTtl?: number;
+  indexingPolicy?: IndexingPolicy;
 }
 
 export interface MongoCreationRequest extends CreationRequest {
@@ -588,6 +577,7 @@ export interface GraphCreationRequest extends CreationRequest {
     resource: {
       id: string;
       partitionKey: {};
+      indexingPolicy?: IndexingPolicy;
     };
     options: RpOptions;
   };
@@ -613,6 +603,7 @@ export interface SqlCollectionCreationRequest extends CreationRequest {
       id: string;
       partitionKey: {};
       analyticalStorageTtl?: number;
+      indexingPolicy?: IndexingPolicy;
     };
     options: RpOptions;
   };

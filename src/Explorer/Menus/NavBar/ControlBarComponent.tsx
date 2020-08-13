@@ -3,17 +3,19 @@
  */
 
 import * as React from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { CommandButtonComponent } from "../../Controls/CommandButton/CommandButtonComponent";
+import {
+  CommandButtonComponent,
+  CommandButtonComponentProps
+} from "../../Controls/CommandButton/CommandButtonComponent";
 
 export interface ControlBarComponentProps {
-  buttons: ViewModels.NavbarButtonConfig[];
+  buttons: CommandButtonComponentProps[];
 }
 
 export class ControlBarComponent extends React.Component<ControlBarComponentProps> {
-  private static renderButtons(commandButtonOptions: ViewModels.NavbarButtonConfig[]): JSX.Element[] {
+  private static renderButtons(commandButtonOptions: CommandButtonComponentProps[]): JSX.Element[] {
     return commandButtonOptions.map(
-      (btn: ViewModels.NavbarButtonConfig, index: number): JSX.Element => {
+      (btn: CommandButtonComponentProps, index: number): JSX.Element => {
         // Remove label
         btn.commandButtonLabel = null;
         return CommandButtonComponent.renderButton(btn, `${index}`);

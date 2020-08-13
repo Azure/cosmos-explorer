@@ -2,13 +2,12 @@
  * Notebook container related stuff
  */
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../Common/Logger";
 
-export class NotebookContainerClient implements ViewModels.INotebookContainerClient {
+export class NotebookContainerClient {
   private reconnectingNotificationId: string;
   private isResettingWorkspace: boolean;
 
@@ -131,7 +130,7 @@ export class NotebookContainerClient implements ViewModels.INotebookContainerCli
   }
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
-    const explorer = window.dataExplorer as ViewModels.Explorer;
+    const explorer = window.dataExplorer;
     if (!explorer || !explorer.databaseAccount() || !explorer.databaseAccount().id) {
       throw new Error("DataExplorer not initialized");
     }

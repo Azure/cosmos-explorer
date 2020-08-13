@@ -3,12 +3,23 @@ import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 
-export class UploadFilePane extends ContextualPaneBase implements ViewModels.UploadFilePane {
+export interface UploadFilePaneOpenOptions {
+  paneTitle: string;
+  selectFileInputLabel: string;
+  errorMessage: string; // Could not upload notebook
+  inProgressMessage: string; // Uploading notebook
+  successMessage: string; // Successfully uploaded notebook
+  onSubmit: (file: File) => Promise<any>;
+  extensions?: string; // input accept field. E.g: .ipynb
+  submitButtonLabel?: string;
+}
+
+export class UploadFilePane extends ContextualPaneBase {
   public selectedFilesTitle: ko.Observable<string>;
   public files: ko.Observable<FileList>;
-  private openOptions: ViewModels.UploadFilePaneOpenOptions;
+  private openOptions: UploadFilePaneOpenOptions;
   private submitButtonLabel: ko.Observable<string>;
   private selectFileInputLabel: ko.Observable<string>;
   private extensions: ko.Observable<string>;
@@ -79,7 +90,7 @@ export class UploadFilePane extends ContextualPaneBase implements ViewModels.Upl
     this.resetFileInput();
   }
 
-  public openWithOptions(options: ViewModels.UploadFilePaneOpenOptions): void {
+  public openWithOptions(options: UploadFilePaneOpenOptions): void {
     this.openOptions = options;
     this.title(this.openOptions.paneTitle);
     if (this.openOptions.submitButtonLabel) {

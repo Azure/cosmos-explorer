@@ -1,7 +1,7 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import { config } from "../Config";
-import * as ViewModels from "../Contracts/ViewModels";
+import { configContext } from "../ConfigContext";
+import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
@@ -36,6 +36,16 @@ export interface IGalleryItem {
   downloads: number;
   favorites: number;
   views: number;
+  newCellId: string;
+}
+
+export interface IPublicGalleryData {
+  metadata: IPublicGalleryMetaData;
+  notebooksData: IGalleryItem[];
+}
+
+export interface IPublicGalleryMetaData {
+  acceptedCodeOfConduct: boolean;
 }
 
 export interface IUserGallery {
@@ -55,7 +65,7 @@ interface IPublishNotebookRequest {
 export class JunoClient {
   private cachedPinnedRepos: ko.Observable<IPinnedRepo[]>;
 
-  constructor(private databaseAccount?: ko.Observable<ViewModels.DatabaseAccount>) {
+  constructor(private databaseAccount?: ko.Observable<DataModels.DatabaseAccount>) {
     this.cachedPinnedRepos = ko.observable<IPinnedRepo[]>([]);
   }
 
@@ -162,7 +172,62 @@ export class JunoClient {
     return this.getNotebooks(`${this.getNotebooksUrl()}/gallery/public`);
   }
 
-  public async getNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
+  // will be renamed once feature.enableCodeOfConduct flag is removed
+  public async fetchPublicNotebooks(): Promise<IJunoResponse<IPublicGalleryData>> {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/public`;
+    const response = await window.fetch(url, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: IPublicGalleryData;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async acceptCodeOfConduct(): Promise<IJunoResponse<boolean>> {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/acceptCodeOfConduct`;
+    const response = await window.fetch(url, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: boolean;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async isCodeOfConductAccepted(): Promise<IJunoResponse<boolean>> {
+    const url = `${this.getNotebooksAccountUrl()}/gallery/isCodeOfConductAccepted`;
+    const response = await window.fetch(url, {
+      method: "PATCH",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: boolean;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async getNotebookInfo(id: string): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(this.getNotebookInfoUrl(id));
 
     let data: IGalleryItem;
@@ -292,24 +357,37 @@ export class JunoClient {
     tags: string[],
     author: string,
     thumbnailUrl: string,
-    content: string
+    content: string,
+    isLinkInjectionEnabled: boolean
   ): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery`, {
       method: "PUT",
       headers: JunoClient.getHeaders(),
-      body: JSON.stringify({
-        name,
-        description,
-        tags,
-        author,
-        thumbnailUrl,
-        content: JSON.parse(content)
-      } as IPublishNotebookRequest)
+      body: isLinkInjectionEnabled
+        ? JSON.stringify({
+            name,
+            description,
+            tags,
+            author,
+            thumbnailUrl,
+            content: JSON.parse(content),
+            addLinkToNotebookViewer: isLinkInjectionEnabled
+          } as IPublishNotebookRequest)
+        : JSON.stringify({
+            name,
+            description,
+            tags,
+            author,
+            thumbnailUrl,
+            content: JSON.parse(content)
+          } as IPublishNotebookRequest)
     });
 
     let data: IGalleryItem;
     if (response.status === HttpStatusCodes.OK) {
       data = await response.json();
+    } else {
+      throw new Error(`HTTP status ${response.status} thrown. ${(await response.json()).Message}`);
     }
 
     return {
@@ -341,11 +419,11 @@ export class JunoClient {
   }
 
   private getNotebooksUrl(): string {
-    return `${config.JUNO_ENDPOINT}/api/notebooks`;
+    return `${configContext.JUNO_ENDPOINT}/api/notebooks`;
   }
 
   private getNotebooksAccountUrl(): string {
-    return `${config.JUNO_ENDPOINT}/api/notebooks/${this.databaseAccount().name}`;
+    return `${configContext.JUNO_ENDPOINT}/api/notebooks/${this.databaseAccount().name}`;
   }
 
   private static getHeaders(): HeadersInit {
@@ -358,11 +436,11 @@ export class JunoClient {
 
   private static getGitHubClientParams(): URLSearchParams {
     const githubParams = new URLSearchParams({
-      client_id: config.GITHUB_CLIENT_ID
+      client_id: configContext.GITHUB_CLIENT_ID
     });
 
-    if (config.GITHUB_CLIENT_SECRET) {
-      githubParams.append("client_secret", config.GITHUB_CLIENT_SECRET);
+    if (configContext.GITHUB_CLIENT_SECRET) {
+      githubParams.append("client_secret", configContext.GITHUB_CLIENT_SECRET);
     }
 
     return githubParams;

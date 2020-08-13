@@ -8,13 +8,16 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
 import Collection from "./Collection";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
+import Explorer from "../Explorer";
+import { readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
+import { readCollections } from "../../Common/dataAccess/readCollections";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public self: string;
   public rid: string;
   public id: ko.Observable<string>;
@@ -24,7 +27,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
 
-  constructor(container: ViewModels.Explorer, data: any, offer: DataModels.Offer) {
+  constructor(container: Explorer, data: any, offer: DataModels.Offer) {
     this.nodeKind = "Database";
     this.container = container;
     this.self = data._self;
@@ -49,12 +52,12 @@ export default class Database implements ViewModels.Database {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    // create settings tab if not created yet
-    const openedTabs = this.container.openedTabs();
-    let settingsTab: ViewModels.Tab = openedTabs
-      .filter(tab => tab.rid === this.rid)
-      .filter(tab => tab.tabKind === ViewModels.CollectionTabKind.DatabaseSettings)[0];
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
+    const matchingTabs = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.DatabaseSettings,
+      tab => tab.rid === this.rid
+    );
+    let settingsTab: DatabaseSettingsTab = matchingTabs && (matchingTabs[0] as DatabaseSettingsTab);
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseAccountName: this.container.databaseAccount().name,
@@ -70,7 +73,6 @@ export default class Database implements ViewModels.Database {
             tabKind: ViewModels.CollectionTabKind.DatabaseSettings,
             title: "Scale",
             tabPath: "",
-            documentClientUtility: this.container.documentClientUtility,
             node: this,
             rid: this.rid,
             database: this,
@@ -78,12 +80,11 @@ export default class Database implements ViewModels.Database {
             selfLink: this.self,
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
-            onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-            openedTabs: this.container.openedTabs()
+            onUpdateTabsButtons: this.container.onUpdateTabsButtons
           });
-          (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(pendingNotification);
-          this.container.openedTabs.push(settingsTab);
-          settingsTab.onTabClick(); // Activate
+
+          settingsTab.pendingNotification(pendingNotification);
+          this.container.tabsManager.activateNewTab(settingsTab);
         },
         (error: any) => {
           TelemetryProcessor.traceFailure(
@@ -109,12 +110,12 @@ export default class Database implements ViewModels.Database {
     } else {
       pendingNotificationsPromise.then(
         (pendingNotification: DataModels.Notification) => {
-          (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(pendingNotification);
-          settingsTab.onTabClick();
+          settingsTab.pendingNotification(pendingNotification);
+          this.container.tabsManager.activateTab(settingsTab);
         },
         (error: any) => {
-          (settingsTab as ViewModels.DatabaseSettingsTab).pendingNotification(undefined);
-          settingsTab.onTabClick();
+          settingsTab.pendingNotification(undefined);
+          this.container.tabsManager.activateTab(settingsTab);
         }
       );
     }
@@ -122,6 +123,10 @@ export default class Database implements ViewModels.Database {
 
   public readSettings(): Q.Promise<void> {
     const deferred: Q.Deferred<void> = Q.defer<void>();
+    if (this.container.isServerlessEnabled()) {
+      deferred.resolve();
+    }
+
     this.container.isRefreshingExplorer(true);
     const databaseDataModel: DataModels.Database = <DataModels.Database>{
       id: this.id(),
@@ -133,7 +138,7 @@ export default class Database implements ViewModels.Database {
       defaultExperience: this.container.defaultExperience()
     });
 
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = this.container.documentClientUtility.readOffers();
+    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
     Q.all([offerInfoPromise]).then(
       () => {
         this.container.isRefreshingExplorer(false);
@@ -142,35 +147,33 @@ export default class Database implements ViewModels.Database {
           offerInfoPromise.valueOf(),
           databaseDataModel
         );
-        this.container.documentClientUtility
-          .readOffer(databaseOffer)
-          .then((offerDetail: DataModels.OfferWithHeaders) => {
-            const offerThroughputInfo: DataModels.OfferThroughputInfo = {
-              minimumRUForCollection:
-                offerDetail.content &&
-                offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
-              numPhysicalPartitions:
-                offerDetail.content &&
-                offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
-            };
+        readOffer(databaseOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
+          const offerThroughputInfo: DataModels.OfferThroughputInfo = {
+            minimumRUForCollection:
+              offerDetail.content &&
+              offerDetail.content.collectionThroughputInfo &&
+              offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
+            numPhysicalPartitions:
+              offerDetail.content &&
+              offerDetail.content.collectionThroughputInfo &&
+              offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
+          };
 
-            databaseOffer.content.collectionThroughputInfo = offerThroughputInfo;
-            (databaseOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
-            this.offer(databaseOffer);
-            this.offer.valueHasMutated();
+          databaseOffer.content.collectionThroughputInfo = offerThroughputInfo;
+          (databaseOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
+          this.offer(databaseOffer);
+          this.offer.valueHasMutated();
 
-            TelemetryProcessor.traceSuccess(
-              Action.LoadOffers,
-              {
-                databaseAccountName: this.container.databaseAccount().name,
-                defaultExperience: this.container.defaultExperience()
-              },
-              startKey
-            );
-            deferred.resolve();
-          });
+          TelemetryProcessor.traceSuccess(
+            Action.LoadOffers,
+            {
+              databaseAccountName: this.container.databaseAccount().name,
+              defaultExperience: this.container.defaultExperience()
+            },
+            startKey
+          );
+          deferred.resolve();
+        });
       },
       (error: any) => {
         this.container.isRefreshingExplorer(false);
@@ -221,7 +224,7 @@ export default class Database implements ViewModels.Database {
       this.expandDatabase();
     }
     this.container.onUpdateTabsButtons([]);
-    this.refreshTabSelectedState();
+    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === this.rid);
   }
 
   public expandDatabase() {
@@ -257,7 +260,7 @@ export default class Database implements ViewModels.Database {
     let collectionVMs: Collection[] = [];
     let deferred: Q.Deferred<void> = Q.defer<void>();
 
-    this.container.documentClientUtility.readCollections(this).then(
+    readCollections(this.id()).then(
       (collections: DataModels.Collection[]) => {
         let collectionsToAddVMPromises: Q.Promise<any>[] = [];
         let deltaCollections = this.getDeltaCollections(collections);
@@ -284,18 +287,6 @@ export default class Database implements ViewModels.Database {
   public openAddCollection(database: Database, event: MouseEvent) {
     database.container.addCollectionPane.databaseId(database.id());
     database.container.addCollectionPane.open();
-  }
-
-  public refreshTabSelectedState(): void {
-    const openedRelevantTabs: ViewModels.Tab[] = this.container
-      .openedTabs()
-      .filter((tab: ViewModels.Tab) => tab && tab.collection && tab.collection.getDatabase().rid === this.rid);
-
-    openedRelevantTabs.forEach((tab: ViewModels.Tab) => {
-      if (tab.isActive()) {
-        tab.onTabClick(); // this ensures the next (deepest) item in the resource tree is highlighted
-      }
-    });
   }
 
   public findCollectionWithId(collectionId: string): ViewModels.Collection {

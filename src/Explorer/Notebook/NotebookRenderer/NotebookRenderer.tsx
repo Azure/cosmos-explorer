@@ -30,11 +30,21 @@ import { CellType } from "@nteract/commutable/src";
 import "./NotebookRenderer.less";
 import HoverableCell from "./decorators/HoverableCell";
 import CellLabeler from "./decorators/CellLabeler";
+<<<<<<< HEAD
 import MonacoEditor from "../MonacoEditor/MonacoEditor";
+=======
+import * as cdbActions from "../NotebookComponent/actions";
+>>>>>>> master
 
-export interface NotebookRendererProps {
+export interface NotebookRendererBaseProps {
   contentRef: any;
 }
+
+interface NotebookRendererDispatchProps {
+  updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => void;
+}
+
+type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps;
 
 interface PassedEditorProps {
   id: string;
@@ -69,6 +79,8 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
 };
 
 class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
+  private notebookRendererRef = React.createRef<HTMLDivElement>();
+
   constructor(props: NotebookRendererProps) {
     super(props);
 
@@ -79,13 +91,22 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
 
   componentDidMount() {
     loadTransform(this.props as any);
+    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
+  }
+
+  componentDidUpdate() {
+    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
+  }
+
+  componentWillUnmount() {
+    this.props.updateNotebookParentDomElt(this.props.contentRef, undefined);
   }
 
   render(): JSX.Element {
     return (
       <>
         <div className="NotebookRendererContainer">
-          <div className="NotebookRenderer">
+          <div className="NotebookRenderer" ref={this.notebookRendererRef}>
             <DndProvider backend={HTML5Backend}>
               <KeyboardShortcuts contentRef={this.props.contentRef}>
                 <Cells contentRef={this.props.contentRef}>
@@ -148,7 +169,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 }
 
-const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererProps) => {
+const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererBaseProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
       addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => {
@@ -156,6 +177,14 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
           actions.addTransform({
             mediaType: transform.MIMETYPE,
             component: transform
+          })
+        );
+      },
+      updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => {
+        return dispatch(
+          cdbActions.UpdateNotebookParentDomElt({
+            contentRef,
+            parentElt
           })
         );
       }

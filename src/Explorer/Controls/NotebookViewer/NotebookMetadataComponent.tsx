@@ -16,11 +16,12 @@ import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../Notebook/FileSystemUtil";
 import "./NotebookViewerComponent.less";
+import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;
   isFavorite: boolean;
-  downloadButtonText: string;
+  downloadButtonText?: string;
   onTagClick: (tag: string) => void;
   onFavoriteClick: () => void;
   onUnfavoriteClick: () => void;
@@ -54,11 +55,18 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
               </>
             )}
           </Text>
-          <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
+
+          {this.props.downloadButtonText && (
+            <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
+          )}
         </Stack>
 
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>
-          <Persona text={this.props.data.author} size={PersonaSize.size32} />
+          <Persona
+            imageUrl={this.props.data.isSample && CosmosDBLogo}
+            text={this.props.data.author}
+            size={PersonaSize.size32}
+          />
           <Text>{dateString}</Text>
           <Text>
             <Icon iconName="RedEye" /> {this.props.data.views}

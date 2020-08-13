@@ -1,8 +1,9 @@
 ﻿import { Action, ActionModifiers } from "./TelemetryConstants";
-import { MessageHandler } from "../../Common/MessageHandler";
+import { sendMessage } from "../../Common/MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { appInsights } from "../appInsights";
-import { config } from "../../Config";
+import { configContext } from "../../ConfigContext";
+import { userContext } from "../../UserContext";
 
 /**
  * Class that persists telemetry data to the portal tables.
@@ -11,7 +12,7 @@ import { config } from "../../Config";
 // TODO: Log telemetry for StorageExplorer case/other clients as well
 export default class TelemetryProcessor {
   public static trace(action: Action, actionModifier: string = ActionModifiers.Mark, data?: any): void {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -25,7 +26,7 @@ export default class TelemetryProcessor {
 
   public static traceStart(action: Action, data?: any): number {
     const timestamp: number = Date.now();
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -40,7 +41,7 @@ export default class TelemetryProcessor {
   }
 
   public static traceSuccess(action: Action, data?: any, timestamp?: number): void {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -54,7 +55,7 @@ export default class TelemetryProcessor {
   }
 
   public static traceFailure(action: Action, data?: any, timestamp?: number): void {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -68,7 +69,7 @@ export default class TelemetryProcessor {
   }
 
   public static traceCancel(action: Action, data?: any, timestamp?: number): void {
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -83,7 +84,7 @@ export default class TelemetryProcessor {
 
   public static traceOpen(action: Action, data?: any, timestamp?: number): number {
     const validTimestamp = timestamp || Date.now();
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -99,7 +100,7 @@ export default class TelemetryProcessor {
 
   public static traceMark(action: Action, data?: any, timestamp?: number): number {
     const validTimestamp = timestamp || Date.now();
-    MessageHandler.sendMessage({
+    sendMessage({
       type: MessageTypes.TelemetryInfo,
       data: {
         action: Action[action],
@@ -115,7 +116,10 @@ export default class TelemetryProcessor {
 
   private static getData(data?: any): any {
     return {
-      platform: config.platform,
+      // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
+      authType: (window as any).authType,
+      subscriptionId: userContext.subscriptionId,
+      platform: configContext.platform,
       ...(data ? data : [])
     };
   }

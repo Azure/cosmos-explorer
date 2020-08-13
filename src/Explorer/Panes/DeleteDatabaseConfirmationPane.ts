@@ -10,11 +10,11 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 
-import { NotificationConsoleUtils } from "../../Utils/NotificationConsoleUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 
-export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase
-  implements ViewModels.DeleteDatabaseConfirmationPane {
+export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
   public databaseIdConfirmation: ko.Observable<string>;
   public databaseDeleteFeedback: ko.Observable<string>;
@@ -51,6 +51,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title()
     });
+    // TODO: Should not be a Q promise anymore, but the Cassandra code requires it
     let promise: Q.Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
       promise = (<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
@@ -60,18 +61,20 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase
         this.container
       );
     } else {
-      promise = this.container.documentClientUtility.deleteDatabase(selectedDatabase);
+      promise = Q(deleteDatabase(selectedDatabase.id()));
     }
     return promise.then(
       () => {
         this.isExecuting(false);
         this.close();
         this.container.refreshAllDatabases();
-        this.container.closeAllTabsForResource(selectedDatabase.rid);
+        this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === selectedDatabase.rid);
         this.container.selectedNode(null);
         selectedDatabase
           .collections()
-          .forEach((collection: ViewModels.Collection) => this.container.closeAllTabsForResource(collection.rid));
+          .forEach((collection: ViewModels.Collection) =>
+            this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === collection.rid)
+          );
         this.resetData();
         TelemetryProcessor.traceSuccess(
           Action.DeleteDatabase,

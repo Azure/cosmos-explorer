@@ -5,18 +5,19 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import Collection from "./Collection";
+import Explorer from "../Explorer";
+import { deleteUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
 
-export default class UserDefinedFunction implements ViewModels.UserDefinedFunction {
+export default class UserDefinedFunction {
   public nodeKind: string;
-  public container: ViewModels.Explorer;
+  public container: Explorer;
   public collection: ViewModels.Collection;
   public self: string;
   public rid: string;
   public id: ko.Observable<string>;
   public body: ko.Observable<string>;
 
-  constructor(container: ViewModels.Explorer, collection: ViewModels.Collection, data: DataModels.UserDefinedFunction) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.UserDefinedFunction) {
     this.nodeKind = "UserDefinedFunction";
     this.container = container;
 
@@ -28,42 +29,41 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const id =
-      source.container
-        .openedTabs()
-        .filter((tab: ViewModels.Tab) => tab.tabKind === ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
+    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
     const userDefinedFunction = <DataModels.UserDefinedFunction>{
       id: "",
       body: "function userDefinedFunction(){}"
     };
-    let userDefinedFunctionTab: ViewModels.Tab = new UserDefinedFunctionTab({
+
+    const userDefinedFunctionTab: UserDefinedFunctionTab = new UserDefinedFunctionTab({
       resource: userDefinedFunction,
       isNew: true,
       tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
       title: `New UDF ${id}`,
       tabPath: "",
-      documentClientUtility: source.container.documentClientUtility,
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
       selfLink: "",
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-      openedTabs: source.container.openedTabs()
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
-    source.container.openedTabs.push(userDefinedFunctionTab);
 
-    // Activate
-    userDefinedFunctionTab.onTabClick();
+    source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
   }
 
   public open = () => {
     this.select();
 
-    let userDefinedFunctionTab: ViewModels.Tab = this.container
-      .openedTabs()
-      .filter(tab => tab.node && tab.node.rid === this.rid)[0];
-    if (!userDefinedFunctionTab) {
+    const userDefinedFunctionTabs: UserDefinedFunctionTab[] = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.UserDefinedFunctions,
+      tab => tab.collection && tab.collection.rid === this.rid
+    ) as UserDefinedFunctionTab[];
+    let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
+
+    if (userDefinedFunctionTab) {
+      this.container.tabsManager.activateTab(userDefinedFunctionTab);
+    } else {
       const userDefinedFunctionData = <DataModels.UserDefinedFunction>{
         _rid: this.rid,
         _self: this.self,
@@ -77,7 +77,6 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
         tabKind: ViewModels.CollectionTabKind.UserDefinedFunctions,
         title: userDefinedFunctionData.id,
         tabPath: "",
-        documentClientUtility: this.container.documentClientUtility,
         collection: this.collection,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -86,14 +85,11 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
         )}/udfs/${this.id()}`,
         selfLink: "",
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-        openedTabs: this.container.openedTabs()
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
-      this.container.openedTabs.push(userDefinedFunctionTab);
-    }
 
-    // Activate
-    userDefinedFunctionTab.onTabClick();
+      this.container.tabsManager.activateNewTab(userDefinedFunctionTab);
+    }
   };
 
   public select() {
@@ -117,9 +113,9 @@ export default class UserDefinedFunction implements ViewModels.UserDefinedFuncti
       id: this.id(),
       body: this.body()
     };
-    this.container.documentClientUtility.deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
+    deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
       () => {
-        this.container.openedTabs.remove((tab: ViewModels.Tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       reason => {}

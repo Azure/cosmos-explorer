@@ -7,10 +7,11 @@ import { AutopilotTier } from "../Contracts/DataModels";
  * Otherwise, return numberOfRegions
  * @param number
  */
-export function normalizeNumber(number: any): number {
-  const normalizedNumber: number = number === null ? 0 : isNaN(number) ? 0 : parseInt(number);
-
-  return normalizedNumber;
+export function normalizeNumber(number: null | undefined | string | number): number {
+  if (!number) {
+    return 0;
+  }
+  return Math.floor(Number(number));
 }
 
 export function getRuToolTipText(isV2AutoPilot: boolean): string {
@@ -79,16 +80,16 @@ export function getPriceCurrency(serverId: string): string {
 
 export function computeStorageUsagePrice(serverId: string, storageUsedRoundUpToGB: number): string {
   if (serverId === "mooncake") {
-    let storageCharge = storageUsedRoundUpToGB * Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerGB;
+    const storageCharge = storageUsedRoundUpToGB * Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerGB;
     return calculateEstimateNumber(storageCharge) + " " + Constants.OfferPricing.HourlyPricing.mooncake.Currency;
   }
 
-  let storageCharge = storageUsedRoundUpToGB * Constants.OfferPricing.HourlyPricing.default.Standard.PricePerGB;
+  const storageCharge = storageUsedRoundUpToGB * Constants.OfferPricing.HourlyPricing.default.Standard.PricePerGB;
   return calculateEstimateNumber(storageCharge) + " " + Constants.OfferPricing.HourlyPricing.default.Currency;
 }
 
 export function computeDisplayUsageString(usageInKB: number): string {
-  let usageInMB = usageInKB / 1024,
+  const usageInMB = usageInKB / 1024,
     usageInGB = usageInMB / 1024,
     displayUsageString =
       usageInGB > 0.1
@@ -100,7 +101,7 @@ export function computeDisplayUsageString(usageInKB: number): string {
 }
 
 export function usageInGB(usageInKB: number): number {
-  let usageInMB = usageInKB / 1024,
+  const usageInMB = usageInKB / 1024,
     usageInGB = usageInMB / 1024;
   return Math.ceil(usageInGB);
 }
@@ -109,7 +110,7 @@ export function calculateEstimateNumber(n: number): string {
   return n >= 1 ? n.toFixed(2) : n.toPrecision(2);
 }
 
-export function numberWithCommasFormatter(n: number) {
+export function numberWithCommasFormatter(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
@@ -279,12 +280,16 @@ export function getEstimatedSpendAcknowledgeString(
       )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
-export function getUpsellMessage(serverId: string = "default"): string {
-  let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
+export function getUpsellMessage(serverId = "default", isFreeTier = false): string {
+  if (isFreeTier) {
+    return "With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s.";
+  } else {
+    let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
 
-  if (serverId === "mooncake") {
-    price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
+    if (serverId === "mooncake") {
+      price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
+    }
+
+    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
   }
-
-  return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
 }
