@@ -6,6 +6,7 @@ import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeA
 import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { number } from "prop-types";
 
 export interface IJunoResponse<T> {
   status: number;
@@ -51,6 +52,35 @@ export interface IPublicGalleryMetaData {
 export interface IUserGallery {
   favorites: string[];
   published: string[];
+}
+
+export interface ISchemaRequest{
+  id: string;
+  subscriptionId: string;
+  resourceGroup: string;
+  accountName: string;
+  resource: string;
+  status: string;
+  timestamp: number;
+}
+
+export interface IDataField{
+  dataType: string;
+  hasNulls: boolean;
+  isArray: boolean;
+  schemaType: string;
+  name: string;
+  path: string;
+  maxRepetitionLevel: number;
+  maxDefinitionLevel: number;
+}
+
+export interface ISchema{
+  id: string;
+  accountName: string;
+  resource: string;
+  fields: IDataField[];
+  timestamp: number;
 }
 
 interface IPublishNotebookRequest {
@@ -402,6 +432,41 @@ export class JunoClient {
 
   public getNotebookInfoUrl(id: string): string {
     return `${this.getNotebooksUrl()}/gallery/${id}`;
+  }
+
+  public async requestSchema(schemaRequest: ISchemaRequest): Promise<IJunoResponse<ISchemaRequest>> {
+    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/schema/request`, {
+      method: "POST",
+      body: JSON.stringify(schemaRequest),
+      headers: JunoClient.getHeaders()
+    });
+
+    let data : ISchemaRequest;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async getSchema(databaseName: string, containerName: string): Promise<IJunoResponse<ISchema>> {
+    const response = await window.fetch(`${this.getNotebooksUrl()}/schema/${databaseName}/${containerName}`, {
+      method: "GET",
+      headers: JunoClient.getHeaders()
+    });
+
+    let data : ISchema;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
   }
 
   private async getNotebooks(input: RequestInfo, init?: RequestInit): Promise<IJunoResponse<IGalleryItem[]>> {
