@@ -123,10 +123,6 @@ export default class Database implements ViewModels.Database {
 
   public readSettings(): Q.Promise<void> {
     const deferred: Q.Deferred<void> = Q.defer<void>();
-    if (this.container.isServerlessEnabled()) {
-      deferred.resolve();
-    }
-
     this.container.isRefreshingExplorer(true);
     const databaseDataModel: DataModels.Database = <DataModels.Database>{
       id: this.id(),
@@ -138,7 +134,9 @@ export default class Database implements ViewModels.Database {
       defaultExperience: this.container.defaultExperience()
     });
 
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
+    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers({
+      isServerless: this.container.isServerlessEnabled()
+    });
     Q.all([offerInfoPromise]).then(
       () => {
         this.container.isRefreshingExplorer(false);
@@ -147,6 +145,11 @@ export default class Database implements ViewModels.Database {
           offerInfoPromise.valueOf(),
           databaseDataModel
         );
+
+        if (!databaseOffer) {
+          return;
+        }
+
         readOffer(databaseOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
           const offerThroughputInfo: DataModels.OfferThroughputInfo = {
             minimumRUForCollection:
