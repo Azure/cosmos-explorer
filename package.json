@@ -4,7 +4,7 @@
   "description": "Cosmos Explorer",
   "main": "index.js",
   "dependencies": {
-    "@azure/cosmos": "3.8.0-dev.20200811.1",
+    "@azure/cosmos": "3.7.4",
     "@azure/cosmos-language-service": "0.0.4",
     "@jupyterlab/services": "4.2.0",
     "@jupyterlab/terminal": "1.2.1",
