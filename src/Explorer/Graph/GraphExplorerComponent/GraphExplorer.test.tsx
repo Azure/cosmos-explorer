@@ -92,6 +92,11 @@ describe("getPkIdFromDocumentId", () => {
     expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("[234, 'id']");
   });
 
+  it("should create pkid pair from partitioned graph (pk as boolean)", () => {
+    const doc = createFakeDoc({ id: "id", mypk: true });
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("[true, 'id']");
+  });
+
   it("should create pkid pair from partitioned graph (pk as valid array value)", () => {
     const doc = createFakeDoc({ id: "id", mypk: [{ id: "someid", _value: "pkvalue" }] });
     expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("['pkvalue', 'id']");

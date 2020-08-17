@@ -1371,7 +1371,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     if (collectionPartitionKeyProperty && d.hasOwnProperty(collectionPartitionKeyProperty)) {
       let pk = (d as any)[collectionPartitionKeyProperty];
-      if (typeof pk !== "string" && typeof pk !== "number") {
+      if (typeof pk !== "string" && typeof pk !== "number" && typeof pk !== "boolean") {
         if (Array.isArray(pk) && pk.length > 0) {
           // pk is [{ id: 'id', _value: 'value' }]
           pk = pk[0]["_value"];
