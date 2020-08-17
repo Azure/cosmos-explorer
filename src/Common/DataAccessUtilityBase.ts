@@ -14,7 +14,8 @@ import {
   PartitionKeyDefinition,
   QueryIterator,
   Resource,
-  TriggerDefinition
+  TriggerDefinition,
+  OfferDefinition
 } from "@azure/cosmos";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { client } from "./CosmosClient";
@@ -244,7 +245,8 @@ export function updateOffer(
   return Q(
     client()
       .offer(offer.id)
-      .replace(newOffer, options)
+      // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
+      .replace((newOffer as unknown) as OfferDefinition, options)
       .then(response => {
         return Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => response.resource);
       })
