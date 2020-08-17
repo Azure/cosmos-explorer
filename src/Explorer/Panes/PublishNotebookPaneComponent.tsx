@@ -285,7 +285,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
             <GalleryCardComponent
               data={{
                 id: undefined,
-                name: this.props.notebookName,
+                name: this.state.notebookName,
                 description: this.state.notebookDescription,
                 gitSha: undefined,
                 tags: this.state.notebookTags.split(","),
