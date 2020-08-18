@@ -158,8 +158,8 @@ export interface IndexingPolicy {
   indexingMode: string;
   includedPaths: any;
   excludedPaths: any;
-  compositeIndexes: any;
-  spatialIndexes: any;
+  compositeIndexes?: any;
+  spatialIndexes?: any;
 }
 
 export interface PartitionKey {
