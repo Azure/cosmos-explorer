@@ -15,7 +15,7 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting database ${databaseId}`);
 
   try {
-    if (window.authType === AuthType.AAD) {
+    if (window.authType === AuthType.AAD && userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
       await deleteDatabaseWithARM(databaseId);
     } else {
       await client()

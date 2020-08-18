@@ -39,7 +39,6 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       formErrorDetail: this.formErrorDetail,
       id: "uploaditemspane",
       isExecuting: this.isExecuting,
-      isSubmitButtonVisible: true,
       title: "Upload Items",
       submitButtonText: "Upload",
       onClose: () => this.close(),

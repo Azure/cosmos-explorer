@@ -12,7 +12,8 @@ import {
   PartitionKeyDefinition,
   QueryIterator,
   Resource,
-  TriggerDefinition
+  TriggerDefinition,
+  OfferDefinition
 } from "@azure/cosmos";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { client } from "./CosmosClient";
@@ -225,7 +226,8 @@ export function updateOffer(
   return Q(
     client()
       .offer(offer.id)
-      .replace(newOffer, options)
+      // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
+      .replace((newOffer as unknown) as OfferDefinition, options)
       .then(response => {
         return Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => response.resource);
       })
@@ -435,6 +437,10 @@ export function readCollectionQuotaInfo(
 }
 
 export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
+  if (options.isServerless) {
+    return Q([]); // Reading offers is not supported for serverless accounts
+  }
+
   try {
     if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [
@@ -450,6 +456,13 @@ export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
       .offers.readAll()
       .fetchAll()
       .then(response => response.resources)
+      .catch(error => {
+        // This should be removed when we can correctly identify if an account is serverless when connected using connection string too.
+        if (error.message.includes("Reading or replacing offers is not supported for serverless accounts")) {
+          return [];
+        }
+        throw error;
+      })
   );
 }
 

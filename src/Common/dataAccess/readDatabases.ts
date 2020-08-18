@@ -15,7 +15,11 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
-    if (window.authType === AuthType.AAD) {
+    if (
+      window.authType === AuthType.AAD &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
       databases = await readDatabasesWithARM();
     } else {
       const sdkResponse = await client()
