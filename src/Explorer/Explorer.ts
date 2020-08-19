@@ -975,6 +975,10 @@ export default class Explorer {
         this.sparkClusterConnectionInfo.valueHasMutated();
       }
 
+      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
+        updateUserContext({ useSDKOperations: true });
+      }
+
       featureSubcription.dispose();
     });
 
