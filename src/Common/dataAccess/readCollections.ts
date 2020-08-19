@@ -19,7 +19,8 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     if (
       window.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB
+      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
     ) {
       collections = await readCollectionsWithARM(databaseId);
     } else {
