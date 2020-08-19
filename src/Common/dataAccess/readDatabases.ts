@@ -17,8 +17,10 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   try {
     if (
       window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Cassandra
     ) {
       databases = await readDatabasesWithARM();
     } else {
