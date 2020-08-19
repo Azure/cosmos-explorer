@@ -37,7 +37,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext } from "../ConfigContext";
+import { configContext, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -1949,12 +1949,17 @@ export default class Explorer {
 
       this._importExplorerConfigComplete = true;
 
+      updateConfigContext({
+        ARM_ENDPOINT: this.armEndpoint()
+      });
+
       updateUserContext({
         authorizationToken,
         masterKey,
-        databaseAccount
+        databaseAccount,
+        resourceGroup: inputs.resourceGroup,
+        subscriptionId: inputs.subscriptionId
       });
-      updateUserContext({ resourceGroup: inputs.resourceGroup, subscriptionId: inputs.subscriptionId });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
