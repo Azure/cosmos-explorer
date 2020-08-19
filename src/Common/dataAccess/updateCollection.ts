@@ -39,7 +39,11 @@ export async function updateCollection(
   const clearMessage = logConsoleProgress(`Updating container ${collectionId}`);
 
   try {
-    if (window.authType === AuthType.AAD) {
+    if (
+      window.authType === AuthType.AAD &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
       const sdkResponse = await client()
