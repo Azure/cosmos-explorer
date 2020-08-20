@@ -3,7 +3,6 @@ import puppeteer from 'puppeteer';
 import { trackException } from "./utils";
 
 import crypto from 'crypto'
-import { loginUsingConnectionString } from "../cypress/utilities/connectionString";
 
 jest.setTimeout(300000);
 
