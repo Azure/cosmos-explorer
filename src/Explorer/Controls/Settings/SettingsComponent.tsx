@@ -735,9 +735,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     for (let i = 0, len = this.container.databases().length; i < len; i++) {
       for (let j = 0, len2 = this.container.databases()[i].collections().length; j < len2; j++) {
         const collectionOffer = this.container
-          .databases()
-          [i].collections()
-          [j].offer();
+          .databases()[i].collections()[j].offer();
         if (collectionOffer && collectionOffer.content && collectionOffer.content.offerIsRUPerMinuteThroughputEnabled) {
           return true;
         }
