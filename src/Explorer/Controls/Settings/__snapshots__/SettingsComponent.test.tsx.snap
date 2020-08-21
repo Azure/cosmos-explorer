@@ -3,7 +3,7 @@
 exports[`SettingsComponent renders 1`] = `
 <div
   className="tab-pane flexContainer"
-  id="tab1597990131391"
+  id="tabId"
   role="tabpanel"
 >
   <div
@@ -59,7 +59,7 @@ exports[`SettingsComponent renders 1`] = `
           setMaxAutoPilotThroughput={[Function]}
           setThroughput={[Function]}
           showAutoPilot={true}
-          testId="settingsThroughputValuetab1597990131391"
+          testId="settingsThroughputValuetabId"
           throughput={
             Object {
               "baseline": undefined,
@@ -67,9 +67,9 @@ exports[`SettingsComponent renders 1`] = `
               "isValid": true,
             }
           }
-          throughputAutoPilotRadioId="editDatabaseThroughput-autoPilotRadiotab1597990131391"
-          throughputModeRadioName="throughputModeRadiotab1597990131391"
-          throughputProvisionedRadioId="editDatabaseThroughput-manualRadiotab1597990131391"
+          throughputAutoPilotRadioId="editDatabaseThroughput-autoPilotRadiotabId"
+          throughputModeRadioName="throughputModeRadiotabId"
+          throughputProvisionedRadioId="editDatabaseThroughput-manualRadiotabId"
         />
         <div
           className="storageCapacityTitle throughputStorageValue"
@@ -127,7 +127,7 @@ exports[`SettingsComponent renders 1`] = `
           <label
             aria-checked={false}
             className="ttlIndexingPolicyFocusElement  unselectedRadio"
-            htmlFor="ttlOffIdtab1597990131391"
+            htmlFor="ttlOffIdtabId"
             onFocus={[Function]}
             onKeyPress={[Function]}
             role="radio"
@@ -138,7 +138,7 @@ exports[`SettingsComponent renders 1`] = `
           <input
             checked={false}
             className="radio"
-            id="ttlOffIdtab1597990131391"
+            id="ttlOffIdtabId"
             name="ttl"
             onChange={[Function]}
             type="radio"
@@ -151,7 +151,7 @@ exports[`SettingsComponent renders 1`] = `
           <label
             aria-checked="false"
             className="ttlIndexingPolicyFocusElement  unselectedRadio"
-            htmlFor="ttlOnNoDefaulttab1597990131391"
+            htmlFor="ttlOnNoDefaulttabId"
             onFocus={[Function]}
             onKeyPress={[Function]}
             role="radio"
@@ -162,7 +162,7 @@ exports[`SettingsComponent renders 1`] = `
           <input
             checked={false}
             className="radio"
-            id="ttlOnNoDefaulttab1597990131391"
+            id="ttlOnNoDefaulttabId"
             name="ttl"
             onChange={[Function]}
             type="radio"
@@ -175,7 +175,7 @@ exports[`SettingsComponent renders 1`] = `
           <label
             aria-checked="true"
             className="ttlIndexingPolicyFocusElement  selectadRedio"
-            htmlFor="ttlOntab1597990131391"
+            htmlFor="ttlOntabId"
             onFocus={[Function]}
             onKeyPress={[Function]}
             role="radio"
@@ -186,7 +186,7 @@ exports[`SettingsComponent renders 1`] = `
           <input
             checked={true}
             className="radio"
-            id="ttlOntab1597990131391"
+            id="ttlOntabId"
             name="ttl"
             onChange={[Function]}
             type="radio"

@@ -25,4 +25,9 @@ export default class SettingsTabV2 extends TabsBase implements ViewModels.WaitsF
   public getSettingsTabContainer(): Explorer {
     return this.getContainer();
   }
+
+  //for testing purposes
+  public getTabId(): string {
+    return this.tabId;
+  }
 }

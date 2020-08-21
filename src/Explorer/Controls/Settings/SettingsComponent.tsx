@@ -240,20 +240,20 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
 
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection && this.collection.container;
-    this.ttlOffId = `ttlOffId${this.props.settingsTab.tabId}`;
-    this.ttlOnNoDefaultId = `ttlOnNoDefault${this.props.settingsTab.tabId}`;
-    this.ttlOnId = `ttlOn${this.props.settingsTab.tabId}`;
-    this.changeFeedPolicyOffId = `changeFeedOff${this.props.settingsTab.tabId}`;
-    this.changeFeedPolicyOnId = `changeFeedOn${this.props.settingsTab.tabId}`;
-    this.rupmOnId = `rupmOn${this.props.settingsTab.tabId}`;
-    this.rupmOffId = `rupmOff${this.props.settingsTab.tabId}`;
-    this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.props.settingsTab.tabId}`;
-    this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.props.settingsTab.tabId}`;
-    this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.props.settingsTab.tabId}`;
-    this.testId = `settingsThroughputValue${this.props.settingsTab.tabId}`;
-    this.throughputAutoPilotRadioId = `editDatabaseThroughput-autoPilotRadio${this.props.settingsTab.tabId}`;
-    this.throughputProvisionedRadioId = `editDatabaseThroughput-manualRadio${this.props.settingsTab.tabId}`;
-    this.throughputModeRadioName = `throughputModeRadio${this.props.settingsTab.tabId}`;
+    this.ttlOffId = `ttlOffId${this.props.settingsTab.getTabId()}`;
+    this.ttlOnNoDefaultId = `ttlOnNoDefault${this.props.settingsTab.getTabId()}`;
+    this.ttlOnId = `ttlOn${this.props.settingsTab.getTabId()}`;
+    this.changeFeedPolicyOffId = `changeFeedOff${this.props.settingsTab.getTabId()}`;
+    this.changeFeedPolicyOnId = `changeFeedOn${this.props.settingsTab.getTabId()}`;
+    this.rupmOnId = `rupmOn${this.props.settingsTab.getTabId()}`;
+    this.rupmOffId = `rupmOff${this.props.settingsTab.getTabId()}`;
+    this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.props.settingsTab.getTabId()}`;
+    this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.props.settingsTab.getTabId()}`;
+    this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.props.settingsTab.getTabId()}`;
+    this.testId = `settingsThroughputValue${this.props.settingsTab.getTabId()}`;
+    this.throughputAutoPilotRadioId = `editDatabaseThroughput-autoPilotRadio${this.props.settingsTab.getTabId()}`;
+    this.throughputProvisionedRadioId = `editDatabaseThroughput-manualRadio${this.props.settingsTab.getTabId()}`;
+    this.throughputModeRadioName = `throughputModeRadio${this.props.settingsTab.getTabId()}`;
     this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
@@ -735,7 +735,11 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     for (let i = 0, len = this.container.databases().length; i < len; i++) {
       for (let j = 0, len2 = this.container.databases()[i].collections().length; j < len2; j++) {
         const collectionOffer = this.container
-          .databases()[i].collections()[j].offer();
+          .databases()
+          // eslint-disable-next-line no-unexpected-multiline
+          [i].collections()
+          // eslint-disable-next-line no-unexpected-multiline
+          [j].offer();
         if (collectionOffer && collectionOffer.content && collectionOffer.content.offerIsRUPerMinuteThroughputEnabled) {
           return true;
         }
@@ -1903,7 +1907,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
 
   public render(): JSX.Element {
     return (
-      <div className="tab-pane flexContainer" id={this.props.settingsTab.tabId} role="tabpanel">
+      <div className="tab-pane flexContainer" id={this.props.settingsTab.getTabId()} role="tabpanel">
         {this.shouldShowStatusBar() && (
           <div className="warningErrorContainer scaleWarningContainer">
             <>
