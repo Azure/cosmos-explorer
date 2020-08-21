@@ -6,8 +6,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import Q from "q";
 import {
   ConflictDefinition,
-  ContainerDefinition,
-  ContainerResponse,
   DatabaseResponse,
   FeedOptions,
   ItemDefinition,
@@ -201,23 +199,6 @@ export function getPartitionKeyHeader(partitionKeyDefinition: DataModels.Partiti
   }
 
   return [partitionKeyValue];
-}
-
-export function updateCollection(
-  databaseId: string,
-  collectionId: string,
-  newCollection: DataModels.Collection,
-  options: any = {}
-): Q.Promise<DataModels.Collection> {
-  return Q(
-    client()
-      .database(databaseId)
-      .container(collectionId)
-      .replace(newCollection as ContainerDefinition, options)
-      .then(async (response: ContainerResponse) => {
-        return refreshCachedResources().then(() => response.resource as DataModels.Collection);
-      })
-  );
 }
 
 export function updateDocument(

@@ -153,7 +153,14 @@ export interface KeyResource {
   Token: string;
 }
 
-export interface IndexingPolicy {}
+export interface IndexingPolicy {
+  automatic: boolean;
+  indexingMode: string;
+  includedPaths: any;
+  excludedPaths: any;
+  compositeIndexes?: any;
+  spatialIndexes?: any;
+}
 
 export interface PartitionKey {
   paths: string[];

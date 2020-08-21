@@ -266,42 +266,6 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
   return deferred.promise;
 }
 
-export function updateCollection(
-  databaseId: string,
-  collection: ViewModels.Collection,
-  newCollection: DataModels.Collection
-): Q.Promise<DataModels.Collection> {
-  var deferred = Q.defer<any>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Updating container ${collection.id()}`
-  );
-  DataAccessUtilityBase.updateCollection(databaseId, collection.id(), newCollection)
-    .then(
-      (replacedCollection: DataModels.Collection) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully updated container ${collection.id()}`
-        );
-        deferred.resolve(replacedCollection);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to update container ${collection.id()}: ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "UpdateCollection", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
 export function updateDocument(
   collection: ViewModels.CollectionBase,
   documentId: DocumentId,
