@@ -12,7 +12,7 @@ describe('Collection Add and Delete SQL spec', () => {
       const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
       const collectionId = `TestCollection${crypto.randomBytes(8).toString("hex")}`;
       const sharedKey = `SharedKey${crypto.randomBytes(8).toString("hex")}`;
-      const browser = await puppeteer.launch({ ignoreHTTPSErrors: true, headless: false, slowMo: 10 });
+      const browser = await puppeteer.launch({ ignoreHTTPSErrors: true, slowMo: 10 });
       const page = await browser.newPage();
       const prodUrl = "https://localhost:1234/hostedExplorer.html";
       page.goto(prodUrl);
