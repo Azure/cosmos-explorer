@@ -210,7 +210,6 @@ jobs:
         run: |
           npm ci
           npm start &
-          npm run wait-for-server
           npm run test:e2e
         shell: bash
         env:
