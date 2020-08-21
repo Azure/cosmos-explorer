@@ -109,6 +109,7 @@ export interface CollectionBase extends TreeNode {
 export interface Collection extends CollectionBase {
   defaultTtl: ko.Observable<number>;
   analyticalStorageTtl: ko.Observable<number>;
+  schema: DataModels.ISchema;
   indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   quotaInfo: ko.Observable<DataModels.CollectionQuotaInfo>;
@@ -353,7 +354,8 @@ export enum CollectionTabKind {
   NotebookV2 = 15,
   SparkMasterTab = 16,
   Gallery = 17,
-  NotebookViewer = 18
+  NotebookViewer = 18,
+  Schema = 19
 }
 
 export enum TerminalKind {

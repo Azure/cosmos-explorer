@@ -54,32 +54,13 @@ export interface IUserGallery {
   published: string[];
 }
 
-export interface ISchemaRequest{
+export interface ISchemaRequest {
   id: string;
   subscriptionId: string;
   resourceGroup: string;
   accountName: string;
   resource: string;
   status: string;
-  timestamp: number;
-}
-
-export interface IDataField{
-  dataType: string;
-  hasNulls: boolean;
-  isArray: boolean;
-  schemaType: string;
-  name: string;
-  path: string;
-  maxRepetitionLevel: number;
-  maxDefinitionLevel: number;
-}
-
-export interface ISchema{
-  id: string;
-  accountName: string;
-  resource: string;
-  fields: IDataField[];
   timestamp: number;
 }
 
@@ -441,7 +422,7 @@ export class JunoClient {
       headers: JunoClient.getHeaders()
     });
 
-    let data : ISchemaRequest;
+    let data: ISchemaRequest;
     if (response.status === HttpStatusCodes.OK) {
       data = await response.json();
     }
@@ -452,13 +433,13 @@ export class JunoClient {
     };
   }
 
-  public async getSchema(databaseName: string, containerName: string): Promise<IJunoResponse<ISchema>> {
+  public async getSchema(databaseName: string, containerName: string): Promise<IJunoResponse<DataModels.ISchema>> {
     const response = await window.fetch(`${this.getNotebooksUrl()}/schema/${databaseName}/${containerName}`, {
       method: "GET",
       headers: JunoClient.getHeaders()
     });
 
-    let data : ISchema;
+    let data: DataModels.ISchema;
     if (response.status === HttpStatusCodes.OK) {
       data = await response.json();
     }

@@ -64,6 +64,7 @@ export default class Collection implements ViewModels.Collection {
   public throughput: ko.Computed<number>;
   public rawDataModel: DataModels.Collection;
   public analyticalStorageTtl: ko.Observable<number>;
+  public schema: DataModels.ISchema;
   public geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
 
   // TODO move this to API customization class
@@ -118,6 +119,7 @@ export default class Collection implements ViewModels.Collection {
     this.conflictResolutionPolicy = ko.observable(data.conflictResolutionPolicy);
     this.changeFeedPolicy = ko.observable<DataModels.ChangeFeedPolicy>(data.changeFeedPolicy);
     this.analyticalStorageTtl = ko.observable(data.analyticalStorageTtl);
+    this.schema = data.schema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
 
     // TODO fix this to only replace non-excaped single quotes

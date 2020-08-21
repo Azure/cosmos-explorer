@@ -32,6 +32,7 @@ import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import TabsBase from "../Tabs/TabsBase";
 import { userContext } from "../../UserContext";
+import * as DataModels from  "../../Contracts/DataModels";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   public static readonly MyNotebooksTitle = "My Notebooks";
@@ -245,6 +246,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Settings)
     });
 
+    let schemaNode: TreeNode = this.buildSchemaNode(collection);
+    if(schemaNode){
+      children.push(schemaNode);
+    }
+    
     if (ResourceTreeAdapter.showScriptNodes(this.container)) {
       children.push(this.buildStoredProcedureNode(collection));
       children.push(this.buildUserDefinedFunctionsNode(collection));
@@ -349,6 +355,54 @@ export class ResourceTreeAdapter implements ReactAdapter {
         );
       }
     };
+  }
+
+  private buildSchemaNode(collection: ViewModels.Collection): TreeNode {
+    if(collection.analyticalStorageTtl() == undefined){
+      return null;
+    }
+    //debugger;
+    return {
+      label: "Schema",
+      children: this.getSchemaNodes(collection.schema.fields),
+      onClick: () => {
+        collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Schema);
+        this.container.tabsManager.refreshActiveTab(
+          (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
+        );
+      }
+    };
+  }
+
+  private getSchemaNodes(fields: DataModels.IDataField[]) : TreeNode[]{
+    
+    var schema: any = {};
+    var nodes: TreeNode[] = [];
+    
+    //unflatten
+    fields.forEach((field: DataModels.IDataField, fieldIndex: number) => {
+        var path: string[] = field.path.split('.');
+        var current: any = {};
+        path.forEach((name: string, pathIndex: number) => {
+          if(pathIndex == 0){
+            if(schema[name] == undefined){
+              schema[name] = {};
+            }            
+            current = schema[name];          
+          }else{
+            if(current[name] == undefined){
+              current[name] = {};
+            }
+            current = current[name]
+          }
+          
+          if(pathIndex == path.length - 1){
+            current[name] = [field.dataType.name, "hasNulls: "+field.hasNulls];
+          }
+        });
+    });
+    
+    return nodes;
   }
 
   private buildNotebooksTrees(): TreeNode {

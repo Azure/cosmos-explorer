@@ -92,6 +92,29 @@ export interface ResourceRequest {
   id: string;
 }
 
+export interface IType{
+  name: string;
+  code: number;
+}
+
+export interface IDataField {
+  dataType: IType;
+  hasNulls: boolean;
+  isArray: boolean;
+  schemaType: IType;
+  name: string;
+  path: string;
+  maxRepetitionLevel: number;
+  maxDefinitionLevel: number;
+}
+
+export interface ISchema {
+  id: string;
+  accountName: string;
+  resource: string;
+  fields: IDataField[];
+}
+
 export interface Collection extends Resource {
   defaultTtl?: number;
   indexingPolicy?: IndexingPolicy;
@@ -102,6 +125,7 @@ export interface Collection extends Resource {
   changeFeedPolicy?: ChangeFeedPolicy;
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
+  schema?: ISchema;
 }
 
 export interface CreateCollectionWithRpResponse extends Resource {

@@ -266,7 +266,8 @@ export default class Database implements ViewModels.Database {
         let deltaCollections = this.getDeltaCollections(collections);
 
         deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
-          const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
+          this.addSchema(collection);
+          const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);          
           collectionVMs.push(collectionVM);
         });
 
@@ -387,5 +388,215 @@ export default class Database implements ViewModels.Database {
 
   private _getOfferForDatabase(offers: DataModels.Offer[], database: DataModels.Database): DataModels.Offer {
     return _.find(offers, (offer: DataModels.Offer) => offer.resource === database._self);
+  }
+
+  private addSchema(collection: DataModels.Collection): void {
+      if(collection.analyticalStorageTtl == undefined){
+        return;
+      }
+
+      collection.schema = {
+        id: "gaausfel-parquet-schema-test-dbs-HappyPath-colls-Items",
+        accountName: "gaausfel-parquet-schema-test",
+        resource: "dbs/HappyPath/colls/Items",
+        fields: [
+          {
+            dataType: {
+              "code": 15,
+              "name": "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "_rid",
+            path: "_rid",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 11,
+              name: "Int64"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "_ts",
+            path: "_ts",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 15,
+              name: "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "id",
+            path: "id",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 15,
+              name: "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "pk",
+            path: "pk",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 15,
+              name: "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "other",
+            path: "other",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 15,
+              name: "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "name",
+            path: "nested.name",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 11,
+              name: "Int64"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "someNumber",
+            path: "nested.someNumber",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 17,
+              name: "Double"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "anotherNumber",
+            path: "nested.anotherNumber",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          },
+          {
+            dataType: {
+              code: 15,
+              name: "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "name",
+            path: "items.list.items.name",
+            maxRepetitionLevel: 1,
+            maxDefinitionLevel: 3
+          },
+          {
+            dataType: {
+              code: 11,
+              name: "Int64"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "someNumber",
+            path: "items.list.items.someNumber",
+            maxRepetitionLevel: 1,
+            maxDefinitionLevel: 3
+          },
+          {
+            dataType: {
+              code: 17,
+              name: "Double"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "anotherNumber",
+            path: "items.list.items.anotherNumber",
+            maxRepetitionLevel: 1,
+            maxDefinitionLevel: 3
+          },
+          {
+            dataType: {
+              code: 15,
+              name: "String"
+            },
+            hasNulls: true,
+            isArray: false,
+            schemaType: {
+              code: 0,
+              name: "Data"
+            },
+            name: "_etag",
+            path: "_etag",
+            maxRepetitionLevel: 0,
+            maxDefinitionLevel: 1
+          }
+        ]
+      };
+      //debugger;
+      //getSchema
+      //if no schema requestSchema
+      //keep checking for schema every 5 seconds
   }
 }
