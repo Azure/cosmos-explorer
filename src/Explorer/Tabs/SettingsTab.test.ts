@@ -5,7 +5,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import Collection from "../Tree/Collection";
 import Database from "../Tree/Database";
 import Explorer from "../Explorer";
-import SettingsTab from "../Tabs/SettingsTab";
+import SettingsTab from "./SettingsTab";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 describe("Settings tab", () => {

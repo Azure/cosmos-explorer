@@ -181,7 +181,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public partitionKeyVisible: ko.PureComputed<boolean>;
   public partitionKeyValue: ko.Observable<string>;
   public isLargePartitionKeyEnabled: ko.Computed<boolean>;
-  public pendingNotification: ko.Observable<DataModels.Notification>;
   public requestUnitsUsageCost: ko.Computed<string>;
   public rupmOnId: string;
   public rupmOffId: string;
@@ -858,7 +857,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.ttlOnDefaultFocused = ko.observable<boolean>(false);
     this.ttlOnFocused = ko.observable<boolean>(false);
     this.indexingPolicyElementFocused = ko.observable<boolean>(false);
-    this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
 
     this._offerReplacePending = ko.pureComputed<boolean>(() => {
       const offer = this.collection && this.collection.offer && this.collection.offer();

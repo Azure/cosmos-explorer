@@ -2,6 +2,7 @@ import * as ko from "knockout";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
+import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
@@ -29,6 +30,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public hashLocation: ko.Observable<string>;
   public isExecutionError: ko.Observable<boolean>;
   public isExecuting: ko.Observable<boolean>;
+  public pendingNotification?: ko.Observable<DataModels.Notification>;
 
   protected _theme: string;
   public onLoadStartKey: number;
@@ -56,6 +58,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.errorDetailsTabIndex = ko.computed<number>(() => (this.isActive() ? 0 : null));
     this.isExecutionError = ko.observable<boolean>(false);
     this.isExecuting = ko.observable<boolean>(false);
+    this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
     this.onLoadStartKey = options.onLoadStartKey;
     this.hashLocation = ko.observable<string>(options.hashLocation || "");
     this.hashLocation.subscribe((newLocation: string) => this.updateGlobalHash(newLocation));

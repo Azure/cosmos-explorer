@@ -38,6 +38,12 @@ export interface Button {
   isSelected?: ko.Computed<boolean>;
 }
 
+export interface ButtonV2 {
+  isVisible: () => boolean;
+  isEnabled: () => boolean;
+  isSelected?: () => boolean;
+}
+
 export interface NotificationConsole {
   filteredConsoleData: ko.ObservableArray<ConsoleData>;
   isConsoleExpanded: ko.Observable<boolean>;
@@ -303,10 +309,6 @@ export interface ScriptTabOption extends TabOptions {
   partitionKey?: DataModels.PartitionKey;
 }
 
-export interface WaitsForTemplate {
-  isTemplateReady: ko.Observable<boolean>;
-}
-
 export interface EditorPosition {
   line: number;
   column: number;
@@ -353,7 +355,8 @@ export enum CollectionTabKind {
   NotebookV2 = 15,
   SparkMasterTab = 16,
   Gallery = 17,
-  NotebookViewer = 18
+  NotebookViewer = 18,
+  SettingsV2 = 19
 }
 
 export enum TerminalKind {

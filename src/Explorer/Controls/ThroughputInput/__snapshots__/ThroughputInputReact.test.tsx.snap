@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThroughputInputAutoPilotV3Component renders 1`] = `
+<div>
+  <div>
+    <p
+      className="pkPadding"
+    >
+      <span
+        className="mandatoryStar"
+      >
+        *
+      </span>
+      <span>
+        label
+      </span>
+      <span
+        className="infoTooltip"
+        role="tooltip"
+        tabIndex={0}
+      >
+        <img
+          alt="More information"
+          className="infoImg"
+          src="../../../../images/info-bubble.svg"
+        />
+        <span
+          className="tooltiptext throughputRuInfo"
+        >
+          infoBubbleText
+        </span>
+      </span>
+    </p>
+  </div>
+  <p>
+    <span>
+      Provision maximum RU/s required by this resource. Estimate your required RU/s with
+      <a
+        href="https://cosmos.azure.com/capacitycalculator/"
+        target="_blank"
+      >
+         capacity calculator
+      </a>
+      .
+    </span>
+  </p>
+  <p>
+    <span>
+      Max RU/s
+    </span>
+  </p>
+  <input
+    aria-label="ariaLabel"
+    className="migration collid select-font-size"
+    disabled={false}
+    key="auto pilot throughput input"
+    min={4000}
+    onChange={[Function]}
+    required={true}
+    step={100}
+    type="number"
+    value={4000}
+  />
+  <p>
+    <span
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "autoPilotUsageCost",
+        }
+      }
+    />
+  </p>
+  <p>
+    <span
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "requestUnitsUsageCost",
+        }
+      }
+    />
+  </p>
+  <p
+    className="pkPadding"
+  >
+    <input
+      aria-label="acknowledge spend throughput"
+      checked={true}
+      id="spendAckId"
+      onChange={[Function]}
+      title="spendAckText"
+      type="checkbox"
+    />
+    <label
+      htmlFor="spendAckId"
+    >
+      spendAckText
+    </label>
+  </p>
+</div>
+`;
+
+exports[`ThroughputInputReactComponent renders 1`] = `
+<div>
+  <div>
+    <p
+      className="pkPadding"
+    >
+      <span
+        className="mandatoryStar"
+      >
+        *
+      </span>
+      <span
+        className="addCollectionLabel"
+      >
+        label
+      </span>
+      <span
+        className="infoTooltip"
+        role="tooltip"
+        tabIndex={0}
+      >
+        <img
+          alt="More information"
+          className="infoImg"
+          src="../../../../images/info-bubble.svg"
+        />
+        <span
+          className="tooltiptext throughputRuInfo"
+        >
+          infoBubbleText
+        </span>
+      </span>
+    </p>
+  </div>
+  <select
+    aria-label="Autopilot Max RU/s"
+    className="collid select-font-size"
+    name="autoPilotTiers"
+    onChange={[Function]}
+    value="1"
+  >
+    <option
+      disabled={true}
+      value="default"
+    >
+      Choose Max RU/s
+    </option>
+    <option
+      key="1"
+      value={1}
+    >
+      tier 1
+    </option>
+    <option
+      key="2"
+      value={2}
+    >
+      tier 2
+    </option>
+  </select>
+  <p>
+    <span
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "autoPilotUsageCost",
+        }
+      }
+    />
+  </p>
+</div>
+`;

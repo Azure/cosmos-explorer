@@ -1,0 +1,301 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SettingsComponent renders 1`] = `
+<div
+  className="tab-pane flexContainer"
+  id="tab1597990131391"
+  role="tabpanel"
+>
+  <div
+    className="tabForm scaleSettingScrollable"
+  >
+    <div>
+      <div
+        aria-controls="scaleRegion"
+        aria-expanded={true}
+        aria-label="Scale"
+        className="scaleDivison"
+        onClick={[Function]}
+        onKeyPress={[Function]}
+        role="button"
+        tabIndex={0}
+      >
+        <span
+          className="themed-images"
+          id="ExpandChevronDownScale"
+        >
+          <img
+            alt="Hide scale properties"
+            className="imgiconwidth ssExpandCollapseIcon "
+            src=""
+          />
+        </span>
+        <span
+          className="scaleSettingTitle"
+        >
+          Scale
+        </span>
+      </div>
+      <div
+        className="ssTextAllignment"
+        id="scaleRegion"
+      >
+        <ThroughputInputAutoPilotV3Component
+          ariaLabel="Throughput (400 - 10,000 RU/s)"
+          autoPilotUsageCost="Your container throughput will automatically scale from <b>400 RU/s (10% of max RU/s) - 4000 RU/s</b> based on usage. <br /><br />After the first 40 GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='https://aka.ms/cosmos-autoscale-info' target='_blank'>Learn more</a>."
+          canExceedMaximumValue={false}
+          costsVisible={true}
+          cssClass="scaleForm"
+          isAutoPilotSelected={false}
+          isEnabled={true}
+          label="Throughput (400 - 10,000 RU/s)"
+          maxAutoPilotThroughput={4000}
+          maximum={10000}
+          minimum={400}
+          overrideWithAutoPilotSettings={false}
+          overrideWithProvisionedThroughputSettings={false}
+          requestUnitsUsageCost=""
+          setAutoPilotSelected={[Function]}
+          setMaxAutoPilotThroughput={[Function]}
+          setThroughput={[Function]}
+          showAutoPilot={true}
+          testId="settingsThroughputValuetab1597990131391"
+          throughput={
+            Object {
+              "baseline": undefined,
+              "current": undefined,
+              "isValid": true,
+            }
+          }
+          throughputAutoPilotRadioId="editDatabaseThroughput-autoPilotRadiotab1597990131391"
+          throughputModeRadioName="throughputModeRadiotab1597990131391"
+          throughputProvisionedRadioId="editDatabaseThroughput-manualRadiotab1597990131391"
+        />
+        <div
+          className="storageCapacityTitle throughputStorageValue"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Storage capacity <br /><b>Fixed</b>",
+            }
+          }
+        />
+      </div>
+    </div>
+    <div
+      aria-controls="settingsRegion"
+      aria-expanded={true}
+      aria-label="Settings"
+      className="formTitle"
+      onClick={[Function]}
+      onKeyPress={[Function]}
+      role="button"
+      tabIndex={0}
+    >
+      <span
+        className="themed-images"
+        id="ExpandChevronDownSettings"
+      >
+        <img
+          alt="Show settings"
+          className="imgiconwidth ssExpandCollapseIcon"
+          src=""
+        />
+      </span>
+      <span
+        className="scaleSettingTitle"
+      >
+        Settings
+      </span>
+    </div>
+    <div
+      className="ssTextAllignment"
+      id="settingsRegion"
+    >
+      <div
+        className="formTitle"
+      >
+        Time to Live
+      </div>
+      <div
+        aria-label="Time to Live"
+        className="tabs disableFocusDefaults"
+        role="radiogroup"
+      >
+        <div
+          className="tab"
+        >
+          <label
+            aria-checked={false}
+            className="ttlIndexingPolicyFocusElement  unselectedRadio"
+            htmlFor="ttlOffIdtab1597990131391"
+            onFocus={[Function]}
+            onKeyPress={[Function]}
+            role="radio"
+            tabIndex={0}
+          >
+            Off
+          </label>
+          <input
+            checked={false}
+            className="radio"
+            id="ttlOffIdtab1597990131391"
+            name="ttl"
+            onChange={[Function]}
+            type="radio"
+            value="off"
+          />
+        </div>
+        <div
+          className="tab"
+        >
+          <label
+            aria-checked="false"
+            className="ttlIndexingPolicyFocusElement  unselectedRadio"
+            htmlFor="ttlOnNoDefaulttab1597990131391"
+            onFocus={[Function]}
+            onKeyPress={[Function]}
+            role="radio"
+            tabIndex={0}
+          >
+            On (no default)
+          </label>
+          <input
+            checked={false}
+            className="radio"
+            id="ttlOnNoDefaulttab1597990131391"
+            name="ttl"
+            onChange={[Function]}
+            type="radio"
+            value="on-nodefault"
+          />
+        </div>
+        <div
+          className="tab"
+        >
+          <label
+            aria-checked="true"
+            className="ttlIndexingPolicyFocusElement  selectadRedio"
+            htmlFor="ttlOntab1597990131391"
+            onFocus={[Function]}
+            onKeyPress={[Function]}
+            role="radio"
+            tabIndex={0}
+          >
+            On
+          </label>
+          <input
+            checked={true}
+            className="radio"
+            id="ttlOntab1597990131391"
+            name="ttl"
+            onChange={[Function]}
+            type="radio"
+            value="on"
+          />
+        </div>
+      </div>
+      <input
+        aria-label="Time to live in seconds"
+        className="dirtyTextbox "
+        disabled={false}
+        max="2147483647"
+        min="1"
+        onChange={[Function]}
+        required={true}
+        type="number"
+        value={5}
+      />
+       second(s)
+      <div
+        className="formTitle"
+      >
+        Analytical Storage Time to Live
+      </div>
+      <div
+        aria-label="Analytical Storage Time to Live"
+        className="tabs disableFocusDefaults"
+        role="radiogroup"
+      >
+        <div
+          className="tab"
+        >
+          <label
+            className="disabledRadio"
+            role="radio"
+            tabIndex={0}
+          >
+            Off
+          </label>
+        </div>
+        <div
+          className="tab"
+        >
+          <label
+            aria-checked="false"
+            className=" unselectedRadio"
+            htmlFor="analyticalStorageTtlOnNoDefaultId"
+            onKeyPress={[Function]}
+            role="radio"
+            tabIndex={0}
+          >
+            On (no default)
+          </label>
+          <input
+            checked={false}
+            className="radio"
+            id="analyticalStorageTtlOnNoDefaultId"
+            name="analyticalStorageTtl"
+            onChange={[Function]}
+            type="radio"
+            value="on-nodefault"
+          />
+        </div>
+        <div
+          className="tab"
+        >
+          <label
+            aria-checked="true"
+            className=" selectedRadio"
+            htmlFor="analyticalStorageTtlOnId"
+            onKeyPress={[Function]}
+            role="radio"
+            tabIndex={0}
+          >
+            On
+          </label>
+          <input
+            checked={true}
+            className="radio"
+            id="analyticalStorageTtlOnId"
+            name="analyticalStorageTtl"
+            onChange={[Function]}
+            type="radio"
+            value="on"
+          />
+        </div>
+      </div>
+      <input
+        aria-label="Time to live in seconds"
+        className="dirtyTextbox "
+        max="2147483647"
+        min="1"
+        onChange={[Function]}
+        required={true}
+        type="number"
+        value={5}
+      />
+       second(s)
+      <div
+        className="formTitle"
+      >
+        Indexing Policy
+      </div>
+      <div
+        className="indexingPolicyEditor ttlIndexingPolicyFocusElement"
+        key="indexingPolicyEditorDiv"
+        tabIndex={0}
+      />
+    </div>
+  </div>
+</div>
+`;

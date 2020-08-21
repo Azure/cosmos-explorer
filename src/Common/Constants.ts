@@ -124,6 +124,7 @@ export class Features {
   public static readonly enableGalleryPublish = "enablegallerypublish";
   public static readonly enableCodeOfConduct = "enablecodeofconduct";
   public static readonly enableLinkInjection = "enablelinkinjection";
+  public static readonly enableSettingsV2 = "enablesettingsv2";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
   public static readonly notebookServerUrl = "notebookserverurl";

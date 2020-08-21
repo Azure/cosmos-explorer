@@ -26,6 +26,7 @@ import MongoQueryTab from "../Tabs/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
+import SettingsTabV2 from "../Tabs/SettingsTabV2";
 import SettingsTab from "../Tabs/SettingsTab";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
@@ -42,6 +43,7 @@ import {
   readOffers
 } from "../../Common/DocumentClientUtilityBase";
 import { userContext } from "../../UserContext";
+import TabsBase from "../Tabs/TabsBase";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -564,33 +566,51 @@ export default class Collection implements ViewModels.Collection {
       return tab.collection && tab.collection.rid === this.rid;
     });
 
-    let settingsTab: SettingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
+    const traceStartData = {
+      databaseAccountName: this.container.databaseAccount().name,
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      defaultExperience: this.container.defaultExperience(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: tabTitle
+    };
+
+    const settingsTabOptions: ViewModels.TabOptions = {
+      tabKind: undefined,
+      title: !this.offer() ? "Settings" : "Scale & Settings",
+      tabPath: "",
+
+      collection: this,
+      node: this,
+      selfLink: this.self,
+      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
+      isActive: ko.observable(false),
+      onUpdateTabsButtons: this.container.onUpdateTabsButtons
+    };
+
+    const isSettingsV2Enabled = this.container.isSettingsV2Enabled();
+    var settingsTab: TabsBase;
+    if (isSettingsV2Enabled) {
+      settingsTab = matchingTabs && (matchingTabs[0] as SettingsTabV2);
+    } else {
+      settingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
+    }
+
     if (!settingsTab) {
-      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
-        databaseName: this.databaseId,
-        collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
-        dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: tabTitle
-      });
+      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
+      settingsTabOptions.onLoadStartKey = startKey;
 
       Q.all([pendingNotificationsPromise, this.readSettings()]).then(
         (data: any) => {
           const pendingNotification: DataModels.Notification = data && data[0];
-          settingsTab = new SettingsTab({
-            tabKind: ViewModels.CollectionTabKind.Settings,
-            title: !this.offer() ? "Settings" : "Scale & Settings",
-            tabPath: "",
 
-            collection: this,
-            node: this,
-            selfLink: this.self,
-            hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
-            isActive: ko.observable(false),
-            onLoadStartKey: startKey,
-            onUpdateTabsButtons: this.container.onUpdateTabsButtons
-          });
+          if (isSettingsV2Enabled) {
+            settingsTabOptions.tabKind = ViewModels.CollectionTabKind.SettingsV2;
+            settingsTab = new SettingsTabV2(settingsTabOptions);
+          } else {
+            settingsTabOptions.tabKind = ViewModels.CollectionTabKind.Settings;
+            settingsTab = new SettingsTab(settingsTabOptions);
+          }
           this.container.tabsManager.activateNewTab(settingsTab);
           settingsTab.pendingNotification(pendingNotification);
         },
