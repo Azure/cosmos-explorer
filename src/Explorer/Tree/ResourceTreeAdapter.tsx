@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
-import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
+import { TreeComponent, TreeNode, TreeNodeMenuItem, TreeNodeComponent } from "../Controls/TreeComponent/TreeComponent";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
@@ -374,35 +374,55 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private getSchemaNodes(fields: DataModels.IDataField[]) : TreeNode[]{
-    
-    var schema: any = {};
-    var nodes: TreeNode[] = [];
+  private getSchemaNodes(fields: DataModels.IDataField[]) : TreeNode[]{    
+    let schema: any = {};
     
     //unflatten
     fields.forEach((field: DataModels.IDataField, fieldIndex: number) => {
-        var path: string[] = field.path.split('.');
-        var current: any = {};
+        const path: string[] = field.path.split('.');
+        const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
+        let current: any = {};
         path.forEach((name: string, pathIndex: number) => {
           if(pathIndex == 0){
             if(schema[name] == undefined){
-              schema[name] = {};
+              if(pathIndex == path.length - 1){
+                schema[name] = fieldProperties;
+              }else{
+                schema[name] = {};
+              }
             }            
-            current = schema[name];          
+            current = schema[name];
           }else{
             if(current[name] == undefined){
-              current[name] = {};
-            }
+              if(pathIndex == path.length - 1){
+                current[name] = fieldProperties;
+              }else{
+                current[name] = {};
+              }              
+            }            
             current = current[name]
-          }
-          
-          if(pathIndex == path.length - 1){
-            current[name] = [field.dataType.name, "hasNulls: "+field.hasNulls];
           }
         });
     });
-    
-    return nodes;
+
+    function traverse(obj: any): TreeNode[] {
+      let children: TreeNode[] = [];
+
+      if(obj !== null && !Array.isArray(obj) && typeof obj == "object"){        
+        Object.entries(obj).forEach(([key, value]) => {  
+          children.push({label: key, children: traverse(value)});
+        }); 
+      }else if(Array.isArray(obj)){
+        return [
+          { label: obj[0] },
+          { label: obj[1] }
+        ];
+      }
+
+      return children;
+    }    
+
+    return traverse(schema);
   }
 
   private buildNotebooksTrees(): TreeNode {
