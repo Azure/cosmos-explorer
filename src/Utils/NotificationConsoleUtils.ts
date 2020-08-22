@@ -3,7 +3,10 @@ import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/Notificat
 
 const _global = typeof self === "undefined" ? window : self;
 
-// DEPRECATED: Use logConsoleInfo, logConsoleError, logConsoleProgress instead
+/**
+ * @deprecated
+ * Use logConsoleInfo, logConsoleError, logConsoleProgress instead
+ * */
 export function logConsoleMessage(type: ConsoleDataType, message: string, id?: string): string {
   const dataExplorer = _global.dataExplorer;
   if (dataExplorer) {
