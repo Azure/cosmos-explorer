@@ -14,6 +14,8 @@ import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
 import { readCollections } from "../../Common/dataAccess/readCollections";
+import { JunoClient, IJunoResponse } from "../../Juno/JunoClient";
+import { userContext } from "../../UserContext";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -26,6 +28,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseExpanded: ko.Observable<boolean>;
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
+  private junoClient: JunoClient;
 
   constructor(container: Explorer, data: any, offer: DataModels.Offer) {
     this.nodeKind = "Database";
@@ -40,6 +43,7 @@ export default class Database implements ViewModels.Database {
     this.isDatabaseShared = ko.pureComputed(() => {
       return this.offer && !!this.offer();
     });
+    this.junoClient = new JunoClient();
   }
 
   public onSettingsClick = () => {
@@ -395,208 +399,25 @@ export default class Database implements ViewModels.Database {
         return;
       }
 
-      collection.schema = {
-        id: "gaausfel-parquet-schema-test-dbs-HappyPath-colls-Items",
-        accountName: "gaausfel-parquet-schema-test",
-        resource: "dbs/HappyPath/colls/Items",
-        fields: [
-          {
-            dataType: {
-              "code": 15,
-              "name": "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "_rid",
-            path: "_rid",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 11,
-              name: "Int64"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "_ts",
-            path: "_ts",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 15,
-              name: "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "id",
-            path: "id",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 15,
-              name: "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "pk",
-            path: "pk",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 15,
-              name: "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "other",
-            path: "other",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 15,
-              name: "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "name",
-            path: "nested.name",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 11,
-              name: "Int64"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "someNumber",
-            path: "nested.someNumber",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 17,
-              name: "Double"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "anotherNumber",
-            path: "nested.anotherNumber",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
-          },
-          {
-            dataType: {
-              code: 15,
-              name: "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "name",
-            path: "items.list.items.name",
-            maxRepetitionLevel: 1,
-            maxDefinitionLevel: 3
-          },
-          {
-            dataType: {
-              code: 11,
-              name: "Int64"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "someNumber",
-            path: "items.list.items.someNumber",
-            maxRepetitionLevel: 1,
-            maxDefinitionLevel: 3
-          },
-          {
-            dataType: {
-              code: 17,
-              name: "Double"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "anotherNumber",
-            path: "items.list.items.anotherNumber",
-            maxRepetitionLevel: 1,
-            maxDefinitionLevel: 3
-          },
-          {
-            dataType: {
-              code: 15,
-              name: "String"
-            },
-            hasNulls: true,
-            isArray: false,
-            schemaType: {
-              code: 0,
-              name: "Data"
-            },
-            name: "_etag",
-            path: "_etag",
-            maxRepetitionLevel: 0,
-            maxDefinitionLevel: 1
+      collection.requestSchema = () =>{
+        this.junoClient.requestSchema({
+          id: null,
+          subscriptionId: userContext.subscriptionId,
+          resourceGroup: userContext.resourceGroup,
+          accountName: userContext.databaseAccount.name,
+          resource: `dbs/${this.id}/colls/${collection.id}`,
+          status: "new"
+        });        
+        const checkForSchema = setInterval(async ()=>{
+          const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(this.id(), collection.id);
+          
+          if(response.data != null){
+            clearInterval(checkForSchema);
+            collection.schema = response.data;
           }
-        ]
+        }, 5000);
       };
-      //debugger;
-      //getSchema
-      //if no schema requestSchema
-      //keep checking for schema every 5 seconds
+
+      collection.requestSchema();
   }
 }

@@ -54,16 +54,6 @@ export interface IUserGallery {
   published: string[];
 }
 
-export interface ISchemaRequest {
-  id: string;
-  subscriptionId: string;
-  resourceGroup: string;
-  accountName: string;
-  resource: string;
-  status: string;
-  timestamp: number;
-}
-
 interface IPublishNotebookRequest {
   name: string;
   description: string;
@@ -415,14 +405,14 @@ export class JunoClient {
     return `${this.getNotebooksUrl()}/gallery/${id}`;
   }
 
-  public async requestSchema(schemaRequest: ISchemaRequest): Promise<IJunoResponse<ISchemaRequest>> {
+  public async requestSchema(schemaRequest: DataModels.ISchemaRequest): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
     const response = await window.fetch(`${this.getNotebooksAccountUrl()}/schema/request`, {
       method: "POST",
       body: JSON.stringify(schemaRequest),
       headers: JunoClient.getHeaders()
     });
 
-    let data: ISchemaRequest;
+    let data: DataModels.ISchemaRequest;
     if (response.status === HttpStatusCodes.OK) {
       data = await response.json();
     }

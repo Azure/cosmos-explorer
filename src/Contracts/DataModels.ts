@@ -115,6 +115,15 @@ export interface ISchema {
   fields: IDataField[];
 }
 
+export interface ISchemaRequest {
+  id: string;
+  subscriptionId: string;
+  resourceGroup: string;
+  accountName: string;
+  resource: string;
+  status: string;
+}
+
 export interface Collection extends Resource {
   defaultTtl?: number;
   indexingPolicy?: IndexingPolicy;
@@ -126,6 +135,7 @@ export interface Collection extends Resource {
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
   schema?: ISchema;
+  requestSchema: () => void;
 }
 
 export interface CreateCollectionWithRpResponse extends Resource {
