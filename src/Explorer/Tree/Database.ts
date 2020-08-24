@@ -271,7 +271,7 @@ export default class Database implements ViewModels.Database {
 
         deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
           this.addSchema(collection);
-          const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);          
+          const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
           collectionVMs.push(collectionVM);
         });
 
@@ -395,29 +395,29 @@ export default class Database implements ViewModels.Database {
   }
 
   private addSchema(collection: DataModels.Collection): void {
-      if(collection.analyticalStorageTtl == undefined){
-        return;
-      }
+    if (collection.analyticalStorageTtl == undefined) {
+      return;
+    }
 
-      collection.requestSchema = () =>{
-        this.junoClient.requestSchema({
-          id: null,
-          subscriptionId: userContext.subscriptionId,
-          resourceGroup: userContext.resourceGroup,
-          accountName: userContext.databaseAccount.name,
-          resource: `dbs/${this.id}/colls/${collection.id}`,
-          status: "new"
-        });        
-        const checkForSchema = setInterval(async ()=>{
-          const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(this.id(), collection.id);
-          
-          if(response.data != null){
-            clearInterval(checkForSchema);
-            collection.schema = response.data;
-          }
-        }, 5000);
-      };
+    collection.requestSchema = () => {
+      this.junoClient.requestSchema({
+        id: null,
+        subscriptionId: userContext.subscriptionId,
+        resourceGroup: userContext.resourceGroup,
+        accountName: userContext.databaseAccount.name,
+        resource: `dbs/${this.id}/colls/${collection.id}`,
+        status: "new"
+      });
+      const checkForSchema = setInterval(async () => {
+        const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(this.id(), collection.id);
 
-      collection.requestSchema();
+        if (response.data != null) {
+          clearInterval(checkForSchema);
+          collection.schema = response.data;
+        }
+      }, 5000);
+    };
+
+    collection.requestSchema();
   }
 }

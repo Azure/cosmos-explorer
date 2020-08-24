@@ -405,7 +405,9 @@ export class JunoClient {
     return `${this.getNotebooksUrl()}/gallery/${id}`;
   }
 
-  public async requestSchema(schemaRequest: DataModels.ISchemaRequest): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
+  public async requestSchema(
+    schemaRequest: DataModels.ISchemaRequest
+  ): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
     const response = await window.fetch(`${this.getNotebooksAccountUrl()}/schema/request`, {
       method: "POST",
       body: JSON.stringify(schemaRequest),

@@ -32,7 +32,7 @@ import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import TabsBase from "../Tabs/TabsBase";
 import { userContext } from "../../UserContext";
-import * as DataModels from  "../../Contracts/DataModels";
+import * as DataModels from "../../Contracts/DataModels";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   public static readonly MyNotebooksTitle = "My Notebooks";
@@ -247,10 +247,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     });
 
     let schemaNode: TreeNode = this.buildSchemaNode(collection);
-    if(schemaNode){
+    if (schemaNode) {
       children.push(schemaNode);
     }
-    
+
     if (ResourceTreeAdapter.showScriptNodes(this.container)) {
       children.push(this.buildStoredProcedureNode(collection));
       children.push(this.buildUserDefinedFunctionsNode(collection));
@@ -358,10 +358,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private buildSchemaNode(collection: ViewModels.Collection): TreeNode {
-    if(collection.analyticalStorageTtl() == undefined){
+    if (collection.analyticalStorageTtl() == undefined) {
       return null;
     }
-    //debugger;
+
     return {
       label: "Schema",
       children: this.getSchemaNodes(collection.schema.fields),
@@ -374,53 +374,50 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private getSchemaNodes(fields: DataModels.IDataField[]) : TreeNode[]{    
+  private getSchemaNodes(fields: DataModels.IDataField[]): TreeNode[] {
     let schema: any = {};
-    
+
     //unflatten
     fields.forEach((field: DataModels.IDataField, fieldIndex: number) => {
-        const path: string[] = field.path.split('.');
-        const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
-        let current: any = {};
-        path.forEach((name: string, pathIndex: number) => {
-          if(pathIndex == 0){
-            if(schema[name] == undefined){
-              if(pathIndex == path.length - 1){
-                schema[name] = fieldProperties;
-              }else{
-                schema[name] = {};
-              }
-            }            
-            current = schema[name];
-          }else{
-            if(current[name] == undefined){
-              if(pathIndex == path.length - 1){
-                current[name] = fieldProperties;
-              }else{
-                current[name] = {};
-              }              
-            }            
-            current = current[name]
+      const path: string[] = field.path.split(".");
+      const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
+      let current: any = {};
+      path.forEach((name: string, pathIndex: number) => {
+        if (pathIndex == 0) {
+          if (schema[name] == undefined) {
+            if (pathIndex == path.length - 1) {
+              schema[name] = fieldProperties;
+            } else {
+              schema[name] = {};
+            }
           }
-        });
+          current = schema[name];
+        } else {
+          if (current[name] == undefined) {
+            if (pathIndex == path.length - 1) {
+              current[name] = fieldProperties;
+            } else {
+              current[name] = {};
+            }
+          }
+          current = current[name];
+        }
+      });
     });
 
     function traverse(obj: any): TreeNode[] {
       let children: TreeNode[] = [];
 
-      if(obj !== null && !Array.isArray(obj) && typeof obj == "object"){        
-        Object.entries(obj).forEach(([key, value]) => {  
-          children.push({label: key, children: traverse(value)});
-        }); 
-      }else if(Array.isArray(obj)){
-        return [
-          { label: obj[0] },
-          { label: obj[1] }
-        ];
+      if (obj !== null && !Array.isArray(obj) && typeof obj == "object") {
+        Object.entries(obj).forEach(([key, value]) => {
+          children.push({ label: key, children: traverse(value) });
+        });
+      } else if (Array.isArray(obj)) {
+        return [{ label: obj[0] }, { label: obj[1] }];
       }
 
       return children;
-    }    
+    }
 
     return traverse(schema);
   }

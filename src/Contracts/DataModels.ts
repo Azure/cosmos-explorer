@@ -92,7 +92,7 @@ export interface ResourceRequest {
   id: string;
 }
 
-export interface IType{
+export interface IType {
   name: string;
   code: number;
 }
