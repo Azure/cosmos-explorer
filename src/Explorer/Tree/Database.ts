@@ -409,7 +409,11 @@ export default class Database implements ViewModels.Database {
         status: "new"
       });
       const checkForSchema = setInterval(async () => {
-        const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(this.id(), collection.id);
+        const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(
+          userContext.databaseAccount.name,
+          this.id(),
+          collection.id
+        );
 
         if (response.status >= 404) {
           clearInterval(checkForSchema);

@@ -408,7 +408,7 @@ export class JunoClient {
   public async requestSchema(
     schemaRequest: DataModels.ISchemaRequest
   ): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/schema/request`, {
+    const response = await window.fetch(`${this.getAnalyticsUrl()}/${schemaRequest.accountName}/schema/request`, {
       method: "POST",
       body: JSON.stringify(schemaRequest),
       headers: JunoClient.getHeaders()
@@ -425,11 +425,18 @@ export class JunoClient {
     };
   }
 
-  public async getSchema(databaseName: string, containerName: string): Promise<IJunoResponse<DataModels.ISchema>> {
-    const response = await window.fetch(`${this.getNotebooksUrl()}/schema/${databaseName}/${containerName}`, {
-      method: "GET",
-      headers: JunoClient.getHeaders()
-    });
+  public async getSchema(
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<IJunoResponse<DataModels.ISchema>> {
+    const response = await window.fetch(
+      `${this.getAnalyticsUrl()}/${accountName}/schema/${databaseName}/${containerName}`,
+      {
+        method: "GET",
+        headers: JunoClient.getHeaders()
+      }
+    );
 
     let data: DataModels.ISchema;
     if (response.status === HttpStatusCodes.OK) {
@@ -462,6 +469,10 @@ export class JunoClient {
 
   private getNotebooksAccountUrl(): string {
     return `${configContext.JUNO_ENDPOINT}/api/notebooks/${this.databaseAccount().name}`;
+  }
+
+  private getAnalyticsUrl(): string {
+    return `${configContext.JUNO_ENDPOINT}/api/analytics`;
   }
 
   private static getHeaders(): HeadersInit {
