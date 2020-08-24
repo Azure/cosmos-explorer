@@ -135,7 +135,7 @@ export interface Collection extends Resource {
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
   schema?: ISchema;
-  requestSchema: () => void;
+  requestSchema?: () => void;
 }
 
 export interface CreateCollectionWithRpResponse extends Resource {
