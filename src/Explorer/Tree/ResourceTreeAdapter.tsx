@@ -362,6 +362,15 @@ export class ResourceTreeAdapter implements ReactAdapter {
       return null;
     }
 
+    if (
+      collection.schema == undefined ||
+      collection.schema == null ||
+      collection.schema.fields == undefined ||
+      collection.schema.fields == null
+    ) {
+      return null;
+    }
+
     return {
       label: "Schema",
       children: this.getSchemaNodes(collection.schema.fields),
