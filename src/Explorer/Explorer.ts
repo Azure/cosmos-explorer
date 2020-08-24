@@ -230,6 +230,7 @@ export default class Explorer {
   public shareTokenCopyHelperText: ko.Observable<string>;
   public shouldShowDataAccessExpiryDialog: ko.Observable<boolean>;
   public shouldShowContextSwitchPrompt: ko.Observable<boolean>;
+  public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
@@ -434,6 +435,8 @@ export default class Explorer {
       }
       return false;
     });
+
+    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
 
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 

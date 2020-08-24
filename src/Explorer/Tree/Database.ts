@@ -395,7 +395,7 @@ export default class Database implements ViewModels.Database {
   }
 
   private addSchema(collection: DataModels.Collection): void {
-    if (collection.analyticalStorageTtl == undefined) {
+    if (collection.analyticalStorageTtl == undefined || !this.container.isSchemaEnabled()) {
       return;
     }
 
