@@ -6,7 +6,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import Q from "q";
 import {
   ConflictDefinition,
-  DatabaseResponse,
   FeedOptions,
   ItemDefinition,
   PartitionKeyDefinition,
@@ -544,26 +543,6 @@ export function getOrCreateDatabaseAndCollection(
   );
 }
 
-export function createDatabase(
-  request: DataModels.CreateDatabaseRequest,
-  options: any
-): Q.Promise<DataModels.Database> {
-  var deferred = Q.defer<DataModels.Database>();
-
-  _createDatabase(request, options).then(
-    (createdDatabase: DataModels.Database) => {
-      refreshCachedOffers().then(() => {
-        deferred.resolve(createdDatabase);
-      });
-    },
-    _createDatabaseError => {
-      deferred.reject(_createDatabaseError);
-    }
-  );
-
-  return deferred.promise;
-}
-
 export function refreshCachedOffers(): Q.Promise<void> {
   if (configContext.platform === Platform.Portal) {
     return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
@@ -591,34 +570,4 @@ export function queryConflicts(
     .container(containerId)
     .conflicts.query(query, options);
   return Q(documentsIterator);
-}
-
-function _createDatabase(request: DataModels.CreateDatabaseRequest, options: any = {}): Q.Promise<DataModels.Database> {
-  const { databaseId, databaseLevelThroughput, offerThroughput, autoPilot, hasAutoPilotV2FeatureFlag } = request;
-  const createBody: DatabaseRequest = { id: databaseId };
-  const databaseOptions: any = options && _.omit(options, "sharedOfferThroughput");
-  // TODO: replace when SDK support autopilot
-  const initialHeaders = autoPilot
-    ? !hasAutoPilotV2FeatureFlag
-      ? {
-          [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({ maxThroughput: autoPilot.maxThroughput })
-        }
-      : {
-          [Constants.HttpHeaders.autoPilotTier]: autoPilot.autopilotTier
-        }
-    : undefined;
-  if (!!databaseLevelThroughput) {
-    if (autoPilot) {
-      databaseOptions.initialHeaders = initialHeaders;
-    }
-    createBody.throughput = offerThroughput;
-  }
-
-  return Q(
-    client()
-      .databases.create(createBody, databaseOptions)
-      .then((response: DatabaseResponse) => {
-        return refreshCachedResources(databaseOptions).then(() => response.resource);
-      })
-  );
 }

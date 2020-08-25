@@ -6,14 +6,8 @@ Instead, generate ARM clients that consume this function with stricter typing.
 */
 
 import promiseRetry, { AbortError } from "p-retry";
+import { ErrorResponse } from "./generatedClients/2020-04-01/types";
 import { userContext } from "../../UserContext";
-
-interface ErrorResponse {
-  error: {
-    code: string;
-    message: string;
-  };
-}
 
 interface ARMError extends Error {
   code: string;
@@ -40,8 +34,8 @@ export async function armRequest<T>({ host, path, apiVersion, method, body: requ
   });
   if (!response.ok) {
     const errorResponse = (await response.json()) as ErrorResponse;
-    const error = new Error(errorResponse.error?.message) as ARMError;
-    error.code = errorResponse.error.code;
+    const error = new Error(errorResponse.message) as ARMError;
+    error.code = errorResponse.code;
     throw error;
   }
 
@@ -84,8 +78,8 @@ async function getOperationStatus(operationStatusUrl: string) {
   });
   if (!response.ok) {
     const errorResponse = (await response.json()) as ErrorResponse;
-    const error = new Error(errorResponse.error?.message) as ARMError;
-    error.code = errorResponse.error.code;
+    const error = new Error(errorResponse.message) as ARMError;
+    error.code = errorResponse.code;
     throw new AbortError(error);
   }
   const body = (await response.json()) as OperationResponse;
