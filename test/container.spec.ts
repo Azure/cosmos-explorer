@@ -66,6 +66,7 @@ describe('Collection Add and Delete SQL spec', () => {
 
       // click delete container
       const msLayer = await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
+      await frame.waitFor(3000)
       await msLayer.$$eval('span[class="treeComponentMenuItemLabel"]', elementArray => {
         // we cast an Element as HTML since it is clickable, but TS seems to think it's not
         return (elementArray[4] as HTMLElement).click();
