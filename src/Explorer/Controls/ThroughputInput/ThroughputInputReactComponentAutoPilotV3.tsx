@@ -12,7 +12,7 @@ export interface ThroughputInputAutoPilotV3Props {
   step?: number;
   isEnabled?: boolean;
   costsVisible: boolean;
-  requestUnitsUsageCost: string;
+  requestUnitsUsageCost: JSX.Element;
   spendAckChecked?: boolean;
   spendAckId?: string;
   spendAckText?: string;
@@ -28,7 +28,7 @@ export interface ThroughputInputAutoPilotV3Props {
   throughputAutoPilotRadioId: string;
   throughputProvisionedRadioId: string;
   throughputModeRadioName: string;
-  autoPilotUsageCost: string;
+  autoPilotUsageCost: JSX.Element;
   showAutoPilot?: boolean;
   overrideWithAutoPilotSettings: boolean;
   overrideWithProvisionedThroughputSettings: boolean;
@@ -38,32 +38,36 @@ export interface ThroughputInputAutoPilotV3Props {
 
 interface ThroughputInputState {
   spendAckChecked: boolean;
-  step: number;
 }
 
 export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
   ThroughputInputState
 > {
-  private defaultStep = 100;
+  private static readonly defaultStep = 100;
+  private static readonly zeroThroughput = 0;
+  private cssClass : string;
+  private step: number;
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
     this.state = {
       spendAckChecked: this.props.spendAckChecked,
-      step: this.props.step ? this.props.step : this.defaultStep
     };
+
+    this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep
+    this.cssClass = this.props.cssClass || "textfontclr collid migration"
   }
 
   private onAutoPilotThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let newThroughput = parseInt(e.currentTarget.value);
-    newThroughput = isNaN(newThroughput) ? 0 : newThroughput;
+    newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
     this.props.setMaxAutoPilotThroughput(newThroughput);
   };
 
   private onThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let newThroughput = parseInt(e.currentTarget.value);
-    newThroughput = isNaN(newThroughput) ? 0 : newThroughput;
+    newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
 
     if (this.props.overrideWithAutoPilotSettings) {
       this.props.setMaxAutoPilotThroughput(newThroughput);
@@ -75,20 +79,18 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   public render(): JSX.Element {
     return (
       <div>
-        <div>
-          <p className="pkPadding">
-            {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
+        <p className="pkPadding">
+          {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
 
-            <span>{this.props.label}</span>
+          <span>{this.props.label}</span>
 
-            {this.props.infoBubbleText && (
-              <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                <img className="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
-                <span className="tooltiptext throughputRuInfo">{this.props.infoBubbleText}</span>
-              </span>
-            )}
-          </p>
-        </div>
+          {this.props.infoBubbleText && (
+            <span className="infoTooltip" role="tooltip" tabIndex={0}>
+              <img className="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
+              <span className="tooltiptext throughputRuInfo">{this.props.infoBubbleText}</span>
+            </span>
+          )}
+        </p>
 
         {!this.props.isFixed && this.props.showAutoPilot && (
           <div className="throughputModeContainer">
@@ -155,21 +157,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               onChange={this.onAutoPilotThroughputChange}
               disabled={this.props.overrideWithProvisionedThroughputSettings}
               className={`migration collid select-font-size`}
-              step={this.state.step}
+              step={this.step}
               type="number"
               required
               min={AutoPilotUtils.minAutoPilotThroughput}
               aria-label={this.props.ariaLabel}
             />
-            {!this.props.overrideWithProvisionedThroughputSettings && (
-              <p>
-                <span dangerouslySetInnerHTML={{ __html: this.props.autoPilotUsageCost }}></span>
-              </p>
-            )}
+            {!this.props.overrideWithProvisionedThroughputSettings && <p>{this.props.autoPilotUsageCost}</p>}
             {this.props.costsVisible && !this.props.overrideWithProvisionedThroughputSettings && (
-              <p>
-                <span dangerouslySetInnerHTML={{ __html: this.props.requestUnitsUsageCost }}></span>
-              </p>
+              <p>{this.props.requestUnitsUsageCost}</p>
             )}
 
             {this.props.spendAckVisible && (
@@ -196,22 +192,18 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               key="provisioned throughput input"
               onChange={this.onThroughputChange}
               value={this.props.throughput.current === 0 ? "" : this.props.throughput.current}
-              className={`${this.props.cssClass} ${isDirty(this.props.throughput) ? "dirty" : ""}`}
+              className={`${this.cssClass} ${isDirty(this.props.throughput) ? "dirty" : ""}`}
               disabled={this.props.overrideWithAutoPilotSettings}
               type="number"
               required
               data-test={this.props.testId}
-              step={this.state.step}
+              step={this.step}
               min={this.props.minimum}
               max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
               aria-label={this.props.ariaLabel}
             />
 
-            {this.props.costsVisible && (
-              <p>
-                <span dangerouslySetInnerHTML={{ __html: this.props.requestUnitsUsageCost }}></span>
-              </p>
-            )}
+            {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
 
             {this.props.spendAckVisible && (
               <p className="pkPadding">

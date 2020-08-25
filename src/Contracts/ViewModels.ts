@@ -38,12 +38,6 @@ export interface Button {
   isSelected?: ko.Computed<boolean>;
 }
 
-export interface ButtonV2 {
-  isVisible: () => boolean;
-  isEnabled: () => boolean;
-  isSelected?: () => boolean;
-}
-
 export interface NotificationConsole {
   filteredConsoleData: ko.ObservableArray<ConsoleData>;
   isConsoleExpanded: ko.Observable<boolean>;

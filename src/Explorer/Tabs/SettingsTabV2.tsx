@@ -15,8 +15,7 @@ export default class SettingsTabV2 extends TabsBase implements ViewModels.WaitsF
     this.settingsComponentAdapter = new SettingsComponentAdapter(props);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): Q.Promise<unknown> {
     return super.onActivate().then(() => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     });

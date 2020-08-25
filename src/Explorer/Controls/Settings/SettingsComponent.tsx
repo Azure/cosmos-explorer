@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as _ from "underscore";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -26,11 +25,27 @@ import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/upd
 import SettingsTab from "../../Tabs/SettingsTabV2";
 import { ThroughputInputAutoPilotV3Component } from "../ThroughputInput/ThroughputInputReactComponentAutoPilotV3";
 import { ThroughputInputComponent } from "../ThroughputInput/ThroughputInputReactComponent";
-import { StatefulValue, isDirty } from "./SettingsUtils";
+import {
+  StatefulValuesType,
+  StatefulValue,
+  isDirty,
+  getAutoPilotV3SpendElement,
+  getAutoPilotV2SpendElement,
+  getEstimatedSpendElement,
+  getEstimatedAutoscaleSpendElement,
+  manualToAutoscaleDisclaimerElement
+} from "./SettingsUtils";
+import { AccessibleElement } from "../AccessibleElement/AccessibleElement";
 
 enum ChangeFeedPolicyToggledState {
   Off = "Off",
   On = "On"
+}
+
+interface ButtonV2 {
+  isVisible: () => boolean;
+  isEnabled: () => boolean;
+  isSelected?: () => boolean;
 }
 
 enum StatefulValueNames {
@@ -50,8 +65,7 @@ enum StatefulValueNames {
 
 interface UpdateStatefulValueParams {
   key: keyof SettingsComponentState;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: StatefulValuesType;
   updateCurrent: boolean;
   updateBaseline?: boolean;
 }
@@ -65,10 +79,7 @@ interface SettingsComponentState {
   timeToLive: StatefulValue<string>;
   timeToLiveSeconds: StatefulValue<number>;
   geospatialConfigType: StatefulValue<string>;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  indexingPolicyContent: StatefulValue<any>;
-
+  indexingPolicyContent: StatefulValue<DataModels.IndexingPolicy>;
   rupm: StatefulValue<string>;
   conflictResolutionPolicyMode: StatefulValue<string>;
   conflictResolutionPolicyPath: StatefulValue<string>;
@@ -80,7 +91,7 @@ interface SettingsComponentState {
   isIndexingPolicyEditorInitializing: boolean;
   conflictResolutionExpanded: boolean;
   indexingPolicyElementFocused: boolean;
-  notificationStatusInfo: string;
+  notificationStatusInfo: JSX.Element;
   scaleExpanded: boolean;
   settingsExpanded: boolean;
   ttlOffFocused: boolean;
@@ -95,46 +106,66 @@ interface SettingsComponentState {
 }
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
-  private ttlWarning = `
-The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
-For more information see, <a target="_blank" href="https://aka.ms/cosmos-db-ttl">Time to Live (TTL) in Azure Cosmos DB</a>.`;
+  private ttlWarning: JSX.Element = (
+    <span>
+      The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a
+      delete operation explicitly issued by a client application. For more information see,{" "}
+      <a target="_blank" href="https://aka.ms/cosmos-db-ttl">
+        Time to Live (TTL) in Azure Cosmos DB
+      </a>
+      .
+    </span>
+  );
 
-  private indexingPolicyTTLWarningMessage = `
-Changing the Indexing Policy impacts query results while the index transformation occurs. 
-When a change is made and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. 
-For more information see, <a target="_blank" href="https://aka.ms/cosmosdb/modify-index-policy">Modifying Indexing Policies</a>.`;
+  private indexingPolicyTTLWarningMessage: JSX.Element = (
+    <span>
+      Changing the Indexing Policy impacts query results while the index transformation occurs. When a change is made
+      and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes.
+      For more information see,{" "}
+      <a target="_blank" href="https://aka.ms/cosmosdb/modify-index-policy">
+        Modifying Indexing Policies
+      </a>
+      .
+    </span>
+  );
 
-  private updateThroughputBeyondLimitWarningMessage = `
-You are about to request an increase in throughput beyond the pre-allocated capacity. 
-The service will scale out and increase throughput for the selected container. 
-This operation will take 1-3 business days to complete. You can track the status of this request in Notifications.`;
+  private updateThroughputBeyondLimitWarningMessage: JSX.Element = (
+    <span>
+      You are about to request an increase in throughput beyond the pre-allocated capacity. The service will scale out
+      and increase throughput for the selected container. This operation will take 1-3 business days to complete. You
+      can track the status of this request in Notifications.
+    </span>
+  );
 
-  private updateThroughputDelayedApplyWarningMessage = `
-You are about to request an increase in throughput beyond the pre-allocated capacity. 
-This operation will take some time to complete.`;
+  private updateThroughputDelayedApplyWarningMessage: JSX.Element = (
+    <span>
+      You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take
+      some time to complete.
+    </span>
+  );
 
-  // TODO: move to a utility classs and add unit tests
-
-  private currentThroughput = (
+  private getCurrentThroughput = (
     isAutoscale: boolean,
     throughput: number,
     throughputUnit: string,
     targetThroughput?: number
   ): string => {
-    if (targetThroughput && throughput) {
-      return isAutoscale
-        ? `, Current autoscale throughput: ${Math.round(
-            throughput / 10
-          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-            targetThroughput / 10
-          )} - ${targetThroughput} ${throughputUnit}`
-        : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
-    }
-
-    if (targetThroughput && !throughput) {
-      return isAutoscale
-        ? `, Target autoscale throughput: ${Math.round(targetThroughput / 10)} - ${targetThroughput} ${throughputUnit}`
-        : `, Target manual throughput: ${targetThroughput} ${throughputUnit}`;
+    if (targetThroughput) {
+      if (throughput) {
+        return isAutoscale
+          ? `, Current autoscale throughput: ${Math.round(
+              throughput / 10
+            )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
+              targetThroughput / 10
+            )} - ${targetThroughput} ${throughputUnit}`
+          : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
+      } else {
+        return isAutoscale
+          ? `, Target autoscale throughput: ${Math.round(
+              targetThroughput / 10
+            )} - ${targetThroughput} ${throughputUnit}`
+          : `, Target manual throughput: ${targetThroughput} ${throughputUnit}`;
+      }
     }
 
     if (!targetThroughput && throughput) {
@@ -146,61 +177,62 @@ This operation will take some time to complete.`;
     return "";
   };
 
-  private throughputApplyDelayedMessage = (
+  private getThroughputApplyDelayedMessage = (
     isAutoscale: boolean,
     throughput: number,
     throughputUnit: string,
     databaseName: string,
     collectionName: string,
     requestedThroughput: number
-  ): string => `
-The request to increase the throughput has successfully been submitted. 
-This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
-Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput(
-    isAutoscale,
-    throughput,
-    throughputUnit,
-    requestedThroughput
-  )}`;
+  ): JSX.Element => (
+    <span>
+      The request to increase the throughput has successfully been submitted. This operation will take 1-3 business days
+      to complete. View the latest status in Notifications.
+      <br />
+      Database: {databaseName}, Container: {collectionName}{" "}
+      {this.getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
+    </span>
+  );
 
-  private throughputApplyShortDelayMessage = (
+  private getThroughputApplyShortDelayMessage = (
     isAutoscale: boolean,
     throughput: number,
     throughputUnit: string,
     databaseName: string,
     collectionName: string,
     targetThroughput: number
-  ): string => `
-A request to increase the throughput is currently in progress. This operation will take some time to complete.<br />
-Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput(
-    isAutoscale,
-    throughput,
-    throughputUnit,
-    targetThroughput
-  )}`;
+  ): JSX.Element => (
+    <span>
+      A request to increase the throughput is currently in progress. This operation will take some time to complete.
+      <br />
+      Database: {databaseName}, Container: {collectionName}{" "}
+      {this.getCurrentThroughput(isAutoscale, throughput, throughputUnit, targetThroughput)}
+    </span>
+  );
 
-  private throughputApplyLongDelayMessage = (
+  private getThroughputApplyLongDelayMessage = (
     isAutoscale: boolean,
     throughput: number,
     throughputUnit: string,
     databaseName: string,
     collectionName: string,
     requestedThroughput: number
-  ): string => `
-A request to increase the throughput is currently in progress. 
-This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
-Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput(
-    isAutoscale,
-    throughput,
-    throughputUnit,
-    requestedThroughput
-  )}`;
+  ): JSX.Element => (
+    <span>
+      A request to increase the throughput is currently in progress. This operation will take 1-3 business days to
+      complete. View the latest status in Notifications.
+      <br />
+      Database: {databaseName}, Container: {collectionName}{" "}
+      {this.getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
+    </span>
+  );
 
-  public GEOGRAPHY = "Geography";
-  public GEOMETRY = "Geometry";
+  private static readonly GEOGRAPHY = "Geography";
+  private static readonly GEOMETRY = "Geometry";
+  private static readonly sixMonthsInSeconds = 15768000;
 
-  public saveSettingsButton: ViewModels.ButtonV2;
-  public discardSettingsChangesButton: ViewModels.ButtonV2;
+  public saveSettingsButton: ButtonV2;
+  public discardSettingsChangesButton: ButtonV2;
 
   public changeFeedPolicyOffId: string;
   public changeFeedPolicyOnId: string;
@@ -234,26 +266,29 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   private maxRUsText: string;
   private partitionKeyValue: string;
   private partitionKeyName: string;
+  private tabId: string;
+  private statefulValuesArray = Object.values(StatefulValueNames) as string[];
 
   constructor(props: SettingsComponentProps) {
     super(props);
 
+    this.tabId = this.props.settingsTab.getTabId();
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection && this.collection.container;
-    this.ttlOffId = `ttlOffId${this.props.settingsTab.getTabId()}`;
-    this.ttlOnNoDefaultId = `ttlOnNoDefault${this.props.settingsTab.getTabId()}`;
-    this.ttlOnId = `ttlOn${this.props.settingsTab.getTabId()}`;
-    this.changeFeedPolicyOffId = `changeFeedOff${this.props.settingsTab.getTabId()}`;
-    this.changeFeedPolicyOnId = `changeFeedOn${this.props.settingsTab.getTabId()}`;
-    this.rupmOnId = `rupmOn${this.props.settingsTab.getTabId()}`;
-    this.rupmOffId = `rupmOff${this.props.settingsTab.getTabId()}`;
-    this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.props.settingsTab.getTabId()}`;
-    this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.props.settingsTab.getTabId()}`;
-    this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.props.settingsTab.getTabId()}`;
-    this.testId = `settingsThroughputValue${this.props.settingsTab.getTabId()}`;
-    this.throughputAutoPilotRadioId = `editDatabaseThroughput-autoPilotRadio${this.props.settingsTab.getTabId()}`;
-    this.throughputProvisionedRadioId = `editDatabaseThroughput-manualRadio${this.props.settingsTab.getTabId()}`;
-    this.throughputModeRadioName = `throughputModeRadio${this.props.settingsTab.getTabId()}`;
+    this.ttlOffId = `ttlOffId${this.tabId}`;
+    this.ttlOnNoDefaultId = `ttlOnNoDefault${this.tabId}`;
+    this.ttlOnId = `ttlOn${this.tabId}`;
+    this.changeFeedPolicyOffId = `changeFeedOff${this.tabId}`;
+    this.changeFeedPolicyOnId = `changeFeedOn${this.tabId}`;
+    this.rupmOnId = `rupmOn${this.tabId}`;
+    this.rupmOffId = `rupmOff${this.tabId}`;
+    this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.tabId}`;
+    this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.tabId}`;
+    this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.tabId}`;
+    this.testId = `settingsThroughputValue${this.tabId}`;
+    this.throughputAutoPilotRadioId = `editDatabaseThroughput-autoPilotRadio${this.tabId}`;
+    this.throughputProvisionedRadioId = `editDatabaseThroughput-manualRadio${this.tabId}`;
+    this.throughputModeRadioName = `throughputModeRadio${this.tabId}`;
     this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
@@ -311,14 +346,14 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       ttlOnDefaultFocused: false,
       ttlOnFocused: false,
       indexingPolicyElementFocused: false,
-      notificationStatusInfo: "",
+      notificationStatusInfo: undefined,
       userCanChangeProvisioningTypes: undefined
     };
 
     this.saveSettingsButton = {
       isEnabled: () => {
         // TODO: move validations to editables and display validation errors
-        if (this.offerReplacePending()) {
+        if (this.isOfferReplacePending()) {
           return false;
         }
 
@@ -338,17 +373,17 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
               return true;
             }
           } else {
-            const isMissingThroughput = !this.state.throughput;
+            const isMissingThroughput = !this.state.throughput.current;
             if (isMissingThroughput) {
               return false;
             }
 
-            const isThroughputLessThanMinRus = this.state.throughput.current < this.minRUs();
+            const isThroughputLessThanMinRus = this.state.throughput.current < this.getMinRUs();
             if (isThroughputLessThanMinRus) {
               return false;
             }
 
-            const isThroughputGreaterThanMaxRus = this.state.throughput.current > this.maxRUs();
+            const isThroughputGreaterThanMaxRus = this.state.throughput.current > this.getMaxRUs();
             const isEmulator = this.container.isEmulator;
             if (isThroughputGreaterThanMaxRus && isEmulator) {
               return false;
@@ -379,7 +414,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
           return true;
         }
 
-        if (this.state.timeToLive.current === "on" && !this.state.timeToLiveSeconds) {
+        if (this.state.timeToLive.current === "on" && !this.state.timeToLiveSeconds.current) {
           return false;
         }
 
@@ -411,17 +446,18 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
           return true;
         }
 
-        if (isDirty(this.state.timeToLive.current === "on" && this.state.timeToLiveSeconds)) {
+        if (this.state.timeToLive.current === "on" && isDirty(this.state.timeToLiveSeconds)) {
           return true;
         }
 
         if (
-          isDirty(this.state.analyticalStorageTtlSelection.current === "on" && this.state.analyticalStorageTtlSeconds)
+          this.state.analyticalStorageTtlSelection.current === "on" &&
+          isDirty(this.state.analyticalStorageTtlSeconds)
         ) {
           return true;
         }
 
-        if (isDirty(this.state.indexingPolicyContent) && isDirty(this.state.indexingPolicyContent)) {
+        if (isDirty(this.state.indexingPolicyContent) && this.state.indexingPolicyContent.isValid) {
           return true;
         }
 
@@ -503,8 +539,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   }
 
   private updateStatefulValue = (params: UpdateStatefulValueParams): void => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const currentStateValue = this.state[params.key] as StatefulValue<any>;
+    const currentStateValue = this.state[params.key] as StatefulValue<StatefulValuesType>;
     if (params.updateCurrent) {
       currentStateValue.current = params.value;
     }
@@ -512,12 +547,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       currentStateValue.baseline = params.value;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const stateObject = (): any => {
+    const stateObject = (): unknown => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const returnObj: any = {};
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      returnObj[params.key] = currentStateValue as any;
+      returnObj[params.key] = currentStateValue as StatefulValue<StatefulValuesType>;
       return returnObj;
     };
     this.setState(stateObject);
@@ -529,8 +562,8 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     if (this.props.settingsTab.isActive()) {
       this.props.settingsTab.getSettingsTabContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
-    if (this.warningMessage().length > 0 && this.state.notificationStatusInfo.length > 0) {
-      this.setState({ notificationStatusInfo: "" });
+    if (!!this.getWarningMessage() && !!this.state.notificationStatusInfo) {
+      this.setState({ notificationStatusInfo: undefined });
     }
   }
 
@@ -539,8 +572,8 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       this.props.settingsTab.getSettingsTabContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
 
-    if (this.warningMessage().length > 0 && this.state.notificationStatusInfo.length > 0) {
-      this.setState({ notificationStatusInfo: "" });
+    if (!!this.getWarningMessage() && !!this.state.notificationStatusInfo) {
+      this.setState({ notificationStatusInfo: undefined });
     }
   }
 
@@ -570,19 +603,23 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     if (!this.hasAutoPilotV2FeatureFlag) {
       if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
         if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-          this.setState({ isAutoPilotSelected: true });
-          this.setState({ wasAutopilotOriginallySet: true });
-          this.setState({ autoPilotThroughput: offerAutopilotSettings.maxThroughput });
+          this.setState({
+            isAutoPilotSelected: true,
+            wasAutopilotOriginallySet: true,
+            autoPilotThroughput: offerAutopilotSettings.maxThroughput
+          });
         }
       }
     } else {
       if (offerAutopilotSettings && offerAutopilotSettings.tier) {
         if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
-          this.setState({ isAutoPilotSelected: true });
-          this.setState({ wasAutopilotOriginallySet: true });
-          this.setState({ selectedAutoPilotTier: offerAutopilotSettings.tier });
           const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
-          this.setState({ autoPilotTiersList: availableAutoPilotTiers });
+          this.setState({
+            isAutoPilotSelected: true,
+            wasAutopilotOriginallySet: true,
+            selectedAutoPilotTier: offerAutopilotSettings.tier,
+            autoPilotTiersList: availableAutoPilotTiers
+          });
         }
       }
     }
@@ -621,10 +658,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       return false;
     }
     const originalAutoPilotSetting = !this.hasAutoPilotV2FeatureFlag
-      ? originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput
-      : originalAutoPilotSettings && originalAutoPilotSettings.tier;
+      ? originalAutoPilotSettings?.maxThroughput
+      : originalAutoPilotSettings?.tier;
     if (
-      (!this.hasAutoPilotV2FeatureFlag && this.state.autoPilotThroughput != originalAutoPilotSetting) ||
+      (!this.hasAutoPilotV2FeatureFlag && this.state.autoPilotThroughput !== originalAutoPilotSetting) ||
       (this.hasAutoPilotV2FeatureFlag && this.state.selectedAutoPilotTier !== originalAutoPilotSetting)
     ) {
       return true;
@@ -632,22 +669,22 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     return false;
   };
 
-  private autoPilotUsageCost = (): string => {
+  private getAutoPilotUsageCost = (): JSX.Element => {
     const autoPilot = !this.hasAutoPilotV2FeatureFlag
       ? this.state.autoPilotThroughput
       : this.state.selectedAutoPilotTier;
     if (!autoPilot) {
-      return "";
+      return <></>;
     }
     return !this.hasAutoPilotV2FeatureFlag
-      ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot, false /* isDatabaseThroughput */)
-      : PricingUtils.getAutoPilotV2SpendHtml(autoPilot, false /* isDatabaseThroughput */);
+      ? getAutoPilotV3SpendElement(autoPilot, false /* isDatabaseThroughput */)
+      : getAutoPilotV2SpendElement(autoPilot, false /* isDatabaseThroughput */);
   };
 
-  private requestUnitsUsageCost = (): string => {
+  private getRequestUnitsUsageCost = (): JSX.Element => {
     const account = this.container.databaseAccount();
     if (!account) {
-      return "";
+      return <></>;
     }
 
     const serverId: string = this.container.serverId();
@@ -659,10 +696,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       1;
     const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
 
-    let estimatedSpend: string;
+    let estimatedSpend: JSX.Element;
 
     if (!this.state.isAutoPilotSelected) {
-      estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+      estimatedSpend = getEstimatedSpendElement(
         // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
         this.overrideWithAutoPilotSettings() ? this.state.autoPilotThroughput : offerThroughput,
         serverId,
@@ -671,7 +708,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
         rupmEnabled
       );
     } else {
-      estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
+      estimatedSpend = getEstimatedAutoscaleSpendElement(
         this.state.autoPilotThroughput,
         serverId,
         regions,
@@ -689,7 +726,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       this.container.databaseAccount().properties.capabilities;
     const enableAutoScaleCapability =
       accountCapabilities &&
-      _.find(accountCapabilities, capability => {
+      accountCapabilities.find((capability: DataModels.Capability) => {
         return (
           capability &&
           capability.name &&
@@ -706,10 +743,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   };
 
   private shouldShowKeyspaceSharedThroughputMessage = (): boolean => {
-    if (!this.container || !this.container.isPreferredApiCassandra() || !this.hasDatabaseSharedThroughput()) {
-      return false;
-    }
-    return true;
+    return this.container && this.container.isPreferredApiCassandra() && this.hasDatabaseSharedThroughput();
   };
 
   private hasConflictResolution = (): boolean => {
@@ -725,7 +759,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     );
   };
 
-  private rupmVisible = (): boolean => {
+  private isRupmVisible = (): boolean => {
     if (this.container.isEmulator) {
       return false;
     }
@@ -757,29 +791,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     return isPublicAzurePortal && hasPartitionKey;
   };
 
-  // not used!
-  private canRequestSupport = (): boolean => {
-    if (this.container.isEmulator) {
-      return false;
-    }
-
-    if (this.isTryCosmosDBSubscription) {
-      return false;
-    }
-
-    if (this.canThroughputExceedMaximumValue()) {
-      return false;
-    }
-
-    if (this.container.getPlatformType() === PlatformType.Hosted) {
-      return false;
-    }
-
-    const numPartitions = this.collection.quotaInfo().numPartitions;
-    return !!this.collection.partitionKeyProperty || numPartitions > 1;
-  };
-
-  private minRUs = (): number => {
+  private getMinRUs = (): number => {
     if (this.isTryCosmosDBSubscription) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
@@ -821,9 +833,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     return Math.max(baseRU, baseRUbyPartitions);
   };
 
-  private minRUAnotationVisible = (): boolean => PricingUtils.isLargerThanDefaultMinRU(this.minRUs());
-
-  private maxRUs = (): number => {
+  private getMaxRUs = (): number => {
     const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription;
     if (isTryCosmosDBSubscription) {
       return Constants.TryCosmosExperience.maxRU;
@@ -844,39 +854,41 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
   };
 
-  private maxRUThroughputInputLimit = (): number => {
+  private getMaxRUThroughputInputLimit = (): number => {
     if (this.container && this.container.getPlatformType() === PlatformType.Hosted && this.collection.partitionKey) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
     }
 
-    return this.maxRUs();
+    return this.getMaxRUs();
   };
 
-  private throughputTitle = (): string => {
+  private getThroughputTitle = (): string => {
     if (this.state.isAutoPilotSelected) {
       return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag);
     }
 
-    const minThroughput: string = this.minRUs().toLocaleString();
+    const minThroughput: string = this.getMinRUs().toLocaleString();
     const maxThroughput: string =
-      this.canThroughputExceedMaximumValue() && !this.isFixedContainer ? "unlimited" : this.maxRUs().toLocaleString();
+      this.canThroughputExceedMaximumValue() && !this.isFixedContainer
+        ? "unlimited"
+        : this.getMaxRUs().toLocaleString();
     return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
   };
 
-  private throughputAriaLabel = (): string => {
-    return this.throughputTitle() + this.requestUnitsUsageCost();
+  private getThroughputAriaLabel = (): string => {
+    return this.getThroughputTitle() + this.getRequestUnitsUsageCost();
   };
 
-  private storageCapacityTitle = (): string => {
+  private getStorageCapacityTitle = (): JSX.Element => {
     // Mongo container with system partition key still treat as "Fixed"
     const isFixed =
       !this.collection.partitionKey ||
       (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
     const capacity: string = isFixed ? "Fixed" : "Unlimited";
-    return `Storage capacity <br /><b>${capacity}</b>`;
+    return <span>Storage capacity <br /><b>{capacity}</b></span>
   };
 
-  private partitionKeyVisible = (): boolean => {
+  private getPartitionKeyVisible = (): boolean => {
     if (this.container.isPreferredApiCassandra() || this.container.isPreferredApiTable()) {
       return false;
     }
@@ -892,7 +904,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     return true;
   };
 
-  private lowerCasePartitionKeyName = (): string => this.partitionKeyName.toLowerCase();
+  private getLowerCasePartitionKeyName = (): string => this.partitionKeyName.toLowerCase();
 
   private isLargePartitionKeyEnabled = (): boolean => {
     return (
@@ -902,7 +914,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     );
   };
 
-  private offerReplacePending = (): boolean => {
+  private isOfferReplacePending = (): boolean => {
     const offer = this.collection && this.collection.offer && this.collection.offer();
     return (
       offer &&
@@ -913,14 +925,14 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     );
   };
 
-  private warningMessage = (): string => {
+  private getWarningMessage = (): JSX.Element => {
     const throughputExceedsBackendLimits: boolean =
       this.canThroughputExceedMaximumValue() &&
-      this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+      this.getMaxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
       this.state.throughput.current > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
 
     const throughputExceedsMaxValue: boolean =
-      !this.container.isEmulator && this.state.throughput.current > this.maxRUs();
+      !this.container.isEmulator && this.state.throughput.current > this.getMaxRUs();
 
     const ttlOptionDirty: boolean = isDirty(this.state.timeToLive);
     const ttlOrIndexingPolicyFieldsDirty: boolean =
@@ -943,14 +955,17 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
     ) {
       if (AutoPilotUtils.isValidV2AutoPilotOffer(offer)) {
-        return "Tier upgrade will take some time to complete.";
+        return <span>Tier upgrade will take some time to complete.</span>;
       }
 
-      const throughput = offer.content.offerAutopilotSettings
-        ? !this.hasAutoPilotV2FeatureFlag
-          ? offer.content.offerAutopilotSettings.maxThroughput
-          : offer.content.offerAutopilotSettings.maximumTierThroughput
-        : undefined;
+      var throughput = undefined;
+      if (offer.content.offerAutopilotSettings) {
+        if (!this.hasAutoPilotV2FeatureFlag) {
+          throughput = offer.content.offerAutopilotSettings.maxThroughput;
+        } else {
+          throughput = offer.content.offerAutopilotSettings.maximumTierThroughput;
+        }
+      }
 
       const targetThroughput =
         offer &&
@@ -958,7 +973,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
         ((offer.content.offerAutopilotSettings && offer.content.offerAutopilotSettings.targetMaxThroughput) ||
           offer.content.offerThroughput);
 
-      return this.throughputApplyShortDelayMessage(
+      return this.getThroughputApplyShortDelayMessage(
         this.state.isAutoPilotSelected,
         throughput,
         this.getThroughputUnit(),
@@ -969,7 +984,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     }
 
     if (!this.hasAutoPilotV2FeatureFlag && this.overrideWithProvisionedThroughputSettings()) {
-      return AutoPilotUtils.manualToAutoscaleDisclaimer;
+      return manualToAutoscaleDisclaimerElement;
     }
 
     if (
@@ -998,10 +1013,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
         .pendingNotification()
         .description.match(`Throughput update for (.*) ${throughputUnit}`);
 
-      const throughput = this.state.throughput.current;
+      const throughput = this.state.throughput.baseline;
       const targetThroughput: number = matches.length > 1 && Number(matches[1]);
       if (targetThroughput) {
-        return this.throughputApplyLongDelayMessage(
+        return this.getThroughputApplyLongDelayMessage(
           this.state.isAutoPilotSelected,
           throughput,
           throughputUnit,
@@ -1016,13 +1031,13 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       return this.indexingPolicyTTLWarningMessage;
     }
 
-    return "";
+    return undefined;
   };
 
-  private shouldShowNotificationStatusPrompt = (): boolean => this.state.notificationStatusInfo.length > 0;
+  private shouldShowNotificationStatusPrompt = (): boolean => !!this.state.notificationStatusInfo;
 
   private shouldShowStatusBar = (): boolean => {
-    return this.shouldShowNotificationStatusPrompt() || this.warningMessage().length > 0;
+    return this.shouldShowNotificationStatusPrompt() || !!this.getWarningMessage();
   };
 
   private onSaveClick = async (): Promise<void> => {
@@ -1036,15 +1051,14 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       tabTitle: this.props.settingsTab.tabTitle()
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newCollectionAttributes: any = {};
+    const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
 
     try {
       if (this.shouldUpdateCollection()) {
         let defaultTtl: number;
         switch (this.state.timeToLive.current) {
           case "on":
-            defaultTtl = Number(this.state.timeToLiveSeconds);
+            defaultTtl = Number(this.state.timeToLiveSeconds.current);
             break;
           case "on-nodefault":
             defaultTtl = -1;
@@ -1055,37 +1069,28 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
             break;
         }
 
-        newCollectionAttributes.defaultTtl = defaultTtl;
+        newCollection.defaultTtl = defaultTtl;
 
-        newCollectionAttributes.indexingPolicy = this.state.indexingPolicyContent.current;
+        newCollection.indexingPolicy = this.state.indexingPolicyContent.current;
 
-        newCollectionAttributes.changeFeedPolicy =
+        newCollection.changeFeedPolicy =
           this.changeFeedPolicyVisible && this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On
             ? ({
                 retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
               } as DataModels.ChangeFeedPolicy)
             : undefined;
 
-        newCollectionAttributes.analyticalStorageTtl = this.isAnalyticalStorageEnabled
-          ? this.state.analyticalStorageTtlSelection.current === "on"
-            ? Number(this.state.analyticalStorageTtlSeconds)
-            : Constants.AnalyticalStorageTtl.Infinite
-          : undefined;
+        newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
 
-        newCollectionAttributes.geospatialConfig = {
+        newCollection.geospatialConfig = {
           type: this.state.geospatialConfigType.current
         };
 
         const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
         if (conflictResolutionChanges) {
-          newCollectionAttributes.conflictResolutionPolicy = conflictResolutionChanges;
+          newCollection.conflictResolutionPolicy = conflictResolutionChanges;
         }
 
-        const newCollection: DataModels.Collection = _.extend(
-          {},
-          this.collection.rawDataModel,
-          newCollectionAttributes
-        );
         const updatedCollection: DataModels.Collection = await updateCollection(
           this.collection.databaseId,
           this.collection,
@@ -1109,19 +1114,22 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       ) {
         const newThroughput = this.state.throughput.current;
         const isRUPerMinuteThroughputEnabled: boolean = this.state.rupm.current === Constants.RUPMStates.on;
-        let newOffer: DataModels.Offer = _.extend({}, this.collection.offer());
+        let newOffer: DataModels.Offer = { ...this.collection.offer() };
         const originalThroughputValue: number = this.state.throughput.baseline;
 
         if (newOffer.content) {
           newOffer.content.offerThroughput = newThroughput;
           newOffer.content.offerIsRUPerMinuteThroughputEnabled = isRUPerMinuteThroughputEnabled;
         } else {
-          newOffer = _.extend({}, newOffer, {
-            content: {
-              offerThroughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+          newOffer = {
+            ...newOffer,
+            ...{
+              content: {
+                offerThroughput: newThroughput,
+                offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+              }
             }
-          });
+          };
         }
 
         const headerOptions: RequestOptions = { initialHeaders: {} };
@@ -1145,8 +1153,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
             delete newOffer.content.offerThroughput;
           }
         } else {
-          this.setState({ isAutoPilotSelected: false });
-          this.setState({ userCanChangeProvisioningTypes: false || !this.hasAutoPilotV2FeatureFlag });
+          this.setState({
+            isAutoPilotSelected: false,
+            userCanChangeProvisioningTypes: false || !this.hasAutoPilotV2FeatureFlag
+          });
 
           // user has changed from autoscale --> provisioned
           if (!this.hasAutoPilotV2FeatureFlag && this.hasProvisioningTypeChanged()) {
@@ -1157,9 +1167,9 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
         }
 
         if (
-          this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+          this.getMaxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
           newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.container != undefined
+          this.container !== undefined
         ) {
           const requestPayload = {
             subscriptionId: userContext.subscriptionId,
@@ -1182,7 +1192,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
             });
 
             this.setState({
-              notificationStatusInfo: this.throughputApplyDelayedMessage(
+              notificationStatusInfo: this.getThroughputApplyDelayedMessage(
                 this.state.isAutoPilotSelected,
                 originalThroughputValue,
                 this.getThroughputUnit(),
@@ -1246,62 +1256,16 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   };
 
   private onRevertClick = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.Throughput,
-      value: this.state.throughput.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.TimeToLive,
-      value: this.state.timeToLive.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.TimeToLiveSeconds,
-      value: this.state.timeToLiveSeconds.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.GeospatialConfigType,
-      value: this.state.geospatialConfigType.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: this.state.analyticalStorageTtlSelection.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.AnalyticalStorageTtlSeconds,
-      value: this.state.analyticalStorageTtlSeconds.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({ key: StatefulValueNames.Rupm, value: this.state.rupm.baseline, updateCurrent: true });
-    this.updateStatefulValue({
-      key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: this.state.changeFeedPolicyToggled.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: this.state.conflictResolutionPolicyMode.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.ConflictResolutionPolicyPath,
-      value: this.state.conflictResolutionPolicyPath.baseline,
-      updateCurrent: true
-    });
-    this.updateStatefulValue({
-      key: StatefulValueNames.ConflictResolutionPolicyProcedure,
-      value: this.state.conflictResolutionPolicyProcedure.baseline,
-      updateCurrent: true
+    this.statefulValuesArray.forEach((key: keyof SettingsComponentState) => {
+      const stateElement = this.state[key] as StatefulValue<unknown>;
+      this.updateStatefulValue({
+        key: key,
+        value: stateElement.baseline,
+        updateCurrent: true
+      });
     });
 
-    // change from any
     const value = this.state.indexingPolicyContent.baseline;
-    this.updateStatefulValue({ key: StatefulValueNames.IndexingPolicyContent, value: value, updateCurrent: true });
-
     const indexingPolicyEditor = this.indexingPolicyEditor;
     if (indexingPolicyEditor) {
       const indexingPolicyEditorModel = indexingPolicyEditor.getModel();
@@ -1355,124 +1319,48 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     this.setState({ conflictResolutionExpanded: !this.state.conflictResolutionExpanded });
   };
 
-  private onScaleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      this.toggleScale();
-      event.stopPropagation();
-    }
+  private onTtlOffKeyPress = (): void => {
+    this.updateStatefulValue({key: StatefulValueNames.TimeToLive, value: "off", updateCurrent: true})
   };
 
-  private onConflictResolutionKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      this.toggleConflictResolution();
-      event.stopPropagation();
-    }
-  };
-
-  private onSettingsKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      this.toggleSettings();
-      event.stopPropagation();
-    }
-  };
-
-  private onTtlOffKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const timeToLive = this.state.timeToLive;
-      timeToLive.current = "off";
-      this.setState({ timeToLive: timeToLive });
-      event.stopPropagation();
-    }
-  };
-
-  private onTtlOnNoDefaultKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const timeToLive = this.state.timeToLive;
-      timeToLive.current = "on-nodefault";
-      this.setState({ timeToLive: timeToLive });
-      event.stopPropagation();
-    }
+  private onTtlOnNoDefaultKeyPress = (): void => {
+    this.updateStatefulValue({key: StatefulValueNames.TimeToLive, value: "on-nodefault", updateCurrent: true})
   };
 
   private onTtlOnKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const timeToLive = this.state.timeToLive;
-      timeToLive.current = "on";
-      this.setState({ timeToLive: timeToLive });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.TimeToLive, value: "on", updateCurrent: true})
   };
 
   private onGeographyKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const geospatialConfigType = this.state.geospatialConfigType;
-      geospatialConfigType.current = this.GEOGRAPHY;
-      this.setState({ geospatialConfigType: geospatialConfigType });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.GeospatialConfigType, value: SettingsComponent.GEOGRAPHY, updateCurrent: true})
   };
 
   private onGeometryKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const geospatialConfigType = this.state.geospatialConfigType;
-      geospatialConfigType.current = this.GEOMETRY;
-      this.setState({ geospatialConfigType: geospatialConfigType });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.GeospatialConfigType, value: SettingsComponent.GEOMETRY, updateCurrent: true})
   };
 
   private onAnalyticalStorageTtlOnNoDefaultKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const analyticalStorageTtlSelection = this.state.analyticalStorageTtlSelection;
-      analyticalStorageTtlSelection.current = "on-nodefault";
-      this.setState({ analyticalStorageTtlSelection: analyticalStorageTtlSelection });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.AnalyticalStorageTtlSelection, value: "on-nodefault", updateCurrent: true})
   };
 
   private onAnalyticalStorageTtlOnKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const analyticalStorageTtlSelection = this.state.analyticalStorageTtlSelection;
-      analyticalStorageTtlSelection.current = "on";
-      this.setState({ analyticalStorageTtlSelection: analyticalStorageTtlSelection });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.AnalyticalStorageTtlSelection, value: "on", updateCurrent: true})
   };
 
   private onChangeFeedPolicyOffKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const changeFeedPolicyToggled = this.state.changeFeedPolicyToggled;
-      changeFeedPolicyToggled.current = ChangeFeedPolicyToggledState.Off;
-      this.setState({ changeFeedPolicyToggled: changeFeedPolicyToggled });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.ChangeFeedPolicyToggled, value: ChangeFeedPolicyToggledState.Off, updateCurrent: true})
   };
 
   private onChangeFeedPolicyOnKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const changeFeedPolicyToggled = this.state.changeFeedPolicyToggled;
-      changeFeedPolicyToggled.current = ChangeFeedPolicyToggledState.On;
-      this.setState({ changeFeedPolicyToggled: changeFeedPolicyToggled });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.ChangeFeedPolicyToggled, value: ChangeFeedPolicyToggledState.On, updateCurrent: true})
   };
 
   private onConflictResolutionCustomKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const conflictResolutionPolicyMode = this.state.conflictResolutionPolicyMode;
-      conflictResolutionPolicyMode.current = DataModels.ConflictResolutionMode.Custom;
-      this.setState({ conflictResolutionPolicyMode: conflictResolutionPolicyMode });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.ConflictResolutionPolicyMode, value: DataModels.ConflictResolutionMode.Custom, updateCurrent: true})
   };
 
   private onConflictResolutionLWWKeyPress = (event: React.KeyboardEvent<HTMLLabelElement>): void => {
-    if (event.key === Constants.NormalizedEventKey.Space || event.key === Constants.NormalizedEventKey.Enter) {
-      const conflictResolutionPolicyMode = this.state.conflictResolutionPolicyMode;
-      conflictResolutionPolicyMode.current = DataModels.ConflictResolutionMode.LastWriterWins;
-      this.setState({ conflictResolutionPolicyMode: conflictResolutionPolicyMode });
-      event.stopPropagation();
-    }
+    this.updateStatefulValue({key: StatefulValueNames.ConflictResolutionPolicyMode, value: DataModels.ConflictResolutionMode.LastWriterWins, updateCurrent: true})
   };
 
   private onConflictResolutionChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1559,6 +1447,17 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
     return this.state.rupm.current === Constants.RUPMStates.on ? "RU/m" : "RU/s";
   };
 
+  private getAnalyticalStorageTtl = (): number => {
+    if (this.isAnalyticalStorageEnabled) {
+      if (this.state.analyticalStorageTtlSelection.current === "on") {
+        return Number(this.state.analyticalStorageTtlSeconds.current);
+      } else {
+        return Constants.AnalyticalStorageTtl.Infinite;
+      }
+    }
+    return undefined;
+  };
+
   private getUpdatedConflictResolutionPolicy = (): DataModels.ConflictResolutionPolicy => {
     if (
       !isDirty(this.state.conflictResolutionPolicyMode) &&
@@ -1574,8 +1473,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
 
     if (
       policy.mode === DataModels.ConflictResolutionMode.Custom &&
-      !!this.state.conflictResolutionPolicyProcedure &&
-      this.state.conflictResolutionPolicyProcedure.current.length > 0
+      this.state.conflictResolutionPolicyProcedure.current?.length > 0
     ) {
       policy.conflictResolutionProcedure = Constants.HashRoutePrefixes.sprocWithIds(
         this.collection.databaseId,
@@ -1587,11 +1485,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
 
     if (policy.mode === DataModels.ConflictResolutionMode.LastWriterWins) {
       policy.conflictResolutionPath = this.state.conflictResolutionPolicyPath.current;
-      if (
-        policy.conflictResolutionPath &&
-        policy.conflictResolutionPath.length > 0 &&
-        policy.conflictResolutionPath[0] !== "/"
-      ) {
+      if (policy.conflictResolutionPath?.startsWith("/")) {
         policy.conflictResolutionPath = "/" + policy.conflictResolutionPath;
       }
     }
@@ -1634,7 +1528,6 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   };
 
   private setBaseline = (): void => {
-    const sixMonthsInSeconds = 15768000;
     const defaultTtl = this.collection.defaultTtl();
 
     let timeToLive: string = this.state.timeToLive.current;
@@ -1643,11 +1536,11 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       case undefined:
       case 0:
         timeToLive = "off";
-        timeToLiveSeconds = sixMonthsInSeconds;
+        timeToLiveSeconds = SettingsComponent.sixMonthsInSeconds;
         break;
       case -1:
         timeToLive = "on-nodefault";
-        timeToLiveSeconds = sixMonthsInSeconds;
+        timeToLiveSeconds = SettingsComponent.sixMonthsInSeconds;
         break;
       default:
         timeToLive = "on";
@@ -1784,7 +1677,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       (this.collection.geospatialConfig &&
         this.collection.geospatialConfig() &&
         this.collection.geospatialConfig().type) ||
-      this.GEOMETRY;
+      SettingsComponent.GEOMETRY;
 
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
@@ -1823,7 +1716,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
       indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.setState({ isIndexingPolicyEditorInitializing: false });
-      if (this.props.settingsTab.onLoadStartKey != undefined && this.props.settingsTab.onLoadStartKey != undefined) {
+      if (this.props.settingsTab.onLoadStartKey !== undefined && this.props.settingsTab.onLoadStartKey !== undefined) {
         TelemetryProcessor.traceSuccess(
           Action.Tab,
           {
@@ -1844,8 +1737,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   private onEditorContentChange = (): void => {
     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parsed: any = JSON.parse(indexingPolicyEditorModel.getValue());
+      const parsed: unknown = JSON.parse(indexingPolicyEditorModel.getValue());
       const indexingPolicyContent = this.state.indexingPolicyContent;
       indexingPolicyContent.current = parsed;
       this.setState({ indexingPolicyContent: indexingPolicyContent });
@@ -1902,12 +1794,12 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
   };
 
   private setAutoPilotTier = (selectedAutoPilotTier: DataModels.AutopilotTier): void => {
-    this.setState({ selectedAutoPilotTier: selectedAutoPilotTier });
+    this.setState({ selectedAutoPilotTier });
   };
 
   public render(): JSX.Element {
     return (
-      <div className="tab-pane flexContainer" id={this.props.settingsTab.getTabId()} role="tabpanel">
+      <div className="tab-pane flexContainer" id={this.tabId} role="tabpanel">
         {this.shouldShowStatusBar() && (
           <div className="warningErrorContainer scaleWarningContainer">
             <>
@@ -1916,10 +1808,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                   <span>
                     <img src={InfoColor} alt="Info" />
                   </span>
-                  <span
-                    className="warningErrorDetailsLinkContainer"
-                    dangerouslySetInnerHTML={{ __html: this.state.notificationStatusInfo }}
-                  ></span>
+                  <div className="warningErrorDetailsLinkContainer">{this.state.notificationStatusInfo}</div>
                 </div>
               )}
               {!this.shouldShowNotificationStatusPrompt() && (
@@ -1927,10 +1816,9 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                   <span>
                     <img src={Warning} alt="Warning" />
                   </span>
-                  <span
-                    className="warningErrorDetailsLinkContainer"
-                    dangerouslySetInnerHTML={{ __html: this.warningMessage() }}
-                  ></span>
+                  <div className="warningErrorDetailsLinkContainer">
+                    {!!this.getWarningMessage() && this.getWarningMessage()}
+                  </div>
                 </div>
               )}
             </>
@@ -1943,178 +1831,174 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
 
           {!this.hasDatabaseSharedThroughput() && (
             <>
-              <div>
-                <div
-                  className="scaleDivison"
-                  onClick={this.toggleScale}
-                  onKeyPress={this.onScaleKeyPress}
-                  aria-expanded={this.state.scaleExpanded}
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Scale"
-                  aria-controls="scaleRegion"
-                >
-                  {!this.state.scaleExpanded && (
-                    <span className="themed-images" id="ExpandChevronRightScale">
-                      <img
-                        className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon "
-                        src={TriangleRight}
-                        alt="Show scale properties"
-                      />
-                    </span>
-                  )}
-
-                  {this.state.scaleExpanded && (
-                    <span className="themed-images" id="ExpandChevronDownScale">
-                      <img
-                        className="imgiconwidth ssExpandCollapseIcon "
-                        src={TriangleDown}
-                        alt="Hide scale properties"
-                      />
-                    </span>
-                  )}
-
-                  <span className="scaleSettingTitle">Scale</span>
-                </div>
+              <AccessibleElement
+                as="div"
+                className="scaleDivison"
+                onClick={this.toggleScale}
+                onActivated={this.toggleScale}
+                aria-expanded={this.state.scaleExpanded}
+                role="button"
+                tabIndex={0}
+                aria-label="Scale"
+                aria-controls="scaleRegion"
+              >
+                {!this.state.scaleExpanded && (
+                  <span className="themed-images" id="ExpandChevronRightScale">
+                    <img
+                      className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon "
+                      src={TriangleRight}
+                      alt="Show scale properties"
+                    />
+                  </span>
+                )}
 
                 {this.state.scaleExpanded && (
-                  <div className="ssTextAllignment" id="scaleRegion">
-                    {!this.isAutoScaleEnabled() && (
-                      <>
-                        {!this.hasAutoPilotV2FeatureFlag && (
-                          <>
-                            <ThroughputInputAutoPilotV3Component
-                              testId={this.testId}
-                              cssClass="scaleForm"
-                              throughput={this.state.throughput}
-                              setThroughput={this.setThroughput}
-                              minimum={this.minRUs()}
-                              maximum={this.maxRUThroughputInputLimit()}
-                              isEnabled={!this.hasDatabaseSharedThroughput()}
-                              canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
-                              label={this.throughputTitle()}
-                              ariaLabel={this.throughputAriaLabel()}
-                              costsVisible={this.costsVisible}
-                              requestUnitsUsageCost={this.requestUnitsUsageCost()}
-                              throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
-                              throughputProvisionedRadioId={this.throughputProvisionedRadioId}
-                              throughputModeRadioName={this.throughputModeRadioName}
-                              showAutoPilot={this.state.userCanChangeProvisioningTypes}
-                              isAutoPilotSelected={this.state.isAutoPilotSelected}
-                              setAutoPilotSelected={this.setAutoPilotSelected}
-                              maxAutoPilotThroughput={this.state.autoPilotThroughput}
-                              setMaxAutoPilotThroughput={this.setMaxAutoPilotThroughput}
-                              autoPilotUsageCost={this.autoPilotUsageCost()}
-                              overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
-                              overrideWithProvisionedThroughputSettings={this.overrideWithProvisionedThroughputSettings()}
-                            ></ThroughputInputAutoPilotV3Component>
-                          </>
-                        )}
-                        {this.hasAutoPilotV2FeatureFlag && (
-                          <ThroughputInputComponent
-                            testId={this.testId}
-                            showAsMandatory={false}
-                            isFixed={false}
-                            cssClass="scaleForm"
-                            throughput={this.state.throughput}
-                            setThroughput={this.setThroughput}
-                            minimum={this.minRUs()}
-                            maximum={this.maxRUThroughputInputLimit()}
-                            isEnabled={!this.hasDatabaseSharedThroughput()}
-                            canExceedMaximumValue={this.canThroughputExceedMaximumValue() || this.canExceedMaximumValue}
-                            label={this.throughputTitle()}
-                            ariaLabel={this.throughputAriaLabel()}
-                            costsVisible={this.costsVisible}
-                            requestUnitsUsageCost={this.requestUnitsUsageCost()}
-                            throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
-                            throughputProvisionedRadioId={this.throughputProvisionedRadioId}
-                            throughputModeRadioName={this.throughputModeRadioName}
-                            showAutoPilot={this.state.userCanChangeProvisioningTypes}
-                            isAutoPilotSelected={this.state.isAutoPilotSelected}
-                            setAutoPilotSelected={this.setAutoPilotSelected}
-                            autoPilotTiersList={this.state.autoPilotTiersList}
-                            selectedAutoPilotTier={this.state.selectedAutoPilotTier}
-                            setAutoPilotTier={this.setAutoPilotTier}
-                            autoPilotUsageCost={this.autoPilotUsageCost()}
-                          ></ThroughputInputComponent>
-                        )}
-                        <div
-                          className="storageCapacityTitle throughputStorageValue"
-                          dangerouslySetInnerHTML={{ __html: this.storageCapacityTitle() }}
-                        ></div>
-                      </>
-                    )}
+                  <span className="themed-images" id="ExpandChevronDownScale">
+                    <img
+                      className="imgiconwidth ssExpandCollapseIcon "
+                      src={TriangleDown}
+                      alt="Hide scale properties"
+                    />
+                  </span>
+                )}
 
-                    {this.rupmVisible() && (
-                      <>
-                        <div className="formTitle">RU/m</div>
-                        <div className="tabs" aria-label="RU/m">
-                          <div className="tab">
-                            <label
-                              htmlFor={this.rupmOnId}
-                              className={`${isDirty(this.state.rupm) ? "dirty" : ""} ${
-                                this.state.rupm.current === "on" ? "selectedRadio" : "unselectedRadio"
-                              }`}
-                            >
-                              On
-                            </label>
-                            <input
-                              type="radio"
-                              name="rupm"
-                              value="on"
-                              className="radio"
-                              onChange={this.onRupmChange}
-                              id={this.rupmOnId}
-                              //check this
-                              checked={this.state.rupm.current === "on"}
-                            />
-                          </div>
-                          <div className="tab">
-                            <label
-                              htmlFor={this.rupmOffId}
-                              className={`${isDirty(this.state.rupm) ? "dirty" : ""} ${
-                                this.state.rupm.current === "off" ? "selectedRadio" : "unselectedRadio"
-                              }`}
-                            >
-                              Off
-                            </label>
-                            <input
-                              type="radio"
-                              name="rupm"
-                              value="off"
-                              className="radio"
-                              id={this.rupmOffId}
-                              onChange={this.onRupmChange}
-                              checked={this.state.rupm.current === "off"}
-                            />
-                          </div>
+                <span className="scaleSettingTitle">Scale</span>
+              </AccessibleElement>
+
+              {this.state.scaleExpanded && (
+                <div className="ssTextAllignment" id="scaleRegion">
+                  {!this.isAutoScaleEnabled() && (
+                    <>
+                      {!this.hasAutoPilotV2FeatureFlag && (
+                        <ThroughputInputAutoPilotV3Component
+                          testId={this.testId}
+                          throughput={this.state.throughput}
+                          setThroughput={this.setThroughput}
+                          minimum={this.getMinRUs()}
+                          maximum={this.getMaxRUThroughputInputLimit()}
+                          isEnabled={!this.hasDatabaseSharedThroughput()}
+                          canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
+                          label={this.getThroughputTitle()}
+                          ariaLabel={this.getThroughputAriaLabel()}
+                          costsVisible={this.costsVisible}
+                          requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
+                          throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
+                          throughputProvisionedRadioId={this.throughputProvisionedRadioId}
+                          throughputModeRadioName={this.throughputModeRadioName}
+                          showAutoPilot={this.state.userCanChangeProvisioningTypes}
+                          isAutoPilotSelected={this.state.isAutoPilotSelected}
+                          setAutoPilotSelected={this.setAutoPilotSelected}
+                          maxAutoPilotThroughput={this.state.autoPilotThroughput}
+                          setMaxAutoPilotThroughput={this.setMaxAutoPilotThroughput}
+                          autoPilotUsageCost={this.getAutoPilotUsageCost()}
+                          overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
+                          overrideWithProvisionedThroughputSettings={this.overrideWithProvisionedThroughputSettings()}
+                        />
+                      )}
+                      {this.hasAutoPilotV2FeatureFlag && (
+                        <ThroughputInputComponent
+                          testId={this.testId}
+                          showAsMandatory={false}
+                          isFixed={false}
+                          throughput={this.state.throughput}
+                          setThroughput={this.setThroughput}
+                          minimum={this.getMinRUs()}
+                          maximum={this.getMaxRUThroughputInputLimit()}
+                          isEnabled={!this.hasDatabaseSharedThroughput()}
+                          canExceedMaximumValue={this.canThroughputExceedMaximumValue() || this.canExceedMaximumValue}
+                          label={this.getThroughputTitle()}
+                          ariaLabel={this.getThroughputAriaLabel()}
+                          costsVisible={this.costsVisible}
+                          requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
+                          throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
+                          throughputProvisionedRadioId={this.throughputProvisionedRadioId}
+                          throughputModeRadioName={this.throughputModeRadioName}
+                          showAutoPilot={this.state.userCanChangeProvisioningTypes}
+                          isAutoPilotSelected={this.state.isAutoPilotSelected}
+                          setAutoPilotSelected={this.setAutoPilotSelected}
+                          autoPilotTiersList={this.state.autoPilotTiersList}
+                          selectedAutoPilotTier={this.state.selectedAutoPilotTier}
+                          setAutoPilotTier={this.setAutoPilotTier}
+                          autoPilotUsageCost={this.getAutoPilotUsageCost()}
+                        />
+                      )}
+                      <div
+                        className="storageCapacityTitle throughputStorageValue"
+                      >
+                        {this.getStorageCapacityTitle()}
+                      </div>
+                    </>
+                  )}
+
+                  {this.isRupmVisible() && (
+                    <>
+                      <div className="formTitle">RU/m</div>
+                      <div className="tabs" aria-label="RU/m">
+                        <div className="tab">
+                          <label
+                            htmlFor={this.rupmOnId}
+                            className={`${isDirty(this.state.rupm) ? "dirty" : ""} ${
+                              this.state.rupm.current === "on" ? "selectedRadio" : "unselectedRadio"
+                            }`}
+                          >
+                            On
+                          </label>
+                          <input
+                            type="radio"
+                            name="rupm"
+                            value="on"
+                            className="radio"
+                            onChange={this.onRupmChange}
+                            id={this.rupmOnId}
+                            checked={this.state.rupm.current === "on"}
+                          />
                         </div>
-                      </>
-                    )}
-
-                    {/*<!-- TODO: Replace link with call to the Azure Support blade -->*/}
-                    {this.isAutoScaleEnabled() && (
-                      <div>
-                        <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
-                        <input className="formReadOnly collid-white" readOnly aria-label="Throughput input" />
-                        <div className="autoScaleDescription">
-                          Your account has custom settings that prevents setting throughput at the container level.
-                          Please work with your Cosmos DB engineering team point of contact to make changes.
+                        <div className="tab">
+                          <label
+                            htmlFor={this.rupmOffId}
+                            className={`${isDirty(this.state.rupm) ? "dirty" : ""} ${
+                              this.state.rupm.current === "off" ? "selectedRadio" : "unselectedRadio"
+                            }`}
+                          >
+                            Off
+                          </label>
+                          <input
+                            type="radio"
+                            name="rupm"
+                            value="off"
+                            className="radio"
+                            id={this.rupmOffId}
+                            onChange={this.onRupmChange}
+                            checked={this.state.rupm.current === "off"}
+                          />
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                    </>
+                  )}
+
+                  {/*<!-- TODO: Replace link with call to the Azure Support blade -->*/}
+                  {this.isAutoScaleEnabled() && (
+                    <div>
+                      <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
+                      <input className="formReadOnly collid-white" readOnly aria-label="Throughput input" />
+                      <div className="autoScaleDescription">
+                        Your account has custom settings that prevents setting throughput at the container level. Please
+                        work with your Cosmos DB engineering team point of contact to make changes.
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           )}
 
           {this.hasConflictResolution() && (
             <>
-              <div
+              <AccessibleElement
+                as="div"
                 className="formTitle"
                 onClick={this.toggleConflictResolution}
-                onKeyPress={this.onConflictResolutionKeyPress}
+                onActivated={this.toggleConflictResolution}
                 aria-expanded={this.state.conflictResolutionExpanded}
                 role="button"
                 tabIndex={0}
@@ -2141,16 +2025,17 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                   </span>
                 )}
                 <span className="scaleSettingTitle">Conflict resolution</span>
-              </div>
+              </AccessibleElement>
               {this.state.conflictResolutionExpanded && (
                 <div id="conflictResolutionRegion" className="ssTextAllignment">
                   <div className="formTitle">Mode</div>
                   <div className="tabs" aria-label="Mode" role="radiogroup">
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
+                        aria-label="ConflictResolutionLWWLabel"
                         tabIndex={0}
                         role="radio"
-                        htmlFor={this.conflictResolutionPolicyModeLWW}
                         aria-checked={
                           this.state.conflictResolutionPolicyMode.current !== "LastWriterWins" ? "true" : "false"
                         }
@@ -2159,10 +2044,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                             ? "selectedRadio"
                             : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onConflictResolutionLWWKeyPress}
+                        onActivated={this.onConflictResolutionLWWKeyPress}
                       >
                         Last Write Wins (default)
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="conflictresolution"
@@ -2175,20 +2060,21 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                     </div>
 
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
+                        aria-label="ConflictResolutionCutomLabel"
                         tabIndex={0}
                         role="radio"
-                        htmlFor={this.conflictResolutionPolicyModeCustom}
                         aria-checked={this.state.conflictResolutionPolicyMode.current === "Custom" ? "true" : "false"}
                         className={`${isDirty(this.state.conflictResolutionPolicyMode) ? "dirty" : ""} ${
                           this.state.conflictResolutionPolicyMode.current === "Custom"
                             ? "selectedRadio"
                             : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onConflictResolutionCustomKeyPress}
+                        onActivated={this.onConflictResolutionCustomKeyPress}
                       >
                         Merge Procedure (custom)
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="conflictresolution"
@@ -2275,10 +2161,11 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
           )}
 
           {(this.shouldShowIndexingPolicyEditor || this.ttlVisible) && (
-            <div
+            <AccessibleElement
+              as="div"
               className="formTitle"
               onClick={this.toggleSettings}
-              onKeyPress={this.onSettingsKeyPress}
+              onActivated={this.toggleSettings}
               aria-expanded={this.state.settingsExpanded}
               role="button"
               tabIndex={0}
@@ -2301,7 +2188,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                 </span>
               )}
               <span className="scaleSettingTitle">Settings</span>
-            </div>
+            </AccessibleElement>
           )}
           {this.state.settingsExpanded && (
             <div className="ssTextAllignment" id="settingsRegion">
@@ -2310,21 +2197,22 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                   <div className="formTitle">Time to Live</div>
                   <div className="tabs disableFocusDefaults" aria-label="Time to Live" role="radiogroup">
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
                         tabIndex={0}
+                        aria-label="ttlOffLable"
                         role="radio"
-                        htmlFor={this.ttlOffId}
                         aria-checked={this.state.timeToLive.current === "off" ? "true" : false}
                         className={`ttlIndexingPolicyFocusElement ${isDirty(this.state.timeToLive) ? "dirty" : ""} ${
                           this.state.timeToLive.current === "off" ? "selectedRadio" : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onTtlOffKeyPress}
+                        onActivated={this.onTtlOffKeyPress}
                         onFocus={() => {
                           this.setState({ ttlOffFocused: true, ttlOnFocused: false, ttlOnDefaultFocused: false });
                         }}
                       >
                         Off
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="ttl"
@@ -2337,21 +2225,22 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                     </div>
 
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
                         tabIndex={0}
+                        aria-label="ttlOnNoDefaultLabel"
                         role="radio"
-                        htmlFor={this.ttlOnNoDefaultId}
                         aria-checked={this.state.timeToLive.current === "on-nodefault" ? "true" : "false"}
                         className={`ttlIndexingPolicyFocusElement ${isDirty(this.state.timeToLive) ? "dirty" : ""} ${
                           this.state.timeToLive.current === "on-nodefault" ? "selectedRadio" : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onTtlOnNoDefaultKeyPress}
+                        onActivated={this.onTtlOnNoDefaultKeyPress}
                         onFocus={() => {
                           this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
                         }}
                       >
                         On (no default)
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="ttl"
@@ -2364,21 +2253,22 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                     </div>
 
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
                         tabIndex={0}
+                        aria-label="ttlOnLabel"
                         role="radio"
-                        htmlFor={this.ttlOnId}
                         aria-checked={this.state.timeToLive.current === "on" ? "true" : "false"}
                         className={`ttlIndexingPolicyFocusElement ${isDirty(this.state.timeToLive) ? "dirty" : ""} ${
-                          this.state.timeToLive.current === "on" ? "selectadRedio" : "unselectedRadio"
+                          this.state.timeToLive.current === "on" ? "selectedRadio" : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onTtlOnKeyPress}
+                        onActivated={this.onTtlOnKeyPress}
                         onFocus={() => {
                           this.setState({ ttlOffFocused: false, ttlOnFocused: true, ttlOnDefaultFocused: false });
                         }}
                       >
                         On
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="ttl"
@@ -2399,7 +2289,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                         max="2147483647"
                         aria-label="Time to live in seconds"
                         value={this.state.timeToLiveSeconds.current}
-                        className={`dirtyTextbox ${isDirty(this.state.timeToLive) ? "dirty" : ""}`}
+                        className={`dirtyTextbox ${isDirty(this.state.timeToLiveSeconds) ? "dirty" : ""}`}
                         disabled={this.state.timeToLive.current !== "on"}
                         onChange={this.onTimeToLiveSecondsChange}
                       />
@@ -2416,63 +2306,68 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
 
                   <div className="tabs disableFocusDefaults" aria-label="Geospatial Configuration" role="radiogroup">
                     <div className="tab">
-                      <label
-                        htmlFor="geography"
+                      <AccessibleElement
+                        as="label"
+                        aria-label="GeospatialGeographyLabel"
                         tabIndex={0}
                         role="radio"
                         aria-checked={
-                          this.state.geospatialConfigType.current?.toLowerCase() !== this.GEOMETRY.toLowerCase()
+                          this.state.geospatialConfigType.current?.toLowerCase() !==
+                          SettingsComponent.GEOMETRY.toLowerCase()
                             ? "true"
                             : "false"
                         }
                         className={`${isDirty(this.state.geospatialConfigType) ? "dirty" : ""} ${
-                          this.state.geospatialConfigType.current?.toLowerCase() !== this.GEOMETRY.toLowerCase()
+                          this.state.geospatialConfigType.current?.toLowerCase() !==
+                          SettingsComponent.GEOMETRY.toLowerCase()
                             ? "selectedRadio"
                             : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onGeographyKeyPress}
+                        onActivated={this.onGeographyKeyPress}
                       >
                         Geography
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="geospatial"
                         id="geography"
                         className="radio"
-                        value={this.GEOGRAPHY}
+                        value={SettingsComponent.GEOGRAPHY}
                         onChange={this.onGeoSpatialConfigTypeChange}
-                        checked={this.state.geospatialConfigType.current?.toLowerCase() === this.GEOGRAPHY}
+                        checked={this.state.geospatialConfigType.current?.toLowerCase() === SettingsComponent.GEOGRAPHY}
                       />
                     </div>
 
                     <div className="tab">
-                      <label
-                        htmlFor="geometry"
+                      <AccessibleElement
+                        as="label"
+                        aria-label="GeospatialGeometryLabel"
                         tabIndex={0}
                         role="radio"
                         aria-checked={
-                          this.state.geospatialConfigType.current?.toLowerCase() === this.GEOMETRY.toLowerCase()
+                          this.state.geospatialConfigType.current?.toLowerCase() ===
+                          SettingsComponent.GEOMETRY.toLowerCase()
                             ? "true"
                             : "false"
                         }
                         className={`${isDirty(this.state.geospatialConfigType) ? "dirty" : ""} ${
-                          this.state.geospatialConfigType.current?.toLowerCase() === this.GEOMETRY.toLowerCase()
+                          this.state.geospatialConfigType.current?.toLowerCase() ===
+                          SettingsComponent.GEOMETRY.toLowerCase()
                             ? "selectedRadio"
                             : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onGeometryKeyPress}
+                        onActivated={this.onGeometryKeyPress}
                       >
                         Geometry
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="geospatial"
                         id="geometry"
                         className="radio"
-                        value={this.GEOMETRY}
-                        //unite geospatial changes
+                        value={SettingsComponent.GEOMETRY}
                         onChange={this.onGeoSpatialConfigTypeChange}
-                        checked={this.state.geospatialConfigType.current?.toLowerCase() === this.GEOMETRY}
+                        checked={this.state.geospatialConfigType.current?.toLowerCase() === SettingsComponent.GEOMETRY}
                       />
                     </div>
                   </div>
@@ -2494,10 +2389,11 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                       </label>
                     </div>
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
+                        aria-label="AnalyticalStorageTtlOnNoDefaultLabel"
                         tabIndex={0}
                         role="radio"
-                        htmlFor="analyticalStorageTtlOnNoDefaultId"
                         aria-checked={
                           this.state.analyticalStorageTtlSelection.current === "on-nodefault" ? "true" : "false"
                         }
@@ -2506,10 +2402,10 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                             ? "selectedRadio"
                             : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onAnalyticalStorageTtlOnNoDefaultKeyPress}
+                        onActivated={this.onAnalyticalStorageTtlOnNoDefaultKeyPress}
                       >
                         On (no default)
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="analyticalStorageTtl"
@@ -2522,20 +2418,21 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                     </div>
 
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
+                        aria-label="AnalyticalStorageTtlOnLabel"                      
                         tabIndex={0}
                         role="radio"
-                        htmlFor="analyticalStorageTtlOnId"
                         aria-checked={this.state.analyticalStorageTtlSelection.current === "on" ? "true" : "false"}
                         className={`${isDirty(this.state.analyticalStorageTtlSelection) ? "dirty" : ""} ${
                           this.state.analyticalStorageTtlSelection.current === "on"
                             ? "selectedRadio"
                             : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onAnalyticalStorageTtlOnKeyPress}
+                        onActivated={this.onAnalyticalStorageTtlOnKeyPress}
                       >
                         On
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="analyticalStorageTtl"
@@ -2583,16 +2480,17 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                   </div>
                   <div className="tabs disableFocusDefaults" aria-label="Change feed selection tabs">
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
+                        aria-label="ChangeFeedPolicyOffLabel"
                         tabIndex={0}
-                        htmlFor={this.changeFeedPolicyOffId}
                         className={`${isDirty(this.state.changeFeedPolicyToggled) ? "dirty" : ""} ${
                           this.state.changeFeedPolicyToggled.current === "Off" ? "selectedRadio" : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onChangeFeedPolicyOffKeyPress}
+                        onActivated={this.onChangeFeedPolicyOffKeyPress}
                       >
                         Off
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="changeFeedPolicy"
@@ -2604,23 +2502,23 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                       />
                     </div>
                     <div className="tab">
-                      <label
+                      <AccessibleElement
+                        as="label"
+                        aria-label="ChangeFeedPolicyOnLabel"
                         tabIndex={0}
-                        htmlFor={this.changeFeedPolicyOnId}
                         className={`${isDirty(this.state.changeFeedPolicyToggled) ? "dirty" : ""} ${
                           this.state.changeFeedPolicyToggled.current === "On" ? "selectedRadio" : "unselectedRadio"
                         }`}
-                        onKeyPress={this.onChangeFeedPolicyOnKeyPress}
+                        onActivated={this.onChangeFeedPolicyOnKeyPress}
                       >
                         On
-                      </label>
+                      </AccessibleElement>
                       <input
                         type="radio"
                         name="changeFeedPolicy"
                         value="On"
                         className="radio"
                         id={this.changeFeedPolicyOnId}
-                        //unite
                         onChange={this.onChangeFeedPolicyToggled}
                         checked={this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On}
                       />
@@ -2629,7 +2527,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
                 </>
               )}
 
-              {this.partitionKeyVisible() && (
+              {this.getPartitionKeyVisible() && (
                 <>
                   <div className="formTitle">Partition Key</div>
                   <input
@@ -2644,7 +2542,7 @@ Database: ${databaseName}, Container: ${collectionName} ${this.currentThroughput
               {this.isLargePartitionKeyEnabled() && (
                 <div className="largePartitionKeyEnabled">
                   <p>
-                    Large <span>{this.lowerCasePartitionKeyName()}</span> has been enabled
+                    Large <span>{this.getLowerCasePartitionKeyName()}</span> has been enabled
                   </p>
                 </div>
               )}

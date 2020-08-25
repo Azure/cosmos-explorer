@@ -13,7 +13,7 @@ export interface ThroughputInputProps {
   step?: number;
   isEnabled?: boolean;
   costsVisible: boolean;
-  requestUnitsUsageCost: string;
+  requestUnitsUsageCost: JSX.Element;
   spendAckChecked?: boolean;
   spendAckId?: string;
   spendAckText?: string;
@@ -32,49 +32,50 @@ export interface ThroughputInputProps {
   autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   selectedAutoPilotTier: DataModels.AutopilotTier;
   setAutoPilotTier: (setAutoPilotTier: DataModels.AutopilotTier) => void;
-  autoPilotUsageCost: string;
+  autoPilotUsageCost: JSX.Element;
   showAutoPilot?: boolean;
 }
 
 interface ThroughputInputState {
   spendAckChecked: boolean;
-  step: number;
 }
 
 export class ThroughputInputComponent extends React.Component<ThroughputInputProps, ThroughputInputState> {
-  private defaultStep = 100;
+  private static readonly defaultStep = 100;
+  private static readonly zeroThroughput = 0;
+  private cssClass : string;
+  private step : number;
 
   public constructor(props: ThroughputInputProps) {
     super(props);
     this.state = {
-      spendAckChecked: this.props.spendAckChecked,
-      step: this.props.step ? this.props.step : this.defaultStep
+      spendAckChecked: this.props.spendAckChecked
     };
+    this.step = this.props.step ?? ThroughputInputComponent.defaultStep
+    this.cssClass = this.props.cssClass || "textfontclr collid"
   }
 
   private onThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let newThroughput = parseInt(e.currentTarget.value);
-    newThroughput = isNaN(newThroughput) ? 0 : newThroughput;
+    newThroughput = isNaN(newThroughput) ? ThroughputInputComponent.zeroThroughput : newThroughput;
     this.props.setThroughput(newThroughput);
   };
 
   public render(): JSX.Element {
     return (
       <div>
-        <div>
-          <p className="pkPadding">
-            {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
+        <p className="pkPadding">
+          {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
 
-            <span className="addCollectionLabel">{this.props.label}</span>
+          <span className="addCollectionLabel">{this.props.label}</span>
 
-            {this.props.infoBubbleText && (
-              <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                <img className="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
-                <span className="tooltiptext throughputRuInfo">{this.props.infoBubbleText}</span>
-              </span>
-            )}
-          </p>
-        </div>
+          {this.props.infoBubbleText && (
+            <span className="infoTooltip" role="tooltip" tabIndex={0}>
+              <img className="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
+              <span className="tooltiptext throughputRuInfo">{this.props.infoBubbleText}</span>
+            </span>
+          )}
+        </p>
 
         {!this.props.isFixed && this.props.showAutoPilot && (
           <div className="throughputModeContainer">
@@ -137,11 +138,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
                 );
               })}
             </select>
-            <p>
-              {this.props.selectedAutoPilotTier && (
-                <span dangerouslySetInnerHTML={{ __html: this.props.autoPilotUsageCost }}></span>
-              )}
-            </p>
+            <p>{this.props.selectedAutoPilotTier && this.props.autoPilotUsageCost}</p>
           </>
         )}
 
@@ -153,22 +150,18 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
                 required
                 key="provisioned throughput input"
                 onChange={this.onThroughputChange}
-                value={this.props.throughput.current == 0 ? "" : this.props.throughput.current}
-                className={`${this.props.cssClass} ${isDirty(this.props.throughput) ? "dirty" : ""}`}
+                value={this.props.throughput.current === 0 ? "" : this.props.throughput.current}
+                className={`${this.cssClass} ${isDirty(this.props.throughput) ? "dirty" : ""}`}
                 disabled={!this.props.isEnabled}
                 data-test={this.props.testId}
-                step={this.state.step}
+                step={this.step}
                 min={this.props.minimum}
                 max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
                 aria-label={this.props.ariaLabel}
               />
             </p>
 
-            {this.props.costsVisible && (
-              <p>
-                <span dangerouslySetInnerHTML={{ __html: this.props.requestUnitsUsageCost }}></span>
-              </p>
-            )}
+            {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
 
             {this.props.spendAckVisible && (
               <p className="pkPadding">
