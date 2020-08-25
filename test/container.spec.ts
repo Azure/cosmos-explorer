@@ -1,7 +1,4 @@
 import "expect-puppeteer";
-import puppeteer from 'puppeteer';
-import { trackException } from "./utils";
-
 import crypto from 'crypto'
 
 jest.setTimeout(300000);
@@ -12,81 +9,78 @@ describe('Collection Add and Delete SQL spec', () => {
       const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
       const collectionId = `TestCollection${crypto.randomBytes(8).toString("hex")}`;
       const sharedKey = `SharedKey${crypto.randomBytes(8).toString("hex")}`;
-      const browser = await puppeteer.launch({ ignoreHTTPSErrors: true, slowMo: 10 });
-      const page = await browser.newPage();
       const prodUrl = "https://localhost:1234/hostedExplorer.html";
       page.goto(prodUrl);
 
       // log in with connection string
       const handle = await page.waitForSelector('iframe');
       const frame = await handle.contentFrame();
-      await frame.waitFor('div > p.switchConnectTypeText', { visible: true })
-      await frame.click('div > p.switchConnectTypeText')
-      const connStr = process.env.PORTAL_RUNNER_CONNECTION_STRING
-      await frame.type("input[class='inputToken']", connStr)
-      await frame.click("input[value='Connect']")
+      await frame.waitFor('div > p.switchConnectTypeText', { visible: true });
+      await frame.click('div > p.switchConnectTypeText');
+      const connStr = process.env.PORTAL_RUNNER_CONNECTION_STRING;
+      await frame.type("input[class='inputToken']", connStr);
+      await frame.click("input[value='Connect']");
 
       // create new collection
-      await frame.waitFor('button[data-test="New Container"]', { visible: true })
-      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true })
-      await frame.click('button[data-test="New Container"]')
+      await frame.waitFor('button[data-test="New Container"]', { visible: true });
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.click('button[data-test="New Container"]');
       
       // check new database
-      await frame.waitFor('input[data-test="addCollection-createNewDatabase"]')
-      await frame.click('input[data-test="addCollection-createNewDatabase"]')
+      await frame.waitFor('input[data-test="addCollection-createNewDatabase"]');
+      await frame.click('input[data-test="addCollection-createNewDatabase"]');
 
       // check shared throughput
-      await frame.waitFor('input[data-test="addCollectionPane-databaseSharedThroughput"]')
-      await frame.click('input[data-test="addCollectionPane-databaseSharedThroughput"]')      
+      await frame.waitFor('input[data-test="addCollectionPane-databaseSharedThroughput"]');
+      await frame.click('input[data-test="addCollectionPane-databaseSharedThroughput"]')   ;   
 
       // type database id
-      await frame.waitFor('input[data-test="addCollection-newDatabaseId"]')
-      await frame.type('input[data-test="addCollection-newDatabaseId"]', dbId)      
+      await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
+      await frame.type('input[data-test="addCollection-newDatabaseId"]', dbId);      
 
       // type collection id
-      await frame.waitFor('input[data-test="addCollection-collectionId"]')
-      await frame.type('input[data-test="addCollection-collectionId"]', collectionId)      
+      await frame.waitFor('input[data-test="addCollection-collectionId"]');
+      await frame.type('input[data-test="addCollection-collectionId"]', collectionId); 
 
       // type partition key value
-      await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]')
-      await frame.type('input[data-test="addCollection-partitionKeyValue"]', sharedKey)
+      await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
+      await frame.type('input[data-test="addCollection-partitionKeyValue"]', sharedKey);
 
       // click submit
-      await frame.waitFor('#submitBtnAddCollection')
-      await frame.click('#submitBtnAddCollection')
+      await frame.waitFor('#submitBtnAddCollection');
+      await frame.click('#submitBtnAddCollection');
 
       // validate created
       // open database menu
-      await frame.waitFor(`span[title="${dbId}"]`)
-      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true })
+      await frame.waitFor(`span[title="${dbId}"]`);
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
-      await frame.click(`div[data-test=${dbId}]`)
-      await frame.waitFor(`span[title="${collectionId}"]`)
+      await frame.click(`div[data-test=${dbId}]`);
+      await frame.waitFor(`span[title="${collectionId}"]`);
       
       // delete container
 
       // click context menu for container
-      await frame.waitFor(`div[data-test="${collectionId}"] > div > button`)
-      await frame.click(`div[data-test="${collectionId}"] > div > button`)
+      await frame.waitFor(`div[data-test="${collectionId}"] > div > button`);
+      await frame.click(`div[data-test="${collectionId}"] > div > button`);
 
       // click delete container
-      const msLayer = await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed')
+      const msLayer = await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
       await msLayer.$$eval('span[class="treeComponentMenuItemLabel"]', elementArray => {
         // we cast an Element as HTML since it is clickable, but TS seems to think it's not
-        return (elementArray[4] as HTMLElement).click()
-      })
+        return (elementArray[4] as HTMLElement).click();
+      });
 
       // confirm delete container
-      await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim())
+      await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
 
       // click delete
-      await frame.click('input[data-test="deleteCollection"]')
-      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true })
+      await frame.click('input[data-test="deleteCollection"]');
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
-      await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`)
+      await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);
     } catch (error) {
       await page.screenshot({path: 'failure.png'});
-      trackException(error);
       throw error;
     } 
   }) 
