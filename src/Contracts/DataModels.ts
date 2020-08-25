@@ -327,12 +327,11 @@ export interface AutoPilotOfferSettings {
   targetMaxThroughput?: number;
 }
 
-export interface CreateDatabaseRequest {
+export interface CreateDatabaseParams {
+  autoPilotMaxThroughput?: number;
   databaseId: string;
   databaseLevelThroughput?: boolean;
   offerThroughput?: number;
-  autoPilot?: AutoPilotCreationSettings;
-  hasAutoPilotV2FeatureFlag?: boolean;
 }
 
 export interface SharedThroughputRange {

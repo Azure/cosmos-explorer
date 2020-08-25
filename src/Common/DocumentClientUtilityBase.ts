@@ -890,36 +890,3 @@ export function getOrCreateDatabaseAndCollection(
 
   return deferred.promise;
 }
-
-export function createDatabase(
-  request: DataModels.CreateDatabaseRequest,
-  options: any = {}
-): Q.Promise<DataModels.Database> {
-  const deferred: Q.Deferred<DataModels.Database> = Q.defer<DataModels.Database>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Creating a new database ${request.databaseId}`
-  );
-
-  DataAccessUtilityBase.createDatabase(request, options)
-    .then(
-      (database: DataModels.Database) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully created database ${request.databaseId}`
-        );
-        deferred.resolve(database);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while creating database ${request.databaseId}:\n ${JSON.stringify(error)}`
-        );
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-
-  return deferred.promise;
-}
