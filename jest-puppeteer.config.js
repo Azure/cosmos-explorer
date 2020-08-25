@@ -5,6 +5,6 @@ module.exports = {
     headless: isCI,
     slowMo: isCI ? null : 20,
     defaultViewport: null,
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: true
   }
 };
