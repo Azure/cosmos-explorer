@@ -269,8 +269,11 @@ export default class Database implements ViewModels.Database {
         let collectionsToAddVMPromises: Q.Promise<any>[] = [];
         let deltaCollections = this.getDeltaCollections(collections);
 
-        deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
+        collections.forEach((collection: DataModels.Collection) => {
           this.addSchema(collection);
+        });
+
+        deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
           const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
           collectionVMs.push(collectionVM);
         });
