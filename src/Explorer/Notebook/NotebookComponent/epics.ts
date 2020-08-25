@@ -96,6 +96,39 @@ const addInitialCodeCellEpic = (
 };
 
 /**
+ * Automatically start kernel if kernelRef is present.
+ * The kernel is normally lazy-started when a cell is being executed, but a running kernel is
+ * required for code completion to work.
+ * For notebook viewer, there is no kernel
+ * @param action$
+ * @param state$
+ */
+export const autoStartKernelEpic = (
+  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  state$: StateObservable<AppState>
+): Observable<{} | actions.CreateCellBelow> => {
+  return action$.pipe(
+    ofType(actions.FETCH_CONTENT_FULFILLED),
+    mergeMap(action => {
+      const state = state$.value;
+      const { contentRef, kernelRef } = action.payload;
+
+      if (!kernelRef) {
+        return empty();
+      }
+
+      return of(
+        actions.restartKernel({
+          contentRef,
+          kernelRef,
+          outputHandling: "None"
+        })
+      );
+    })
+  );
+};
+
+/**
  * Updated kernels.formWebSocketURL so we pass the userId as a query param
  */
 const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string, sessionId?: string): string => {
@@ -849,6 +882,7 @@ const closeContentFailedToFetchEpic = (
 
 export const allEpics = [
   addInitialCodeCellEpic,
+  autoStartKernelEpic,
   focusInitialCodeCellEpic,
   notificationsToUserEpic,
   launchWebSocketKernelEpic,

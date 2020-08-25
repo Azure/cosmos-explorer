@@ -1,13 +1,13 @@
 import * as Immutable from "immutable";
 import { ActionsObservable, StateObservable } from "redux-observable";
-import { Subject } from "rxjs";
+import { Subject, empty } from "rxjs";
 import { toArray } from "rxjs/operators";
 import { makeNotebookRecord } from "@nteract/commutable";
 import { actions, state } from "@nteract/core";
 import * as sinon from "sinon";
 
 import { CdbAppState, makeCdbRecord } from "./types";
-import { launchWebSocketKernelEpic } from "./epics";
+import { launchWebSocketKernelEpic, autoStartKernelEpic } from "./epics";
 import { NotebookUtil } from "../NotebookUtil";
 
 import { sessions } from "rx-jupyter";
@@ -74,46 +74,47 @@ describe("Extract kernel from notebook", () => {
   });
 });
 
+const initialState = {
+  app: state.makeAppRecord({
+    host: state.makeJupyterHostRecord({
+      type: "jupyter",
+      token: "eh",
+      basePath: "/"
+    })
+  }),
+  comms: state.makeCommsRecord(),
+  config: Immutable.Map({}),
+  core: state.makeStateRecord({
+    kernelRef: "fake",
+    entities: state.makeEntitiesRecord({
+      contents: state.makeContentsRecord({
+        byRef: Immutable.Map({
+          fakeContentRef: state.makeNotebookContentRecord()
+        })
+      }),
+      kernels: state.makeKernelsRecord({
+        byRef: Immutable.Map({
+          fake: state.makeRemoteKernelRecord({
+            type: "websocket",
+            channels: new Subject<any>(),
+            kernelSpecName: "fancy",
+            id: "0"
+          })
+        })
+      })
+    })
+  }),
+  cdb: makeCdbRecord({
+    databaseAccountName: "dbAccountName",
+    defaultExperience: "defaultExperience"
+  })
+};
+
 describe("launchWebSocketKernelEpic", () => {
   const createSpy = sinon.spy(sessions, "create");
 
   const contentRef = "fakeContentRef";
   const kernelRef = "fake";
-  const initialState = {
-    app: state.makeAppRecord({
-      host: state.makeJupyterHostRecord({
-        type: "jupyter",
-        token: "eh",
-        basePath: "/"
-      })
-    }),
-    comms: state.makeCommsRecord(),
-    config: Immutable.Map({}),
-    core: state.makeStateRecord({
-      kernelRef: "fake",
-      entities: state.makeEntitiesRecord({
-        contents: state.makeContentsRecord({
-          byRef: Immutable.Map({
-            fakeContentRef: state.makeNotebookContentRecord()
-          })
-        }),
-        kernels: state.makeKernelsRecord({
-          byRef: Immutable.Map({
-            fake: state.makeRemoteKernelRecord({
-              type: "websocket",
-              channels: new Subject<any>(),
-              kernelSpecName: "fancy",
-              id: "0"
-            })
-          })
-        })
-      })
-    }),
-    cdb: makeCdbRecord({
-      databaseAccountName: "dbAccountName",
-      defaultExperience: "defaultExperience"
-    })
-  };
 
   it("launches remote kernels", async () => {
     const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
@@ -488,5 +489,57 @@ describe("launchWebSocketKernelEpic", () => {
         }
       });
     });
+  });
+});
+
+describe("autoStartKernelEpic", () => {
+  const contentRef = "fakeContentRef";
+  const kernelRef = "fake";
+
+  it("automatically starts kernel when content fetch is successful if kernelRef is defined", async () => {
+    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+
+    const action$ = ActionsObservable.of(
+      actions.fetchContentFulfilled({
+        contentRef,
+        kernelRef,
+        filepath: "filepath",
+        model: {}
+      })
+    );
+
+    const responseActions = await autoStartKernelEpic(action$, state$)
+      .pipe(toArray())
+      .toPromise();
+
+      expect(responseActions).toMatchObject([
+        {
+          type: actions.RESTART_KERNEL,
+          payload: {
+            contentRef,
+            kernelRef,
+            outputHandling: "None"
+          }
+        }
+      ]);
+  });
+
+  it("Don't start kernel when content fetch is successful if kernelRef is not defined", async () => {
+    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+
+    const action$ = ActionsObservable.of(
+      actions.fetchContentFulfilled({
+        contentRef,
+        kernelRef: undefined,
+        filepath: "filepath",
+        model: {}
+      })
+    );
+
+    const responseActions = await autoStartKernelEpic(action$, state$)
+      .pipe(toArray())
+      .toPromise();
+
+      expect(responseActions).toMatchObject([]);
   });
 });
