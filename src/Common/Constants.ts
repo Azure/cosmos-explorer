@@ -1,5 +1,4 @@
 import { AutopilotTier } from "../Contracts/DataModels";
-import { configContext } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -11,12 +10,6 @@ export class CodeOfConductEndpoints {
   public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
   public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
   public static termsOfUse: string = "https://aka.ms/ms-terms-of-use";
-}
-
-export class BackendEndpoints {
-  public static localhost: string = "https://localhost:12900";
-  public static dev: string = "https://ext.documents-dev.windows-int.net";
-  public static productionPortal: string = configContext.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
 }
 
 export class EndpointsRegex {

@@ -24,6 +24,7 @@ import { SubscriptionUtilMappings } from "../../Shared/Constants";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
 import Explorer from "../../Explorer/Explorer";
 import { updateUserContext } from "../../UserContext";
+import { configContext } from "../../ConfigContext";
 
 export default class Main {
   private static _databaseAccountId: string;
@@ -315,7 +316,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -335,7 +336,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -365,7 +366,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
