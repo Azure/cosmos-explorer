@@ -512,16 +512,16 @@ describe("autoStartKernelEpic", () => {
       .pipe(toArray())
       .toPromise();
 
-      expect(responseActions).toMatchObject([
-        {
-          type: actions.RESTART_KERNEL,
-          payload: {
-            contentRef,
-            kernelRef,
-            outputHandling: "None"
-          }
+    expect(responseActions).toMatchObject([
+      {
+        type: actions.RESTART_KERNEL,
+        payload: {
+          contentRef,
+          kernelRef,
+          outputHandling: "None"
         }
-      ]);
+      }
+    ]);
   });
 
   it("Don't start kernel when content fetch is successful if kernelRef is not defined", async () => {
@@ -540,6 +540,6 @@ describe("autoStartKernelEpic", () => {
       .pipe(toArray())
       .toPromise();
 
-      expect(responseActions).toMatchObject([]);
+    expect(responseActions).toMatchObject([]);
   });
 });
