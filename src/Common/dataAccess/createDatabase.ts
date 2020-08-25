@@ -1,4 +1,3 @@
-import * as Constants from "../Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { DatabaseResponse } from "@azure/cosmos";
@@ -152,7 +151,7 @@ async function createCassandraKeyspace(params: DataModels.CreateDatabaseParams):
       userContext.databaseAccount.name,
       params.databaseId
     );
-    if (getResponse && getResponse.properties && getResponse.properties.resource) {
+    if (getResponse?.properties?.resource) {
       throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
     }
   } catch (error) {
@@ -222,11 +221,9 @@ async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): P
   // TODO: replace when SDK support autopilot
   if (params.databaseLevelThroughput) {
     if (params.autoPilotMaxThroughput) {
-      databaseOptions.initialHeaders = {
-        [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({ maxThroughput: params.autoPilotMaxThroughput })
-      };
+      createBody.maxThroughput = params.autoPilotMaxThroughput;
     } else {
-      createBody.throughput = params.autoPilotMaxThroughput;
+      createBody.throughput = params.offerThroughput;
     }
   }
 
@@ -241,7 +238,9 @@ function constructRpOptions(params: DataModels.CreateDatabaseParams): CreateUpda
 
   if (params.autoPilotMaxThroughput) {
     return {
-      [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: params.autoPilotMaxThroughput }
+      autoscaleSettings: {
+        maxThroughput: params.autoPilotMaxThroughput
+      }
     };
   }
 
