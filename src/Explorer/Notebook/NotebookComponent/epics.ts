@@ -1,4 +1,4 @@
-import { empty, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
+import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
 import { ActionsObservable, StateObservable } from "redux-observable";
 import { ofType } from "redux-observable";
@@ -77,7 +77,7 @@ const addInitialCodeCellEpic = (
 
       // If it's not a notebook, we shouldn't be here
       if (!model || model.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       const cellOrder = selectors.notebook.cellOrder(model);
@@ -90,7 +90,7 @@ const addInitialCodeCellEpic = (
         );
       }
 
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -114,7 +114,7 @@ export const autoStartKernelEpic = (
       const { contentRef, kernelRef } = action.payload;
 
       if (!kernelRef) {
-        return empty();
+        return EMPTY;
       }
 
       return of(
@@ -321,7 +321,7 @@ export const launchWebSocketKernelEpic = (
       const state = state$.value;
       const host = selectors.currentHost(state);
       if (host.type !== "jupyter") {
-        return empty();
+        return EMPTY;
       }
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
       serverConfig.userPuid = getUserPuid();
@@ -332,7 +332,7 @@ export const launchWebSocketKernelEpic = (
 
       const content = selectors.content(state, { contentRef });
       if (!content || content.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       let kernelSpecToLaunch = kernelSpecName;
@@ -546,26 +546,26 @@ const changeWebSocketKernelEpic = (
       const state = state$.value;
       const host = selectors.currentHost(state);
       if (host.type !== "jupyter") {
-        return empty();
+        return EMPTY;
       }
 
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
       if (!oldKernelRef) {
-        return empty();
+        return EMPTY;
       }
 
       const oldKernel = selectors.kernel(state, { kernelRef: oldKernelRef });
       if (!oldKernel || oldKernel.type !== "websocket") {
-        return empty();
+        return EMPTY;
       }
       const { sessionId } = oldKernel;
       if (!sessionId) {
-        return empty();
+        return EMPTY;
       }
 
       const content = selectors.content(state, { contentRef });
       if (!content || content.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
       const {
         filepath,
@@ -626,7 +626,7 @@ const focusInitialCodeCellEpic = (
 
       // If it's not a notebook, we shouldn't be here
       if (!model || model.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       const cellOrder = selectors.notebook.cellOrder(model);
@@ -641,7 +641,7 @@ const focusInitialCodeCellEpic = (
         );
       }
 
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -694,7 +694,7 @@ const notificationsToUserEpic = (
           break;
         }
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -734,7 +734,7 @@ const handleKernelConnectionLostEpic = (
         if (explorer) {
           explorer.showOkModalDialog("kernel restarts", msg);
         }
-        return of(empty());
+        return of(EMPTY);
       }
 
       return concat(
@@ -847,7 +847,7 @@ const closeUnsupportedMimetypesEpic = (
         explorer.showOkModalDialog("File cannot be rendered", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -875,7 +875,7 @@ const closeContentFailedToFetchEpic = (
         explorer.showOkModalDialog("Failure to load", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
