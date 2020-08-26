@@ -235,7 +235,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
           data: collection.rid
         });
       },
-      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Documents, ViewModels.CollectionTabKind.Graph]),
+      isSelected: () =>
+        this.isDataNodeSelected(collection.rid, "Collection", [
+          ViewModels.CollectionTabKind.Documents,
+          ViewModels.CollectionTabKind.Graph
+        ]),
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection)
     });
 
@@ -264,7 +268,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       children.push({
         label: "Conflicts",
         onClick: collection.onConflictsClick.bind(collection),
-        isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Conflicts])
+        isSelected: () =>
+          this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Conflicts])
       });
     }
 
@@ -339,7 +344,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       children: collection.triggers().map((trigger: Trigger) => ({
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
-        isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Triggers]),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Triggers]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container, trigger)
       })),
       onClick: () => {

@@ -3,25 +3,23 @@ import * as ko from "knockout";
 import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "../Tabs/TabsBase";
-import { assert } from "console";
 
 describe("ResourceTreeAdapter", () => {
-
-  const mockContainer = (): Explorer => ({
-    selectedNode: ko.observable<ViewModels.TreeNode>({
-      nodeKind: "nodeKind",
-      rid: "rid",
-      id: ko.observable<string>("id")
-    }),
-    tabsManager: {
-      activeTab: ko.observable<TabsBase>({
-        tabKind: ViewModels.CollectionTabKind.Documents
-      } as TabsBase)
-    },
-    isNotebookEnabled: ko.observable<boolean>(true),
-    nonSystemDatabases: ko.observable<ViewModels.Database[]>([])
-
-  }) as unknown as Explorer;
+  const mockContainer = (): Explorer =>
+    (({
+      selectedNode: ko.observable<ViewModels.TreeNode>({
+        nodeKind: "nodeKind",
+        rid: "rid",
+        id: ko.observable<string>("id")
+      }),
+      tabsManager: {
+        activeTab: ko.observable<TabsBase>({
+          tabKind: ViewModels.CollectionTabKind.Documents
+        } as TabsBase)
+      },
+      isNotebookEnabled: ko.observable<boolean>(true),
+      nonSystemDatabases: ko.observable<ViewModels.Database[]>([])
+    } as unknown) as Explorer);
 
   // TODO isDataNodeSelected needs a better design and refactor, but for now, we protect some of the code paths
   describe("isDataNodeSelected", () => {
@@ -50,14 +48,16 @@ describe("ResourceTreeAdapter", () => {
     it("should select if correct database node regardless of subnodekinds", () => {
       const subNodeKind = ViewModels.CollectionTabKind.Documents;
       const explorer = mockContainer();
-      explorer.selectedNode({
+      explorer.selectedNode(({
         nodeKind: "Database",
         rid: "dbrid",
         id: ko.observable<string>("id"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
-      } as any)
+      } as unknown) as ViewModels.TreeNode);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbrid", "Database", [ViewModels.CollectionTabKind.Documents]);
+      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbrid", "Database", [
+        ViewModels.CollectionTabKind.Documents
+      ]);
       expect(isDataNodeSelected).toBeTruthy();
     });
 
@@ -67,12 +67,12 @@ describe("ResourceTreeAdapter", () => {
       explorer.tabsManager.activeTab({
         tabKind: subNodeKind
       } as TabsBase);
-      explorer.selectedNode({
+      explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
         id: ko.observable<string>("id"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
-      } as any)
+      } as unknown) as ViewModels.TreeNode);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
       let isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
@@ -81,29 +81,31 @@ describe("ResourceTreeAdapter", () => {
       explorer.tabsManager.activeTab({
         tabKind: subNodeKind
       } as TabsBase);
-      explorer.selectedNode({
+      explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
         id: ko.observable<string>("id"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
-      } as any)
+      } as unknown) as ViewModels.TreeNode);
       isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
     });
 
     it("should not select incorrect collection node (e.g. Settings)", () => {
       const explorer = mockContainer();
-      explorer.selectedNode({
+      explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
         id: ko.observable<string>("id"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(ViewModels.CollectionTabKind.Documents)
-      } as any);
+      } as unknown) as ViewModels.TreeNode);
       explorer.tabsManager.activeTab({
-          tabKind: ViewModels.CollectionTabKind.Documents
-        } as TabsBase);
+        tabKind: ViewModels.CollectionTabKind.Documents
+      } as TabsBase);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [ViewModels.CollectionTabKind.Settings]);
+      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [
+        ViewModels.CollectionTabKind.Settings
+      ]);
       expect(isDataNodeSelected).toBeFalsy();
     });
   });
