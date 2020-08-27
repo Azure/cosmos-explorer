@@ -1,7 +1,7 @@
 import { Channels } from "@nteract/messaging";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import * as monaco from "./monaco";
 import * as React from "react";
-// import { completionProvider } from "./completions/completionItemProvider";
+import { completionProvider } from "./completions/completionItemProvider";
 import { AppState, ContentRef } from "@nteract/core";
 import { connect } from "react-redux";
 import "./styles.css";
@@ -81,7 +81,7 @@ function getMonacoTheme(theme: monaco.editor.IStandaloneThemeData | monaco.edito
 
 const makeMapStateToProps = (initialState: AppState, initialProps: IMonacoProps) => {
   const { id, contentRef } = initialProps;
-  function mapStateToProps(state: AppState, ownProps: IMonacoProps & IMonacoStateProps) {
+  const mapStateToProps = (state: AppState, ownProps: IMonacoProps & IMonacoStateProps) => {
     return {
       language: getCellMonacoLanguage(
         state,
@@ -303,14 +303,14 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
       return;
     }
 
-    const { value, /* channels, language, contentRef, id, */ editorFocused, theme } = this.props;
+    const { value, channels, /* language, contentRef, id,*/ editorFocused, theme } = this.props;
 
     // Ensures that the source contents of the editor (value) is consistent with the state of the editor
     if (this.editor.getValue() !== value) {
       this.editor.setValue(value);
     }
 
-    // completionProvider.setChannels(channels);
+    completionProvider.setChannels(channels);
 
     // Register Jupyter completion provider if needed
     this.registerCompletionProvider();
@@ -348,7 +348,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
     // In the multi-tabs scenario, when the notebook is hidden by setting "display:none",
     // Any state update propagated here would cause a UI re-layout, monaco-editor will then recalculate
     // and set its height to 5px.
-    // To work around that issue, we skip updating the UI when paraent element's offsetParent is null (which
+    // To work around that issue, we skip updating the UI when parent element's offsetParent is null (which
     // indicate an ancient element is hidden by display set to none)
     // We may revisit this when we get to refactor for multi-notebooks.
     if (!this.editorContainerRef.current?.offsetParent) {
@@ -394,7 +394,7 @@ export class MonacoEditor extends React.Component<IMonacoProps & IMonacoStatePro
   registerDefaultCompletionProvider(language: string): void {
     // onLanguage event is emitted only once per language when language is first time needed.
     monaco.languages.onLanguage(language, () => {
-      // monaco.languages.registerCompletionItemProvider(language, completionProvider);
+      monaco.languages.registerCompletionItemProvider(language, completionProvider);
     });
   }
 

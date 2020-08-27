@@ -1,5 +1,4 @@
-// import * as monaco from "./monaco";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import * as monaco from "./monaco";
 
 // TODO: move defineTheme calls to an initialization function
 
