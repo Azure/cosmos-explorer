@@ -39,7 +39,7 @@ export async function createUpdateTable(
   body: Types.TableCreateUpdateParameters
 ): Promise<Types.TableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Deletes an existing Azure Cosmos DB Table. */
@@ -73,7 +73,7 @@ export async function updateTableThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Migrate an Azure Cosmos DB Table from manual throughput to autoscale */

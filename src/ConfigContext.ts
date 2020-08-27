@@ -80,12 +80,20 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
         console.error(error);
       }
     }
-    // Allow override of any config value with URL query parameters
+    // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
-    params.forEach((value, key) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (configContext as any)[key] = value;
-    });
+    if (params.has("platform")) {
+      const platform = params.get("platform");
+      switch (platform) {
+        default:
+          console.log("Invalid platform query parameter given, ignoring");
+          break;
+        case Platform.Portal:
+        case Platform.Hosted:
+        case Platform.Emulator:
+          updateConfigContext({ platform });
+      }
+    }
   } catch (error) {
     console.log("No configuration file found using defaults");
   }

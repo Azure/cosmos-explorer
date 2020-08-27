@@ -648,7 +648,9 @@ export default class Collection implements ViewModels.Collection {
     });
     // TODO: Use the collection entity cache to get quota info
     const quotaInfoPromise: Q.Promise<DataModels.CollectionQuotaInfo> = readCollectionQuotaInfo(this);
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
+    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers({
+      isServerless: this.container.isServerlessEnabled()
+    });
     Q.all([quotaInfoPromise, offerInfoPromise]).then(
       () => {
         this.container.isRefreshingExplorer(false);
@@ -657,9 +659,7 @@ export default class Collection implements ViewModels.Collection {
         const quotaInfo = _.omit(quotaInfoWithUniqueKeyPolicy, "uniqueKeyPolicy");
 
         const collectionOffer = this._getOfferForCollection(offerInfoPromise.valueOf(), collectionDataModel);
-        const isDatabaseShared = this.getDatabase() && this.getDatabase().isDatabaseShared();
-        const isServerless = this.container.isServerlessEnabled();
-        if ((isDatabaseShared || isServerless) && !collectionOffer) {
+        if (!collectionOffer) {
           this.quotaInfo(quotaInfo);
           TelemetryProcessor.traceSuccess(
             Action.LoadOffers,

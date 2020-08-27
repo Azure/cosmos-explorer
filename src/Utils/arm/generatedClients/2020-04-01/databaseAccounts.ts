@@ -27,13 +27,7 @@ export async function update(
   body: Types.DatabaseAccountUpdateParameters
 ): Promise<Types.DatabaseAccountGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
-  return armRequest({
-    host: configContext.ARM_ENDPOINT,
-    path,
-    method: "PATCH",
-    apiVersion,
-    body: JSON.stringify(body)
-  });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PATCH", apiVersion, body });
 }
 
 /* Creates or updates an Azure Cosmos DB database account. The "Update" method is preferred when performing updates on an account. */
@@ -44,7 +38,7 @@ export async function createOrUpdate(
   body: Types.DatabaseAccountCreateUpdateParameters
 ): Promise<Types.DatabaseAccountGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Deletes an existing Azure Cosmos DB database account. */
@@ -61,7 +55,7 @@ export async function failoverPriorityChange(
   body: Types.FailoverPolicies
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/failoverPriorityChange`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
 }
 
 /* Lists all the Azure Cosmos DB database accounts available under the subscription. */
@@ -107,7 +101,7 @@ export async function offlineRegion(
   body: Types.RegionForOnlineOffline
 ): Promise<void | Types.ErrorResponse> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/offlineRegion`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
 }
 
 /* Online the specified region for the specified Azure Cosmos DB database account. */
@@ -118,7 +112,7 @@ export async function onlineRegion(
   body: Types.RegionForOnlineOffline
 ): Promise<void | Types.ErrorResponse> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/onlineRegion`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
 }
 
 /* Lists the read-only access keys for the specified Azure Cosmos DB database account. */
@@ -149,7 +143,7 @@ export async function regenerateKey(
   body: Types.DatabaseAccountRegenerateKeyParameters
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/regenerateKey`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
 }
 
 /* Checks that the Azure Cosmos DB account name already exists. A valid account name may contain only lowercase letters, numbers, and the '-' character, and must be between 3 and 50 characters. */
