@@ -91,9 +91,9 @@ class CompletionItemProvider implements monaco.languages.CompletionItemProvider 
     const completion$ = channels.pipe(
       childOf(message),
       ofMessageType("complete_reply"),
-      map((entry) => entry.content),
+      map(entry => entry.content),
       first(),
-      map((results) => this.adaptToMonacoCompletions(results, model))
+      map(results => this.adaptToMonacoCompletions(results, model))
     );
 
     // Subscribe and send completion request message
@@ -112,7 +112,7 @@ class CompletionItemProvider implements monaco.languages.CompletionItemProvider 
     let percentCount = 0;
     let matches = results ? results.matches : [];
     if (results.metadata && results.metadata._jupyter_types_experimental) {
-      matches = results.metadata._jupyter_types_experimental;
+      matches = results.metadata._jupyter_types_experimental as CompletionMatch[];
     }
     return matches.map((match: CompletionMatch, index: number) => {
       if (typeof match === "string") {

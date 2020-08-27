@@ -59,10 +59,7 @@ export const completionRequest = (code: string, cursorPos: number) =>
  * @param js_idx JavaScript index
  * @param text Text
  */
-export const js_idx_to_char_idx: (js_idx: number, text: string) => number = (
-  js_idx: number,
-  text: string
-): number => {
+export const js_idx_to_char_idx: (js_idx: number, text: string) => number = (js_idx: number, text: string): number => {
   let char_idx: number = js_idx;
   for (let i = 0; i + 1 < text.length && i < js_idx; i++) {
     const char_code: number = text.charCodeAt(i);

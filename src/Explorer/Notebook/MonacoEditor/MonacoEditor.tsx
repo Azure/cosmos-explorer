@@ -91,7 +91,7 @@ const makeMapStateToProps = (initialState: AppState, initialProps: IMonacoProps)
         ownProps.notebookLanguageOverride
       )
     };
-  }
+  };
   return mapStateToProps;
 };
 
