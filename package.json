@@ -4,7 +4,7 @@
   "description": "Cosmos Explorer",
   "main": "index.js",
   "dependencies": {
-    "@azure/cosmos": "3.7.4",
+    "@azure/cosmos": "3.9.0",
     "@azure/cosmos-language-service": "0.0.4",
     "@jupyterlab/services": "4.2.0",
     "@jupyterlab/terminal": "1.2.1",
@@ -42,7 +42,7 @@
     "applicationinsights": "1.8.0",
     "babel-polyfill": "6.26.0",
     "bootstrap": "3.4.1",
-    "canvas": "2.6.0",
+    "canvas": "2.6.1",
     "clean-webpack-plugin": "0.1.19",
     "copy-webpack-plugin": "6.0.2",
     "crossroads": "0.12.2",

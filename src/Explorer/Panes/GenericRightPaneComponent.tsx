@@ -8,7 +8,6 @@ import Explorer from "../Explorer";
 
 export interface GenericRightPaneProps {
   container: Explorer;
-  content: JSX.Element;
   formError: string;
   formErrorDetail: string;
   id: string;
@@ -17,7 +16,7 @@ export interface GenericRightPaneProps {
   onSubmit: () => void;
   submitButtonText: string;
   title: string;
-  isSubmitButtonVisible?: boolean;
+  isSubmitButtonHidden?: boolean;
 }
 
 export interface GenericRightPaneState {
@@ -57,18 +56,18 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
           onKeyDown={this.onKeyDown}
         >
           <div className="panelContentWrapper">
-            {this.createPanelHeader()}
-            {this.createErrorSection()}
-            {this.props.content}
-            {this.createPanelFooter()}
+            {this.renderPanelHeader()}
+            {this.renderErrorSection()}
+            {this.props.children}
+            {this.renderPanelFooter()}
           </div>
-          {this.createLoadingScreen()}
+          {this.renderLoadingScreen()}
         </div>
       </div>
     );
   }
 
-  private createPanelHeader = (): JSX.Element => {
+  private renderPanelHeader = (): JSX.Element => {
     return (
       <div className="firstdivbg headerline">
         <span id="databaseTitle">{this.props.title}</span>
@@ -84,7 +83,7 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
     );
   };
 
-  private createErrorSection = (): JSX.Element => {
+  private renderErrorSection = (): JSX.Element => {
     return (
       <div className="warningErrorContainer" aria-live="assertive" hidden={!this.props.formError}>
         <div className="warningErrorContent">
@@ -104,12 +103,12 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
     );
   };
 
-  private createPanelFooter = (): JSX.Element => {
+  private renderPanelFooter = (): JSX.Element => {
     return (
       <div className="paneFooter">
         <div className="leftpanel-okbut">
           <PrimaryButton
-            style={{ visibility: this.props.isSubmitButtonVisible ? "visible" : "hidden" }}
+            style={{ visibility: this.props.isSubmitButtonHidden ? "hidden" : "visible" }}
             ariaLabel="Submit"
             title="Submit"
             onClick={this.props.onSubmit}
@@ -122,7 +121,7 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
     );
   };
 
-  private createLoadingScreen = (): JSX.Element => {
+  private renderLoadingScreen = (): JSX.Element => {
     return (
       <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.props.isExecuting}>
         <img className="dataExplorerLoader" src={LoadingIndicatorIcon} />

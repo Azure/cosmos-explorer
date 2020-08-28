@@ -12,7 +12,8 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
-import { readCollections, readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
+import { readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
+import { readCollections } from "../../Common/dataAccess/readCollections";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -122,10 +123,6 @@ export default class Database implements ViewModels.Database {
 
   public readSettings(): Q.Promise<void> {
     const deferred: Q.Deferred<void> = Q.defer<void>();
-    if (this.container.isServerlessEnabled()) {
-      deferred.resolve();
-    }
-
     this.container.isRefreshingExplorer(true);
     const databaseDataModel: DataModels.Database = <DataModels.Database>{
       id: this.id(),
@@ -137,7 +134,9 @@ export default class Database implements ViewModels.Database {
       defaultExperience: this.container.defaultExperience()
     });
 
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
+    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers({
+      isServerless: this.container.isServerlessEnabled()
+    });
     Q.all([offerInfoPromise]).then(
       () => {
         this.container.isRefreshingExplorer(false);
@@ -146,6 +145,11 @@ export default class Database implements ViewModels.Database {
           offerInfoPromise.valueOf(),
           databaseDataModel
         );
+
+        if (!databaseOffer) {
+          return;
+        }
+
         readOffer(databaseOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
           const offerThroughputInfo: DataModels.OfferThroughputInfo = {
             minimumRUForCollection:
@@ -259,7 +263,7 @@ export default class Database implements ViewModels.Database {
     let collectionVMs: Collection[] = [];
     let deferred: Q.Deferred<void> = Q.defer<void>();
 
-    readCollections(this).then(
+    readCollections(this.id()).then(
       (collections: DataModels.Collection[]) => {
         let collectionsToAddVMPromises: Q.Promise<any>[] = [];
         let deltaCollections = this.getDeltaCollections(collections);

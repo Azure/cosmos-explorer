@@ -266,42 +266,6 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
   return deferred.promise;
 }
 
-export function updateCollection(
-  databaseId: string,
-  collection: ViewModels.Collection,
-  newCollection: DataModels.Collection
-): Q.Promise<DataModels.Collection> {
-  var deferred = Q.defer<any>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Updating container ${collection.id()}`
-  );
-  DataAccessUtilityBase.updateCollection(databaseId, collection.id(), newCollection)
-    .then(
-      (replacedCollection: DataModels.Collection) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully updated container ${collection.id()}`
-        );
-        deferred.resolve(replacedCollection);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to update container ${collection.id()}: ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "UpdateCollection", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
 export function updateDocument(
   collection: ViewModels.CollectionBase,
   documentId: DocumentId,
@@ -806,63 +770,6 @@ export function refreshCachedOffers(): Q.Promise<void> {
   return DataAccessUtilityBase.refreshCachedOffers();
 }
 
-export function readCollections(database: ViewModels.Database, options: any = {}): Q.Promise<DataModels.Collection[]> {
-  var deferred = Q.defer<DataModels.Collection[]>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Querying containers for database ${database.id()}`
-  );
-  DataAccessUtilityBase.readCollections(database, options)
-    .then(
-      (collections: DataModels.Collection[]) => {
-        deferred.resolve(collections);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while querying containers for database ${database.id()}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "ReadCollections", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
-export function readCollection(databaseId: string, collectionId: string): Q.Promise<DataModels.Collection> {
-  const deferred = Q.defer<DataModels.Collection>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Querying container ${collectionId}`
-  );
-
-  DataAccessUtilityBase.readCollection(databaseId, collectionId)
-    .then(
-      (collection: DataModels.Collection) => {
-        deferred.resolve(collection);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while querying containers for database ${databaseId}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "ReadCollections", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
 export function readCollectionQuotaInfo(
   collection: ViewModels.Collection,
   options?: any
@@ -950,31 +857,6 @@ export function readOffer(
   return deferred.promise;
 }
 
-export function readDatabases(options: any): Q.Promise<DataModels.Database[]> {
-  var deferred = Q.defer<any>();
-  const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Querying databases");
-  DataAccessUtilityBase.readDatabases(options)
-    .then(
-      (databases: DataModels.Database[]) => {
-        deferred.resolve(databases);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while querying databases:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "ReadDatabases", error.code);
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
-    });
-
-  return deferred.promise;
-}
-
 export function getOrCreateDatabaseAndCollection(
   request: DataModels.CreateDatabaseAndCollectionRequest,
   options: any = {}
@@ -999,39 +881,6 @@ export function getOrCreateDatabaseAndCollection(
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
           `Error while creating container ${request.collectionId}:\n ${sanitizedError}`
-        );
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-
-  return deferred.promise;
-}
-
-export function createDatabase(
-  request: DataModels.CreateDatabaseRequest,
-  options: any = {}
-): Q.Promise<DataModels.Database> {
-  const deferred: Q.Deferred<DataModels.Database> = Q.defer<DataModels.Database>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Creating a new database ${request.databaseId}`
-  );
-
-  DataAccessUtilityBase.createDatabase(request, options)
-    .then(
-      (database: DataModels.Database) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully created database ${request.databaseId}`
-        );
-        deferred.resolve(database);
-      },
-      (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while creating database ${request.databaseId}:\n ${JSON.stringify(error)}`
         );
         sendNotificationForError(error);
         deferred.reject(error);

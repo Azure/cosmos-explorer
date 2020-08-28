@@ -135,6 +135,7 @@ export class Features {
   public static readonly enableAutoPilotV2 = "enableautopilotv2";
   public static readonly ttl90Days = "ttl90days";
   public static readonly enableRightPanelV2 = "enablerightpanelv2";
+  public static readonly enableSDKoperations = "enablesdkoperations";
 }
 
 export class AfecFeatures {

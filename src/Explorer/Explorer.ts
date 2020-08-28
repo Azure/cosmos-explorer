@@ -15,7 +15,9 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readDatabases, readCollection, readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import EnvironmentUtility from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
@@ -35,7 +37,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext } from "../ConfigContext";
+import { configContext, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -484,7 +486,13 @@ export default class Explorer {
     this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
     this.databaseAccount.subscribe(databaseAccount => {
-      this.defaultExperience(DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount));
+      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
+        databaseAccount
+      );
+      this.defaultExperience(defaultExperience);
+      updateUserContext({
+        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience)
+      });
     });
 
     this.isPreferredApiDocumentDB = ko.computed(() => {
@@ -969,6 +977,10 @@ export default class Explorer {
         this.sparkClusterConnectionInfo.valueHasMutated();
       }
 
+      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
+        updateUserContext({ useSDKOperations: true });
+      }
+
       featureSubcription.dispose();
     });
 
@@ -1416,7 +1428,7 @@ export default class Explorer {
 
     const refreshDatabases = (offers?: DataModels.Offer[]) => {
       this._setLoadingStatusText("Fetching databases...");
-      readDatabases(null /*options*/).then(
+      readDatabases().then(
         (databases: DataModels.Database[]) => {
           this._setLoadingStatusText("Successfully fetched databases.");
           TelemetryProcessor.traceSuccess(
@@ -1469,38 +1481,33 @@ export default class Explorer {
       );
     };
 
-    if (this.isServerlessEnabled()) {
-      // Serverless accounts don't support offers call
-      refreshDatabases();
-    } else {
-      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
-      this._setLoadingStatusText("Fetching offers...");
-      offerPromise.then(
-        (offers: DataModels.Offer[]) => {
-          this._setLoadingStatusText("Successfully fetched offers.");
-          refreshDatabases(offers);
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch offers.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    }
+    const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers({ isServerless: this.isServerlessEnabled() });
+    this._setLoadingStatusText("Fetching offers...");
+    offerPromise.then(
+      (offers: DataModels.Offer[]) => {
+        this._setLoadingStatusText("Successfully fetched offers.");
+        refreshDatabases(offers);
+      },
+      error => {
+        this._setLoadingStatusText("Failed to fetch offers.");
+        this.isRefreshingExplorer(false);
+        deferred.reject(error);
+        TelemetryProcessor.traceFailure(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree,
+            error: JSON.stringify(error)
+          },
+          startKey
+        );
+        NotificationConsoleUtils.logConsoleMessage(
+          ConsoleDataType.Error,
+          `Error while refreshing databases: ${JSON.stringify(error)}`
+        );
+      }
+    );
 
     return deferred.promise.then(
       () => {
@@ -1948,12 +1955,17 @@ export default class Explorer {
 
       this._importExplorerConfigComplete = true;
 
+      updateConfigContext({
+        ARM_ENDPOINT: this.armEndpoint()
+      });
+
       updateUserContext({
         authorizationToken,
         masterKey,
-        databaseAccount
+        databaseAccount,
+        resourceGroup: inputs.resourceGroup,
+        subscriptionId: inputs.subscriptionId
       });
-      updateUserContext({ resourceGroup: inputs.resourceGroup, subscriptionId: inputs.subscriptionId });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {

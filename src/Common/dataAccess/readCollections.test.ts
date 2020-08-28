@@ -1,16 +1,14 @@
 jest.mock("../../Utils/arm/request");
-jest.mock("../MessageHandler");
 jest.mock("../CosmosClient");
-import { deleteDatabase } from "./deleteDatabase";
-import { armRequest } from "../../Utils/arm/request";
 import { AuthType } from "../../AuthType";
-import { client } from "../CosmosClient";
-import { updateUserContext } from "../../UserContext";
 import { DatabaseAccount } from "../../Contracts/DataModels";
-import { sendCachedDataMessage } from "../MessageHandler";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { armRequest } from "../../Utils/arm/request";
+import { client } from "../CosmosClient";
+import { readCollections } from "./readCollections";
+import { updateUserContext } from "../../UserContext";
 
-describe("deleteDatabase", () => {
+describe("readCollections", () => {
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
@@ -18,12 +16,11 @@ describe("deleteDatabase", () => {
       } as DatabaseAccount,
       defaultExperience: DefaultAccountExperienceType.DocumentDB
     });
-    (sendCachedDataMessage as jest.Mock).mockResolvedValue(undefined);
   });
 
   it("should call ARM if logged in with AAD", async () => {
     window.authType = AuthType.AAD;
-    await deleteDatabase("database");
+    await readCollections("database");
     expect(armRequest).toHaveBeenCalled();
   });
 
@@ -32,11 +29,17 @@ describe("deleteDatabase", () => {
     (client as jest.Mock).mockReturnValue({
       database: () => {
         return {
-          delete: (): unknown => undefined
+          containers: {
+            readAll: () => {
+              return {
+                fetchAll: (): unknown => []
+              };
+            }
+          }
         };
       }
     });
-    await deleteDatabase("database");
+    await readCollections("database");
     expect(client).toHaveBeenCalled();
   });
 });

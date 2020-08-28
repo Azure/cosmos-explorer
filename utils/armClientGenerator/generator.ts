@@ -102,31 +102,31 @@ interface Property {
   }[];
 }
 
-const propertyToType = (property: Property, prop: string) => {
+const propertyToType = (property: Property, prop: string, required: boolean) => {
   if (property) {
     if (property.allOf) {
       outputTypes.push(`
       /* ${property.description || "undocumented"} */
-      ${property.readOnly ? "readonly " : ""}${prop}: ${property.allOf
-        .map((allof: { $ref: string }) => refToType(allof.$ref))
-        .join(" & ")}`);
+      ${property.readOnly ? "readonly " : ""}${prop}${
+        required ? "" : "?"
+      }: ${property.allOf.map((allof: { $ref: string }) => refToType(allof.$ref)).join(" & ")}`);
     } else if (property.$ref) {
       const type = refToType(property.$ref);
       outputTypes.push(`
           /* ${property.description || "undocumented"} */
-          ${property.readOnly ? "readonly " : ""}${prop}: ${type}
+          ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${type}
           `);
     } else if (property.type === "array") {
       const type = refToType(property.items.$ref);
       outputTypes.push(`
           /* ${property.description || "undocumented"} */
-          ${property.readOnly ? "readonly " : ""}${prop}: ${type}[]
+          ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${type}[]
           `);
     } else if (property.type === "object") {
       const type = refToType(property.$ref);
       outputTypes.push(`
           /* ${property.description || "undocumented"} */
-          ${property.readOnly ? "readonly " : ""}${prop}: ${type}
+          ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${type}
           `);
     } else {
       if (property.type === undefined) {
@@ -135,7 +135,7 @@ const propertyToType = (property: Property, prop: string) => {
       }
       outputTypes.push(`
           /* ${property.description || "undocumented"} */
-          ${property.readOnly ? "readonly " : ""}${prop}: ${
+          ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${
         propertyMap[property.type] ? propertyMap[property.type] : property.type
       }`);
     }
@@ -166,7 +166,7 @@ async function main() {
       }
       for (const prop in schema.definitions[definition].properties) {
         const property = schema.definitions[definition].properties[prop];
-        propertyToType(property, prop);
+        propertyToType(property, prop, schema.definitions[definition].required?.includes(prop));
       }
       outputTypes.push(`}`);
       outputTypes.push("\n\n");
@@ -245,7 +245,7 @@ async function main() {
           ) : Promise<${responseType(operation, "Types")}> {
             const path = \`${path.replace(/{/g, "${")}\`
             return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "${method.toLocaleUpperCase()}", apiVersion, ${
-          bodyParameter ? "body: JSON.stringify(body)" : ""
+          bodyParameter ? "body" : ""
         } })
           }
           `);

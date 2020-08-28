@@ -153,7 +153,14 @@ export interface KeyResource {
   Token: string;
 }
 
-export interface IndexingPolicy {}
+export interface IndexingPolicy {
+  automatic: boolean;
+  indexingMode: string;
+  includedPaths: any;
+  excludedPaths: any;
+  compositeIndexes?: any;
+  spatialIndexes?: any;
+}
 
 export interface PartitionKey {
   paths: string[];
@@ -320,12 +327,11 @@ export interface AutoPilotOfferSettings {
   targetMaxThroughput?: number;
 }
 
-export interface CreateDatabaseRequest {
+export interface CreateDatabaseParams {
+  autoPilotMaxThroughput?: number;
   databaseId: string;
   databaseLevelThroughput?: boolean;
   offerThroughput?: number;
-  autoPilot?: AutoPilotCreationSettings;
-  hasAutoPilotV2FeatureFlag?: boolean;
 }
 
 export interface SharedThroughputRange {

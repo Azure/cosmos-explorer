@@ -546,41 +546,50 @@ export class ResourceTreeAdapter implements ReactAdapter {
           (activeTab as any).notebookPath() === item.path
         );
       },
-      contextMenu: createFileContextMenu
-        ? [
-            {
-              label: "Rename",
-              iconSrc: NotebookIcon,
-              onClick: () => this.container.renameNotebook(item)
-            },
-            {
-              label: "Delete",
-              iconSrc: DeleteIcon,
-              onClick: () => {
-                this.container.showOkCancelModalDialog(
-                  "Confirm delete",
-                  `Are you sure you want to delete "${item.name}"`,
-                  "Delete",
-                  () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-                  "Cancel",
-                  undefined
-                );
-              }
-            },
-            {
-              label: "Copy to ...",
-              iconSrc: CopyIcon,
-              onClick: () => this.copyNotebook(item)
-            },
-            {
-              label: "Download",
-              iconSrc: NotebookIcon,
-              onClick: () => this.container.downloadFile(item)
-            }
-          ]
-        : undefined,
+      contextMenu: createFileContextMenu && this.createFileContextMenu(item),
       data: item
     };
+  }
+
+  private createFileContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
+    let items: TreeNodeMenuItem[] = [
+      {
+        label: "Rename",
+        iconSrc: NotebookIcon,
+        onClick: () => this.container.renameNotebook(item)
+      },
+      {
+        label: "Delete",
+        iconSrc: DeleteIcon,
+        onClick: () => {
+          this.container.showOkCancelModalDialog(
+            "Confirm delete",
+            `Are you sure you want to delete "${item.name}"`,
+            "Delete",
+            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+            "Cancel",
+            undefined
+          );
+        }
+      },
+      {
+        label: "Copy to ...",
+        iconSrc: CopyIcon,
+        onClick: () => this.copyNotebook(item)
+      },
+      {
+        label: "Download",
+        iconSrc: NotebookIcon,
+        onClick: () => this.container.downloadFile(item)
+      }
+    ];
+
+    // "Copy to ..." isn't needed if github locations are not available
+    if (!this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+      items = items.filter(item => item.label !== "Copy to ...");
+    }
+
+    return items;
   }
 
   private copyNotebook = async (item: NotebookContentItem) => {
