@@ -1,37 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ThroughputInputAutoPilotV3Component renders 1`] = `
+exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
 <div>
-  <div>
-    <p
-      className="pkPadding"
+  <p
+    className="pkPadding"
+  >
+    <span
+      className="mandatoryStar"
     >
+      *
+    </span>
+    <span>
+      label
+    </span>
+    <span
+      className="infoTooltip"
+      role="tooltip"
+      tabIndex={0}
+    >
+      <img
+        alt="More information"
+        className="infoImg"
+        src="../../../../images/info-bubble.svg"
+      />
       <span
-        className="mandatoryStar"
+        className="tooltiptext throughputRuInfo"
       >
-        *
+        infoBubbleText
       </span>
-      <span>
-        label
-      </span>
-      <span
-        className="infoTooltip"
-        role="tooltip"
-        tabIndex={0}
-      >
-        <img
-          alt="More information"
-          className="infoImg"
-          src="../../../../images/info-bubble.svg"
-        />
-        <span
-          className="tooltiptext throughputRuInfo"
-        >
-          infoBubbleText
-        </span>
-      </span>
-    </p>
-  </div>
+    </span>
+  </p>
   <p>
     <span>
       Provision maximum RU/s required by this resource. Estimate your required RU/s with
@@ -51,34 +49,19 @@ exports[`ThroughputInputAutoPilotV3Component renders 1`] = `
   </p>
   <input
     aria-label="ariaLabel"
-    className="migration collid select-font-size"
+    className="migration collid select-font-size "
     disabled={false}
+    id="autopilotInput"
     key="auto pilot throughput input"
     min={4000}
     onChange={[Function]}
     required={true}
     step={100}
     type="number"
-    value={4000}
+    value="4000"
   />
-  <p>
-    <span
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "autoPilotUsageCost",
-        }
-      }
-    />
-  </p>
-  <p>
-    <span
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "requestUnitsUsageCost",
-        }
-      }
-    />
-  </p>
+  <p />
+  <p />
   <p
     className="pkPadding"
   >
@@ -99,43 +82,110 @@ exports[`ThroughputInputAutoPilotV3Component renders 1`] = `
 </div>
 `;
 
-exports[`ThroughputInputReactComponent renders 1`] = `
+exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
 <div>
-  <div>
-    <p
-      className="pkPadding"
+  <p
+    className="pkPadding"
+  >
+    <span
+      className="mandatoryStar"
     >
+      *
+    </span>
+    <span>
+      label
+    </span>
+    <span
+      className="infoTooltip"
+      role="tooltip"
+      tabIndex={0}
+    >
+      <img
+        alt="More information"
+        className="infoImg"
+        src="../../../../images/info-bubble.svg"
+      />
       <span
-        className="mandatoryStar"
+        className="tooltiptext throughputRuInfo"
       >
-        *
+        infoBubbleText
       </span>
+    </span>
+  </p>
+  <input
+    aria-label="ariaLabel"
+    className="dirty "
+    data-test="testId"
+    disabled={true}
+    id="throughputInput"
+    key="provisioned throughput input"
+    min={10000}
+    onChange={[Function]}
+    required={true}
+    step={100}
+    type="number"
+    value="100"
+  />
+  <p />
+  <p
+    className="pkPadding"
+  >
+    <input
+      aria-label="acknowledge spend throughput"
+      checked={true}
+      id="spendAckId"
+      onChange={[Function]}
+      title="spendAckText"
+      type="checkbox"
+    />
+    <label
+      htmlFor="spendAckId"
+    >
+      spendAckText
+    </label>
+  </p>
+  <p>
+    Choose unlimited storage capacity for more than 10,000 RU/s.
+  </p>
+</div>
+`;
+
+exports[`ThroughputInputReactComponent autopilot input visible 1`] = `
+<div>
+  <p
+    className="pkPadding"
+  >
+    <span
+      className="mandatoryStar"
+    >
+      *
+    </span>
+    <span
+      className="addCollectionLabel"
+    >
+      label
+    </span>
+    <span
+      className="infoTooltip"
+      role="tooltip"
+      tabIndex={0}
+    >
+      <img
+        alt="More information"
+        className="infoImg"
+        src="../../../../images/info-bubble.svg"
+      />
       <span
-        className="addCollectionLabel"
+        className="tooltiptext throughputRuInfo"
       >
-        label
+        infoBubbleText
       </span>
-      <span
-        className="infoTooltip"
-        role="tooltip"
-        tabIndex={0}
-      >
-        <img
-          alt="More information"
-          className="infoImg"
-          src="../../../../images/info-bubble.svg"
-        />
-        <span
-          className="tooltiptext throughputRuInfo"
-        >
-          infoBubbleText
-        </span>
-      </span>
-    </p>
-  </div>
+    </span>
+  </p>
   <select
     aria-label="Autopilot Max RU/s"
     className="collid select-font-size"
+    id="autopilotSelector"
     name="autoPilotTiers"
     onChange={[Function]}
     value="1"
@@ -159,14 +209,76 @@ exports[`ThroughputInputReactComponent renders 1`] = `
       tier 2
     </option>
   </select>
-  <p>
+  <p />
+</div>
+`;
+
+exports[`ThroughputInputReactComponent throughput input visible 1`] = `
+<div>
+  <p
+    className="pkPadding"
+  >
     <span
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "autoPilotUsageCost",
-        }
-      }
+      className="mandatoryStar"
+    >
+      *
+    </span>
+    <span
+      className="addCollectionLabel"
+    >
+      label
+    </span>
+    <span
+      className="infoTooltip"
+      role="tooltip"
+      tabIndex={0}
+    >
+      <img
+        alt="More information"
+        className="infoImg"
+        src="../../../../images/info-bubble.svg"
+      />
+      <span
+        className="tooltiptext throughputRuInfo"
+      >
+        infoBubbleText
+      </span>
+    </span>
+  </p>
+  <p
+    className="addContainerThroughputInput"
+  >
+    <input
+      aria-label="ariaLabel"
+      className="dirty "
+      data-test="testId"
+      disabled={false}
+      id="throughputInput"
+      key="provisioned throughput input"
+      min={10000}
+      onChange={[Function]}
+      required={true}
+      step={100}
+      type="number"
+      value={100}
     />
+  </p>
+  <p />
+  <p
+    className="pkPadding"
+  >
+    <input
+      checked={true}
+      onChange={[Function]}
+    />
+    <label
+      htmlFor="spendAckId"
+    >
+      spendAckText
+    </label>
+  </p>
+  <p>
+    Choose unlimited storage capacity for more than 10,000 RU/s.
   </p>
 </div>
 `;

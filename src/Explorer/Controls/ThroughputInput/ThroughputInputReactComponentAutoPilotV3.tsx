@@ -32,7 +32,7 @@ export interface ThroughputInputAutoPilotV3Props {
   showAutoPilot?: boolean;
   overrideWithAutoPilotSettings: boolean;
   overrideWithProvisionedThroughputSettings: boolean;
-  maxAutoPilotThroughput: number;
+  maxAutoPilotThroughput: StatefulValue<number>;
   setMaxAutoPilotThroughput: (newThroughput: number) => void;
 }
 
@@ -46,17 +46,17 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 > {
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
-  private cssClass : string;
+  private cssClass: string;
   private step: number;
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
     this.state = {
-      spendAckChecked: this.props.spendAckChecked,
+      spendAckChecked: this.props.spendAckChecked
     };
 
-    this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep
-    this.cssClass = this.props.cssClass || "textfontclr collid migration"
+    this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
+    this.cssClass = this.props.cssClass || "textfontclr collid migration";
   }
 
   private onAutoPilotThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -73,6 +73,27 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       this.props.setMaxAutoPilotThroughput(newThroughput);
     } else {
       this.props.setThroughput(newThroughput);
+    }
+  };
+
+  private getThroughputValue = (): string => {
+    if (this.props.throughput.current) {
+      if (this.props.throughput.current === 0) {
+        return "";
+      } else {
+        return this.props.throughput.current.toString();
+      }
+    }
+    return "";
+  };
+
+  private getMaxAutoPilotThroughputValue = (): string => {
+    if (this.props.overrideWithProvisionedThroughputSettings) {
+      return "";
+    } else {
+      return this.props.maxAutoPilotThroughput.current === 0
+        ? ""
+        : this.props.maxAutoPilotThroughput.current.toString();
     }
   };
 
@@ -146,17 +167,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               <span>Max RU/s</span>
             </p>
             <input
+              id="autopilotInput"
               key="auto pilot throughput input"
-              value={
-                this.props.overrideWithProvisionedThroughputSettings
-                  ? ""
-                  : this.props.maxAutoPilotThroughput === 0
-                  ? ""
-                  : this.props.maxAutoPilotThroughput
-              }
+              value={this.getMaxAutoPilotThroughputValue()}
               onChange={this.onAutoPilotThroughputChange}
               disabled={this.props.overrideWithProvisionedThroughputSettings}
-              className={`migration collid select-font-size`}
+              className={`migration collid select-font-size ${
+                isDirty(this.props.maxAutoPilotThroughput) ? "dirty" : ""
+              }`}
               step={this.step}
               type="number"
               required
@@ -189,9 +207,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         {!this.props.isAutoPilotSelected && (
           <>
             <input
+              id="throughputInput"
               key="provisioned throughput input"
               onChange={this.onThroughputChange}
-              value={this.props.throughput.current === 0 ? "" : this.props.throughput.current}
+              value={this.getThroughputValue()}
               className={`${this.cssClass} ${isDirty(this.props.throughput) ? "dirty" : ""}`}
               disabled={this.props.overrideWithAutoPilotSettings}
               type="number"

@@ -1,6 +1,5 @@
 import { shallow } from "enzyme";
 import React from "react";
-import * as sinon from "sinon";
 import { SettingsComponentProps, SettingsComponent } from "./SettingsComponent";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -9,12 +8,11 @@ import Explorer from "../../Explorer";
 import SettingsTabV2 from "../../Tabs/SettingsTabV2";
 
 describe("SettingsComponent", () => {
-  let sandbox: sinon.SinonSandbox;
   let settingsTabV2: SettingsTabV2;
+  const mockedGetTabIdFn = jest.fn();
+  mockedGetTabIdFn.mockReturnValue("tabId");
 
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    sandbox.stub(SettingsTabV2.prototype, "getTabId").returns("tabId");
+  it("renders", () => {
     settingsTabV2 = new SettingsTabV2({
       tabKind: ViewModels.CollectionTabKind.SettingsV2,
       title: "Scale & Settings",
@@ -45,13 +43,9 @@ describe("SettingsComponent", () => {
       isActive: ko.observable(false),
       onUpdateTabsButtons: undefined
     });
-  });
 
-  afterEach(() => {
-    sandbox.restore();
-  });
+    settingsTabV2.getTabId = mockedGetTabIdFn;
 
-  it("renders", () => {
     const props: SettingsComponentProps = {
       settingsTab: settingsTabV2
     };

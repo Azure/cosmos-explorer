@@ -43,16 +43,16 @@ interface ThroughputInputState {
 export class ThroughputInputComponent extends React.Component<ThroughputInputProps, ThroughputInputState> {
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
-  private cssClass : string;
-  private step : number;
+  private cssClass: string;
+  private step: number;
 
   public constructor(props: ThroughputInputProps) {
     super(props);
     this.state = {
       spendAckChecked: this.props.spendAckChecked
     };
-    this.step = this.props.step ?? ThroughputInputComponent.defaultStep
-    this.cssClass = this.props.cssClass || "textfontclr collid"
+    this.step = this.props.step ?? ThroughputInputComponent.defaultStep;
+    this.cssClass = this.props.cssClass || "textfontclr collid";
   }
 
   private onThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -119,6 +119,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
         {this.props.isAutoPilotSelected && (
           <>
             <select
+              id="autopilotSelector"
               name="autoPilotTiers"
               className="collid select-font-size"
               aria-label="Autopilot Max RU/s"
@@ -146,6 +147,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
           <>
             <p className="addContainerThroughputInput">
               <input
+                id="throughputInput"
                 type="number"
                 required
                 key="provisioned throughput input"
