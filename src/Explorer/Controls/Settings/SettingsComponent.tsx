@@ -2082,7 +2082,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             type="text"
             aria-label="Stored procedure name for conflict resolution"
             value={
-              this.state.conflictResolutionPolicyProcedure.current == undefined
+              this.state.conflictResolutionPolicyProcedure.current === undefined
                 ? ""
                 : this.state.conflictResolutionPolicyProcedure.current
             }
@@ -2393,7 +2393,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               min="1"
               max="2147483647"
               value={
-                this.state.analyticalStorageTtlSeconds.current == undefined
+                this.state.analyticalStorageTtlSeconds.current === undefined
                   ? ""
                   : this.state.analyticalStorageTtlSeconds.current
               }
