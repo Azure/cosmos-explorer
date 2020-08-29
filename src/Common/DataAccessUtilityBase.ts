@@ -8,15 +8,12 @@ import {
   ConflictDefinition,
   FeedOptions,
   ItemDefinition,
-  PartitionKeyDefinition,
   QueryIterator,
   Resource,
   TriggerDefinition,
   OfferDefinition
 } from "@azure/cosmos";
-import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { client } from "./CosmosClient";
-import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
 import { sendCachedDataMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -477,69 +474,6 @@ export function readOffer(requestedResource: DataModels.Offer, options: any): Q.
       .offer(requestedResource.id)
       .read(options)
       .then(response => ({ ...response.resource, headers: response.headers }))
-  );
-}
-
-export function getOrCreateDatabaseAndCollection(
-  request: DataModels.CreateDatabaseAndCollectionRequest,
-  options: any
-): Q.Promise<DataModels.Collection> {
-  const databaseOptions: any = options && _.omit(options, "sharedOfferThroughput");
-  const {
-    databaseId,
-    databaseLevelThroughput,
-    collectionId,
-    partitionKey,
-    indexingPolicy,
-    uniqueKeyPolicy,
-    offerThroughput,
-    analyticalStorageTtl,
-    hasAutoPilotV2FeatureFlag
-  } = request;
-
-  const createBody: DatabaseRequest = {
-    id: databaseId
-  };
-
-  // TODO: replace when SDK support autopilot
-  const initialHeaders = request.autoPilot
-    ? !hasAutoPilotV2FeatureFlag
-      ? {
-          [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({
-            maxThroughput: request.autoPilot.maxThroughput
-          })
-        }
-      : {
-          [Constants.HttpHeaders.autoPilotTier]: request.autoPilot.autopilotTier
-        }
-    : undefined;
-  if (databaseLevelThroughput) {
-    if (request.autoPilot) {
-      databaseOptions.initialHeaders = initialHeaders;
-    }
-    createBody.throughput = offerThroughput;
-  }
-
-  return Q(
-    client()
-      .databases.createIfNotExists(createBody, databaseOptions)
-      .then(response => {
-        return response.database.containers.create(
-          {
-            id: collectionId,
-            partitionKey: (partitionKey || undefined) as PartitionKeyDefinition,
-            indexingPolicy: indexingPolicy ? indexingPolicy : undefined,
-            uniqueKeyPolicy: uniqueKeyPolicy ? uniqueKeyPolicy : undefined,
-            analyticalStorageTtl: analyticalStorageTtl,
-            throughput: databaseLevelThroughput || request.autoPilot ? undefined : offerThroughput
-          } as ContainerRequest, // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
-          {
-            initialHeaders: databaseLevelThroughput ? undefined : initialHeaders
-          }
-        );
-      })
-      .then(containerResponse => containerResponse.resource as DataModels.Collection)
-      .finally(() => refreshCachedResources(options))
   );
 }
 
