@@ -347,8 +347,10 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
   const createDatabaseBody: DatabaseRequest = { id: params.databaseId };
 
   if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
-    collectionOptions.initialHeaders[HttpHeaders.supportSpatialLegacyCoordinates] = true;
-    collectionOptions.initialHeaders[HttpHeaders.usePolygonsSmallerThanAHemisphere] = true;
+    collectionOptions.initialHeaders = {
+      [HttpHeaders.supportSpatialLegacyCoordinates]: true,
+      [HttpHeaders.usePolygonsSmallerThanAHemisphere]: true
+    };
   }
 
   if (params.databaseLevelThroughput) {
