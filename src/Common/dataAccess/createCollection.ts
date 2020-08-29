@@ -5,11 +5,11 @@ import { ContainerResponse, DatabaseResponse } from "@azure/cosmos";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { HttpHeaders } from "../../Common/Constants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
-import { getSqlContainer, createUpdateSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { createMongoCollectionWithProxy } from "../MongoProxyClient";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   createUpdateCassandraTable,
   getCassandraTable
@@ -47,6 +47,8 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
         await createDatabase(createDatabaseParams);
       }
       collection = await createCollectionWithARM(params);
+    } else if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
+      collection = await createMongoCollectionWithProxy(params);
     } else {
       collection = await createCollectionWithSDK(params);
     }
@@ -345,13 +347,6 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
   } as ContainerRequest; // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
   const collectionOptions: RequestOptions = {};
   const createDatabaseBody: DatabaseRequest = { id: params.databaseId };
-
-  if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
-    collectionOptions.initialHeaders = {
-      [HttpHeaders.supportSpatialLegacyCoordinates]: true,
-      [HttpHeaders.usePolygonsSmallerThanAHemisphere]: true
-    };
-  }
 
   if (params.databaseLevelThroughput) {
     if (params.autoPilotMaxThroughput) {
