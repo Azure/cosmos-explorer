@@ -18,7 +18,8 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
-import { updateOffer, updateCollection } from "../../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../../Common/DocumentClientUtilityBase";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
@@ -1007,7 +1008,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
         const updatedCollection: DataModels.Collection = await updateCollection(
           this.collection.databaseId,
-          this.collection,
+          this.collection.id(),
           newCollection
         );
         this.collection.rawDataModel = updatedCollection;
@@ -1171,7 +1172,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onRevertClick = (): void => {
     this.statefulValuesArray.forEach((key: keyof SettingsComponentState) => {
-      const stateElement = this.state[key] as StatefulValue<unknown>;
+      const stateElement = this.state[key] as StatefulValue<StatefulValuesType>;
       this.updateStatefulValue({
         key: key,
         value: stateElement.baseline,
@@ -1693,7 +1694,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onEditorContentChange = (): void => {
     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
     try {
-      const parsed: unknown = JSON.parse(indexingPolicyEditorModel.getValue());
+      const parsed = JSON.parse(indexingPolicyEditorModel.getValue()) as DataModels.IndexingPolicy;
       const indexingPolicyContent = this.state.indexingPolicyContent;
       indexingPolicyContent.current = parsed;
       this.setState({ indexingPolicyContent: indexingPolicyContent });
