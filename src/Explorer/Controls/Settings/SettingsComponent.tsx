@@ -27,9 +27,6 @@ import SettingsTab from "../../Tabs/SettingsTabV2";
 import { ThroughputInputAutoPilotV3Component } from "../ThroughputInput/ThroughputInputReactComponentAutoPilotV3";
 import { ThroughputInputComponent } from "../ThroughputInput/ThroughputInputReactComponent";
 import {
-  StatefulValuesType,
-  StatefulValue,
-  isDirty,
   getAutoPilotV3SpendElement,
   getAutoPilotV2SpendElement,
   getEstimatedSpendElement,
@@ -44,6 +41,10 @@ import {
   getThroughputApplyLongDelayMessage
 } from "./SettingsUtils";
 import { AccessibleElement } from "../AccessibleElement/AccessibleElement";
+import { Int32 } from "../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+import { StatefulValue } from "../StatefulValue";
+
+type StatefulValuesType = boolean | string | number | DataModels.IndexingPolicy;
 
 enum ChangeFeedPolicyToggledState {
   Off = "Off",
@@ -86,7 +87,6 @@ enum StatefulValueNames {
 interface UpdateStatefulValueParams {
   key: keyof SettingsComponentState;
   value: StatefulValuesType;
-  updateCurrent: boolean;
   updateBaseline?: boolean;
 }
 
@@ -215,34 +215,26 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state = {
       isIndexingPolicyEditorInitializing: false,
       geospatialVisible: this.container.isPreferredApiDocumentDB(),
-      changeFeedPolicyToggled: {
-        baseline: this.initialChangeFeedLoggingState,
-        current: this.initialChangeFeedLoggingState,
-        isValid: true
-      },
+      changeFeedPolicyToggled: new StatefulValue(this.initialChangeFeedLoggingState),
       scaleExpanded: true,
       settingsExpanded: true,
       conflictResolutionExpanded: true,
-      throughput: { baseline: undefined, current: undefined, isValid: true },
-      conflictResolutionPolicyMode: { baseline: undefined, current: undefined, isValid: true },
-      conflictResolutionPolicyPath: { baseline: undefined, current: undefined, isValid: true },
-      conflictResolutionPolicyProcedure: { baseline: undefined, current: undefined, isValid: true },
-      timeToLive: { baseline: undefined, current: undefined, isValid: true },
-      timeToLiveSeconds: { baseline: undefined, current: undefined, isValid: true },
-      geospatialConfigType: { baseline: undefined, current: undefined, isValid: true },
-      analyticalStorageTtlSelection: { baseline: undefined, current: undefined, isValid: true },
-      analyticalStorageTtlSeconds: { baseline: undefined, current: undefined, isValid: true },
-      indexingPolicyContent: { baseline: undefined, current: undefined, isValid: true },
-      rupm: { baseline: undefined, current: undefined, isValid: true },
+      throughput: new StatefulValue(),
+      conflictResolutionPolicyMode: new StatefulValue(),
+      conflictResolutionPolicyPath: new StatefulValue(),
+      conflictResolutionPolicyProcedure: new StatefulValue(),
+      timeToLive: new StatefulValue(),
+      timeToLiveSeconds: new StatefulValue(),
+      geospatialConfigType: new StatefulValue(),
+      analyticalStorageTtlSelection: new StatefulValue(),
+      analyticalStorageTtlSeconds: new StatefulValue(),
+      indexingPolicyContent: new StatefulValue(),
+      rupm: new StatefulValue(),
       isAutoPilotSelected: false,
       wasAutopilotOriginallySet: false,
       selectedAutoPilotTier: undefined,
       autoPilotTiersList: undefined,
-      autoPilotThroughput: {
-        baseline: AutoPilotUtils.minAutoPilotThroughput,
-        current: AutoPilotUtils.minAutoPilotThroughput,
-        isValid: true
-      },
+      autoPilotThroughput: new StatefulValue(AutoPilotUtils.minAutoPilotThroughput),
       ttlOffFocused: false,
       ttlOnDefaultFocused: false,
       ttlOnFocused: false,
@@ -300,7 +292,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               return false;
             }
 
-            if (isDirty(this.state.throughput)) {
+            if (this.state.throughput.isDirty()) {
               return true;
             }
           }
@@ -308,9 +300,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
         if (
           this.hasConflictResolution() &&
-          (isDirty(this.state.conflictResolutionPolicyMode) ||
-            isDirty(this.state.conflictResolutionPolicyPath) ||
-            isDirty(this.state.conflictResolutionPolicyProcedure))
+          (this.state.conflictResolutionPolicyMode.isDirty() ||
+            this.state.conflictResolutionPolicyPath.isDirty() ||
+            this.state.conflictResolutionPolicyProcedure.isDirty())
         ) {
           return true;
         }
@@ -334,38 +326,38 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           return false;
         }
 
-        if (isDirty(this.state.timeToLive)) {
+        if (this.state.timeToLive.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.geospatialConfigType)) {
+        if (this.state.geospatialConfigType.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.analyticalStorageTtlSelection)) {
+        if (this.state.analyticalStorageTtlSelection.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.changeFeedPolicyToggled)) {
+        if (this.state.changeFeedPolicyToggled.isDirty()) {
           return true;
         }
 
-        if (this.state.timeToLive.current === TtlType.On && isDirty(this.state.timeToLiveSeconds)) {
+        if (this.state.timeToLive.current === TtlType.On && this.state.timeToLiveSeconds.isDirty()) {
           return true;
         }
 
         if (
           this.state.analyticalStorageTtlSelection.current === TtlType.On &&
-          isDirty(this.state.analyticalStorageTtlSeconds)
+          this.state.analyticalStorageTtlSeconds.isDirty()
         ) {
           return true;
         }
 
-        if (isDirty(this.state.indexingPolicyContent) && this.state.indexingPolicyContent.isValid) {
+        if (this.state.indexingPolicyContent.isDirty() && this.state.indexingPolicyContent.isValid) {
           return true;
         }
 
-        if (isDirty(this.state.rupm)) {
+        if (this.state.rupm.isDirty()) {
           return true;
         }
 
@@ -386,49 +378,49 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           return true;
         }
 
-        if (isDirty(this.state.throughput)) {
+        if (this.state.throughput.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.timeToLive)) {
+        if (this.state.timeToLive.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.geospatialConfigType)) {
+        if (this.state.geospatialConfigType.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.analyticalStorageTtlSelection)) {
+        if (this.state.analyticalStorageTtlSelection.isDirty()) {
           return true;
         }
 
-        if (this.state.timeToLive.current === TtlType.On && isDirty(this.state.timeToLiveSeconds)) {
+        if (this.state.timeToLive.current === TtlType.On && this.state.timeToLiveSeconds.isDirty()) {
           return true;
         }
 
         if (
           this.state.analyticalStorageTtlSelection.current === TtlType.On &&
-          isDirty(this.state.analyticalStorageTtlSeconds)
+          this.state.analyticalStorageTtlSeconds.isDirty()
         ) {
           return true;
         }
 
-        if (isDirty(this.state.changeFeedPolicyToggled)) {
+        if (this.state.changeFeedPolicyToggled.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.indexingPolicyContent)) {
+        if (this.state.indexingPolicyContent.isDirty()) {
           return true;
         }
 
-        if (isDirty(this.state.rupm)) {
+        if (this.state.rupm.isDirty()) {
           return true;
         }
 
         if (
-          isDirty(this.state.conflictResolutionPolicyMode) ||
-          isDirty(this.state.conflictResolutionPolicyPath) ||
-          isDirty(this.state.conflictResolutionPolicyProcedure)
+          this.state.conflictResolutionPolicyMode.isDirty() ||
+          this.state.conflictResolutionPolicyPath.isDirty() ||
+          this.state.conflictResolutionPolicyProcedure.isDirty()
         ) {
           return true;
         }
@@ -444,9 +436,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private updateStatefulValue = (params: UpdateStatefulValueParams): void => {
     const currentStateValue = this.state[params.key] as StatefulValue<StatefulValuesType>;
-    if (params.updateCurrent) {
-      currentStateValue.current = params.value;
-    }
+    currentStateValue.current = params.value;
     if (params.updateBaseline) {
       currentStateValue.baseline = params.value;
     }
@@ -483,17 +473,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private shouldUpdateCollection = (): boolean => {
     return (
-      isDirty(this.state.timeToLive) ||
-      (this.state.timeToLive.current === TtlType.On && isDirty(this.state.timeToLiveSeconds)) ||
-      isDirty(this.state.geospatialConfigType) ||
-      isDirty(this.state.conflictResolutionPolicyMode) ||
-      isDirty(this.state.conflictResolutionPolicyPath) ||
-      isDirty(this.state.conflictResolutionPolicyProcedure) ||
-      isDirty(this.state.indexingPolicyContent) ||
-      isDirty(this.state.changeFeedPolicyToggled) ||
-      isDirty(this.state.analyticalStorageTtlSelection) ||
+      this.state.timeToLive.isDirty() ||
+      (this.state.timeToLive.current === TtlType.On && this.state.timeToLiveSeconds.isDirty()) ||
+      this.state.geospatialConfigType.isDirty() ||
+      this.state.conflictResolutionPolicyMode.isDirty() ||
+      this.state.conflictResolutionPolicyPath.isDirty() ||
+      this.state.conflictResolutionPolicyProcedure.isDirty() ||
+      this.state.indexingPolicyContent.isDirty() ||
+      this.state.changeFeedPolicyToggled.isDirty() ||
+      this.state.analyticalStorageTtlSelection.isDirty() ||
       (this.state.analyticalStorageTtlSelection.current === TtlType.On &&
-        isDirty(this.state.analyticalStorageTtlSeconds))
+        this.state.analyticalStorageTtlSeconds.isDirty())
     );
   };
 
@@ -515,8 +505,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           this.updateStatefulValue({
             key: StatefulValueNames.AutoPilotThroughput,
             value: offerAutopilotSettings.maxThroughput,
-            updateBaseline: true,
-            updateCurrent: true
+            updateBaseline: true
           });
         }
       }
@@ -849,11 +838,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const throughputExceedsMaxValue: boolean =
       !this.container.isEmulator && this.state.throughput.current > this.getMaxRUs();
 
-    const ttlOptionDirty: boolean = isDirty(this.state.timeToLive);
+    const ttlOptionDirty: boolean = this.state.timeToLive.isDirty();
     const ttlOrIndexingPolicyFieldsDirty: boolean =
-      isDirty(this.state.timeToLive) ||
-      isDirty(this.state.indexingPolicyContent) ||
-      isDirty(this.state.timeToLiveSeconds);
+      this.state.timeToLive.isDirty() ||
+      this.state.indexingPolicyContent.isDirty() ||
+      this.state.timeToLiveSeconds.isDirty();
     const ttlFieldFocused: boolean =
       this.state.ttlOffFocused || this.state.ttlOnDefaultFocused || this.state.ttlOnFocused;
     const offer = this.collection && this.collection.offer && this.collection.offer();
@@ -1022,8 +1011,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
 
       if (
-        isDirty(this.state.throughput) ||
-        isDirty(this.state.rupm) ||
+        this.state.throughput.isDirty() ||
+        this.state.rupm.isDirty() ||
         this.isAutoPilotDirty() ||
         this.hasProvisioningTypeChanged()
       ) {
@@ -1102,7 +1091,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             this.updateStatefulValue({
               key: StatefulValueNames.Throughput,
               value: originalThroughputValue,
-              updateCurrent: true,
               updateBaseline: true
             });
 
@@ -1175,8 +1163,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       const stateElement = this.state[key] as StatefulValue<StatefulValuesType>;
       this.updateStatefulValue({
         key: key,
-        value: stateElement.baseline,
-        updateCurrent: true
+        value: stateElement.baseline
       });
     });
 
@@ -1198,8 +1185,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.updateStatefulValue({
           key: StatefulValueNames.AutoPilotThroughput,
           value: originalAutoPilotMaxThroughput,
-          updateBaseline: true,
-          updateCurrent: true
+          updateBaseline: true
         });
       } else {
         const originalAutoPilotTier = originalAutoPilotSettings && originalAutoPilotSettings.tier;
@@ -1240,158 +1226,140 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private onTtlOffKeyPress = (): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.Off, updateCurrent: true });
+    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.Off });
   };
 
   private onTtlOnNoDefaultKeyPress = (): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.OnNoDefault, updateCurrent: true });
+    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.OnNoDefault });
   };
 
   private onTtlOnKeyPress = (): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.On, updateCurrent: true });
+    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.On });
   };
 
   private onGeographyKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
-      value: GeospatialConfigType.Geography,
-      updateCurrent: true
+      value: GeospatialConfigType.Geography
     });
   };
 
   private onGeometryKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
-      value: GeospatialConfigType.Geometry,
-      updateCurrent: true
+      value: GeospatialConfigType.Geometry
     });
   };
 
   private onAnalyticalStorageTtlOnNoDefaultKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: TtlType.OnNoDefault,
-      updateCurrent: true
+      value: TtlType.OnNoDefault
     });
   };
 
   private onAnalyticalStorageTtlOnKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: TtlType.On,
-      updateCurrent: true
+      value: TtlType.On
     });
   };
 
   private onChangeFeedPolicyOffKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: ChangeFeedPolicyToggledState.Off,
-      updateCurrent: true
+      value: ChangeFeedPolicyToggledState.Off
     });
   };
 
   private onChangeFeedPolicyOnKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: ChangeFeedPolicyToggledState.On,
-      updateCurrent: true
+      value: ChangeFeedPolicyToggledState.On
     });
   };
 
   private onConflictResolutionCustomKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: DataModels.ConflictResolutionMode.Custom,
-      updateCurrent: true
+      value: DataModels.ConflictResolutionMode.Custom
     });
   };
 
   private onConflictResolutionLWWKeyPress = (): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: DataModels.ConflictResolutionMode.LastWriterWins,
-      updateCurrent: true
+      value: DataModels.ConflictResolutionMode.LastWriterWins
     });
   };
 
   private onConflictResolutionChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onRupmChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.Rupm,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onConflictResolutionPolicyPathChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyPath,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onConflictResolutionPolicyProcedureChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyProcedure,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onTimeToLiveChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.TimeToLive,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onTimeToLiveSecondsChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.TimeToLiveSeconds,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onGeoSpatialConfigTypeChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onAnalyticalStorageTtlSelectionChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.nodeValue
     });
   };
 
   private onAnalyticalStorageTtlSecondsChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.AnalyticalStorageTtlSeconds,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
   private onChangeFeedPolicyToggled = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: event.currentTarget.value,
-      updateCurrent: true
+      value: event.currentTarget.value
     });
   };
 
@@ -1412,9 +1380,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private getUpdatedConflictResolutionPolicy = (): DataModels.ConflictResolutionPolicy => {
     if (
-      !isDirty(this.state.conflictResolutionPolicyMode) &&
-      !isDirty(this.state.conflictResolutionPolicyPath) &&
-      !isDirty(this.state.conflictResolutionPolicyProcedure)
+      !this.state.conflictResolutionPolicyMode.isDirty() &&
+      !this.state.conflictResolutionPolicyPath.isDirty() &&
+      !this.state.conflictResolutionPolicyProcedure.isDirty()
     ) {
       return undefined;
     }
@@ -1506,20 +1474,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.updateStatefulValue({
           key: StatefulValueNames.AnalyticalStorageTtlSelection,
           value: TtlType.OnNoDefault,
-          updateCurrent: true,
           updateBaseline: true
         });
       } else {
         this.updateStatefulValue({
           key: StatefulValueNames.AnalyticalStorageTtlSelection,
           value: TtlType.On,
-          updateCurrent: true,
           updateBaseline: true
         });
         this.updateStatefulValue({
           key: StatefulValueNames.AnalyticalStorageTtlSeconds,
           value: analyticalStorageTtl,
-          updateCurrent: true,
           updateBaseline: true
         });
       }
@@ -1535,7 +1500,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.updateStatefulValue({
       key: StatefulValueNames.Throughput,
       value: offerThroughput,
-      updateCurrent: true,
       updateBaseline: true
     });
 
@@ -1550,28 +1514,24 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.updateStatefulValue({
       key: StatefulValueNames.ChangeFeedPolicyToggled,
       value: changeFeedPolicyToggled,
-      updateCurrent: true,
       updateBaseline: true
     });
 
     this.updateStatefulValue({
       key: StatefulValueNames.TimeToLive,
       value: timeToLive,
-      updateCurrent: true,
       updateBaseline: true
     });
 
     this.updateStatefulValue({
       key: StatefulValueNames.TimeToLiveSeconds,
       value: timeToLiveSeconds,
-      updateCurrent: true,
       updateBaseline: true
     });
 
     this.updateStatefulValue({
       key: StatefulValueNames.IndexingPolicyContent,
       value: this.collection.indexingPolicy(),
-      updateCurrent: true,
       updateBaseline: true
     });
 
@@ -1584,7 +1544,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyMode,
       value: conflictResolutionPolicyMode,
-      updateCurrent: true,
       updateBaseline: true
     });
 
@@ -1592,7 +1551,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyPath,
       value: conflictResolutionPolicyPath,
-      updateCurrent: true,
       updateBaseline: true
     });
 
@@ -1602,18 +1560,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyProcedure,
       value: conflictResolutionPolicyProcedure,
-      updateCurrent: true,
       updateBaseline: true
     });
 
     const rupm = offerIsRUPerMinuteThroughputEnabled ? Constants.RUPMStates.on : Constants.RUPMStates.off;
-    this.updateStatefulValue({ key: StatefulValueNames.Rupm, value: rupm, updateCurrent: true, updateBaseline: true });
+    this.updateStatefulValue({ key: StatefulValueNames.Rupm, value: rupm, updateBaseline: true });
 
     const indexingPolicyContent = this.collection.indexingPolicy();
     this.updateStatefulValue({
       key: StatefulValueNames.IndexingPolicyContent,
       value: indexingPolicyContent,
-      updateCurrent: true,
       updateBaseline: true
     });
 
@@ -1634,7 +1590,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
       value: geospatialConfigType,
-      updateCurrent: true,
       updateBaseline: true
     });
 
@@ -1650,8 +1605,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.updateStatefulValue({
         key: StatefulValueNames.AutoPilotThroughput,
         value: maxThroughput || AutoPilotUtils.minAutoPilotThroughput,
-        updateBaseline: true,
-        updateCurrent: true
+        updateBaseline: true
       });
     }
   };
@@ -1737,16 +1691,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private setMaxAutoPilotThroughput = (newThroughput: number): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.AutoPilotThroughput,
-      value: newThroughput,
-      updateCurrent: true
+      value: newThroughput
     });
   };
 
   private setThroughput = (newThroughput: number): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.Throughput,
-      value: newThroughput,
-      updateCurrent: true
+      value: newThroughput
     });
   };
 
@@ -1848,7 +1800,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           <div className="tab">
             <label
               htmlFor={this.rupmOnId}
-              className={`${isDirty(this.state.rupm) ? "dirty" : ""} ${
+              className={`${this.state.rupm.isDirty() ? "dirty" : ""} ${
                 this.state.rupm.current === Constants.RUPMStates.on ? "selectedRadio" : "unselectedRadio"
               }`}
             >
@@ -1867,7 +1819,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           <div className="tab">
             <label
               htmlFor={this.rupmOffId}
-              className={`${isDirty(this.state.rupm) ? "dirty" : ""} ${
+              className={`${this.state.rupm.isDirty() ? "dirty" : ""} ${
                 this.state.rupm.current === Constants.RUPMStates.off ? "selectedRadio" : "unselectedRadio"
               }`}
             >
@@ -1965,7 +1917,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                   ? "true"
                   : "false"
               }
-              className={`${isDirty(this.state.conflictResolutionPolicyMode) ? "dirty" : ""} ${
+              className={`${this.state.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
                 this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins
                   ? "selectedRadio"
                   : "unselectedRadio"
@@ -1998,7 +1950,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                   ? "true"
                   : "false"
               }
-              className={`${isDirty(this.state.conflictResolutionPolicyMode) ? "dirty" : ""} ${
+              className={`${this.state.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
                 this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom
                   ? "selectedRadio"
                   : "unselectedRadio"
@@ -2046,7 +1998,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                 ? ""
                 : this.state.conflictResolutionPolicyPath.current
             }
-            className={`${isDirty(this.state.conflictResolutionPolicyPath) ? "dirty" : ""}`}
+            className={`${this.state.conflictResolutionPolicyPath.isDirty() ? "dirty" : ""}`}
             onChange={this.onConflictResolutionPolicyPathChange}
           />
         </p>
@@ -2087,7 +2039,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                 ? ""
                 : this.state.conflictResolutionPolicyProcedure.current
             }
-            className={`${isDirty(this.state.conflictResolutionPolicyProcedure) ? "dirty" : ""}`}
+            className={`${this.state.conflictResolutionPolicyProcedure.isDirty() ? "dirty" : ""}`}
             onChange={this.onConflictResolutionPolicyProcedureChange}
           />
         </p>
@@ -2154,7 +2106,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               aria-label="ttlOffLable"
               role="radio"
               aria-checked={this.state.timeToLive.current === TtlType.Off ? "true" : false}
-              className={`ttlIndexingPolicyFocusElement ${isDirty(this.state.timeToLive) ? "dirty" : ""} ${
+              className={`ttlIndexingPolicyFocusElement ${this.state.timeToLive.isDirty() ? "dirty" : ""} ${
                 this.state.timeToLive.current === TtlType.Off ? "selectedRadio" : "unselectedRadio"
               }`}
               onActivated={this.onTtlOffKeyPress}
@@ -2182,7 +2134,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               aria-label="ttlOnNoDefaultLabel"
               role="radio"
               aria-checked={this.state.timeToLive.current === TtlType.OnNoDefault ? "true" : "false"}
-              className={`ttlIndexingPolicyFocusElement ${isDirty(this.state.timeToLive) ? "dirty" : ""} ${
+              className={`ttlIndexingPolicyFocusElement ${this.state.timeToLive.isDirty() ? "dirty" : ""} ${
                 this.state.timeToLive.current === TtlType.OnNoDefault ? "selectedRadio" : "unselectedRadio"
               }`}
               onActivated={this.onTtlOnNoDefaultKeyPress}
@@ -2210,7 +2162,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               aria-label="ttlOnLabel"
               role="radio"
               aria-checked={this.state.timeToLive.current === TtlType.On ? "true" : "false"}
-              className={`ttlIndexingPolicyFocusElement ${isDirty(this.state.timeToLive) ? "dirty" : ""} ${
+              className={`ttlIndexingPolicyFocusElement ${this.state.timeToLive.isDirty() ? "dirty" : ""} ${
                 this.state.timeToLive.current === TtlType.On ? "selectedRadio" : "unselectedRadio"
               }`}
               onActivated={this.onTtlOnKeyPress}
@@ -2238,10 +2190,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               type="number"
               required
               min="1"
-              max="2147483647"
+              max={Int32.Max}
               aria-label="Time to live in seconds"
               value={this.state.timeToLiveSeconds.current}
-              className={`dirtyTextbox ${isDirty(this.state.timeToLiveSeconds) ? "dirty" : ""}`}
+              className={`dirtyTextbox ${this.state.timeToLiveSeconds.isDirty() ? "dirty" : ""}`}
               disabled={this.state.timeToLive.current !== TtlType.On}
               onChange={this.onTimeToLiveSecondsChange}
             />
@@ -2269,7 +2221,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                   ? "true"
                   : "false"
               }
-              className={`${isDirty(this.state.geospatialConfigType) ? "dirty" : ""} ${
+              className={`${this.state.geospatialConfigType.isDirty() ? "dirty" : ""} ${
                 this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography.toLowerCase()
                   ? "selectedRadio"
                   : "unselectedRadio"
@@ -2300,7 +2252,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                   ? "true"
                   : "false"
               }
-              className={`${isDirty(this.state.geospatialConfigType) ? "dirty" : ""} ${
+              className={`${this.state.geospatialConfigType.isDirty() ? "dirty" : ""} ${
                 this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry.toLowerCase()
                   ? "selectedRadio"
                   : "unselectedRadio"
@@ -2341,7 +2293,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               tabIndex={0}
               role="radio"
               aria-checked={this.state.analyticalStorageTtlSelection.current === TtlType.OnNoDefault ? "true" : "false"}
-              className={`${isDirty(this.state.analyticalStorageTtlSelection) ? "dirty" : ""} ${
+              className={`${this.state.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
                 this.state.analyticalStorageTtlSelection.current === TtlType.OnNoDefault
                   ? "selectedRadio"
                   : "unselectedRadio"
@@ -2368,7 +2320,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               tabIndex={0}
               role="radio"
               aria-checked={this.state.analyticalStorageTtlSelection.current === TtlType.On ? "true" : "false"}
-              className={`${isDirty(this.state.analyticalStorageTtlSelection) ? "dirty" : ""} ${
+              className={`${this.state.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
                 this.state.analyticalStorageTtlSelection.current === TtlType.On ? "selectedRadio" : "unselectedRadio"
               }`}
               onActivated={this.onAnalyticalStorageTtlOnKeyPress}
@@ -2399,7 +2351,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                   : this.state.analyticalStorageTtlSeconds.current
               }
               aria-label="Time to live in seconds"
-              className={`dirtyTextbox ${isDirty(this.state.analyticalStorageTtlSeconds) ? "dirty" : ""}`}
+              className={`dirtyTextbox ${this.state.analyticalStorageTtlSeconds.isDirty() ? "dirty" : ""}`}
               onChange={this.onAnalyticalStorageTtlSecondsChange}
             />
             {` second(s)`}
@@ -2429,7 +2381,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               as="label"
               aria-label="ChangeFeedPolicyOffLabel"
               tabIndex={0}
-              className={`${isDirty(this.state.changeFeedPolicyToggled) ? "dirty" : ""} ${
+              className={`${this.state.changeFeedPolicyToggled.isDirty() ? "dirty" : ""} ${
                 this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.Off
                   ? "selectedRadio"
                   : "unselectedRadio"
@@ -2453,7 +2405,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               as="label"
               aria-label="ChangeFeedPolicyOnLabel"
               tabIndex={0}
-              className={`${isDirty(this.state.changeFeedPolicyToggled) ? "dirty" : ""} ${
+              className={`${this.state.changeFeedPolicyToggled.isDirty() ? "dirty" : ""} ${
                 this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On
                   ? "selectedRadio"
                   : "unselectedRadio"

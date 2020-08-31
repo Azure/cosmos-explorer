@@ -6,10 +6,11 @@ import {
   ThroughputInputAutoPilotV3Props
 } from "./ThroughputInputReactComponentAutoPilotV3";
 import { AutopilotTier } from "../../../Contracts/DataModels";
+import { StatefulValue } from "../StatefulValue";
 
 describe("ThroughputInputReactComponent", () => {
   const baseProps: ThroughputInputProps = {
-    throughput: { baseline: 100, current: 100, isValid: true },
+    throughput: new StatefulValue(100),
     setThroughput: undefined,
     testId: "testId",
     ariaLabel: "ariaLabel",
@@ -62,7 +63,7 @@ describe("ThroughputInputReactComponent", () => {
 
 describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {
-    throughput: { baseline: 100, current: 100, isValid: true },
+    throughput: new StatefulValue(100),
     setThroughput: undefined,
     testId: "testId",
     ariaLabel: "ariaLabel",
@@ -91,7 +92,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     showAutoPilot: true,
     overrideWithAutoPilotSettings: true,
     overrideWithProvisionedThroughputSettings: false,
-    maxAutoPilotThroughput: { baseline: 4000, current: 4000, isValid: true },
+    maxAutoPilotThroughput: new StatefulValue(4000),
     setMaxAutoPilotThroughput: undefined
   };
 

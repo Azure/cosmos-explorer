@@ -1,6 +1,6 @@
 import React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import { StatefulValue, isDirty } from "../Settings/SettingsUtils";
+import { StatefulValue } from "../StatefulValue";
 
 export interface ThroughputInputAutoPilotV3Props {
   throughput: StatefulValue<number>;
@@ -97,6 +97,141 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     }
   };
 
+  private renderThroughputModeChoices = (): JSX.Element => {
+    return (
+      <div className="throughputModeContainer">
+        <input
+          className="throughputModeRadio"
+          aria-label="Autopilot mode"
+          type="radio"
+          role="radio"
+          tabIndex={0}
+          value="true"
+          checked={this.props.isAutoPilotSelected}
+          onChange={this.props.setAutoPilotSelected}
+          id={this.props.throughputAutoPilotRadioId}
+          name={this.props.throughputModeRadioName}
+          aria-checked={this.props.isAutoPilotSelected}
+        />
+        <label className="throughputModeSpace" htmlFor={this.props.throughputAutoPilotRadioId}>
+          Autoscale
+        </label>
+
+        <input
+          className="throughputModeRadio nonFirstRadio"
+          aria-label="Provisioned Throughput mode"
+          type="radio"
+          role="radio"
+          value="false"
+          checked={!this.props.isAutoPilotSelected}
+          tabIndex={0}
+          onChange={this.props.setAutoPilotSelected}
+          id={this.props.throughputProvisionedRadioId}
+          name={this.props.throughputModeRadioName}
+          aria-checked={!this.props.isAutoPilotSelected}
+        />
+        <label className="throughputModeSpace" htmlFor={this.props.throughputProvisionedRadioId}>
+          Manual
+        </label>
+      </div>
+    );
+  };
+
+  private renderAutoPilotInput = (): JSX.Element => {
+    return (
+      <>
+        <p>
+          <span>
+            Provision maximum RU/s required by this resource. Estimate your required RU/s with
+            {/* eslint-disable-next-line react/jsx-no-target-blank*/}
+            <a target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+              {` capacity calculator`}
+            </a>
+            .
+          </span>
+        </p>
+        <p>
+          <span>Max RU/s</span>
+        </p>
+        <input
+          id="autopilotInput"
+          key="auto pilot throughput input"
+          value={this.getMaxAutoPilotThroughputValue()}
+          onChange={this.onAutoPilotThroughputChange}
+          disabled={this.props.overrideWithProvisionedThroughputSettings}
+          className={`migration collid select-font-size ${this.props.maxAutoPilotThroughput.isDirty() ? "dirty" : ""}`}
+          step={this.step}
+          type="number"
+          required
+          min={AutoPilotUtils.minAutoPilotThroughput}
+          aria-label={this.props.ariaLabel}
+        />
+        {!this.props.overrideWithProvisionedThroughputSettings && <p>{this.props.autoPilotUsageCost}</p>}
+        {this.props.costsVisible && !this.props.overrideWithProvisionedThroughputSettings && (
+          <p>{this.props.requestUnitsUsageCost}</p>
+        )}
+
+        {this.props.spendAckVisible && (
+          <p className="pkPadding">
+            <input
+              type="checkbox"
+              aria-label="acknowledge spend throughput"
+              title={this.props.spendAckText}
+              id={this.props.spendAckId}
+              checked={this.props.spendAckChecked}
+              onChange={e => {
+                this.setState({ spendAckChecked: e.currentTarget.value === "true" });
+              }}
+            />
+            <label htmlFor={this.props.spendAckId}>{this.props.spendAckText}</label>
+          </p>
+        )}
+      </>
+    );
+  };
+
+  private renderThroughputSelector = (): JSX.Element => {
+    return (
+      <>
+        <input
+          id="throughputInput"
+          key="provisioned throughput input"
+          onChange={this.onThroughputChange}
+          value={this.getThroughputValue()}
+          className={`${this.cssClass} ${this.props.throughput.isDirty() ? "dirty" : ""}`}
+          disabled={this.props.overrideWithAutoPilotSettings}
+          type="number"
+          required
+          data-test={this.props.testId}
+          step={this.step}
+          min={this.props.minimum}
+          max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
+          aria-label={this.props.ariaLabel}
+        />
+
+        {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
+
+        {this.props.spendAckVisible && (
+          <p className="pkPadding">
+            <input
+              type="checkbox"
+              aria-label="acknowledge spend throughput"
+              title={this.props.spendAckText}
+              id={this.props.spendAckId}
+              checked={this.props.spendAckChecked}
+              onChange={e => {
+                this.setState({ spendAckChecked: e.currentTarget.value === "true" });
+              }}
+            />
+            <label htmlFor={this.props.spendAckId}>{this.props.spendAckText}</label>
+          </p>
+        )}
+
+        {this.props.isFixed && <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>}
+      </>
+    );
+  };
+
   public render(): JSX.Element {
     return (
       <div>
@@ -113,136 +248,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           )}
         </p>
 
-        {!this.props.isFixed && this.props.showAutoPilot && (
-          <div className="throughputModeContainer">
-            <input
-              className="throughputModeRadio"
-              aria-label="Autopilot mode"
-              type="radio"
-              role="radio"
-              tabIndex={0}
-              value="true"
-              checked={this.props.isAutoPilotSelected}
-              onChange={this.props.setAutoPilotSelected}
-              id={this.props.throughputAutoPilotRadioId}
-              name={this.props.throughputModeRadioName}
-              aria-checked={this.props.isAutoPilotSelected}
-            />
-            <label className="throughputModeSpace" htmlFor={this.props.throughputAutoPilotRadioId}>
-              Autoscale
-            </label>
+        {!this.props.isFixed && this.props.showAutoPilot && this.renderThroughputModeChoices()}
 
-            <input
-              className="throughputModeRadio nonFirstRadio"
-              aria-label="Provisioned Throughput mode"
-              type="radio"
-              role="radio"
-              value="false"
-              checked={!this.props.isAutoPilotSelected}
-              tabIndex={0}
-              onChange={this.props.setAutoPilotSelected}
-              id={this.props.throughputProvisionedRadioId}
-              name={this.props.throughputModeRadioName}
-              aria-checked={!this.props.isAutoPilotSelected}
-            />
-            <label className="throughputModeSpace" htmlFor={this.props.throughputProvisionedRadioId}>
-              Manual
-            </label>
-          </div>
-        )}
-
-        {this.props.isAutoPilotSelected && (
-          <>
-            <p>
-              <span>
-                Provision maximum RU/s required by this resource. Estimate your required RU/s with
-                {/* eslint-disable-next-line react/jsx-no-target-blank*/}
-                <a target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
-                  {` capacity calculator`}
-                </a>
-                .
-              </span>
-            </p>
-            <p>
-              <span>Max RU/s</span>
-            </p>
-            <input
-              id="autopilotInput"
-              key="auto pilot throughput input"
-              value={this.getMaxAutoPilotThroughputValue()}
-              onChange={this.onAutoPilotThroughputChange}
-              disabled={this.props.overrideWithProvisionedThroughputSettings}
-              className={`migration collid select-font-size ${
-                isDirty(this.props.maxAutoPilotThroughput) ? "dirty" : ""
-              }`}
-              step={this.step}
-              type="number"
-              required
-              min={AutoPilotUtils.minAutoPilotThroughput}
-              aria-label={this.props.ariaLabel}
-            />
-            {!this.props.overrideWithProvisionedThroughputSettings && <p>{this.props.autoPilotUsageCost}</p>}
-            {this.props.costsVisible && !this.props.overrideWithProvisionedThroughputSettings && (
-              <p>{this.props.requestUnitsUsageCost}</p>
-            )}
-
-            {this.props.spendAckVisible && (
-              <p className="pkPadding">
-                <input
-                  type="checkbox"
-                  aria-label="acknowledge spend throughput"
-                  title={this.props.spendAckText}
-                  id={this.props.spendAckId}
-                  checked={this.props.spendAckChecked}
-                  onChange={e => {
-                    this.setState({ spendAckChecked: e.currentTarget.value === "true" });
-                  }}
-                />
-                <label htmlFor={this.props.spendAckId}>{this.props.spendAckText}</label>
-              </p>
-            )}
-          </>
-        )}
-
-        {!this.props.isAutoPilotSelected && (
-          <>
-            <input
-              id="throughputInput"
-              key="provisioned throughput input"
-              onChange={this.onThroughputChange}
-              value={this.getThroughputValue()}
-              className={`${this.cssClass} ${isDirty(this.props.throughput) ? "dirty" : ""}`}
-              disabled={this.props.overrideWithAutoPilotSettings}
-              type="number"
-              required
-              data-test={this.props.testId}
-              step={this.step}
-              min={this.props.minimum}
-              max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
-              aria-label={this.props.ariaLabel}
-            />
-
-            {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
-
-            {this.props.spendAckVisible && (
-              <p className="pkPadding">
-                <input
-                  type="checkbox"
-                  aria-label="acknowledge spend throughput"
-                  title={this.props.spendAckText}
-                  id={this.props.spendAckId}
-                  checked={this.props.spendAckChecked}
-                  onChange={e => {
-                    this.setState({ spendAckChecked: e.currentTarget.value === "true" });
-                  }}
-                />
-                <label htmlFor={this.props.spendAckId}>{this.props.spendAckText}</label>
-              </p>
-            )}
-
-            {this.props.isFixed && <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>}
-          </>
-        )}
+        {this.props.isAutoPilotSelected ? this.renderAutoPilotInput() : this.renderThroughputSelector()}
       </div>
     );
   }

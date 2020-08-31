@@ -79,9 +79,10 @@ exports[`SettingsComponent renders 1`] = `
         isEnabled={true}
         label="Throughput (400 - 10,000 RU/s)"
         maxAutoPilotThroughput={
-          Object {
+          StatefulValue {
             "baseline": 4000,
             "current": 4000,
+            "getStringValue": [Function],
             "isValid": true,
           }
         }
@@ -96,9 +97,10 @@ exports[`SettingsComponent renders 1`] = `
         showAutoPilot={true}
         testId="settingsThroughputValuetabId"
         throughput={
-          Object {
+          StatefulValue {
             "baseline": undefined,
             "current": undefined,
+            "getStringValue": [Function],
             "isValid": true,
           }
         }
@@ -239,7 +241,7 @@ exports[`SettingsComponent renders 1`] = `
         aria-label="Time to live in seconds"
         className="dirtyTextbox "
         disabled={false}
-        max="2147483647"
+        max={2147483647}
         min="1"
         onChange={[Function]}
         required={true}

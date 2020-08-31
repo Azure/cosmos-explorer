@@ -2,7 +2,6 @@ import * as React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as SharedConstants from "../../../Shared/Constants";
 import * as CommonConstants from "../../../Common/Constants";
-import * as DataModels from "../../../Contracts/DataModels";
 import { AutopilotTier } from "../../../Contracts/DataModels";
 import {
   computeAutoscaleUsagePriceHourly,
@@ -14,44 +13,6 @@ import {
   getPricePerRu,
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
-
-/*
-Class used to track baseline and current values of a state object. If both the values differ,
-isDirty is set to true. The isDirty value is used to change css of the component and to govern logic
-around whether the current value should be persistently saved or not.
-*/
-export type StatefulValuesType = boolean | string | number | DataModels.IndexingPolicy;
-
-export interface StatefulValue<StatefulValuesType> {
-  baseline: StatefulValuesType;
-  current: StatefulValuesType;
-  isValid: boolean;
-}
-
-const getStringValue = (value: StatefulValuesType): string => {
-  const type = typeof value;
-  switch (type) {
-    case "string":
-    case "undefined":
-    case "number":
-    case "boolean":
-      return value?.toString();
-
-    default:
-      return JSON.stringify(value);
-  }
-};
-
-export function isDirty(value: StatefulValue<StatefulValuesType>): boolean {
-  const current = getStringValue(value.current);
-  const baseline = getStringValue(value.baseline);
-
-  if (current !== baseline) {
-    return true;
-  }
-
-  return false;
-}
 
 export function getAutoPilotV3SpendElement(
   maxAutoPilotThroughputSet: number,
