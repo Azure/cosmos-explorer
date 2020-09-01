@@ -76,7 +76,7 @@ const createCollectionWithARM = async (params: DataModels.CreateCollectionParams
     case DefaultAccountExperienceType.Cassandra:
       return createCassandraTable(params);
     case DefaultAccountExperienceType.Graph:
-      return createGremlineGraph(params);
+      return createGraph(params);
     case DefaultAccountExperienceType.Table:
       return createTable(params);
     default:
@@ -229,7 +229,7 @@ const createCassandraTable = async (params: DataModels.CreateCollectionParams): 
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
 
-const createGremlineGraph = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
+const createGraph = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   try {
     const getResponse = await getGremlinGraph(
       userContext.subscriptionId,
@@ -319,7 +319,7 @@ const createTable = async (params: DataModels.CreateCollectionParams): Promise<D
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
 
-const constructRpOptions = (params: DataModels.CreateDatabaseParams): ARMTypes.CreateUpdateOptions => {
+export const constructRpOptions = (params: DataModels.CreateDatabaseParams): ARMTypes.CreateUpdateOptions => {
   if (params.databaseLevelThroughput) {
     return {};
   }
