@@ -357,7 +357,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildSchemaNode(collection: ViewModels.Collection): TreeNode {
+  public buildSchemaNode(collection: ViewModels.Collection): TreeNode {
     if (collection.analyticalStorageTtl() == undefined) {
       return null;
     }

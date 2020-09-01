@@ -28,7 +28,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseExpanded: ko.Observable<boolean>;
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
-  private junoClient: JunoClient;
+  public junoClient: JunoClient;
 
   constructor(container: Explorer, data: any, offer: DataModels.Offer) {
     this.nodeKind = "Database";
@@ -397,38 +397,40 @@ export default class Database implements ViewModels.Database {
     return _.find(offers, (offer: DataModels.Offer) => offer.resource === database._self);
   }
 
-  private addSchema(collection: DataModels.Collection): void {
-    if (collection.analyticalStorageTtl == undefined || !this.container.isSchemaEnabled()) {
-      return;
+  public addSchema(collection: DataModels.Collection): NodeJS.Timeout {
+    let checkForSchema: NodeJS.Timeout = null;
+
+    if (collection.analyticalStorageTtl != undefined && this.container.isSchemaEnabled()) {
+      collection.requestSchema = () => {
+        this.junoClient.requestSchema({
+          id: null,
+          subscriptionId: userContext.subscriptionId,
+          resourceGroup: userContext.resourceGroup,
+          accountName: userContext.databaseAccount.name,
+          resource: `dbs/${this.id}/colls/${collection.id}`,
+          status: "new"
+        });
+        checkForSchema = setInterval(async () => {
+          const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(
+            userContext.databaseAccount.name,
+            this.id(),
+            collection.id
+          );
+
+          if (response.status >= 404) {
+            clearInterval(checkForSchema);
+          }
+
+          if (response.data != null) {
+            clearInterval(checkForSchema);
+            collection.schema = response.data;
+          }
+        }, 5000);
+      };
+
+      collection.requestSchema();
     }
 
-    collection.requestSchema = () => {
-      this.junoClient.requestSchema({
-        id: null,
-        subscriptionId: userContext.subscriptionId,
-        resourceGroup: userContext.resourceGroup,
-        accountName: userContext.databaseAccount.name,
-        resource: `dbs/${this.id}/colls/${collection.id}`,
-        status: "new"
-      });
-      const checkForSchema = setInterval(async () => {
-        const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(
-          userContext.databaseAccount.name,
-          this.id(),
-          collection.id
-        );
-
-        if (response.status >= 404) {
-          clearInterval(checkForSchema);
-        }
-
-        if (response.data != null) {
-          clearInterval(checkForSchema);
-          collection.schema = response.data;
-        }
-      }, 5000);
-    };
-
-    collection.requestSchema();
+    return checkForSchema;
   }
 }
