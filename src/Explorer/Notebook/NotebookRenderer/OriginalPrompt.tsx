@@ -39,10 +39,7 @@ export class Prompt extends React.Component<Props> {
   }
 }
 
-const makeMapStateToProps = (
-  state: AppState,
-  ownProps: ComponentProps
-): ((state: AppState) => StateProps) => {
+const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
   const mapStateToProps = (state: AppState) => {
     const { contentRef, id } = ownProps;
     const model = selectors.model(state, { contentRef });
@@ -66,6 +63,4 @@ const makeMapStateToProps = (
   return mapStateToProps;
 };
 
-export default connect<StateProps, void, ComponentProps, AppState>(
-  makeMapStateToProps
-)(Prompt);
+export default connect<StateProps, void, ComponentProps, AppState>(makeMapStateToProps)(Prompt);
