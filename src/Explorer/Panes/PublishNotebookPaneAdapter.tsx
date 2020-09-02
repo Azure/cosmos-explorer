@@ -52,7 +52,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       submitButtonText: "Publish",
       onClose: () => this.close(),
       onSubmit: () => this.submit(),
-      isSubmitButtonVisible: this.isCodeOfConductAccepted
+      isSubmitButtonHidden: !this.isCodeOfConductAccepted
     };
 
     const publishNotebookPaneProps: PublishNotebookPaneProps = {

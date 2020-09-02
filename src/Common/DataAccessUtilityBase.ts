@@ -6,19 +6,14 @@ import * as ViewModels from "../Contracts/ViewModels";
 import Q from "q";
 import {
   ConflictDefinition,
-  ContainerDefinition,
-  ContainerResponse,
-  DatabaseResponse,
   FeedOptions,
   ItemDefinition,
-  PartitionKeyDefinition,
   QueryIterator,
   Resource,
-  TriggerDefinition
+  TriggerDefinition,
+  OfferDefinition
 } from "@azure/cosmos";
-import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { client } from "./CosmosClient";
-import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
 import { sendCachedDataMessage } from "./MessageHandler";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -202,23 +197,6 @@ export function getPartitionKeyHeader(partitionKeyDefinition: DataModels.Partiti
   return [partitionKeyValue];
 }
 
-export function updateCollection(
-  databaseId: string,
-  collectionId: string,
-  newCollection: DataModels.Collection,
-  options: any = {}
-): Q.Promise<DataModels.Collection> {
-  return Q(
-    client()
-      .database(databaseId)
-      .container(collectionId)
-      .replace(newCollection as ContainerDefinition, options)
-      .then(async (response: ContainerResponse) => {
-        return refreshCachedResources().then(() => response.resource as DataModels.Collection);
-      })
-  );
-}
-
 export function updateDocument(
   collection: ViewModels.CollectionBase,
   documentId: DocumentId,
@@ -244,7 +222,8 @@ export function updateOffer(
   return Q(
     client()
       .offer(offer.id)
-      .replace(newOffer, options)
+      // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
+      .replace((newOffer as unknown) as OfferDefinition, options)
       .then(response => {
         return Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => response.resource);
       })
@@ -454,6 +433,10 @@ export function readCollectionQuotaInfo(
 }
 
 export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
+  if (options.isServerless) {
+    return Q([]); // Reading offers is not supported for serverless accounts
+  }
+
   try {
     if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<DataModels.Offer[]>(MessageTypes.AllOffers, [
@@ -469,6 +452,13 @@ export function readOffers(options: any): Q.Promise<DataModels.Offer[]> {
       .offers.readAll()
       .fetchAll()
       .then(response => response.resources)
+      .catch(error => {
+        // This should be removed when we can correctly identify if an account is serverless when connected using connection string too.
+        if (error.message.includes("Reading or replacing offers is not supported for serverless accounts")) {
+          return [];
+        }
+        throw error;
+      })
   );
 }
 
@@ -485,89 +475,6 @@ export function readOffer(requestedResource: DataModels.Offer, options: any): Q.
       .read(options)
       .then(response => ({ ...response.resource, headers: response.headers }))
   );
-}
-
-export function getOrCreateDatabaseAndCollection(
-  request: DataModels.CreateDatabaseAndCollectionRequest,
-  options: any
-): Q.Promise<DataModels.Collection> {
-  const databaseOptions: any = options && _.omit(options, "sharedOfferThroughput");
-  const {
-    databaseId,
-    databaseLevelThroughput,
-    collectionId,
-    partitionKey,
-    indexingPolicy,
-    uniqueKeyPolicy,
-    offerThroughput,
-    analyticalStorageTtl,
-    hasAutoPilotV2FeatureFlag
-  } = request;
-
-  const createBody: DatabaseRequest = {
-    id: databaseId
-  };
-
-  // TODO: replace when SDK support autopilot
-  const initialHeaders = request.autoPilot
-    ? !hasAutoPilotV2FeatureFlag
-      ? {
-          [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({
-            maxThroughput: request.autoPilot.maxThroughput
-          })
-        }
-      : {
-          [Constants.HttpHeaders.autoPilotTier]: request.autoPilot.autopilotTier
-        }
-    : undefined;
-  if (databaseLevelThroughput) {
-    if (request.autoPilot) {
-      databaseOptions.initialHeaders = initialHeaders;
-    }
-    createBody.throughput = offerThroughput;
-  }
-
-  return Q(
-    client()
-      .databases.createIfNotExists(createBody, databaseOptions)
-      .then(response => {
-        return response.database.containers.create(
-          {
-            id: collectionId,
-            partitionKey: (partitionKey || undefined) as PartitionKeyDefinition,
-            indexingPolicy: indexingPolicy ? indexingPolicy : undefined,
-            uniqueKeyPolicy: uniqueKeyPolicy ? uniqueKeyPolicy : undefined,
-            analyticalStorageTtl: analyticalStorageTtl,
-            throughput: databaseLevelThroughput || request.autoPilot ? undefined : offerThroughput
-          } as ContainerRequest, // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
-          {
-            initialHeaders: databaseLevelThroughput ? undefined : initialHeaders
-          }
-        );
-      })
-      .then(containerResponse => containerResponse.resource as DataModels.Collection)
-      .finally(() => refreshCachedResources(options))
-  );
-}
-
-export function createDatabase(
-  request: DataModels.CreateDatabaseRequest,
-  options: any
-): Q.Promise<DataModels.Database> {
-  var deferred = Q.defer<DataModels.Database>();
-
-  _createDatabase(request, options).then(
-    (createdDatabase: DataModels.Database) => {
-      refreshCachedOffers().then(() => {
-        deferred.resolve(createdDatabase);
-      });
-    },
-    _createDatabaseError => {
-      deferred.reject(_createDatabaseError);
-    }
-  );
-
-  return deferred.promise;
 }
 
 export function refreshCachedOffers(): Q.Promise<void> {
@@ -597,34 +504,4 @@ export function queryConflicts(
     .container(containerId)
     .conflicts.query(query, options);
   return Q(documentsIterator);
-}
-
-function _createDatabase(request: DataModels.CreateDatabaseRequest, options: any = {}): Q.Promise<DataModels.Database> {
-  const { databaseId, databaseLevelThroughput, offerThroughput, autoPilot, hasAutoPilotV2FeatureFlag } = request;
-  const createBody: DatabaseRequest = { id: databaseId };
-  const databaseOptions: any = options && _.omit(options, "sharedOfferThroughput");
-  // TODO: replace when SDK support autopilot
-  const initialHeaders = autoPilot
-    ? !hasAutoPilotV2FeatureFlag
-      ? {
-          [Constants.HttpHeaders.autoPilotThroughputSDK]: JSON.stringify({ maxThroughput: autoPilot.maxThroughput })
-        }
-      : {
-          [Constants.HttpHeaders.autoPilotTier]: autoPilot.autopilotTier
-        }
-    : undefined;
-  if (!!databaseLevelThroughput) {
-    if (autoPilot) {
-      databaseOptions.initialHeaders = initialHeaders;
-    }
-    createBody.throughput = offerThroughput;
-  }
-
-  return Q(
-    client()
-      .databases.create(createBody, databaseOptions)
-      .then((response: DatabaseResponse) => {
-        return refreshCachedResources(databaseOptions).then(() => response.resource);
-      })
-  );
 }

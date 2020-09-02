@@ -114,13 +114,17 @@ export default class TelemetryProcessor {
     return validTimestamp;
   }
 
-  private static getData(data?: any): any {
+  private static getData(data: any = {}): any {
+    if (typeof data === "string") {
+      data = { message: data };
+    }
     return {
       // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
       authType: (window as any).authType,
       subscriptionId: userContext.subscriptionId,
       platform: configContext.platform,
-      ...(data ? data : [])
+      env: process.env.NODE_ENV,
+      ...data
     };
   }
 }
