@@ -852,6 +852,10 @@ export interface SqlContainerResource {
 
   /* The conflict resolution policy for the container. */
   conflictResolutionPolicy?: ConflictResolutionPolicy;
+
+  //TODO: this property is manually added. It should be auto-generated instead. Need to be fixed in the API spec.
+  /* Analytical storage time to live */
+  analyticalStorageTtl?: number;
 }
 
 /* Cosmos DB indexing policy */

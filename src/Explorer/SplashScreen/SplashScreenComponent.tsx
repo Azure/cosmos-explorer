@@ -45,7 +45,7 @@ export class SplashScreenComponent extends React.Component<SplashScreenComponent
                 tabIndex={0}
                 role="button"
               >
-                <img src={item.iconSrc} alt={item.title} />
+                <img src={item.iconSrc} alt="" />
                 <div className="legendContainer">
                   <div className="legend">{item.title}</div>
                   <div className="description">{item.description}</div>
@@ -66,7 +66,7 @@ export class SplashScreenComponent extends React.Component<SplashScreenComponent
                     tabIndex={0}
                     role="button"
                   >
-                    <img src={item.iconSrc} alt={item.title} />
+                    <img src={item.iconSrc} alt="" />
                     <span className="oneLineContent" title={item.info}>
                       {item.title}
                     </span>
@@ -79,7 +79,7 @@ export class SplashScreenComponent extends React.Component<SplashScreenComponent
               <ul>
                 {this.props.recentItems.map((item: SplashScreenItem, index: number) => (
                   <li key={`${item.title}${item.description}${index}`}>
-                    <img src={item.iconSrc} alt={item.title} />
+                    <img src={item.iconSrc} alt="" />
                     <span className="twoLineContent">
                       <Link onClick={item.onClick} title={item.info}>
                         {item.title}
