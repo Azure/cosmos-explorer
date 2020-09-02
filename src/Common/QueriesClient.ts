@@ -10,13 +10,8 @@ import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
 import { userContext } from "../UserContext";
-import {
-  createDocument,
-  deleteDocument,
-  getOrCreateDatabaseAndCollection,
-  queryDocuments,
-  queryDocumentsPage
-} from "./DocumentClientUtilityBase";
+import { createDocument, deleteDocument, queryDocuments, queryDocumentsPage } from "./DocumentClientUtilityBase";
+import { createCollection } from "./dataAccess/createCollection";
 import * as ErrorParserUtility from "./ErrorParserUtility";
 import * as Logger from "./Logger";
 
@@ -41,12 +36,13 @@ export class QueriesClient {
       ConsoleDataType.InProgress,
       "Setting up account for saving queries"
     );
-    return getOrCreateDatabaseAndCollection({
+    return createCollection({
       collectionId: SavedQueries.CollectionName,
+      createNewDatabase: true,
       databaseId: SavedQueries.DatabaseName,
       partitionKey: QueriesClient.PartitionKey,
       offerThroughput: SavedQueries.OfferThroughput,
-      databaseLevelThroughput: undefined
+      databaseLevelThroughput: false
     })
       .then(
         (collection: DataModels.Collection) => {

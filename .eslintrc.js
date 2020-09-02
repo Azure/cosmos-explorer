@@ -41,6 +41,7 @@ module.exports = {
     "@typescript-eslint/no-extraneous-class": "error",
     "no-null/no-null": "error",
     "@typescript-eslint/no-explicit-any": "error",
-    "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }]
+    "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
+    eqeqeq: "error"
   }
 };
