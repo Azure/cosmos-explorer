@@ -3,8 +3,10 @@ import { AuthType } from "../../AuthType";
 import { DatabaseResponse } from "@azure/cosmos";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
 import {
+  CassandraKeyspaceCreateUpdateParameters,
+  GremlinDatabaseCreateUpdateParameters,
+  MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
   CreateUpdateOptions
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
@@ -79,7 +81,7 @@ async function createSqlDatabase(params: DataModels.CreateDatabaseParams): Promi
       userContext.databaseAccount.name,
       params.databaseId
     );
-    if (getResponse && getResponse.properties && getResponse.properties.resource) {
+    if (getResponse?.properties?.resource) {
       throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
     }
   } catch (error) {
@@ -115,7 +117,7 @@ async function createMongoDatabase(params: DataModels.CreateDatabaseParams): Pro
       userContext.databaseAccount.name,
       params.databaseId
     );
-    if (getResponse && getResponse.properties && getResponse.properties.resource) {
+    if (getResponse?.properties?.resource) {
       throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
     }
   } catch (error) {
@@ -125,7 +127,7 @@ async function createMongoDatabase(params: DataModels.CreateDatabaseParams): Pro
   }
 
   const options: CreateUpdateOptions = constructRpOptions(params);
-  const rpPayload: SqlDatabaseCreateUpdateParameters = {
+  const rpPayload: MongoDBDatabaseCreateUpdateParameters = {
     properties: {
       resource: {
         id: params.databaseId
@@ -161,7 +163,7 @@ async function createCassandraKeyspace(params: DataModels.CreateDatabaseParams):
   }
 
   const options: CreateUpdateOptions = constructRpOptions(params);
-  const rpPayload: SqlDatabaseCreateUpdateParameters = {
+  const rpPayload: CassandraKeyspaceCreateUpdateParameters = {
     properties: {
       resource: {
         id: params.databaseId
@@ -187,7 +189,7 @@ async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): 
       userContext.databaseAccount.name,
       params.databaseId
     );
-    if (getResponse && getResponse.properties && getResponse.properties.resource) {
+    if (getResponse?.properties?.resource) {
       throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
     }
   } catch (error) {
@@ -197,7 +199,7 @@ async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): 
   }
 
   const options: CreateUpdateOptions = constructRpOptions(params);
-  const rpPayload: SqlDatabaseCreateUpdateParameters = {
+  const rpPayload: GremlinDatabaseCreateUpdateParameters = {
     properties: {
       resource: {
         id: params.databaseId
@@ -217,8 +219,7 @@ async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): 
 
 async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
   const createBody: DatabaseRequest = { id: params.databaseId };
-  const databaseOptions: RequestOptions = {};
-  // TODO: replace when SDK support autopilot
+
   if (params.databaseLevelThroughput) {
     if (params.autoPilotMaxThroughput) {
       createBody.maxThroughput = params.autoPilotMaxThroughput;
@@ -227,7 +228,7 @@ async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): P
     }
   }
 
-  const response: DatabaseResponse = await client().databases.create(createBody, databaseOptions);
+  const response: DatabaseResponse = await client().databases.create(createBody);
   return response.resource;
 }
 

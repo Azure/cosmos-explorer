@@ -3,8 +3,8 @@
   "offerThroughput": 400,
   "databaseLevelThroughput": false,
   "collectionId": "Persons",
-  "rupmEnabled": false,
-  "partitionKey": { "kind": "Hash", "paths": ["/firstname"] },
+  "createNewDatabase": true,
+  "partitionKey": { "kind": "Hash", "paths": ["/firstname"], "version": 1 },
   "data": [
     {
       "firstname": "Eva",
