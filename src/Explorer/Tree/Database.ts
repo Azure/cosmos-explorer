@@ -397,8 +397,9 @@ export default class Database implements ViewModels.Database {
     return _.find(offers, (offer: DataModels.Offer) => offer.resource === database._self);
   }
 
-  public addSchema(collection: DataModels.Collection): NodeJS.Timeout {
+  public addSchema(collection: DataModels.Collection, interval?: number): NodeJS.Timeout {
     let checkForSchema: NodeJS.Timeout = null;
+    interval = interval || 5000;
 
     if (collection.analyticalStorageTtl != undefined && this.container.isSchemaEnabled()) {
       collection.requestSchema = () => {
@@ -425,7 +426,7 @@ export default class Database implements ViewModels.Database {
             clearInterval(checkForSchema);
             collection.schema = response.data;
           }
-        }, 5000);
+        }, interval);
       };
 
       collection.requestSchema();
