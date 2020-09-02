@@ -401,7 +401,7 @@ export default class Database implements ViewModels.Database {
     let checkForSchema: NodeJS.Timeout = null;
     interval = interval || 5000;
 
-    if (collection.analyticalStorageTtl != undefined && this.container.isSchemaEnabled()) {
+    if (collection.analyticalStorageTtl !== undefined && this.container.isSchemaEnabled()) {
       collection.requestSchema = () => {
         this.junoClient.requestSchema({
           id: null,
@@ -422,7 +422,7 @@ export default class Database implements ViewModels.Database {
             clearInterval(checkForSchema);
           }
 
-          if (response.data != null) {
+          if (response.data !== null) {
             clearInterval(checkForSchema);
             collection.schema = response.data;
           }

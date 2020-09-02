@@ -246,7 +246,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Settings)
     });
 
-    let schemaNode: TreeNode = this.buildSchemaNode(collection);
+    const schemaNode: TreeNode = this.buildSchemaNode(collection);
     if (schemaNode) {
       children.push(schemaNode);
     }
@@ -359,16 +359,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public buildSchemaNode(collection: ViewModels.Collection): TreeNode {
     if (collection.analyticalStorageTtl() == undefined) {
-      return null;
+      return undefined;
     }
 
-    if (
-      collection.schema == undefined ||
-      collection.schema == null ||
-      collection.schema.fields == undefined ||
-      collection.schema.fields == null
-    ) {
-      return null;
+    if (!collection.schema || !collection.schema.fields) {
+      return undefined;
     }
 
     return {
@@ -384,7 +379,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private getSchemaNodes(fields: DataModels.IDataField[]): TreeNode[] {
-    let schema: any = {};
+    const schema: any = {};
 
     //unflatten
     fields.forEach((field: DataModels.IDataField, fieldIndex: number) => {
@@ -392,9 +387,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
       let current: any = {};
       path.forEach((name: string, pathIndex: number) => {
-        if (pathIndex == 0) {
-          if (schema[name] == undefined) {
-            if (pathIndex == path.length - 1) {
+        if (pathIndex === 0) {
+          if (schema[name] === undefined) {
+            if (pathIndex === path.length - 1) {
               schema[name] = fieldProperties;
             } else {
               schema[name] = {};
@@ -402,8 +397,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
           }
           current = schema[name];
         } else {
-          if (current[name] == undefined) {
-            if (pathIndex == path.length - 1) {
+          if (current[name] === undefined) {
+            if (pathIndex === path.length - 1) {
               current[name] = fieldProperties;
             } else {
               current[name] = {};
@@ -415,9 +410,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
     });
 
     function traverse(obj: any): TreeNode[] {
-      let children: TreeNode[] = [];
+      const children: TreeNode[] = [];
 
-      if (obj !== null && !Array.isArray(obj) && typeof obj == "object") {
+      if (obj !== null && !Array.isArray(obj) && typeof obj === "object") {
         Object.entries(obj).forEach(([key, value]) => {
           children.push({ label: key, children: traverse(value) });
         });
