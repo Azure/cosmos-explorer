@@ -3,6 +3,8 @@ import "./base.css";
 import "./default.css";
 
 import { CodeCell, RawCell, Cells, MarkdownCell } from "@nteract/stateful-components";
+import Prompt, { PassedPromptProps } from "./OriginalPrompt";
+// import Prompt, { PassedPromptProps } from "@nteract/stateful-components/src/inputs/prompt";
 import { AzureTheme } from "./AzureTheme";
 
 import { connect } from "react-redux";
@@ -15,6 +17,7 @@ import "./NotebookReadOnlyRenderer.less";
 export interface NotebookRendererProps {
   contentRef: any;
   hideInputs?: boolean;
+  hidePrompt?: boolean;
 }
 
 interface PassedEditorProps {
@@ -38,6 +41,29 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
     loadTransform(this.props as any);
   }
 
+  private renderPrompt(id: string, contentRef: string): JSX.Element {
+    if (this.props.hidePrompt) {
+      return <></>;
+    }
+
+    return <Prompt id={id} contentRef={contentRef}>
+    {(props: PassedPromptProps) => {
+      if (props.status === "busy") {
+        return <React.Fragment>{"[*]"}</React.Fragment>;
+      }
+      if (props.status === "queued") {
+        return <React.Fragment>{"[…]"}</React.Fragment>;
+      }
+      if (typeof props.executionCount === "number") {
+        return (
+          <React.Fragment>{`[${props.executionCount}]`}</React.Fragment>
+        );
+      }
+      return <React.Fragment>{"[ ]"}</React.Fragment>;
+    }}
+  </Prompt>;
+  };
+
   render(): JSX.Element {
     return (
       <div className="NotebookReadOnlyRender">
@@ -46,6 +72,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
             code: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
               <CodeCell id={id} contentRef={contentRef}>
                 {{
+                  prompt: (props: { id: string, contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
                   editor: {
                     codemirror: (props: PassedEditorProps) =>
                       this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />

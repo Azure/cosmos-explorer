@@ -35,13 +35,19 @@ const onInit = async () => {
     const galleryItemJunoResponse = await junoClient.getNotebookInfo(galleryItemId);
     galleryItem = galleryItemJunoResponse.data;
   }
-  render(notebookUrl, backNavigationText, hideInputs, galleryItem, onBackClick);
+
+  // The main purpose of hiding the prompt is to hide everything when hiding inputs.
+  // It is generally not very useful to just hide the prompt.
+  const hidePrompt = hideInputs;
+
+  render(notebookUrl, backNavigationText, hideInputs, hidePrompt, galleryItem, onBackClick);
 };
 
 const render = (
   notebookUrl: string,
   backNavigationText: string,
-  hideInputs: boolean,
+  hideInputs?: boolean,
+  hidePrompt?: boolean,
   galleryItem?: IGalleryItem,
   onBackClick?: () => void
 ) => {
@@ -51,6 +57,7 @@ const render = (
     galleryItem,
     backNavigationText,
     hideInputs,
+    hidePrompt,
     onBackClick: onBackClick,
     onTagClick: undefined
   };
