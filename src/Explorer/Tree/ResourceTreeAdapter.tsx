@@ -409,7 +409,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     });
 
-    function traverse(obj: any): TreeNode[] {
+    const traverse = (obj: any): TreeNode[] => {
       const children: TreeNode[] = [];
 
       if (obj !== null && !Array.isArray(obj) && typeof obj === "object") {
@@ -421,7 +421,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       }
 
       return children;
-    }
+    };
 
     return traverse(schema);
   }
