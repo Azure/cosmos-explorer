@@ -3,19 +3,14 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
-import * as PricingUtils from "../../../Utils/PricingUtils";
 import * as SharedConstants from "../../../Shared/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import InfoColor from "../../../../images/info_color.svg";
 import Warning from "../../../../images/warning.svg";
-import TriangleRight from "../../../../images/Triangle-right.svg";
-import TriangleDown from "../../../../images/Triangle-down.svg";
-import InfoBubble from "../../../../images/info-bubble.svg";
 import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import { PlatformType } from "../../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
 import { updateOffer } from "../../../Common/DocumentClientUtilityBase";
@@ -24,13 +19,7 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import SettingsTab from "../../Tabs/SettingsTabV2";
-import { ThroughputInputAutoPilotV3Component } from "../ThroughputInput/ThroughputInputReactComponentAutoPilotV3";
-import { ThroughputInputComponent } from "../ThroughputInput/ThroughputInputReactComponent";
 import {
-  getAutoPilotV3SpendElement,
-  getAutoPilotV2SpendElement,
-  getEstimatedSpendElement,
-  getEstimatedAutoscaleSpendElement,
   manualToAutoscaleDisclaimerElement,
   ttlWarning,
   indexingPolicyTTLWarningMessage,
@@ -39,28 +28,22 @@ import {
   getThroughputApplyDelayedMessage,
   getThroughputApplyShortDelayMessage,
   getThroughputApplyLongDelayMessage
-} from "./SettingsUtils";
-import { AccessibleElement } from "../AccessibleElement/AccessibleElement";
-import { Int32 } from "../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+} from "./SettingsRenderUtils";
 import { StatefulValue } from "../StatefulValue";
+import { ScaleComponent } from "./SettingsSubComponents/ScaleComponent";
+import {
+  getMaxRUs,
+  getMinRUs,
+  hasDatabaseSharedThroughput,
+  canThroughputExceedMaximumValue,
+  GeospatialConfigType,
+  TtlType,
+  ChangeFeedPolicyToggledState
+} from "./SettingsUtils";
+import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
+import { SubSettingsComponent } from "./SettingsSubComponents/SubSettingsComponent";
 
 type StatefulValuesType = boolean | string | number | DataModels.IndexingPolicy;
-
-enum ChangeFeedPolicyToggledState {
-  Off = "Off",
-  On = "On"
-}
-
-enum TtlType {
-  Off = "off",
-  On = "on",
-  OnNoDefault = "on-nodefault"
-}
-
-enum GeospatialConfigType {
-  Geography = "Geography",
-  Geometry = "Geometry"
-}
 
 interface ButtonV2 {
   isVisible: () => boolean;
@@ -107,18 +90,13 @@ interface SettingsComponentState {
   analyticalStorageTtlSelection: StatefulValue<TtlType>;
   analyticalStorageTtlSeconds: StatefulValue<number>;
   changeFeedPolicyToggled: StatefulValue<ChangeFeedPolicyToggledState>;
-  geospatialVisible: boolean;
   isIndexingPolicyEditorInitializing: boolean;
-  conflictResolutionExpanded: boolean;
   indexingPolicyElementFocused: boolean;
   notificationStatusInfo: JSX.Element;
-  scaleExpanded: boolean;
-  settingsExpanded: boolean;
   ttlOffFocused: boolean;
   ttlOnDefaultFocused: boolean;
   ttlOnFocused: boolean;
   userCanChangeProvisioningTypes: boolean;
-  autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   selectedAutoPilotTier: DataModels.AutopilotTier;
   isAutoPilotSelected: boolean;
   autoPilotThroughput: StatefulValue<number>;
@@ -131,40 +109,19 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   public saveSettingsButton: ButtonV2;
   public discardSettingsChangesButton: ButtonV2;
 
-  public changeFeedPolicyOffId: string;
-  public changeFeedPolicyOnId: string;
-  public conflictResolutionPolicyModeCustom: string;
-  public conflictResolutionPolicyModeCRDT: string;
-  public conflictResolutionPolicyModeLWW: string;
-  public rupmOnId: string;
-  public rupmOffId: string;
-  public ttlOffId: string;
-  public ttlOnId: string;
-  public ttlOnNoDefaultId: string;
   public isAnalyticalStorageEnabled: boolean;
   public testId: string;
-  public throughputAutoPilotRadioId: string;
-  public throughputProvisionedRadioId: string;
-  public throughputModeRadioName: string;
   private collection: ViewModels.Collection;
   private container: Explorer;
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
-  private shouldShowIndexingPolicyEditor: boolean;
   private initialChangeFeedLoggingState: ChangeFeedPolicyToggledState;
   private hasAutoPilotV2FeatureFlag: boolean;
-  private canExceedMaximumValue: boolean;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
-  private ttlVisible: boolean;
-  private costsVisible: boolean;
-  private isTryCosmosDBSubscription: boolean;
-  private shouldDisplayPortalUsePrompt: boolean;
-  private maxRUsText: string;
-  private partitionKeyValue: string;
-  private partitionKeyName: string;
   private tabId: string;
   private statefulValuesArray = Object.values(StatefulValueNames) as string[];
+  private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
 
   constructor(props: SettingsComponentProps) {
     super(props);
@@ -172,30 +129,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.tabId = this.props.settingsTab.getTabId();
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection && this.collection.container;
-    this.ttlOffId = `ttlOffId${this.tabId}`;
-    this.ttlOnNoDefaultId = `ttlOnNoDefault${this.tabId}`;
-    this.ttlOnId = `ttlOn${this.tabId}`;
-    this.changeFeedPolicyOffId = `changeFeedOff${this.tabId}`;
-    this.changeFeedPolicyOnId = `changeFeedOn${this.tabId}`;
-    this.rupmOnId = `rupmOn${this.tabId}`;
-    this.rupmOffId = `rupmOff${this.tabId}`;
-    this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.tabId}`;
-    this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.tabId}`;
-    this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.tabId}`;
     this.testId = `settingsThroughputValue${this.tabId}`;
-    this.throughputAutoPilotRadioId = `editDatabaseThroughput-autoPilotRadio${this.tabId}`;
-    this.throughputProvisionedRadioId = `editDatabaseThroughput-manualRadio${this.tabId}`;
-    this.throughputModeRadioName = `throughputModeRadio${this.tabId}`;
     this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
-    this.shouldShowIndexingPolicyEditor =
-      this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
     this.initialChangeFeedLoggingState = this.collection.rawDataModel?.changeFeedPolicy
       ? ChangeFeedPolicyToggledState.On
       : ChangeFeedPolicyToggledState.Off;
 
     this.hasAutoPilotV2FeatureFlag = this.container.hasAutoPilotV2FeatureFlag();
-    this.canExceedMaximumValue = this.container.canExceedMaximumValue();
     this.changeFeedPolicyVisible =
       this.collection && this.collection.container.isFeatureEnabled(Constants.Features.enableChangeFeedPolicy);
     // Mongo container with system partition key still treat as "Fixed"
@@ -203,22 +144,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.isFixedContainer =
       !this.collection.partitionKey ||
       (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
-    this.ttlVisible = (this.container && !this.container.isPreferredApiCassandra()) || false;
-    this.costsVisible = !this.container.isEmulator;
-    this.isTryCosmosDBSubscription = (this.container && this.container.isTryCosmosDBSubscription()) || false;
-    this.shouldDisplayPortalUsePrompt =
-      this.container.getPlatformType() === PlatformType.Hosted && !!this.collection.partitionKey;
-    this.maxRUsText = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million.toLocaleString();
-    this.partitionKeyValue = "/" + this.collection.partitionKeyProperty;
-    this.partitionKeyName = this.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
 
     this.state = {
       isIndexingPolicyEditorInitializing: false,
-      geospatialVisible: this.container.isPreferredApiDocumentDB(),
       changeFeedPolicyToggled: new StatefulValue(this.initialChangeFeedLoggingState),
-      scaleExpanded: true,
-      settingsExpanded: true,
-      conflictResolutionExpanded: true,
       throughput: new StatefulValue(),
       conflictResolutionPolicyMode: new StatefulValue(),
       conflictResolutionPolicyPath: new StatefulValue(),
@@ -233,7 +162,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isAutoPilotSelected: false,
       wasAutopilotOriginallySet: false,
       selectedAutoPilotTier: undefined,
-      autoPilotTiersList: undefined,
       autoPilotThroughput: new StatefulValue(AutoPilotUtils.minAutoPilotThroughput),
       ttlOffFocused: false,
       ttlOnDefaultFocused: false,
@@ -250,7 +178,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           return false;
         }
 
-        const isCollectionThroughput = !this.hasDatabaseSharedThroughput();
+        const isCollectionThroughput = !hasDatabaseSharedThroughput(this.collection);
         if (isCollectionThroughput) {
           if (this.hasProvisioningTypeChanged()) {
             return true;
@@ -271,12 +199,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               return false;
             }
 
-            const isThroughputLessThanMinRus = this.state.throughput.current < this.getMinRUs();
+            const isThroughputLessThanMinRus =
+              this.state.throughput.current < getMinRUs(this.collection, this.container);
             if (isThroughputLessThanMinRus) {
               return false;
             }
 
-            const isThroughputGreaterThanMaxRus = this.state.throughput.current > this.getMaxRUs();
+            const isThroughputGreaterThanMaxRus =
+              this.state.throughput.current > getMaxRUs(this.collection, this.container);
             const isEmulator = this.container.isEmulator;
             if (isThroughputGreaterThanMaxRus && isEmulator) {
               return false;
@@ -288,7 +218,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
             const isThroughputMoreThan1Million =
               this.state.throughput.current > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-            if (!this.canThroughputExceedMaximumValue() && isThroughputMoreThan1Million) {
+            if (!canThroughputExceedMaximumValue(this.collection, this.container) && isThroughputMoreThan1Million) {
               return false;
             }
 
@@ -513,11 +443,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       if (offerAutopilotSettings && offerAutopilotSettings.tier) {
         if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
           const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
+          this.autoPilotTiersList = availableAutoPilotTiers;
           this.setState({
             isAutoPilotSelected: true,
             wasAutopilotOriginallySet: true,
-            selectedAutoPilotTier: offerAutopilotSettings.tier,
-            autoPilotTiersList: availableAutoPilotTiers
+            selectedAutoPilotTier: offerAutopilotSettings.tier
           });
         }
       }
@@ -532,13 +462,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return true;
     }
     return false;
-  };
-
-  private overrideWithAutoPilotSettings = (): boolean => {
-    if (this.hasAutoPilotV2FeatureFlag) {
-      return false;
-    }
-    return this.hasProvisioningTypeChanged() && this.state.wasAutopilotOriginallySet;
   };
 
   private overrideWithProvisionedThroughputSettings = (): boolean => {
@@ -568,81 +491,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return false;
   };
 
-  private getAutoPilotUsageCost = (): JSX.Element => {
-    const autoPilot = !this.hasAutoPilotV2FeatureFlag
-      ? this.state.autoPilotThroughput.current
-      : this.state.selectedAutoPilotTier;
-    if (!autoPilot) {
-      return <></>;
-    }
-    return !this.hasAutoPilotV2FeatureFlag
-      ? getAutoPilotV3SpendElement(autoPilot, false /* isDatabaseThroughput */)
-      : getAutoPilotV2SpendElement(autoPilot, false /* isDatabaseThroughput */);
-  };
-
-  private getRequestUnitsUsageCost = (): JSX.Element => {
-    const account = this.container.databaseAccount();
-    if (!account) {
-      return <></>;
-    }
-
-    const serverId: string = this.container.serverId();
-    const offerThroughput: number = this.state.throughput.current;
-    const rupmEnabled = this.state.rupm.current === Constants.RUPMStates.on;
-
-    const regions =
-      (account && account.properties && account.properties.readLocations && account.properties.readLocations.length) ||
-      1;
-    const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
-
-    let estimatedSpend: JSX.Element;
-
-    if (!this.state.isAutoPilotSelected) {
-      estimatedSpend = getEstimatedSpendElement(
-        // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
-        this.overrideWithAutoPilotSettings() ? this.state.autoPilotThroughput.current : offerThroughput,
-        serverId,
-        regions,
-        multimaster,
-        rupmEnabled
-      );
-    } else {
-      estimatedSpend = getEstimatedAutoscaleSpendElement(
-        this.state.autoPilotThroughput.current,
-        serverId,
-        regions,
-        multimaster
-      );
-    }
-    return estimatedSpend;
-  };
-
-  private isAutoScaleEnabled = (): boolean => {
-    const accountCapabilities: DataModels.Capability[] =
-      this.container &&
-      this.container.databaseAccount() &&
-      this.container.databaseAccount().properties &&
-      this.container.databaseAccount().properties.capabilities;
-    const enableAutoScaleCapability =
-      accountCapabilities &&
-      accountCapabilities.find((capability: DataModels.Capability) => {
-        return (
-          capability &&
-          capability.name &&
-          capability.name.toLowerCase() === Constants.CapabilityNames.EnableAutoScale.toLowerCase()
-        );
-      });
-
-    return !!enableAutoScaleCapability;
-  };
-
-  private hasDatabaseSharedThroughput = (): boolean => {
-    const database: ViewModels.Database = this.collection.getDatabase();
-    return database && database.isDatabaseShared && !this.collection.offer();
-  };
-
   private shouldShowKeyspaceSharedThroughputMessage = (): boolean => {
-    return this.container && this.container.isPreferredApiCassandra() && this.hasDatabaseSharedThroughput();
+    return this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
   };
 
   private hasConflictResolution = (): boolean => {
@@ -655,166 +505,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.conflictResolutionPolicy &&
         !!this.collection.conflictResolutionPolicy()) ||
       false
-    );
-  };
-
-  private isRupmVisible = (): boolean => {
-    if (this.container.isEmulator) {
-      return false;
-    }
-    if (this.container.isFeatureEnabled(Constants.Features.enableRupm)) {
-      return true;
-    }
-    for (let i = 0, len = this.container.databases().length; i < len; i++) {
-      for (let j = 0, len2 = this.container.databases()[i].collections().length; j < len2; j++) {
-        const collectionOffer = this.container
-          .databases()
-          // eslint-disable-next-line no-unexpected-multiline
-          [i].collections()
-          // eslint-disable-next-line no-unexpected-multiline
-          [j].offer();
-        if (collectionOffer && collectionOffer.content && collectionOffer.content.offerIsRUPerMinuteThroughputEnabled) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
-  private canThroughputExceedMaximumValue = (): boolean => {
-    const isPublicAzurePortal: boolean =
-      this.container.getPlatformType() === PlatformType.Portal && !this.container.isRunningOnNationalCloud();
-    const hasPartitionKey = !!this.collection.partitionKey;
-
-    return isPublicAzurePortal && hasPartitionKey;
-  };
-
-  private getMinRUs = (): number => {
-    if (this.isTryCosmosDBSubscription) {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-    }
-
-    const offerContent =
-      this.collection && this.collection.offer && this.collection.offer() && this.collection.offer().content;
-
-    if (offerContent && offerContent.offerAutopilotSettings) {
-      return 400;
-    }
-
-    const collectionThroughputInfo: DataModels.OfferThroughputInfo =
-      offerContent && offerContent.collectionThroughputInfo;
-
-    if (
-      collectionThroughputInfo &&
-      collectionThroughputInfo.minimumRUForCollection &&
-      collectionThroughputInfo.minimumRUForCollection > 0
-    ) {
-      return collectionThroughputInfo.minimumRUForCollection;
-    }
-
-    const numPartitions =
-      (collectionThroughputInfo && collectionThroughputInfo.numPhysicalPartitions) ||
-      this.collection.quotaInfo().numPartitions;
-
-    if (!numPartitions || numPartitions === 1) {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-    }
-
-    const baseRU = SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-
-    const quotaInKb = this.collection.quotaInfo().collectionSize;
-    const quotaInGb = PricingUtils.usageInGB(quotaInKb);
-
-    const perPartitionGBQuota: number = Math.max(10, quotaInGb / numPartitions);
-    const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
-
-    return Math.max(baseRU, baseRUbyPartitions);
-  };
-
-  private getMaxRUs = (): number => {
-    const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription;
-    if (isTryCosmosDBSubscription) {
-      return Constants.TryCosmosExperience.maxRU;
-    }
-
-    const numPartitionsFromOffer: number =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.collectionThroughputInfo &&
-      this.collection.offer().content.collectionThroughputInfo.numPhysicalPartitions;
-
-    const numPartitionsFromQuotaInfo: number = this.collection && this.collection.quotaInfo().numPartitions;
-
-    const numPartitions = numPartitionsFromOffer || numPartitionsFromQuotaInfo || 1;
-
-    return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
-  };
-
-  private getMaxRUThroughputInputLimit = (): number => {
-    if (this.container && this.container.getPlatformType() === PlatformType.Hosted && this.collection.partitionKey) {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-    }
-
-    return this.getMaxRUs();
-  };
-
-  private getThroughputTitle = (): string => {
-    if (this.state.isAutoPilotSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag);
-    }
-
-    const minThroughput: string = this.getMinRUs().toLocaleString();
-    const maxThroughput: string =
-      this.canThroughputExceedMaximumValue() && !this.isFixedContainer
-        ? "unlimited"
-        : this.getMaxRUs().toLocaleString();
-    return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
-  };
-
-  private getThroughputAriaLabel = (): string => {
-    return this.getThroughputTitle() + this.getRequestUnitsUsageCost();
-  };
-
-  private getStorageCapacityTitle = (): JSX.Element => {
-    // Mongo container with system partition key still treat as "Fixed"
-    const isFixed =
-      !this.collection.partitionKey ||
-      (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
-    const capacity: string = isFixed ? "Fixed" : "Unlimited";
-    return (
-      <span>
-        Storage capacity <br />
-        <b>{capacity}</b>
-      </span>
-    );
-  };
-
-  private getPartitionKeyVisible = (): boolean => {
-    if (this.container.isPreferredApiCassandra() || this.container.isPreferredApiTable()) {
-      return false;
-    }
-
-    if (!this.collection.partitionKeyProperty) {
-      return false;
-    }
-
-    if (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey) {
-      return false;
-    }
-
-    return true;
-  };
-
-  private getLowerCasePartitionKeyName = (): string => this.partitionKeyName.toLowerCase();
-
-  private isLargePartitionKeyEnabled = (): boolean => {
-    return (
-      !!this.collection.partitionKey &&
-      !!this.collection.partitionKey.version &&
-      this.collection.partitionKey.version >= 2
     );
   };
 
@@ -831,12 +521,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private getWarningMessage = (): JSX.Element => {
     const throughputExceedsBackendLimits: boolean =
-      this.canThroughputExceedMaximumValue() &&
-      this.getMaxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+      canThroughputExceedMaximumValue(this.collection, this.container) &&
+      getMaxRUs(this.collection, this.container) <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
       this.state.throughput.current > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
 
     const throughputExceedsMaxValue: boolean =
-      !this.container.isEmulator && this.state.throughput.current > this.getMaxRUs();
+      !this.container.isEmulator && this.state.throughput.current > getMaxRUs(this.collection, this.container);
 
     const ttlOptionDirty: boolean = this.state.timeToLive.isDirty();
     const ttlOrIndexingPolicyFieldsDirty: boolean =
@@ -1071,7 +761,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         }
 
         if (
-          this.getMaxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+          getMaxRUs(this.collection, this.container) <=
+            SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
           newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
           this.container !== undefined
         ) {
@@ -1206,25 +897,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ indexingPolicyContent: indexingPolicyContent });
   };
 
-  private toggleScale = (): void => {
-    this.setState({ scaleExpanded: !this.state.scaleExpanded });
-  };
-
-  private toggleSettings = (): void => {
-    if (this.hasDatabaseSharedThroughput()) {
-      return;
-    }
-    this.setState({ settingsExpanded: !this.state.settingsExpanded }, () => {
-      if (this.state.settingsExpanded && !this.state.isIndexingPolicyEditorInitializing) {
-        this.createIndexingPolicyEditor();
-      }
-    });
-  };
-
-  private toggleConflictResolution = (): void => {
-    this.setState({ conflictResolutionExpanded: !this.state.conflictResolutionExpanded });
-  };
-
   private onTtlOffKeyPress = (): void => {
     this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.Off });
   };
@@ -1235,6 +907,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onTtlOnKeyPress = (): void => {
     this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.On });
+  };
+
+  private onTtlOffKeyFocus = (): void => {
+    this.setState({ ttlOffFocused: true, ttlOnFocused: false, ttlOnDefaultFocused: false });
+  };
+
+  private onTtlOnNoDefaultKeyFocus = (): void => {
+    this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
+  };
+
+  private onTtlOnKeyFocus = (): void => {
+    this.setState({ ttlOffFocused: false, ttlOnFocused: true, ttlOnDefaultFocused: false });
   };
 
   private onGeographyKeyPress = (): void => {
@@ -1737,787 +1421,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-  private getThroughputInputComponent = (): JSX.Element => {
-    return this.hasAutoPilotV2FeatureFlag ? (
-      <ThroughputInputComponent
-        testId={this.testId}
-        showAsMandatory={false}
-        isFixed={false}
-        throughput={this.state.throughput}
-        setThroughput={this.setThroughput}
-        minimum={this.getMinRUs()}
-        maximum={this.getMaxRUThroughputInputLimit()}
-        isEnabled={!this.hasDatabaseSharedThroughput()}
-        canExceedMaximumValue={this.canThroughputExceedMaximumValue() || this.canExceedMaximumValue}
-        label={this.getThroughputTitle()}
-        ariaLabel={this.getThroughputAriaLabel()}
-        costsVisible={this.costsVisible}
-        requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
-        throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
-        throughputProvisionedRadioId={this.throughputProvisionedRadioId}
-        throughputModeRadioName={this.throughputModeRadioName}
-        showAutoPilot={this.state.userCanChangeProvisioningTypes}
-        isAutoPilotSelected={this.state.isAutoPilotSelected}
-        setAutoPilotSelected={this.setAutoPilotSelected}
-        autoPilotTiersList={this.state.autoPilotTiersList}
-        selectedAutoPilotTier={this.state.selectedAutoPilotTier}
-        setAutoPilotTier={this.setAutoPilotTier}
-        autoPilotUsageCost={this.getAutoPilotUsageCost()}
-      />
-    ) : (
-      <ThroughputInputAutoPilotV3Component
-        testId={this.testId}
-        throughput={this.state.throughput}
-        setThroughput={this.setThroughput}
-        minimum={this.getMinRUs()}
-        maximum={this.getMaxRUThroughputInputLimit()}
-        isEnabled={!this.hasDatabaseSharedThroughput()}
-        canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
-        label={this.getThroughputTitle()}
-        ariaLabel={this.getThroughputAriaLabel()}
-        costsVisible={this.costsVisible}
-        requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
-        throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
-        throughputProvisionedRadioId={this.throughputProvisionedRadioId}
-        throughputModeRadioName={this.throughputModeRadioName}
-        showAutoPilot={this.state.userCanChangeProvisioningTypes}
-        isAutoPilotSelected={this.state.isAutoPilotSelected}
-        setAutoPilotSelected={this.setAutoPilotSelected}
-        maxAutoPilotThroughput={this.state.autoPilotThroughput}
-        setMaxAutoPilotThroughput={this.setMaxAutoPilotThroughput}
-        autoPilotUsageCost={this.getAutoPilotUsageCost()}
-        overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
-        overrideWithProvisionedThroughputSettings={this.overrideWithProvisionedThroughputSettings()}
-      />
-    );
-  };
-
-  private getRupmComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">RU/m</div>
-        <div className="tabs" aria-label="RU/m">
-          <div className="tab">
-            <label
-              htmlFor={this.rupmOnId}
-              className={`${this.state.rupm.isDirty() ? "dirty" : ""} ${
-                this.state.rupm.current === Constants.RUPMStates.on ? "selectedRadio" : "unselectedRadio"
-              }`}
-            >
-              On
-            </label>
-            <input
-              type="radio"
-              name="rupm"
-              value={Constants.RUPMStates.on}
-              className="radio"
-              onChange={this.onRupmChange}
-              id={this.rupmOnId}
-              checked={this.state.rupm.current === Constants.RUPMStates.on}
-            />
-          </div>
-          <div className="tab">
-            <label
-              htmlFor={this.rupmOffId}
-              className={`${this.state.rupm.isDirty() ? "dirty" : ""} ${
-                this.state.rupm.current === Constants.RUPMStates.off ? "selectedRadio" : "unselectedRadio"
-              }`}
-            >
-              Off
-            </label>
-            <input
-              type="radio"
-              name="rupm"
-              value={Constants.RUPMStates.off}
-              className="radio"
-              id={this.rupmOffId}
-              onChange={this.onRupmChange}
-              checked={this.state.rupm.current === Constants.RUPMStates.off}
-            />
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  private getScaleComponent = (): JSX.Element => {
-    return (
-      <>
-        <AccessibleElement
-          as="div"
-          className="scaleDivison"
-          onClick={this.toggleScale}
-          onActivated={this.toggleScale}
-          aria-expanded={this.state.scaleExpanded}
-          role="button"
-          tabIndex={0}
-          aria-label="Scale"
-          aria-controls="scaleRegion"
-        >
-          {!this.state.scaleExpanded && (
-            <span className="themed-images" id="ExpandChevronRightScale">
-              <img
-                className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon "
-                src={TriangleRight}
-                alt="Show scale properties"
-              />
-            </span>
-          )}
-
-          {this.state.scaleExpanded && (
-            <span className="themed-images" id="ExpandChevronDownScale">
-              <img className="imgiconwidth ssExpandCollapseIcon " src={TriangleDown} alt="Hide scale properties" />
-            </span>
-          )}
-
-          <span className="scaleSettingTitle">Scale</span>
-        </AccessibleElement>
-
-        {this.state.scaleExpanded && (
-          <div className="ssTextAllignment" id="scaleRegion">
-            {!this.isAutoScaleEnabled() && (
-              <>
-                {this.getThroughputInputComponent()}
-                <div className="storageCapacityTitle throughputStorageValue">{this.getStorageCapacityTitle()}</div>
-              </>
-            )}
-
-            {this.isRupmVisible() && this.getRupmComponent()}
-
-            {/*<!-- TODO: Replace link with call to the Azure Support blade -->*/}
-            {this.isAutoScaleEnabled() && (
-              <div>
-                <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
-                <input className="formReadOnly collid-white" readOnly aria-label="Throughput input" />
-                <div className="autoScaleDescription">
-                  Your account has custom settings that prevents setting throughput at the container level. Please work
-                  with your Cosmos DB engineering team point of contact to make changes.
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </>
-    );
-  };
-
-  private getConflictResolutionModeComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">Mode</div>
-        <div className="tabs" aria-label="Mode" role="radiogroup">
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ConflictResolutionLWWLabel"
-              tabIndex={0}
-              role="radio"
-              aria-checked={
-                this.state.conflictResolutionPolicyMode.current !== DataModels.ConflictResolutionMode.LastWriterWins
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.state.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
-                this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onConflictResolutionLWWKeyPress}
-            >
-              Last Write Wins (default)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="conflictresolution"
-              value={DataModels.ConflictResolutionMode.LastWriterWins}
-              className="radio"
-              id={this.conflictResolutionPolicyModeLWW}
-              onChange={this.onConflictResolutionChange}
-              checked={
-                this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins
-              }
-            />
-          </div>
-
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ConflictResolutionCutomLabel"
-              tabIndex={0}
-              role="radio"
-              aria-checked={
-                this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.state.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
-                this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onConflictResolutionCustomKeyPress}
-            >
-              Merge Procedure (custom)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="conflictresolution"
-              value={DataModels.ConflictResolutionMode.Custom}
-              className="radio"
-              id={this.conflictResolutionPolicyModeCustom}
-              onChange={this.onConflictResolutionChange}
-              checked={this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom}
-            />
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  private getConflictResolutionLWWComponent = (): JSX.Element => {
-    return (
-      <>
-        <p className="formTitle">
-          Conflict Resolver Property
-          <span className="infoTooltip" role="tooltip" tabIndex={0}>
-            <img className="infoImg" src={InfoBubble} alt="More information" />
-            <span className="tooltiptext infoTooltipWidth">
-              Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW)
-              based conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts
-              to decide the winner for the conflicting versions of the document. Specify your own integer property if
-              you want to override the default timestamp based conflict resolution.
-            </span>
-          </span>
-        </p>
-        <p>
-          <input
-            type="text"
-            aria-label="Document path for conflict resolution"
-            value={
-              this.state.conflictResolutionPolicyPath.current === undefined
-                ? ""
-                : this.state.conflictResolutionPolicyPath.current
-            }
-            className={`${this.state.conflictResolutionPolicyPath.isDirty() ? "dirty" : ""}`}
-            onChange={this.onConflictResolutionPolicyPathChange}
-          />
-        </p>
-      </>
-    );
-  };
-
-  private getConflictResolutionCustomComponent = (): JSX.Element => {
-    return (
-      <>
-        <p className="formTitle">
-          Stored procedure
-          <span className="infoTooltip" role="tooltip" tabIndex={0}>
-            <img className="infoImg" src={InfoBubble} alt="More information" />
-            <span className="tooltiptext infoTooltipWidth">
-              Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can
-              write application defined logic to determine the winner of the conflicting versions of a document. The
-              stored procedure will get executed transactionally, exactly once, on the server side. If you do not
-              provide a stored procedure, the conflicts will be populated in the
-              <a
-                className="linkDarkBackground"
-                href="https://aka.ms/dataexplorerconflics"
-                rel="noreferrer"
-                target="_blank"
-              >
-                {` conflicts feed`}
-              </a>
-              . You can update/re-register the stored procedure at any time.
-            </span>
-          </span>
-        </p>
-        <p>
-          <input
-            type="text"
-            aria-label="Stored procedure name for conflict resolution"
-            value={
-              this.state.conflictResolutionPolicyProcedure.current === undefined
-                ? ""
-                : this.state.conflictResolutionPolicyProcedure.current
-            }
-            className={`${this.state.conflictResolutionPolicyProcedure.isDirty() ? "dirty" : ""}`}
-            onChange={this.onConflictResolutionPolicyProcedureChange}
-          />
-        </p>
-      </>
-    );
-  };
-
-  private getConflictResolutionComponent = (): JSX.Element => {
-    return (
-      <>
-        <AccessibleElement
-          as="div"
-          className="formTitle"
-          onClick={this.toggleConflictResolution}
-          onActivated={this.toggleConflictResolution}
-          aria-expanded={this.state.conflictResolutionExpanded}
-          role="button"
-          tabIndex={0}
-          aria-label="Conflict Resolution"
-          aria-controls="conflictResolutionRegion"
-        >
-          {!this.state.conflictResolutionExpanded && (
-            <span className="themed-images" id="ExpandChevronRightConflictResolution">
-              <img
-                className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon"
-                src={TriangleRight}
-                alt="Show conflict resolution"
-              />
-            </span>
-          )}
-
-          {this.state.conflictResolutionExpanded && (
-            <span className="themed-images" id="ExpandChevronDownConflictResolution">
-              <img className="imgiconwidth ssExpandCollapseIcon" src={TriangleDown} alt="Show conflict resolution" />
-            </span>
-          )}
-          <span className="scaleSettingTitle">Conflict resolution</span>
-        </AccessibleElement>
-
-        {this.state.conflictResolutionExpanded && (
-          <div id="conflictResolutionRegion" className="ssTextAllignment">
-            {this.getConflictResolutionModeComponent()}
-
-            {this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins &&
-              this.getConflictResolutionLWWComponent()}
-
-            {this.state.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom &&
-              this.getConflictResolutionCustomComponent()}
-          </div>
-        )}
-      </>
-    );
-  };
-
-  private getTtlComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">Time to Live</div>
-        <div className="tabs disableFocusDefaults" aria-label="Time to Live" role="radiogroup">
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              tabIndex={0}
-              aria-label="ttlOffLable"
-              role="radio"
-              aria-checked={this.state.timeToLive.current === TtlType.Off ? "true" : false}
-              className={`ttlIndexingPolicyFocusElement ${this.state.timeToLive.isDirty() ? "dirty" : ""} ${
-                this.state.timeToLive.current === TtlType.Off ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.onTtlOffKeyPress}
-              onFocus={() => {
-                this.setState({ ttlOffFocused: true, ttlOnFocused: false, ttlOnDefaultFocused: false });
-              }}
-            >
-              Off
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="ttl"
-              value={TtlType.Off}
-              className="radio"
-              id={this.ttlOffId}
-              checked={this.state.timeToLive.current === TtlType.Off}
-              onChange={this.onTimeToLiveChange}
-            />
-          </div>
-
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              tabIndex={0}
-              aria-label="ttlOnNoDefaultLabel"
-              role="radio"
-              aria-checked={this.state.timeToLive.current === TtlType.OnNoDefault ? "true" : "false"}
-              className={`ttlIndexingPolicyFocusElement ${this.state.timeToLive.isDirty() ? "dirty" : ""} ${
-                this.state.timeToLive.current === TtlType.OnNoDefault ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.onTtlOnNoDefaultKeyPress}
-              onFocus={() => {
-                this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
-              }}
-            >
-              On (no default)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="ttl"
-              value={TtlType.OnNoDefault}
-              className="radio"
-              id={this.ttlOnNoDefaultId}
-              checked={this.state.timeToLive.current === TtlType.OnNoDefault}
-              onChange={this.onTimeToLiveChange}
-            />
-          </div>
-
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              tabIndex={0}
-              aria-label="ttlOnLabel"
-              role="radio"
-              aria-checked={this.state.timeToLive.current === TtlType.On ? "true" : "false"}
-              className={`ttlIndexingPolicyFocusElement ${this.state.timeToLive.isDirty() ? "dirty" : ""} ${
-                this.state.timeToLive.current === TtlType.On ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.onTtlOnKeyPress}
-              onFocus={() => {
-                this.setState({ ttlOffFocused: false, ttlOnFocused: true, ttlOnDefaultFocused: false });
-              }}
-            >
-              On
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="ttl"
-              value={TtlType.On}
-              className="radio"
-              id={this.ttlOnId}
-              checked={this.state.timeToLive.current === TtlType.On}
-              onChange={this.onTimeToLiveChange}
-            />
-          </div>
-        </div>
-
-        {this.state.timeToLive.current === TtlType.On && (
-          <>
-            <input
-              type="number"
-              required
-              min="1"
-              max={Int32.Max}
-              aria-label="Time to live in seconds"
-              value={this.state.timeToLiveSeconds.current}
-              className={`dirtyTextbox ${this.state.timeToLiveSeconds.isDirty() ? "dirty" : ""}`}
-              disabled={this.state.timeToLive.current !== TtlType.On}
-              onChange={this.onTimeToLiveSecondsChange}
-            />
-            {` second(s)`}
-          </>
-        )}
-      </>
-    );
-  };
-
-  private getGeoSpatialComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">Geospatial Configuration</div>
-
-        <div className="tabs disableFocusDefaults" aria-label="Geospatial Configuration" role="radiogroup">
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="GeospatialGeographyLabel"
-              tabIndex={0}
-              role="radio"
-              aria-checked={
-                this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography.toLowerCase()
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.state.geospatialConfigType.isDirty() ? "dirty" : ""} ${
-                this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography.toLowerCase()
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onGeographyKeyPress}
-            >
-              Geography
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="geospatial"
-              id="geography"
-              className="radio"
-              value={GeospatialConfigType.Geography}
-              onChange={this.onGeoSpatialConfigTypeChange}
-              checked={this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography}
-            />
-          </div>
-
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="GeospatialGeometryLabel"
-              tabIndex={0}
-              role="radio"
-              aria-checked={
-                this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry.toLowerCase()
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.state.geospatialConfigType.isDirty() ? "dirty" : ""} ${
-                this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry.toLowerCase()
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onGeometryKeyPress}
-            >
-              Geometry
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="geospatial"
-              id="geometry"
-              className="radio"
-              value={GeospatialConfigType.Geometry}
-              onChange={this.onGeoSpatialConfigTypeChange}
-              checked={this.state.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry}
-            />
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  private getAnalyticalStorageTtlComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">Analytical Storage Time to Live</div>
-        <div className="tabs disableFocusDefaults" aria-label="Analytical Storage Time to Live" role="radiogroup">
-          <div className="tab">
-            <label tabIndex={0} role="radio" className="disabledRadio">
-              Off
-            </label>
-          </div>
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="AnalyticalStorageTtlOnNoDefaultLabel"
-              tabIndex={0}
-              role="radio"
-              aria-checked={this.state.analyticalStorageTtlSelection.current === TtlType.OnNoDefault ? "true" : "false"}
-              className={`${this.state.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
-                this.state.analyticalStorageTtlSelection.current === TtlType.OnNoDefault
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onAnalyticalStorageTtlOnNoDefaultKeyPress}
-            >
-              On (no default)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="analyticalStorageTtl"
-              value={TtlType.OnNoDefault}
-              className="radio"
-              id="analyticalStorageTtlOnNoDefaultId"
-              onChange={this.onAnalyticalStorageTtlSelectionChange}
-              checked={this.state.analyticalStorageTtlSelection.current === TtlType.OnNoDefault}
-            />
-          </div>
-
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="AnalyticalStorageTtlOnLabel"
-              tabIndex={0}
-              role="radio"
-              aria-checked={this.state.analyticalStorageTtlSelection.current === TtlType.On ? "true" : "false"}
-              className={`${this.state.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
-                this.state.analyticalStorageTtlSelection.current === TtlType.On ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.onAnalyticalStorageTtlOnKeyPress}
-            >
-              On
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="analyticalStorageTtl"
-              value={TtlType.On}
-              className="radio"
-              id="analyticalStorageTtlOnId"
-              onChange={this.onAnalyticalStorageTtlSelectionChange}
-              checked={this.state.analyticalStorageTtlSelection.current === TtlType.On}
-            />
-          </div>
-        </div>
-        {this.state.analyticalStorageTtlSelection.current === TtlType.On && (
-          <>
-            <input
-              type="number"
-              required
-              min="1"
-              max="2147483647"
-              value={
-                this.state.analyticalStorageTtlSeconds.current === undefined
-                  ? ""
-                  : this.state.analyticalStorageTtlSeconds.current
-              }
-              aria-label="Time to live in seconds"
-              className={`dirtyTextbox ${this.state.analyticalStorageTtlSeconds.isDirty() ? "dirty" : ""}`}
-              onChange={this.onAnalyticalStorageTtlSecondsChange}
-            />
-            {` second(s)`}
-          </>
-        )}
-      </>
-    );
-  };
-
-  private getChangeFeedComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">
-          <span>Change feed log retention policy</span>
-          <span className="infoTooltip" role="tooltip" tabIndex={0}>
-            <img className="infoImg" src={InfoBubble} alt="More information" />
-            <span className="tooltiptext infoTooltipWidth">
-              Enable change feed log retention policy to retain last 10 minutes of history for items in the container by
-              default. To support this, the request unit (RU) charge for this container will be multiplied by a factor
-              of two for writes. Reads are unaffected.
-            </span>
-          </span>
-        </div>
-        <div className="tabs disableFocusDefaults" aria-label="Change feed selection tabs">
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ChangeFeedPolicyOffLabel"
-              tabIndex={0}
-              className={`${this.state.changeFeedPolicyToggled.isDirty() ? "dirty" : ""} ${
-                this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.Off
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onChangeFeedPolicyOffKeyPress}
-            >
-              Off
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="changeFeedPolicy"
-              value={ChangeFeedPolicyToggledState.Off}
-              className="radio"
-              id={this.changeFeedPolicyOffId}
-              onChange={this.onChangeFeedPolicyToggled}
-              checked={this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.Off}
-            />
-          </div>
-          <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ChangeFeedPolicyOnLabel"
-              tabIndex={0}
-              className={`${this.state.changeFeedPolicyToggled.isDirty() ? "dirty" : ""} ${
-                this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onActivated={this.onChangeFeedPolicyOnKeyPress}
-            >
-              On
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="changeFeedPolicy"
-              value={ChangeFeedPolicyToggledState.On}
-              className="radio"
-              id={this.changeFeedPolicyOnId}
-              onChange={this.onChangeFeedPolicyToggled}
-              checked={this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On}
-            />
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  private getPartitionKeyComponent = (): JSX.Element => {
-    return (
-      <>
-        {this.getPartitionKeyVisible() && (
-          <>
-            <div className="formTitle">Partition Key</div>
-            <input
-              className="formReadOnly collid-white"
-              aria-label={this.partitionKeyName}
-              defaultValue={this.partitionKeyValue}
-              readOnly
-            />
-          </>
-        )}
-
-        {this.isLargePartitionKeyEnabled() && (
-          <div className="largePartitionKeyEnabled">
-            <p>
-              Large <span>{this.getLowerCasePartitionKeyName()}</span> has been enabled
-            </p>
-          </div>
-        )}
-      </>
-    );
-  };
-
-  private getSettingsComponent = (): JSX.Element => {
-    return (
-      <>
-        {(this.shouldShowIndexingPolicyEditor || this.ttlVisible) && (
-          <AccessibleElement
-            as="div"
-            className="formTitle"
-            onClick={this.toggleSettings}
-            onActivated={this.toggleSettings}
-            aria-expanded={this.state.settingsExpanded}
-            role="button"
-            tabIndex={0}
-            aria-label="Settings"
-            aria-controls="settingsRegion"
-          >
-            {!this.state.settingsExpanded && !this.hasDatabaseSharedThroughput() && (
-              <span className="themed-images" id="ExpandChevronRightSettings">
-                <img
-                  className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon"
-                  src={TriangleRight}
-                  alt="Show settings"
-                />
-              </span>
-            )}
-
-            {this.state.settingsExpanded && !this.hasDatabaseSharedThroughput() && (
-              <span className="themed-images" id="ExpandChevronDownSettings">
-                <img className="imgiconwidth ssExpandCollapseIcon" src={TriangleDown} alt="Show settings" />
-              </span>
-            )}
-            <span className="scaleSettingTitle">Settings</span>
-          </AccessibleElement>
-        )}
-
-        {this.state.settingsExpanded && (
-          <div className="ssTextAllignment" id="settingsRegion">
-            {this.ttlVisible && this.getTtlComponent()}
-
-            {this.state.geospatialVisible && this.getGeoSpatialComponent()}
-
-            {this.isAnalyticalStorageEnabled && this.getAnalyticalStorageTtlComponent()}
-
-            {this.changeFeedPolicyVisible && this.getChangeFeedComponent()}
-
-            {this.getPartitionKeyComponent()}
-
-            {this.shouldShowIndexingPolicyEditor && (
-              <>
-                <div className="formTitle">Indexing Policy</div>
-                <div
-                  key="indexingPolicyEditorDiv"
-                  className="indexingPolicyEditor ttlIndexingPolicyFocusElement"
-                  tabIndex={0}
-                  ref={this.indexingPolicyDiv}
-                ></div>
-              </>
-            )}
-          </div>
-        )}
-      </>
-    );
-  };
-
   public render(): JSX.Element {
     return (
       <div className="tab-pane flexContainer" id={this.tabId} role="tabpanel">
@@ -2528,11 +1431,82 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             <div>This table shared throughput is configured at the keyspace</div>
           )}
 
-          {!this.hasDatabaseSharedThroughput() && this.getScaleComponent()}
+          {!hasDatabaseSharedThroughput(this.collection) && (
+            <ScaleComponent
+              collection={this.collection}
+              container={this.container}
+              tabId={this.tabId}
+              hasProvisioningTypeChanged={this.hasProvisioningTypeChanged}
+              hasAutoPilotV2FeatureFlag={this.hasAutoPilotV2FeatureFlag}
+              isFixedContainer={this.isFixedContainer}
+              autoPilotTiersList={this.autoPilotTiersList}
+              onRupmChange={this.onRupmChange}
+              rupm={this.state.rupm}
+              setThroughput={this.setThroughput}
+              throughput={this.state.throughput}
+              autoPilotThroughput={this.state.autoPilotThroughput}
+              selectedAutoPilotTier={this.state.selectedAutoPilotTier}
+              isAutoPilotSelected={this.state.isAutoPilotSelected}
+              wasAutopilotOriginallySet={this.state.wasAutopilotOriginallySet}
+              userCanChangeProvisioningTypes={this.state.userCanChangeProvisioningTypes}
+              overrideWithProvisionedThroughputSettings={this.overrideWithProvisionedThroughputSettings}
+              setAutoPilotSelected={this.setAutoPilotSelected}
+              setAutoPilotTier={this.setAutoPilotTier}
+              setMaxAutoPilotThroughput={this.setMaxAutoPilotThroughput}
+            />
+          )}
 
-          {this.hasConflictResolution() && this.getConflictResolutionComponent()}
+          {this.hasConflictResolution() && (
+            <ConflictResolutionComponent
+              collection={this.collection}
+              container={this.container}
+              tabId={this.tabId}
+              conflictResolutionPolicyMode={this.state.conflictResolutionPolicyMode}
+              conflictResolutionPolicyPath={this.state.conflictResolutionPolicyPath}
+              conflictResolutionPolicyProcedure={this.state.conflictResolutionPolicyProcedure}
+              onConflictResolutionChange={this.onConflictResolutionChange}
+              onConflictResolutionLWWKeyPress={this.onConflictResolutionLWWKeyPress}
+              onConflictResolutionPolicyPathChange={this.onConflictResolutionPolicyPathChange}
+              onConflictResolutionCustomKeyPress={this.onConflictResolutionCustomKeyPress}
+              onConflictResolutionPolicyProcedureChange={this.onConflictResolutionPolicyProcedureChange}
+            />
+          )}
 
-          {this.getSettingsComponent()}
+          <SubSettingsComponent
+            collection={this.collection}
+            container={this.container}
+            tabId={this.tabId}
+            isAnalyticalStorageEnabled={this.isAnalyticalStorageEnabled}
+            changeFeedPolicyVisible={this.changeFeedPolicyVisible}
+            indexingPolicyDiv={this.indexingPolicyDiv}
+            timeToLive={this.state.timeToLive}
+            onTtlOffKeyPress={this.onTtlOffKeyPress}
+            onTtlOnNoDefaultKeyPress={this.onTtlOnNoDefaultKeyPress}
+            onTtlOnKeyPress={this.onTtlOnKeyPress}
+            onTtlOffKeyFocus={this.onTtlOffKeyFocus}
+            onTtlOnNoDefaultKeyFocus={this.onTtlOnNoDefaultKeyFocus}
+            onTtlOnKeyFocus={this.onTtlOnKeyFocus}
+            onTimeToLiveChange={this.onTimeToLiveChange}
+            timeToLiveSeconds={this.state.timeToLiveSeconds}
+            onTimeToLiveSecondsChange={this.onTimeToLiveSecondsChange}
+            geospatialConfigType={this.state.geospatialConfigType}
+            onGeoSpatialConfigTypeChange={this.onGeoSpatialConfigTypeChange}
+            onGeographyKeyPress={this.onGeographyKeyPress}
+            onGeometryKeyPress={this.onGeometryKeyPress}
+            analyticalStorageTtlSelection={this.state.analyticalStorageTtlSelection}
+            onAnalyticalStorageTtlSelectionChange={this.onAnalyticalStorageTtlSelectionChange}
+            onAnalyticalStorageTtlOnNoDefaultKeyPress={this.onAnalyticalStorageTtlOnNoDefaultKeyPress}
+            onAnalyticalStorageTtlOnKeyPress={this.onAnalyticalStorageTtlOnKeyPress}
+            analyticalStorageTtlSeconds={this.state.analyticalStorageTtlSeconds}
+            onAnalyticalStorageTtlSecondsChange={this.onAnalyticalStorageTtlSecondsChange}
+            changeFeedPolicyToggled={this.state.changeFeedPolicyToggled}
+            onChangeFeedPolicyOffKeyPress={this.onChangeFeedPolicyOffKeyPress}
+            onChangeFeedPolicyOnKeyPress={this.onChangeFeedPolicyOnKeyPress}
+            onChangeFeedPolicyToggled={this.onChangeFeedPolicyToggled}
+            indexingPolicyContent={this.state.indexingPolicyContent}
+            isIndexingPolicyEditorInitializing={this.state.isIndexingPolicyEditorInitializing}
+            createIndexingPolicyEditor={this.createIndexingPolicyEditor}
+          />
         </div>
       </div>
     );
