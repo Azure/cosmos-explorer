@@ -23,6 +23,7 @@ module.exports = {
         .click({ force: true });
 
       const secret = Cypress.env("CONNECTION_STRING");
+      console.log({ secret })
 
       cy.wrap($body)
         .find("input[class='inputToken']")
