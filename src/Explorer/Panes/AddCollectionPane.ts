@@ -943,7 +943,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     const defaultThroughput = this.container.collectionCreationDefaults.throughput;
     this.throughputSinglePartition(defaultThroughput.fixed);
     this.throughputMultiPartition(
-      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
+      AddCollectionUtility.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
     );
 
     this.throughputDatabase(defaultThroughput.shared);
@@ -1167,17 +1167,19 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
   private _updateThroughputLimitByCollectionStorage() {
     const storage = this.storage();
-    const minThroughputRU = AddCollectionUtility.Utilities.getMinRUForStorageOption(
-      this.container.collectionCreationDefaults,
-      storage
-    );
+    const minThroughputRU =
+      storage === SharedConstants.CollectionCreation.storage10Gb
+        ? SharedConstants.CollectionCreation.DefaultCollectionRUs400
+        : this.container.collectionCreationDefaults.throughput.unlimitedmin;
 
-    let maxThroughputRU = AddCollectionUtility.Utilities.getMaxRUForStorageOption(
-      this.container.collectionCreationDefaults,
-      storage
-    );
+    let maxThroughputRU;
     if (this.isTryCosmosDBSubscription()) {
       maxThroughputRU = Constants.TryCosmosExperience.maxRU;
+    } else {
+      maxThroughputRU =
+        storage === SharedConstants.CollectionCreation.storage10Gb
+          ? SharedConstants.CollectionCreation.DefaultCollectionRUs10K
+          : this.container.collectionCreationDefaults.throughput.unlimitedmax;
     }
 
     this.minThroughputRU(minThroughputRU);
