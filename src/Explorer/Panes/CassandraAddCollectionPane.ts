@@ -494,9 +494,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.selectedSharedAutoPilotTier(null);
     this.selectedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    this.throughput(
-      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
-    );
+    this.throughput(AddCollectionUtility.getMaxThroughput(this.container.collectionCreationDefaults, this.container));
     this.keyspaceThroughput(throughputDefaults.shared);
     this.maxThroughputRU(throughputDefaults.unlimitedmax);
     this.minThroughputRU(throughputDefaults.unlimitedmin);

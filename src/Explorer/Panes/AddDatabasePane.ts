@@ -1,4 +1,3 @@
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
@@ -8,15 +7,11 @@ import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import editable from "../../Common/EditableUtility";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { AddDbUtilities } from "../../Shared/AddDatabaseUtility";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { PlatformType } from "../../PlatformType";
-import { userContext } from "../../UserContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;

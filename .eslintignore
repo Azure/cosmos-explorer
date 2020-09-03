@@ -266,10 +266,6 @@ src/ResourceProvider/ResourceProviderClientFactory.ts
 src/RouteHandlers/RouteHandler.ts
 src/RouteHandlers/TabRouteHandler.test.ts
 src/RouteHandlers/TabRouteHandler.ts
-src/Shared/AddCollectionUtility.test.ts
-src/Shared/AddCollectionUtility.ts
-src/Shared/AddDatabaseUtility.test.ts
-src/Shared/AddDatabaseUtility.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
@@ -418,6 +414,5 @@ cypress/integration/dataexplorer/SQL/addCollection.spec.ts
 cypress/integration/dataexplorer/TABLE/addCollection.spec.ts
 cypress/integration/notebook/newNotebook.spec.ts
 cypress/integration/notebook/resourceTree.spec.ts
-__mocks__/AddDatabaseUtility.ts
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.test.tsx
