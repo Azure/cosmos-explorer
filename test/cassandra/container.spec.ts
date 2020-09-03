@@ -6,9 +6,8 @@ jest.setTimeout(300000);
 describe.only('Collection Add and Delete Cassandra spec', () => {
   it('creates a collection', async () => {
     try {
-      const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
-      const collectionId = `TestCollection${crypto.randomBytes(8).toString("hex")}`;
-      const sharedKey = `SharedKey${crypto.randomBytes(8).toString("hex")}`;
+      const keyspaceId = `KeyspaceId${crypto.randomBytes(8).toString("hex")}`;
+      const tableId = `TableId112`;
       const prodUrl = "https://localhost:1234/hostedExplorer.html";
       page.goto(prodUrl);
 
@@ -18,31 +17,21 @@ describe.only('Collection Add and Delete Cassandra spec', () => {
       await frame.waitFor('div > p.switchConnectTypeText', { visible: true });
       await frame.click('div > p.switchConnectTypeText');
       const connStr = process.env.CASSANDRA_CONNECTION_STRING;
-      console.log({ connStr })
       await frame.type("input[class='inputToken']", connStr);
       await frame.click("input[value='Connect']");
 
-    //   // create new collection
-    //   await frame.waitFor('button[data-test="New Container"]', { visible: true });
-    //   await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-    //   await frame.click('button[data-test="New Container"]');
+      // create new table
+      await frame.waitFor('div[class="commandBarContainer"]', { visible: true });
+      await frame.waitForSelector('button[data-test="New Table"]', { visible: true });
+      await frame.click('button[data-test="New Table"]');
       
-    //   // check new database3
+      // type keyspace id
+      await frame.waitFor('input[id="keyspace-id"]', { visible: true });
+      await frame.type('input[id="keyspace-id"]', keyspaceId);      
 
-    //   await frame.waitFor('input[data-test="addCollection-createNewDatabase"]');
-    //   await frame.click('input[data-test="addCollection-createNewDatabase"]');
-
-    //   // check shared throughput
-    //   await frame.waitFor('input[data-test="addCollectionPane-databaseSharedThroughput"]');
-    //   await frame.click('input[data-test="addCollectionPane-databaseSharedThroughput"]')   ;   
-
-    //   // type database id
-    //   await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
-    //   await frame.type('input[data-test="addCollection-newDatabaseId"]', dbId);      
-
-    //   // type collection id
-    //   await frame.waitFor('input[data-test="addCollection-collectionId"]');
-    //   await frame.type('input[data-test="addCollection-collectionId"]', collectionId); 
+      // type table id
+      await frame.waitFor('input[class="textfontclr"]');
+      await frame.type('input[class="textfontclr"]', tableId); 
 
     //   // type partition key value
     //   await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
