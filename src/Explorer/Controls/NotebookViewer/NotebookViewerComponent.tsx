@@ -30,7 +30,7 @@ export interface NotebookViewerComponentProps {
   isFavorite?: boolean;
   backNavigationText: string;
   hideInputs?: boolean;
-  hidePrompt?: boolean;
+  hidePrompts?: boolean;
   onBackClick: () => void;
   onTagClick: (tag: string) => void;
 }
@@ -150,7 +150,7 @@ export class NotebookViewerComponent extends React.Component<
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
           hideInputs: this.props.hideInputs,
-          hidePrompt: this.props.hidePrompt
+          hidePrompts: this.props.hidePrompts
         })}
 
         {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}

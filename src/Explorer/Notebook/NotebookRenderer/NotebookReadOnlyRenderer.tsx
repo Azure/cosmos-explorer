@@ -17,7 +17,7 @@ import "./NotebookReadOnlyRenderer.less";
 export interface NotebookRendererProps {
   contentRef: any;
   hideInputs?: boolean;
-  hidePrompt?: boolean;
+  hidePrompts?: boolean;
 }
 
 interface PassedEditorProps {
@@ -42,7 +42,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
   }
 
   private renderPrompt(id: string, contentRef: string): JSX.Element {
-    if (this.props.hidePrompt) {
+    if (this.props.hidePrompts) {
       return <></>;
     }
 

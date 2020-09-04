@@ -38,16 +38,16 @@ const onInit = async () => {
 
   // The main purpose of hiding the prompt is to hide everything when hiding inputs.
   // It is generally not very useful to just hide the prompt.
-  const hidePrompt = hideInputs;
+  const hidePrompts = hideInputs;
 
-  render(notebookUrl, backNavigationText, hideInputs, hidePrompt, galleryItem, onBackClick);
+  render(notebookUrl, backNavigationText, hideInputs, hidePrompts, galleryItem, onBackClick);
 };
 
 const render = (
   notebookUrl: string,
   backNavigationText: string,
   hideInputs?: boolean,
-  hidePrompt?: boolean,
+  hidePrompts?: boolean,
   galleryItem?: IGalleryItem,
   onBackClick?: () => void
 ) => {
@@ -57,7 +57,7 @@ const render = (
     galleryItem,
     backNavigationText,
     hideInputs,
-    hidePrompt,
+    hidePrompts,
     onBackClick: onBackClick,
     onTagClick: undefined
   };
