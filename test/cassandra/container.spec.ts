@@ -21,10 +21,11 @@ describe.only('Collection Add and Delete Cassandra spec', () => {
       await frame.click("input[value='Connect']");
 
       // create new table
-      await frame.waitFor('div[class="commandBarContainer"]', { visible: true });
-      await frame.waitForSelector('button[data-test="New Table"]', { visible: true });
-      await frame.click('button[data-test="New Table"]');
-      
+      await frame.waitFor('button[data-test="New Table"]', { visible: true });
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.click('button[data-test="New Table"]');      
+
+      debugger;
       // type keyspace id
       await frame.waitFor('input[id="keyspace-id"]', { visible: true });
       await frame.type('input[id="keyspace-id"]', keyspaceId);      
