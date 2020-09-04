@@ -23,7 +23,7 @@ import { GraphConfig } from "../../Tabs/GraphTab";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as Constants from "../../../Common/Constants";
 import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";

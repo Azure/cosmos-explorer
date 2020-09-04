@@ -10,7 +10,7 @@ import { HashMap } from "../../Common/HashMap";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import * as Logger from "../../Common/Logger";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import { QueryUtils } from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";

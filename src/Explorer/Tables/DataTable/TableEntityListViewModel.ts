@@ -15,7 +15,7 @@ import * as Utilities from "../Utilities";
 import * as Entities from "../Entities";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as TableEntityProcessor from "../TableEntityProcessor";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as ErrorParserUtility from "../../../Common/ErrorParserUtility";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";

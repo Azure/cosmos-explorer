@@ -11,7 +11,7 @@ import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility"
 import DeleteFeedback from "../../Common/DeleteFeedback";
 
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
