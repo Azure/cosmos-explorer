@@ -3117,12 +3117,6 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
-
-    TelemetryProcessor.trace(
-      Action.LoadingStatus,
-      ActionModifiers.Mark,
-      title !== "Welcome to Azure Cosmos DB" ? `Title: ${title}, Text: ${text}` : text
-    );
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {
