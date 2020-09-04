@@ -14,7 +14,8 @@ import {
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
 import { StatefulValue } from "../StatefulValue";
-import { ITextFieldStyles, ITextFieldStyleProps } from "office-ui-fabric-react";
+import { ITextFieldStyles, ITextFieldStyleProps, TooltipHost, Icon } from "office-ui-fabric-react";
+import { convertJSDateToUnix } from "../../Tables/QueryBuilder/DateTimeUtilities";
 
 export function getAutoPilotV3SpendElement(
   maxAutoPilotThroughputSet: number,
@@ -290,6 +291,38 @@ export const getThroughputApplyLongDelayMessage = (
     <br />
     Database: {databaseName}, Container: {collectionName}{" "}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
+  </span>
+);
+
+export const getToolTipContainer = (content: string | JSX.Element): JSX.Element => <span>{content}</span>;
+
+export const conflictResolutionLwwTooltip: JSX.Element = (
+  <span>
+    Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW) based
+    conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts to decide the
+    winner for the conflicting versions of the document. Specify your own integer property if you want to override the
+    default timestamp based conflict resolution.
+  </span>
+);
+
+export const conflictResolutionCustomToolTip: JSX.Element = (
+  <span>
+    Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write
+    application defined logic to determine the winner of the conflicting versions of a document. The stored procedure
+    will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the
+    conflicts will be populated in the
+    <a className="linkDarkBackground" href="https://aka.ms/dataexplorerconflics" rel="noreferrer" target="_blank">
+      {` conflicts feed`}
+    </a>
+    . You can update/re-register the stored procedure at any time.
+  </span>
+);
+
+export const changeFeedPolicyToolTip: JSX.Element = (
+  <span>
+    Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default.
+    To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes.
+    Reads are unaffected.
   </span>
 );
 

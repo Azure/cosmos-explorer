@@ -1,8 +1,9 @@
 import React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { StatefulValue } from "../StatefulValue";
-import { getTextFieldStyles } from "../Settings/SettingsRenderUtils";
+import { getTextFieldStyles, getToolTipContainer } from "../Settings/SettingsRenderUtils";
 import { TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Label } from "office-ui-fabric-react";
+import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabel";
 
 export interface ThroughputInputAutoPilotV3Props {
   throughput: StatefulValue<number>;
@@ -90,6 +91,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private renderThroughputModeChoices = (): JSX.Element => {
     return (
       <ChoiceGroup
+        className="settingsV2RadioButton"
         tabIndex={0}
         selectedKey={this.props.isAutoPilotSelected.toString()}
         options={this.options}
@@ -186,16 +188,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   public render(): JSX.Element {
     return (
       <div>
-        <p className="pkPadding">
-          {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
+        {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
 
-          {this.props.infoBubbleText && (
-            <span className="infoTooltip" role="tooltip" tabIndex={0}>
-              <img className="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
-              <span className="tooltiptext throughputRuInfo">{this.props.infoBubbleText}</span>
-            </span>
-          )}
-        </p>
+        {this.props.infoBubbleText && (
+          <ToolTipLabelComponent toolTipElement={getToolTipContainer(this.props.infoBubbleText)} />
+        )}
 
         {!this.props.isFixed && this.props.showAutoPilot && this.renderThroughputModeChoices()}
 

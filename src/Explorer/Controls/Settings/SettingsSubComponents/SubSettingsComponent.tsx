@@ -1,25 +1,19 @@
 import * as React from "react";
-import { AccessibleElement } from "../../AccessibleElement/AccessibleElement";
-import TriangleRight from "../../../../../images/Triangle-right.svg";
-import TriangleDown from "../../../../../images/Triangle-down.svg";
-import InfoBubble from "../../../../../images/info-bubble.svg";
 import { StatefulValue } from "../../StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import * as DataModels from "../../../../Contracts/DataModels";
-import { hasDatabaseSharedThroughput, GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
+import { GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { Label, TextField, ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
+import { Label, TextField } from "office-ui-fabric-react";
 import * as Constants from "../../../../Common/Constants";
-import { getTextFieldStyles } from "../SettingsRenderUtils";
+import { getTextFieldStyles, changeFeedPolicyToolTip } from "../SettingsRenderUtils";
+import { ToolTipLabelComponent } from "./ToolTipLabel";
 
 export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
   tabId: string;
-  isAnalyticalStorageEnabled: boolean;
-  changeFeedPolicyVisible: boolean;
-  indexingPolicyDiv: React.RefObject<HTMLDivElement>;
+
   timeToLive: StatefulValue<TtlType>;
   onTtlChange: (ttlType: TtlType) => void;
   onTtlFocusChange: (ttlType: TtlType) => void;
@@ -32,6 +26,7 @@ export interface SubSettingsComponentProps {
   geospatialConfigType: StatefulValue<GeospatialConfigType>;
   onGeoSpatialConfigTypeChange: (geoSpatialConfigType: GeospatialConfigType) => void;
 
+  isAnalyticalStorageEnabled: boolean;
   analyticalStorageTtlSelection: StatefulValue<TtlType>;
   onAnalyticalStorageTtlSelectionChange: (ttltype: TtlType) => void;
   analyticalStorageTtlSeconds: StatefulValue<number>;
@@ -40,20 +35,12 @@ export interface SubSettingsComponentProps {
     newValue?: string
   ) => void;
 
+  changeFeedPolicyVisible: boolean;
   changeFeedPolicy: StatefulValue<ChangeFeedPolicyState>;
   onChangeFeedPolicyChange: (changeFeedPolicyState: ChangeFeedPolicyState) => void;
-
-  indexingPolicyContent: StatefulValue<DataModels.IndexingPolicy>;
-  isIndexingPolicyEditorInitializing: boolean;
-  createIndexingPolicyEditor: () => void;
 }
 
-interface SubSettingsComponentState {
-  settingsExpanded: boolean;
-}
-
-export class SubSettingsComponent extends React.Component<SubSettingsComponentProps, SubSettingsComponentState> {
-  private shouldShowIndexingPolicyEditor: boolean;
+export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {
   private ttlVisible: boolean;
   private geospatialVisible: boolean;
   private partitionKeyValue: string;
@@ -61,29 +48,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   constructor(props: SubSettingsComponentProps) {
     super(props);
-    this.state = {
-      settingsExpanded: true
-    };
-    this.shouldShowIndexingPolicyEditor =
-      this.props.container &&
-      !this.props.container.isPreferredApiCassandra() &&
-      !this.props.container.isPreferredApiMongoDB();
     this.ttlVisible = (this.props.container && !this.props.container.isPreferredApiCassandra()) || false;
     this.geospatialVisible = this.props.container.isPreferredApiDocumentDB();
     this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
     this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
   }
-
-  private toggleSettings = (): void => {
-    if (hasDatabaseSharedThroughput(this.props.collection)) {
-      return;
-    }
-    this.setState({ settingsExpanded: !this.state.settingsExpanded }, () => {
-      if (this.state.settingsExpanded && !this.props.isIndexingPolicyEditorInitializing) {
-        this.props.createIndexingPolicyEditor();
-      }
-    });
-  };
 
   private onTtlOffKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
     if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
@@ -320,11 +289,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         <div className="formTitle">Analytical Storage Time to Live</div>
         <div className="tabs disableFocusDefaults" aria-label="Analytical Storage Time to Live" role="radiogroup">
           <div className="tab">
-            <Label 
-              tabIndex={0}
-              role="radio" 
-              disabled
-              className="settingsV2Label-disabled">
+            <Label tabIndex={0} role="radio" disabled className="settingsV2Label-disabled">
               Off
             </Label>
           </div>
@@ -378,17 +343,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   private getChangeFeedComponent = (): JSX.Element => {
     return (
       <>
-        <div className="formTitle">
-          <span>Change feed log retention policy</span>
-          <span className="infoTooltip" role="tooltip" tabIndex={0}>
-            <img className="infoImg" src={InfoBubble} alt="More information" />
-            <span className="tooltiptext infoTooltipWidth">
-              Enable change feed log retention policy to retain last 10 minutes of history for items in the container by
-              default. To support this, the request unit (RU) charge for this container will be multiplied by a factor
-              of two for writes. Reads are unaffected.
-            </span>
-          </span>
-        </div>
+        <ToolTipLabelComponent label="Change feed log retention policy" toolTipElement={changeFeedPolicyToolTip} />
         <div className="tabs disableFocusDefaults" aria-label="Change feed selection tabs">
           <div className="tab">
             <Label
@@ -470,62 +425,15 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public render(): JSX.Element {
     return (
       <>
-        {(this.shouldShowIndexingPolicyEditor || this.ttlVisible) && (
-          <AccessibleElement
-            as="div"
-            className="formTitle"
-            onClick={this.toggleSettings}
-            onActivated={this.toggleSettings}
-            aria-expanded={this.state.settingsExpanded}
-            role="button"
-            tabIndex={0}
-            aria-label="Settings"
-            aria-controls="settingsRegion"
-          >
-            {!this.state.settingsExpanded && !hasDatabaseSharedThroughput(this.props.collection) && (
-              <span className="themed-images" id="ExpandChevronRightSettings">
-                <img
-                  className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon"
-                  src={TriangleRight}
-                  alt="Show settings"
-                />
-              </span>
-            )}
+        {this.ttlVisible && this.getTtlComponent()}
 
-            {this.state.settingsExpanded && !hasDatabaseSharedThroughput(this.props.collection) && (
-              <span className="themed-images" id="ExpandChevronDownSettings">
-                <img className="imgiconwidth ssExpandCollapseIcon" src={TriangleDown} alt="Show settings" />
-              </span>
-            )}
-            <span className="scaleSettingTitle">Settings</span>
-          </AccessibleElement>
-        )}
+        {this.geospatialVisible && this.getGeoSpatialComponent()}
 
-        {this.state.settingsExpanded && (
-          <div className="ssTextAllignment" id="settingsRegion">
-            {this.ttlVisible && this.getTtlComponent()}
+        {this.props.isAnalyticalStorageEnabled && this.getAnalyticalStorageTtlComponent()}
 
-            {this.geospatialVisible && this.getGeoSpatialComponent()}
+        {this.props.changeFeedPolicyVisible && this.getChangeFeedComponent()}
 
-            {this.props.isAnalyticalStorageEnabled && this.getAnalyticalStorageTtlComponent()}
-
-            {this.props.changeFeedPolicyVisible && this.getChangeFeedComponent()}
-
-            {this.getPartitionKeyComponent()}
-
-            {this.shouldShowIndexingPolicyEditor && (
-              <>
-                <div className="formTitle">Indexing Policy</div>
-                <div
-                  key="indexingPolicyEditorDiv"
-                  className="indexingPolicyEditor ttlIndexingPolicyFocusElement"
-                  tabIndex={0}
-                  ref={this.props.indexingPolicyDiv}
-                ></div>
-              </>
-            )}
-          </div>
-        )}
+        {this.getPartitionKeyComponent()}
       </>
     );
   }

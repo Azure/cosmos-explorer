@@ -1,21 +1,38 @@
+@import "../../../../less/Common/Constants";
+
 .settingsV2Label {
     white-space: nowrap;
     font: 12px "Segoe UI";
     padding: 5px 25px;
 }
+
 .settingsV2Label-disabled {
     white-space: nowrap;
     font: 12px "Segoe UI";
     padding: 5px 25px;
-    background-color: #ddd;
+    background-color: #F3F2F1;
 }
 
-label {
+.settingsV2ToolTip {
+    padding: 10px;
+    max-width: 300px;
+}
+
+.settingsV2RadioButton label {
     white-space: nowrap;
     font: 12px "Segoe UI";
     padding: 2px 5px;
 }
+
 .autoPilotSelector span {
     height: 25px;
     font: 14px "Segoe UI";
+}
+
+.settingsV2TabsContainer {
+  padding: @LargeSpace @LargeSpace 30px @LargeSpace;
+  height: 100%;
+  overflow-y: auto;
+  width: 100%;
+  font-family: @DataExplorerFont;
 }

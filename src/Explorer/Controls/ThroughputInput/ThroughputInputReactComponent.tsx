@@ -12,7 +12,8 @@ import {
   IDropdownOption,
   DropdownMenuItemType
 } from "office-ui-fabric-react";
-import { getTextFieldStyles } from "../Settings/SettingsRenderUtils";
+import { getTextFieldStyles, getToolTipContainer } from "../Settings/SettingsRenderUtils";
+import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabel";
 
 export interface ThroughputInputProps {
   throughput: StatefulValue<number>;
@@ -176,16 +177,11 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   public render(): JSX.Element {
     return (
       <div>
-        <p className="pkPadding">
-          {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
+        {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
 
-          {this.props.infoBubbleText && (
-            <span className="infoTooltip" role="tooltip" tabIndex={0}>
-              <img className="infoImg" src="../../../../images/info-bubble.svg" alt="More information" />
-              <span className="tooltiptext throughputRuInfo">{this.props.infoBubbleText}</span>
-            </span>
-          )}
-        </p>
+        {this.props.infoBubbleText && (
+          <ToolTipLabelComponent toolTipElement={getToolTipContainer(this.props.infoBubbleText)} />
+        )}
 
         {!this.props.isFixed && this.props.showAutoPilot && this.renderThroughputModeChoices()}
 

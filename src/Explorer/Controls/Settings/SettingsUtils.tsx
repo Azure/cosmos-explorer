@@ -23,6 +23,13 @@ export enum GeospatialConfigType {
   Geometry = "Geometry"
 }
 
+export enum SettingsV2TabTypes {
+  ScaleTab,
+  ConflictResolutionTab,
+  SubSettingsTab,
+  IndexingPolicyTab
+}
+
 export function hasDatabaseSharedThroughput(collection: ViewModels.Collection): boolean {
   const database: ViewModels.Database = collection.getDatabase();
   return database && database.isDatabaseShared && !collection.offer();
@@ -97,4 +104,19 @@ export function getMinRUs(collection: ViewModels.Collection, container: Explorer
   const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
 
   return Math.max(baseRU, baseRUbyPartitions);
+}
+
+export function getTabTitle(tab: SettingsV2TabTypes): string {
+  switch (tab) {
+    case SettingsV2TabTypes.ScaleTab:
+      return "Scale";
+    case SettingsV2TabTypes.ConflictResolutionTab:
+      return "Conflict Resolution";
+    case SettingsV2TabTypes.SubSettingsTab:
+      return "Settings";
+    case SettingsV2TabTypes.IndexingPolicyTab:
+      return "Indexing Policy";
+    default:
+      throw new Error(`Unknown tab ${tab}`);
+  }
 }

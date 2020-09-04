@@ -1,7 +1,4 @@
 import * as React from "react";
-import { AccessibleElement } from "../../AccessibleElement/AccessibleElement";
-import TriangleRight from "../../../../../images/Triangle-right.svg";
-import TriangleDown from "../../../../../images/Triangle-down.svg";
 import * as Constants from "../../../../Common/Constants";
 import { StatefulValue } from "../../StatefulValue";
 import { ThroughputInputComponent } from "../../ThroughputInput/ThroughputInputReactComponent";
@@ -20,7 +17,7 @@ import {
 } from "../SettingsRenderUtils";
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Label, TextField } from "office-ui-fabric-react";
+import { TextField } from "office-ui-fabric-react";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -43,25 +40,14 @@ export interface ScaleComponentProps {
   setMaxAutoPilotThroughput: (newThroughput: number) => void;
 }
 
-interface ScaleComponentState {
-  scaleExpanded: boolean;
-}
-
-export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleComponentState> {
+export class ScaleComponent extends React.Component<ScaleComponentProps> {
   public canExceedMaximumValue: boolean;
   private costsVisible: boolean;
   constructor(props: ScaleComponentProps) {
     super(props);
-    this.state = {
-      scaleExpanded: true
-    };
     this.canExceedMaximumValue = this.props.container.canExceedMaximumValue();
     this.costsVisible = !this.props.container.isEmulator;
   }
-
-  private toggleScale = (): void => {
-    this.setState({ scaleExpanded: !this.state.scaleExpanded });
-  };
 
   private isAutoScaleEnabled = (): boolean => {
     const accountCapabilities: DataModels.Capability[] =
@@ -197,12 +183,13 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
         setAutoPilotSelected={this.props.setAutoPilotSelected}
         autoPilotTiersList={this.props.autoPilotTiersList}
         spendAckChecked={false}
-        spendAckId="123"
-        spendAckText="text"
-        spendAckVisible={true}
         selectedAutoPilotTier={this.props.selectedAutoPilotTier}
         setAutoPilotTier={this.props.setAutoPilotTier}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
+        spendAckId="123"
+        spendAckText="longer text for testing"
+        spendAckVisible={true}
+        infoBubbleText="info bubble text"
       />
     ) : (
       <ThroughputInputAutoPilotV3Component
@@ -225,8 +212,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
         overrideWithProvisionedThroughputSettings={this.props.overrideWithProvisionedThroughputSettings()}
         spendAckChecked={false}
         spendAckId="123"
-        spendAckText="text"
+        spendAckText="longer text for testing"
         spendAckVisible={true}
+        infoBubbleText="info bubble text"
       />
     );
   };
@@ -234,56 +222,22 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
   public render(): JSX.Element {
     return (
       <>
-        <AccessibleElement
-          as="div"
-          className="scaleDivison"
-          onClick={this.toggleScale}
-          onActivated={this.toggleScale}
-          aria-expanded={this.state.scaleExpanded}
-          role="button"
-          tabIndex={0}
-          aria-label="Scale"
-          aria-controls="scaleRegion"
-        >
-          {!this.state.scaleExpanded && (
-            <span className="themed-images" id="ExpandChevronRightScale">
-              <img
-                className="imgiconwidth ssExpandCollapseIcon ssCollapseIcon "
-                src={TriangleRight}
-                alt="Show scale properties"
-              />
-            </span>
-          )}
+        {!this.isAutoScaleEnabled() && (
+          <>
+            {this.getThroughputInputComponent()}
+            <div className="storageCapacityTitle throughputStorageValue">{this.getStorageCapacityTitle()}</div>
+          </>
+        )}
 
-          {this.state.scaleExpanded && (
-            <span className="themed-images" id="ExpandChevronDownScale">
-              <img className="imgiconwidth ssExpandCollapseIcon " src={TriangleDown} alt="Hide scale properties" />
-            </span>
-          )}
-
-          <span className="scaleSettingTitle">Scale</span>
-        </AccessibleElement>
-
-        {this.state.scaleExpanded && (
-          <div className="ssTextAllignment" id="scaleRegion">
-            {!this.isAutoScaleEnabled() && (
-              <>
-                {this.getThroughputInputComponent()}
-                <div className="storageCapacityTitle throughputStorageValue">{this.getStorageCapacityTitle()}</div>
-              </>
-            )}
-
-            {/*<!-- TODO: Replace link with call to the Azure Support blade -->*/}
-            {this.isAutoScaleEnabled() && (
-              <div>
-                <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
-                <TextField disabled styles={getTextFieldStyles()} />
-                <div className="autoScaleDescription">
-                  Your account has custom settings that prevents setting throughput at the container level. Please work
-                  with your Cosmos DB engineering team point of contact to make changes.
-                </div>
-              </div>
-            )}
+        {/* TODO: Replace link with call to the Azure Support blade */}
+        {this.isAutoScaleEnabled() && (
+          <div>
+            <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
+            <TextField disabled styles={getTextFieldStyles()} />
+            <div className="autoScaleDescription">
+              Your account has custom settings that prevents setting throughput at the container level. Please work with
+              your Cosmos DB engineering team point of contact to make changes.
+            </div>
           </div>
         )}
       </>
