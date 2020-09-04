@@ -3,8 +3,7 @@ import "./base.css";
 import "./default.css";
 
 import { CodeCell, RawCell, Cells, MarkdownCell } from "@nteract/stateful-components";
-import Prompt, { PassedPromptProps } from "./OriginalPrompt";
-// import Prompt, { PassedPromptProps } from "@nteract/stateful-components/src/inputs/prompt";
+import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
 import { AzureTheme } from "./AzureTheme";
 
 import { connect } from "react-redux";
