@@ -13,6 +13,8 @@ import {
   getPricePerRu,
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
+import { StatefulValue } from "../StatefulValue";
+import { ITextFieldStyles, ITextFieldStyleProps } from "office-ui-fabric-react";
 
 export function getAutoPilotV3SpendElement(
   maxAutoPilotThroughputSet: number,
@@ -290,3 +292,21 @@ export const getThroughputApplyLongDelayMessage = (
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
   </span>
 );
+
+const dirtyTextFieldColor = "#9b4f96";
+
+export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Partial<ITextFieldStyles> => {
+  return {
+    fieldGroup: {
+      height: 25,
+      width: 300,
+      borderColor: `${statefulValue?.isDirty() ? dirtyTextFieldColor : ""}`,
+      selectors: {
+        ":disabled": {
+          backgroundColor: "#ddd",
+          borderColor: "#969696"
+        }
+      }
+    }
+  };
+};

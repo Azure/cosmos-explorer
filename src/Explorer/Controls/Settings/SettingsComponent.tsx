@@ -38,10 +38,11 @@ import {
   canThroughputExceedMaximumValue,
   GeospatialConfigType,
   TtlType,
-  ChangeFeedPolicyToggledState
+  ChangeFeedPolicyState
 } from "./SettingsUtils";
 import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent } from "./SettingsSubComponents/SubSettingsComponent";
+import "./SettingsComponent.less";
 
 type StatefulValuesType = boolean | string | number | DataModels.IndexingPolicy;
 
@@ -57,13 +58,12 @@ enum StatefulValueNames {
   TimeToLiveSeconds = "timeToLiveSeconds",
   GeospatialConfigType = "geospatialConfigType",
   IndexingPolicyContent = "indexingPolicyContent",
-  Rupm = "rupm",
   ConflictResolutionPolicyMode = "conflictResolutionPolicyMode",
   ConflictResolutionPolicyPath = "conflictResolutionPolicyPath",
   ConflictResolutionPolicyProcedure = "conflictResolutionPolicyProcedure",
   AnalyticalStorageTtlSelection = "analyticalStorageTtlSelection",
   AnalyticalStorageTtlSeconds = "analyticalStorageTtlSeconds",
-  ChangeFeedPolicyToggled = "changeFeedPolicyToggled",
+  ChangeFeedPolicy = "changeFeedPolicy",
   AutoPilotThroughput = "autoPilotThroughput"
 }
 
@@ -83,13 +83,12 @@ interface SettingsComponentState {
   timeToLiveSeconds: StatefulValue<number>;
   geospatialConfigType: StatefulValue<GeospatialConfigType>;
   indexingPolicyContent: StatefulValue<DataModels.IndexingPolicy>;
-  rupm: StatefulValue<string>;
   conflictResolutionPolicyMode: StatefulValue<DataModels.ConflictResolutionMode>;
   conflictResolutionPolicyPath: StatefulValue<string>;
   conflictResolutionPolicyProcedure: StatefulValue<string>;
   analyticalStorageTtlSelection: StatefulValue<TtlType>;
   analyticalStorageTtlSeconds: StatefulValue<number>;
-  changeFeedPolicyToggled: StatefulValue<ChangeFeedPolicyToggledState>;
+  changeFeedPolicy: StatefulValue<ChangeFeedPolicyState>;
   isIndexingPolicyEditorInitializing: boolean;
   indexingPolicyElementFocused: boolean;
   notificationStatusInfo: JSX.Element;
@@ -115,7 +114,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private container: Explorer;
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
-  private initialChangeFeedLoggingState: ChangeFeedPolicyToggledState;
+  private initialChangeFeedLoggingState: ChangeFeedPolicyState;
   private hasAutoPilotV2FeatureFlag: boolean;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
@@ -130,11 +129,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection && this.collection.container;
     this.testId = `settingsThroughputValue${this.tabId}`;
-    this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
+    //this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
+    this.isAnalyticalStorageEnabled = true
 
     this.initialChangeFeedLoggingState = this.collection.rawDataModel?.changeFeedPolicy
-      ? ChangeFeedPolicyToggledState.On
-      : ChangeFeedPolicyToggledState.Off;
+      ? ChangeFeedPolicyState.On
+      : ChangeFeedPolicyState.Off;
 
     this.hasAutoPilotV2FeatureFlag = this.container.hasAutoPilotV2FeatureFlag();
     this.changeFeedPolicyVisible =
@@ -147,7 +147,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     this.state = {
       isIndexingPolicyEditorInitializing: false,
-      changeFeedPolicyToggled: new StatefulValue(this.initialChangeFeedLoggingState),
+      changeFeedPolicy: new StatefulValue(this.initialChangeFeedLoggingState),
       throughput: new StatefulValue(),
       conflictResolutionPolicyMode: new StatefulValue(),
       conflictResolutionPolicyPath: new StatefulValue(),
@@ -158,7 +158,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       analyticalStorageTtlSelection: new StatefulValue(),
       analyticalStorageTtlSeconds: new StatefulValue(),
       indexingPolicyContent: new StatefulValue(),
-      rupm: new StatefulValue(),
       isAutoPilotSelected: false,
       wasAutopilotOriginallySet: false,
       selectedAutoPilotTier: undefined,
@@ -248,14 +247,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           return false;
         }
 
-        if (
-          this.state.rupm.current === Constants.RUPMStates.on &&
-          this.state.throughput.current >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo().numPartitions
-        ) {
-          return false;
-        }
-
         if (this.state.timeToLive.isDirty()) {
           return true;
         }
@@ -268,7 +259,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           return true;
         }
 
-        if (this.state.changeFeedPolicyToggled.isDirty()) {
+        if (this.state.changeFeedPolicy.isDirty()) {
           return true;
         }
 
@@ -284,10 +275,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         }
 
         if (this.state.indexingPolicyContent.isDirty() && this.state.indexingPolicyContent.isValid) {
-          return true;
-        }
-
-        if (this.state.rupm.isDirty()) {
           return true;
         }
 
@@ -335,15 +322,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           return true;
         }
 
-        if (this.state.changeFeedPolicyToggled.isDirty()) {
+        if (this.state.changeFeedPolicy.isDirty()) {
           return true;
         }
 
         if (this.state.indexingPolicyContent.isDirty()) {
-          return true;
-        }
-
-        if (this.state.rupm.isDirty()) {
           return true;
         }
 
@@ -410,7 +393,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.conflictResolutionPolicyPath.isDirty() ||
       this.state.conflictResolutionPolicyProcedure.isDirty() ||
       this.state.indexingPolicyContent.isDirty() ||
-      this.state.changeFeedPolicyToggled.isDirty() ||
+      this.state.changeFeedPolicy.isDirty() ||
       this.state.analyticalStorageTtlSelection.isDirty() ||
       (this.state.analyticalStorageTtlSelection.current === TtlType.On &&
         this.state.analyticalStorageTtlSeconds.isDirty())
@@ -668,7 +651,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         newCollection.indexingPolicy = this.state.indexingPolicyContent.current;
 
         newCollection.changeFeedPolicy =
-          this.changeFeedPolicyVisible && this.state.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On
+          this.changeFeedPolicyVisible && this.state.changeFeedPolicy.current === ChangeFeedPolicyState.On
             ? ({
                 retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
               } as DataModels.ChangeFeedPolicy)
@@ -700,27 +683,20 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.geospatialConfig(updatedCollection.geospatialConfig);
       }
 
-      if (
-        this.state.throughput.isDirty() ||
-        this.state.rupm.isDirty() ||
-        this.isAutoPilotDirty() ||
-        this.hasProvisioningTypeChanged()
-      ) {
+      if (this.state.throughput.isDirty() || this.isAutoPilotDirty() || this.hasProvisioningTypeChanged()) {
         const newThroughput = this.state.throughput.current;
-        const isRUPerMinuteThroughputEnabled: boolean = this.state.rupm.current === Constants.RUPMStates.on;
         let newOffer: DataModels.Offer = { ...this.collection.offer() };
         const originalThroughputValue: number = this.state.throughput.baseline;
 
         if (newOffer.content) {
           newOffer.content.offerThroughput = newThroughput;
-          newOffer.content.offerIsRUPerMinuteThroughputEnabled = isRUPerMinuteThroughputEnabled;
         } else {
           newOffer = {
             ...newOffer,
             ...{
               content: {
                 offerThroughput: newThroughput,
-                offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+                offerIsRUPerMinuteThroughputEnabled: false
               }
             }
           };
@@ -773,7 +749,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             databaseName: this.collection.databaseId,
             collectionName: this.collection.id(),
             throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+            offerIsRUPerMinuteThroughputEnabled: false
           };
           try {
             await updateOfferThroughputBeyondLimit(requestPayload);
@@ -897,111 +873,66 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ indexingPolicyContent: indexingPolicyContent });
   };
 
-  private onTtlOffKeyPress = (): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.Off });
+  private onConflictResolutionPolicyModeChange = (mode: DataModels.ConflictResolutionMode): void => {
+    this.updateStatefulValue({
+      key: StatefulValueNames.ConflictResolutionPolicyMode,
+      value: mode
+    });
   };
 
-  private onTtlOnNoDefaultKeyPress = (): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.OnNoDefault });
+  private onTtlChange = (ttltype: TtlType): void => {
+    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: ttltype });
   };
 
-  private onTtlOnKeyPress = (): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: TtlType.On });
+  private onTtlFocusChange = (ttltype: TtlType): void => {
+    switch (ttltype) {
+      case TtlType.Off:
+        this.setState({ ttlOffFocused: true, ttlOnFocused: false, ttlOnDefaultFocused: false });
+        break;
+      case TtlType.On:
+        this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
+        break;
+      case TtlType.OnNoDefault:
+        this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
+        break;
+    }
   };
 
-  private onTtlOffKeyFocus = (): void => {
-    this.setState({ ttlOffFocused: true, ttlOnFocused: false, ttlOnDefaultFocused: false });
-  };
-
-  private onTtlOnNoDefaultKeyFocus = (): void => {
-    this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
-  };
-
-  private onTtlOnKeyFocus = (): void => {
-    this.setState({ ttlOffFocused: false, ttlOnFocused: true, ttlOnDefaultFocused: false });
-  };
-
-  private onGeographyKeyPress = (): void => {
+  private onGeoSpatialConfigTypeChange = (geoSpatialConfigType: GeospatialConfigType): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
-      value: GeospatialConfigType.Geography
+      value: geoSpatialConfigType
     });
   };
 
-  private onGeometryKeyPress = (): void => {
+  private onAnalyticalStorageTtlSelectionChange = (ttltype: TtlType): void => {
+    this.updateStatefulValue({ key: StatefulValueNames.AnalyticalStorageTtlSelection, value: ttltype });
+  };
+
+  private onChangeFeedPolicyChange = (changeFeedPolicyState: ChangeFeedPolicyState): void => {
     this.updateStatefulValue({
-      key: StatefulValueNames.GeospatialConfigType,
-      value: GeospatialConfigType.Geometry
+      key: StatefulValueNames.ChangeFeedPolicy,
+      value: changeFeedPolicyState
     });
   };
 
-  private onAnalyticalStorageTtlOnNoDefaultKeyPress = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: TtlType.OnNoDefault
-    });
-  };
-
-  private onAnalyticalStorageTtlOnKeyPress = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: TtlType.On
-    });
-  };
-
-  private onChangeFeedPolicyOffKeyPress = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: ChangeFeedPolicyToggledState.Off
-    });
-  };
-
-  private onChangeFeedPolicyOnKeyPress = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: ChangeFeedPolicyToggledState.On
-    });
-  };
-
-  private onConflictResolutionCustomKeyPress = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: DataModels.ConflictResolutionMode.Custom
-    });
-  };
-
-  private onConflictResolutionLWWKeyPress = (): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: DataModels.ConflictResolutionMode.LastWriterWins
-    });
-  };
-
-  private onConflictResolutionChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: event.currentTarget.value
-    });
-  };
-
-  private onRupmChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.Rupm,
-      value: event.currentTarget.value
-    });
-  };
-
-  private onConflictResolutionPolicyPathChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private onConflictResolutionPolicyPathChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyPath,
-      value: event.currentTarget.value
+      value: newValue
     });
   };
 
-  private onConflictResolutionPolicyProcedureChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private onConflictResolutionPolicyProcedureChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyProcedure,
-      value: event.currentTarget.value
+      value: newValue
     });
   };
 
@@ -1012,43 +943,28 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     });
   };
 
-  private onTimeToLiveSecondsChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private onTimeToLiveSecondsChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.TimeToLiveSeconds,
-      value: event.currentTarget.value
+      value: newValue
     });
   };
 
-  private onGeoSpatialConfigTypeChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.GeospatialConfigType,
-      value: event.currentTarget.value
-    });
-  };
-
-  private onAnalyticalStorageTtlSelectionChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.AnalyticalStorageTtlSelection,
-      value: event.currentTarget.nodeValue
-    });
-  };
-
-  private onAnalyticalStorageTtlSecondsChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private onAnalyticalStorageTtlSecondsChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.AnalyticalStorageTtlSeconds,
-      value: event.currentTarget.value
-    });
-  };
-
-  private onChangeFeedPolicyToggled = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.updateStatefulValue({
-      key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: event.currentTarget.value
+      value: newValue
     });
   };
 
   private getThroughputUnit = (): string => {
-    return this.state.rupm.current === Constants.RUPMStates.on ? "RU/m" : "RU/s";
+    return "RU/s";
   };
 
   private getAnalyticalStorageTtl = (): number => {
@@ -1194,10 +1110,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.collection.offer().content &&
       this.collection.offer().content.offerIsRUPerMinuteThroughputEnabled;
 
-    const changeFeedPolicyToggled: ChangeFeedPolicyToggledState = this.state.changeFeedPolicyToggled.current;
+    const changeFeedPolicy: ChangeFeedPolicyState = this.state.changeFeedPolicy.current;
     this.updateStatefulValue({
-      key: StatefulValueNames.ChangeFeedPolicyToggled,
-      value: changeFeedPolicyToggled,
+      key: StatefulValueNames.ChangeFeedPolicy,
+      value: changeFeedPolicy,
       updateBaseline: true
     });
 
@@ -1246,9 +1162,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       value: conflictResolutionPolicyProcedure,
       updateBaseline: true
     });
-
-    const rupm = offerIsRUPerMinuteThroughputEnabled ? Constants.RUPMStates.on : Constants.RUPMStates.off;
-    this.updateStatefulValue({ key: StatefulValueNames.Rupm, value: rupm, updateBaseline: true });
 
     const indexingPolicyContent = this.collection.indexingPolicy();
     this.updateStatefulValue({
@@ -1386,12 +1299,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     });
   };
 
-  private setAutoPilotSelected = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ isAutoPilotSelected: e.currentTarget.value === "true" });
+  private setAutoPilotSelected = (isAutoPilotSelected: boolean): void => {
+    this.setState({ isAutoPilotSelected: isAutoPilotSelected });
   };
 
   private setAutoPilotTier = (selectedAutoPilotTier: DataModels.AutopilotTier): void => {
-    this.setState({ selectedAutoPilotTier });
+    this.setState({ selectedAutoPilotTier: selectedAutoPilotTier });
   };
 
   private getStatusBarComponent = (): JSX.Element => {
@@ -1440,8 +1353,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               hasAutoPilotV2FeatureFlag={this.hasAutoPilotV2FeatureFlag}
               isFixedContainer={this.isFixedContainer}
               autoPilotTiersList={this.autoPilotTiersList}
-              onRupmChange={this.onRupmChange}
-              rupm={this.state.rupm}
               setThroughput={this.setThroughput}
               throughput={this.state.throughput}
               autoPilotThroughput={this.state.autoPilotThroughput}
@@ -1462,12 +1373,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               container={this.container}
               tabId={this.tabId}
               conflictResolutionPolicyMode={this.state.conflictResolutionPolicyMode}
+              onConflictResolutionPolicyModeChange={this.onConflictResolutionPolicyModeChange}
               conflictResolutionPolicyPath={this.state.conflictResolutionPolicyPath}
               conflictResolutionPolicyProcedure={this.state.conflictResolutionPolicyProcedure}
-              onConflictResolutionChange={this.onConflictResolutionChange}
-              onConflictResolutionLWWKeyPress={this.onConflictResolutionLWWKeyPress}
               onConflictResolutionPolicyPathChange={this.onConflictResolutionPolicyPathChange}
-              onConflictResolutionCustomKeyPress={this.onConflictResolutionCustomKeyPress}
               onConflictResolutionPolicyProcedureChange={this.onConflictResolutionPolicyProcedureChange}
             />
           )}
@@ -1480,29 +1389,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             changeFeedPolicyVisible={this.changeFeedPolicyVisible}
             indexingPolicyDiv={this.indexingPolicyDiv}
             timeToLive={this.state.timeToLive}
-            onTtlOffKeyPress={this.onTtlOffKeyPress}
-            onTtlOnNoDefaultKeyPress={this.onTtlOnNoDefaultKeyPress}
-            onTtlOnKeyPress={this.onTtlOnKeyPress}
-            onTtlOffKeyFocus={this.onTtlOffKeyFocus}
-            onTtlOnNoDefaultKeyFocus={this.onTtlOnNoDefaultKeyFocus}
-            onTtlOnKeyFocus={this.onTtlOnKeyFocus}
-            onTimeToLiveChange={this.onTimeToLiveChange}
+            onTtlChange={this.onTtlChange}
+            onTtlFocusChange={this.onTtlFocusChange}
             timeToLiveSeconds={this.state.timeToLiveSeconds}
             onTimeToLiveSecondsChange={this.onTimeToLiveSecondsChange}
             geospatialConfigType={this.state.geospatialConfigType}
             onGeoSpatialConfigTypeChange={this.onGeoSpatialConfigTypeChange}
-            onGeographyKeyPress={this.onGeographyKeyPress}
-            onGeometryKeyPress={this.onGeometryKeyPress}
             analyticalStorageTtlSelection={this.state.analyticalStorageTtlSelection}
             onAnalyticalStorageTtlSelectionChange={this.onAnalyticalStorageTtlSelectionChange}
-            onAnalyticalStorageTtlOnNoDefaultKeyPress={this.onAnalyticalStorageTtlOnNoDefaultKeyPress}
-            onAnalyticalStorageTtlOnKeyPress={this.onAnalyticalStorageTtlOnKeyPress}
             analyticalStorageTtlSeconds={this.state.analyticalStorageTtlSeconds}
             onAnalyticalStorageTtlSecondsChange={this.onAnalyticalStorageTtlSecondsChange}
-            changeFeedPolicyToggled={this.state.changeFeedPolicyToggled}
-            onChangeFeedPolicyOffKeyPress={this.onChangeFeedPolicyOffKeyPress}
-            onChangeFeedPolicyOnKeyPress={this.onChangeFeedPolicyOnKeyPress}
-            onChangeFeedPolicyToggled={this.onChangeFeedPolicyToggled}
+            changeFeedPolicy={this.state.changeFeedPolicy}
+            onChangeFeedPolicyChange={this.onChangeFeedPolicyChange}
             indexingPolicyContent={this.state.indexingPolicyContent}
             isIndexingPolicyEditorInitializing={this.state.isIndexingPolicyEditorInitializing}
             createIndexingPolicyEditor={this.createIndexingPolicyEditor}

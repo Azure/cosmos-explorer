@@ -1,12 +1,12 @@
 import React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { StatefulValue } from "../StatefulValue";
+import { getTextFieldStyles } from "../Settings/SettingsRenderUtils";
+import { TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Label } from "office-ui-fabric-react";
 
 export interface ThroughputInputAutoPilotV3Props {
   throughput: StatefulValue<number>;
   setThroughput: (newThroughput: number) => void;
-  testId: string;
-  ariaLabel?: string;
   minimum: number;
   maximum: number;
   step?: number;
@@ -22,12 +22,8 @@ export interface ThroughputInputAutoPilotV3Props {
   label: string;
   infoBubbleText?: string;
   canExceedMaximumValue?: boolean;
-  cssClass?: string;
-  setAutoPilotSelected: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   isAutoPilotSelected: boolean;
-  throughputAutoPilotRadioId: string;
-  throughputProvisionedRadioId: string;
-  throughputModeRadioName: string;
   autoPilotUsageCost: JSX.Element;
   showAutoPilot?: boolean;
   overrideWithAutoPilotSettings: boolean;
@@ -46,8 +42,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 > {
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
-  private cssClass: string;
   private step: number;
+  private options: IChoiceGroupOption[] = [
+    { key: "true", text: "Autoscale" },
+    { key: "false", text: "Manual" }
+  ];
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
@@ -56,17 +55,22 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
-    this.cssClass = this.props.cssClass || "textfontclr collid migration";
   }
 
-  private onAutoPilotThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    let newThroughput = parseInt(e.currentTarget.value);
+  private onAutoPilotThroughputChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
+    let newThroughput = parseInt(newValue);
     newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
     this.props.setMaxAutoPilotThroughput(newThroughput);
   };
 
-  private onThroughputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    let newThroughput = parseInt(e.currentTarget.value);
+  private onThroughputChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
+    let newThroughput = parseInt(newValue);
     newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
 
     if (this.props.overrideWithAutoPilotSettings) {
@@ -76,65 +80,27 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     }
   };
 
-  private getThroughputValue = (): string => {
-    if (this.props.throughput.current) {
-      if (this.props.throughput.current === 0) {
-        return "";
-      } else {
-        return this.props.throughput.current.toString();
-      }
-    }
-    return "";
-  };
-
-  private getMaxAutoPilotThroughputValue = (): string => {
-    if (this.props.overrideWithProvisionedThroughputSettings) {
-      return "";
-    } else {
-      return this.props.maxAutoPilotThroughput.current === 0
-        ? ""
-        : this.props.maxAutoPilotThroughput.current.toString();
-    }
+  private onChoiceGroupChange = (
+    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void => {
+    this.props.setAutoPilotSelected(option.key === "true");
   };
 
   private renderThroughputModeChoices = (): JSX.Element => {
     return (
-      <div className="throughputModeContainer">
-        <input
-          className="throughputModeRadio"
-          aria-label="Autopilot mode"
-          type="radio"
-          role="radio"
-          tabIndex={0}
-          value="true"
-          checked={this.props.isAutoPilotSelected}
-          onChange={this.props.setAutoPilotSelected}
-          id={this.props.throughputAutoPilotRadioId}
-          name={this.props.throughputModeRadioName}
-          aria-checked={this.props.isAutoPilotSelected}
-        />
-        <label className="throughputModeSpace" htmlFor={this.props.throughputAutoPilotRadioId}>
-          Autoscale
-        </label>
-
-        <input
-          className="throughputModeRadio nonFirstRadio"
-          aria-label="Provisioned Throughput mode"
-          type="radio"
-          role="radio"
-          value="false"
-          checked={!this.props.isAutoPilotSelected}
-          tabIndex={0}
-          onChange={this.props.setAutoPilotSelected}
-          id={this.props.throughputProvisionedRadioId}
-          name={this.props.throughputModeRadioName}
-          aria-checked={!this.props.isAutoPilotSelected}
-        />
-        <label className="throughputModeSpace" htmlFor={this.props.throughputProvisionedRadioId}>
-          Manual
-        </label>
-      </div>
+      <ChoiceGroup
+        tabIndex={0}
+        selectedKey={this.props.isAutoPilotSelected.toString()}
+        options={this.options}
+        onChange={this.onChoiceGroupChange}
+        label={this.props.label}
+      />
     );
+  };
+
+  private onSpendAckChecked = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
+    this.setState({ spendAckChecked: checked });
   };
 
   private renderAutoPilotInput = (): JSX.Element => {
@@ -153,18 +119,21 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         <p>
           <span>Max RU/s</span>
         </p>
-        <input
+        <TextField
+          required
+          type="number"
           id="autopilotInput"
           key="auto pilot throughput input"
-          value={this.getMaxAutoPilotThroughputValue()}
-          onChange={this.onAutoPilotThroughputChange}
+          styles={getTextFieldStyles(this.props.maxAutoPilotThroughput)}
           disabled={this.props.overrideWithProvisionedThroughputSettings}
-          className={`migration collid select-font-size ${this.props.maxAutoPilotThroughput.isDirty() ? "dirty" : ""}`}
           step={this.step}
-          type="number"
-          required
           min={AutoPilotUtils.minAutoPilotThroughput}
-          aria-label={this.props.ariaLabel}
+          value={
+            this.props.overrideWithProvisionedThroughputSettings
+              ? ""
+              : this.props.maxAutoPilotThroughput.current?.toString()
+          }
+          onChange={this.onAutoPilotThroughputChange}
         />
         {!this.props.overrideWithProvisionedThroughputSettings && <p>{this.props.autoPilotUsageCost}</p>}
         {this.props.costsVisible && !this.props.overrideWithProvisionedThroughputSettings && (
@@ -172,19 +141,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         )}
 
         {this.props.spendAckVisible && (
-          <p className="pkPadding">
-            <input
-              type="checkbox"
-              aria-label="acknowledge spend throughput"
-              title={this.props.spendAckText}
-              id={this.props.spendAckId}
-              checked={this.props.spendAckChecked}
-              onChange={e => {
-                this.setState({ spendAckChecked: e.currentTarget.value === "true" });
-              }}
-            />
-            <label htmlFor={this.props.spendAckId}>{this.props.spendAckText}</label>
-          </p>
+          <Checkbox
+            label={this.props.spendAckText}
+            checked={this.state.spendAckChecked}
+            onChange={this.onSpendAckChecked}
+          />
         )}
       </>
     );
@@ -193,38 +154,28 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private renderThroughputSelector = (): JSX.Element => {
     return (
       <>
-        <input
+        <TextField
+          required
+          type="number"
           id="throughputInput"
           key="provisioned throughput input"
-          onChange={this.onThroughputChange}
-          value={this.getThroughputValue()}
-          className={`${this.cssClass} ${this.props.throughput.isDirty() ? "dirty" : ""}`}
+          styles={getTextFieldStyles(this.props.throughput)}
           disabled={this.props.overrideWithAutoPilotSettings}
-          type="number"
-          required
-          data-test={this.props.testId}
           step={this.step}
           min={this.props.minimum}
           max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
-          aria-label={this.props.ariaLabel}
+          value={this.props.throughput.current?.toString()}
+          onChange={this.onThroughputChange}
         />
 
         {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
 
         {this.props.spendAckVisible && (
-          <p className="pkPadding">
-            <input
-              type="checkbox"
-              aria-label="acknowledge spend throughput"
-              title={this.props.spendAckText}
-              id={this.props.spendAckId}
-              checked={this.props.spendAckChecked}
-              onChange={e => {
-                this.setState({ spendAckChecked: e.currentTarget.value === "true" });
-              }}
-            />
-            <label htmlFor={this.props.spendAckId}>{this.props.spendAckText}</label>
-          </p>
+          <Checkbox
+            label={this.props.spendAckText}
+            checked={this.state.spendAckChecked}
+            onChange={this.onSpendAckChecked}
+          />
         )}
 
         {this.props.isFixed && <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>}
@@ -237,8 +188,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       <div>
         <p className="pkPadding">
           {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
-
-          <span>{this.props.label}</span>
 
           {this.props.infoBubbleText && (
             <span className="infoTooltip" role="tooltip" tabIndex={0}>

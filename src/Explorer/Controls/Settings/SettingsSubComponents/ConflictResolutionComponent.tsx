@@ -7,19 +7,26 @@ import { StatefulValue } from "../../StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
 import Explorer from "../../../Explorer";
+import * as Constants from "../../../../Common/Constants";
+import { getTextFieldStyles } from "../SettingsRenderUtils";
+import { Label, TextField, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
 
 export interface ConflictResolutionComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
   tabId: string;
   conflictResolutionPolicyMode: StatefulValue<DataModels.ConflictResolutionMode>;
+  onConflictResolutionPolicyModeChange: (mode: DataModels.ConflictResolutionMode) => void;
   conflictResolutionPolicyPath: StatefulValue<string>;
+  onConflictResolutionPolicyPathChange: (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => void;
   conflictResolutionPolicyProcedure: StatefulValue<string>;
-  onConflictResolutionChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onConflictResolutionLWWKeyPress: () => void;
-  onConflictResolutionPolicyPathChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onConflictResolutionCustomKeyPress: () => void;
-  onConflictResolutionPolicyProcedureChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onConflictResolutionPolicyProcedureChange: (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => void;
 }
 
 interface ConflictResolutionComponentState {
@@ -30,22 +37,39 @@ export class ConflictResolutionComponent extends React.Component<
   ConflictResolutionComponentProps,
   ConflictResolutionComponentState
 > {
-  public conflictResolutionPolicyModeCustomId: string;
-  public conflictResolutionPolicyModeCRDTId: string;
-  public conflictResolutionPolicyModeLWWId: string;
-
   constructor(props: ConflictResolutionComponentProps) {
     super(props);
     this.state = {
       conflictResolutionExpanded: true
     };
-    this.conflictResolutionPolicyModeCustomId = `conflictResolutionPolicyModeCustom${this.props.tabId}`;
-    this.conflictResolutionPolicyModeLWWId = `conflictResolutionPolicyModeLWW${this.props.tabId}`;
-    this.conflictResolutionPolicyModeCRDTId = `conflictResolutionPolicyModeCRDT${this.props.tabId}`;
   }
 
   private toggleConflictResolution = (): void => {
     this.setState({ conflictResolutionExpanded: !this.state.conflictResolutionExpanded });
+  };
+
+  private onConflictResolutionCustomKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onConflictResolutionCustomClick();
+    }
+  };
+
+  private onConflictResolutionCustomClick = (): void => {
+    this.props.onConflictResolutionPolicyModeChange(DataModels.ConflictResolutionMode.Custom);
+  };
+
+  private onConflictResolutionLWWKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onConflictResolutionLWWClick();
+    }
+  };
+
+  private onConflictResolutionLWWClick = (): void => {
+    this.props.onConflictResolutionPolicyModeChange(DataModels.ConflictResolutionMode.LastWriterWins);
   };
 
   private getConflictResolutionModeComponent = (): JSX.Element => {
@@ -54,67 +78,34 @@ export class ConflictResolutionComponent extends React.Component<
         <div className="formTitle">Mode</div>
         <div className="tabs" aria-label="Mode" role="radiogroup">
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ConflictResolutionLWWLabel"
+            <Label
               tabIndex={0}
               role="radio"
-              aria-checked={
-                this.props.conflictResolutionPolicyMode.current !== DataModels.ConflictResolutionMode.LastWriterWins
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.props.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
+              className={`settingsV2Label ${this.props.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
                 this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins
                   ? "selectedRadio"
                   : "unselectedRadio"
               }`}
-              onActivated={this.props.onConflictResolutionLWWKeyPress}
+              onKeyPress={this.onConflictResolutionLWWKeyPress}
+              onClick={this.onConflictResolutionLWWClick}
             >
               Last Write Wins (default)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="conflictresolution"
-              value={DataModels.ConflictResolutionMode.LastWriterWins}
-              className="radio"
-              id={this.conflictResolutionPolicyModeLWWId}
-              onChange={this.props.onConflictResolutionChange}
-              checked={
-                this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins
-              }
-            />
+            </Label>
           </div>
-
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ConflictResolutionCutomLabel"
+            <Label
               tabIndex={0}
               role="radio"
-              aria-checked={
-                this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.props.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
+              className={`settingsV2Label ${this.props.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
                 this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom
                   ? "selectedRadio"
                   : "unselectedRadio"
               }`}
-              onActivated={this.props.onConflictResolutionCustomKeyPress}
+              onKeyPress={this.onConflictResolutionCustomKeyPress}
+              onClick={this.onConflictResolutionCustomClick}
             >
               Merge Procedure (custom)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="conflictresolution"
-              value={DataModels.ConflictResolutionMode.Custom}
-              className="radio"
-              id={this.conflictResolutionPolicyModeCustomId}
-              onChange={this.props.onConflictResolutionChange}
-              checked={this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom}
-            />
+            </Label>
           </div>
         </div>
       </>
@@ -136,19 +127,11 @@ export class ConflictResolutionComponent extends React.Component<
             </span>
           </span>
         </p>
-        <p>
-          <input
-            type="text"
-            aria-label="Document path for conflict resolution"
-            value={
-              this.props.conflictResolutionPolicyPath.current === undefined
-                ? ""
-                : this.props.conflictResolutionPolicyPath.current
-            }
-            className={`${this.props.conflictResolutionPolicyPath.isDirty() ? "dirty" : ""}`}
-            onChange={this.props.onConflictResolutionPolicyPathChange}
-          />
-        </p>
+        <TextField
+          styles={getTextFieldStyles(this.props.conflictResolutionPolicyPath)}
+          value={this.props.conflictResolutionPolicyPath.current}
+          onChange={this.props.onConflictResolutionPolicyPathChange}
+        />
       </>
     );
   };
@@ -177,24 +160,16 @@ export class ConflictResolutionComponent extends React.Component<
             </span>
           </span>
         </p>
-        <p>
-          <input
-            type="text"
-            aria-label="Stored procedure name for conflict resolution"
-            value={
-              this.props.conflictResolutionPolicyProcedure.current === undefined
-                ? ""
-                : this.props.conflictResolutionPolicyProcedure.current
-            }
-            className={`${this.props.conflictResolutionPolicyProcedure.isDirty() ? "dirty" : ""}`}
-            onChange={this.props.onConflictResolutionPolicyProcedureChange}
-          />
-        </p>
+        <TextField
+          styles={getTextFieldStyles(this.props.conflictResolutionPolicyProcedure)}
+          value={this.props.conflictResolutionPolicyProcedure.current}
+          onChange={this.props.onConflictResolutionPolicyProcedureChange}
+        />
       </>
     );
   };
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <>
         <AccessibleElement

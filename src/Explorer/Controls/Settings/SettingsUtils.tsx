@@ -7,7 +7,7 @@ import * as PricingUtils from "../../../Utils/PricingUtils";
 
 import Explorer from "../../Explorer";
 
-export enum ChangeFeedPolicyToggledState {
+export enum ChangeFeedPolicyState {
   Off = "Off",
   On = "On"
 }

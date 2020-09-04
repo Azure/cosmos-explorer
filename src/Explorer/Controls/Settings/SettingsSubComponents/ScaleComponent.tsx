@@ -15,10 +15,12 @@ import {
   getAutoPilotV3SpendElement,
   getAutoPilotV2SpendElement,
   getEstimatedSpendElement,
-  getEstimatedAutoscaleSpendElement
+  getEstimatedAutoscaleSpendElement,
+  getTextFieldStyles
 } from "../SettingsRenderUtils";
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
+import { Label, TextField } from "office-ui-fabric-react";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -28,8 +30,6 @@ export interface ScaleComponentProps {
   hasAutoPilotV2FeatureFlag: boolean;
   isFixedContainer: boolean;
   autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
-  onRupmChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  rupm: StatefulValue<string>;
   setThroughput: (newThroughput: number) => void;
   throughput: StatefulValue<number>;
   autoPilotThroughput: StatefulValue<number>;
@@ -38,7 +38,7 @@ export interface ScaleComponentProps {
   wasAutopilotOriginallySet: boolean;
   userCanChangeProvisioningTypes: boolean;
   overrideWithProvisionedThroughputSettings: () => boolean;
-  setAutoPilotSelected: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   setAutoPilotTier: (selectedAutoPilotTier: DataModels.AutopilotTier) => void;
   setMaxAutoPilotThroughput: (newThroughput: number) => void;
 }
@@ -48,56 +48,19 @@ interface ScaleComponentState {
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleComponentState> {
-  public rupmOnId: string;
-  public rupmOffId: string;
-  public testId: string;
   public canExceedMaximumValue: boolean;
   private costsVisible: boolean;
-  public throughputAutoPilotRadioId: string;
-  public throughputProvisionedRadioId: string;
-  public throughputModeRadioName: string;
-
   constructor(props: ScaleComponentProps) {
     super(props);
     this.state = {
       scaleExpanded: true
     };
-    this.testId = `settingsThroughputValue${this.props.tabId}`;
-    this.rupmOnId = `rupmOn${this.props.tabId}`;
-    this.rupmOffId = `rupmOff${this.props.tabId}`;
-    this.throughputAutoPilotRadioId = `editDatabaseThroughput-autoPilotRadio${this.props.tabId}`;
-    this.throughputProvisionedRadioId = `editDatabaseThroughput-manualRadio${this.props.tabId}`;
-    this.throughputModeRadioName = `throughputModeRadio${this.props.tabId}`;
     this.canExceedMaximumValue = this.props.container.canExceedMaximumValue();
     this.costsVisible = !this.props.container.isEmulator;
   }
 
   private toggleScale = (): void => {
     this.setState({ scaleExpanded: !this.state.scaleExpanded });
-  };
-
-  private isRupmVisible = (): boolean => {
-    if (this.props.container.isEmulator) {
-      return false;
-    }
-    if (this.props.container.isFeatureEnabled(Constants.Features.enableRupm)) {
-      return true;
-    }
-    for (let i = 0, len = this.props.container.databases().length; i < len; i++) {
-      for (let j = 0, len2 = this.props.container.databases()[i].collections().length; j < len2; j++) {
-        const collectionOffer = this.props.container
-          .databases()
-          // eslint-disable-next-line no-unexpected-multiline
-          [i].collections()
-          // eslint-disable-next-line no-unexpected-multiline
-          [j].offer();
-        if (collectionOffer && collectionOffer.content && collectionOffer.content.offerIsRUPerMinuteThroughputEnabled) {
-          return true;
-        }
-      }
-    }
-
-    return false;
   };
 
   private isAutoScaleEnabled = (): boolean => {
@@ -170,10 +133,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
     return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
   };
 
-  private getThroughputAriaLabel = (): string => {
-    return this.getThroughputTitle() + this.getRequestUnitsUsageCost();
-  };
-
   private getRequestUnitsUsageCost = (): JSX.Element => {
     const account = this.props.container.databaseAccount();
     if (!account) {
@@ -182,7 +141,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
 
     const serverId: string = this.props.container.serverId();
     const offerThroughput: number = this.props.throughput.current;
-    const rupmEnabled = this.props.rupm.current === Constants.RUPMStates.on;
 
     const regions =
       (account && account.properties && account.properties.readLocations && account.properties.readLocations.length) ||
@@ -198,7 +156,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
         serverId,
         regions,
         multimaster,
-        rupmEnabled
+        false
       );
     } else {
       estimatedSpend = getEstimatedAutoscaleSpendElement(
@@ -221,7 +179,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
   private getThroughputInputComponent = (): JSX.Element => {
     return this.props.hasAutoPilotV2FeatureFlag ? (
       <ThroughputInputComponent
-        testId={this.testId}
         showAsMandatory={false}
         isFixed={false}
         throughput={this.props.throughput}
@@ -233,23 +190,22 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
           canThroughputExceedMaximumValue(this.props.collection, this.props.container) || this.canExceedMaximumValue
         }
         label={this.getThroughputTitle()}
-        ariaLabel={this.getThroughputAriaLabel()}
         costsVisible={this.costsVisible}
         requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
-        throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
-        throughputProvisionedRadioId={this.throughputProvisionedRadioId}
-        throughputModeRadioName={this.throughputModeRadioName}
         showAutoPilot={this.props.userCanChangeProvisioningTypes}
         isAutoPilotSelected={this.props.isAutoPilotSelected}
         setAutoPilotSelected={this.props.setAutoPilotSelected}
         autoPilotTiersList={this.props.autoPilotTiersList}
+        spendAckChecked={false}
+        spendAckId="123"
+        spendAckText="text"
+        spendAckVisible={true}
         selectedAutoPilotTier={this.props.selectedAutoPilotTier}
         setAutoPilotTier={this.props.setAutoPilotTier}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
       />
     ) : (
       <ThroughputInputAutoPilotV3Component
-        testId={this.testId}
         throughput={this.props.throughput}
         setThroughput={this.props.setThroughput}
         minimum={getMinRUs(this.props.collection, this.props.container)}
@@ -257,12 +213,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
         isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
         canExceedMaximumValue={canThroughputExceedMaximumValue(this.props.collection, this.props.container)}
         label={this.getThroughputTitle()}
-        ariaLabel={this.getThroughputAriaLabel()}
         costsVisible={this.costsVisible}
         requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
-        throughputAutoPilotRadioId={this.throughputAutoPilotRadioId}
-        throughputProvisionedRadioId={this.throughputProvisionedRadioId}
-        throughputModeRadioName={this.throughputModeRadioName}
         showAutoPilot={this.props.userCanChangeProvisioningTypes}
         isAutoPilotSelected={this.props.isAutoPilotSelected}
         setAutoPilotSelected={this.props.setAutoPilotSelected}
@@ -271,59 +223,15 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
         overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
         overrideWithProvisionedThroughputSettings={this.props.overrideWithProvisionedThroughputSettings()}
+        spendAckChecked={false}
+        spendAckId="123"
+        spendAckText="text"
+        spendAckVisible={true}
       />
     );
   };
 
-  private getRupmComponent = (): JSX.Element => {
-    return (
-      <>
-        <div className="formTitle">RU/m</div>
-        <div className="tabs" aria-label="RU/m">
-          <div className="tab">
-            <label
-              htmlFor={this.rupmOnId}
-              className={`${this.props.rupm.isDirty() ? "dirty" : ""} ${
-                this.props.rupm.current === Constants.RUPMStates.on ? "selectedRadio" : "unselectedRadio"
-              }`}
-            >
-              On
-            </label>
-            <input
-              type="radio"
-              name="rupm"
-              value={Constants.RUPMStates.on}
-              className="radio"
-              onChange={this.props.onRupmChange}
-              id={this.rupmOnId}
-              checked={this.props.rupm.current === Constants.RUPMStates.on}
-            />
-          </div>
-          <div className="tab">
-            <label
-              htmlFor={this.rupmOffId}
-              className={`${this.props.rupm.isDirty() ? "dirty" : ""} ${
-                this.props.rupm.current === Constants.RUPMStates.off ? "selectedRadio" : "unselectedRadio"
-              }`}
-            >
-              Off
-            </label>
-            <input
-              type="radio"
-              name="rupm"
-              value={Constants.RUPMStates.off}
-              className="radio"
-              id={this.rupmOffId}
-              onChange={this.props.onRupmChange}
-              checked={this.props.rupm.current === Constants.RUPMStates.off}
-            />
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  public render() {
+  public render(): JSX.Element {
     return (
       <>
         <AccessibleElement
@@ -365,13 +273,11 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
               </>
             )}
 
-            {this.isRupmVisible() && this.getRupmComponent()}
-
             {/*<!-- TODO: Replace link with call to the Azure Support blade -->*/}
             {this.isAutoScaleEnabled() && (
               <div>
                 <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
-                <input className="formReadOnly collid-white" readOnly aria-label="Throughput input" />
+                <TextField disabled styles={getTextFieldStyles()} />
                 <div className="autoScaleDescription">
                   Your account has custom settings that prevents setting throughput at the container level. Please work
                   with your Cosmos DB engineering team point of contact to make changes.

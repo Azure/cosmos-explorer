@@ -6,14 +6,12 @@ import InfoBubble from "../../../../../images/info-bubble.svg";
 import { StatefulValue } from "../../StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
-import {
-  hasDatabaseSharedThroughput,
-  GeospatialConfigType,
-  TtlType,
-  ChangeFeedPolicyToggledState
-} from "../SettingsUtils";
+import { hasDatabaseSharedThroughput, GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+import { Label, TextField, ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
+import * as Constants from "../../../../Common/Constants";
+import { getTextFieldStyles } from "../SettingsRenderUtils";
 
 export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
@@ -23,32 +21,27 @@ export interface SubSettingsComponentProps {
   changeFeedPolicyVisible: boolean;
   indexingPolicyDiv: React.RefObject<HTMLDivElement>;
   timeToLive: StatefulValue<TtlType>;
-  onTtlOffKeyPress: () => void;
-  onTtlOnNoDefaultKeyPress: () => void;
-  onTtlOnKeyPress: () => void;
-  onTtlOffKeyFocus: () => void;
-  onTtlOnNoDefaultKeyFocus: () => void;
-  onTtlOnKeyFocus: () => void;
-  onTimeToLiveChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onTtlChange: (ttlType: TtlType) => void;
+  onTtlFocusChange: (ttlType: TtlType) => void;
   timeToLiveSeconds: StatefulValue<number>;
-  onTimeToLiveSecondsChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onTimeToLiveSecondsChange: (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => void;
 
   geospatialConfigType: StatefulValue<GeospatialConfigType>;
-  onGeoSpatialConfigTypeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onGeographyKeyPress: () => void;
-  onGeometryKeyPress: () => void;
+  onGeoSpatialConfigTypeChange: (geoSpatialConfigType: GeospatialConfigType) => void;
 
   analyticalStorageTtlSelection: StatefulValue<TtlType>;
-  onAnalyticalStorageTtlSelectionChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onAnalyticalStorageTtlOnNoDefaultKeyPress: () => void;
-  onAnalyticalStorageTtlOnKeyPress: () => void;
+  onAnalyticalStorageTtlSelectionChange: (ttltype: TtlType) => void;
   analyticalStorageTtlSeconds: StatefulValue<number>;
-  onAnalyticalStorageTtlSecondsChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onAnalyticalStorageTtlSecondsChange: (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => void;
 
-  changeFeedPolicyToggled: StatefulValue<ChangeFeedPolicyToggledState>;
-  onChangeFeedPolicyOffKeyPress: () => void;
-  onChangeFeedPolicyOnKeyPress: () => void;
-  onChangeFeedPolicyToggled: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  changeFeedPolicy: StatefulValue<ChangeFeedPolicyState>;
+  onChangeFeedPolicyChange: (changeFeedPolicyState: ChangeFeedPolicyState) => void;
 
   indexingPolicyContent: StatefulValue<DataModels.IndexingPolicy>;
   isIndexingPolicyEditorInitializing: boolean;
@@ -60,11 +53,6 @@ interface SubSettingsComponentState {
 }
 
 export class SubSettingsComponent extends React.Component<SubSettingsComponentProps, SubSettingsComponentState> {
-  private changeFeedPolicyOffId: string;
-  private changeFeedPolicyOnId: string;
-  private ttlOffId: string;
-  private ttlOnId: string;
-  private ttlOnNoDefaultId: string;
   private shouldShowIndexingPolicyEditor: boolean;
   private ttlVisible: boolean;
   private geospatialVisible: boolean;
@@ -76,11 +64,6 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.state = {
       settingsExpanded: true
     };
-    this.ttlOffId = `ttlOffId${this.props.tabId}`;
-    this.ttlOnNoDefaultId = `ttlOnNoDefault${this.props.tabId}`;
-    this.ttlOnId = `ttlOn${this.props.tabId}`;
-    this.changeFeedPolicyOffId = `changeFeedOff${this.props.tabId}`;
-    this.changeFeedPolicyOnId = `changeFeedOn${this.props.tabId}`;
     this.shouldShowIndexingPolicyEditor =
       this.props.container &&
       !this.props.container.isPreferredApiCassandra() &&
@@ -102,101 +85,184 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     });
   };
 
+  private onTtlOffKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onTtlOffLabelClick();
+    }
+  };
+
+  private onTtlOffLabelClick = (): void => {
+    this.props.onTtlChange(TtlType.Off);
+  };
+
+  private onTtlOnNoDefaultKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onTtlOnNoDefaultLabelClick();
+    }
+  };
+
+  private onTtlOnNoDefaultLabelClick = (): void => {
+    this.props.onTtlChange(TtlType.OnNoDefault);
+  };
+
+  private onTtlOnKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onTtlOnLabelClick();
+    }
+  };
+
+  private onTtlOnLabelClick = (): void => {
+    this.props.onTtlChange(TtlType.On);
+  };
+
+  private onTtlOffLabelFocus = (): void => {
+    this.props.onTtlFocusChange(TtlType.Off);
+  };
+
+  private onTtlOnNoDefaultLabelFocus = (): void => {
+    this.props.onTtlFocusChange(TtlType.OnNoDefault);
+  };
+
+  private onTtlOnLabelFocus = (): void => {
+    this.props.onTtlFocusChange(TtlType.On);
+  };
+
+  private onGeographyKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onGeographyLabelClick();
+    }
+  };
+
+  private onGeographyLabelClick = (): void => {
+    this.props.onGeoSpatialConfigTypeChange(GeospatialConfigType.Geography);
+  };
+
+  private onGeometryKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onGeometryLabelClick();
+    }
+  };
+
+  private onGeometryLabelClick = (): void => {
+    this.props.onGeoSpatialConfigTypeChange(GeospatialConfigType.Geometry);
+  };
+
+  private onAnalyticalStorageTtlOnNoDefaultKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onAnalyticalStorageTtlOnNoDefaultLabelClick();
+    }
+  };
+
+  private onAnalyticalStorageTtlOnNoDefaultLabelClick = (): void => {
+    this.props.onAnalyticalStorageTtlSelectionChange(TtlType.OnNoDefault);
+  };
+
+  private onAnalyticalStorageTtlOnKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onAnalyticalStorageTtlOnLabelClick();
+    }
+  };
+
+  private onAnalyticalStorageTtlOnLabelClick = (): void => {
+    this.props.onAnalyticalStorageTtlSelectionChange(TtlType.On);
+  };
+
+  private onChangeFeedPolicyOffKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onChangeFeedPolicyOffLabelClick();
+    }
+  };
+
+  private onChangeFeedPolicyOffLabelClick = (): void => {
+    this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState.Off);
+  };
+
+  private onChangeFeedPolicyOnKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.onChangeFeedPolicyOnLabelClick();
+    }
+  };
+
+  private onChangeFeedPolicyOnLabelClick = (): void => {
+    this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState.On);
+  };
+
   private getTtlComponent = (): JSX.Element => {
     return (
       <>
         <div className="formTitle">Time to Live</div>
         <div className="tabs disableFocusDefaults" aria-label="Time to Live" role="radiogroup">
           <div className="tab">
-            <AccessibleElement
-              as="label"
+            <Label
               tabIndex={0}
-              aria-label="ttlOffLable"
               role="radio"
-              aria-checked={this.props.timeToLive.current === TtlType.Off ? "true" : false}
-              className={`ttlIndexingPolicyFocusElement ${this.props.timeToLive.isDirty() ? "dirty" : ""} ${
-                this.props.timeToLive.current === TtlType.Off ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.props.onTtlOffKeyPress}
-              onFocus={this.props.onTtlOffKeyFocus}
+              className={`settingsV2Label ttlIndexingPolicyFocusElement ${
+                this.props.timeToLive.isDirty() ? "dirty" : ""
+              } ${this.props.timeToLive.current === TtlType.Off ? "selectedRadio" : "unselectedRadio"}`}
+              onClick={this.onTtlOffLabelClick}
+              onKeyPress={this.onTtlOffKeyPress}
+              onFocus={this.onTtlOffLabelFocus}
             >
               Off
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="ttl"
-              value={TtlType.Off}
-              className="radio"
-              id={this.ttlOffId}
-              checked={this.props.timeToLive.current === TtlType.Off}
-              onChange={this.props.onTimeToLiveChange}
-            />
+            </Label>
           </div>
-
           <div className="tab">
-            <AccessibleElement
-              as="label"
+            <Label
               tabIndex={0}
-              aria-label="ttlOnNoDefaultLabel"
               role="radio"
-              aria-checked={this.props.timeToLive.current === TtlType.OnNoDefault ? "true" : "false"}
-              className={`ttlIndexingPolicyFocusElement ${this.props.timeToLive.isDirty() ? "dirty" : ""} ${
-                this.props.timeToLive.current === TtlType.OnNoDefault ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.props.onTtlOnNoDefaultKeyPress}
-              onFocus={this.props.onTtlOnNoDefaultKeyFocus}
+              className={`settingsV2Label ttlIndexingPolicyFocusElement ${
+                this.props.timeToLive.isDirty() ? "dirty" : ""
+              } ${this.props.timeToLive.current === TtlType.OnNoDefault ? "selectedRadio" : "unselectedRadio"}`}
+              onClick={this.onTtlOnNoDefaultLabelClick}
+              onKeyPress={this.onTtlOnNoDefaultKeyPress}
+              onFocus={this.onTtlOnNoDefaultLabelFocus}
             >
               On (no default)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="ttl"
-              value={TtlType.OnNoDefault}
-              className="radio"
-              id={this.ttlOnNoDefaultId}
-              checked={this.props.timeToLive.current === TtlType.OnNoDefault}
-              onChange={this.props.onTimeToLiveChange}
-            />
+            </Label>
           </div>
-
           <div className="tab">
-            <AccessibleElement
-              as="label"
+            <Label
               tabIndex={0}
-              aria-label="ttlOnLabel"
               role="radio"
-              aria-checked={this.props.timeToLive.current === TtlType.On ? "true" : "false"}
-              className={`ttlIndexingPolicyFocusElement ${this.props.timeToLive.isDirty() ? "dirty" : ""} ${
-                this.props.timeToLive.current === TtlType.On ? "selectedRadio" : "unselectedRadio"
-              }`}
-              onActivated={this.props.onTtlOnKeyPress}
-              onFocus={this.props.onTtlOnKeyFocus}
+              className={`settingsV2Label ttlIndexingPolicyFocusElement ${
+                this.props.timeToLive.isDirty() ? "dirty" : ""
+              } ${this.props.timeToLive.current === TtlType.On ? "selectedRadio" : "unselectedRadio"}`}
+              onClick={this.onTtlOnLabelClick}
+              onKeyPress={this.onTtlOnKeyPress}
+              onFocus={this.onTtlOnLabelFocus}
             >
               On
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="ttl"
-              value={TtlType.On}
-              className="radio"
-              id={this.ttlOnId}
-              checked={this.props.timeToLive.current === TtlType.On}
-              onChange={this.props.onTimeToLiveChange}
-            />
+            </Label>
           </div>
         </div>
 
         {this.props.timeToLive.current === TtlType.On && (
           <>
-            <input
+            <TextField
+              styles={getTextFieldStyles(this.props.timeToLiveSeconds)}
               type="number"
               required
-              min="1"
+              min={1}
               max={Int32.Max}
-              aria-label="Time to live in seconds"
-              value={this.props.timeToLiveSeconds.current}
-              className={`dirtyTextbox ${this.props.timeToLiveSeconds.isDirty() ? "dirty" : ""}`}
-              disabled={this.props.timeToLive.current !== TtlType.On}
+              value={this.props.timeToLiveSeconds.current?.toString()}
               onChange={this.props.onTimeToLiveSecondsChange}
             />
             {` second(s)`}
@@ -213,65 +279,35 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
         <div className="tabs disableFocusDefaults" aria-label="Geospatial Configuration" role="radiogroup">
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="GeospatialGeographyLabel"
+            <Label
               tabIndex={0}
               role="radio"
-              aria-checked={
-                this.props.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography.toLowerCase()
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.props.geospatialConfigType.isDirty() ? "dirty" : ""} ${
+              className={`settingsV2Label  ${this.props.geospatialConfigType.isDirty() ? "dirty" : ""} ${
                 this.props.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography.toLowerCase()
                   ? "selectedRadio"
                   : "unselectedRadio"
               }`}
-              onActivated={this.props.onGeographyKeyPress}
+              onClick={this.onGeographyLabelClick}
+              onKeyPress={this.onGeographyKeyPress}
             >
               Geography
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="geospatial"
-              id="geography"
-              className="radio"
-              value={GeospatialConfigType.Geography}
-              onChange={this.props.onGeoSpatialConfigTypeChange}
-              checked={this.props.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geography}
-            />
+            </Label>
           </div>
 
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="GeospatialGeometryLabel"
+            <Label
               tabIndex={0}
               role="radio"
-              aria-checked={
-                this.props.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry.toLowerCase()
-                  ? "true"
-                  : "false"
-              }
-              className={`${this.props.geospatialConfigType.isDirty() ? "dirty" : ""} ${
+              className={`settingsV2Label ${this.props.geospatialConfigType.isDirty() ? "dirty" : ""} ${
                 this.props.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry.toLowerCase()
                   ? "selectedRadio"
                   : "unselectedRadio"
               }`}
-              onActivated={this.props.onGeometryKeyPress}
+              onClick={this.onGeometryLabelClick}
+              onKeyPress={this.onGeometryKeyPress}
             >
               Geometry
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="geospatial"
-              id="geometry"
-              className="radio"
-              value={GeospatialConfigType.Geometry}
-              onChange={this.props.onGeoSpatialConfigTypeChange}
-              checked={this.props.geospatialConfigType.current?.toLowerCase() === GeospatialConfigType.Geometry}
-            />
+            </Label>
           </div>
         </div>
       </>
@@ -284,76 +320,52 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         <div className="formTitle">Analytical Storage Time to Live</div>
         <div className="tabs disableFocusDefaults" aria-label="Analytical Storage Time to Live" role="radiogroup">
           <div className="tab">
-            <label tabIndex={0} role="radio" className="disabledRadio">
+            <Label 
+              tabIndex={0}
+              role="radio" 
+              disabled
+              className="settingsV2Label-disabled">
               Off
-            </label>
+            </Label>
           </div>
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="AnalyticalStorageTtlOnNoDefaultLabel"
+            <Label
               tabIndex={0}
               role="radio"
-              aria-checked={this.props.analyticalStorageTtlSelection.current === TtlType.OnNoDefault ? "true" : "false"}
-              className={`${this.props.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
+              className={`settingsV2Label ${this.props.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
                 this.props.analyticalStorageTtlSelection.current === TtlType.OnNoDefault
                   ? "selectedRadio"
                   : "unselectedRadio"
               }`}
-              onActivated={this.props.onAnalyticalStorageTtlOnNoDefaultKeyPress}
+              onClick={this.onAnalyticalStorageTtlOnNoDefaultLabelClick}
+              onKeyPress={this.onAnalyticalStorageTtlOnNoDefaultKeyPress}
             >
               On (no default)
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="analyticalStorageTtl"
-              value={TtlType.OnNoDefault}
-              className="radio"
-              id="analyticalStorageTtlOnNoDefaultId"
-              onChange={this.props.onAnalyticalStorageTtlSelectionChange}
-              checked={this.props.analyticalStorageTtlSelection.current === TtlType.OnNoDefault}
-            />
+            </Label>
           </div>
-
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="AnalyticalStorageTtlOnLabel"
+            <Label
               tabIndex={0}
               role="radio"
-              aria-checked={this.props.analyticalStorageTtlSelection.current === TtlType.On ? "true" : "false"}
-              className={`${this.props.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
+              className={`settingsV2Label  ${this.props.analyticalStorageTtlSelection.isDirty() ? "dirty" : ""} ${
                 this.props.analyticalStorageTtlSelection.current === TtlType.On ? "selectedRadio" : "unselectedRadio"
               }`}
-              onActivated={this.props.onAnalyticalStorageTtlOnKeyPress}
+              onClick={this.onAnalyticalStorageTtlOnLabelClick}
+              onKeyPress={this.onAnalyticalStorageTtlOnKeyPress}
             >
               On
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="analyticalStorageTtl"
-              value={TtlType.On}
-              className="radio"
-              id="analyticalStorageTtlOnId"
-              onChange={this.props.onAnalyticalStorageTtlSelectionChange}
-              checked={this.props.analyticalStorageTtlSelection.current === TtlType.On}
-            />
+            </Label>
           </div>
         </div>
         {this.props.analyticalStorageTtlSelection.current === TtlType.On && (
           <>
-            <input
+            <TextField
+              styles={getTextFieldStyles(this.props.analyticalStorageTtlSeconds)}
               type="number"
               required
-              min="1"
-              max="2147483647"
-              value={
-                this.props.analyticalStorageTtlSeconds.current === undefined
-                  ? ""
-                  : this.props.analyticalStorageTtlSeconds.current
-              }
-              aria-label="Time to live in seconds"
-              className={`dirtyTextbox ${this.props.analyticalStorageTtlSeconds.isDirty() ? "dirty" : ""}`}
+              min={1}
+              max={Int32.Max}
+              value={this.props.analyticalStorageTtlSeconds.current?.toString()}
               onChange={this.props.onAnalyticalStorageTtlSecondsChange}
             />
             {` second(s)`}
@@ -379,52 +391,30 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         </div>
         <div className="tabs disableFocusDefaults" aria-label="Change feed selection tabs">
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ChangeFeedPolicyOffLabel"
+            <Label
               tabIndex={0}
-              className={`${this.props.changeFeedPolicyToggled.isDirty() ? "dirty" : ""} ${
-                this.props.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.Off
-                  ? "selectedRadio"
-                  : "unselectedRadio"
+              role="radio"
+              className={`settingsV2Label  ${this.props.changeFeedPolicy.isDirty() ? "dirty" : ""} ${
+                this.props.changeFeedPolicy.current === ChangeFeedPolicyState.Off ? "selectedRadio" : "unselectedRadio"
               }`}
-              onActivated={this.props.onChangeFeedPolicyOffKeyPress}
+              onClick={this.onChangeFeedPolicyOffLabelClick}
+              onKeyPress={this.onChangeFeedPolicyOffKeyPress}
             >
               Off
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="changeFeedPolicy"
-              value={ChangeFeedPolicyToggledState.Off}
-              className="radio"
-              id={this.changeFeedPolicyOffId}
-              onChange={this.props.onChangeFeedPolicyToggled}
-              checked={this.props.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.Off}
-            />
+            </Label>
           </div>
           <div className="tab">
-            <AccessibleElement
-              as="label"
-              aria-label="ChangeFeedPolicyOnLabel"
+            <Label
               tabIndex={0}
-              className={`${this.props.changeFeedPolicyToggled.isDirty() ? "dirty" : ""} ${
-                this.props.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On
-                  ? "selectedRadio"
-                  : "unselectedRadio"
+              role="radio"
+              className={`settingsV2Label  ${this.props.changeFeedPolicy.isDirty() ? "dirty" : ""} ${
+                this.props.changeFeedPolicy.current === ChangeFeedPolicyState.On ? "selectedRadio" : "unselectedRadio"
               }`}
-              onActivated={this.props.onChangeFeedPolicyOnKeyPress}
+              onClick={this.onChangeFeedPolicyOnLabelClick}
+              onKeyPress={this.onChangeFeedPolicyOnKeyPress}
             >
               On
-            </AccessibleElement>
-            <input
-              type="radio"
-              name="changeFeedPolicy"
-              value={ChangeFeedPolicyToggledState.On}
-              className="radio"
-              id={this.changeFeedPolicyOnId}
-              onChange={this.props.onChangeFeedPolicyToggled}
-              checked={this.props.changeFeedPolicyToggled.current === ChangeFeedPolicyToggledState.On}
-            />
+            </Label>
           </div>
         </div>
       </>
@@ -437,12 +427,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         {this.getPartitionKeyVisible() && (
           <>
             <div className="formTitle">Partition Key</div>
-            <input
-              className="formReadOnly collid-white"
-              aria-label={this.partitionKeyName}
-              defaultValue={this.partitionKeyValue}
-              readOnly
-            />
+            <TextField disabled styles={getTextFieldStyles()} defaultValue={this.partitionKeyValue} />
           </>
         )}
 
