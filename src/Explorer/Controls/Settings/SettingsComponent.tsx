@@ -118,14 +118,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   public discardSettingsChangesButton: ButtonV2;
 
   public isAnalyticalStorageEnabled: boolean;
-  public testId: string;
   private collection: ViewModels.Collection;
   private container: Explorer;
   private initialChangeFeedLoggingState: ChangeFeedPolicyState;
   private hasAutoPilotV2FeatureFlag: boolean;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
-  private tabId: string;
   private statefulValuesArray = Object.values(StatefulValueNames) as string[];
   private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
@@ -133,12 +131,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   constructor(props: SettingsComponentProps) {
     super(props);
 
-    this.tabId = this.props.settingsTab.getTabId();
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection && this.collection.container;
-    this.testId = `settingsThroughputValue${this.tabId}`;
     this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
-    //this.isAnalyticalStorageEnabled = true;
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
@@ -679,7 +674,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           newCollection.conflictResolutionPolicy = conflictResolutionChanges;
         }
 
-        console.log(JSON.stringify(newCollection))
         const updatedCollection: DataModels.Collection = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
@@ -846,7 +840,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     });
 
-    this.setState({shouldDiscardIndexingPolicy: true})
+    this.setState({ shouldDiscardIndexingPolicy: true });
 
     if (this.state.userCanChangeProvisioningTypes) {
       this.setState({ isAutoPilotSelected: this.state.wasAutopilotOriginallySet });
@@ -885,9 +879,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ indexingPolicyContent: indexingPolicyContent });
   };
 
-  private resetShouldDiscardIndexingPolicy = () : void => {
-    this.setState({shouldDiscardIndexingPolicy: false})
-  }
+  private resetShouldDiscardIndexingPolicy = (): void => {
+    this.setState({ shouldDiscardIndexingPolicy: false });
+  };
 
   private logIndexingPolicySuccessMessage = (): void => {
     if (this.props.settingsTab.onLoadStartKey) {
@@ -1137,13 +1131,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       updateBaseline: true
     });
 
-    const offerIsRUPerMinuteThroughputEnabled =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.offerIsRUPerMinuteThroughputEnabled;
-
     const changeFeedPolicy: ChangeFeedPolicyState = this.state.changeFeedPolicy.current;
     this.updateStatefulValue({
       key: StatefulValueNames.ChangeFeedPolicy,
@@ -1336,7 +1323,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           <ScaleComponent
             collection={this.collection}
             container={this.container}
-            tabId={this.tabId}
             hasProvisioningTypeChanged={this.hasProvisioningTypeChanged}
             hasAutoPilotV2FeatureFlag={this.hasAutoPilotV2FeatureFlag}
             isFixedContainer={this.isFixedContainer}
@@ -1364,7 +1350,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           <ConflictResolutionComponent
             collection={this.collection}
             container={this.container}
-            tabId={this.tabId}
             conflictResolutionPolicyMode={this.state.conflictResolutionPolicyMode}
             onConflictResolutionPolicyModeChange={this.onConflictResolutionPolicyModeChange}
             conflictResolutionPolicyPath={this.state.conflictResolutionPolicyPath}
@@ -1382,7 +1367,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         <SubSettingsComponent
           collection={this.collection}
           container={this.container}
-          tabId={this.tabId}
           isAnalyticalStorageEnabled={this.isAnalyticalStorageEnabled}
           changeFeedPolicyVisible={this.changeFeedPolicyVisible}
           timeToLive={this.state.timeToLive}

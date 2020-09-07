@@ -7,15 +7,16 @@ import * as Constants from "../../../../Common/Constants";
 import {
   getTextFieldStyles,
   conflictResolutionLwwTooltip,
-  conflictResolutionCustomToolTip
+  conflictResolutionCustomToolTip,
+  subComponentStackProps,
+  titleAndInputStackProps
 } from "../SettingsRenderUtils";
-import { Label, TextField, ITextFieldProps } from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "./ToolTipLabel";
+import { Label, Text, TextField, ITextFieldProps, Stack } from "office-ui-fabric-react";
+import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface ConflictResolutionComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
-  tabId: string;
   conflictResolutionPolicyMode: StatefulValue<DataModels.ConflictResolutionMode>;
   onConflictResolutionPolicyModeChange: (mode: DataModels.ConflictResolutionMode) => void;
   conflictResolutionPolicyPath: StatefulValue<string>;
@@ -61,8 +62,8 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
 
   private getConflictResolutionModeComponent = (): JSX.Element => {
     return (
-      <>
-        <div className="formTitle">Mode</div>
+      <Stack {...titleAndInputStackProps}>
+        <Text>Mode</Text>
         <div className="tabs" aria-label="Mode" role="radiogroup">
           <div className="tab">
             <Label
@@ -95,7 +96,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
             </Label>
           </div>
         </div>
-      </>
+      </Stack>
     );
   };
 
@@ -106,6 +107,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private getConflictResolutionLWWComponent = (): JSX.Element => {
     return (
       <TextField
+        id="conflictResolutionLwwTextField"
         label={"Conflict Resolver Property"}
         onRenderLabel={this.onRenderLwwComponentTextField}
         styles={getTextFieldStyles(this.props.conflictResolutionPolicyPath)}
@@ -122,6 +124,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private getConflictResolutionCustomComponent = (): JSX.Element => {
     return (
       <TextField
+        id="conflictResolutionCustomTextField"
         label="Stored procedure"
         onRenderLabel={this.onRenderCustomComponentTextField}
         styles={getTextFieldStyles(this.props.conflictResolutionPolicyProcedure)}
@@ -133,7 +136,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
 
   public render(): JSX.Element {
     return (
-      <>
+      <Stack {...subComponentStackProps}>
         {this.getConflictResolutionModeComponent()}
 
         {this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins &&
@@ -141,7 +144,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
 
         {this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom &&
           this.getConflictResolutionCustomComponent()}
-      </>
+      </Stack>
     );
   }
 }

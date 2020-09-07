@@ -4,15 +4,19 @@ import * as ViewModels from "../../../../Contracts/ViewModels";
 import { GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { Label, TextField } from "office-ui-fabric-react";
+import { Label, Text, TextField, Stack } from "office-ui-fabric-react";
 import * as Constants from "../../../../Common/Constants";
-import { getTextFieldStyles, changeFeedPolicyToolTip } from "../SettingsRenderUtils";
-import { ToolTipLabelComponent } from "./ToolTipLabel";
+import {
+  getTextFieldStyles,
+  changeFeedPolicyToolTip,
+  subComponentStackProps,
+  titleAndInputStackProps
+} from "../SettingsRenderUtils";
+import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
-  tabId: string;
 
   timeToLive: StatefulValue<TtlType>;
   onTtlChange: (ttlType: TtlType) => void;
@@ -176,9 +180,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private getTtlComponent = (): JSX.Element => {
     return (
-      <>
-        <div className="formTitle">Time to Live</div>
-        <div className="tabs disableFocusDefaults" aria-label="Time to Live" role="radiogroup">
+      <Stack {...titleAndInputStackProps}>
+        <Text>Time to Live</Text>
+        <div className="tabs" id="timeToLive" aria-label="Time to Live" role="radiogroup">
           <div className="tab">
             <Label
               tabIndex={0}
@@ -224,29 +228,27 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         </div>
 
         {this.props.timeToLive.current === TtlType.On && (
-          <>
-            <TextField
-              styles={getTextFieldStyles(this.props.timeToLiveSeconds)}
-              type="number"
-              required
-              min={1}
-              max={Int32.Max}
-              value={this.props.timeToLiveSeconds.current?.toString()}
-              onChange={this.props.onTimeToLiveSecondsChange}
-            />
-            {` second(s)`}
-          </>
+          <TextField
+            id="timeToLiveSeconds"
+            styles={getTextFieldStyles(this.props.timeToLiveSeconds)}
+            type="number"
+            required
+            min={1}
+            max={Int32.Max}
+            value={this.props.timeToLiveSeconds.current?.toString()}
+            onChange={this.props.onTimeToLiveSecondsChange}
+            suffix="second(s)"
+          />
         )}
-      </>
+      </Stack>
     );
   };
 
   private getGeoSpatialComponent = (): JSX.Element => {
     return (
-      <>
-        <div className="formTitle">Geospatial Configuration</div>
-
-        <div className="tabs disableFocusDefaults" aria-label="Geospatial Configuration" role="radiogroup">
+      <Stack {...titleAndInputStackProps}>
+        <Text>Geospatial Configuration</Text>
+        <div className="tabs" id="geoSpatialConfig" aria-label="Geospatial Configuration" role="radiogroup">
           <div className="tab">
             <Label
               tabIndex={0}
@@ -279,15 +281,20 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             </Label>
           </div>
         </div>
-      </>
+      </Stack>
     );
   };
 
   private getAnalyticalStorageTtlComponent = (): JSX.Element => {
     return (
-      <>
-        <div className="formTitle">Analytical Storage Time to Live</div>
-        <div className="tabs disableFocusDefaults" aria-label="Analytical Storage Time to Live" role="radiogroup">
+      <Stack {...titleAndInputStackProps}>
+        <Text>Analytical Storage Time to Live</Text>
+        <div
+          className="tabs"
+          id="analyticalStorageTimeToLive"
+          aria-label="Analytical Storage Time to Live"
+          role="radiogroup"
+        >
           <div className="tab">
             <Label tabIndex={0} role="radio" disabled className="settingsV2Label-disabled">
               Off
@@ -323,28 +330,30 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           </div>
         </div>
         {this.props.analyticalStorageTtlSelection.current === TtlType.On && (
-          <>
-            <TextField
-              styles={getTextFieldStyles(this.props.analyticalStorageTtlSeconds)}
-              type="number"
-              required
-              min={1}
-              max={Int32.Max}
-              value={this.props.analyticalStorageTtlSeconds.current?.toString()}
-              onChange={this.props.onAnalyticalStorageTtlSecondsChange}
-            />
-            {` second(s)`}
-          </>
+          <TextField
+            id="analyticalStorageTimeToLiveSeconds"
+            styles={getTextFieldStyles(this.props.analyticalStorageTtlSeconds)}
+            type="number"
+            required
+            min={1}
+            max={Int32.Max}
+            value={this.props.analyticalStorageTtlSeconds.current?.toString()}
+            suffix="second(s)"
+            onChange={this.props.onAnalyticalStorageTtlSecondsChange}
+          />
         )}
-      </>
+      </Stack>
     );
   };
 
   private getChangeFeedComponent = (): JSX.Element => {
+    const labelId = "settingsV2ChangeFeedLabelId";
     return (
-      <>
-        <ToolTipLabelComponent label="Change feed log retention policy" toolTipElement={changeFeedPolicyToolTip} />
-        <div className="tabs disableFocusDefaults" aria-label="Change feed selection tabs">
+      <Stack.Item>
+        <Label id={labelId}>
+          <ToolTipLabelComponent label="Change feed log retention policy" toolTipElement={changeFeedPolicyToolTip} />
+        </Label>
+        <div aria-labelledby={labelId} className="tabs" id="changeFeedPolicy" aria-label="Change feed selection tabs">
           <div className="tab">
             <Label
               tabIndex={0}
@@ -372,28 +381,22 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             </Label>
           </div>
         </div>
-      </>
+      </Stack.Item>
     );
   };
 
   private getPartitionKeyComponent = (): JSX.Element => {
     return (
-      <>
+      <Stack {...titleAndInputStackProps}>
         {this.getPartitionKeyVisible() && (
           <>
-            <div className="formTitle">Partition Key</div>
+            <Text>Partition Key</Text>
             <TextField disabled styles={getTextFieldStyles()} defaultValue={this.partitionKeyValue} />
           </>
         )}
 
-        {this.isLargePartitionKeyEnabled() && (
-          <div className="largePartitionKeyEnabled">
-            <p>
-              Large <span>{this.getLowerCasePartitionKeyName()}</span> has been enabled
-            </p>
-          </div>
-        )}
-      </>
+        {this.isLargePartitionKeyEnabled() && <Text>Large {this.getLowerCasePartitionKeyName()} has been enabled</Text>}
+      </Stack>
     );
   };
 
@@ -424,7 +427,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   public render(): JSX.Element {
     return (
-      <>
+      <Stack {...subComponentStackProps}>
         {this.ttlVisible && this.getTtlComponent()}
 
         {this.geospatialVisible && this.getGeoSpatialComponent()}
@@ -434,7 +437,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         {this.props.changeFeedPolicyVisible && this.getChangeFeedComponent()}
 
         {this.getPartitionKeyComponent()}
-      </>
+      </Stack>
     );
   }
 }

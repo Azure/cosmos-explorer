@@ -1,0 +1,1098 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 30,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Time to Live
+    </Text>
+    <div
+      aria-label="Time to Live"
+      className="tabs"
+      id="timeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Geospatial Configuration
+    </Text>
+    <div
+      aria-label="Geospatial Configuration"
+      className="tabs"
+      id="geoSpatialConfig"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geography
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geometry
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <StackItem>
+    <StyledLabelBase
+      id="settingsV2ChangeFeedLabelId"
+    >
+      <ToolTipLabelComponent
+        label="Change feed log retention policy"
+        toolTipElement={
+          <span>
+            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+          </span>
+        }
+      />
+    </StyledLabelBase>
+    <div
+      aria-label="Change feed selection tabs"
+      aria-labelledby="settingsV2ChangeFeedLabelId"
+      className="tabs"
+      id="changeFeedPolicy"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </StackItem>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 30,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Time to Live
+    </Text>
+    <div
+      aria-label="Time to Live"
+      className="tabs"
+      id="timeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Geospatial Configuration
+    </Text>
+    <div
+      aria-label="Geospatial Configuration"
+      className="tabs"
+      id="geoSpatialConfig"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geography
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geometry
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Analytical Storage Time to Live
+    </Text>
+    <div
+      aria-label="Analytical Storage Time to Live"
+      className="tabs"
+      id="analyticalStorageTimeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label-disabled"
+          disabled={true}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label dirty selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  dirty unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <StackItem>
+    <StyledLabelBase
+      id="settingsV2ChangeFeedLabelId"
+    >
+      <ToolTipLabelComponent
+        label="Change feed log retention policy"
+        toolTipElement={
+          <span>
+            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+          </span>
+        }
+      />
+    </StyledLabelBase>
+    <div
+      aria-label="Change feed selection tabs"
+      aria-labelledby="settingsV2ChangeFeedLabelId"
+      className="tabs"
+      id="changeFeedPolicy"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </StackItem>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 30,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Time to Live
+    </Text>
+    <div
+      aria-label="Time to Live"
+      className="tabs"
+      id="timeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Geospatial Configuration
+    </Text>
+    <div
+      aria-label="Geospatial Configuration"
+      className="tabs"
+      id="geoSpatialConfig"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geography
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geometry
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Analytical Storage Time to Live
+    </Text>
+    <div
+      aria-label="Analytical Storage Time to Live"
+      className="tabs"
+      id="analyticalStorageTimeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label-disabled"
+          disabled={true}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label dirty selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  dirty unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 30,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Time to Live
+    </Text>
+    <div
+      aria-label="Time to Live"
+      className="tabs"
+      id="timeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement  unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement  unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement  selectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Geospatial Configuration
+    </Text>
+    <div
+      aria-label="Geospatial Configuration"
+      className="tabs"
+      id="geoSpatialConfig"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geography
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geometry
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Analytical Storage Time to Live
+    </Text>
+    <div
+      aria-label="Analytical Storage Time to Live"
+      className="tabs"
+      id="analyticalStorageTimeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label-disabled"
+          disabled={true}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+    <StyledTextFieldBase
+      id="analyticalStorageTimeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="2000"
+    />
+  </Stack>
+  <StackItem>
+    <StyledLabelBase
+      id="settingsV2ChangeFeedLabelId"
+    >
+      <ToolTipLabelComponent
+        label="Change feed log retention policy"
+        toolTipElement={
+          <span>
+            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+          </span>
+        }
+      />
+    </StyledLabelBase>
+    <div
+      aria-label="Change feed selection tabs"
+      aria-labelledby="settingsV2ChangeFeedLabelId"
+      className="tabs"
+      id="changeFeedPolicy"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </StackItem>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 30,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Time to Live
+    </Text>
+    <div
+      aria-label="Time to Live"
+      className="tabs"
+      id="timeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Geospatial Configuration
+    </Text>
+    <div
+      aria-label="Geospatial Configuration"
+      className="tabs"
+      id="geoSpatialConfig"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geography
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Geometry
+        </StyledLabelBase>
+      </div>
+    </div>
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Analytical Storage Time to Live
+    </Text>
+    <div
+      aria-label="Analytical Storage Time to Live"
+      className="tabs"
+      id="analyticalStorageTimeToLive"
+      role="radiogroup"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label-disabled"
+          disabled={true}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label  unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On (no default)
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+    <StyledTextFieldBase
+      id="analyticalStorageTimeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="2000"
+    />
+  </Stack>
+  <StackItem>
+    <StyledLabelBase
+      id="settingsV2ChangeFeedLabelId"
+    >
+      <ToolTipLabelComponent
+        label="Change feed log retention policy"
+        toolTipElement={
+          <span>
+            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+          </span>
+        }
+      />
+    </StyledLabelBase>
+    <div
+      aria-label="Change feed selection tabs"
+      aria-labelledby="settingsV2ChangeFeedLabelId"
+      className="tabs"
+      id="changeFeedPolicy"
+    >
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   unselectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          Off
+        </StyledLabelBase>
+      </div>
+      <div
+        className="tab"
+      >
+        <StyledLabelBase
+          className="settingsV2Label   selectedRadio"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="radio"
+          tabIndex={0}
+        >
+          On
+        </StyledLabelBase>
+      </div>
+    </div>
+  </StackItem>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;

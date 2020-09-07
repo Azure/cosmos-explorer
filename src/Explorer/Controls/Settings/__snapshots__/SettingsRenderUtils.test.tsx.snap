@@ -297,5 +297,25 @@ exports[`SettingsUtils functions render 1`] = `
      
     , Current manual throughput: 1000 RU/s, Target manual throughput: 2000
   </span>
+  <span>
+    <span>
+      Sample Text
+    </span>
+  </span>
+  <span>
+    Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write application defined logic to determine the winner of the conflicting versions of a document. The stored procedure will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the conflicts will be populated in the
+    <a
+      className="linkDarkBackground"
+      href="https://aka.ms/dataexplorerconflics"
+      rel="noreferrer"
+      target="_blank"
+    >
+       conflicts feed
+    </a>
+    . You can update/re-register the stored procedure at any time.
+  </span>
+  <span>
+    Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+  </span>
 </Fragment>
 `;

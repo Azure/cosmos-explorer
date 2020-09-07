@@ -4,8 +4,8 @@ import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
 
 export interface IndexingPolicyComponentProps {
-  shouldDiscardIndexingPolicy: boolean,
-  resetShouldDiscardIndexingPolicy: () => void,
+  shouldDiscardIndexingPolicy: boolean;
+  resetShouldDiscardIndexingPolicy: () => void;
   indexingPolicyContent: StatefulValue<DataModels.IndexingPolicy>;
   setIndexingPolicyElementFocussed: (indexingPolicyContentFocussed: boolean) => void;
   setIndexingPolicyContent: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
@@ -13,8 +13,7 @@ export interface IndexingPolicyComponentProps {
   logIndexingPolicySuccessMessage: () => void;
 }
 
-export class IndexingPolicyComponent extends React.Component<
-  IndexingPolicyComponentProps> {
+export class IndexingPolicyComponent extends React.Component<IndexingPolicyComponentProps> {
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
 
@@ -22,18 +21,19 @@ export class IndexingPolicyComponent extends React.Component<
     super(props);
   }
 
-  componentDidUpdate() {
-    if(this.props.shouldDiscardIndexingPolicy) {
-        this.resetIndexingPolicyEditor();
-        this.props.resetShouldDiscardIndexingPolicy()
+  componentDidUpdate(): void {
+    if (this.props.shouldDiscardIndexingPolicy) {
+      this.resetIndexingPolicyEditor();
+      this.props.resetShouldDiscardIndexingPolicy();
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.resetIndexingPolicyEditor();
   }
 
-  private resetIndexingPolicyEditor = () => {
+  // public for testing purposes
+  public resetIndexingPolicyEditor = (): void => {
     if (!this.indexingPolicyEditor) {
       this.createIndexingPolicyEditor();
     } else {

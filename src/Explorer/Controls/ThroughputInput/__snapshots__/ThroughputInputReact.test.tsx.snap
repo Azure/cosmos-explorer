@@ -1,55 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
-<div>
-  <p
-    className="pkPadding"
-  >
-    <span
-      className="mandatoryStar"
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
+>
+  <Text>
+    Provision maximum RU/s required by this resource. Estimate your required RU/s with
+    <a
+      href="https://cosmos.azure.com/capacitycalculator/"
+      target="_blank"
     >
-      *
-    </span>
-    <span>
-      label
-    </span>
-    <span
-      className="infoTooltip"
-      role="tooltip"
-      tabIndex={0}
-    >
-      <img
-        alt="More information"
-        className="infoImg"
-        src="../../../../images/info-bubble.svg"
-      />
-      <span
-        className="tooltiptext throughputRuInfo"
-      >
-        infoBubbleText
-      </span>
-    </span>
-  </p>
-  <p>
-    <span>
-      Provision maximum RU/s required by this resource. Estimate your required RU/s with
-      <a
-        href="https://cosmos.azure.com/capacitycalculator/"
-        target="_blank"
-      >
-         capacity calculator
-      </a>
-      .
-    </span>
-  </p>
-  <p>
-    <span>
-      Max RU/s
-    </span>
-  </p>
-  <input
-    aria-label="ariaLabel"
-    className="migration collid select-font-size "
+       capacity calculator
+    </a>
+     Max RU/s
+  </Text>
+  <StyledTextFieldBase
     disabled={false}
     id="autopilotInput"
     key="auto pilot throughput input"
@@ -57,201 +26,210 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     onChange={[Function]}
     required={true}
     step={100}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "borderColor": "",
+          "height": 25,
+          "selectors": Object {
+            ":disabled": Object {
+              "backgroundColor": "#ddd",
+              "borderColor": "#969696",
+            },
+          },
+          "width": 300,
+        },
+      }
+    }
     type="number"
     value="4000"
   />
-  <p />
-  <p />
-  <p
-    className="pkPadding"
+  <Text />
+  <Text />
+</Stack>
+`;
+
+exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
   >
-    <input
-      aria-label="acknowledge spend throughput"
-      checked={true}
-      id="spendAckId"
+    <StyledTextFieldBase
+      disabled={true}
+      id="throughputInput"
+      key="provisioned throughput input"
+      min={10000}
       onChange={[Function]}
-      title="spendAckText"
-      type="checkbox"
+      required={true}
+      step={100}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      type="number"
+      value="100"
     />
-    <label
-      htmlFor="spendAckId"
-    >
-      spendAckText
-    </label>
-  </p>
-</div>
+    <Text />
+    <StyledCheckboxBase
+      checked={false}
+      id="spendAckCheckBox"
+      label="spendAckText"
+      onChange={[Function]}
+      styles={
+        Object {
+          "label": Object {
+            "margin": 0,
+            "padding": "2 0 2 0",
+          },
+          "text": Object {
+            "fontSize": 12,
+          },
+        }
+      }
+    />
+    <p>
+      Choose unlimited storage capacity for more than 10,000 RU/s.
+    </p>
+  </Stack>
+</Stack>
 `;
 
 exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
-<div>
-  <p
-    className="pkPadding"
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
   >
-    <span
-      className="mandatoryStar"
-    >
-      *
-    </span>
-    <span>
-      label
-    </span>
-    <span
-      className="infoTooltip"
-      role="tooltip"
-      tabIndex={0}
-    >
-      <img
-        alt="More information"
-        className="infoImg"
-        src="../../../../images/info-bubble.svg"
-      />
-      <span
-        className="tooltiptext throughputRuInfo"
-      >
-        infoBubbleText
-      </span>
-    </span>
-  </p>
-  <input
-    aria-label="ariaLabel"
-    className="dirty "
-    data-test="testId"
-    disabled={true}
-    id="throughputInput"
-    key="provisioned throughput input"
-    min={10000}
-    onChange={[Function]}
-    required={true}
-    step={100}
-    type="number"
-    value="100"
-  />
-  <p />
-  <p
-    className="pkPadding"
-  >
-    <input
-      aria-label="acknowledge spend throughput"
-      checked={true}
-      id="spendAckId"
+    <StyledTextFieldBase
+      disabled={true}
+      id="throughputInput"
+      key="provisioned throughput input"
+      min={10000}
       onChange={[Function]}
-      title="spendAckText"
-      type="checkbox"
+      required={true}
+      step={100}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      type="number"
+      value="100"
     />
-    <label
-      htmlFor="spendAckId"
-    >
-      spendAckText
-    </label>
-  </p>
-  <p>
-    Choose unlimited storage capacity for more than 10,000 RU/s.
-  </p>
-</div>
+    <Text />
+    <p>
+      Choose unlimited storage capacity for more than 10,000 RU/s.
+    </p>
+  </Stack>
+</Stack>
 `;
 
 exports[`ThroughputInputReactComponent autopilot input visible 1`] = `
-<div>
-  <p
-    className="pkPadding"
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
   >
-    <span
-      className="mandatoryStar"
-    >
-      *
-    </span>
-    <span
-      className="addCollectionLabel"
-    >
-      label
-    </span>
-    <span
-      className="infoTooltip"
-      role="tooltip"
-      tabIndex={0}
-    >
-      <img
-        alt="More information"
-        className="infoImg"
-        src="../../../../images/info-bubble.svg"
-      />
-      <span
-        className="tooltiptext throughputRuInfo"
-      >
-        infoBubbleText
-      </span>
-    </span>
-  </p>
-  <select
-    aria-label="Autopilot Max RU/s"
-    className="collid select-font-size"
-    id="autopilotSelector"
-    name="autoPilotTiers"
-    onChange={[Function]}
-    value="1"
-  >
-    <option
-      disabled={true}
-      value="default"
-    >
-      Choose Max RU/s
-    </option>
-    <option
-      key="1"
-      value={1}
-    >
-      tier 1
-    </option>
-    <option
-      key="2"
-      value={2}
-    >
-      tier 2
-    </option>
-  </select>
-  <p />
-</div>
+    <StyledWithResponsiveMode
+      className="autoPilotSelector"
+      defaultSelectedKey={1}
+      id="autopilotSelector"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "itemType": 2,
+            "key": "Default",
+            "text": "Choose Max RU/s",
+          },
+          Object {
+            "key": 1,
+            "text": "tier 1",
+          },
+          Object {
+            "key": 2,
+            "text": "tier 2",
+          },
+        ]
+      }
+      styles={
+        Object {
+          "dropdown": Object {
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text />
+  </Stack>
+</Stack>
 `;
 
-exports[`ThroughputInputReactComponent throughput input visible 1`] = `
-<div>
-  <p
-    className="pkPadding"
+exports[`ThroughputInputReactComponent spendAck checkbox visible 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
   >
-    <span
-      className="mandatoryStar"
-    >
-      *
-    </span>
-    <span
-      className="addCollectionLabel"
-    >
-      label
-    </span>
-    <span
-      className="infoTooltip"
-      role="tooltip"
-      tabIndex={0}
-    >
-      <img
-        alt="More information"
-        className="infoImg"
-        src="../../../../images/info-bubble.svg"
-      />
-      <span
-        className="tooltiptext throughputRuInfo"
-      >
-        infoBubbleText
-      </span>
-    </span>
-  </p>
-  <p
-    className="addContainerThroughputInput"
-  >
-    <input
-      aria-label="ariaLabel"
-      className="dirty "
-      data-test="testId"
+    <StyledTextFieldBase
       disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
@@ -259,26 +237,94 @@ exports[`ThroughputInputReactComponent throughput input visible 1`] = `
       onChange={[Function]}
       required={true}
       step={100}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
       type="number"
-      value={100}
+      value="100"
     />
-  </p>
-  <p />
-  <p
-    className="pkPadding"
-  >
-    <input
-      checked={true}
+    <Text />
+    <StyledCheckboxBase
+      checked={false}
+      id="spendAckCheckBox"
+      label="spendAckText"
       onChange={[Function]}
+      styles={
+        Object {
+          "label": Object {
+            "margin": 0,
+            "padding": "2 0 2 0",
+          },
+          "text": Object {
+            "fontSize": 12,
+          },
+        }
+      }
     />
-    <label
-      htmlFor="spendAckId"
-    >
-      spendAckText
-    </label>
-  </p>
-  <p>
-    Choose unlimited storage capacity for more than 10,000 RU/s.
-  </p>
-</div>
+    <Text>
+      Choose unlimited storage capacity for more than 10,000 RU/s.
+    </Text>
+  </Stack>
+</Stack>
+`;
+
+exports[`ThroughputInputReactComponent throughput input visible 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 10,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      disabled={false}
+      id="throughputInput"
+      key="provisioned throughput input"
+      min={10000}
+      onChange={[Function]}
+      required={true}
+      step={100}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      type="number"
+      value="100"
+    />
+    <Text />
+    <Text>
+      Choose unlimited storage capacity for more than 10,000 RU/s.
+    </Text>
+  </Stack>
+</Stack>
 `;

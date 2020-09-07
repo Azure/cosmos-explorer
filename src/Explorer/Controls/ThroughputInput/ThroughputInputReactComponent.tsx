@@ -3,6 +3,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import React from "react";
 import { StatefulValue } from "../StatefulValue";
 import {
+  Text,
   TextField,
   IChoiceGroupOption,
   ChoiceGroup,
@@ -10,10 +11,18 @@ import {
   Dropdown,
   IDropdownStyles,
   IDropdownOption,
-  DropdownMenuItemType
+  DropdownMenuItemType,
+  Stack,
+  Label
 } from "office-ui-fabric-react";
-import { getTextFieldStyles, getToolTipContainer } from "../Settings/SettingsRenderUtils";
-import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabel";
+import {
+  getTextFieldStyles,
+  getToolTipContainer,
+  spendAckCheckBoxStyle,
+  checkBoxAndInputStackProps,
+  titleAndInputStackProps
+} from "../Settings/SettingsRenderUtils";
+import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
 
 export interface ThroughputInputProps {
   throughput: StatefulValue<number>;
@@ -67,11 +76,11 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
     this.step = this.props.step ?? ThroughputInputComponent.defaultStep;
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.updateAutoPilotTierOptions();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     this.updateAutoPilotTierOptions();
   }
 
@@ -107,14 +116,25 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   };
 
   private renderThroughputModeChoices = (): JSX.Element => {
+    const labelId = "settingsV2RadioButtonLabelId";
     return (
-      <ChoiceGroup
-        tabIndex={0}
-        selectedKey={this.props.isAutoPilotSelected.toString()}
-        options={this.throughputChoiceOptions}
-        onChange={this.onChoiceGroupChange}
-        label={this.props.label}
-      />
+      <div>
+        <Label id={labelId}>
+          <ToolTipLabelComponent
+            label={this.props.label}
+            toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
+          />
+        </Label>
+        <ChoiceGroup
+          className="settingsV2RadioButton"
+          tabIndex={0}
+          selectedKey={this.props.isAutoPilotSelected.toString()}
+          options={this.throughputChoiceOptions}
+          onChange={this.onChoiceGroupChange}
+          required={this.props.showAsMandatory}
+          ariaLabelledBy={labelId}
+        />
+      </div>
     );
   };
 
@@ -124,7 +144,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
 
   private renderAutoPilotSelector = (): JSX.Element => {
     return (
-      <>
+      <Stack {...titleAndInputStackProps}>
         <Dropdown
           id="autopilotSelector"
           className="autoPilotSelector"
@@ -133,9 +153,8 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
           options={this.state.autoPilotTierOptions}
           styles={this.dropdownStyles}
         />
-        <br />
-        <p>{this.props.selectedAutoPilotTier && this.props.autoPilotUsageCost}</p>
-      </>
+        <Text>{this.props.selectedAutoPilotTier && this.props.autoPilotUsageCost}</Text>
+      </Stack>
     );
   };
 
@@ -145,7 +164,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
 
   private renderThroughputInput = (): JSX.Element => {
     return (
-      <>
+      <Stack {...titleAndInputStackProps}>
         <TextField
           required
           type="number"
@@ -159,34 +178,30 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
           value={this.props.throughput.current?.toString()}
           onChange={this.onThroughputChange}
         />
-        {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
+        {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}
 
         {this.props.spendAckVisible && (
           <Checkbox
+            id="spendAckCheckBox"
+            styles={spendAckCheckBoxStyle}
             label={this.props.spendAckText}
             checked={this.state.spendAckChecked}
             onChange={this.onSpendAckChecked}
           />
         )}
 
-        {this.props.isFixed && <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>}
-      </>
+        {this.props.isFixed && <Text>Choose unlimited storage capacity for more than 10,000 RU/s.</Text>}
+      </Stack>
     );
   };
 
   public render(): JSX.Element {
     return (
-      <div>
-        {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
-
-        {this.props.infoBubbleText && (
-          <ToolTipLabelComponent toolTipElement={getToolTipContainer(this.props.infoBubbleText)} />
-        )}
-
+      <Stack {...checkBoxAndInputStackProps}>
         {!this.props.isFixed && this.props.showAutoPilot && this.renderThroughputModeChoices()}
 
         {this.props.isAutoPilotSelected ? this.renderAutoPilotSelector() : this.renderThroughputInput()}
-      </div>
+      </Stack>
     );
   }
 }

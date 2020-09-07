@@ -12,7 +12,10 @@ import {
   updateThroughputDelayedApplyWarningMessage,
   getThroughputApplyDelayedMessage,
   getThroughputApplyShortDelayMessage,
-  getThroughputApplyLongDelayMessage
+  getThroughputApplyLongDelayMessage,
+  getToolTipContainer,
+  conflictResolutionCustomToolTip,
+  changeFeedPolicyToolTip
 } from "./SettingsRenderUtils";
 import { AutopilotTier } from "../../../Contracts/DataModels";
 
@@ -47,6 +50,10 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {getThroughputApplyDelayedMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
         {getThroughputApplyShortDelayMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
         {getThroughputApplyLongDelayMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
+
+        {getToolTipContainer(<span>Sample Text</span>)}
+        {conflictResolutionCustomToolTip}
+        {changeFeedPolicyToolTip}
       </>
     );
   }

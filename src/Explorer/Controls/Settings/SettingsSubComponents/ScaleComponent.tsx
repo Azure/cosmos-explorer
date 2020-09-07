@@ -13,16 +13,17 @@ import {
   getAutoPilotV2SpendElement,
   getEstimatedSpendElement,
   getEstimatedAutoscaleSpendElement,
-  getTextFieldStyles
+  getTextFieldStyles,
+  subComponentStackProps,
+  titleAndInputStackProps
 } from "../SettingsRenderUtils";
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { TextField } from "office-ui-fabric-react";
+import { Text, TextField, Stack } from "office-ui-fabric-react";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
-  tabId: string;
   hasProvisioningTypeChanged: () => boolean;
   hasAutoPilotV2FeatureFlag: boolean;
   isFixedContainer: boolean;
@@ -75,10 +76,12 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey);
     const capacity: string = isFixed ? "Fixed" : "Unlimited";
     return (
-      <span>
-        Storage capacity <br />
-        <b>{capacity}</b>
-      </span>
+      <Stack {...titleAndInputStackProps}>
+        <Text>Storage capacity</Text>
+        <Text>
+          <b>{capacity}</b>
+        </Text>
+      </Stack>
     );
   };
 
@@ -186,10 +189,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         selectedAutoPilotTier={this.props.selectedAutoPilotTier}
         setAutoPilotTier={this.props.setAutoPilotTier}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
-        spendAckId="123"
-        spendAckText="longer text for testing"
-        spendAckVisible={true}
-        infoBubbleText="info bubble text"
       />
     ) : (
       <ThroughputInputAutoPilotV3Component
@@ -211,10 +210,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
         overrideWithProvisionedThroughputSettings={this.props.overrideWithProvisionedThroughputSettings()}
         spendAckChecked={false}
-        spendAckId="123"
-        spendAckText="longer text for testing"
-        spendAckVisible={true}
-        infoBubbleText="info bubble text"
       />
     );
   };
@@ -223,22 +218,22 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return (
       <>
         {!this.isAutoScaleEnabled() && (
-          <>
+          <Stack {...subComponentStackProps}>
             {this.getThroughputInputComponent()}
-            <div className="storageCapacityTitle throughputStorageValue">{this.getStorageCapacityTitle()}</div>
-          </>
+            {this.getStorageCapacityTitle()}
+          </Stack>
         )}
 
         {/* TODO: Replace link with call to the Azure Support blade */}
         {this.isAutoScaleEnabled() && (
-          <div>
-            <div className="autoScaleThroughputTitle">Throughput (RU/s)</div>
+          <Stack {...titleAndInputStackProps}>
+            <Text>Throughput (RU/s)</Text>
             <TextField disabled styles={getTextFieldStyles()} />
-            <div className="autoScaleDescription">
+            <Text>
               Your account has custom settings that prevents setting throughput at the container level. Please work with
               your Cosmos DB engineering team point of contact to make changes.
-            </div>
-          </div>
+            </Text>
+          </Stack>
         )}
       </>
     );

@@ -1,9 +1,15 @@
 import React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { StatefulValue } from "../StatefulValue";
-import { getTextFieldStyles, getToolTipContainer } from "../Settings/SettingsRenderUtils";
-import { TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Label } from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabel";
+import {
+  getTextFieldStyles,
+  getToolTipContainer,
+  spendAckCheckBoxStyle,
+  titleAndInputStackProps,
+  checkBoxAndInputStackProps
+} from "../Settings/SettingsRenderUtils";
+import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label } from "office-ui-fabric-react";
+import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
   throughput: StatefulValue<number>;
@@ -89,15 +95,25 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   };
 
   private renderThroughputModeChoices = (): JSX.Element => {
+    const labelId = "settingsV2RadioButtonLabelId";
     return (
-      <ChoiceGroup
-        className="settingsV2RadioButton"
-        tabIndex={0}
-        selectedKey={this.props.isAutoPilotSelected.toString()}
-        options={this.options}
-        onChange={this.onChoiceGroupChange}
-        label={this.props.label}
-      />
+      <div>
+        <Label id={labelId}>
+          <ToolTipLabelComponent
+            label={this.props.label}
+            toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
+          />
+        </Label>
+        <ChoiceGroup
+          className="settingsV2RadioButton"
+          tabIndex={0}
+          selectedKey={this.props.isAutoPilotSelected.toString()}
+          options={this.options}
+          onChange={this.onChoiceGroupChange}
+          required={this.props.showAsMandatory}
+          ariaLabelledBy={labelId}
+        />
+      </div>
     );
   };
 
@@ -108,19 +124,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private renderAutoPilotInput = (): JSX.Element => {
     return (
       <>
-        <p>
-          <span>
-            Provision maximum RU/s required by this resource. Estimate your required RU/s with
-            {/* eslint-disable-next-line react/jsx-no-target-blank*/}
-            <a target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
-              {` capacity calculator`}
-            </a>
-            .
-          </span>
-        </p>
-        <p>
-          <span>Max RU/s</span>
-        </p>
+        <Text>
+          Provision maximum RU/s required by this resource. Estimate your required RU/s with
+          {/* eslint-disable-next-line react/jsx-no-target-blank*/}
+          <a target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+            {` capacity calculator`}
+          </a>
+          {" Max RU/s"}
+        </Text>
         <TextField
           required
           type="number"
@@ -137,13 +148,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           }
           onChange={this.onAutoPilotThroughputChange}
         />
-        {!this.props.overrideWithProvisionedThroughputSettings && <p>{this.props.autoPilotUsageCost}</p>}
+        {!this.props.overrideWithProvisionedThroughputSettings && <Text>{this.props.autoPilotUsageCost}</Text>}
         {this.props.costsVisible && !this.props.overrideWithProvisionedThroughputSettings && (
-          <p>{this.props.requestUnitsUsageCost}</p>
+          <Text>{this.props.requestUnitsUsageCost}</Text>
         )}
 
         {this.props.spendAckVisible && (
           <Checkbox
+            id="spendAckCheckBox"
+            styles={spendAckCheckBoxStyle}
             label={this.props.spendAckText}
             checked={this.state.spendAckChecked}
             onChange={this.onSpendAckChecked}
@@ -153,9 +166,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     );
   };
 
-  private renderThroughputSelector = (): JSX.Element => {
+  private renderThroughputInput = (): JSX.Element => {
     return (
-      <>
+      <Stack {...titleAndInputStackProps}>
         <TextField
           required
           type="number"
@@ -170,10 +183,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           onChange={this.onThroughputChange}
         />
 
-        {this.props.costsVisible && <p>{this.props.requestUnitsUsageCost}</p>}
+        {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}
 
         {this.props.spendAckVisible && (
           <Checkbox
+            id="spendAckCheckBox"
+            styles={spendAckCheckBoxStyle}
             label={this.props.spendAckText}
             checked={this.state.spendAckChecked}
             onChange={this.onSpendAckChecked}
@@ -181,23 +196,17 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         )}
 
         {this.props.isFixed && <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>}
-      </>
+      </Stack>
     );
   };
 
   public render(): JSX.Element {
     return (
-      <div>
-        {this.props.showAsMandatory && <span className="mandatoryStar">*</span>}
-
-        {this.props.infoBubbleText && (
-          <ToolTipLabelComponent toolTipElement={getToolTipContainer(this.props.infoBubbleText)} />
-        )}
-
+      <Stack {...checkBoxAndInputStackProps}>
         {!this.props.isFixed && this.props.showAutoPilot && this.renderThroughputModeChoices()}
 
-        {this.props.isAutoPilotSelected ? this.renderAutoPilotInput() : this.renderThroughputSelector()}
-      </div>
+        {this.props.isAutoPilotSelected ? this.renderAutoPilotInput() : this.renderThroughputInput()}
+      </Stack>
     );
   }
 }

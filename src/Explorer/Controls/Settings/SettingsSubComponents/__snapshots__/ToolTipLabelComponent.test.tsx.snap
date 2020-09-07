@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ToolTipLabelComponent renders 1`] = `
+<Fragment>
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 6,
+        "padding": "0px 0px 5px",
+      }
+    }
+    verticalAlign="center"
+  >
+    <Text>
+      sample tool tip label
+    </Text>
+    <div>
+      <Memo(StyledIconBase)
+        ariaLabel="Info"
+        iconName="Info"
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": -3,
+            },
+          }
+        }
+      />
+    </div>
+  </Stack>
+</Fragment>
+`;

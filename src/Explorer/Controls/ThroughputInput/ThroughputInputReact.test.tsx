@@ -12,18 +12,16 @@ describe("ThroughputInputReactComponent", () => {
   const baseProps: ThroughputInputProps = {
     throughput: new StatefulValue(100),
     setThroughput: undefined,
-    testId: "testId",
-    ariaLabel: "ariaLabel",
     minimum: 10000,
     maximum: 400,
     step: 100,
     isEnabled: true,
     costsVisible: true,
     requestUnitsUsageCost: undefined,
-    spendAckChecked: true,
+    spendAckChecked: false,
     spendAckId: "spendAckId",
     spendAckText: "spendAckText",
-    spendAckVisible: true,
+    spendAckVisible: false,
     showAsMandatory: true,
     isFixed: true,
     label: "label",
@@ -32,9 +30,6 @@ describe("ThroughputInputReactComponent", () => {
     cssClass: "dirty",
     setAutoPilotSelected: undefined,
     isAutoPilotSelected: false,
-    throughputAutoPilotRadioId: "throughputAutoPilotRadioId",
-    throughputProvisionedRadioId: "throughputProvisionedRadioId",
-    throughputModeRadioName: "throughputModeRadioName",
     autoPilotTiersList: [
       { value: AutopilotTier.Tier1, text: "tier 1" },
       { value: AutopilotTier.Tier2, text: "tier 2" }
@@ -50,14 +45,25 @@ describe("ThroughputInputReactComponent", () => {
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#throughputInput")).toEqual(true);
     expect(wrapper.exists("#autopilotSelector")).toEqual(false);
+    expect(wrapper.exists("#spendAckCheckBox")).toEqual(false);
   });
 
   it("autopilot input visible", () => {
-    baseProps.isAutoPilotSelected = true;
-    const wrapper = shallow(<ThroughputInputComponent {...baseProps} />);
+    const newProps = { ...baseProps };
+    newProps.isAutoPilotSelected = true;
+    const wrapper = shallow(<ThroughputInputComponent {...newProps} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#autopilotSelector")).toEqual(true);
     expect(wrapper.exists("#throughputInput")).toEqual(false);
+    expect(wrapper.exists("#spendAckCheckBox")).toEqual(false);
+  });
+
+  it("spendAck checkbox visible", () => {
+    const newProps = { ...baseProps };
+    newProps.spendAckVisible = true;
+    const wrapper = shallow(<ThroughputInputComponent {...newProps} />);
+    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.exists("#spendAckCheckBox")).toEqual(true);
   });
 });
 
@@ -65,29 +71,23 @@ describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {
     throughput: new StatefulValue(100),
     setThroughput: undefined,
-    testId: "testId",
-    ariaLabel: "ariaLabel",
     minimum: 10000,
     maximum: 400,
     step: 100,
     isEnabled: true,
     costsVisible: true,
     requestUnitsUsageCost: undefined,
-    spendAckChecked: true,
+    spendAckChecked: false,
     spendAckId: "spendAckId",
     spendAckText: "spendAckText",
-    spendAckVisible: true,
+    spendAckVisible: false,
     showAsMandatory: true,
     isFixed: true,
     label: "label",
     infoBubbleText: "infoBubbleText",
     canExceedMaximumValue: true,
-    cssClass: "dirty",
     setAutoPilotSelected: undefined,
     isAutoPilotSelected: false,
-    throughputAutoPilotRadioId: "throughputAutoPilotRadioId",
-    throughputProvisionedRadioId: "throughputProvisionedRadioId",
-    throughputModeRadioName: "throughputModeRadioName",
     autoPilotUsageCost: undefined,
     showAutoPilot: true,
     overrideWithAutoPilotSettings: true,
@@ -104,10 +104,19 @@ describe("ThroughputInputAutoPilotV3Component", () => {
   });
 
   it("autopilot input visible", () => {
-    baseProps.isAutoPilotSelected = true;
-    const wrapper = shallow(<ThroughputInputAutoPilotV3Component {...baseProps} />);
+    const newProps = { ...baseProps };
+    newProps.isAutoPilotSelected = true;
+    const wrapper = shallow(<ThroughputInputAutoPilotV3Component {...newProps} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#autopilotInput")).toEqual(true);
     expect(wrapper.exists("#throughputInput")).toEqual(false);
+  });
+
+  it("spendAck checkbox visible", () => {
+    const newProps = { ...baseProps };
+    newProps.spendAckVisible = true;
+    const wrapper = shallow(<ThroughputInputAutoPilotV3Component {...newProps} />);
+    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.exists("#spendAckCheckBox")).toEqual(true);
   });
 });

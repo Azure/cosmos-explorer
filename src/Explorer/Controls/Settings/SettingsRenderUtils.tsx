@@ -14,8 +14,7 @@ import {
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
 import { StatefulValue } from "../StatefulValue";
-import { ITextFieldStyles, ITextFieldStyleProps, TooltipHost, Icon } from "office-ui-fabric-react";
-import { convertJSDateToUnix } from "../../Tables/QueryBuilder/DateTimeUtilities";
+import { ITextFieldStyles, ICheckboxStyles, IStackProps, IStackTokens } from "office-ui-fabric-react";
 
 export function getAutoPilotV3SpendElement(
   maxAutoPilotThroughputSet: number,
@@ -294,7 +293,8 @@ export const getThroughputApplyLongDelayMessage = (
   </span>
 );
 
-export const getToolTipContainer = (content: string | JSX.Element): JSX.Element => <span>{content}</span>;
+export const getToolTipContainer = (content: string | JSX.Element): JSX.Element =>
+  content ? <span>{content}</span> : undefined;
 
 export const conflictResolutionLwwTooltip: JSX.Element = (
   <span>
@@ -342,4 +342,31 @@ export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Part
       }
     }
   };
+};
+
+export const spendAckCheckBoxStyle: ICheckboxStyles = {
+  label: {
+    margin: 0,
+    padding: "2 0 2 0"
+  },
+  text: {
+    fontSize: 12
+  }
+};
+
+export const subComponentStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 30 }
+};
+
+export const titleAndInputStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 5 }
+};
+
+export const checkBoxAndInputStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 10 }
+};
+
+export const horizontalStackTokens: IStackTokens = {
+  childrenGap: 6,
+  padding: "0px 0px 5px"
 };
