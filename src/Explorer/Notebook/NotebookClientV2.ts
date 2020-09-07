@@ -115,7 +115,7 @@ export class NotebookClientV2 {
       comms: makeCommsRecord(),
       config: Immutable.Map({
         theme: "light",
-        editorType: params.cellEditorType || "codemirror",
+        editorType: params.cellEditorType || "monaco",
         autoSaveInterval: params.autoSaveInterval || Constants.Notebook.autoSaveIntervalMs
       }),
       core: makeStateRecord({

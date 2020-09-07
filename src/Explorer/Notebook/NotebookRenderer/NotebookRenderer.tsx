@@ -4,6 +4,7 @@ import "./default.css";
 
 import { RawCell, Cells, CodeCell, MarkdownCell } from "@nteract/stateful-components";
 import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
+import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 
 import Prompt from "./Prompt";
 import { promptContent } from "./PromptContent";
@@ -117,6 +118,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             editor: {
                               codemirror: (props: PassedEditorProps) => (
                                 <CodeMirrorEditor {...props} lineNumbers={true} />
+                              ),
+                              monaco: (props: PassedEditorProps) => (
+                                <MonacoEditor id={id} contentRef={contentRef} editorType={"monaco"} />
                               )
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
