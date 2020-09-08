@@ -75,21 +75,16 @@ describe('Collection Add and Delete SQL spec', () => {
 
       // click delete
       await frame.click('input[data-test="deleteCollection"]');
-      // await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
-      // await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);
-      // await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);
 
       // click context menu for database
-      page.on('console', consoleObj => console.log(consoleObj.text()));
-
       await frame.waitFor(`div[data-test="${dbId}"] > div > button`);
       const button = await frame.$(`div[data-test="${dbId}"] > div > button`);
-      console.log({ button })
       await button.focus();
       await button.click();
       await button.asElement().click()
-      console.log({ buttonAsEl: button.asElement() })
 
       // click delete database
       await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
@@ -103,6 +98,7 @@ describe('Collection Add and Delete SQL spec', () => {
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {
       await page.screenshot({path: 'failure.png'});
       throw error;
