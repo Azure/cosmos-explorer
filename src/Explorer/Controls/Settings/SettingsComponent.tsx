@@ -28,7 +28,7 @@ import {
   getThroughputApplyShortDelayMessage,
   getThroughputApplyLongDelayMessage
 } from "./SettingsRenderUtils";
-import { StatefulValue } from "../StatefulValue";
+import { StatefulValue } from "../StatefulValue/StatefulValue";
 import { ScaleComponent } from "./SettingsSubComponents/ScaleComponent";
 import {
   getMaxRUs,
@@ -132,8 +132,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     super(props);
 
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
-    this.container = this.collection && this.collection.container;
-    this.isAnalyticalStorageEnabled = this.collection && !!this.collection.analyticalStorageTtl();
+    this.container = this.collection?.container;
+    this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
@@ -142,8 +142,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       : ChangeFeedPolicyState.Off;
 
     this.hasAutoPilotV2FeatureFlag = this.container.hasAutoPilotV2FeatureFlag();
-    this.changeFeedPolicyVisible =
-      this.collection && this.collection.container.isFeatureEnabled(Constants.Features.enableChangeFeedPolicy);
+    this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
+      Constants.Features.enableChangeFeedPolicy
+    );
     // Mongo container with system partition key still treat as "Fixed"
 
     this.isFixedContainer =
@@ -407,8 +408,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private setAutoPilotStates = (): void => {
-    const offer = this.collection && this.collection.offer && this.collection.offer();
-    const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
+    const offer = this.collection?.offer && this.collection.offer();
+    const offerAutopilotSettings = offer?.content?.offerAutopilotSettings;
 
     this.setState({
       userCanChangeProvisioningTypes: !!offerAutopilotSettings || !this.hasAutoPilotV2FeatureFlag
@@ -429,7 +430,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         }
       }
     } else {
-      if (offerAutopilotSettings && offerAutopilotSettings.tier) {
+      if (offerAutopilotSettings?.tier) {
         if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
           const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
           this.autoPilotTiersList = availableAutoPilotTiers;
@@ -486,11 +487,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private hasConflictResolution = (): boolean => {
     return (
-      (this.container &&
-        this.container.databaseAccount &&
-        this.container.databaseAccount() &&
-        this.container.databaseAccount().properties &&
-        this.container.databaseAccount().properties.enableMultipleWriteLocations &&
+      (this.container?.databaseAccount &&
+        this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
         this.collection.conflictResolutionPolicy &&
         !!this.collection.conflictResolutionPolicy()) ||
       false
@@ -498,12 +496,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private isOfferReplacePending = (): boolean => {
-    const offer = this.collection && this.collection.offer && this.collection.offer();
+    const offer = this.collection?.offer && this.collection.offer();
     return (
       offer &&
-      Object.keys(offer).find(value => {
-        return value === "headers";
-      }) &&
+      Object.keys(offer).find(value => value === "headers") &&
       !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
     );
   };
@@ -524,7 +520,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.timeToLiveSeconds.isDirty();
     const ttlFieldFocused: boolean =
       this.state.ttlOffFocused || this.state.ttlOnDefaultFocused || this.state.ttlOnFocused;
-    const offer = this.collection && this.collection.offer && this.collection.offer();
+    const offer = this.collection?.offer && this.collection.offer();
 
     if (ttlOptionDirty && this.state.timeToLive.current === TtlType.On) {
       return ttlWarning;
@@ -551,10 +547,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
 
       const targetThroughput =
-        offer &&
-        offer.content &&
-        ((offer.content.offerAutopilotSettings && offer.content.offerAutopilotSettings.targetMaxThroughput) ||
-          offer.content.offerThroughput);
+        (offer?.content?.offerAutopilotSettings && offer.content.offerAutopilotSettings.targetMaxThroughput) ||
+        offer?.content?.offerThroughput;
 
       return getThroughputApplyShortDelayMessage(
         this.state.isAutoPilotSelected,
@@ -691,20 +685,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       if (this.state.throughput.isDirty() || this.isAutoPilotDirty() || this.hasProvisioningTypeChanged()) {
         const newThroughput = this.state.throughput.current;
-        let newOffer: DataModels.Offer = { ...this.collection.offer() };
+        const newOffer: DataModels.Offer = { ...this.collection.offer() };
         const originalThroughputValue: number = this.state.throughput.baseline;
 
         if (newOffer.content) {
           newOffer.content.offerThroughput = newThroughput;
         } else {
-          newOffer = {
-            ...newOffer,
-            ...{
-              content: {
-                offerThroughput: newThroughput,
-                offerIsRUPerMinuteThroughputEnabled: false
-              }
-            }
+          newOffer.content = {
+            offerThroughput: newThroughput,
+            offerIsRUPerMinuteThroughputEnabled: false
           };
         }
 
@@ -731,7 +720,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         } else {
           this.setState({
             isAutoPilotSelected: false,
-            userCanChangeProvisioningTypes: false || !this.hasAutoPilotV2FeatureFlag
+            userCanChangeProvisioningTypes: !this.hasAutoPilotV2FeatureFlag
           });
 
           // user has changed from autoscale --> provisioned
@@ -746,7 +735,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           getMaxRUs(this.collection, this.container) <=
             SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
           newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.container !== undefined
+          this.container
         ) {
           const requestPayload = {
             subscriptionId: userContext.subscriptionId,
@@ -849,14 +838,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.state.isAutoPilotSelected) {
       const originalAutoPilotSettings = this.collection.offer().content.offerAutopilotSettings;
       if (!this.hasAutoPilotV2FeatureFlag) {
-        const originalAutoPilotMaxThroughput = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
+        const originalAutoPilotMaxThroughput = originalAutoPilotSettings?.maxThroughput;
         this.updateStatefulValue({
           key: StatefulValueNames.AutoPilotThroughput,
           value: originalAutoPilotMaxThroughput,
           updateBaseline: true
         });
       } else {
-        const originalAutoPilotTier = originalAutoPilotSettings && originalAutoPilotSettings.tier;
+        const originalAutoPilotTier = originalAutoPilotSettings?.tier;
         this.setState({ selectedAutoPilotTier: originalAutoPilotTier });
       }
     }
@@ -1118,12 +1107,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    const offerThroughput =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.offerThroughput;
+    const offerThroughput = this.collection?.offer && this.collection.offer()?.content?.offerThroughput;
 
     this.updateStatefulValue({
       key: StatefulValueNames.Throughput,
@@ -1159,16 +1143,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
 
-    const conflictResolutionPolicyMode = SettingsComponent.parseConflictResolutionMode(
-      conflictResolutionPolicy && conflictResolutionPolicy.mode
-    );
+    const conflictResolutionPolicyMode = SettingsComponent.parseConflictResolutionMode(conflictResolutionPolicy?.mode);
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyMode,
       value: conflictResolutionPolicyMode,
       updateBaseline: true
     });
 
-    const conflictResolutionPolicyPath = conflictResolutionPolicy && conflictResolutionPolicy.conflictResolutionPath;
+    const conflictResolutionPolicyPath = conflictResolutionPolicy?.conflictResolutionPath;
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyPath,
       value: conflictResolutionPolicyPath,
@@ -1176,7 +1158,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     });
 
     const conflictResolutionPolicyProcedure = SettingsComponent.parseConflictResolutionProcedure(
-      conflictResolutionPolicy && conflictResolutionPolicy.conflictResolutionProcedure
+      conflictResolutionPolicy?.conflictResolutionProcedure
     );
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyProcedure,
@@ -1191,21 +1173,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       updateBaseline: true
     });
 
-    /*
-    if (!this.indexingPolicyEditor && !this.state.isIndexingPolicyEditorInitializing) {
-      this.createIndexingPolicyEditor();
-    } else {
-      const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
-      const value: string = JSON.stringify(indexingPolicyContent, undefined, 4);
-      indexingPolicyEditorModel.setValue(value);
-    }
-    */
-
     const geospatialConfigType: string =
-      (this.collection.geospatialConfig &&
-        this.collection.geospatialConfig() &&
-        this.collection.geospatialConfig().type) ||
-      GeospatialConfigType.Geometry;
+      (this.collection.geospatialConfig && this.collection.geospatialConfig()?.type) || GeospatialConfigType.Geometry;
 
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
@@ -1215,12 +1184,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     if (!this.hasAutoPilotV2FeatureFlag) {
       const maxThroughput =
-        this.collection &&
-        this.collection.offer &&
-        this.collection.offer() &&
-        this.collection.offer().content &&
-        this.collection.offer().content.offerAutopilotSettings &&
-        this.collection.offer().content.offerAutopilotSettings.maxThroughput;
+        this.collection?.offer && this.collection.offer()?.content?.offerAutopilotSettings?.maxThroughput;
 
       this.updateStatefulValue({
         key: StatefulValueNames.AutoPilotThroughput,

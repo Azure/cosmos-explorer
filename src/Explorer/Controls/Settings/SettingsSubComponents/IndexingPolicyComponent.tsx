@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StatefulValue } from "../../StatefulValue";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
 
@@ -16,10 +16,6 @@ export interface IndexingPolicyComponentProps {
 export class IndexingPolicyComponent extends React.Component<IndexingPolicyComponentProps> {
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
-
-  constructor(props: IndexingPolicyComponentProps) {
-    super(props);
-  }
 
   componentDidUpdate(): void {
     if (this.props.shouldDiscardIndexingPolicy) {
@@ -74,14 +70,12 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
 
   public render(): JSX.Element {
     return (
-      <>
-        <div
-          key="indexingPolicyEditorDiv"
-          className="indexingPolicyEditor"
-          tabIndex={0}
-          ref={this.indexingPolicyDiv}
-        ></div>
-      </>
+      <div
+        key="indexingPolicyEditorDiv"
+        className="indexingPolicyEditor"
+        tabIndex={0}
+        ref={this.indexingPolicyDiv}
+      ></div>
     );
   }
 }

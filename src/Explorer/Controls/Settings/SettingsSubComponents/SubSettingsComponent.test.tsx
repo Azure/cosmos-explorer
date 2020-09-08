@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 import { container, collection } from "../TestUtils";
-import { StatefulValue } from "../../StatefulValue";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import { TtlType, GeospatialConfigType, ChangeFeedPolicyState } from "../SettingsUtils";
 import ko from "knockout";
 
@@ -68,8 +68,7 @@ describe("SubSettingsComponent", () => {
   });
 
   it("analyticalTimeToLive hidden", () => {
-    const props = { ...baseProps };
-    props.isAnalyticalStorageEnabled = false;
+    const props = { ...baseProps, isAnalyticalStorageEnabled: false };
     const wrapper = shallow(<SubSettingsComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#analyticalStorageTimeToLive")).toEqual(false);
@@ -86,8 +85,7 @@ describe("SubSettingsComponent", () => {
   });
 
   it("changeFeedPolicy hidden", () => {
-    const props = { ...baseProps };
-    props.changeFeedPolicyVisible = false;
+    const props = { ...baseProps, changeFeedPolicyVisible: false };
     const wrapper = shallow(<SubSettingsComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#changeFeedPolicy")).toEqual(false);

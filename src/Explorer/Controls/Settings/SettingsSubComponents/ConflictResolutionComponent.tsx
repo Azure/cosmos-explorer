@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StatefulValue } from "../../StatefulValue";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
 import Explorer from "../../../Explorer";
@@ -32,10 +32,6 @@ export interface ConflictResolutionComponentProps {
 }
 
 export class ConflictResolutionComponent extends React.Component<ConflictResolutionComponentProps> {
-  constructor(props: ConflictResolutionComponentProps) {
-    super(props);
-  }
-
   private onConflictResolutionCustomKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
     if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
       event.stopPropagation();

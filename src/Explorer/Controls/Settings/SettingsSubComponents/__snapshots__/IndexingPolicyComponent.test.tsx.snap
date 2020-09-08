@@ -1,21 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`IndexingPolicyComponent indexing policy is reset 1`] = `
-<Fragment>
-  <div
-    className="indexingPolicyEditor"
-    key="indexingPolicyEditorDiv"
-    tabIndex={0}
-  />
-</Fragment>
+<div
+  className="indexingPolicyEditor"
+  key="indexingPolicyEditorDiv"
+  tabIndex={0}
+/>
 `;
 
 exports[`IndexingPolicyComponent renders 1`] = `
-<Fragment>
-  <div
-    className="indexingPolicyEditor"
-    key="indexingPolicyEditorDiv"
-    tabIndex={0}
-  />
-</Fragment>
+<div
+  className="indexingPolicyEditor"
+  key="indexingPolicyEditorDiv"
+  tabIndex={0}
+/>
 `;

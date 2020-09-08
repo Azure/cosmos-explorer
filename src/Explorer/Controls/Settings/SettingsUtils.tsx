@@ -30,66 +30,54 @@ export enum SettingsV2TabTypes {
   IndexingPolicyTab
 }
 
-export function hasDatabaseSharedThroughput(collection: ViewModels.Collection): boolean {
+export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
   const database: ViewModels.Database = collection.getDatabase();
-  return database && database.isDatabaseShared && !collection.offer();
-}
+  return database?.isDatabaseShared && !collection.offer();
+};
 
-export function canThroughputExceedMaximumValue(collection: ViewModels.Collection, container: Explorer): boolean {
+export const canThroughputExceedMaximumValue = (collection: ViewModels.Collection, container: Explorer): boolean => {
   const isPublicAzurePortal: boolean =
     container.getPlatformType() === PlatformType.Portal && !container.isRunningOnNationalCloud();
   const hasPartitionKey = !!collection.partitionKey;
 
   return isPublicAzurePortal && hasPartitionKey;
-}
+};
 
-export function getMaxRUs(collection: ViewModels.Collection, container: Explorer): number {
-  const isTryCosmosDBSubscription = (container && container.isTryCosmosDBSubscription()) || false;
+export const getMaxRUs = (collection: ViewModels.Collection, container: Explorer): number => {
+  const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription() || false;
   if (isTryCosmosDBSubscription) {
     return Constants.TryCosmosExperience.maxRU;
   }
 
   const numPartitionsFromOffer: number =
-    collection &&
-    collection.offer &&
-    collection.offer() &&
-    collection.offer().content &&
-    collection.offer().content.collectionThroughputInfo &&
-    collection.offer().content.collectionThroughputInfo.numPhysicalPartitions;
+    collection?.offer && collection.offer()?.content?.collectionThroughputInfo?.numPhysicalPartitions;
 
-  const numPartitionsFromQuotaInfo: number = collection && collection.quotaInfo().numPartitions;
+  const numPartitionsFromQuotaInfo: number = collection?.quotaInfo().numPartitions;
 
   const numPartitions = numPartitionsFromOffer || numPartitionsFromQuotaInfo || 1;
 
   return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
-}
+};
 
-export function getMinRUs(collection: ViewModels.Collection, container: Explorer): number {
-  const isTryCosmosDBSubscription = (container && container.isTryCosmosDBSubscription()) || false;
+export const getMinRUs = (collection: ViewModels.Collection, container: Explorer): number => {
+  const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription() || false;
   if (isTryCosmosDBSubscription) {
     return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
   }
 
-  const offerContent = collection && collection.offer && collection.offer() && collection.offer().content;
+  const offerContent = collection?.offer && collection.offer()?.content;
 
-  if (offerContent && offerContent.offerAutopilotSettings) {
-    return 400;
+  if (offerContent?.offerAutopilotSettings) {
+    return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
   }
 
-  const collectionThroughputInfo: DataModels.OfferThroughputInfo =
-    offerContent && offerContent.collectionThroughputInfo;
+  const collectionThroughputInfo: DataModels.OfferThroughputInfo = offerContent?.collectionThroughputInfo;
 
-  if (
-    collectionThroughputInfo &&
-    collectionThroughputInfo.minimumRUForCollection &&
-    collectionThroughputInfo.minimumRUForCollection > 0
-  ) {
+  if (collectionThroughputInfo?.minimumRUForCollection > 0) {
     return collectionThroughputInfo.minimumRUForCollection;
   }
 
-  const numPartitions =
-    (collectionThroughputInfo && collectionThroughputInfo.numPhysicalPartitions) ||
-    collection.quotaInfo().numPartitions;
+  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions || collection.quotaInfo().numPartitions;
 
   if (!numPartitions || numPartitions === 1) {
     return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
@@ -104,9 +92,9 @@ export function getMinRUs(collection: ViewModels.Collection, container: Explorer
   const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
 
   return Math.max(baseRU, baseRUbyPartitions);
-}
+};
 
-export function getTabTitle(tab: SettingsV2TabTypes): string {
+export const getTabTitle = (tab: SettingsV2TabTypes): string => {
   switch (tab) {
     case SettingsV2TabTypes.ScaleTab:
       return "Scale";
@@ -119,4 +107,4 @@ export function getTabTitle(tab: SettingsV2TabTypes): string {
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
-}
+};

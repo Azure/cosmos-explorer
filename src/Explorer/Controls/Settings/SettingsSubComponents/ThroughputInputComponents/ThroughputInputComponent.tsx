@@ -1,7 +1,7 @@
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
+import * as DataModels from "../../../../../Contracts/DataModels";
+import * as ViewModels from "../../../../../Contracts/ViewModels";
 import React from "react";
-import { StatefulValue } from "../StatefulValue";
+import { StatefulValue } from "../../../StatefulValue/StatefulValue";
 import {
   Text,
   TextField,
@@ -21,8 +21,8 @@ import {
   spendAckCheckBoxStyle,
   checkBoxAndInputStackProps,
   titleAndInputStackProps
-} from "../Settings/SettingsRenderUtils";
-import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
+} from "../../SettingsRenderUtils";
+import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputProps {
   throughput: StatefulValue<number>;

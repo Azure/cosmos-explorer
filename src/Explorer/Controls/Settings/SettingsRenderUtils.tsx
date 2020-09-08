@@ -13,13 +13,13 @@ import {
   getPricePerRu,
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
-import { StatefulValue } from "../StatefulValue";
+import { StatefulValue } from "../StatefulValue/StatefulValue";
 import { ITextFieldStyles, ICheckboxStyles, IStackProps, IStackTokens } from "office-ui-fabric-react";
 
-export function getAutoPilotV3SpendElement(
+export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,
   isDatabaseThroughput: boolean
-): JSX.Element {
+): JSX.Element => {
   if (!maxAutoPilotThroughputSet) {
     return <></>;
   }
@@ -43,9 +43,12 @@ export function getAutoPilotV3SpendElement(
       .
     </span>
   );
-}
+};
 
-export function getAutoPilotV2SpendElement(autoPilotTier: AutopilotTier, isDatabaseThroughput: boolean): JSX.Element {
+export const getAutoPilotV2SpendElement = (
+  autoPilotTier: AutopilotTier,
+  isDatabaseThroughput: boolean
+): JSX.Element => {
   if (!autoPilotTier) {
     return <></>;
   }
@@ -103,14 +106,14 @@ export function getAutoPilotV2SpendElement(autoPilotTier: AutopilotTier, isDatab
     default:
       return <span>Your {resource} throughput will automatically scale based on the workload needs.</span>;
   }
-}
+};
 
-export function getEstimatedAutoscaleSpendElement(
+export const getEstimatedAutoscaleSpendElement = (
   throughput: number,
   serverId: string,
   regions: number,
   multimaster: boolean
-): JSX.Element {
+): JSX.Element => {
   const hourlyPrice: number = computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster);
   const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
@@ -133,15 +136,15 @@ export function getEstimatedAutoscaleSpendElement(
       {pricePerRu}/RU)
     </span>
   );
-}
+};
 
-export function getEstimatedSpendElement(
+export const getEstimatedSpendElement = (
   throughput: number,
   serverId: string,
   regions: number,
   multimaster: boolean,
   rupmEnabled: boolean
-): JSX.Element {
+): JSX.Element => {
   const hourlyPrice: number = computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
@@ -164,7 +167,7 @@ export function getEstimatedSpendElement(
       {pricePerRu}/RU)
     </span>
   );
-}
+};
 
 export const manualToAutoscaleDisclaimerElement: JSX.Element = (
   <span>
@@ -328,21 +331,19 @@ export const changeFeedPolicyToolTip: JSX.Element = (
 
 const dirtyTextFieldColor = "#9b4f96";
 
-export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Partial<ITextFieldStyles> => {
-  return {
-    fieldGroup: {
-      height: 25,
-      width: 300,
-      borderColor: `${statefulValue?.isDirty() ? dirtyTextFieldColor : ""}`,
-      selectors: {
-        ":disabled": {
-          backgroundColor: "#ddd",
-          borderColor: "#969696"
-        }
+export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Partial<ITextFieldStyles> => ({
+  fieldGroup: {
+    height: 25,
+    width: 300,
+    borderColor: `${statefulValue?.isDirty() ? dirtyTextFieldColor : ""}`,
+    selectors: {
+      ":disabled": {
+        backgroundColor: "#ddd",
+        borderColor: "#969696"
       }
     }
-  };
-};
+  }
+});
 
 export const spendAckCheckBoxStyle: ICheckboxStyles = {
   label: {

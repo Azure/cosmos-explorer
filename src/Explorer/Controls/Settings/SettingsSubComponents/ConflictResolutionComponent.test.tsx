@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { ConflictResolutionComponentProps, ConflictResolutionComponent } from "./ConflictResolutionComponent";
 import { container, collection } from "../TestUtils";
-import { StatefulValue } from "../../StatefulValue";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as DataModels from "../../../../Contracts/DataModels";
 
 describe("ConflictResolutionComponent", () => {

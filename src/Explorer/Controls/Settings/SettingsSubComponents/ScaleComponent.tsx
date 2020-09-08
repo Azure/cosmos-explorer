@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { StatefulValue } from "../../StatefulValue";
-import { ThroughputInputComponent } from "../../ThroughputInput/ThroughputInputReactComponent";
-import { ThroughputInputAutoPilotV3Component } from "../../ThroughputInput/ThroughputInputReactComponentAutoPilotV3";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
+import { ThroughputInputComponent } from "./ThroughputInputComponents/ThroughputInputComponent";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as SharedConstants from "../../../../Shared/Constants";
@@ -51,11 +51,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   }
 
   private isAutoScaleEnabled = (): boolean => {
-    const accountCapabilities: DataModels.Capability[] =
-      this.props.container &&
-      this.props.container.databaseAccount() &&
-      this.props.container.databaseAccount().properties &&
-      this.props.container.databaseAccount().properties.capabilities;
+    const accountCapabilities: DataModels.Capability[] = this.props.container?.databaseAccount()?.properties
+      ?.capabilities;
     const enableAutoScaleCapability =
       accountCapabilities &&
       accountCapabilities.find((capability: DataModels.Capability) => {
@@ -86,11 +83,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   private getMaxRUThroughputInputLimit = (): number => {
-    if (
-      this.props.container &&
-      this.props.container.getPlatformType() === PlatformType.Hosted &&
-      this.props.collection.partitionKey
-    ) {
+    if (this.props.container?.getPlatformType() === PlatformType.Hosted && this.props.collection.partitionKey) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
     }
 
@@ -131,10 +124,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     const serverId: string = this.props.container.serverId();
     const offerThroughput: number = this.props.throughput.current;
 
-    const regions =
-      (account && account.properties && account.properties.readLocations && account.properties.readLocations.length) ||
-      1;
-    const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
+    const regions = account?.properties?.readLocations?.length || 1;
+    const multimaster = account?.properties?.enableMultipleWriteLocations || false;
 
     let estimatedSpend: JSX.Element;
 

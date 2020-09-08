@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StatefulValue } from "../../StatefulValue";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import { GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
@@ -418,11 +418,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private isLargePartitionKeyEnabled = (): boolean => {
-    return (
-      !!this.props.collection.partitionKey &&
-      !!this.props.collection.partitionKey.version &&
-      this.props.collection.partitionKey.version >= 2
-    );
+    return this.props.collection.partitionKey?.version >= 2;
   };
 
   public render(): JSX.Element {

@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./IndexingPolicyComponent";
-import { StatefulValue } from "../../StatefulValue";
+import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as DataModels from "../../../../Contracts/DataModels";
 
 describe("IndexingPolicyComponent", () => {

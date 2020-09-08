@@ -1,15 +1,15 @@
 import React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import { StatefulValue } from "../StatefulValue";
+import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
+import { StatefulValue } from "../../../StatefulValue/StatefulValue";
 import {
   getTextFieldStyles,
   getToolTipContainer,
   spendAckCheckBoxStyle,
   titleAndInputStackProps,
   checkBoxAndInputStackProps
-} from "../Settings/SettingsRenderUtils";
+} from "../../SettingsRenderUtils";
 import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label } from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
+import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
   throughput: StatefulValue<number>;
@@ -39,13 +39,13 @@ export interface ThroughputInputAutoPilotV3Props {
   setMaxAutoPilotThroughput: (newThroughput: number) => void;
 }
 
-interface ThroughputInputState {
+interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
 }
 
 export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
-  ThroughputInputState
+  ThroughputInputAutoPilotV3State
 > {
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
