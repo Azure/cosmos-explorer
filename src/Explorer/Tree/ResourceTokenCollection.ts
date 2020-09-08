@@ -7,7 +7,7 @@ import DocumentId from "./DocumentId";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import Q from "q";
 import QueryTab from "../Tabs/QueryTab";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import TabsBase from "../Tabs/TabsBase";
 

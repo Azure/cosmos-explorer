@@ -5,14 +5,7 @@ import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 import { updateUserContext } from "../UserContext";
-import {
-  deleteDocument,
-  getEndpoint,
-  queryDocuments,
-  readDocument,
-  updateDocument,
-  _createMongoCollectionWithARM
-} from "./MongoProxyClient";
+import { deleteDocument, getEndpoint, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
 jest.mock("../ResourceProvider/ResourceProviderClient.ts");
 
 const databaseId = "testDB";
@@ -258,60 +251,6 @@ describe("MongoProxyClient", () => {
       window.authType = AuthType.EncryptedToken;
       const endpoint = getEndpoint(databaseAccount as DatabaseAccount);
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/guest/mongo/explorer");
-    });
-  });
-
-  describe("createMongoCollectionWithARM", () => {
-    it("should create a collection with autopilot when autopilot is selected + shared throughput is false", () => {
-      const resourceProviderClientPutAsyncSpy = jest.spyOn(ResourceProviderClient.prototype, "putAsync");
-      const properties = {
-        pk: "state",
-        coll: "abc-collection",
-        cd: true,
-        db: "a1-db",
-        st: false,
-        sid: "a2",
-        rg: "c1",
-        dba: "main",
-        is: false
-      };
-      _createMongoCollectionWithARM("management.azure.com", properties, { "x-ms-cosmos-offer-autopilot-tier": "1" });
-      expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
-        "subscriptions/a2/resourceGroups/c1/providers/Microsoft.DocumentDB/databaseAccounts/foo/mongodbDatabases/a1-db/collections/abc-collection",
-        "2020-04-01",
-        {
-          properties: {
-            options: { "x-ms-cosmos-offer-autopilot-tier": "1" },
-            resource: { id: "abc-collection" }
-          }
-        }
-      );
-    });
-    it("should create a collection with provisioned throughput when provisioned throughput is selected + shared throughput is false", () => {
-      const resourceProviderClientPutAsyncSpy = jest.spyOn(ResourceProviderClient.prototype, "putAsync");
-      const properties = {
-        pk: "state",
-        coll: "abc-collection",
-        cd: true,
-        db: "a1-db",
-        st: false,
-        sid: "a2",
-        rg: "c1",
-        dba: "main",
-        is: false,
-        offerThroughput: 400
-      };
-      _createMongoCollectionWithARM("management.azure.com", properties, undefined);
-      expect(resourceProviderClientPutAsyncSpy).toHaveBeenCalledWith(
-        "subscriptions/a2/resourceGroups/c1/providers/Microsoft.DocumentDB/databaseAccounts/foo/mongodbDatabases/a1-db/collections/abc-collection",
-        "2020-04-01",
-        {
-          properties: {
-            options: { throughput: "400" },
-            resource: { id: "abc-collection" }
-          }
-        }
-      );
     });
   });
 });
