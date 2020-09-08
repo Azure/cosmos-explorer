@@ -112,7 +112,7 @@ export function traceMark(action: Action, data?: unknown, timestamp?: number): n
   return validTimestamp;
 }
 
-function getData(data: unknown = {}) {
+function getData(data: unknown = {}): { [key: string]: string } | undefined {
   if (typeof data === "string") {
     data = { message: data };
   }
@@ -121,9 +121,9 @@ function getData(data: unknown = {}) {
       // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       authType: (window as any).authType,
-      subscriptionId: userContext.subscriptionId,
+      subscriptionId: userContext.subscriptionId as string,
       platform: configContext.platform,
-      env: process.env.NODE_ENV,
+      env: process.env.NODE_ENV as string,
       ...data
     };
   }
