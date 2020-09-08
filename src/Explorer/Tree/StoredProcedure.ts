@@ -5,7 +5,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import { deleteStoredProcedure, executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
 import TabsBase from "../Tabs/TabsBase";

@@ -8,7 +8,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";

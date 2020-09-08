@@ -29,7 +29,7 @@ import { MeControlComponentAdapter } from "./Explorer/Menus/NavBar/MeControlComp
 import { MessageTypes } from "./Contracts/ExplorerContracts";
 import * as ReactBindingHandler from "./Bindings/ReactBindingHandler";
 import { SwitchDirectoryPane, SwitchDirectoryPaneComponent } from "./Explorer/Panes/SwitchDirectoryPane";
-import TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
 import { isInvalidParentFrameOrigin } from "./Utils/MessageValidation";
 import "../less/hostedexplorer.less";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";

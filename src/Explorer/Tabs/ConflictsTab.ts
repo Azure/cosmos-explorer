@@ -13,7 +13,7 @@ import * as HeadersUtility from "../../Common/HeadersUtility";
 import TabsBase from "./TabsBase";
 import { DocumentsGridMetrics } from "../../Common/Constants";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteIcon from "../../../images/delete.svg";
