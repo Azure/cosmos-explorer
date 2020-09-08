@@ -8,7 +8,7 @@
     "@azure/cosmos-language-service": "0.0.4",
     "@jupyterlab/services": "4.2.0",
     "@jupyterlab/terminal": "1.2.1",
-    "@microsoft/applicationinsights-web": "2.5.4",
+    "@microsoft/applicationinsights-web": "2.5.8",
     "@nteract/commutable": "7.1.4",
     "@nteract/connected-components": "6.7.8",
     "@nteract/core": "13.0.0",

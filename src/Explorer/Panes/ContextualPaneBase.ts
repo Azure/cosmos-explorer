@@ -4,7 +4,7 @@ import * as Constants from "../../Common/Constants";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { KeyCodes } from "../../Common/Constants";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 
 // TODO: Use specific actions for logging telemetry data

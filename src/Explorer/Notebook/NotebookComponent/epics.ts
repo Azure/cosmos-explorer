@@ -37,7 +37,7 @@ import * as Constants from "../../../Common/Constants";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as CdbActions from "./actions";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action as TelemetryAction } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";

@@ -5,7 +5,7 @@ import { DirectoryListProps } from "../Controls/Directory/DirectoryListComponent
 import { DefaultDirectoryDropdownProps } from "../Controls/Directory/DefaultDirectoryDropdownComponent";
 import { DirectoryComponentAdapter } from "../Controls/Directory/DirectoryComponentAdapter";
 import SwitchDirectoryPaneTemplate from "./SwitchDirectoryPane.html";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 
 class PaneComponent {
   constructor(data: any) {
