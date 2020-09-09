@@ -3,7 +3,7 @@ import { trackEvent, trackException } from "./utils";
 
 jest.setTimeout(300000);
 
-describe("Collection CRUD", () => {
+describe.skip("Collection CRUD", () => {
   it("should complete collection crud", async () => {
     try {
       // Login to Azure Portal

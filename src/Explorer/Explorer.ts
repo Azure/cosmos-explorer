@@ -1893,6 +1893,9 @@ export default class Explorer {
   }
 
   public findSelectedDatabase(): ViewModels.Database {
+    if (!this.selectedNode()) {
+      return null;
+    }
     if (this.selectedNode().nodeKind === "Database") {
       return _.find(this.databases(), (database: ViewModels.Database) => database.rid === this.selectedNode().rid);
     }
