@@ -1,7 +1,6 @@
 import * as DataModels from "../../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../../Contracts/ViewModels";
 import React from "react";
-import { StatefulValue } from "../../../StatefulValue/StatefulValue";
 import {
   Text,
   TextField,
@@ -21,12 +20,13 @@ import {
   spendAckCheckBoxStyle,
   checkBoxAndInputStackProps,
   titleAndInputStackProps,
-  choiceGroupOptionStyles
+  getChoiceGroupStyles
 } from "../../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputProps {
-  throughput: StatefulValue<number>;
+  throughput: number;
+  throughputBaseline: number;
   setThroughput: (newThroughput: number) => void;
   minimum: number;
   maximum: number;
@@ -62,9 +62,10 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
   private step: number;
+  private choiceGroupFixedStyle = getChoiceGroupStyles(undefined, undefined);
   private throughputChoiceOptions: IChoiceGroupOption[] = [
-    { key: "true", text: "Autoscale", styles: choiceGroupOptionStyles },
-    { key: "false", text: "Manual", styles: choiceGroupOptionStyles }
+    { key: "true", text: "Autoscale" },
+    { key: "false", text: "Manual" }
   ];
   private dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 300 } };
 
@@ -119,7 +120,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
     return (
-      <div>
+      <Stack>
         <Label id={labelId}>
           <ToolTipLabelComponent
             label={this.props.label}
@@ -127,15 +128,15 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
           />
         </Label>
         <ChoiceGroup
-          className="settingsV2RadioButton"
           tabIndex={0}
           selectedKey={this.props.isAutoPilotSelected.toString()}
           options={this.throughputChoiceOptions}
           onChange={this.onChoiceGroupChange}
           required={this.props.showAsMandatory}
           ariaLabelledBy={labelId}
+          styles={this.choiceGroupFixedStyle}
         />
-      </div>
+      </Stack>
     );
   };
 
@@ -171,12 +172,12 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
           type="number"
           id="throughputInput"
           key="provisioned throughput input"
-          styles={getTextFieldStyles(this.props.throughput)}
+          styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
           disabled={!this.props.isEnabled}
           step={this.step}
           min={this.props.minimum}
           max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
-          value={this.props.throughput.current?.toString()}
+          value={this.props.throughput?.toString()}
           onChange={this.onThroughputChange}
         />
         {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}

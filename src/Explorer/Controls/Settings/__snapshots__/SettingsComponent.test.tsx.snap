@@ -22,14 +22,8 @@ exports[`SettingsComponent renders 1`] = `
         }
       >
         <ScaleComponent
-          autoPilotThroughput={
-            StatefulValue {
-              "baseline": 4000,
-              "current": 4000,
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
+          autoPilotThroughput={4000}
+          autoPilotThroughputBaseline={4000}
           collection={
             Object {
               "analyticalStorageTtl": [Function],
@@ -2639,14 +2633,8 @@ exports[`SettingsComponent renders 1`] = `
           setAutoPilotTier={[Function]}
           setMaxAutoPilotThroughput={[Function]}
           setThroughput={[Function]}
-          throughput={
-            StatefulValue {
-              "baseline": 10000,
-              "current": 10000,
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
+          throughput={10000}
+          throughputBaseline={10000}
           userCanChangeProvisioningTypes={true}
           wasAutopilotOriginallySet={false}
         />
@@ -2662,30 +2650,12 @@ exports[`SettingsComponent renders 1`] = `
         }
       >
         <SubSettingsComponent
-          analyticalStorageTtlSeconds={
-            StatefulValue {
-              "baseline": 5,
-              "current": 5,
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
-          analyticalStorageTtlSelection={
-            StatefulValue {
-              "baseline": "on",
-              "current": "on",
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
-          changeFeedPolicy={
-            StatefulValue {
-              "baseline": "Off",
-              "current": "Off",
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
+          analyticalStorageTtlSeconds={5}
+          analyticalStorageTtlSecondsBaseline={5}
+          analyticalStorageTtlSelection="on"
+          analyticalStorageTtlSelectionBaseline="on"
+          changeFeedPolicy="Off"
+          changeFeedPolicyBaseline="Off"
           changeFeedPolicyVisible={false}
           collection={
             Object {
@@ -5287,14 +5257,8 @@ exports[`SettingsComponent renders 1`] = `
               },
             }
           }
-          geospatialConfigType={
-            StatefulValue {
-              "baseline": "Geometry",
-              "current": "Geometry",
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
+          geospatialConfigType="Geometry"
+          geospatialConfigTypeBaseline="Geometry"
           isAnalyticalStorageEnabled={true}
           onAnalyticalStorageTtlSecondsChange={[Function]}
           onAnalyticalStorageTtlSelectionChange={[Function]}
@@ -5302,22 +5266,10 @@ exports[`SettingsComponent renders 1`] = `
           onGeoSpatialConfigTypeChange={[Function]}
           onTimeToLiveSecondsChange={[Function]}
           onTtlChange={[Function]}
-          timeToLive={
-            StatefulValue {
-              "baseline": "on",
-              "current": "on",
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
-          timeToLiveSeconds={
-            StatefulValue {
-              "baseline": 5,
-              "current": 5,
-              "getStringValue": [Function],
-              "isValid": true,
-            }
-          }
+          timeToLive="on"
+          timeToLiveBaseline="on"
+          timeToLiveSeconds={5}
+          timeToLiveSecondsBaseline={5}
         />
       </PivotItem>
       <PivotItem
@@ -5332,21 +5284,11 @@ exports[`SettingsComponent renders 1`] = `
       >
         <IndexingPolicyComponent
           indexingPolicyContent={
-            StatefulValue {
-              "baseline": Object {
-                "automatic": true,
-                "excludedPaths": Array [],
-                "includedPaths": Array [],
-                "indexingMode": "default",
-              },
-              "current": Object {
-                "automatic": true,
-                "excludedPaths": Array [],
-                "includedPaths": Array [],
-                "indexingMode": "default",
-              },
-              "getStringValue": [Function],
-              "isValid": true,
+            Object {
+              "automatic": true,
+              "excludedPaths": Array [],
+              "includedPaths": Array [],
+              "indexingMode": "default",
             }
           }
           logIndexingPolicySuccessMessage={[Function]}

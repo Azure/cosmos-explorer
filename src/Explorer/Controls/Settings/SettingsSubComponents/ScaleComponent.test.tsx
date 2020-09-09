@@ -2,7 +2,6 @@ import { shallow } from "enzyme";
 import React from "react";
 import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
 import { container, collection } from "../TestUtils";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as DataModels from "../../../../Contracts/DataModels";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 import { ThroughputInputComponent } from "./ThroughputInputComponents/ThroughputInputComponent";
@@ -18,8 +17,10 @@ describe("ScaleComponent", () => {
     setThroughput: () => {
       return;
     },
-    throughput: new StatefulValue<number>(1000),
-    autoPilotThroughput: new StatefulValue<number>(4000),
+    throughput: 1000,
+    throughputBaseline: 1000,
+    autoPilotThroughput: 4000,
+    autoPilotThroughputBaseline: 4000,
     selectedAutoPilotTier: DataModels.AutopilotTier.Tier1,
     isAutoPilotSelected: false,
     wasAutopilotOriginallySet: false,

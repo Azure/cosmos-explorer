@@ -7,6 +7,8 @@ import * as PricingUtils from "../../../Utils/PricingUtils";
 
 import Explorer from "../../Explorer";
 
+export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
+
 export enum ChangeFeedPolicyState {
   Off = "Off",
   On = "On"
@@ -92,6 +94,32 @@ export const getMinRUs = (collection: ViewModels.Collection, container: Explorer
   const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
 
   return Math.max(baseRU, baseRUbyPartitions);
+};
+
+export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
+  const currentType = typeof current;
+  const baselineType = typeof baseline;
+
+  if (currentType !== "undefined" && baselineType !== "undefined" && currentType !== baselineType) {
+    throw new Error("current and baseline values are not of the same type.");
+  }
+  const currentStringValue = getStringValue(current, currentType);
+  const baselineStringValue = getStringValue(baseline, baselineType);
+
+  return currentStringValue !== baselineStringValue;
+};
+
+const getStringValue = (value: isDirtyTypes, type: string): string => {
+  switch (type) {
+    case "string":
+    case "undefined":
+    case "number":
+    case "boolean":
+      return value?.toString();
+
+    default:
+      return JSON.stringify(value);
+  }
 };
 
 export const getTabTitle = (tab: SettingsV2TabTypes): string => {

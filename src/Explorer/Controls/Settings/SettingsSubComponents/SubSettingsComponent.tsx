@@ -1,5 +1,4 @@
 import * as React from "react";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import { GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
@@ -10,7 +9,6 @@ import {
   changeFeedPolicyToolTip,
   subComponentStackProps,
   titleAndInputStackProps,
-  choiceGroupOptionStyles,
   getChoiceGroupStyles
 } from "../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
@@ -19,34 +17,42 @@ export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
 
-  timeToLive: StatefulValue<TtlType>;
+  timeToLive: TtlType;
+  timeToLiveBaseline: TtlType;
+
   onTtlChange: (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => void;
-  timeToLiveSeconds: StatefulValue<number>;
+  timeToLiveSeconds: number;
+  timeToLiveSecondsBaseline: number;
   onTimeToLiveSecondsChange: (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => void;
 
-  geospatialConfigType: StatefulValue<GeospatialConfigType>;
+  geospatialConfigType: GeospatialConfigType;
+  geospatialConfigTypeBaseline: GeospatialConfigType;
   onGeoSpatialConfigTypeChange: (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
   ) => void;
 
   isAnalyticalStorageEnabled: boolean;
-  analyticalStorageTtlSelection: StatefulValue<TtlType>;
+  analyticalStorageTtlSelection: TtlType;
+  analyticalStorageTtlSelectionBaseline: TtlType;
   onAnalyticalStorageTtlSelectionChange: (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
   ) => void;
-  analyticalStorageTtlSeconds: StatefulValue<number>;
+
+  analyticalStorageTtlSeconds: number;
+  analyticalStorageTtlSecondsBaseline: number;
   onAnalyticalStorageTtlSecondsChange: (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => void;
 
   changeFeedPolicyVisible: boolean;
-  changeFeedPolicy: StatefulValue<ChangeFeedPolicyState>;
+  changeFeedPolicy: ChangeFeedPolicyState;
+  changeFeedPolicyBaseline: ChangeFeedPolicyState;
   onChangeFeedPolicyChange: (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => void;
 }
 
@@ -65,9 +71,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   }
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off", styles: choiceGroupOptionStyles },
-    { key: TtlType.OnNoDefault, text: "On (no default)", styles: choiceGroupOptionStyles },
-    { key: TtlType.On, text: "On", styles: choiceGroupOptionStyles }
+    { key: TtlType.Off, text: "Off" },
+    { key: TtlType.OnNoDefault, text: "On (no default)" },
+    { key: TtlType.On, text: "On" }
   ];
 
   private getTtlComponent = (): JSX.Element => {
@@ -77,21 +83,21 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           id="timeToLive"
           label="Time to Live"
           tabIndex={0}
-          selectedKey={this.props.timeToLive.current}
+          selectedKey={this.props.timeToLive}
           options={this.ttlChoiceGroupOptions}
           onChange={this.props.onTtlChange}
           //onFocus=?
-          styles={getChoiceGroupStyles(this.props.timeToLive)}
+          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
         />
-        {this.props.timeToLive.current === TtlType.On && (
+        {this.props.timeToLive === TtlType.On && (
           <TextField
             id="timeToLiveSeconds"
-            styles={getTextFieldStyles(this.props.timeToLiveSeconds)}
+            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
             type="number"
             required
             min={1}
             max={Int32.Max}
-            value={this.props.timeToLiveSeconds.current?.toString()}
+            value={this.props.timeToLiveSeconds?.toString()}
             onChange={this.props.onTimeToLiveSecondsChange}
             suffix="second(s)"
           />
@@ -101,9 +107,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off", styles: choiceGroupOptionStyles, disabled: true },
-    { key: TtlType.OnNoDefault, text: "On (no default)", styles: choiceGroupOptionStyles },
-    { key: TtlType.On, text: "On", styles: choiceGroupOptionStyles }
+    { key: TtlType.Off, text: "Off", disabled: true },
+    { key: TtlType.OnNoDefault, text: "On (no default)" },
+    { key: TtlType.On, text: "On" }
   ];
 
   private getAnalyticalStorageTtlComponent = (): JSX.Element => {
@@ -113,20 +119,26 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           id="analyticalStorageTimeToLive"
           label="Analytical Storage Time to Live"
           tabIndex={0}
-          selectedKey={this.props.analyticalStorageTtlSelection.current}
+          selectedKey={this.props.analyticalStorageTtlSelection}
           options={this.analyticalTtlChoiceGroupOptions}
           onChange={this.props.onAnalyticalStorageTtlSelectionChange}
-          styles={getChoiceGroupStyles(this.props.analyticalStorageTtlSelection)}
+          styles={getChoiceGroupStyles(
+            this.props.analyticalStorageTtlSelection,
+            this.props.analyticalStorageTtlSelectionBaseline
+          )}
         />
-        {this.props.analyticalStorageTtlSelection.current === TtlType.On && (
+        {this.props.analyticalStorageTtlSelection === TtlType.On && (
           <TextField
             id="analyticalStorageTimeToLiveSeconds"
-            styles={getTextFieldStyles(this.props.analyticalStorageTtlSeconds)}
+            styles={getTextFieldStyles(
+              this.props.analyticalStorageTtlSeconds,
+              this.props.analyticalStorageTtlSecondsBaseline
+            )}
             type="number"
             required
             min={1}
             max={Int32.Max}
-            value={this.props.analyticalStorageTtlSeconds.current?.toString()}
+            value={this.props.analyticalStorageTtlSeconds?.toString()}
             suffix="second(s)"
             onChange={this.props.onAnalyticalStorageTtlSecondsChange}
           />
@@ -136,8 +148,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: GeospatialConfigType.Geography, text: "Geography", styles: choiceGroupOptionStyles },
-    { key: GeospatialConfigType.Geometry, text: "Geometry", styles: choiceGroupOptionStyles }
+    { key: GeospatialConfigType.Geography, text: "Geography" },
+    { key: GeospatialConfigType.Geometry, text: "Geometry" }
   ];
 
   private getGeoSpatialComponent = (): JSX.Element => {
@@ -146,17 +158,17 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         id="geoSpatialConfig"
         label="Geospatial Configuration"
         tabIndex={0}
-        selectedKey={this.props.geospatialConfigType.current}
+        selectedKey={this.props.geospatialConfigType}
         options={this.geoSpatialConfigTypeChoiceGroupOptions}
         onChange={this.props.onGeoSpatialConfigTypeChange}
-        styles={getChoiceGroupStyles(this.props.geospatialConfigType)}
+        styles={getChoiceGroupStyles(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline)}
       />
     );
   };
 
   private changeFeedChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: ChangeFeedPolicyState.Off, text: "Off", styles: choiceGroupOptionStyles },
-    { key: ChangeFeedPolicyState.On, text: "On", styles: choiceGroupOptionStyles }
+    { key: ChangeFeedPolicyState.Off, text: "Off" },
+    { key: ChangeFeedPolicyState.On, text: "On" }
   ];
 
   private getChangeFeedComponent = (): JSX.Element => {
@@ -170,10 +182,10 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         <ChoiceGroup
           id="changeFeedPolicy"
           tabIndex={0}
-          selectedKey={this.props.changeFeedPolicy.current}
+          selectedKey={this.props.changeFeedPolicy}
           options={this.changeFeedChoiceGroupOptions}
           onChange={this.props.onChangeFeedPolicyChange}
-          styles={getChoiceGroupStyles(this.props.changeFeedPolicy)}
+          styles={getChoiceGroupStyles(this.props.changeFeedPolicy, this.props.changeFeedPolicyBaseline)}
           aria-labelledby={labelId}
         />
       </Stack>
@@ -187,7 +199,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           <TextField
             label="Partition Key"
             disabled
-            styles={getTextFieldStyles()}
+            styles={getTextFieldStyles(undefined, undefined)}
             defaultValue={this.partitionKeyValue}
           />
         )}

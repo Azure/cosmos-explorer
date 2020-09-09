@@ -1,12 +1,11 @@
 import * as React from "react";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
 
 export interface IndexingPolicyComponentProps {
   shouldDiscardIndexingPolicy: boolean;
   resetShouldDiscardIndexingPolicy: () => void;
-  indexingPolicyContent: StatefulValue<DataModels.IndexingPolicy>;
+  indexingPolicyContent: DataModels.IndexingPolicy;
   setIndexingPolicyElementFocussed: (indexingPolicyContentFocussed: boolean) => void;
   setIndexingPolicyContent: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
   setIndexingPolicyValidity: (isValid: boolean) => void;
@@ -34,13 +33,13 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
       this.createIndexingPolicyEditor();
     } else {
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
-      const value: string = JSON.stringify(this.props.indexingPolicyContent.current, undefined, 4);
+      const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
       indexingPolicyEditorModel.setValue(value);
     }
   };
 
   private createIndexingPolicyEditor = (): void => {
-    const value: string = JSON.stringify(this.props.indexingPolicyContent.current, undefined, 4);
+    const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
 
     this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
       value: value,

@@ -4,11 +4,11 @@ import {
   ThroughputInputAutoPilotV3Component,
   ThroughputInputAutoPilotV3Props
 } from "./ThroughputInputAutoPilotV3Component";
-import { StatefulValue } from "../../../StatefulValue/StatefulValue";
 
 describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {
-    throughput: new StatefulValue(100),
+    throughput: 100,
+    throughputBaseline: 100,
     setThroughput: undefined,
     minimum: 10000,
     maximum: 400,
@@ -31,7 +31,8 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     showAutoPilot: true,
     overrideWithAutoPilotSettings: true,
     overrideWithProvisionedThroughputSettings: false,
-    maxAutoPilotThroughput: new StatefulValue(4000),
+    maxAutoPilotThroughput: 4000,
+    maxAutoPilotThroughputBaseline: 4000,
     setMaxAutoPilotThroughput: undefined
   };
 

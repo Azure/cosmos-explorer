@@ -2,40 +2,38 @@ import { shallow } from "enzyme";
 import React from "react";
 import { ConflictResolutionComponentProps, ConflictResolutionComponent } from "./ConflictResolutionComponent";
 import { container, collection } from "../TestUtils";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as DataModels from "../../../../Contracts/DataModels";
 
 describe("ConflictResolutionComponent", () => {
-  const props: ConflictResolutionComponentProps = {
+  const baseProps: ConflictResolutionComponentProps = {
     collection: collection,
     container: container,
-    conflictResolutionPolicyMode: new StatefulValue<DataModels.ConflictResolutionMode>(
-      DataModels.ConflictResolutionMode.Custom
-    ),
+    conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.Custom,
+    conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode.Custom,
     onConflictResolutionPolicyModeChange: () => {
       return;
     },
-    conflictResolutionPolicyPath: new StatefulValue<"">(),
+    conflictResolutionPolicyPath: "",
+    conflictResolutionPolicyPathBaseline: "",
     onConflictResolutionPolicyPathChange: () => {
       return;
     },
-    conflictResolutionPolicyProcedure: new StatefulValue<"">(),
+    conflictResolutionPolicyProcedure: "",
+    conflictResolutionPolicyProcedureBaseline: "",
     onConflictResolutionPolicyProcedureChange: () => {
       return;
     }
   };
 
   it("Sproc text field displayed", () => {
-    const wrapper = shallow(<ConflictResolutionComponent {...props} />);
+    const wrapper = shallow(<ConflictResolutionComponent {...baseProps} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#conflictResolutionCustomTextField")).toEqual(true);
     expect(wrapper.exists("#conflictResolutionLwwTextField")).toEqual(false);
   });
 
   it("Path text field displayed", () => {
-    props.conflictResolutionPolicyMode = new StatefulValue<DataModels.ConflictResolutionMode>(
-      DataModels.ConflictResolutionMode.LastWriterWins
-    );
+    const props = {...baseProps, conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins}
     const wrapper = shallow(<ConflictResolutionComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#conflictResolutionCustomTextField")).toEqual(false);

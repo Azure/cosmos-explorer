@@ -23,792 +23,14 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         Array [
           Object {
             "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "Off",
           },
           Object {
             "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On (no default)",
           },
           Object {
             "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="off"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <StyledChoiceGroupBase
-    id="geoSpatialConfig"
-    label="Geospatial Configuration"
-    onChange={[Function]}
-    options={
-      Array [
-        Object {
-          "key": "Geography",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
-          "text": "Geography",
-        },
-        Object {
-          "key": "Geometry",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
-          "text": "Geometry",
-        },
-      ]
-    }
-    selectedKey="Geography"
-    styles={
-      Object {
-        "flexContainer": Array [
-          Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
-                "borderColor": "",
-              },
-              ".ms-ChoiceField-field.is-checked::before": Object {
-                "borderColor": "",
-              },
-              ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-          },
-        ],
-      }
-    }
-    tabIndex={0}
-  />
-  <Stack>
-    <StyledLabelBase
-      id="settingsV2ChangeFeedLabelId"
-    >
-      <ToolTipLabelComponent
-        label="Change feed log retention policy"
-        toolTipElement={
-          <span>
-            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
-          </span>
-        }
-      />
-    </StyledLabelBase>
-    <StyledChoiceGroupBase
-      aria-labelledby="settingsV2ChangeFeedLabelId"
-      id="changeFeedPolicy"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "Off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "On",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="On"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  />
-</Stack>
-`;
-
-exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
-<Stack
-  tokens={
-    Object {
-      "childrenGap": 20,
-    }
-  }
->
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="off"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <StyledChoiceGroupBase
-    id="geoSpatialConfig"
-    label="Geospatial Configuration"
-    onChange={[Function]}
-    options={
-      Array [
-        Object {
-          "key": "Geography",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
-          "text": "Geography",
-        },
-        Object {
-          "key": "Geometry",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
-          "text": "Geometry",
-        },
-      ]
-    }
-    selectedKey="Geography"
-    styles={
-      Object {
-        "flexContainer": Array [
-          Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
-                "borderColor": "",
-              },
-              ".ms-ChoiceField-field.is-checked::before": Object {
-                "borderColor": "",
-              },
-              ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-          },
-        ],
-      }
-    }
-    tabIndex={0}
-  />
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <StyledChoiceGroupBase
-      id="analyticalStorageTimeToLive"
-      label="Analytical Storage Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "disabled": true,
-            "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="on-nodefault"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <Stack>
-    <StyledLabelBase
-      id="settingsV2ChangeFeedLabelId"
-    >
-      <ToolTipLabelComponent
-        label="Change feed log retention policy"
-        toolTipElement={
-          <span>
-            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
-          </span>
-        }
-      />
-    </StyledLabelBase>
-    <StyledChoiceGroupBase
-      aria-labelledby="settingsV2ChangeFeedLabelId"
-      id="changeFeedPolicy"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "Off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "On",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="On"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  />
-</Stack>
-`;
-
-exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
-<Stack
-  tokens={
-    Object {
-      "childrenGap": 20,
-    }
-  }
->
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="off"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <StyledChoiceGroupBase
-    id="geoSpatialConfig"
-    label="Geospatial Configuration"
-    onChange={[Function]}
-    options={
-      Array [
-        Object {
-          "key": "Geography",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
-          "text": "Geography",
-        },
-        Object {
-          "key": "Geometry",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
-          "text": "Geometry",
-        },
-      ]
-    }
-    selectedKey="Geography"
-    styles={
-      Object {
-        "flexContainer": Array [
-          Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
-                "borderColor": "",
-              },
-              ".ms-ChoiceField-field.is-checked::before": Object {
-                "borderColor": "",
-              },
-              ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-          },
-        ],
-      }
-    }
-    tabIndex={0}
-  />
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <StyledChoiceGroupBase
-      id="analyticalStorageTimeToLive"
-      label="Analytical Storage Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "disabled": true,
-            "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="on-nodefault"
-      styles={
-        Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
-        }
-      }
-      tabIndex={0}
-    />
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  />
-</Stack>
-`;
-
-exports[`SubSettingsComponent renders 1`] = `
-<Stack
-  tokens={
-    Object {
-      "childrenGap": 20,
-    }
-  }
->
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On",
           },
         ]
@@ -872,26 +94,202 @@ exports[`SubSettingsComponent renders 1`] = `
       Array [
         Object {
           "key": "Geography",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Geography",
         },
         Object {
           "key": "Geometry",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
             },
           },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
+  <Stack>
+    <StyledLabelBase
+      id="settingsV2ChangeFeedLabelId"
+    >
+      <ToolTipLabelComponent
+        label="Change feed log retention policy"
+        toolTipElement={
+          <span>
+            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+          </span>
+        }
+      />
+    </StyledLabelBase>
+    <StyledChoiceGroupBase
+      aria-labelledby="settingsV2ChangeFeedLabelId"
+      id="changeFeedPolicy"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Off",
+            "text": "Off",
+          },
+          Object {
+            "key": "On",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="On"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
+  </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
           "text": "Geometry",
         },
       ]
@@ -937,38 +335,476 @@ exports[`SubSettingsComponent renders 1`] = `
           Object {
             "disabled": true,
             "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "Off",
           },
           Object {
             "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On (no default)",
           },
           Object {
             "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on-nodefault"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
+  <Stack>
+    <StyledLabelBase
+      id="settingsV2ChangeFeedLabelId"
+    >
+      <ToolTipLabelComponent
+        label="Change feed log retention policy"
+        toolTipElement={
+          <span>
+            Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
+          </span>
+        }
+      />
+    </StyledLabelBase>
+    <StyledChoiceGroupBase
+      aria-labelledby="settingsV2ChangeFeedLabelId"
+      id="changeFeedPolicy"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Off",
+            "text": "Off",
+          },
+          Object {
+            "key": "On",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="On"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
+  </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
                 "fontFamily": "Segoe UI",
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
               },
             },
+          },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledChoiceGroupBase
+      id="analyticalStorageTimeToLive"
+      label="Analytical Storage Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "disabled": true,
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+    <StyledTextFieldBase
+      id="analyticalStorageTimeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="2000"
+    />
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  />
+</Stack>
+`;
+
+exports[`SubSettingsComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": "#ddd",
+                "borderColor": "#969696",
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
+  </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledChoiceGroupBase
+      id="analyticalStorageTimeToLive"
+      label="Analytical Storage Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "disabled": true,
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
             "text": "On",
           },
         ]
@@ -1045,26 +881,10 @@ exports[`SubSettingsComponent renders 1`] = `
         Array [
           Object {
             "key": "Off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "Off",
           },
           Object {
             "key": "On",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On",
           },
         ]
@@ -1128,38 +948,14 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         Array [
           Object {
             "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "Off",
           },
           Object {
             "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On (no default)",
           },
           Object {
             "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On",
           },
         ]
@@ -1198,26 +994,10 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       Array [
         Object {
           "key": "Geography",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Geography",
         },
         Object {
           "key": "Geometry",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Geometry",
         },
       ]
@@ -1263,38 +1043,14 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
           Object {
             "disabled": true,
             "key": "off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "Off",
           },
           Object {
             "key": "on-nodefault",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On (no default)",
           },
           Object {
             "key": "on",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On",
           },
         ]
@@ -1371,26 +1127,10 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         Array [
           Object {
             "key": "Off",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "Off",
           },
           Object {
             "key": "On",
-            "styles": Object {
-              "choiceFieldWrapper": Object {
-                "fontFamily": "Segoe UI",
-                "fontSize": 14,
-                "padding": "2px 5px",
-                "whiteSpace": "nowrap",
-              },
-            },
             "text": "On",
           },
         ]

@@ -13,15 +13,14 @@ import {
   getPricePerRu,
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
-import { StatefulValue } from "../StatefulValue/StatefulValue";
 import {
   ITextFieldStyles,
   ICheckboxStyles,
   IStackProps,
   IStackTokens,
-  IChoiceGroupStyles,
-  IChoiceGroupOptionStyles
+  IChoiceGroupStyles
 } from "office-ui-fabric-react";
+import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
 export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,
@@ -338,11 +337,11 @@ export const changeFeedPolicyToolTip: JSX.Element = (
 
 const dirtyTextFieldColor = "#9b4f96";
 
-export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Partial<ITextFieldStyles> => ({
+export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<ITextFieldStyles> => ({
   fieldGroup: {
     height: 25,
     width: 300,
-    borderColor: statefulValue?.isDirty() ? dirtyTextFieldColor : "",
+    borderColor: isDirty(current, baseline) ? dirtyTextFieldColor : "",
     selectors: {
       ":disabled": {
         backgroundColor: "#ddd",
@@ -352,15 +351,15 @@ export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Part
   }
 });
 
-export const getChoiceGroupStyles = (statefulValue: StatefulValue<unknown>): Partial<IChoiceGroupStyles> => ({
+export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<IChoiceGroupStyles> => ({
   flexContainer: [
     {
       selectors: {
         ".ms-ChoiceField-field.is-checked::before": {
-          borderColor: statefulValue?.isDirty() ? dirtyTextFieldColor : ""
+          borderColor: isDirty(current, baseline) ? dirtyTextFieldColor : ""
         },
         ".ms-ChoiceField-field.is-checked::after": {
-          borderColor: statefulValue?.isDirty() ? dirtyTextFieldColor : ""
+          borderColor: isDirty(current, baseline) ? dirtyTextFieldColor : ""
         },
         ".ms-ChoiceField-wrapper label": {
           whiteSpace: "nowrap",
@@ -372,15 +371,6 @@ export const getChoiceGroupStyles = (statefulValue: StatefulValue<unknown>): Par
     }
   ]
 });
-
-export const choiceGroupOptionStyles: Partial<IChoiceGroupOptionStyles> = {
-  choiceFieldWrapper: {
-    whiteSpace: "nowrap",
-    fontSize: 14,
-    fontFamily: "Segoe UI",
-    padding: "2px 5px"
-  }
-};
 
 export const spendAckCheckBoxStyle: ICheckboxStyles = {
   label: {

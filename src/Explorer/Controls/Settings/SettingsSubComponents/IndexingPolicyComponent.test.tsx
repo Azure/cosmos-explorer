@@ -1,8 +1,6 @@
 import { shallow } from "enzyme";
 import React from "react";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./IndexingPolicyComponent";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
-import * as DataModels from "../../../../Contracts/DataModels";
 
 describe("IndexingPolicyComponent", () => {
   const props: IndexingPolicyComponentProps = {
@@ -10,12 +8,12 @@ describe("IndexingPolicyComponent", () => {
     resetShouldDiscardIndexingPolicy: () => {
       return;
     },
-    indexingPolicyContent: new StatefulValue<DataModels.IndexingPolicy>({
+    indexingPolicyContent: {
       automatic: false,
       indexingMode: "",
       includedPaths: [],
       excludedPaths: []
-    }),
+    },
     setIndexingPolicyElementFocussed: () => {
       return;
     },

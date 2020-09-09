@@ -1,5 +1,4 @@
 import * as React from "react";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
 import Explorer from "../../../Explorer";
@@ -8,32 +7,30 @@ import {
   conflictResolutionLwwTooltip,
   conflictResolutionCustomToolTip,
   subComponentStackProps,
-  getChoiceGroupStyles,
-  choiceGroupOptionStyles
+  getChoiceGroupStyles
 } from "../SettingsRenderUtils";
-import {
-  TextField,
-  ITextFieldProps,
-  Stack,
-  IChoiceGroupOption,
-  ChoiceGroup
-} from "office-ui-fabric-react";
+import { TextField, ITextFieldProps, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface ConflictResolutionComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
-  conflictResolutionPolicyMode: StatefulValue<DataModels.ConflictResolutionMode>;
+  conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
+  conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
   onConflictResolutionPolicyModeChange: (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
   ) => void;
-  conflictResolutionPolicyPath: StatefulValue<string>;
+  conflictResolutionPolicyPath: string;
+  conflictResolutionPolicyPathBaseline: string;
+
   onConflictResolutionPolicyPathChange: (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => void;
-  conflictResolutionPolicyProcedure: StatefulValue<string>;
+  conflictResolutionPolicyProcedure: string;
+  conflictResolutionPolicyProcedureBaseline: string;
+
   onConflictResolutionPolicyProcedureChange: (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
@@ -44,10 +41,9 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private conflictResolutionChoiceGroupOptions: IChoiceGroupOption[] = [
     {
       key: DataModels.ConflictResolutionMode.LastWriterWins,
-      text: "Last Write Wins (default)",
-      styles: choiceGroupOptionStyles
+      text: "Last Write Wins (default)"
     },
-    { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)", styles: choiceGroupOptionStyles }
+    { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" }
   ];
 
   private getConflictResolutionModeComponent = (): JSX.Element => {
@@ -55,10 +51,13 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       <ChoiceGroup
         label="Mode"
         tabIndex={0}
-        selectedKey={this.props.conflictResolutionPolicyMode.current}
+        selectedKey={this.props.conflictResolutionPolicyMode}
         options={this.conflictResolutionChoiceGroupOptions}
         onChange={this.props.onConflictResolutionPolicyModeChange}
-        styles={getChoiceGroupStyles(this.props.conflictResolutionPolicyMode)}
+        styles={getChoiceGroupStyles(
+          this.props.conflictResolutionPolicyMode,
+          this.props.conflictResolutionPolicyModeBaseline
+        )}
       />
     );
   };
@@ -73,8 +72,11 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
         id="conflictResolutionLwwTextField"
         label={"Conflict Resolver Property"}
         onRenderLabel={this.onRenderLwwComponentTextField}
-        styles={getTextFieldStyles(this.props.conflictResolutionPolicyPath)}
-        value={this.props.conflictResolutionPolicyPath.current}
+        styles={getTextFieldStyles(
+          this.props.conflictResolutionPolicyPath,
+          this.props.conflictResolutionPolicyPathBaseline
+        )}
+        value={this.props.conflictResolutionPolicyPath}
         onChange={this.props.onConflictResolutionPolicyPathChange}
       />
     );
@@ -90,8 +92,11 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
         id="conflictResolutionCustomTextField"
         label="Stored procedure"
         onRenderLabel={this.onRenderCustomComponentTextField}
-        styles={getTextFieldStyles(this.props.conflictResolutionPolicyProcedure)}
-        value={this.props.conflictResolutionPolicyProcedure.current}
+        styles={getTextFieldStyles(
+          this.props.conflictResolutionPolicyProcedure,
+          this.props.conflictResolutionPolicyProcedureBaseline
+        )}
+        value={this.props.conflictResolutionPolicyProcedure}
         onChange={this.props.onConflictResolutionPolicyProcedureChange}
       />
     );
@@ -102,10 +107,10 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       <Stack {...subComponentStackProps}>
         {this.getConflictResolutionModeComponent()}
 
-        {this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins &&
+        {this.props.conflictResolutionPolicyMode === DataModels.ConflictResolutionMode.LastWriterWins &&
           this.getConflictResolutionLWWComponent()}
 
-        {this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom &&
+        {this.props.conflictResolutionPolicyMode === DataModels.ConflictResolutionMode.Custom &&
           this.getConflictResolutionCustomComponent()}
       </Stack>
     );

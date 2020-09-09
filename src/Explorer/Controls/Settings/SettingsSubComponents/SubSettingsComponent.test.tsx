@@ -2,7 +2,6 @@ import { shallow } from "enzyme";
 import React from "react";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 import { container, collection } from "../TestUtils";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import { TtlType, GeospatialConfigType, ChangeFeedPolicyState } from "../SettingsUtils";
 import ko from "knockout";
 
@@ -13,32 +12,39 @@ describe("SubSettingsComponent", () => {
     collection: collection,
     container: container,
 
-    timeToLive: new StatefulValue<TtlType>(TtlType.On),
+    timeToLive: TtlType.On,
+    timeToLiveBaseline: TtlType.On,
     onTtlChange: () => {
       return;
     },
-    timeToLiveSeconds: new StatefulValue<number>(1000),
+    timeToLiveSeconds: 1000,
+    timeToLiveSecondsBaseline: 1000,
     onTimeToLiveSecondsChange: () => {
       return;
     },
 
-    geospatialConfigType: new StatefulValue<GeospatialConfigType>(GeospatialConfigType.Geography),
+    geospatialConfigType: GeospatialConfigType.Geography,
+    geospatialConfigTypeBaseline: GeospatialConfigType.Geography,
     onGeoSpatialConfigTypeChange: () => {
       return;
     },
 
     isAnalyticalStorageEnabled: true,
-    analyticalStorageTtlSelection: new StatefulValue<TtlType>(TtlType.On),
+    analyticalStorageTtlSelection: TtlType.On,
+    analyticalStorageTtlSelectionBaseline: TtlType.On,
     onAnalyticalStorageTtlSelectionChange: () => {
       return;
     },
-    analyticalStorageTtlSeconds: new StatefulValue<number>(2000),
+    analyticalStorageTtlSeconds: 2000,
+    analyticalStorageTtlSecondsBaseline: 2000,
     onAnalyticalStorageTtlSecondsChange: () => {
       return;
     },
 
     changeFeedPolicyVisible: true,
-    changeFeedPolicy: new StatefulValue<ChangeFeedPolicyState>(ChangeFeedPolicyState.On),
+    changeFeedPolicy: ChangeFeedPolicyState.On,
+    changeFeedPolicyBaseline: ChangeFeedPolicyState.On,
+
     onChangeFeedPolicyChange: () => {
       return;
     }
@@ -56,8 +62,7 @@ describe("SubSettingsComponent", () => {
   });
 
   it("timeToLiveSeconds hidden", () => {
-    const props = { ...baseProps };
-    props.timeToLive.current = TtlType.Off;
+    const props = { ...baseProps, timeToLive: TtlType.Off };
     const wrapper = shallow(<SubSettingsComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#timeToLive")).toEqual(true);
@@ -73,8 +78,7 @@ describe("SubSettingsComponent", () => {
   });
 
   it("analyticalTimeToLiveSeconds hidden", () => {
-    const props = { ...baseProps };
-    props.analyticalStorageTtlSelection.current = TtlType.OnNoDefault;
+    const props = { ...baseProps, analyticalStorageTtlSelection: TtlType.OnNoDefault };
     const wrapper = shallow(<SubSettingsComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#analyticalStorageTimeToLive")).toEqual(true);

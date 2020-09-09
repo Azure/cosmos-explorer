@@ -43,14 +43,8 @@ exports[`ScaleComponent renders V2 throughput component 1`] = `
       showAsMandatory={false}
       showAutoPilot={false}
       spendAckChecked={false}
-      throughput={
-        StatefulValue {
-          "baseline": 1000,
-          "current": 1000,
-          "getStringValue": [Function],
-          "isValid": true,
-        }
-      }
+      throughput={1000}
+      throughputBaseline={1000}
     />
     <Stack
       tokens={
@@ -118,14 +112,8 @@ exports[`ScaleComponent renders V3 throughput component 1`] = `
       isAutoPilotSelected={false}
       isEnabled={true}
       label="Throughput (6,000 - 40,000 RU/s)"
-      maxAutoPilotThroughput={
-        StatefulValue {
-          "baseline": 4000,
-          "current": 4000,
-          "getStringValue": [Function],
-          "isValid": true,
-        }
-      }
+      maxAutoPilotThroughput={4000}
+      maxAutoPilotThroughputBaseline={4000}
       maximum={40000}
       minimum={6000}
       overrideWithAutoPilotSettings={false}
@@ -136,14 +124,8 @@ exports[`ScaleComponent renders V3 throughput component 1`] = `
       setThroughput={[Function]}
       showAutoPilot={false}
       spendAckChecked={false}
-      throughput={
-        StatefulValue {
-          "baseline": 1000,
-          "current": 1000,
-          "getStringValue": [Function],
-          "isValid": true,
-        }
-      }
+      throughput={1000}
+      throughputBaseline={1000}
     />
     <Stack
       tokens={

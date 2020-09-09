@@ -15,26 +15,10 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
       Array [
         Object {
           "key": "LastWriterWins",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Last Write Wins (default)",
         },
         Object {
           "key": "Custom",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Merge Procedure (custom)",
         },
       ]
@@ -46,10 +30,10 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
           Object {
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
-                "borderColor": "",
+                "borderColor": "#9b4f96",
               },
               ".ms-ChoiceField-field.is-checked::before": Object {
-                "borderColor": "",
+                "borderColor": "#9b4f96",
               },
               ".ms-ChoiceField-wrapper label": Object {
                 "fontFamily": "Segoe UI",
@@ -84,6 +68,7 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
         },
       }
     }
+    value=""
   />
 </Stack>
 `;
@@ -103,26 +88,10 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
       Array [
         Object {
           "key": "LastWriterWins",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Last Write Wins (default)",
         },
         Object {
           "key": "Custom",
-          "styles": Object {
-            "choiceFieldWrapper": Object {
-              "fontFamily": "Segoe UI",
-              "fontSize": 14,
-              "padding": "2px 5px",
-              "whiteSpace": "nowrap",
-            },
-          },
           "text": "Merge Procedure (custom)",
         },
       ]
@@ -172,6 +141,7 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
         },
       }
     }
+    value=""
   />
 </Stack>
 `;

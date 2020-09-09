@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import { ThroughputInputComponent } from "./ThroughputInputComponents/ThroughputInputComponent";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 import * as ViewModels from "../../../../Contracts/ViewModels";
@@ -29,8 +28,10 @@ export interface ScaleComponentProps {
   isFixedContainer: boolean;
   autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   setThroughput: (newThroughput: number) => void;
-  throughput: StatefulValue<number>;
-  autoPilotThroughput: StatefulValue<number>;
+  throughput: number;
+  throughputBaseline: number;
+  autoPilotThroughput: number;
+  autoPilotThroughputBaseline: number;
   selectedAutoPilotTier: DataModels.AutopilotTier;
   isAutoPilotSelected: boolean;
   wasAutopilotOriginallySet: boolean;
@@ -92,7 +93,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   private getAutoPilotUsageCost = (): JSX.Element => {
     const autoPilot = !this.props.hasAutoPilotV2FeatureFlag
-      ? this.props.autoPilotThroughput.current
+      ? this.props.autoPilotThroughput
       : this.props.selectedAutoPilotTier;
     if (!autoPilot) {
       return <></>;
@@ -122,7 +123,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     }
 
     const serverId: string = this.props.container.serverId();
-    const offerThroughput: number = this.props.throughput.current;
+    const offerThroughput: number = this.props.throughput;
 
     const regions = account?.properties?.readLocations?.length || 1;
     const multimaster = account?.properties?.enableMultipleWriteLocations || false;
@@ -132,7 +133,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     if (!this.props.isAutoPilotSelected) {
       estimatedSpend = getEstimatedSpendElement(
         // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
-        this.overrideWithAutoPilotSettings() ? this.props.autoPilotThroughput.current : offerThroughput,
+        this.overrideWithAutoPilotSettings() ? this.props.autoPilotThroughput : offerThroughput,
         serverId,
         regions,
         multimaster,
@@ -140,7 +141,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       );
     } else {
       estimatedSpend = getEstimatedAutoscaleSpendElement(
-        this.props.autoPilotThroughput.current,
+        this.props.autoPilotThroughput,
         serverId,
         regions,
         multimaster
@@ -162,6 +163,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         showAsMandatory={false}
         isFixed={false}
         throughput={this.props.throughput}
+        throughputBaseline={this.props.throughputBaseline}
         setThroughput={this.props.setThroughput}
         minimum={getMinRUs(this.props.collection, this.props.container)}
         maximum={this.getMaxRUThroughputInputLimit()}
@@ -184,6 +186,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     ) : (
       <ThroughputInputAutoPilotV3Component
         throughput={this.props.throughput}
+        throughputBaseline={this.props.throughputBaseline}
         setThroughput={this.props.setThroughput}
         minimum={getMinRUs(this.props.collection, this.props.container)}
         maximum={this.getMaxRUThroughputInputLimit()}
@@ -196,6 +199,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         isAutoPilotSelected={this.props.isAutoPilotSelected}
         setAutoPilotSelected={this.props.setAutoPilotSelected}
         maxAutoPilotThroughput={this.props.autoPilotThroughput}
+        maxAutoPilotThroughputBaseline={this.props.autoPilotThroughputBaseline}
         setMaxAutoPilotThroughput={this.props.setMaxAutoPilotThroughput}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
         overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
@@ -219,7 +223,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         {this.isAutoScaleEnabled() && (
           <Stack {...titleAndInputStackProps}>
             <Text>Throughput (RU/s)</Text>
-            <TextField disabled styles={getTextFieldStyles()} />
+            <TextField disabled styles={getTextFieldStyles(undefined, undefined)} />
             <Text>
               Your account has custom settings that prevents setting throughput at the container level. Please work with
               your Cosmos DB engineering team point of contact to make changes.

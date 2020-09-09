@@ -2,11 +2,11 @@ import { shallow } from "enzyme";
 import React from "react";
 import { ThroughputInputComponent, ThroughputInputProps } from "./ThroughputInputComponent";
 import { AutopilotTier } from "../../../../../Contracts/DataModels";
-import { StatefulValue } from "../../../StatefulValue/StatefulValue";
 
 describe("ThroughputInputReactComponent", () => {
   const baseProps: ThroughputInputProps = {
-    throughput: new StatefulValue(100),
+    throughput: 100,
+    throughputBaseline: 100,
     setThroughput: undefined,
     minimum: 10000,
     maximum: 400,

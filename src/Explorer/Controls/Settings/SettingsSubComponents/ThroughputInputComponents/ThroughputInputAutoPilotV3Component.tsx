@@ -1,27 +1,19 @@
 import React from "react";
 import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
-import { StatefulValue } from "../../../StatefulValue/StatefulValue";
 import {
   getTextFieldStyles,
   getToolTipContainer,
   spendAckCheckBoxStyle,
   titleAndInputStackProps,
   checkBoxAndInputStackProps,
-  choiceGroupOptionStyles
+  getChoiceGroupStyles
 } from "../../SettingsRenderUtils";
-import {
-  Text,
-  TextField,
-  ChoiceGroup,
-  IChoiceGroupOption,
-  Checkbox,
-  Stack,
-  Label
-} from "office-ui-fabric-react";
+import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
-  throughput: StatefulValue<number>;
+  throughput: number;
+  throughputBaseline: number;
   setThroughput: (newThroughput: number) => void;
   minimum: number;
   maximum: number;
@@ -44,7 +36,8 @@ export interface ThroughputInputAutoPilotV3Props {
   showAutoPilot?: boolean;
   overrideWithAutoPilotSettings: boolean;
   overrideWithProvisionedThroughputSettings: boolean;
-  maxAutoPilotThroughput: StatefulValue<number>;
+  maxAutoPilotThroughput: number;
+  maxAutoPilotThroughputBaseline: number;
   setMaxAutoPilotThroughput: (newThroughput: number) => void;
 }
 
@@ -59,12 +52,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
   private step: number;
+  private choiceGroupFixedStyle = getChoiceGroupStyles(undefined, undefined);
   private options: IChoiceGroupOption[] = [
-    { key: "true", text: "Autoscale", styles: choiceGroupOptionStyles },
-    { key: "false", text: "Manual", styles: choiceGroupOptionStyles }
+    { key: "true", text: "Autoscale" },
+    { key: "false", text: "Manual" }
   ];
-
-  private isAutoPilotInitiallySelected: boolean;
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
@@ -72,7 +64,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       spendAckChecked: this.props.spendAckChecked
     };
 
-    this.isAutoPilotInitiallySelected = false;
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
   }
 
@@ -117,13 +108,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           />
         </Label>
         <ChoiceGroup
-          className="settingsV2RadioButton"
           tabIndex={0}
           selectedKey={this.props.isAutoPilotSelected.toString()}
           options={this.options}
           onChange={this.onChoiceGroupChange}
           required={this.props.showAsMandatory}
           ariaLabelledBy={labelId}
+          styles={this.choiceGroupFixedStyle}
         />
       </div>
     );
@@ -142,21 +133,19 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           <a target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
             {` capacity calculator`}
           </a>
-          {" Max RU/s"}
         </Text>
         <TextField
+          label="Max RU/s"
           required
           type="number"
           id="autopilotInput"
           key="auto pilot throughput input"
-          styles={getTextFieldStyles(this.props.maxAutoPilotThroughput)}
+          styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
           disabled={this.props.overrideWithProvisionedThroughputSettings}
           step={this.step}
           min={AutoPilotUtils.minAutoPilotThroughput}
           value={
-            this.props.overrideWithProvisionedThroughputSettings
-              ? ""
-              : this.props.maxAutoPilotThroughput.current?.toString()
+            this.props.overrideWithProvisionedThroughputSettings ? "" : this.props.maxAutoPilotThroughput?.toString()
           }
           onChange={this.onAutoPilotThroughputChange}
         />
@@ -186,12 +175,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           type="number"
           id="throughputInput"
           key="provisioned throughput input"
-          styles={getTextFieldStyles(this.props.throughput)}
+          styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
           disabled={this.props.overrideWithAutoPilotSettings}
           step={this.step}
           min={this.props.minimum}
           max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
-          value={this.props.throughput.current?.toString()}
+          value={this.props.throughput?.toString()}
           onChange={this.onThroughputChange}
         />
 
