@@ -50,6 +50,7 @@ async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Co
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
       rpResponse = await listSqlContainers(subscriptionId, resourceGroup, accountName, databaseId);
+      rpResponse?.value?.map(collection => collection.properties.resource.partitionKey ??= { paths: ["/_partitionKey"], kind: "Hash", version: 2, systemKey: true });
       break;
     case DefaultAccountExperienceType.MongoDB:
       rpResponse = await listMongoDBCollections(subscriptionId, resourceGroup, accountName, databaseId);
