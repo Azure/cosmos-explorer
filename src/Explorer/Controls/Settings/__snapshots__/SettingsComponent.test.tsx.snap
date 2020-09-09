@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SettingsComponent renders 1`] = `
-<Fragment>
+<div
+  className="settingsV2MainContainer"
+>
   <div
     className="settingsV2TabsContainer"
   >
@@ -5300,7 +5302,6 @@ exports[`SettingsComponent renders 1`] = `
           onGeoSpatialConfigTypeChange={[Function]}
           onTimeToLiveSecondsChange={[Function]}
           onTtlChange={[Function]}
-          onTtlFocusChange={[Function]}
           timeToLive={
             StatefulValue {
               "baseline": "on",
@@ -5358,5 +5359,5 @@ exports[`SettingsComponent renders 1`] = `
       </PivotItem>
     </StyledPivotBase>
   </div>
-</Fragment>
+</div>
 `;

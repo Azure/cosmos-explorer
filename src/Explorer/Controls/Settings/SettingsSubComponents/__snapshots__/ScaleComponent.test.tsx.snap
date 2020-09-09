@@ -5,7 +5,7 @@ exports[`ScaleComponent renders V2 throughput component 1`] = `
   <Stack
     tokens={
       Object {
-        "childrenGap": 30,
+        "childrenGap": 20,
       }
     }
   >
@@ -77,7 +77,7 @@ exports[`ScaleComponent renders V3 throughput component 1`] = `
   <Stack
     tokens={
       Object {
-        "childrenGap": 30,
+        "childrenGap": 20,
       }
     }
   >

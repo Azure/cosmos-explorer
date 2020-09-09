@@ -17,9 +17,6 @@ describe("SubSettingsComponent", () => {
     onTtlChange: () => {
       return;
     },
-    onTtlFocusChange: () => {
-      return;
-    },
     timeToLiveSeconds: new StatefulValue<number>(1000),
     onTimeToLiveSecondsChange: () => {
       return;

@@ -9,16 +9,29 @@ import {
   conflictResolutionLwwTooltip,
   conflictResolutionCustomToolTip,
   subComponentStackProps,
-  titleAndInputStackProps
+  titleAndInputStackProps,
+  getChoiceGroupStyles,
+  choiceGroupOptionStyles
 } from "../SettingsRenderUtils";
-import { Label, Text, TextField, ITextFieldProps, Stack } from "office-ui-fabric-react";
+import {
+  Label,
+  Text,
+  TextField,
+  ITextFieldProps,
+  Stack,
+  IChoiceGroupOption,
+  ChoiceGroup
+} from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface ConflictResolutionComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
   conflictResolutionPolicyMode: StatefulValue<DataModels.ConflictResolutionMode>;
-  onConflictResolutionPolicyModeChange: (mode: DataModels.ConflictResolutionMode) => void;
+  onConflictResolutionPolicyModeChange: (
+    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ) => void;
   conflictResolutionPolicyPath: StatefulValue<string>;
   onConflictResolutionPolicyPathChange: (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -32,67 +45,25 @@ export interface ConflictResolutionComponentProps {
 }
 
 export class ConflictResolutionComponent extends React.Component<ConflictResolutionComponentProps> {
-  private onConflictResolutionCustomKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
-    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
-      event.stopPropagation();
-      event.preventDefault();
-      this.onConflictResolutionCustomClick();
-    }
-  };
-
-  private onConflictResolutionCustomClick = (): void => {
-    this.props.onConflictResolutionPolicyModeChange(DataModels.ConflictResolutionMode.Custom);
-  };
-
-  private onConflictResolutionLWWKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
-    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
-      event.stopPropagation();
-      event.preventDefault();
-      this.onConflictResolutionLWWClick();
-    }
-  };
-
-  private onConflictResolutionLWWClick = (): void => {
-    this.props.onConflictResolutionPolicyModeChange(DataModels.ConflictResolutionMode.LastWriterWins);
-  };
+  private conflictResolutionChoiceGroupOptions: IChoiceGroupOption[] = [
+    {
+      key: DataModels.ConflictResolutionMode.LastWriterWins,
+      text: "Last Write Wins (default)",
+      styles: choiceGroupOptionStyles
+    },
+    { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)", styles: choiceGroupOptionStyles }
+  ];
 
   private getConflictResolutionModeComponent = (): JSX.Element => {
     return (
-      <Stack {...titleAndInputStackProps}>
-        <Text>Mode</Text>
-        <div className="tabs" aria-label="Mode" role="radiogroup">
-          <div className="tab">
-            <Label
-              tabIndex={0}
-              role="radio"
-              className={`settingsV2Label ${this.props.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
-                this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.LastWriterWins
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onKeyPress={this.onConflictResolutionLWWKeyPress}
-              onClick={this.onConflictResolutionLWWClick}
-            >
-              Last Write Wins (default)
-            </Label>
-          </div>
-          <div className="tab">
-            <Label
-              tabIndex={0}
-              role="radio"
-              className={`settingsV2Label ${this.props.conflictResolutionPolicyMode.isDirty() ? "dirty" : ""} ${
-                this.props.conflictResolutionPolicyMode.current === DataModels.ConflictResolutionMode.Custom
-                  ? "selectedRadio"
-                  : "unselectedRadio"
-              }`}
-              onKeyPress={this.onConflictResolutionCustomKeyPress}
-              onClick={this.onConflictResolutionCustomClick}
-            >
-              Merge Procedure (custom)
-            </Label>
-          </div>
-        </div>
-      </Stack>
+      <ChoiceGroup
+        label="Mode"
+        tabIndex={0}
+        selectedKey={this.props.conflictResolutionPolicyMode.current}
+        options={this.conflictResolutionChoiceGroupOptions}
+        onChange={this.props.onConflictResolutionPolicyModeChange}
+        styles={getChoiceGroupStyles(this.props.conflictResolutionPolicyMode)}
+      />
     );
   };
 

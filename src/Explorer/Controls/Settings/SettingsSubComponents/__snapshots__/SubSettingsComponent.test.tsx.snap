@@ -4,7 +4,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
@@ -15,104 +15,134 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     }
   >
-    <Text>
-      Time to Live
-    </Text>
-    <div
-      aria-label="Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="timeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="off"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
   </Stack>
-  <Stack
-    tokens={
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
       Object {
-        "childrenGap": 5,
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
       }
     }
-  >
-    <Text>
-      Geospatial Configuration
-    </Text>
-    <div
-      aria-label="Geospatial Configuration"
-      className="tabs"
-      id="geoSpatialConfig"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geography
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geometry
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
-  <StackItem>
+    tabIndex={0}
+  />
+  <Stack>
     <StyledLabelBase
       id="settingsV2ChangeFeedLabelId"
     >
@@ -125,40 +155,64 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         }
       />
     </StyledLabelBase>
-    <div
-      aria-label="Change feed selection tabs"
+    <StyledChoiceGroupBase
       aria-labelledby="settingsV2ChangeFeedLabelId"
-      className="tabs"
       id="changeFeedPolicy"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
-  </StackItem>
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "On",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="On"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
   <Stack
     tokens={
       Object {
@@ -173,7 +227,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
@@ -184,59 +238,133 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <Text>
-      Time to Live
-    </Text>
-    <div
-      aria-label="Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="timeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="off"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
   </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
   <Stack
     tokens={
       Object {
@@ -244,100 +372,78 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <Text>
-      Geospatial Configuration
-    </Text>
-    <div
-      aria-label="Geospatial Configuration"
-      className="tabs"
-      id="geoSpatialConfig"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geography
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geometry
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <Text>
-      Analytical Storage Time to Live
-    </Text>
-    <div
-      aria-label="Analytical Storage Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="analyticalStorageTimeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label-disabled"
-          disabled={true}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label dirty selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  dirty unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Analytical Storage Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "disabled": true,
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on-nodefault"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
   </Stack>
-  <StackItem>
+  <Stack>
     <StyledLabelBase
       id="settingsV2ChangeFeedLabelId"
     >
@@ -350,40 +456,64 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         }
       />
     </StyledLabelBase>
-    <div
-      aria-label="Change feed selection tabs"
+    <StyledChoiceGroupBase
       aria-labelledby="settingsV2ChangeFeedLabelId"
-      className="tabs"
       id="changeFeedPolicy"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
-  </StackItem>
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "On",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="On"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
   <Stack
     tokens={
       Object {
@@ -398,7 +528,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
@@ -409,59 +539,133 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <Text>
-      Time to Live
-    </Text>
-    <div
-      aria-label="Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="timeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="off"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
   </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
   <Stack
     tokens={
       Object {
@@ -469,98 +673,76 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <Text>
-      Geospatial Configuration
-    </Text>
-    <div
-      aria-label="Geospatial Configuration"
-      className="tabs"
-      id="geoSpatialConfig"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geography
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geometry
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <Text>
-      Analytical Storage Time to Live
-    </Text>
-    <div
-      aria-label="Analytical Storage Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="analyticalStorageTimeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label-disabled"
-          disabled={true}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label dirty selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  dirty unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Analytical Storage Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "disabled": true,
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on-nodefault"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
   </Stack>
   <Stack
     tokens={
@@ -576,7 +758,7 @@ exports[`SubSettingsComponent renders 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
@@ -587,58 +769,75 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <Text>
-      Time to Live
-    </Text>
-    <div
-      aria-label="Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="timeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement  unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement  unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement  selectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -665,6 +864,63 @@ exports[`SubSettingsComponent renders 1`] = `
       value="1000"
     />
   </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
   <Stack
     tokens={
       Object {
@@ -672,98 +928,76 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <Text>
-      Geospatial Configuration
-    </Text>
-    <div
-      aria-label="Geospatial Configuration"
-      className="tabs"
-      id="geoSpatialConfig"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geography
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geometry
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <Text>
-      Analytical Storage Time to Live
-    </Text>
-    <div
-      aria-label="Analytical Storage Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="analyticalStorageTimeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label-disabled"
-          disabled={true}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Analytical Storage Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "disabled": true,
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
     <StyledTextFieldBase
       id="analyticalStorageTimeToLiveSeconds"
       max={2147483647}
@@ -790,7 +1024,7 @@ exports[`SubSettingsComponent renders 1`] = `
       value="2000"
     />
   </Stack>
-  <StackItem>
+  <Stack>
     <StyledLabelBase
       id="settingsV2ChangeFeedLabelId"
     >
@@ -803,40 +1037,64 @@ exports[`SubSettingsComponent renders 1`] = `
         }
       />
     </StyledLabelBase>
-    <div
-      aria-label="Change feed selection tabs"
+    <StyledChoiceGroupBase
       aria-labelledby="settingsV2ChangeFeedLabelId"
-      className="tabs"
       id="changeFeedPolicy"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
-  </StackItem>
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "On",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="On"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
   <Stack
     tokens={
       Object {
@@ -851,7 +1109,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
@@ -862,59 +1120,133 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <Text>
-      Time to Live
-    </Text>
-    <div
-      aria-label="Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="timeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty selectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label ttlIndexingPolicyFocusElement dirty unselectedRadio"
-          onClick={[Function]}
-          onFocus={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="off"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "#9b4f96",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
   </Stack>
+  <StyledChoiceGroupBase
+    id="geoSpatialConfig"
+    label="Geospatial Configuration"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "Geography",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geography",
+        },
+        Object {
+          "key": "Geometry",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Geometry",
+        },
+      ]
+    }
+    selectedKey="Geography"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+    tabIndex={0}
+  />
   <Stack
     tokens={
       Object {
@@ -922,98 +1254,76 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <Text>
-      Geospatial Configuration
-    </Text>
-    <div
-      aria-label="Geospatial Configuration"
-      className="tabs"
-      id="geoSpatialConfig"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geography
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Geometry
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
-  <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
-  >
-    <Text>
-      Analytical Storage Time to Live
-    </Text>
-    <div
-      aria-label="Analytical Storage Time to Live"
-      className="tabs"
+    <StyledChoiceGroupBase
       id="analyticalStorageTimeToLive"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label-disabled"
-          disabled={true}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On (no default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
+      label="Analytical Storage Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "disabled": true,
+            "key": "off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
     <StyledTextFieldBase
       id="analyticalStorageTimeToLiveSeconds"
       max={2147483647}
@@ -1040,7 +1350,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       value="2000"
     />
   </Stack>
-  <StackItem>
+  <Stack>
     <StyledLabelBase
       id="settingsV2ChangeFeedLabelId"
     >
@@ -1053,40 +1363,64 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         }
       />
     </StyledLabelBase>
-    <div
-      aria-label="Change feed selection tabs"
+    <StyledChoiceGroupBase
       aria-labelledby="settingsV2ChangeFeedLabelId"
-      className="tabs"
       id="changeFeedPolicy"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Off
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label   selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          On
-        </StyledLabelBase>
-      </div>
-    </div>
-  </StackItem>
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Off",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "Off",
+          },
+          Object {
+            "key": "On",
+            "styles": Object {
+              "choiceFieldWrapper": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="On"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+      tabIndex={0}
+    />
+  </Stack>
   <Stack
     tokens={
       Object {

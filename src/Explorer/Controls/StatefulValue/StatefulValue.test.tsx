@@ -7,7 +7,7 @@ describe("StatefulValue isDirty", () => {
     value.current = current;
     expect(value.isDirty()).toEqual(true);
   };
-    
+
   it("string", () => {
     testStatefulValue("baseline", "current");
   });

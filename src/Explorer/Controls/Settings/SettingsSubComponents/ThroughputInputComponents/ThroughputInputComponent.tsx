@@ -20,7 +20,8 @@ import {
   getToolTipContainer,
   spendAckCheckBoxStyle,
   checkBoxAndInputStackProps,
-  titleAndInputStackProps
+  titleAndInputStackProps,
+  choiceGroupOptionStyles
 } from "../../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
@@ -62,8 +63,8 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   private static readonly zeroThroughput = 0;
   private step: number;
   private throughputChoiceOptions: IChoiceGroupOption[] = [
-    { key: "true", text: "Autoscale" },
-    { key: "false", text: "Manual" }
+    { key: "true", text: "Autoscale", styles: choiceGroupOptionStyles },
+    { key: "false", text: "Manual", styles: choiceGroupOptionStyles }
   ];
   private dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 300 } };
 

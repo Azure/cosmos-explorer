@@ -7,12 +7,17 @@ exports[`ToolTipLabelComponent renders 1`] = `
     tokens={
       Object {
         "childrenGap": 6,
-        "padding": "0px 0px 5px",
       }
     }
     verticalAlign="center"
   >
-    <Text>
+    <Text
+      style={
+        Object {
+          "fontWeight": 600,
+        }
+      }
+    >
       sample tool tip label
     </Text>
     <div>

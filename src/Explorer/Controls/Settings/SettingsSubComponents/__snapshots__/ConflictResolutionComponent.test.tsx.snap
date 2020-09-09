@@ -4,53 +4,66 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
-  <Stack
-    tokens={
+  <StyledChoiceGroupBase
+    label="Mode"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "LastWriterWins",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Last Write Wins (default)",
+        },
+        Object {
+          "key": "Custom",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Merge Procedure (custom)",
+        },
+      ]
+    }
+    selectedKey="LastWriterWins"
+    styles={
       Object {
-        "childrenGap": 5,
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
       }
     }
-  >
-    <Text>
-      Mode
-    </Text>
-    <div
-      aria-label="Mode"
-      className="tabs"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Last Write Wins (default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Merge Procedure (custom)
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
+    tabIndex={0}
+  />
   <StyledTextFieldBase
     id="conflictResolutionLwwTextField"
     label="Conflict Resolver Property"
@@ -79,53 +92,66 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
 <Stack
   tokens={
     Object {
-      "childrenGap": 30,
+      "childrenGap": 20,
     }
   }
 >
-  <Stack
-    tokens={
+  <StyledChoiceGroupBase
+    label="Mode"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "LastWriterWins",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Last Write Wins (default)",
+        },
+        Object {
+          "key": "Custom",
+          "styles": Object {
+            "choiceFieldWrapper": Object {
+              "fontFamily": "Segoe UI",
+              "fontSize": 14,
+              "padding": "2px 5px",
+              "whiteSpace": "nowrap",
+            },
+          },
+          "text": "Merge Procedure (custom)",
+        },
+      ]
+    }
+    selectedKey="Custom"
+    styles={
       Object {
-        "childrenGap": 5,
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": "Segoe UI",
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
       }
     }
-  >
-    <Text>
-      Mode
-    </Text>
-    <div
-      aria-label="Mode"
-      className="tabs"
-      role="radiogroup"
-    >
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  unselectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Last Write Wins (default)
-        </StyledLabelBase>
-      </div>
-      <div
-        className="tab"
-      >
-        <StyledLabelBase
-          className="settingsV2Label  selectedRadio"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          role="radio"
-          tabIndex={0}
-        >
-          Merge Procedure (custom)
-        </StyledLabelBase>
-      </div>
-    </div>
-  </Stack>
+    tabIndex={0}
+  />
   <StyledTextFieldBase
     id="conflictResolutionCustomTextField"
     label="Stored procedure"

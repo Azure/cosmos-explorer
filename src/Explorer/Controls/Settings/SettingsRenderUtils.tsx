@@ -14,7 +14,16 @@ import {
   calculateEstimateNumber
 } from "../../../Utils/PricingUtils";
 import { StatefulValue } from "../StatefulValue/StatefulValue";
-import { ITextFieldStyles, ICheckboxStyles, IStackProps, IStackTokens } from "office-ui-fabric-react";
+import {
+  ITextFieldStyles,
+  ICheckboxStyles,
+  IStackProps,
+  IStackTokens,
+  ICheckboxStyleProps,
+  IChoiceGroupStyles,
+  IChoiceGroupOptionStyles
+} from "office-ui-fabric-react";
+import { fontFamily } from "html2canvas/dist/types/css/property-descriptors/font-family";
 
 export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,
@@ -335,7 +344,7 @@ export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Part
   fieldGroup: {
     height: 25,
     width: 300,
-    borderColor: `${statefulValue?.isDirty() ? dirtyTextFieldColor : ""}`,
+    borderColor: statefulValue?.isDirty() ? dirtyTextFieldColor : "",
     selectors: {
       ":disabled": {
         backgroundColor: "#ddd",
@@ -344,6 +353,36 @@ export const getTextFieldStyles = (statefulValue?: StatefulValue<unknown>): Part
     }
   }
 });
+
+export const getChoiceGroupStyles = (statefulValue: StatefulValue<unknown>): Partial<IChoiceGroupStyles> => ({
+  flexContainer: [
+    {
+      selectors: {
+        ".ms-ChoiceField-field.is-checked::before": {
+          borderColor: statefulValue?.isDirty() ? dirtyTextFieldColor : ""
+        },
+        ".ms-ChoiceField-field.is-checked::after": {
+          borderColor: statefulValue?.isDirty() ? dirtyTextFieldColor : ""
+        },
+        ".ms-ChoiceField-wrapper label": {
+          whiteSpace: "nowrap",
+          fontSize: 14,
+          fontFamily: "Segoe UI",
+          padding: "2px 5px"
+        }
+      }
+    }
+  ]
+});
+
+export const choiceGroupOptionStyles: Partial<IChoiceGroupOptionStyles> = {
+  choiceFieldWrapper: {
+    whiteSpace: "nowrap",
+    fontSize: 14,
+    fontFamily: "Segoe UI",
+    padding: "2px 5px"
+  }
+};
 
 export const spendAckCheckBoxStyle: ICheckboxStyles = {
   label: {
@@ -356,7 +395,7 @@ export const spendAckCheckBoxStyle: ICheckboxStyles = {
 };
 
 export const subComponentStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 30 }
+  tokens: { childrenGap: 20 }
 };
 
 export const titleAndInputStackProps: Partial<IStackProps> = {
@@ -368,6 +407,5 @@ export const checkBoxAndInputStackProps: Partial<IStackProps> = {
 };
 
 export const horizontalStackTokens: IStackTokens = {
-  childrenGap: 6,
-  padding: "0px 0px 5px"
+  childrenGap: 6
 };

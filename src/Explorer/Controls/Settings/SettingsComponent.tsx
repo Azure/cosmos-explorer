@@ -43,7 +43,7 @@ import {
 } from "./SettingsUtils";
 import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption, Stack } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent } from "./SettingsSubComponents/IndexingPolicyComponent";
 
@@ -100,9 +100,6 @@ interface SettingsComponentState {
   shouldDiscardIndexingPolicy: boolean;
   indexingPolicyElementFocussed: boolean;
   notificationStatusInfo: JSX.Element;
-  ttlOffFocused: boolean;
-  ttlOnDefaultFocused: boolean;
-  ttlOnFocused: boolean;
   userCanChangeProvisioningTypes: boolean;
   selectedAutoPilotTier: DataModels.AutopilotTier;
   isAutoPilotSelected: boolean;
@@ -168,9 +165,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       wasAutopilotOriginallySet: false,
       selectedAutoPilotTier: undefined,
       autoPilotThroughput: new StatefulValue(AutoPilotUtils.minAutoPilotThroughput),
-      ttlOffFocused: false,
-      ttlOnDefaultFocused: false,
-      ttlOnFocused: false,
       indexingPolicyElementFocussed: false,
       notificationStatusInfo: undefined,
       userCanChangeProvisioningTypes: undefined,
@@ -518,8 +512,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.timeToLive.isDirty() ||
       this.state.indexingPolicyContent.isDirty() ||
       this.state.timeToLiveSeconds.isDirty();
-    const ttlFieldFocused: boolean =
-      this.state.ttlOffFocused || this.state.ttlOnDefaultFocused || this.state.ttlOnFocused;
     const offer = this.collection?.offer && this.collection.offer();
 
     if (ttlOptionDirty && this.state.timeToLive.current === TtlType.On) {
@@ -568,7 +560,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughputExceedsBackendLimits &&
       !!this.collection.partitionKey &&
       !this.isFixedContainer &&
-      !ttlFieldFocused &&
       !this.state.indexingPolicyElementFocussed
     ) {
       return updateThroughputBeyondLimitWarningMessage;
@@ -578,7 +569,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughputExceedsMaxValue &&
       !!this.collection.partitionKey &&
       !this.isFixedContainer &&
-      !ttlFieldFocused &&
       !this.state.indexingPolicyElementFocussed
     ) {
       return updateThroughputDelayedApplyWarningMessage;
@@ -890,46 +880,50 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   };
 
-  private onConflictResolutionPolicyModeChange = (mode: DataModels.ConflictResolutionMode): void => {
+  private onConflictResolutionPolicyModeChange = (
+    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ConflictResolutionPolicyMode,
-      value: mode
+      value: option.key
     });
   };
 
-  private onTtlChange = (ttltype: TtlType): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.TimeToLive, value: ttltype });
+  private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void => {
+    this.updateStatefulValue({
+      key: StatefulValueNames.TimeToLive,
+      value: option.key
+    });
   };
 
-  private onTtlFocusChange = (ttltype: TtlType): void => {
-    switch (ttltype) {
-      case TtlType.Off:
-        this.setState({ ttlOffFocused: true, ttlOnFocused: false, ttlOnDefaultFocused: false });
-        break;
-      case TtlType.On:
-        this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
-        break;
-      case TtlType.OnNoDefault:
-        this.setState({ ttlOffFocused: false, ttlOnFocused: false, ttlOnDefaultFocused: true });
-        break;
-    }
-  };
-
-  private onGeoSpatialConfigTypeChange = (geoSpatialConfigType: GeospatialConfigType): void => {
+  private onGeoSpatialConfigTypeChange = (
+    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.GeospatialConfigType,
-      value: geoSpatialConfigType
+      value: option.key
     });
   };
 
-  private onAnalyticalStorageTtlSelectionChange = (ttltype: TtlType): void => {
-    this.updateStatefulValue({ key: StatefulValueNames.AnalyticalStorageTtlSelection, value: ttltype });
+  private onAnalyticalStorageTtlSelectionChange = (
+    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void => {
+    this.updateStatefulValue({
+      key: StatefulValueNames.AnalyticalStorageTtlSelection,
+      value: option.key
+    });
   };
 
-  private onChangeFeedPolicyChange = (changeFeedPolicyState: ChangeFeedPolicyState): void => {
+  private onChangeFeedPolicyChange = (
+    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void => {
     this.updateStatefulValue({
       key: StatefulValueNames.ChangeFeedPolicy,
-      value: changeFeedPolicyState
+      value: option.key
     });
   };
 
@@ -1335,7 +1329,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           changeFeedPolicyVisible={this.changeFeedPolicyVisible}
           timeToLive={this.state.timeToLive}
           onTtlChange={this.onTtlChange}
-          onTtlFocusChange={this.onTtlFocusChange}
           timeToLiveSeconds={this.state.timeToLiveSeconds}
           onTimeToLiveSecondsChange={this.onTimeToLiveSecondsChange}
           geospatialConfigType={this.state.geospatialConfigType}
@@ -1387,17 +1380,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     });
 
     return (
-      <>
+      <div className="settingsV2MainContainer">
         {this.shouldShowStatusBar() && this.getStatusBarComponent()}
 
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
           <div>This table shared throughput is configured at the keyspace</div>
         )}
 
-        <div className="settingsV2TabsContainer">
-          <Pivot {...pivotProps}>{pivotItems}</Pivot>
+          <div className="settingsV2TabsContainer">
+        <Pivot {...pivotProps}>{pivotItems}</Pivot>
         </div>
-      </>
+        </div>
     );
   }
 }

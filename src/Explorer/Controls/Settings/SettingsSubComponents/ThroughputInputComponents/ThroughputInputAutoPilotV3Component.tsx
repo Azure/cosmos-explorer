@@ -6,9 +6,19 @@ import {
   getToolTipContainer,
   spendAckCheckBoxStyle,
   titleAndInputStackProps,
-  checkBoxAndInputStackProps
+  checkBoxAndInputStackProps,
+  choiceGroupOptionStyles
 } from "../../SettingsRenderUtils";
-import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label } from "office-ui-fabric-react";
+import {
+  Text,
+  TextField,
+  ChoiceGroup,
+  IChoiceGroupOption,
+  Checkbox,
+  Stack,
+  Label,
+  IChoiceGroupOptionStyles
+} from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
@@ -51,9 +61,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private static readonly zeroThroughput = 0;
   private step: number;
   private options: IChoiceGroupOption[] = [
-    { key: "true", text: "Autoscale" },
-    { key: "false", text: "Manual" }
+    { key: "true", text: "Autoscale", styles: choiceGroupOptionStyles },
+    { key: "false", text: "Manual", styles: choiceGroupOptionStyles }
   ];
+
+  private isAutoPilotInitiallySelected: boolean;
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
@@ -61,6 +73,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       spendAckChecked: this.props.spendAckChecked
     };
 
+    this.isAutoPilotInitiallySelected = false;
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
   }
 
