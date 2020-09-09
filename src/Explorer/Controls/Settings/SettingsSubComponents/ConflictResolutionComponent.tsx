@@ -3,19 +3,15 @@ import { StatefulValue } from "../../StatefulValue/StatefulValue";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
 import Explorer from "../../../Explorer";
-import * as Constants from "../../../../Common/Constants";
 import {
   getTextFieldStyles,
   conflictResolutionLwwTooltip,
   conflictResolutionCustomToolTip,
   subComponentStackProps,
-  titleAndInputStackProps,
   getChoiceGroupStyles,
   choiceGroupOptionStyles
 } from "../SettingsRenderUtils";
 import {
-  Label,
-  Text,
   TextField,
   ITextFieldProps,
   Stack,

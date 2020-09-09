@@ -19,11 +19,9 @@ import {
   ICheckboxStyles,
   IStackProps,
   IStackTokens,
-  ICheckboxStyleProps,
   IChoiceGroupStyles,
   IChoiceGroupOptionStyles
 } from "office-ui-fabric-react";
-import { fontFamily } from "html2canvas/dist/types/css/property-descriptors/font-family";
 
 export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,

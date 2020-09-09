@@ -16,8 +16,7 @@ import {
   IChoiceGroupOption,
   Checkbox,
   Stack,
-  Label,
-  IChoiceGroupOptionStyles
+  Label
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 

@@ -43,7 +43,7 @@ import {
 } from "./SettingsUtils";
 import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption, Stack } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent } from "./SettingsSubComponents/IndexingPolicyComponent";
 

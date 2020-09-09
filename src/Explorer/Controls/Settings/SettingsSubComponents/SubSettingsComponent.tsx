@@ -5,7 +5,6 @@ import { GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../Setting
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import { Label, Text, TextField, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
-import * as Constants from "../../../../Common/Constants";
 import {
   getTextFieldStyles,
   changeFeedPolicyToolTip,

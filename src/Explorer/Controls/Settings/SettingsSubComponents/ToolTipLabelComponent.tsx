@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Stack, Text, IIconStyles, Icon, Callout } from "office-ui-fabric-react";
 import { horizontalStackTokens } from "../SettingsRenderUtils";
-import { fontWeight } from "html2canvas/dist/types/css/property-descriptors/font-weight";
 
 export interface ToolTipLabelComponentProps {
   label: string;
