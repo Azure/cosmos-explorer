@@ -8,7 +8,7 @@ import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import InfoColor from "../../../../images/info_color.svg";
 import Warning from "../../../../images/warning.svg";
-import {traceStart, traceFailure, traceSuccess} from "../../../Shared/Telemetry/TelemetryProcessor";
+import { traceStart, traceFailure, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
