@@ -14,7 +14,7 @@ But it does work well enough to generate a fully typed tree-shakeable client for
 Results of this file should be checked into the repo.
 */
 
-const rpname = "cosmos-db"; // Can also use "notebooks"
+const rpname = "notebook"; // Can also use "notebooks"
 
 // Array of strings to use for eventual output
 const outputTypes: string[] = [""];
@@ -79,12 +79,16 @@ function responseType(operation: Operation, namespace: string) {
   if (operation.responses) {
     return Object.keys(operation.responses)
       .map((responseCode: string) => {
+        // "default" always seems to be an ErrorResponse which we do not want to include in the possible return type
+        if (responseCode === "default") {
+          return undefined;
+        }
         if (!operation.responses[responseCode].schema) {
           return "void";
         }
         return refToType(operation.responses[responseCode].schema.$ref, namespace);
       })
-      .filter((value, index, array) => array.indexOf(value) === index)
+      .filter((value, index, array) => value && array.indexOf(value) === index) // Ensure all values are truthy and unique
       .join(" | ");
   }
   return "unknown";

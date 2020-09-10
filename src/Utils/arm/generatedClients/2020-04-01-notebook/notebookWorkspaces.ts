@@ -14,7 +14,7 @@ export async function listByDatabaseAccount(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string
-): Promise<Types.NotebookWorkspaceListResult | unknown> {
+): Promise<Types.NotebookWorkspaceListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
@@ -25,7 +25,7 @@ export async function get(
   resourceGroupName: string,
   accountName: string,
   notebookWorkspaceName: string
-): Promise<Types.NotebookWorkspace | unknown> {
+): Promise<Types.NotebookWorkspace> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
@@ -37,7 +37,7 @@ export async function createOrUpdate(
   accountName: string,
   notebookWorkspaceName: string,
   body: Types.NotebookWorkspaceCreateUpdateParameters
-): Promise<Types.NotebookWorkspace | unknown> {
+): Promise<Types.NotebookWorkspace> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
@@ -48,7 +48,7 @@ export async function destroy(
   resourceGroupName: string,
   accountName: string,
   notebookWorkspaceName: string
-): Promise<void | unknown> {
+): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
@@ -59,7 +59,7 @@ export async function listConnectionInfo(
   resourceGroupName: string,
   accountName: string,
   notebookWorkspaceName: string
-): Promise<Types.NotebookWorkspaceConnectionInfoResult | unknown> {
+): Promise<Types.NotebookWorkspaceConnectionInfoResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}/listConnectionInfo`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
@@ -70,7 +70,7 @@ export async function regenerateAuthToken(
   resourceGroupName: string,
   accountName: string,
   notebookWorkspaceName: string
-): Promise<void | unknown> {
+): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}/regenerateAuthToken`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
@@ -81,7 +81,7 @@ export async function start(
   resourceGroupName: string,
   accountName: string,
   notebookWorkspaceName: string
-): Promise<void | unknown> {
+): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}/start`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }

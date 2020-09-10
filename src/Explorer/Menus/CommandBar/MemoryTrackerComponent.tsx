@@ -3,8 +3,8 @@ import useSWR from "swr";
 import { ProgressIndicator } from "office-ui-fabric-react/lib/ProgressIndicator";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
 import { Stack } from "office-ui-fabric-react/lib/Stack";
-import { listConnectionInfo } from "../../../Utils/arm/generatedClients/2020-04-01-notebooks/notebookWorkspaces";
-import { NotebookWorkspaceConnectionInfoResult } from "../../../Utils/arm/generatedClients/2020-04-01-notebooks/types";
+import { listConnectionInfo } from "../../../Utils/arm/generatedClients/2020-04-01-notebook/notebookWorkspaces";
+import { NotebookWorkspaceConnectionInfoResult } from "../../../Utils/arm/generatedClients/2020-04-01-notebook/types";
 import { userContext } from "../../../UserContext";
 
 export interface MemoryUsageInfo {
@@ -33,7 +33,7 @@ const fetchMemoryInfo = async (_key: unknown, connectionInfo: NotebookWorkspaceC
 };
 
 export const MemoryTrackerComponent: FunctionComponent = () => {
-  const { data: connectionInfo } = useSWR<NotebookWorkspaceConnectionInfoResult>(
+  const { data: connectionInfo } = useSWR(
     [
       "notebooksConnectionInfo",
       userContext.subscriptionId,
@@ -44,7 +44,7 @@ export const MemoryTrackerComponent: FunctionComponent = () => {
     (_key, subscriptionId, resourceGroup, accountName, workspace) =>
       listConnectionInfo(subscriptionId, resourceGroup, accountName, workspace)
   );
-  const { data } = useSWR<any>(connectionInfo ? ["memoryUsage", connectionInfo] : null, fetchMemoryInfo, {
+  const { data } = useSWR(connectionInfo ? ["memoryUsage", connectionInfo] : null, fetchMemoryInfo, {
     refreshInterval: 2000
   });
 
