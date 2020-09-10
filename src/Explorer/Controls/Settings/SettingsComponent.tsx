@@ -59,12 +59,6 @@ interface ButtonV2 {
   isSelected?: () => boolean;
 }
 
-interface UpdateStatefulValueParams {
-  key: keyof SettingsComponentState;
-  value: isDirtyTypes;
-  updateBaseline?: boolean;
-}
-
 export interface SettingsComponentProps {
   settingsTab: SettingsTab;
 }

@@ -33,7 +33,7 @@ describe("ConflictResolutionComponent", () => {
   });
 
   it("Path text field displayed", () => {
-    const props = {...baseProps, conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins}
+    const props = { ...baseProps, conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins };
     const wrapper = shallow(<ConflictResolutionComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#conflictResolutionCustomTextField")).toEqual(false);

@@ -4,7 +4,7 @@ import { SettingsComponentAdapter } from "../Controls/Settings/SettingsComponent
 import { SettingsComponentProps } from "../Controls/Settings/SettingsComponent";
 import Explorer from "../Explorer";
 
-export default class SettingsTabV2 extends TabsBase implements ViewModels.WaitsForTemplate {
+export default class SettingsTabV2 extends TabsBase {
   public settingsComponentAdapter: SettingsComponentAdapter;
 
   constructor(options: ViewModels.TabOptions) {
@@ -17,7 +17,7 @@ export default class SettingsTabV2 extends TabsBase implements ViewModels.WaitsF
 
   public onActivate(): Q.Promise<unknown> {
     return super.onActivate().then(() => {
-      this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
+      this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.SettingsV2);
     });
   }
 
