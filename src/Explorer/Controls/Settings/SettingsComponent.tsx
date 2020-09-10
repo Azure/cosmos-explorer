@@ -8,7 +8,7 @@ import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import InfoColor from "../../../../images/info_color.svg";
 import Warning from "../../../../images/warning.svg";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import {traceStart, traceFailure, traceSuccess} from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
@@ -39,7 +39,6 @@ import {
   ChangeFeedPolicyState,
   SettingsV2TabTypes,
   getTabTitle,
-  isDirtyTypes,
   isDirty
 } from "./SettingsUtils";
 import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
@@ -596,7 +595,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.props.settingsTab.isExecutionError(false);
 
     this.props.settingsTab.isExecuting(true);
-    const startKey: number = TelemetryProcessor.traceStart(Action.UpdateSettings, {
+    const startKey: number = traceStart(Action.UpdateSettings, {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
@@ -741,7 +740,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               )
             });
           } catch (error) {
-            TelemetryProcessor.traceFailure(
+            traceFailure(
               Action.UpdateSettings,
               {
                 databaseAccountName: this.container.databaseAccount().name,
@@ -766,7 +765,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.setBaseline();
       this.collection.readSettings();
       this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
-      TelemetryProcessor.traceSuccess(
+      traceSuccess(
         Action.UpdateSettings,
         {
           databaseAccountName: this.container.databaseAccount().name,
@@ -780,7 +779,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
       console.error(reason);
-      TelemetryProcessor.traceFailure(
+      traceFailure(
         Action.UpdateSettings,
         {
           databaseAccountName: this.container.databaseAccount().name,
@@ -848,7 +847,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private logIndexingPolicySuccessMessage = (): void => {
     if (this.props.settingsTab.onLoadStartKey) {
-      TelemetryProcessor.traceSuccess(
+      traceSuccess(
         Action.Tab,
         {
           databaseAccountName: this.container.databaseAccount().name,
