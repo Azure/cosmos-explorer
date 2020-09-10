@@ -209,6 +209,7 @@ export default class Explorer {
 
   // features
   public isGalleryPublishEnabled: ko.Computed<boolean>;
+  public isQueryTabV2Enabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
@@ -413,6 +414,9 @@ export default class Explorer {
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
+    );
+    this.isQueryTabV2Enabled = ko.computed<boolean>(() =>
+    this.isFeatureEnabled(Constants.Features.enableQueryTabV2)
     );
     this.isCodeOfConductEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableCodeOfConduct)

@@ -122,6 +122,7 @@ export class Features {
   public static readonly enableTtl = "enablettl";
   public static readonly enableNotebooks = "enablenotebooks";
   public static readonly enableGalleryPublish = "enablegallerypublish";
+  public static readonly enableQueryTabV2 = "enablequerytabv2";
   public static readonly enableCodeOfConduct = "enablecodeofconduct";
   public static readonly enableLinkInjection = "enablelinkinjection";
   public static readonly enableSpark = "enablespark";

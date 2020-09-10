@@ -353,7 +353,8 @@ export enum CollectionTabKind {
   NotebookV2 = 15,
   SparkMasterTab = 16,
   Gallery = 17,
-  NotebookViewer = 18
+  NotebookViewer = 18,
+  QueryV2 = 19
 }
 
 export enum TerminalKind {

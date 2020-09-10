@@ -42,6 +42,8 @@ import {
   readOffers
 } from "../../Common/DocumentClientUtilityBase";
 import { userContext } from "../../UserContext";
+import TabsBase from "../Tabs/TabsBase";
+import QueryTabV2 from "../Tabs/QueryTabV2";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -729,8 +731,9 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+    const queryTabType = this.container.isQueryTabV2Enabled ? ViewModels.CollectionTabKind.QueryV2 : ViewModels.CollectionTabKind.Query 
     const collection: ViewModels.Collection = source.collection || source;
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const id = this.container.tabsManager.getTabs(queryTabType).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseAccountName: this.container.databaseAccount().name,
@@ -741,8 +744,8 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title
     });
 
-    const queryTab: QueryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
+    const queryTabProps : ViewModels.QueryTabOptions = {
+      tabKind: queryTabType,
       title: title,
       tabPath: "",
       collection: this,
@@ -754,7 +757,9 @@ export default class Collection implements ViewModels.Collection {
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons
-    });
+    }
+
+    const queryTab = this.container.isQueryTabV2Enabled ? new QueryTab(queryTabProps) : new QueryTabV2(queryTabProps)
 
     this.container.tabsManager.activateNewTab(queryTab);
   }

@@ -35,6 +35,7 @@ ko.components.register("trigger-tab", new TabComponents.TriggerTab());
 ko.components.register("user-defined-function-tab", new TabComponents.UserDefinedFunctionTab());
 ko.components.register("settings-tab", new TabComponents.SettingsTab());
 ko.components.register("query-tab", new TabComponents.QueryTab());
+ko.components.register("query-tab-v2", new TabComponents.QueryTabV2());
 ko.components.register("tables-query-tab", new TabComponents.QueryTablesTab());
 ko.components.register("graph-tab", new TabComponents.GraphTab());
 ko.components.register("mongo-shell-tab", new TabComponents.MongoShellTab());

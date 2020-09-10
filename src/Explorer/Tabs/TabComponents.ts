@@ -17,6 +17,7 @@ import UserDefinedFunctionTabTemplate from "./UserDefinedFunctionTab.html";
 import GalleryTabTemplate from "./GalleryTab.html";
 import NotebookViewerTabTemplate from "./NotebookViewerTab.html";
 import TabsManagerTemplate from "./TabsManager.html";
+import QueryTabV2Template from "./QueryTabV2.html";
 
 export class TabComponent {
   constructor(data: any) {
@@ -119,6 +120,15 @@ export class QueryTab {
     return {
       viewModel: TabComponent,
       template: QueryTabTemplate
+    };
+  }
+}
+
+export class QueryTabV2 {
+  constructor() {
+    return {
+      viewModel: TabComponent,
+      template: QueryTabV2Template
     };
   }
 }
