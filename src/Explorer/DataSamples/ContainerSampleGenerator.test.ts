@@ -1,4 +1,5 @@
 jest.mock("../../Common/DocumentClientUtilityBase");
+jest.mock("../../Common/dataAccess/createCollection");
 import * as ko from "knockout";
 import * as sinon from "sinon";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -33,8 +34,8 @@ describe("ContainerSampleGenerator", () => {
       databaseId: sampleDatabaseId,
       offerThroughput: 400,
       databaseLevelThroughput: false,
+      createNewDatabase: true,
       collectionId: sampleCollectionId,
-      rupmEnabled: false,
       data: [
         {
           firstname: "Eva",
@@ -99,8 +100,8 @@ describe("ContainerSampleGenerator", () => {
       databaseId: sampleDatabaseId,
       offerThroughput: 400,
       databaseLevelThroughput: false,
+      createNewDatabase: true,
       collectionId: sampleCollectionId,
-      rupmEnabled: false,
       data: [
         "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)"
       ]

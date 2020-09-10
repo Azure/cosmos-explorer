@@ -8,7 +8,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import DeleteCollectionConfirmationPane from "./DeleteCollectionConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 

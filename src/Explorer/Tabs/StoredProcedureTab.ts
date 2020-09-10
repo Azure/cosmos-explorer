@@ -7,7 +7,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import editable from "../../Common/EditableUtility";
 import ScriptTabBase from "./ScriptTabBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import StoredProcedure from "../Tree/StoredProcedure";
 import { createStoredProcedure, updateStoredProcedure } from "../../Common/DocumentClientUtilityBase";

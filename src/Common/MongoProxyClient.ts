@@ -1,16 +1,12 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import queryString from "querystring";
 import { AuthType } from "../AuthType";
-import * as Constants from "../Common/Constants";
-import * as DataExplorerConstants from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import DocumentId from "../Explorer/Tree/DocumentId";
-import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
-import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { userContext } from "../UserContext";
@@ -285,43 +281,35 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
 }
 
 export function createMongoCollectionWithProxy(
-  databaseId: string,
-  collectionId: string,
-  offerThroughput: number,
-  shardKey: string,
-  createDatabase: boolean,
-  sharedThroughput: boolean,
-  isSharded: boolean,
-  autopilotOptions?: DataModels.RpOptions
+  params: DataModels.CreateCollectionParams
 ): Promise<DataModels.Collection> {
   const databaseAccount = userContext.databaseAccount;
-  const params: DataModels.MongoParameters = {
+  const shardKey: string = params.partitionKey?.paths[0];
+  const mongoParams: DataModels.MongoParameters = {
     resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
-    db: databaseId,
-    coll: collectionId,
+    db: params.databaseId,
+    coll: params.collectionId,
     pk: shardKey,
-    offerThroughput,
-    cd: createDatabase,
-    st: sharedThroughput,
-    is: isSharded,
+    offerThroughput: params.offerThroughput,
+    cd: params.createNewDatabase,
+    st: params.databaseLevelThroughput,
+    is: !!shardKey,
     rid: "",
     rtype: "colls",
     sid: userContext.subscriptionId,
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
-    isAutoPilot: false
+    isAutoPilot: !!params.autoPilotMaxThroughput,
+    autoPilotThroughput: params.autoPilotMaxThroughput?.toString()
   };
-
-  if (autopilotOptions) {
-    params.isAutoPilot = true;
-    params.autoPilotTier = autopilotOptions[Constants.HttpHeaders.autoPilotTier] as string;
-  }
 
   const endpoint = getEndpoint(databaseAccount);
 
   return window
     .fetch(
-      `${endpoint}/createCollection?${queryString.stringify((params as unknown) as queryString.ParsedUrlQueryInput)}`,
+      `${endpoint}/createCollection?${queryString.stringify(
+        (mongoParams as unknown) as queryString.ParsedUrlQueryInput
+      )}`,
       {
         method: "POST",
         headers: {
@@ -335,50 +323,8 @@ export function createMongoCollectionWithProxy(
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "creating collection", params);
+      return errorHandling(response, "creating collection", mongoParams);
     });
-}
-
-export function createMongoCollectionWithARM(
-  armEndpoint: string,
-  databaseId: string,
-  analyticalStorageTtl: number,
-  collectionId: string,
-  offerThroughput: number,
-  shardKey: string,
-  createDatabase: boolean,
-  sharedThroughput: boolean,
-  isSharded: boolean,
-  additionalOptions?: DataModels.RpOptions
-): Promise<DataModels.CreateCollectionWithRpResponse> {
-  const databaseAccount = userContext.databaseAccount;
-  const params: DataModels.MongoParameters = {
-    resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
-    db: databaseId,
-    coll: collectionId,
-    pk: shardKey,
-    offerThroughput,
-    cd: createDatabase,
-    st: sharedThroughput,
-    is: isSharded,
-    rid: "",
-    rtype: "colls",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    analyticalStorageTtl
-  };
-
-  if (createDatabase) {
-    return AddDbUtilities.createMongoDatabaseWithARM(
-      armEndpoint,
-      params,
-      sharedThroughput ? additionalOptions : {}
-    ).then(() => {
-      return _createMongoCollectionWithARM(armEndpoint, params, sharedThroughput ? {} : additionalOptions);
-    });
-  }
-  return _createMongoCollectionWithARM(armEndpoint, params, additionalOptions);
 }
 
 export function getEndpoint(databaseAccount: DataModels.DatabaseAccount): string {
@@ -412,47 +358,4 @@ async function errorHandling(response: Response, action: string, params: unknown
 
 export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameters): string {
   return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}/collections/${params.coll}`;
-}
-
-export async function _createMongoCollectionWithARM(
-  armEndpoint: string,
-  params: DataModels.MongoParameters,
-  rpOptions: DataModels.RpOptions
-): Promise<DataModels.CreateCollectionWithRpResponse> {
-  const rpPayloadToCreateCollection: DataModels.MongoCreationRequest = {
-    properties: {
-      resource: {
-        id: params.coll
-      },
-      options: {}
-    }
-  };
-
-  if (params.is) {
-    rpPayloadToCreateCollection.properties.resource["shardKey"] = { [params.pk]: "Hash" };
-  }
-
-  if (!params.st) {
-    if (rpOptions) {
-      rpPayloadToCreateCollection.properties.options = rpOptions;
-    } else {
-      rpPayloadToCreateCollection.properties.options["throughput"] =
-        params.offerThroughput && params.offerThroughput.toString();
-    }
-  }
-
-  if (params.analyticalStorageTtl) {
-    rpPayloadToCreateCollection.properties.resource.analyticalStorageTtl = params.analyticalStorageTtl;
-  }
-
-  try {
-    return new ResourceProviderClient<DataModels.CreateCollectionWithRpResponse>(armEndpoint).putAsync(
-      getARMCreateCollectionEndpoint(params),
-      DataExplorerConstants.ArmApiVersions.publicVersion,
-      rpPayloadToCreateCollection
-    );
-  } catch (response) {
-    errorHandling(response, "creating collection", undefined);
-    return undefined;
-  }
 }

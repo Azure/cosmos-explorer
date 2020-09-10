@@ -62,8 +62,6 @@
     "./src/Shared/ExplorerSettings.ts",
     "./src/Shared/StorageUtility.ts",
     "./src/Shared/StringUtility.ts",
-    "./src/Shared/Telemetry/TelemetryConstants.ts",
-    "./src/Shared/Telemetry/TelemetryProcessor.ts",
     "./src/Shared/appInsights.ts",
     "./src/UserContext.ts",
     "./src/Utils/GitHubUtils.ts",

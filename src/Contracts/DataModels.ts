@@ -334,6 +334,19 @@ export interface CreateDatabaseParams {
   offerThroughput?: number;
 }
 
+export interface CreateCollectionParams {
+  createNewDatabase: boolean;
+  collectionId: string;
+  databaseId: string;
+  databaseLevelThroughput: boolean;
+  offerThroughput: number;
+  analyticalStorageTtl?: number;
+  autoPilotMaxThroughput?: number;
+  indexingPolicy?: IndexingPolicy;
+  partitionKey?: PartitionKey;
+  uniqueKeyPolicy?: UniqueKeyPolicy;
+}
+
 export interface SharedThroughputRange {
   minimumRU: number;
   maximumRU: number;

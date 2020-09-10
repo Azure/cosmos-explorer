@@ -1,6 +1,5 @@
 import * as Constants from "./Constants";
 import * as DataModels from "../Contracts/DataModels";
-import * as ErrorParserUtility from "./ErrorParserUtility";
 import * as ViewModels from "../Contracts/ViewModels";
 import Q from "q";
 import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
@@ -853,40 +852,6 @@ export function readOffer(
     .finally(() => {
       NotificationConsoleUtils.clearInProgressMessageWithId(id);
     });
-
-  return deferred.promise;
-}
-
-export function getOrCreateDatabaseAndCollection(
-  request: DataModels.CreateDatabaseAndCollectionRequest,
-  options: any = {}
-): Q.Promise<DataModels.Collection> {
-  const deferred: Q.Deferred<DataModels.Collection> = Q.defer<DataModels.Collection>();
-  const id = NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.InProgress,
-    `Creating a new container ${request.collectionId} for database ${request.databaseId}`
-  );
-
-  DataAccessUtilityBase.getOrCreateDatabaseAndCollection(request, options)
-    .then(
-      (collection: DataModels.Collection) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully created container ${request.collectionId}`
-        );
-        deferred.resolve(collection);
-      },
-      (error: any) => {
-        const sanitizedError = ErrorParserUtility.replaceKnownError(JSON.stringify(error));
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while creating container ${request.collectionId}:\n ${sanitizedError}`
-        );
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
 
   return deferred.promise;
 }

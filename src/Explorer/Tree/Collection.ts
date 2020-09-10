@@ -9,7 +9,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { PlatformType } from "../../PlatformType";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { OfferUtils } from "../../Utils/OfferUtils";
 import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";

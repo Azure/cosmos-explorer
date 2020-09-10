@@ -2,7 +2,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { PlatformType } from "../../../PlatformType";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../../Common/Constants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";

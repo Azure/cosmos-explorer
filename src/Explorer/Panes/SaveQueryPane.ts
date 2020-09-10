@@ -6,7 +6,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import QueryTab from "../Tabs/QueryTab";
 
 export class SaveQueryPane extends ContextualPaneBase {

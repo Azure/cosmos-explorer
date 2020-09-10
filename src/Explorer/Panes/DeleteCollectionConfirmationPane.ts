@@ -10,7 +10,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
