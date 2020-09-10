@@ -10,27 +10,23 @@ import {
   Dispatch,
   MiddlewareAPI
 } from "redux";
-import { combineEpics, createEpicMiddleware, Epic, ActionsObservable } from "redux-observable";
+import { combineEpics, createEpicMiddleware, Epic } from "redux-observable";
 import { allEpics } from "./epics";
 import { coreReducer, cdbReducer } from "./reducers";
 import { catchError } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { configuration } from "@nteract/mythic-configuration";
+import { makeConfigureStore } from "@nteract/myths";
+import { CdbAppState } from "./types";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default function configureStore(
-  initialState: Partial<AppState>,
+  initialState: Partial<CdbAppState>,
   contentProvider: IContentProvider,
   onTraceFailure: (title: string, message: string) => void,
   customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[]
-): Store<AppState, AnyAction> {
-  const rootReducer = combineReducers({
-    app: reducers.app,
-    comms: reducers.comms,
-    config: reducers.config,
-    core: coreReducer,
-    cdb: cdbReducer
-  });
-
+): Store<CdbAppState, AnyAction> {
   /**
    * Catches errors in reducers
    */
@@ -46,7 +42,7 @@ export default function configureStore(
   };
 
   const protect = (epic: Epic) => {
-    return (action$: ActionsObservable<any>, state$: any, dependencies: any) =>
+    return (action$: Observable<any>, state$: any, dependencies: any) =>
       epic(action$, state$, dependencies).pipe(
         catchError((error, caught) => {
           traceFailure("Epic failure", error);
@@ -64,9 +60,8 @@ export default function configureStore(
     }
   };
 
-  const combineAndProtectEpics = (epics: Epic[]): Epic => {
-    const protectedEpics = epics.map(epic => protect(epic));
-    return combineEpics<Epic>(...protectedEpics);
+  const combineAndProtectEpics = (epics: Epic[]): Epic[] => {
+    return epics.map(epic => protect(epic));
   };
 
   // This list needs to be consistent and in sync with core.allEpics until we figure
@@ -103,10 +98,21 @@ export default function configureStore(
   }
   middlewares.push(catchErrorMiddleware);
 
-  const store = createStore(rootReducer, initialState, composeEnhancers(applyMiddleware(...middlewares)));
+  const mythConfigureStore = makeConfigureStore<CdbAppState>()({
+    packages: [configuration],
+    reducers: {
+      app: reducers.app,
+      core: coreReducer as any,
+      cdb: cdbReducer
+    },
+    epics: rootEpic,
+    epicDependencies: { contentProvider },
+    enhancer: composeEnhancers //composeEnhancers(applyMiddleware(...middlewares))
+  });
 
-  epicMiddleware.run(rootEpic);
+  const store = mythConfigureStore(initialState as any);
 
   // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
-  return store as Store<AppState, AnyAction>;
+  // return store as Store<AppState, AnyAction>;
+  return store as any;
 }

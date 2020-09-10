@@ -1,15 +1,16 @@
 /**
  * JupyterLab applications based on jupyterLab components
  */
-import { ServerConnection, TerminalSession } from "@jupyterlab/services";
+import { ServerConnection, TerminalManager } from "@jupyterlab/services";
 import { Terminal } from "@jupyterlab/terminal";
 import { Panel, Widget } from "@phosphor/widgets";
 
 export class JupyterLabAppFactory {
   public static async createTerminalApp(serverSettings: ServerConnection.ISettings) {
-    const session = await TerminalSession.startNew({
+    const manager = new TerminalManager({
       serverSettings: serverSettings
     });
+    const session = await manager.startNew();
     const term = new Terminal(session, { theme: "dark", shutdownOnClose: true });
 
     if (!term) {
@@ -21,7 +22,7 @@ export class JupyterLabAppFactory {
     term.addClass("terminalWidget");
 
     let panel = new Panel();
-    panel.addWidget(term);
+    panel.addWidget(term as any /* TODO TEST THIS */);
     panel.id = "main";
 
     // Attach the widget to the dom.

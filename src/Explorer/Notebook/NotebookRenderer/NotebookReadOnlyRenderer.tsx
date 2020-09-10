@@ -10,24 +10,12 @@ import { Dispatch } from "redux";
 import { actions, ContentRef } from "@nteract/core";
 import loadTransform from "../NotebookComponent/loadTransform";
 import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
+import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import "./NotebookReadOnlyRenderer.less";
 
 export interface NotebookRendererProps {
   contentRef: any;
   hideInputs?: boolean;
-}
-
-interface PassedEditorProps {
-  id: string;
-  contentRef: ContentRef;
-  editorFocused: boolean;
-  value: string;
-  channels: any;
-  kernelStatus: string;
-  theme: string;
-  onChange: (text: string) => void;
-  onFocusChange: (focused: boolean) => void;
-  className: string;
 }
 
 /**
@@ -48,7 +36,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 {{
                   editor: {
                     codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />
                   }
                 }}
               </CodeCell>
@@ -65,7 +53,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 {{
                   editor: {
                     codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />
                   }
                 }}
               </RawCell>
