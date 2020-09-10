@@ -1,9 +1,9 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/sqlResources";
+import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/cassandraResources";
+import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/mongoDBResources";
+import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/gremlinResources";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 import { client } from "../CosmosClient";

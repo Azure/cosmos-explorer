@@ -2,89 +2,13 @@
  * Notebook container related stuff
  */
 import * as DataModels from "../../Contracts/DataModels";
-import * as Constants from "../../Common/Constants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../Common/Logger";
 
 export class NotebookContainerClient {
   private reconnectingNotificationId: string;
   private isResettingWorkspace: boolean;
 
-  constructor(
-    private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    private onConnectionLost: () => void,
-    private onMemoryUsageInfoUpdate: (update: DataModels.MemoryUsageInfo) => void
-  ) {
-    if (notebookServerInfo() && notebookServerInfo().notebookServerEndpoint) {
-      this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-    } else {
-      const subscription = notebookServerInfo.subscribe((newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
-        if (newServerInfo && newServerInfo.notebookServerEndpoint) {
-          this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-        }
-        subscription.dispose();
-      });
-    }
-  }
-
-  /**
-   * Heartbeat: each ping schedules another ping
-   */
-  private scheduleHeartbeat(delayMs: number): void {
-    setTimeout(() => {
-      this.getMemoryUsage()
-        .then(memoryUsageInfo => this.onMemoryUsageInfoUpdate(memoryUsageInfo))
-        .finally(() => this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs));
-    }, delayMs);
-  }
-
-  private async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
-    if (!this.notebookServerInfo() || !this.notebookServerInfo().notebookServerEndpoint) {
-      const error = "No server endpoint detected";
-      Logger.logError(error, "NotebookContainerClient/getMemoryUsage");
-      return Promise.reject(error);
-    }
-
-    if (this.isResettingWorkspace) {
-      return undefined;
-    }
-
-    const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
-    try {
-      const response = await fetch(`${notebookServerEndpoint}/api/metrics/memory`, {
-        method: "GET",
-        headers: {
-          Authorization: authToken,
-          "content-type": "application/json"
-        }
-      });
-      if (response.ok) {
-        if (this.reconnectingNotificationId) {
-          NotificationConsoleUtils.clearInProgressMessageWithId(this.reconnectingNotificationId);
-          this.reconnectingNotificationId = "";
-        }
-        const memoryUsageInfo = await response.json();
-        if (memoryUsageInfo) {
-          return {
-            totalKB: memoryUsageInfo.total,
-            freeKB: memoryUsageInfo.free
-          };
-        }
-      }
-      return undefined;
-    } catch (error) {
-      Logger.logError(error, "NotebookContainerClient/getMemoryUsage");
-      if (!this.reconnectingNotificationId) {
-        this.reconnectingNotificationId = NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.InProgress,
-          "Connection lost with Notebook server. Attempting to reconnect..."
-        );
-      }
-      this.onConnectionLost();
-      return undefined;
-    }
-  }
+  constructor(private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>) {}
 
   public async resetWorkspace(): Promise<void> {
     this.isResettingWorkspace = true;

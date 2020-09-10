@@ -1,50 +1,71 @@
-import * as React from "react";
-import { Observable, Subscription } from "knockout";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
+import React, { FunctionComponent } from "react";
+import useSWR from "swr";
 import { ProgressIndicator } from "office-ui-fabric-react/lib/ProgressIndicator";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
 import { Stack } from "office-ui-fabric-react/lib/Stack";
+import { listConnectionInfo } from "../../../Utils/arm/generatedClients/2020-04-01-notebooks/notebookWorkspaces";
+import { NotebookWorkspaceConnectionInfoResult } from "../../../Utils/arm/generatedClients/2020-04-01-notebooks/types";
+import { userContext } from "../../../UserContext";
 
-interface MemoryTrackerProps {
-  memoryUsageInfo: Observable<MemoryUsageInfo>;
+export interface MemoryUsageInfo {
+  total: number;
+  free: number;
 }
 
-export class MemoryTrackerComponent extends React.Component<MemoryTrackerProps> {
-  private memoryUsageInfoSubscription: Subscription;
+const kbInGB = 1048576;
 
-  public componentDidMount(): void {
-    this.memoryUsageInfoSubscription = this.props.memoryUsageInfo.subscribe(() => {
-      this.forceUpdate();
-    });
-  }
-
-  public componentWillUnmount(): void {
-    this.memoryUsageInfoSubscription && this.memoryUsageInfoSubscription.dispose();
-  }
-
-  public render(): JSX.Element {
-    const memoryUsageInfo: MemoryUsageInfo = this.props.memoryUsageInfo();
-    if (!memoryUsageInfo) {
-      return (
-        <Stack className="memoryTrackerContainer" horizontal>
-          <span>Memory</span>
-          <Spinner size={SpinnerSize.medium} />
-        </Stack>
-      );
+const fetchMemoryInfo = async (_key: unknown, connectionInfo: NotebookWorkspaceConnectionInfoResult) => {
+  const response = await fetch(`${connectionInfo.notebookServerEndpoint}/api/metrics/memory`, {
+    method: "GET",
+    headers: {
+      Authorization: `Token ${connectionInfo.authToken}`,
+      "content-type": "application/json"
     }
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  const memoryUsageInfo = (await response.json()) as MemoryUsageInfo;
+  return {
+    totalKB: memoryUsageInfo.total,
+    freeKB: memoryUsageInfo.free
+  };
+};
 
-    const totalGB = memoryUsageInfo.totalKB / 1048576;
-    const usedGB = totalGB - memoryUsageInfo.freeKB / 1048576;
+export const MemoryTrackerComponent: FunctionComponent = () => {
+  const { data: connectionInfo } = useSWR<NotebookWorkspaceConnectionInfoResult>(
+    [
+      "notebooksConnectionInfo",
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
+      "default"
+    ],
+    (_key, subscriptionId, resourceGroup, accountName, workspace) =>
+      listConnectionInfo(subscriptionId, resourceGroup, accountName, workspace)
+  );
+  const { data } = useSWR<any>(connectionInfo ? ["memoryUsage", connectionInfo] : null, fetchMemoryInfo, {
+    refreshInterval: 2000
+  });
 
+  if (!data) {
     return (
       <Stack className="memoryTrackerContainer" horizontal>
         <span>Memory</span>
-        <ProgressIndicator
-          className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
-          description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
-          percentComplete={usedGB / totalGB}
-        />
+        <Spinner size={SpinnerSize.medium} />
       </Stack>
     );
   }
-}
+  const totalGB = data.totalKB / kbInGB;
+  const usedGB = totalGB - data.freeKB / kbInGB;
+  return (
+    <Stack className="memoryTrackerContainer" horizontal>
+      <span>Memory</span>
+      <ProgressIndicator
+        className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
+        description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
+        percentComplete={usedGB / totalGB}
+      />
+    </Stack>
+  );
+};

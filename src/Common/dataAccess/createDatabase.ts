@@ -9,21 +9,24 @@ import {
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
   CreateUpdateOptions
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/types";
 import { client } from "../CosmosClient";
-import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import {
+  createUpdateSqlDatabase,
+  getSqlDatabase
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/sqlResources";
 import {
   createUpdateCassandraKeyspace,
   getCassandraKeyspace
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/cassandraResources";
 import {
   createUpdateMongoDBDatabase,
   getMongoDBDatabase
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/mongoDBResources";
 import {
   createUpdateGremlinDatabase,
   getGremlinDatabase
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/gremlinResources";
 import { logConsoleProgress, logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { refreshCachedOffers, refreshCachedResources } from "../DataAccessUtilityBase";

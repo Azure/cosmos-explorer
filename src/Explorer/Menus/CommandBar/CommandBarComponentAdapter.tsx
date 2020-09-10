@@ -82,9 +82,7 @@ export class CommandBarComponentAdapter implements ReactAdapter {
     uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
     if (this.isNotebookTabActive()) {
-      uiFabricControlButtons.unshift(
-        CommandBarUtil.createMemoryTracker("memoryTracker", this.container.memoryUsageInfo)
-      );
+      uiFabricControlButtons.unshift(CommandBarUtil.createMemoryTracker("memoryTracker"));
     }
 
     return (

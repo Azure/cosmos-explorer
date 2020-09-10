@@ -6,7 +6,7 @@ Instead, generate ARM clients that consume this function with stricter typing.
 */
 
 import promiseRetry, { AbortError } from "p-retry";
-import { ErrorResponse } from "./generatedClients/2020-04-01/types";
+import { ErrorResponse } from "./generatedClients/2020-04-01-cosmos-db/types";
 import { userContext } from "../../UserContext";
 
 interface ARMError extends Error {

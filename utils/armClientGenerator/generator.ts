@@ -14,12 +14,14 @@ But it does work well enough to generate a fully typed tree-shakeable client for
 Results of this file should be checked into the repo.
 */
 
+const rpname = "cosmos-db"; // Can also use "notebooks"
+
 // Array of strings to use for eventual output
 const outputTypes: string[] = [""];
 const version = "2020-04-01";
-const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/${version}/cosmos-db.json`;
+const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/${version}/${rpname}.json`;
 
-const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${version}`);
+const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${version}-${rpname}`);
 mkdirp.sync(outputDir);
 
 // Buckets for grouping operations based on their name

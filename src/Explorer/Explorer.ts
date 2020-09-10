@@ -243,7 +243,6 @@ export default class Explorer {
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
-  public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any; // This is dynamically loaded
 
   private _panes: ContextualPaneBase[] = [];
@@ -374,7 +373,6 @@ export default class Explorer {
         );
       }
     });
-    this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
     this.notificationsClient = options.notificationsClient;
     this.isEmulator = options.isEmulator;
 

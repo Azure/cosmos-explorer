@@ -1,16 +1,14 @@
-import _ from "underscore";
-import * as React from "react";
-import { Observable } from "knockout";
+import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
+import { Dropdown, IDropdownOption, IDropdownStyles } from "office-ui-fabric-react/lib/Dropdown";
 import { IconType } from "office-ui-fabric-react/lib/Icon";
 import { IComponentAsProps } from "office-ui-fabric-react/lib/Utilities";
-import { StyleConstants } from "../../../Common/Constants";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
-import { Dropdown, IDropdownStyles, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
-import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import * as React from "react";
+import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
+import { StyleConstants } from "../../../Common/Constants";
 import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 
 /**
  * Utilities for CommandBar
@@ -178,10 +176,10 @@ export class CommandBarUtil {
     };
   }
 
-  public static createMemoryTracker(key: string, memoryUsageInfo: Observable<MemoryUsageInfo>): ICommandBarItemProps {
+  public static createMemoryTracker(key: string): ICommandBarItemProps {
     return {
       key,
-      onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />
+      onRender: () => <MemoryTrackerComponent />
     };
   }
 }

@@ -6,23 +6,26 @@ import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/Contai
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
-import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
+import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/types";
 import { client } from "../CosmosClient";
 import { createMongoCollectionWithProxy } from "../MongoProxyClient";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import {
+  createUpdateSqlContainer,
+  getSqlContainer
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/sqlResources";
 import {
   createUpdateCassandraTable,
   getCassandraTable
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/cassandraResources";
 import {
   createUpdateMongoDBCollection,
   getMongoDBCollection
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/mongoDBResources";
 import {
   createUpdateGremlinGraph,
   getGremlinGraph
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+} from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/gremlinResources";
+import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/tableResources";
 import { logConsoleProgress, logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { refreshCachedResources } from "../DataAccessUtilityBase";

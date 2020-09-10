@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { deleteSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { deleteSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/sqlResources";
+import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/cassandraResources";
+import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/mongoDBResources";
+import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/gremlinResources";
+import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01-cosmos-db/tableResources";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";

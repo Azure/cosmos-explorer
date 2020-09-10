@@ -16,7 +16,6 @@ import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProv
 import { GitHubContentProvider } from "../../GitHub/GitHubContentProvider";
 import { contents } from "rx-jupyter";
 import { NotebookContainerClient } from "./NotebookContainerClient";
-import { MemoryUsageInfo } from "../../Contracts/DataModels";
 import { NotebookContentClient } from "./NotebookContentClient";
 import { DialogProps } from "../Controls/DialogReactComponent/DialogComponent";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
@@ -76,11 +75,7 @@ export default class NotebookManager {
       contents.JupyterContentProvider
     );
 
-    this.notebookClient = new NotebookContainerClient(
-      this.params.container.notebookServerInfo,
-      () => this.params.container.initNotebooks(this.params.container.databaseAccount()),
-      (update: MemoryUsageInfo) => this.params.container.memoryUsageInfo(update)
-    );
+    this.notebookClient = new NotebookContainerClient(this.params.container.notebookServerInfo);
 
     this.notebookContentClient = new NotebookContentClient(
       this.params.container.notebookServerInfo,

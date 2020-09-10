@@ -709,11 +709,6 @@ export interface SparkPool extends ArmResource {
   properties: SparkPoolProperties;
 }
 
-export interface MemoryUsageInfo {
-  freeKB: number;
-  totalKB: number;
-}
-
 export interface resourceTokenConnectionStringProperties {
   accountEndpoint: string;
   collectionId: string;
