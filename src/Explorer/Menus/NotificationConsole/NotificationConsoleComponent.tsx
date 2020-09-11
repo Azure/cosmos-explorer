@@ -130,11 +130,13 @@ export class NotificationConsoleComponent extends React.Component<
               <span className="headerStatusEllipsis">{this.state.headerStatus}</span>
             </span>
           </div>
-          <div className="expandCollapseButton" role="button" tabIndex={0}>
-            <img
-              src={this.state.isExpanded ? ChevronDownIcon : ChevronUpIcon}
-              alt={this.state.isExpanded ? "collapse console" : "expand console"}
-            />
+          <div
+            className="expandCollapseButton"
+            role="button"
+            tabIndex={0}
+            aria-label={this.state.isExpanded ? "collapse console" : "expand console"}
+          >
+            <img src={this.state.isExpanded ? ChevronDownIcon : ChevronUpIcon} alt="" />
           </div>
         </div>
         <AnimateHeight
