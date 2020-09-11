@@ -195,8 +195,9 @@ export class NotebookContentClient {
   }
 
   public readFileContent(filePath: string): Promise<string> {
+    const fileType = NotebookUtil.isNotebookFile(filePath) ? "notebook" : "file";
     return this.contentProvider
-      .get(this.getServerConfig(), filePath, { type: "notebook", format: "text", content: 1 })
+      .get(this.getServerConfig(), filePath, { type: fileType, format: "text", content: 1 })
       .toPromise()
       .then(xhr => {
         const content = (xhr.response as any).content;
