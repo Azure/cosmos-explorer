@@ -48,14 +48,27 @@ export function sendCachedDataMessage<TResponseDataModel>(
 
 export function sendMessage(data: any): void {
   if (canSendMessage()) {
-    window.parent.postMessage(
-      {
-        signature: "pcIframe",
-        data: data
-      },
-      window.document.referrer
-    );
+    const dataExplorerWindow = getDataExplorerWindow();
+    if (dataExplorerWindow) {
+      dataExplorerWindow.parent.postMessage(
+        {
+          signature: "pcIframe",
+          data: data
+        },
+        dataExplorerWindow.document.referrer
+      );
+    }
   }
+}
+
+function getDataExplorerWindow(): Window {
+  // Traverse up the window to find a window with `dataExplorerPlatform` property
+  let dataExplorerWindow: Window = window;
+  while (!dataExplorerWindow.hasOwnProperty("dataExplorerPlatform") && dataExplorerWindow.parent) {
+    dataExplorerWindow = dataExplorerWindow.parent;
+  }
+
+  return dataExplorerWindow;
 }
 
 export function canSendMessage(): boolean {
