@@ -3,7 +3,7 @@ import crypto from 'crypto'
 
 jest.setTimeout(300000);
 
-describe.only('Collection Add and Delete Cassandra spec', () => {
+describe('Collection Add and Delete Cassandra spec', () => {
   it('creates a collection', async () => {
     try {
       const keyspaceId = `keyspaceid${crypto.randomBytes(8).toString("hex")}`;
