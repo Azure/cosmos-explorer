@@ -135,6 +135,7 @@ export class NotificationConsoleComponent extends React.Component<
             role="button"
             tabIndex={0}
             aria-label={this.state.isExpanded ? "collapse console" : "expand console"}
+            aria-expanded={this.state.isExpanded}
           >
             <img src={this.state.isExpanded ? ChevronDownIcon : ChevronUpIcon} alt="" />
           </div>
