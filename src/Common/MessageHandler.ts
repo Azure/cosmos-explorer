@@ -61,15 +61,17 @@ export function sendMessage(data: any): void {
   }
 }
 
-function getDataExplorerWindow(): Window {
+const getDataExplorerWindow = (): Window => {
   // Traverse up the window to find a window with `dataExplorerPlatform` property
   let dataExplorerWindow: Window = window;
-  while (!dataExplorerWindow.hasOwnProperty("dataExplorerPlatform") && dataExplorerWindow.parent) {
+  // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  while (!(dataExplorerWindow as any).dataExplorerPlatform && dataExplorerWindow.parent) {
     dataExplorerWindow = dataExplorerWindow.parent;
   }
 
   return dataExplorerWindow;
-}
+};
 
 export function canSendMessage(): boolean {
   return window.parent !== window;
