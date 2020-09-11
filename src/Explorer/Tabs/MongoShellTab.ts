@@ -6,7 +6,7 @@ import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import Q from "q";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../Common/HashMap";

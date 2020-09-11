@@ -5,7 +5,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import ScriptTabBase from "./ScriptTabBase";
 import editable from "../../Common/EditableUtility";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
 import { createTrigger, updateTrigger } from "../../Common/DocumentClientUtilityBase";
 

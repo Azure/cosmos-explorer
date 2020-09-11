@@ -26,7 +26,7 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import TerminalTab from "./Tabs/TerminalTab";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { ActionContracts, MessageTypes } from "../Contracts/ExplorerContracts";
@@ -1893,6 +1893,9 @@ export default class Explorer {
   }
 
   public findSelectedDatabase(): ViewModels.Database {
+    if (!this.selectedNode()) {
+      return null;
+    }
     if (this.selectedNode().nodeKind === "Database") {
       return _.find(this.databases(), (database: ViewModels.Database) => database.rid === this.selectedNode().rid);
     }
@@ -3117,12 +3120,6 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
-
-    TelemetryProcessor.trace(
-      Action.LoadingStatus,
-      ActionModifiers.Mark,
-      title !== "Welcome to Azure Cosmos DB" ? `Title: ${title}, Text: ${text}` : text
-    );
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {

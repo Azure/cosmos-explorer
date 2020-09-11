@@ -4,7 +4,7 @@ import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import { deleteUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
 

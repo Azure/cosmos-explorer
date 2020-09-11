@@ -3,7 +3,7 @@ import crypto from 'crypto'
 
 jest.setTimeout(300000);
 
-describe.skip('Collection Add and Delete SQL spec', () => {
+describe('Collection Add and Delete SQL spec', () => {
   it('creates a collection', async () => {
     try {
       const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
@@ -66,17 +66,38 @@ describe.skip('Collection Add and Delete SQL spec', () => {
 
       // click delete container
       await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
+      await frame.waitFor(1000);
       const elements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await elements[4].click()
+      await elements[4].click();
 
       // confirm delete container
       await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
 
       // click delete
       await frame.click('input[data-test="deleteCollection"]');
+      await frame.waitFor(5000);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);
+
+      // click context menu for database
+      await frame.waitFor(`div[data-test="${dbId}"] > div > button`);
+      const button = await frame.$(`div[data-test="${dbId}"] > div > button`);
+      await button.focus();
+      await button.asElement().click();
+
+      // click delete database
+      await frame.waitFor(1000);
+      const dbElements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
+      await dbElements[1].click();
+
+      // confirm delete database
+      await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());
+
+      // click delete
+      await frame.click('input[data-test="deleteDatabase"]');
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {
       await page.screenshot({path: 'failure.png'});
       throw error;

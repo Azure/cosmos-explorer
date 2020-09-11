@@ -193,7 +193,7 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
     maxAutoPilotThroughputSet
   )} GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='${
     Constants.AutopilotDocumentation.Url
-  }' target='_blank'>Learn more</a>.`;
+  }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
 }
 
 export function computeAutoscaleUsagePriceHourly(
