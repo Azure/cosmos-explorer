@@ -1,23 +1,28 @@
+import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
 import * as _ from "underscore";
 import UploadWorker from "worker-loader!../../workers/upload";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
+import { readTriggers } from "../../Common/dataAccess/readTriggers";
+import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
+import { createDocument, readCollectionQuotaInfo, readOffer, readOffers } from "../../Common/DocumentClientUtilityBase";
 import * as Logger from "../../Common/Logger";
+import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { PlatformType } from "../../PlatformType";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { OfferUtils } from "../../Utils/OfferUtils";
 import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
+import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
-import ConflictId from "./ConflictId";
-
-import DocumentId from "./DocumentId";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
@@ -27,21 +32,11 @@ import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import SettingsTab from "../Tabs/SettingsTab";
+import ConflictId from "./ConflictId";
+import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-import { configContext } from "../../ConfigContext";
-import Explorer from "../Explorer";
-import {
-  createDocument,
-  readTriggers,
-  readUserDefinedFunctions,
-  readStoredProcedures,
-  readCollectionQuotaInfo,
-  readOffer,
-  readOffers
-} from "../../Common/DocumentClientUtilityBase";
-import { userContext } from "../../UserContext";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -854,21 +849,21 @@ export default class Collection implements ViewModels.Collection {
     Trigger.create(source, event);
   }
 
-  public createStoredProcedureNode(data: DataModels.StoredProcedure): StoredProcedure {
+  public createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure {
     const node = new StoredProcedure(this.container, this, data);
     this.container.selectedNode(node);
     this.children.push(node);
     return node;
   }
 
-  public createUserDefinedFunctionNode(data: DataModels.UserDefinedFunction): UserDefinedFunction {
+  public createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction {
     const node = new UserDefinedFunction(this.container, this, data);
     this.container.selectedNode(node);
     this.children.push(node);
     return node;
   }
 
-  public createTriggerNode(data: DataModels.Trigger): Trigger {
+  public createTriggerNode(data: TriggerDefinition & Resource): Trigger {
     const node = new Trigger(this.container, this, data);
     this.container.selectedNode(node);
     this.children.push(node);
@@ -1062,8 +1057,8 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public loadStoredProcedures(): Q.Promise<any> {
-    return readStoredProcedures(this).then((storedProcedures: DataModels.StoredProcedure[]) => {
+  public loadStoredProcedures(): Promise<any> {
+    return readStoredProcedures(this.databaseId, this.id()).then(storedProcedures => {
       const storedProceduresNodes: ViewModels.TreeNode[] = storedProcedures.map(
         storedProcedure => new StoredProcedure(this.container, this, storedProcedure)
       );
@@ -1073,8 +1068,8 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public loadUserDefinedFunctions(): Q.Promise<any> {
-    return readUserDefinedFunctions(this).then((userDefinedFunctions: DataModels.UserDefinedFunction[]) => {
+  public loadUserDefinedFunctions(): Promise<any> {
+    return readUserDefinedFunctions(this.databaseId, this.id()).then(userDefinedFunctions => {
       const userDefinedFunctionsNodes: ViewModels.TreeNode[] = userDefinedFunctions.map(
         udf => new UserDefinedFunction(this.container, this, udf)
       );
@@ -1084,8 +1079,8 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public loadTriggers(): Q.Promise<any> {
-    return readTriggers(this, null /*options*/).then((triggers: DataModels.Trigger[]) => {
+  public loadTriggers(): Promise<any> {
+    return readTriggers(this.databaseId, this.id()).then(triggers => {
       const triggerNodes: ViewModels.TreeNode[] = triggers.map(trigger => new Trigger(this.container, this, trigger));
       const otherNodes = this.children().filter(node => node.nodeKind !== "Trigger");
       const allNodes = otherNodes.concat(triggerNodes);

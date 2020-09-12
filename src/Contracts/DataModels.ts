@@ -124,19 +124,6 @@ export interface Database extends Resource {
 
 export interface DocumentId extends Resource {}
 
-export interface Script extends Resource {
-  body: string;
-}
-
-export interface StoredProcedure extends Script {}
-
-export interface UserDefinedFunction extends Script {}
-
-export interface Trigger extends Script {
-  triggerType: string;
-  triggerOperation: string;
-}
-
 export interface ConflictId extends Resource {
   resourceId?: string;
   resourceType?: string;

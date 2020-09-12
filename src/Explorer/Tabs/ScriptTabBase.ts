@@ -1,15 +1,14 @@
-import * as Constants from "../../Common/Constants";
 import * as ko from "knockout";
+import * as monaco from "monaco-editor";
 import Q from "q";
-
+import DiscardIcon from "../../../images/discard.svg";
+import SaveIcon from "../../../images/save-cosmos.svg";
+import * as Constants from "../../Common/Constants";
+import editable from "../../Common/EditableUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import TabsBase from "./TabsBase";
-import editable from "../../Common/EditableUtility";
-import * as monaco from "monaco-editor";
-import SaveIcon from "../../../images/save-cosmos.svg";
-import DiscardIcon from "../../../images/discard.svg";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import TabsBase from "./TabsBase";
 
 export default abstract class ScriptTabBase extends TabsBase implements ViewModels.WaitsForTemplate {
   public ariaLabel: ko.Observable<string>;
@@ -30,7 +29,8 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   public formIsValid: ko.Computed<boolean>;
   public formIsDirty: ko.Computed<boolean>;
   public isNew: ko.Observable<boolean>;
-  public resource: ko.Observable<DataModels.Script>;
+  // TODO: Remove any. The SDK types for all the script.body are slightly incorrect which makes this REALLY hard to type correct.
+  public resource: ko.Observable<any>;
   public isTemplateReady: ko.Observable<boolean>;
   protected _partitionKey: DataModels.PartitionKey;
 
@@ -194,8 +194,8 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     });
   }
 
-  public abstract onSaveClick: () => Q.Promise<any>;
-  public abstract onUpdateClick: () => Q.Promise<any>;
+  public abstract onSaveClick: () => Promise<any>;
+  public abstract onUpdateClick: () => Promise<any>;
 
   public onDiscard = (): Q.Promise<any> => {
     this.setBaselines();
@@ -206,14 +206,14 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     return Q();
   };
 
-  public onSaveOrUpdateClick(): Q.Promise<any> {
+  public onSaveOrUpdateClick(): Promise<any> {
     if (this.saveButton.visible()) {
       return this.onSaveClick();
     } else if (this.updateButton.visible()) {
       return this.onUpdateClick();
     }
 
-    return Q();
+    return undefined;
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
