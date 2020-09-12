@@ -48,30 +48,15 @@ export function sendCachedDataMessage<TResponseDataModel>(
 
 export function sendMessage(data: any): void {
   if (canSendMessage()) {
-    const dataExplorerWindow = getDataExplorerWindow();
-    if (dataExplorerWindow) {
-      dataExplorerWindow.parent.postMessage(
-        {
-          signature: "pcIframe",
-          data: data
-        },
-        dataExplorerWindow.document.referrer
-      );
-    }
+    window.parent.postMessage(
+      {
+        signature: "pcIframe",
+        data: data
+      },
+      window.document.referrer
+    );
   }
 }
-
-const getDataExplorerWindow = (): Window => {
-  // Traverse up the window to find a window with `dataExplorerPlatform` property
-  let dataExplorerWindow: Window = window;
-  // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  while (!(dataExplorerWindow as any).dataExplorerPlatform && dataExplorerWindow.parent) {
-    dataExplorerWindow = dataExplorerWindow.parent;
-  }
-
-  return dataExplorerWindow;
-};
 
 export function canSendMessage(): boolean {
   return window.parent !== window;
