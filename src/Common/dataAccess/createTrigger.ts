@@ -7,8 +7,7 @@ import { sendNotificationForError } from "./sendNotificationForError";
 export async function createTrigger(
   databaseId: string,
   collectionId: string,
-  trigger: TriggerDefinition,
-  options?: unknown
+  trigger: TriggerDefinition
 ): Promise<TriggerDefinition & Resource> {
   let createdTrigger: TriggerDefinition & Resource;
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
@@ -16,7 +15,7 @@ export async function createTrigger(
     const repsonse = await client()
       .database(databaseId)
       .container(collectionId)
-      .scripts.triggers.create(trigger, options);
+      .scripts.triggers.create(trigger);
     createdTrigger = repsonse.resource;
   } catch (error) {
     logConsoleError(`Error while creating trigger ${trigger.id}:\n ${JSON.stringify(error)}`);

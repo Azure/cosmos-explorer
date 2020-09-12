@@ -7,8 +7,7 @@ import { sendNotificationForError } from "./sendNotificationForError";
 export async function updateStoredProcedure(
   databaseId: string,
   collectionId: string,
-  storedProcedure: StoredProcedureDefinition,
-  options?: unknown
+  storedProcedure: StoredProcedureDefinition
 ): Promise<StoredProcedureDefinition & Resource> {
   let updatedStoredProcedure: StoredProcedureDefinition & Resource;
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
@@ -17,7 +16,7 @@ export async function updateStoredProcedure(
       .database(databaseId)
       .container(collectionId)
       .scripts.storedProcedure(storedProcedure.id)
-      .replace(storedProcedure, options);
+      .replace(storedProcedure);
     updatedStoredProcedure = repsonse.resource;
   } catch (error) {
     logConsoleError(`Error while updating stored procedure ${storedProcedure.id}:\n ${JSON.stringify(error)}`);

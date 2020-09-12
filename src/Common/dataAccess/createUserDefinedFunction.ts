@@ -7,8 +7,7 @@ import { sendNotificationForError } from "./sendNotificationForError";
 export async function createUserDefinedFunction(
   databaseId: string,
   collectionId: string,
-  userDefinedFunction: UserDefinedFunctionDefinition,
-  options?: unknown
+  userDefinedFunction: UserDefinedFunctionDefinition
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   let createdUserDefinedFunction: UserDefinedFunctionDefinition & Resource;
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
@@ -16,7 +15,7 @@ export async function createUserDefinedFunction(
     const repsonse = await client()
       .database(databaseId)
       .container(collectionId)
-      .scripts.userDefinedFunctions.create(userDefinedFunction, options);
+      .scripts.userDefinedFunctions.create(userDefinedFunction);
     createdUserDefinedFunction = repsonse.resource;
   } catch (error) {
     logConsoleError(`Error while creating user defined function ${userDefinedFunction.id}:\n ${JSON.stringify(error)}`);

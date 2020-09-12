@@ -7,8 +7,7 @@ import { sendNotificationForError } from "./sendNotificationForError";
 export async function createStoredProcedure(
   databaseId: string,
   collectionId: string,
-  storedProcedure: StoredProcedureDefinition,
-  options?: unknown
+  storedProcedure: StoredProcedureDefinition
 ): Promise<StoredProcedureDefinition & Resource> {
   let createdStoredProcedure: StoredProcedureDefinition & Resource;
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
@@ -16,7 +15,7 @@ export async function createStoredProcedure(
     const repsonse = await client()
       .database(databaseId)
       .container(collectionId)
-      .scripts.storedProcedures.create(storedProcedure, options);
+      .scripts.storedProcedures.create(storedProcedure);
     createdStoredProcedure = repsonse.resource;
   } catch (error) {
     logConsoleError(`Error while creating stored procedure ${storedProcedure.id}:\n ${JSON.stringify(error)}`);

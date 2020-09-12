@@ -7,8 +7,7 @@ import { sendNotificationForError } from "./sendNotificationForError";
 export async function updateTrigger(
   databaseId: string,
   collectionId: string,
-  trigger: TriggerDefinition,
-  options?: unknown
+  trigger: TriggerDefinition
 ): Promise<TriggerDefinition> {
   let updatedTrigger: TriggerDefinition;
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
@@ -17,7 +16,7 @@ export async function updateTrigger(
       .database(databaseId)
       .container(collectionId)
       .scripts.trigger(trigger.id)
-      .replace(trigger, options);
+      .replace(trigger);
     updatedTrigger = repsonse.resource;
   } catch (error) {
     logConsoleError(`Error while updating trigger ${trigger.id}:\n ${JSON.stringify(error)}`);

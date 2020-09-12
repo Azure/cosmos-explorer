@@ -6,8 +6,7 @@ import { sendNotificationForError } from "./sendNotificationForError";
 
 export async function readStoredProcedures(
   databaseId: string,
-  collectionId: string,
-  options?: unknown
+  collectionId: string
 ): Promise<(StoredProcedureDefinition & Resource)[]> {
   let sprocs: (StoredProcedureDefinition & Resource)[];
   const clearMessage = logConsoleProgress(`Querying stored procedures for container ${collectionId}`);
@@ -15,7 +14,7 @@ export async function readStoredProcedures(
     const response = await client()
       .database(databaseId)
       .container(collectionId)
-      .scripts.storedProcedures.readAll(options)
+      .scripts.storedProcedures.readAll()
       .fetchAll();
     sprocs = response.resources;
   } catch (error) {
