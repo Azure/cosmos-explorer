@@ -87,6 +87,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
+import { stringToBlob } from "../Utils/BlobUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -2623,7 +2624,7 @@ export default class Explorer {
 
     return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
       (content: string) => {
-        const blob = new Blob([content], { type: "octet/stream" });
+        const blob = stringToBlob(content, "text/plain");
         if (navigator.msSaveBlob) {
           // for IE and Edge
           navigator.msSaveBlob(blob, notebookFile.name);
