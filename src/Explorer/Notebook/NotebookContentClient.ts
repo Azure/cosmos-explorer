@@ -194,18 +194,24 @@ export class NotebookContentClient {
       });
   }
 
-  public readFileContent(filePath: string): Promise<string> {
-    const fileType = NotebookUtil.isNotebookFile(filePath) ? "notebook" : "file";
-    return this.contentProvider
-      .get(this.getServerConfig(), filePath, { type: fileType, format: "text", content: 1 })
-      .toPromise()
-      .then(xhr => {
-        const content = (xhr.response as any).content;
-        if (!content) {
-          throw new Error("No content read");
-        }
+  public async readFileContent(filePath: string): Promise<string> {
+    const xhr = await this.contentProvider.get(this.getServerConfig(), filePath, { content: 1 }).toPromise();
+    const content = (xhr.response as any).content;
+    if (!content) {
+      throw new Error("No content read");
+    }
+
+    const format = (xhr.response as any).format;
+    switch (format) {
+      case "text":
+        return content;
+      case "base64":
+        return atob(content);
+      case "json":
         return stringifyNotebook(content);
-      });
+      default:
+        throw new Error(`Unsupported content format ${format}`);
+    }
   }
 
   private deleteNotebookFile(path: string): Promise<string> {
