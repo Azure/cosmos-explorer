@@ -2622,6 +2622,8 @@ export default class Explorer {
       throw new Error(error);
     }
 
+    const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Downloading ${notebookFile.path}`);
+
     return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
       (content: string) => {
         const blob = stringToBlob(content, "text/plain");
@@ -2641,12 +2643,16 @@ export default class Explorer {
           downloadLink.click();
           downloadLink.remove();
         }
+
+        clearMessage();
       },
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
           `Could not download notebook ${JSON.stringify(error)}`
         );
+
+        clearMessage();
       }
     );
   }
