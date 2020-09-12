@@ -4,8 +4,6 @@ import "@jupyterlab/terminal/style/index.css";
 import "./index.css";
 import { ServerConnection } from "@jupyterlab/services";
 import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
-import { Action } from "../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};
@@ -16,7 +14,10 @@ const getUrlVars = (): { [key: string]: string } => {
   return vars;
 };
 
-const createServerSettings = (urlVars: { [key: string]: string }): ServerConnection.ISettings => {
+const main = (): void => {
+  const urlVars = getUrlVars();
+  console.log("URL parameters", urlVars);
+
   let body: BodyInit;
   if (urlVars.hasOwnProperty("terminalEndpoint")) {
     body = JSON.stringify({
@@ -38,29 +39,14 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
       fetch: window.parent.fetch
     };
   }
+  const serverSettings = ServerConnection.makeSettings(options);
 
-  return ServerConnection.makeSettings(options);
-};
-
-const main = async (): Promise<void> => {
-  const urlVars = getUrlVars();
-  const serverSettings = createServerSettings(urlVars);
-
-  const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, {
-    baseUrl: serverSettings.baseUrl
-  });
-
-  try {
-    if (urlVars.hasOwnProperty("terminal")) {
-      await JupyterLabAppFactory.createTerminalApp(serverSettings);
-    } else {
-      throw new Error("Only terminal is supported");
-    }
-
-    TelemetryProcessor.traceSuccess(Action.OpenTerminal, startTime);
-  } catch (error) {
-    TelemetryProcessor.traceFailure(Action.OpenTerminal, startTime);
+  if (urlVars.hasOwnProperty("terminal")) {
+    JupyterLabAppFactory.createTerminalApp(serverSettings);
+    return;
   }
+
+  throw new Error("Only terminal is supported");
 };
 
 window.addEventListener("load", main);
