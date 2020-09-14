@@ -84,6 +84,7 @@ describe('Collection Add and Delete Cassandra spec', () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${keyspaceId}"]`);
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName
       await page.screenshot({path: `Test Failed ${testName}`});
       throw error;
