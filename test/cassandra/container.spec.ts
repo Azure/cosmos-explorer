@@ -84,7 +84,8 @@ describe('Collection Add and Delete Cassandra spec', () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${keyspaceId}"]`);
     } catch (error) {
-      await page.screenshot({path: 'failure.png'});
+      const testName = (expect as any).getState().currentTestName
+      await page.screenshot({path: `Test Failed ${testName}`});
       throw error;
     } 
   }) 
