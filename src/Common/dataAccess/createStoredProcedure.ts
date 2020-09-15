@@ -12,11 +12,11 @@ export async function createStoredProcedure(
   let createdStoredProcedure: StoredProcedureDefinition & Resource;
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
   try {
-    const repsonse = await client()
+    const response = await client()
       .database(databaseId)
       .container(collectionId)
       .scripts.storedProcedures.create(storedProcedure);
-    createdStoredProcedure = repsonse.resource;
+    createdStoredProcedure = response.resource;
   } catch (error) {
     logConsoleError(`Error while creating stored procedure ${storedProcedure.id}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "CreateStoredProcedure", error.code);

@@ -12,11 +12,11 @@ export async function createUserDefinedFunction(
   let createdUserDefinedFunction: UserDefinedFunctionDefinition & Resource;
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
   try {
-    const repsonse = await client()
+    const response = await client()
       .database(databaseId)
       .container(collectionId)
       .scripts.userDefinedFunctions.create(userDefinedFunction);
-    createdUserDefinedFunction = repsonse.resource;
+    createdUserDefinedFunction = response.resource;
   } catch (error) {
     logConsoleError(`Error while creating user defined function ${userDefinedFunction.id}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "CreateUserupdateUserDefinedFunction", error.code);

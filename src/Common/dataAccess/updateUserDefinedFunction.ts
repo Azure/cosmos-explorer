@@ -12,12 +12,12 @@ export async function updateUserDefinedFunction(
   let updatedUserDefinedFunction: UserDefinedFunctionDefinition & Resource;
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
   try {
-    const repsonse = await client()
+    const response = await client()
       .database(databaseId)
       .container(collectionId)
       .scripts.userDefinedFunction(userDefinedFunction.id)
       .replace(userDefinedFunction);
-    updatedUserDefinedFunction = repsonse.resource;
+    updatedUserDefinedFunction = response.resource;
   } catch (error) {
     logConsoleError(`Error while updating user defined function ${userDefinedFunction.id}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "UpdateUserupdateUserDefinedFunction", error.code);

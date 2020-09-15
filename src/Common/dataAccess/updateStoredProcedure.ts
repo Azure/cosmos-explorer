@@ -12,12 +12,12 @@ export async function updateStoredProcedure(
   let updatedStoredProcedure: StoredProcedureDefinition & Resource;
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
-    const repsonse = await client()
+    const response = await client()
       .database(databaseId)
       .container(collectionId)
       .scripts.storedProcedure(storedProcedure.id)
       .replace(storedProcedure);
-    updatedStoredProcedure = repsonse.resource;
+    updatedStoredProcedure = response.resource;
   } catch (error) {
     logConsoleError(`Error while updating stored procedure ${storedProcedure.id}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "UpdateStoredProcedure", error.code);

@@ -12,11 +12,11 @@ export async function createTrigger(
   let createdTrigger: TriggerDefinition & Resource;
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
-    const repsonse = await client()
+    const response = await client()
       .database(databaseId)
       .container(collectionId)
       .scripts.triggers.create(trigger);
-    createdTrigger = repsonse.resource;
+    createdTrigger = response.resource;
   } catch (error) {
     logConsoleError(`Error while creating trigger ${trigger.id}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "CreateTrigger", error.code);

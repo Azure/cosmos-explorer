@@ -12,12 +12,12 @@ export async function updateTrigger(
   let updatedTrigger: TriggerDefinition;
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
   try {
-    const repsonse = await client()
+    const response = await client()
       .database(databaseId)
       .container(collectionId)
       .scripts.trigger(trigger.id)
       .replace(trigger);
-    updatedTrigger = repsonse.resource;
+    updatedTrigger = response.resource;
   } catch (error) {
     logConsoleError(`Error while updating trigger ${trigger.id}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "UpdateTrigger", error.code);
