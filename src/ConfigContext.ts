@@ -81,7 +81,9 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
         const { allowedParentFrameOrigins, ...externalConfig } = await response.json();
         Object.assign(configContext, externalConfig);
         if (allowedParentFrameOrigins && allowedParentFrameOrigins.length > 0) {
-          configContext.allowedParentFrameOrigins = [...configContext.allowedParentFrameOrigins];
+          updateConfigContext({
+            allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins]
+          });
         }
       } catch (error) {
         console.error("Unable to parse json in config file");
