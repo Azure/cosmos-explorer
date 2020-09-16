@@ -63,6 +63,15 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
       label
     </span>
   </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
@@ -201,6 +210,15 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
       />
     </div>
   </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
@@ -257,6 +275,77 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
         paddingLeft={192}
       />
     </div>
+  </AnimateHeight>
+</div>
+`;
+
+exports[`TreeNodeComponent renders loading icon 1`] = `
+<div
+  className=" main2 nodeItem "
+  onClick={[Function]}
+  onKeyPress={[Function]}
+>
+  <div
+    className="treeNodeHeader "
+    data-test="label"
+    style={
+      Object {
+        "paddingLeft": 9,
+      }
+    }
+    tabIndex={-1}
+  >
+    <img
+      alt="label branch is expanded"
+      className="expandCollapseIcon"
+      onKeyPress={[Function]}
+      role="button"
+      src=""
+      tabIndex={0}
+    />
+    <span
+      className="nodeLabel"
+      title="label"
+    >
+      label
+    </span>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height="auto"
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+    />
   </AnimateHeight>
 </div>
 `;
@@ -330,6 +419,15 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
       />
     </div>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
   </div>
   <AnimateHeight
     animateOpacity={false}
@@ -449,6 +547,15 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
     >
       label
     </span>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
   </div>
   <AnimateHeight
     animateOpacity={false}
