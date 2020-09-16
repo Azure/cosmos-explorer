@@ -1,13 +1,13 @@
+import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
+import { deleteStoredProcedure } from "../../Common/dataAccess/deleteStoredProcedure";
+import { executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-
-import StoredProcedureTab from "../Tabs/StoredProcedureTab";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
-import { deleteStoredProcedure, executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TabsBase from "../Tabs/TabsBase";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
@@ -47,20 +47,20 @@ export default class StoredProcedure {
   public body: ko.Observable<string>;
   public isExecuteEnabled: boolean;
 
-  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.StoredProcedure) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: StoredProcedureDefinition & Resource) {
     this.nodeKind = "StoredProcedure";
     this.container = container;
     this.collection = collection;
     this.self = data._self;
     this.rid = data._rid;
     this.id = ko.observable(data.id);
-    this.body = ko.observable(data.body);
+    this.body = ko.observable(data.body as string);
     this.isExecuteEnabled = this.container.isFeatureEnabled(Constants.Features.executeSproc);
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.StoredProcedures).length + 1;
-    const storedProcedure = <DataModels.StoredProcedure>{
+    const storedProcedure = <StoredProcedureDefinition>{
       id: "",
       body: sampleStoredProcedureBody
     };
@@ -104,7 +104,7 @@ export default class StoredProcedure {
     if (storedProcedureTab) {
       this.container.tabsManager.activateTab(storedProcedureTab);
     } else {
-      const storedProcedureData = <DataModels.StoredProcedure>{
+      const storedProcedureData = <StoredProcedureDefinition>{
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
@@ -137,14 +137,7 @@ export default class StoredProcedure {
       return;
     }
 
-    const storedProcedureData = <DataModels.StoredProcedure>{
-      _rid: this.rid,
-      _self: this.self,
-      id: this.id(),
-      body: this.body()
-    };
-
-    deleteStoredProcedure(this.collection, storedProcedureData).then(
+    deleteStoredProcedure(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
         this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);

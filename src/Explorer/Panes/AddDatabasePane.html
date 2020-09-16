@@ -73,8 +73,8 @@
           </p>
 
           <input id="database-id" type="text" aria-required="true" autocomplete="off" pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'" placeholder="Type a new database id"
-              size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus"
+              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus, attr: { placeholder: databaseIdPlaceHolder }"
               aria-label="Database id" autofocus>
 
           <!-- Database provisioned throughput - Start -->

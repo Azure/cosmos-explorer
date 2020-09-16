@@ -17,7 +17,7 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import InterruptKernelIcon from "../../../images/notebook/Notebook-stop.svg";
 import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas, ArmApiVersions } from "../../Common/Constants";
 import { CommandBarComponentButtonFactory } from "../Menus/CommandBar/CommandBarComponentButtonFactory";

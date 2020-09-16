@@ -26,7 +26,7 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import TerminalTab from "./Tabs/TerminalTab";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { ActionContracts, MessageTypes } from "../Contracts/ExplorerContracts";
@@ -87,6 +87,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
+import { stringToBlob } from "../Utils/BlobUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -1862,6 +1863,9 @@ export default class Explorer {
   }
 
   public findSelectedDatabase(): ViewModels.Database {
+    if (!this.selectedNode()) {
+      return null;
+    }
     if (this.selectedNode().nodeKind === "Database") {
       return _.find(this.databases(), (database: ViewModels.Database) => database.rid === this.selectedNode().rid);
     }
@@ -2578,9 +2582,11 @@ export default class Explorer {
       throw new Error(error);
     }
 
+    const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Downloading ${notebookFile.path}`);
+
     return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
       (content: string) => {
-        const blob = new Blob([content], { type: "octet/stream" });
+        const blob = stringToBlob(content, "text/plain");
         if (navigator.msSaveBlob) {
           // for IE and Edge
           navigator.msSaveBlob(blob, notebookFile.name);
@@ -2597,12 +2603,16 @@ export default class Explorer {
           downloadLink.click();
           downloadLink.remove();
         }
+
+        clearMessage();
       },
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
           `Could not download notebook ${JSON.stringify(error)}`
         );
+
+        clearMessage();
       }
     );
   }
@@ -3077,12 +3087,6 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
-
-    TelemetryProcessor.trace(
-      Action.LoadingStatus,
-      ActionModifiers.Mark,
-      title !== "Welcome to Azure Cosmos DB" ? `Title: ${title}, Text: ${text}` : text
-    );
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {

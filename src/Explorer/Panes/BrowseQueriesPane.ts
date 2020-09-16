@@ -5,7 +5,7 @@ import { Areas } from "../../Common/Constants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import * as Logger from "../../Common/Logger";
 import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import QueryTab from "../Tabs/QueryTab";
 
 export class BrowseQueriesPane extends ContextualPaneBase {

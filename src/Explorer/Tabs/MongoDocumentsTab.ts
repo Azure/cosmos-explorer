@@ -8,7 +8,7 @@ import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import MongoUtility from "../../Common/MongoUtility";
 import ObjectId from "../Tree/ObjectId";
 import Q from "q";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import {
   createDocument,

@@ -287,7 +287,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
       <img
         className="expandCollapseIcon"
         src={this.state.isExpanded ? TriangleDownIcon : TriangleRightIcon}
-        alt={this.state.isExpanded ? "Branch is expanded" : "Branch is collapsed"}
+        alt={this.state.isExpanded ? `${node.label} branch is expanded` : `${node.label} branch is collapsed`}
         onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onCollapseExpandIconKeyPress(event, node)}
         tabIndex={0}
         role="button"

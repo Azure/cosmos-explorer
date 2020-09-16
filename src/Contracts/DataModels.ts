@@ -88,10 +88,6 @@ export interface Resource {
   id: string;
 }
 
-export interface ResourceRequest {
-  id: string;
-}
-
 export interface Collection extends Resource {
   defaultTtl?: number;
   indexingPolicy?: IndexingPolicy;
@@ -104,38 +100,11 @@ export interface Collection extends Resource {
   geospatialConfig?: GeospatialConfig;
 }
 
-export interface CreateCollectionWithRpResponse extends Resource {
-  properties: Collection;
-  name: string;
-  type: string;
-}
-
-export interface CollectionRequest extends ResourceRequest {
-  defaultTtl?: number;
-  indexingPolicy?: IndexingPolicy;
-  partitionKey?: PartitionKey;
-  uniqueKeyPolicy?: UniqueKeyPolicy;
-  conflictResolutionPolicy?: ConflictResolutionPolicy;
-}
-
 export interface Database extends Resource {
   collections?: Collection[];
 }
 
 export interface DocumentId extends Resource {}
-
-export interface Script extends Resource {
-  body: string;
-}
-
-export interface StoredProcedure extends Script {}
-
-export interface UserDefinedFunction extends Script {}
-
-export interface Trigger extends Script {
-  triggerType: string;
-  triggerOperation: string;
-}
 
 export interface ConflictId extends Resource {
   resourceId?: string;
@@ -259,28 +228,6 @@ export interface ErrorDataModel {
   code?: string;
 }
 
-/**
- * Defines a property bag for telemetry e.g. see ITelemetryError.
- */
-export interface ITelemetryProperties {
-  [propertyName: string]: string;
-}
-
-/**
- * Defines a property bag for telemetry e.g. see ITelemetryError.
- */
-export interface ITelemetryEvent {
-  name: string;
-  properties?: ITelemetryProperties;
-}
-
-/**
- * Defines an error to be logged as telemetry data.
- */
-export interface ITelemetryError extends ITelemetryEvent {
-  error: any;
-}
-
 export interface CreateDatabaseAndCollectionRequest {
   databaseId: string;
   collectionId: string;
@@ -305,11 +252,6 @@ export enum AutopilotTier {
   Tier2 = 2,
   Tier3 = 3,
   Tier4 = 4
-}
-
-export interface RpOptions {
-  // tier is sent as string, autoscale as object (AutoPilotCreationSettings)
-  [key: string]: string | AutoPilotCreationSettings;
 }
 
 export interface Query {
@@ -352,12 +294,6 @@ export interface ReadDatabaseOfferParams {
   databaseResourceId?: string;
   isServerless?: boolean;
   offerId?: string;
-}
-
-export interface SharedThroughputRange {
-  minimumRU: number;
-  maximumRU: number;
-  defaultRU: number;
 }
 
 export interface Notification {
@@ -502,25 +438,6 @@ export interface NotebookConfigurationEndpointInfo {
   token: string;
 }
 
-export interface SparkCluster {
-  id: string;
-  name: string;
-  type: string;
-  properties: {
-    kind: string;
-    driverSize: string;
-    workerSize: string;
-    workerInstanceCount: number;
-    creationTime: string;
-    status: string;
-    libraries?: SparkClusterLibrary[];
-  };
-}
-
-export interface SparkClusterFeedResponse {
-  value: SparkCluster[];
-}
-
 export interface SparkClusterConnectionInfo {
   userName: string;
   password: string;
@@ -562,77 +479,8 @@ export interface MongoParameters extends RpParameters {
   analyticalStorageTtl?: number;
 }
 
-export interface GraphParameters extends RpParameters {
-  pk: string;
-  coll: string;
-  cd: Boolean;
-  indexingPolicy?: IndexingPolicy;
-}
-
-export interface CreationRequest {
-  properties: {
-    resource: {
-      id: string;
-    };
-    options: RpOptions;
-  };
-}
-
-export interface SqlCollectionParameters extends RpParameters {
-  uniqueKeyPolicy?: UniqueKeyPolicy;
-  pk: string;
-  coll: string;
-  cd: Boolean;
-  analyticalStorageTtl?: number;
-  indexingPolicy?: IndexingPolicy;
-}
-
-export interface MongoCreationRequest extends CreationRequest {
-  properties: {
-    resource: {
-      id: string;
-      analyticalStorageTtl?: number;
-      shardKey?: {};
-    };
-    options: RpOptions;
-  };
-}
-
-export interface GraphCreationRequest extends CreationRequest {
-  properties: {
-    resource: {
-      id: string;
-      partitionKey: {};
-      indexingPolicy?: IndexingPolicy;
-    };
-    options: RpOptions;
-  };
-}
-
-export interface CreateDatabaseWithRpResponse {
-  id: string;
-  name: string;
-  type: string;
-  properties: {
-    id: string;
-  };
-}
-
 export interface SparkClusterLibrary {
   name: string;
-}
-
-export interface SqlCollectionCreationRequest extends CreationRequest {
-  properties: {
-    resource: {
-      uniqueKeyPolicy?: UniqueKeyPolicy;
-      id: string;
-      partitionKey: {};
-      analyticalStorageTtl?: number;
-      indexingPolicy?: IndexingPolicy;
-    };
-    options: RpOptions;
-  };
 }
 
 export interface Library extends SparkClusterLibrary {
