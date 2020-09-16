@@ -13,6 +13,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
+import { ARMError } from "../../Utils/arm/request";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
@@ -105,11 +106,12 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
           this.databaseDeleteFeedback("");
         }
       },
-      (reason: any) => {
+      (reason: unknown) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        this.formErrors(message[0].message);
-        this.formErrorsDetails(message[0].message);
+
+        const message = reason instanceof ARMError ? reason.message : ErrorParserUtility.parse(reason)[0].message;
+        this.formErrors(message);
+        this.formErrorsDetails(message);
         TelemetryProcessor.traceFailure(
           Action.DeleteDatabase,
           {

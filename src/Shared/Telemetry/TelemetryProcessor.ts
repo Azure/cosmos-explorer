@@ -19,7 +19,7 @@ export function trace(action: Action, actionModifier: string = ActionModifiers.M
     }
   });
 
-  appInsights.trackEvent({ name: Action[action] }, getData(data));
+  appInsights.trackEvent({ name: Action[action] }, getData(actionModifier, data));
 }
 
 export function traceStart(action: Action, data?: unknown): number {
@@ -49,7 +49,7 @@ export function traceSuccess(action: Action, data?: unknown, timestamp?: number)
     }
   });
 
-  appInsights.stopTrackEvent(Action[action], getData(data));
+  appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Success, data));
 }
 
 export function traceFailure(action: Action, data?: unknown, timestamp?: number): void {
@@ -63,7 +63,7 @@ export function traceFailure(action: Action, data?: unknown, timestamp?: number)
     }
   });
 
-  appInsights.stopTrackEvent(Action[action], getData(data));
+  appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Failed, data));
 }
 
 export function traceCancel(action: Action, data?: unknown, timestamp?: number): void {
@@ -77,7 +77,7 @@ export function traceCancel(action: Action, data?: unknown, timestamp?: number):
     }
   });
 
-  appInsights.stopTrackEvent(Action[action], getData(data));
+  appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Cancel, data));
 }
 
 export function traceOpen(action: Action, data?: unknown, timestamp?: number): number {
@@ -112,7 +112,7 @@ export function traceMark(action: Action, data?: unknown, timestamp?: number): n
   return validTimestamp;
 }
 
-function getData(data: unknown = {}): { [key: string]: string } | undefined {
+function getData(actionModifier: string, data: unknown = {}): { [key: string]: string } | undefined {
   if (typeof data === "string") {
     data = { message: data };
   }
@@ -124,6 +124,7 @@ function getData(data: unknown = {}): { [key: string]: string } | undefined {
       subscriptionId: userContext.subscriptionId as string,
       platform: configContext.platform,
       env: process.env.NODE_ENV as string,
+      actionModifier,
       ...data
     };
   }

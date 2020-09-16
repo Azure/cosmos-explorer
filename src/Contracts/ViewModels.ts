@@ -1,16 +1,22 @@
-import * as DataModels from "./DataModels";
+import {
+  QueryMetrics,
+  Resource,
+  StoredProcedureDefinition,
+  TriggerDefinition,
+  UserDefinedFunctionDefinition
+} from "@azure/cosmos";
 import Q from "q";
-import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
-import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { QueryMetrics } from "@azure/cosmos";
-import { UploadDetails } from "../workers/upload/definitions";
 import Explorer from "../Explorer/Explorer";
-import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
+import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
+import ConflictId from "../Explorer/Tree/ConflictId";
+import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
-import DocumentId from "../Explorer/Tree/DocumentId";
-import ConflictId from "../Explorer/Tree/ConflictId";
+import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
+import { UploadDetails } from "../workers/upload/definitions";
+import * as DataModels from "./DataModels";
 
 export interface TokenProvider {
   getAuthHeader(): Promise<Headers>;
@@ -153,13 +159,13 @@ export interface Collection extends CollectionBase {
   collapseUserDefinedFunctions(): void;
   collapseTriggers(): void;
 
-  loadUserDefinedFunctions(): Q.Promise<any>;
-  loadStoredProcedures(): Q.Promise<any>;
-  loadTriggers(): Q.Promise<any>;
+  loadUserDefinedFunctions(): Promise<any>;
+  loadStoredProcedures(): Promise<any>;
+  loadTriggers(): Promise<any>;
 
-  createStoredProcedureNode(data: DataModels.StoredProcedure): StoredProcedure;
-  createUserDefinedFunctionNode(data: DataModels.UserDefinedFunction): UserDefinedFunction;
-  createTriggerNode(data: DataModels.Trigger): Trigger;
+  createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
+  createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
+  createTriggerNode(data: TriggerDefinition & Resource): Trigger;
   findStoredProcedureWithId(sprocRid: string): StoredProcedure;
   findTriggerWithId(triggerRid: string): Trigger;
   findUserDefinedFunctionWithId(udfRid: string): UserDefinedFunction;

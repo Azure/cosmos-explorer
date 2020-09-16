@@ -1,28 +1,26 @@
-import * as _ from "underscore";
-import * as Constants from "./Constants";
-import * as DataModels from "../Contracts/DataModels";
-import * as HeadersUtility from "./HeadersUtility";
-import * as ViewModels from "../Contracts/ViewModels";
-import Q from "q";
 import {
   ConflictDefinition,
   FeedOptions,
   ItemDefinition,
+  OfferDefinition,
   QueryIterator,
-  Resource,
-  TriggerDefinition,
-  OfferDefinition
+  Resource
 } from "@azure/cosmos";
-import { client } from "./CosmosClient";
-import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
-import { sendCachedDataMessage } from "./MessageHandler";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { OfferUtils } from "../Utils/OfferUtils";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
-import StoredProcedure from "../Explorer/Tree/StoredProcedure";
-import { Platform, configContext } from "../ConfigContext";
-import DocumentId from "../Explorer/Tree/DocumentId";
+import Q from "q";
+import { configContext, Platform } from "../ConfigContext";
+import * as DataModels from "../Contracts/DataModels";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
+import * as ViewModels from "../Contracts/ViewModels";
 import ConflictId from "../Explorer/Tree/ConflictId";
+import DocumentId from "../Explorer/Tree/DocumentId";
+import StoredProcedure from "../Explorer/Tree/StoredProcedure";
+import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
+import { OfferUtils } from "../Utils/OfferUtils";
+import * as Constants from "./Constants";
+import { client } from "./CosmosClient";
+import * as HeadersUtility from "./HeadersUtility";
+import { sendCachedDataMessage } from "./MessageHandler";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
@@ -55,85 +53,55 @@ export function queryDocuments(
   return Q(documentsIterator);
 }
 
-export function readStoredProcedures(
-  collection: ViewModels.Collection,
-  options?: any
-): Q.Promise<DataModels.StoredProcedure[]> {
+export function getPartitionKeyHeaderForConflict(conflictId: ConflictId): Object {
+  const partitionKeyDefinition: DataModels.PartitionKey = conflictId.partitionKey;
+  const partitionKeyValue: any = conflictId.partitionKeyValue;
+
+  return getPartitionKeyHeader(partitionKeyDefinition, partitionKeyValue);
+}
+
+export function getPartitionKeyHeader(partitionKeyDefinition: DataModels.PartitionKey, partitionKeyValue: any): Object {
+  if (!partitionKeyDefinition) {
+    return undefined;
+  }
+
+  if (partitionKeyValue === undefined) {
+    return [{}];
+  }
+
+  return [partitionKeyValue];
+}
+
+export function updateOffer(
+  offer: DataModels.Offer,
+  newOffer: DataModels.Offer,
+  options?: RequestOptions
+): Q.Promise<DataModels.Offer> {
   return Q(
     client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.storedProcedures.readAll(options)
-      .fetchAll()
-      .then(response => response.resources as DataModels.StoredProcedure[])
+      .offer(offer.id)
+      // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
+      .replace((newOffer as unknown) as OfferDefinition, options)
+      .then(response => {
+        return Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => response.resource);
+      })
   );
 }
 
-export function readStoredProcedure(
-  collection: ViewModels.Collection,
-  requestedResource: DataModels.Resource,
-  options?: any
-): Q.Promise<DataModels.StoredProcedure> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.storedProcedure(requestedResource.id)
-      .read(options)
-      .then(response => response.resource as DataModels.StoredProcedure)
-  );
-}
-export function readUserDefinedFunctions(
-  collection: ViewModels.Collection,
-  options: any
-): Q.Promise<DataModels.UserDefinedFunction[]> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.userDefinedFunctions.readAll(options)
-      .fetchAll()
-      .then(response => response.resources as DataModels.UserDefinedFunction[])
-  );
-}
-export function readUserDefinedFunction(
-  collection: ViewModels.Collection,
-  requestedResource: DataModels.Resource,
-  options?: any
-): Q.Promise<DataModels.UserDefinedFunction> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.userDefinedFunction(requestedResource.id)
-      .read(options)
-      .then(response => response.resource as DataModels.UserDefinedFunction)
-  );
-}
+export function updateDocument(
+  collection: ViewModels.CollectionBase,
+  documentId: DocumentId,
+  newDocument: any
+): Q.Promise<any> {
+  const partitionKey = documentId.partitionKeyValue;
 
-export function readTriggers(collection: ViewModels.Collection, options: any): Q.Promise<DataModels.Trigger[]> {
   return Q(
     client()
       .database(collection.databaseId)
       .container(collection.id())
-      .scripts.triggers.readAll(options)
-      .fetchAll()
-      .then(response => response.resources as DataModels.Trigger[])
-  );
-}
-
-export function readTrigger(
-  collection: ViewModels.Collection,
-  requestedResource: DataModels.Resource,
-  options?: any
-): Q.Promise<DataModels.Trigger> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.trigger(requestedResource.id)
-      .read(options)
-      .then(response => response.resource as DataModels.Trigger)
+      .item(documentId.id(), partitionKey)
+      .replace(newDocument)
+      .then(response => response.resource)
   );
 }
 
@@ -165,6 +133,16 @@ export function executeStoredProcedure(
   );
 }
 
+export function createDocument(collection: ViewModels.CollectionBase, newDocument: any): Q.Promise<any> {
+  return Q(
+    client()
+      .database(collection.databaseId)
+      .container(collection.id())
+      .items.create(newDocument)
+      .then(response => response.resource)
+  );
+}
+
 export function readDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
 
@@ -175,155 +153,6 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
       .item(documentId.id(), partitionKey)
       .read()
       .then(response => response.resource)
-  );
-}
-
-export function getPartitionKeyHeaderForConflict(conflictId: ConflictId): Object {
-  const partitionKeyDefinition: DataModels.PartitionKey = conflictId.partitionKey;
-  const partitionKeyValue: any = conflictId.partitionKeyValue;
-
-  return getPartitionKeyHeader(partitionKeyDefinition, partitionKeyValue);
-}
-
-export function getPartitionKeyHeader(partitionKeyDefinition: DataModels.PartitionKey, partitionKeyValue: any): Object {
-  if (!partitionKeyDefinition) {
-    return undefined;
-  }
-
-  if (partitionKeyValue === undefined) {
-    return [{}];
-  }
-
-  return [partitionKeyValue];
-}
-
-export function updateDocument(
-  collection: ViewModels.CollectionBase,
-  documentId: DocumentId,
-  newDocument: any
-): Q.Promise<any> {
-  const partitionKey = documentId.partitionKeyValue;
-
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .item(documentId.id(), partitionKey)
-      .replace(newDocument)
-      .then(response => response.resource)
-  );
-}
-
-export function updateOffer(
-  offer: DataModels.Offer,
-  newOffer: DataModels.Offer,
-  options?: RequestOptions
-): Q.Promise<DataModels.Offer> {
-  return Q(
-    client()
-      .offer(offer.id)
-      // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
-      .replace((newOffer as unknown) as OfferDefinition, options)
-      .then(response => {
-        return Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => response.resource);
-      })
-  );
-}
-
-export function updateStoredProcedure(
-  collection: ViewModels.Collection,
-  storedProcedure: DataModels.StoredProcedure,
-  options: any
-): Q.Promise<DataModels.StoredProcedure> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.storedProcedure(storedProcedure.id)
-      .replace(storedProcedure, options)
-      .then(response => response.resource as DataModels.StoredProcedure)
-  );
-}
-
-export function updateUserDefinedFunction(
-  collection: ViewModels.Collection,
-  userDefinedFunction: DataModels.UserDefinedFunction,
-  options?: any
-): Q.Promise<DataModels.UserDefinedFunction> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.userDefinedFunction(userDefinedFunction.id)
-      .replace(userDefinedFunction, options)
-      .then(response => response.resource as DataModels.StoredProcedure)
-  );
-}
-
-export function updateTrigger(
-  collection: ViewModels.Collection,
-  trigger: DataModels.Trigger,
-  options?: any
-): Q.Promise<DataModels.Trigger> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.trigger(trigger.id)
-      .replace(trigger as TriggerDefinition, options)
-      .then(response => response.resource as DataModels.Trigger)
-  );
-}
-
-export function createDocument(collection: ViewModels.CollectionBase, newDocument: any): Q.Promise<any> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .items.create(newDocument)
-      .then(response => response.resource as DataModels.StoredProcedure)
-  );
-}
-
-export function createStoredProcedure(
-  collection: ViewModels.Collection,
-  newStoredProcedure: DataModels.StoredProcedure,
-  options?: any
-): Q.Promise<DataModels.StoredProcedure> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.storedProcedures.create(newStoredProcedure, options)
-      .then(response => response.resource as DataModels.StoredProcedure)
-  );
-}
-
-export function createUserDefinedFunction(
-  collection: ViewModels.Collection,
-  newUserDefinedFunction: DataModels.UserDefinedFunction,
-  options: any
-): Q.Promise<DataModels.UserDefinedFunction> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.userDefinedFunctions.create(newUserDefinedFunction, options)
-      .then(response => response.resource as DataModels.UserDefinedFunction)
-  );
-}
-
-export function createTrigger(
-  collection: ViewModels.Collection,
-  newTrigger: DataModels.Trigger,
-  options?: any
-): Q.Promise<DataModels.Trigger> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.triggers.create(newTrigger as TriggerDefinition, options)
-      .then(response => response.resource as DataModels.Trigger)
   );
 }
 
@@ -352,48 +181,6 @@ export function deleteConflict(
       .container(collection.id())
       .conflict(conflictId.id())
       .delete(options)
-  );
-}
-
-export function deleteStoredProcedure(
-  collection: ViewModels.Collection,
-  storedProcedure: DataModels.StoredProcedure,
-  options: any
-): Q.Promise<any> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.storedProcedure(storedProcedure.id)
-      .delete()
-  );
-}
-
-export function deleteUserDefinedFunction(
-  collection: ViewModels.Collection,
-  userDefinedFunction: DataModels.UserDefinedFunction,
-  options: any
-): Q.Promise<any> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.userDefinedFunction(userDefinedFunction.id)
-      .delete()
-  );
-}
-
-export function deleteTrigger(
-  collection: ViewModels.Collection,
-  trigger: DataModels.Trigger,
-  options: any
-): Q.Promise<any> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .scripts.trigger(trigger.id)
-      .delete()
   );
 }
 
