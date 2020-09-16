@@ -115,10 +115,10 @@
 
           <!-- Database provisioned throughput - Start -->
           <!-- ko if: canConfigureThroughput -->
-          <div class="databaseProvision" aria-label="New database provision support"
+          <div class="databaseProvision" aria-label="Provision database throughput"
               data-bind="visible: databaseCreateNew">
               <input tabindex="0" type="checkbox" data-test="addCollectionPane-databaseSharedThroughput"
-                  id="addCollection-databaseSharedThroughput" title="Provision shared throughput"
+                  id="addCollection-databaseSharedThroughput" title="Provision database throughput"
                   data-bind="checked: databaseCreateNewShared" />
               <span class="databaseProvisionText" for="databaseSharedThroughput">Provision database throughput</span>
               <span class="infoTooltip" role="tooltip" tabindex="0">
