@@ -17,6 +17,7 @@ import {
 
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
+import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
 
 export interface TreeNodeMenuItem {
   label: string;
@@ -37,6 +38,7 @@ export interface TreeNode {
   data?: any; // Piece of data corresponding to this node
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
+  isLoading?: boolean;
   isSelected?: () => boolean;
   onClick?: (isExpanded: boolean) => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => void;
@@ -182,6 +184,9 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
             </span>
           )}
           {node.contextMenu && this.renderContextMenuButton(node)}
+        </div>
+        <div className="loadingIconContainer">
+          <img className="loadingIcon" src={LoadingIndicator_3Squares} hidden={!this.props.node.isLoading} />
         </div>
         {node.children && (
           <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>

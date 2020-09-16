@@ -75,15 +75,15 @@ export interface Database extends TreeNode {
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
 
   selectDatabase(): void;
-  expandDatabase(): void;
+  expandDatabase(): Promise<void>;
   collapseDatabase(): void;
 
-  loadCollections(): Q.Promise<void>;
+  loadCollections(): Promise<void>;
   findCollectionWithId(collectionRid: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
   onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
-  readSettings(): void;
   onSettingsClick: () => void;
+  loadOffer(): Promise<void>;
 }
 
 export interface CollectionBase extends TreeNode {

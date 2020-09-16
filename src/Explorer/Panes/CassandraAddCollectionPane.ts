@@ -268,8 +268,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
           if (keyspace && keyspace.offer && !!keyspace.offer()) {
             this.keyspaceOffers.set(keyspace.id(), keyspace.offer());
-          } else if (keyspace && keyspace.isDatabaseShared && keyspace.isDatabaseShared()) {
-            keyspace.readSettings();
           }
           return keyspace.id();
         });

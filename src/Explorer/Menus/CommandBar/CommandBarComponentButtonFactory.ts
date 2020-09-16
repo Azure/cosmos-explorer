@@ -391,31 +391,6 @@ export class CommandBarComponentButtonFactory {
     return buttons;
   }
 
-  private static createScaleAndSettingsButton(container: Explorer): CommandButtonComponentProps {
-    let isShared = false;
-    if (container.isDatabaseNodeSelected()) {
-      isShared = container.findSelectedDatabase().isDatabaseShared();
-    } else if (container.isNodeKindSelected("Collection")) {
-      const database: ViewModels.Database = container.findSelectedCollection().getDatabase();
-      isShared = database && database.isDatabaseShared();
-    }
-
-    const label = isShared ? "Settings" : "Scale & Settings";
-
-    return {
-      iconSrc: ScaleIcon,
-      iconAlt: label,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && (<any>selectedCollection).onSettingsClick();
-      },
-      commandButtonLabel: label,
-      ariaLabel: label,
-      hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected()
-    };
-  }
-
   private static createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
     const label = "New Notebook";
     return {
