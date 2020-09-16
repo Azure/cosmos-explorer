@@ -537,9 +537,11 @@
                                                           attr: {
                                                               'aria-checked': isAnalyticalStorageOn() ? 'true' : 'false'
                                                           }" />
-                      <span for="enableAnalyticalStorageRadioOn" data-bind="disable: showEnableSynapseLink">
-                          On
-                      </span>
+                      <label for="enableAnalyticalStorageRadioOn" class="enableAnalyticalStorageRadioLabel">
+                        <span data-bind="disable: showEnableSynapseLink">
+                            On
+                        </span>
+                      </label>
 
                       <input class="enableAnalyticalStorageRadio" id="enableAnalyticalStorageRadioOff"
                           name="analyticalStore" type="radio" role="radio" tabindex="0" data-bind="
@@ -549,9 +551,11 @@
                                                           attr: {
                                                               'aria-checked': isAnalyticalStorageOn() ? 'false' : 'true'
                                                           }" />
-                      <span for="enableAnalyticalStorageRadioOff" data-bind="disable: showEnableSynapseLink">
-                          Off
-                      </span>
+                      <label for="enableAnalyticalStorageRadioOff" class="enableAnalyticalStorageRadioLabel">
+                        <span data-bind="disable: showEnableSynapseLink">
+                            Off
+                        </span>
+                      </label>
                   </div>
 
                   <div class="paragraph italic" data-bind="visible: ttl90DaysEnabled() && isAnalyticalStorageOn()">
