@@ -36,12 +36,7 @@ import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
 import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
-import {
-  createDocument,
-  readCollectionQuotaInfo,
-  readOffer,
-  readOffers
-} from "../../Common/DocumentClientUtilityBase";
+import { createDocument, readCollectionQuotaInfo, readOffer, readOffers } from "../../Common/DocumentClientUtilityBase";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
 
