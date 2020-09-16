@@ -93,7 +93,7 @@
                 margin-left: @MediumSpace;
                 .flex-display();
                 .flex-direction();
-    
+
 
                 .togglesWithMetadata {
                     margin-top: @MediumSpace;
@@ -102,23 +102,23 @@
                         height: @ToggleHeight;
                         width: @ToggleWidth;
                         margin-left: @MediumSpace;
-            
+
                         &:focus {
                             .focus();
                         }
-            
+
                         .tab {
                             margin-right: @MediumSpace;
                         }
-            
+
                         .toggleSwitch {
                             .toggleSwitch();
                         }
-            
+
                         .selectedToggle {
                             .selectedToggle();
                         }
-            
+
                         .unselectedToggle {
                             .unselectedToggle();
                         }
@@ -136,7 +136,7 @@
                     .queryResultNextEnable {
                         color: @AccentMediumHigh;
                         font-size: @mediumFontSize;
-                        cursor: pointer; 
+                        cursor: pointer;
 
                         img {
                             height: @ImgHeight;
@@ -153,7 +153,7 @@
                         img {
                             height: @ImgHeight;
                             width: @ImgWidth;
-                            margin-left: @SmallSpace; 
+                            margin-left: @SmallSpace;
                         }
                     }
                 }
@@ -181,7 +181,7 @@
                     cursor: pointer;
                     padding: @SmallSpace;
                 }
-            
+
                 .queryMetricsSummaryContainer {
                     .flex-display();
                     .flex-direction();
@@ -195,10 +195,14 @@
                         overflow-y: auto;
                         overflow-x: hidden;
 
+                        caption {
+                            width: 100px;
+                        }
+
                         .queryMetricsSummaryHead {
                             .flex-display();
                         }
-                
+
                         .queryMetricsSummaryHeader.queryMetricsSummaryTuple {
                             font-size: 10px;
                         }
@@ -207,7 +211,7 @@
                             .flex-display();
                             .flex-direction();
                         }
-                
+
                         .queryMetricsSummaryTuple {
                             border-bottom: 1px solid @BaseMedium;
                             height: 32px;
@@ -221,18 +225,14 @@
                                     text-overflow: ellipsis;
                                     overflow: hidden;
                                     white-space: nowrap;
-                                    flex: 0 1 auto;
-                                }
-
-                                &:nth-child(2) {
-                                    flex: 1 1 auto;
+                                    flex: 0 0 50%;
                                 }
 
                                 &:nth-child(3) {
                                     text-overflow: ellipsis;
                                     overflow: hidden;
                                     white-space: nowrap;
-                                    flex: 0 0 50%; 
+                                    flex: 0 0 50%;
                                 }
 
                                 .queryMetricInfoTooltip {
@@ -264,7 +264,7 @@
                                             .tooltipTextAfter();
                                         }
                                     }
-                                    
+
                                     .queryEngineExeTimeInfo {
                                         width: @QueryEngineExeInfo;
                                         top: -85px;
