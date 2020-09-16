@@ -21,14 +21,13 @@ exports[`SettingsUtils functions render 1`] = `
     After the first 
     10
      GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
        
       Learn more
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -50,14 +49,13 @@ exports[`SettingsUtils functions render 1`] = `
     After the first 
     10
      GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
        
       Learn more
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -65,13 +63,12 @@ exports[`SettingsUtils functions render 1`] = `
     container
      throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -79,13 +76,12 @@ exports[`SettingsUtils functions render 1`] = `
     container
      throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -93,13 +89,12 @@ exports[`SettingsUtils functions render 1`] = `
     container
      throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -107,13 +102,12 @@ exports[`SettingsUtils functions render 1`] = `
     container
      throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -121,13 +115,12 @@ exports[`SettingsUtils functions render 1`] = `
     database
      throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -135,13 +128,12 @@ exports[`SettingsUtils functions render 1`] = `
     database
      throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -149,13 +141,12 @@ exports[`SettingsUtils functions render 1`] = `
     database
      throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -163,13 +154,12 @@ exports[`SettingsUtils functions render 1`] = `
     database
      throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-info"
-      rel="noreferrer"
       target="_blank"
     >
       documentation
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -192,9 +182,9 @@ exports[`SettingsUtils functions render 1`] = `
        
     </b>
     (
-    2
+    regions: 
      
-    regions
+    2
     , 
     1000
     RU/s, 
@@ -216,9 +206,9 @@ exports[`SettingsUtils functions render 1`] = `
        
     </b>
     (
-    2
+    regions: 
      
-    regions
+    2
     , 
     100
      - 
@@ -240,25 +230,23 @@ exports[`SettingsUtils functions render 1`] = `
   <span>
     The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. For more information see,
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-db-ttl"
-      rel="noreferrer"
       target="_blank"
     >
       Time to Live (TTL) in Azure Cosmos DB
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
     Changing the Indexing Policy impacts query results while the index transformation occurs. When a change is made and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. For more information see,
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmosdb/modify-index-policy"
-      rel="noreferrer"
       target="_blank"
     >
       Modifying Indexing Policies
-    </a>
+    </StyledLinkBase>
     .
   </span>
   <span>
@@ -304,14 +292,13 @@ exports[`SettingsUtils functions render 1`] = `
   </span>
   <span>
     Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write application defined logic to determine the winner of the conflicting versions of a document. The stored procedure will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the conflicts will be populated in the
-    <a
+    <StyledLinkBase
       className="linkDarkBackground"
       href="https://aka.ms/dataexplorerconflics"
-      rel="noreferrer"
       target="_blank"
     >
        conflicts feed
-    </a>
+    </StyledLinkBase>
     . You can update/re-register the stored procedure at any time.
   </span>
   <span>

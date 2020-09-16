@@ -13,7 +13,7 @@ export const collection = {
   databaseId: "test",
   id: ko.observable<string>("test"),
   defaultTtl: ko.observable<number>(5),
-  analyticalStorageTtl: ko.observable<number>(5),
+  analyticalStorageTtl: ko.observable<number>(undefined),
   indexingPolicy: ko.observable<DataModels.IndexingPolicy>({
     automatic: true,
     indexingMode: "default",
@@ -37,5 +37,14 @@ export const collection = {
   ),
   changeFeedPolicy: ko.observable<DataModels.ChangeFeedPolicy>({} as DataModels.ChangeFeedPolicy),
   geospatialConfig: ko.observable<DataModels.GeospatialConfig>({} as DataModels.GeospatialConfig),
-  getDatabase: () => undefined
+  getDatabase: () => undefined,
+  partitionKey: {
+    paths: [],
+    kind: "hash",
+    version: 2
+  },
+  partitionKeyProperty: "partitionKey",
+  readSettings: () => {
+    return;
+  }
 } as ViewModels.Collection;

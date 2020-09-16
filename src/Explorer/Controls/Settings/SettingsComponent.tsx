@@ -39,11 +39,14 @@ import {
   ChangeFeedPolicyState,
   SettingsV2TabTypes,
   getTabTitle,
-  isDirty
+  isDirty,
+  TtlOff,
+  TtlOn,
+  TtlOnNoDefault
 } from "./SettingsUtils";
 import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption, Image } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent } from "./SettingsSubComponents/IndexingPolicyComponent";
 
@@ -62,7 +65,7 @@ export interface SettingsComponentProps {
   settingsTab: SettingsTab;
 }
 
-interface SettingsComponentState {
+export interface SettingsComponentState {
   throughput: number;
   throughputBaseline: number;
   timeToLive: TtlType;
@@ -100,6 +103,7 @@ interface SettingsComponentState {
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
+  private static throughputUnit = "RU/s";
 
   public saveSettingsButton: ButtonV2;
   public discardSettingsChangesButton: ButtonV2;
@@ -119,7 +123,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection?.container;
     this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
-
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
@@ -170,180 +173,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     this.saveSettingsButton = {
-      isEnabled: () => {
-        // TODO: move validations to editables and display validation errors
-        if (this.isOfferReplacePending()) {
-          return false;
-        }
-
-        const isCollectionThroughput = !hasDatabaseSharedThroughput(this.collection);
-        if (isCollectionThroughput) {
-          if (this.hasProvisioningTypeChanged()) {
-            return true;
-          } else if (this.state.isAutoPilotSelected) {
-            const validAutopilotChange =
-              (!this.hasAutoPilotV2FeatureFlag &&
-                this.isAutoPilotDirty() &&
-                AutoPilotUtils.isValidAutoPilotThroughput(this.state.autoPilotThroughput)) ||
-              (this.hasAutoPilotV2FeatureFlag &&
-                this.isAutoPilotDirty() &&
-                AutoPilotUtils.isValidAutoPilotTier(this.state.selectedAutoPilotTier));
-            if (validAutopilotChange) {
-              return true;
-            }
-          } else {
-            const isMissingThroughput = !this.state.throughput;
-            if (isMissingThroughput) {
-              return false;
-            }
-
-            const isThroughputLessThanMinRus = this.state.throughput < getMinRUs(this.collection, this.container);
-            if (isThroughputLessThanMinRus) {
-              return false;
-            }
-
-            const isThroughputGreaterThanMaxRus = this.state.throughput > getMaxRUs(this.collection, this.container);
-            const isEmulator = this.container.isEmulator;
-            if (isThroughputGreaterThanMaxRus && isEmulator) {
-              return false;
-            }
-
-            if (isThroughputGreaterThanMaxRus && this.isFixedContainer) {
-              return false;
-            }
-
-            const isThroughputMoreThan1Million =
-              this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-            if (!canThroughputExceedMaximumValue(this.collection, this.container) && isThroughputMoreThan1Million) {
-              return false;
-            }
-
-            if (isDirty(this.state.throughput, this.state.throughputBaseline)) {
-              return true;
-            }
-          }
-        }
-
-        if (
-          this.hasConflictResolution() &&
-          (isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
-            isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
-            isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline))
-        ) {
-          return true;
-        }
-
-        if (this.state.timeToLive === TtlType.On && !this.state.timeToLiveSeconds) {
-          return false;
-        }
-
-        if (this.state.analyticalStorageTtlSelection === TtlType.On && !this.state.analyticalStorageTtlSeconds) {
-          return false;
-        }
-
-        if (isDirty(this.state.timeToLive, this.state.timeToLiveBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline)) {
-          return true;
-        }
-
-        if (
-          this.state.timeToLive === TtlType.On &&
-          isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)
-        ) {
-          return true;
-        }
-
-        if (
-          this.state.analyticalStorageTtlSelection === TtlType.On &&
-          isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline)
-        ) {
-          return true;
-        }
-
-        if (
-          isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline) &&
-          this.state.indexingPolicyContentIsValid
-        ) {
-          return true;
-        }
-
-        return false;
-      },
-
+      isEnabled: this.isSaveSettingsButtonEnabled,
       isVisible: () => {
         return true;
       }
     };
 
     this.discardSettingsChangesButton = {
-      isEnabled: () => {
-        if (this.hasProvisioningTypeChanged()) {
-          return true;
-        }
-        if (this.state.isAutoPilotSelected && this.isAutoPilotDirty()) {
-          return true;
-        }
-
-        if (isDirty(this.state.throughput, this.state.throughputBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.timeToLive, this.state.timeToLiveBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline)) {
-          return true;
-        }
-
-        if (
-          this.state.timeToLive === TtlType.On &&
-          isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)
-        ) {
-          return true;
-        }
-
-        if (
-          this.state.analyticalStorageTtlSelection === TtlType.On &&
-          isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline)
-        ) {
-          return true;
-        }
-
-        if (isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline)) {
-          return true;
-        }
-
-        if (isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline)) {
-          return true;
-        }
-
-        if (
-          isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
-          isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
-          isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline)
-        ) {
-          return true;
-        }
-
-        return false;
-      },
-
+      isEnabled: this.isDiscardSettingsButtonEnabled,
       isVisible: () => {
         return true;
       }
@@ -371,7 +208,174 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   }
 
-  private shouldUpdateCollection = (): boolean => {
+  public isSaveSettingsButtonEnabled = (): boolean => {
+    if (this.isOfferReplacePending()) {
+      return false;
+    }
+
+    const isCollectionThroughput = !hasDatabaseSharedThroughput(this.collection);
+    if (isCollectionThroughput) {
+      if (this.hasProvisioningTypeChanged()) {
+        return true;
+      } else if (this.state.isAutoPilotSelected) {
+        const validAutopilotChange =
+          (!this.hasAutoPilotV2FeatureFlag &&
+            this.isAutoPilotDirty() &&
+            AutoPilotUtils.isValidAutoPilotThroughput(this.state.autoPilotThroughput)) ||
+          (this.hasAutoPilotV2FeatureFlag &&
+            this.isAutoPilotDirty() &&
+            AutoPilotUtils.isValidAutoPilotTier(this.state.selectedAutoPilotTier));
+        if (validAutopilotChange) {
+          return true;
+        }
+      } else {
+        const isMissingThroughput = !this.state.throughput;
+        if (isMissingThroughput) {
+          return false;
+        }
+
+        const isThroughputLessThanMinRus = this.state.throughput < getMinRUs(this.collection, this.container);
+        if (isThroughputLessThanMinRus) {
+          return false;
+        }
+
+        const isThroughputGreaterThanMaxRus = this.state.throughput > getMaxRUs(this.collection, this.container);
+        const isEmulator = this.container.isEmulator;
+        if (isThroughputGreaterThanMaxRus && isEmulator) {
+          return false;
+        }
+
+        if (isThroughputGreaterThanMaxRus && this.isFixedContainer) {
+          return false;
+        }
+
+        const isThroughputMoreThan1Million =
+          this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
+        if (!canThroughputExceedMaximumValue(this.collection, this.container) && isThroughputMoreThan1Million) {
+          return false;
+        }
+
+        if (isDirty(this.state.throughput, this.state.throughputBaseline)) {
+          return true;
+        }
+      }
+    }
+
+    if (
+      this.hasConflictResolution() &&
+      (isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
+        isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
+        isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline))
+    ) {
+      return true;
+    }
+
+    if (this.state.timeToLive === TtlType.On && !this.state.timeToLiveSeconds) {
+      return false;
+    }
+
+    if (this.state.analyticalStorageTtlSelection === TtlType.On && !this.state.analyticalStorageTtlSeconds) {
+      return false;
+    }
+
+    if (isDirty(this.state.timeToLive, this.state.timeToLiveBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline)) {
+      return true;
+    }
+
+    if (
+      this.state.timeToLive === TtlType.On &&
+      isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)
+    ) {
+      return true;
+    }
+
+    if (
+      this.state.analyticalStorageTtlSelection === TtlType.On &&
+      isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline)
+    ) {
+      return true;
+    }
+
+    if (
+      isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline) &&
+      this.state.indexingPolicyContentIsValid
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  public isDiscardSettingsButtonEnabled = (): boolean => {
+    if (this.hasProvisioningTypeChanged()) {
+      return true;
+    }
+    if (this.state.isAutoPilotSelected && this.isAutoPilotDirty()) {
+      return true;
+    }
+
+    if (isDirty(this.state.throughput, this.state.throughputBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.timeToLive, this.state.timeToLiveBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline)) {
+      return true;
+    }
+
+    if (
+      this.state.timeToLive === TtlType.On &&
+      isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)
+    ) {
+      return true;
+    }
+
+    if (
+      this.state.analyticalStorageTtlSelection === TtlType.On &&
+      isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline)
+    ) {
+      return true;
+    }
+
+    if (isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline)) {
+      return true;
+    }
+
+    if (isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline)) {
+      return true;
+    }
+
+    if (
+      isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
+      isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
+      isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  public shouldUpdateCollection = (): boolean => {
     return (
       isDirty(this.state.timeToLive, this.state.timeToLiveBaseline) ||
       (this.state.timeToLive === TtlType.On &&
@@ -422,7 +426,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   };
 
-  private hasProvisioningTypeChanged = (): boolean => {
+  public hasProvisioningTypeChanged = (): boolean => {
     if (!this.state.userCanChangeProvisioningTypes) {
       return false;
     }
@@ -432,14 +436,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return false;
   };
 
-  private overrideWithProvisionedThroughputSettings = (): boolean => {
+  public overrideWithProvisionedThroughputSettings = (): boolean => {
     if (this.hasAutoPilotV2FeatureFlag) {
       return false;
     }
     return this.hasProvisioningTypeChanged() && !this.state.wasAutopilotOriginallySet;
   };
 
-  private isAutoPilotDirty = (): boolean => {
+  public isAutoPilotDirty = (): boolean => {
     if (!this.state.isAutoPilotSelected) {
       return false;
     }
@@ -459,21 +463,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return false;
   };
 
-  private shouldShowKeyspaceSharedThroughputMessage = (): boolean => {
-    return this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
-  };
+  public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
+    this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
 
-  private hasConflictResolution = (): boolean => {
-    return (
-      (this.container?.databaseAccount &&
-        this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
-        this.collection.conflictResolutionPolicy &&
-        !!this.collection.conflictResolutionPolicy()) ||
-      false
-    );
-  };
+  public hasConflictResolution = (): boolean =>
+    this.container?.databaseAccount &&
+    this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
+    this.collection.conflictResolutionPolicy &&
+    !!this.collection.conflictResolutionPolicy();
 
-  private isOfferReplacePending = (): boolean => {
+  public isOfferReplacePending = (): boolean => {
     const offer = this.collection?.offer && this.collection.offer();
     return (
       offer &&
@@ -514,7 +513,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
 
       let throughput: number;
-      if (offer.content.offerAutopilotSettings) {
+      if (offer?.content?.offerAutopilotSettings) {
         if (!this.hasAutoPilotV2FeatureFlag) {
           throughput = offer.content.offerAutopilotSettings.maxThroughput;
         } else {
@@ -529,7 +528,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return getThroughputApplyShortDelayMessage(
         this.state.isAutoPilotSelected,
         throughput,
-        this.getThroughputUnit(),
+        SettingsComponent.throughputUnit,
         this.collection.databaseId,
         this.collection.id(),
         targetThroughput
@@ -559,10 +558,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     if (this.props.settingsTab.pendingNotification()) {
-      const throughputUnit: string = this.getThroughputUnit();
       const matches: string[] = this.props.settingsTab
         .pendingNotification()
-        .description.match(`Throughput update for (.*) ${throughputUnit}`);
+        .description.match(`Throughput update for (.*) ${SettingsComponent.throughputUnit}`);
 
       const throughput = this.state.throughput;
       const targetThroughput: number = matches.length > 1 && Number(matches[1]);
@@ -570,7 +568,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         return getThroughputApplyLongDelayMessage(
           this.state.isAutoPilotSelected,
           throughput,
-          throughputUnit,
+          SettingsComponent.throughputUnit,
           this.collection.databaseId,
           this.collection.id(),
           targetThroughput
@@ -587,16 +585,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private shouldShowNotificationStatusPrompt = (): boolean => !!this.state.notificationStatusInfo;
 
-  private shouldShowStatusBar = (): boolean => {
-    return this.shouldShowNotificationStatusPrompt() || !!this.getWarningMessage();
-  };
+  private shouldShowStatusBar = (): boolean => this.shouldShowNotificationStatusPrompt() || !!this.getWarningMessage();
 
-  private onSaveClick = async (): Promise<void> => {
+  public onSaveClick = async (): Promise<void> => {
     this.props.settingsTab.isExecutionError(false);
 
     this.props.settingsTab.isExecuting(true);
     const startKey: number = traceStart(Action.UpdateSettings, {
-      databaseAccountName: this.container.databaseAccount().name,
+      databaseAccountName: this.container.databaseAccount()?.name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.props.settingsTab.tabTitle()
@@ -626,9 +622,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
         newCollection.changeFeedPolicy =
           this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
-            ? ({
+            ? {
                 retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
-              } as DataModels.ChangeFeedPolicy)
+              }
             : undefined;
 
         newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
@@ -733,7 +729,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               notificationStatusInfo: getThroughputApplyDelayedMessage(
                 this.state.isAutoPilotSelected,
                 originalThroughputValue,
-                this.getThroughputUnit(),
+                SettingsComponent.throughputUnit,
                 this.collection.databaseId,
                 this.collection.id(),
                 newThroughput
@@ -768,7 +764,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       traceSuccess(
         Action.UpdateSettings,
         {
-          databaseAccountName: this.container.databaseAccount().name,
+          databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle()
@@ -782,7 +778,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       traceFailure(
         Action.UpdateSettings,
         {
-          databaseAccountName: this.container.databaseAccount().name,
+          databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle()
@@ -793,7 +789,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.props.settingsTab.isExecuting(false);
   };
 
-  private onRevertClick = (): void => {
+  public onRevertClick = (): void => {
     this.setState({
       throughput: this.state.throughputBaseline,
       timeToLive: this.state.timeToLiveBaseline,
@@ -829,21 +825,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   };
 
-  private setIndexingPolicyElementFocussed = (indexingPolicyElementFocussed: boolean): void => {
+  private onIndexingPolicyElementFocusChange = (indexingPolicyElementFocussed: boolean): void =>
     this.setState({ indexingPolicyElementFocussed: indexingPolicyElementFocussed });
-  };
 
-  private setIndexingPolicyContent = (newIndexingPolicy: DataModels.IndexingPolicy): void => {
+  private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
-  };
 
-  private setIndexingPolicyValidity = (isValid: boolean): void => {
+  private onIndexingPolicyValidityChage = (isValid: boolean): void =>
     this.setState({ indexingPolicyContentIsValid: isValid });
-  };
 
-  private resetShouldDiscardIndexingPolicy = (): void => {
-    this.setState({ shouldDiscardIndexingPolicy: false });
-  };
+  private resetShouldDiscardIndexingPolicy = (): void => this.setState({ shouldDiscardIndexingPolicy: false });
 
   private logIndexingPolicySuccessMessage = (): void => {
     if (this.props.settingsTab.onLoadStartKey) {
@@ -866,83 +857,65 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onConflictResolutionPolicyModeChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => {
+  ): void =>
     this.setState({
       conflictResolutionPolicyMode:
         DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode]
     });
-  };
 
   private onConflictResolutionPolicyPathChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => {
-    this.setState({ conflictResolutionPolicyPath: newValue });
-  };
+  ): void => this.setState({ conflictResolutionPolicyPath: newValue });
 
   private onConflictResolutionPolicyProcedureChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => {
-    this.setState({ conflictResolutionPolicyProcedure: newValue });
-  };
+  ): void => this.setState({ conflictResolutionPolicyProcedure: newValue });
 
-  private getTtlValue = (value: string): TtlType => {
+  public getTtlValue = (value: string): TtlType => {
     switch (value) {
-      case "on":
+      case TtlOn:
         return TtlType.On;
-      case "off":
+      case TtlOff:
         return TtlType.Off;
-      case "on-nodefault":
+      case TtlOnNoDefault:
         return TtlType.OnNoDefault;
     }
     return undefined;
   };
 
-  private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void => {
+  private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void =>
     this.setState({ timeToLive: this.getTtlValue(option.key) });
-  };
 
   private onTimeToLiveSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => {
-    this.setState({ timeToLiveSeconds: parseInt(newValue) });
-  };
+  ): void => this.setState({ timeToLiveSeconds: parseInt(newValue) });
 
   private onGeoSpatialConfigTypeChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => {
+  ): void =>
     this.setState({ geospatialConfigType: GeospatialConfigType[option.key as keyof typeof GeospatialConfigType] });
-  };
 
   private onAnalyticalStorageTtlSelectionChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => {
-    this.setState({ analyticalStorageTtlSelection: this.getTtlValue(option.key) });
-  };
+  ): void => this.setState({ analyticalStorageTtlSelection: this.getTtlValue(option.key) });
 
   private onAnalyticalStorageTtlSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => {
-    this.setState({ analyticalStorageTtlSeconds: parseInt(newValue) });
-  };
+  ): void => this.setState({ analyticalStorageTtlSeconds: parseInt(newValue) });
 
   private onChangeFeedPolicyChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => {
+  ): void =>
     this.setState({ changeFeedPolicy: ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState] });
-  };
 
-  private getThroughputUnit = (): string => {
-    return "RU/s";
-  };
-
-  private getAnalyticalStorageTtl = (): number => {
+  public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
       if (this.state.analyticalStorageTtlSelection === TtlType.On) {
         return Number(this.state.analyticalStorageTtlSeconds);
@@ -953,7 +926,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return undefined;
   };
 
-  private getUpdatedConflictResolutionPolicy = (): DataModels.ConflictResolutionPolicy => {
+  public getUpdatedConflictResolutionPolicy = (): DataModels.ConflictResolutionPolicy => {
     if (
       !isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) &&
       !isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) &&
@@ -1022,7 +995,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return procedureFromBackEnd;
   };
 
-  private setBaseline = (): void => {
+  public setBaseline = (): void => {
     const defaultTtl = this.collection.defaultTtl();
 
     let timeToLive: TtlType = this.state.timeToLive;
@@ -1138,48 +1111,39 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return buttons;
   };
 
-  private setMaxAutoPilotThroughput = (newThroughput: number): void => {
+  private onMaxAutoPilotThroughputChange = (newThroughput: number): void =>
     this.setState({ autoPilotThroughput: newThroughput });
-  };
 
-  private setThroughput = (newThroughput: number): void => {
-    this.setState({ throughput: newThroughput });
-  };
+  private onThroughputChange = (newThroughput: number): void => this.setState({ throughput: newThroughput });
 
-  private setAutoPilotSelected = (isAutoPilotSelected: boolean): void => {
+  private onAutoPilotSelected = (isAutoPilotSelected: boolean): void =>
     this.setState({ isAutoPilotSelected: isAutoPilotSelected });
-  };
 
-  private setAutoPilotTier = (selectedAutoPilotTier: DataModels.AutopilotTier): void => {
+  private onAutoPilotTierChange = (selectedAutoPilotTier: DataModels.AutopilotTier): void =>
     this.setState({ selectedAutoPilotTier: selectedAutoPilotTier });
-  };
 
-  private getStatusBarComponent = (): JSX.Element => {
-    return (
-      <div className="warningErrorContainer scaleWarningContainer">
-        <>
-          {this.shouldShowNotificationStatusPrompt() && (
-            <div className="warningErrorContent">
-              <span>
-                <img src={InfoColor} alt="Info" />
-              </span>
-              <div className="warningErrorDetailsLinkContainer">{this.state.notificationStatusInfo}</div>
-            </div>
-          )}
-          {!this.shouldShowNotificationStatusPrompt() && (
-            <div className="warningErrorContent">
-              <span>
-                <img src={Warning} alt="Warning" />
-              </span>
-              <div className="warningErrorDetailsLinkContainer">
-                {!!this.getWarningMessage() && this.getWarningMessage()}
-              </div>
-            </div>
-          )}
-        </>
-      </div>
-    );
-  };
+  private getStatusBarComponent = (): JSX.Element => (
+    <div className="warningErrorContainer scaleWarningContainer">
+      {this.shouldShowNotificationStatusPrompt() && (
+        <div className="warningErrorContent">
+          <span>
+            <Image src={InfoColor} alt="Info" />
+          </span>
+          <div className="warningErrorDetailsLinkContainer">{this.state.notificationStatusInfo}</div>
+        </div>
+      )}
+      {!this.shouldShowNotificationStatusPrompt() && (
+        <div className="warningErrorContent">
+          <span>
+            <Image src={Warning} alt="Warning" />
+          </span>
+          <div className="warningErrorDetailsLinkContainer">
+            {!!this.getWarningMessage() && this.getWarningMessage()}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   private onPivotChange = (item: PivotItem): void => {
     const selectedTab = SettingsV2TabTypes[item.props.itemKey as keyof typeof SettingsV2TabTypes];
@@ -1199,7 +1163,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             hasAutoPilotV2FeatureFlag={this.hasAutoPilotV2FeatureFlag}
             isFixedContainer={this.isFixedContainer}
             autoPilotTiersList={this.autoPilotTiersList}
-            setThroughput={this.setThroughput}
+            onThroughputChange={this.onThroughputChange}
             throughput={this.state.throughput}
             throughputBaseline={this.state.throughputBaseline}
             autoPilotThroughput={this.state.autoPilotThroughput}
@@ -1209,9 +1173,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             wasAutopilotOriginallySet={this.state.wasAutopilotOriginallySet}
             userCanChangeProvisioningTypes={this.state.userCanChangeProvisioningTypes}
             overrideWithProvisionedThroughputSettings={this.overrideWithProvisionedThroughputSettings}
-            setAutoPilotSelected={this.setAutoPilotSelected}
-            setAutoPilotTier={this.setAutoPilotTier}
-            setMaxAutoPilotThroughput={this.setMaxAutoPilotThroughput}
+            onAutoPilotSelected={this.onAutoPilotSelected}
+            onAutoPilotTierChange={this.onAutoPilotTierChange}
+            onMaxAutoPilotThroughputChange={this.onMaxAutoPilotThroughputChange}
           />
         )
       });
@@ -1255,9 +1219,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             shouldDiscardIndexingPolicy={this.state.shouldDiscardIndexingPolicy}
             resetShouldDiscardIndexingPolicy={this.resetShouldDiscardIndexingPolicy}
             indexingPolicyContent={this.state.indexingPolicyContent}
-            setIndexingPolicyElementFocussed={this.setIndexingPolicyElementFocussed}
-            setIndexingPolicyContent={this.setIndexingPolicyContent}
-            setIndexingPolicyValidity={this.setIndexingPolicyValidity}
+            onIndexingPolicyElementFocusChange={this.onIndexingPolicyElementFocusChange}
+            onIndexingPolicyContentChange={this.onIndexingPolicyContentChange}
+            onIndexingPolicyValidityChange={this.onIndexingPolicyValidityChage}
             logIndexingPolicySuccessMessage={this.logIndexingPolicySuccessMessage}
           />
         )

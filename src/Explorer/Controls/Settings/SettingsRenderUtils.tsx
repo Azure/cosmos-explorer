@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import * as SharedConstants from "../../../Shared/Constants";
-import * as CommonConstants from "../../../Common/Constants";
+import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
+import { Urls, StyleConstants } from "../../../Common/Constants";
 import { AutopilotTier } from "../../../Contracts/DataModels";
 import {
   computeAutoscaleUsagePriceHourly,
@@ -18,7 +18,8 @@ import {
   ICheckboxStyles,
   IStackProps,
   IStackTokens,
-  IChoiceGroupStyles
+  IChoiceGroupStyles,
+  Link
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -42,10 +43,10 @@ export const getAutoPilotV3SpendElement = (
       <br />
       After the first {AutoPilotUtils.getStorageBasedOnUserInput(maxAutoPilotThroughputSet)} GB of data stored, the max
       RU/s will be automatically upgraded based on the new storage value.
-      <a href={SharedConstants.AutopilotDocumentation.Url} target="_blank" rel="noreferrer">
+      <Link href={AutopilotDocumentation.Url} target="_blank">
         {" "}
         Learn more
-      </a>
+      </Link>
       .
     </span>
   );
@@ -67,9 +68,9 @@ export const getAutoPilotV2SpendElement = (
           Your {resource} throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload
           needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum
           (and minimum) throughput thresholds to the next available value. For more details, see{" "}
-          <a href={SharedConstants.AutopilotDocumentation.Url} target="_blank" rel="noreferrer">
+          <Link href={AutopilotDocumentation.Url} target="_blank">
             documentation
-          </a>
+          </Link>
           .
         </span>
       );
@@ -79,9 +80,9 @@ export const getAutoPilotV2SpendElement = (
           Your {resource} throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload
           needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the
           maximum (and minimum) throughput thresholds to the next available value. For more details, see{" "}
-          <a href={SharedConstants.AutopilotDocumentation.Url} target="_blank" rel="noreferrer">
+          <Link href={AutopilotDocumentation.Url} target="_blank">
             documentation
-          </a>
+          </Link>
           .
         </span>
       );
@@ -91,9 +92,9 @@ export const getAutoPilotV2SpendElement = (
           Your {resource} throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload
           needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum
           (and minimum) throughput thresholds to the next available value. For more details, see{" "}
-          <a href={SharedConstants.AutopilotDocumentation.Url} target="_blank" rel="noreferrer">
+          <Link href={AutopilotDocumentation.Url} target="_blank">
             documentation
-          </a>
+          </Link>
           .
         </span>
       );
@@ -103,9 +104,9 @@ export const getAutoPilotV2SpendElement = (
           Your {resource} throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload
           needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum
           (and minimum) throughput thresholds to the next available value. For more details, see{" "}
-          <a href={SharedConstants.AutopilotDocumentation.Url} target="_blank" rel="noreferrer">
+          <Link href={AutopilotDocumentation.Url} target="_blank">
             documentation
-          </a>
+          </Link>
           .
         </span>
       );
@@ -121,7 +122,7 @@ export const getEstimatedAutoscaleSpendElement = (
   multimaster: boolean
 ): JSX.Element => {
   const hourlyPrice: number = computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster);
-  const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
+  const monthlyPrice: number = hourlyPrice * hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
   const pricePerRu =
@@ -138,7 +139,7 @@ export const getEstimatedAutoscaleSpendElement = (
         {currencySign}
         {calculateEstimateNumber(monthlyPrice)}{" "}
       </b>
-      ({regions} {regions === 1 ? "region" : "regions"}, {throughput / 10} - {throughput} RU/s, {currencySign}
+      ({"regions: "} {regions}, {throughput / 10} - {throughput} RU/s, {currencySign}
       {pricePerRu}/RU)
     </span>
   );
@@ -153,7 +154,7 @@ export const getEstimatedSpendElement = (
 ): JSX.Element => {
   const hourlyPrice: number = computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
   const dailyPrice: number = hourlyPrice * 24;
-  const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
+  const monthlyPrice: number = hourlyPrice * hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
   const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
@@ -169,7 +170,7 @@ export const getEstimatedSpendElement = (
         {currencySign}
         {calculateEstimateNumber(monthlyPrice)} monthly{" "}
       </b>
-      ({regions} {regions === 1 ? "region" : "regions"}, {throughput}RU/s, {currencySign}
+      ({"regions: "} {regions}, {throughput}RU/s, {currencySign}
       {pricePerRu}/RU)
     </span>
   );
@@ -179,7 +180,7 @@ export const manualToAutoscaleDisclaimerElement: JSX.Element = (
   <span>
     The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings
     and storage of your resource. After autoscale has been enabled, you can change the max RU/s.{" "}
-    <a href={CommonConstants.Urls.autoscaleMigration}>Learn more</a>
+    <a href={Urls.autoscaleMigration}>Learn more</a>
   </span>
 );
 
@@ -187,9 +188,9 @@ export const ttlWarning: JSX.Element = (
   <span>
     The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete
     operation explicitly issued by a client application. For more information see,{" "}
-    <a target="_blank" href="https://aka.ms/cosmos-db-ttl" rel="noreferrer">
+    <Link target="_blank" href="https://aka.ms/cosmos-db-ttl">
       Time to Live (TTL) in Azure Cosmos DB
-    </a>
+    </Link>
     .
   </span>
 );
@@ -199,9 +200,9 @@ export const indexingPolicyTTLWarningMessage: JSX.Element = (
     Changing the Indexing Policy impacts query results while the index transformation occurs. When a change is made and
     the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. For
     more information see,{" "}
-    <a target="_blank" href="https://aka.ms/cosmosdb/modify-index-policy" rel="noreferrer">
+    <Link target="_blank" href="https://aka.ms/cosmosdb/modify-index-policy">
       Modifying Indexing Policies
-    </a>
+    </Link>
     .
   </span>
 );
@@ -320,9 +321,9 @@ export const conflictResolutionCustomToolTip: JSX.Element = (
     application defined logic to determine the winner of the conflicting versions of a document. The stored procedure
     will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the
     conflicts will be populated in the
-    <a className="linkDarkBackground" href="https://aka.ms/dataexplorerconflics" rel="noreferrer" target="_blank">
+    <Link className="linkDarkBackground" href="https://aka.ms/dataexplorerconflics" target="_blank">
       {` conflicts feed`}
-    </a>
+    </Link>
     . You can update/re-register the stored procedure at any time.
   </span>
 );
@@ -335,17 +336,15 @@ export const changeFeedPolicyToolTip: JSX.Element = (
   </span>
 );
 
-const dirtyTextFieldColor = "#9b4f96";
-
 export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<ITextFieldStyles> => ({
   fieldGroup: {
     height: 25,
     width: 300,
-    borderColor: isDirty(current, baseline) ? dirtyTextFieldColor : "",
+    borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
     selectors: {
       ":disabled": {
-        backgroundColor: "#ddd",
-        borderColor: "#969696"
+        backgroundColor: StyleConstants.BaseMedium,
+        borderColor: StyleConstants.BaseMediumHigh
       }
     }
   }
@@ -356,15 +355,15 @@ export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTyp
     {
       selectors: {
         ".ms-ChoiceField-field.is-checked::before": {
-          borderColor: isDirty(current, baseline) ? dirtyTextFieldColor : ""
+          borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : ""
         },
         ".ms-ChoiceField-field.is-checked::after": {
-          borderColor: isDirty(current, baseline) ? dirtyTextFieldColor : ""
+          borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : ""
         },
         ".ms-ChoiceField-wrapper label": {
           whiteSpace: "nowrap",
           fontSize: 14,
-          fontFamily: "Segoe UI",
+          fontFamily: StyleConstants.DataExplorerFont,
           padding: "2px 5px"
         }
       }

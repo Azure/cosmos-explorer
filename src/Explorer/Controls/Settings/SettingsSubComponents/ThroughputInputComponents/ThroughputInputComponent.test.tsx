@@ -7,7 +7,7 @@ describe("ThroughputInputReactComponent", () => {
   const baseProps: ThroughputInputProps = {
     throughput: 100,
     throughputBaseline: 100,
-    setThroughput: undefined,
+    onThroughputChange: undefined,
     minimum: 10000,
     maximum: 400,
     step: 100,
@@ -24,14 +24,14 @@ describe("ThroughputInputReactComponent", () => {
     infoBubbleText: "infoBubbleText",
     canExceedMaximumValue: true,
     cssClass: "dirty",
-    setAutoPilotSelected: undefined,
+    onAutoPilotSelected: undefined,
     isAutoPilotSelected: false,
     autoPilotTiersList: [
       { value: AutopilotTier.Tier1, text: "tier 1" },
       { value: AutopilotTier.Tier2, text: "tier 2" }
     ],
     selectedAutoPilotTier: AutopilotTier.Tier1,
-    setAutoPilotTier: undefined,
+    onAutoPilotTierChange: undefined,
     autoPilotUsageCost: undefined,
     showAutoPilot: true
   };

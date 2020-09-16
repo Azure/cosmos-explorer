@@ -80,8 +80,8 @@ exports[`ThroughputInputReactComponent spendAck checkbox visible 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -146,8 +146,8 @@ exports[`ThroughputInputReactComponent throughput input visible 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,

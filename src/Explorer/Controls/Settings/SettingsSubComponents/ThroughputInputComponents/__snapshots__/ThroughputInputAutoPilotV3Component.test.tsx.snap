@@ -10,12 +10,12 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
 >
   <Text>
     Provision maximum RU/s required by this resource. Estimate your required RU/s with
-    <a
+    <StyledLinkBase
       href="https://cosmos.azure.com/capacitycalculator/"
       target="_blank"
     >
        capacity calculator
-    </a>
+    </StyledLinkBase>
   </Text>
   <StyledTextFieldBase
     disabled={false}
@@ -33,8 +33,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           "height": 25,
           "selectors": Object {
             ":disabled": Object {
-              "backgroundColor": "#ddd",
-              "borderColor": "#969696",
+              "backgroundColor": undefined,
+              "borderColor": undefined,
             },
           },
           "width": 300,
@@ -79,8 +79,8 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -145,8 +145,8 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,

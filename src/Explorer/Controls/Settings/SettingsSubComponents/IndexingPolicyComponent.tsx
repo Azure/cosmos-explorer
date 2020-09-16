@@ -6,9 +6,9 @@ export interface IndexingPolicyComponentProps {
   shouldDiscardIndexingPolicy: boolean;
   resetShouldDiscardIndexingPolicy: () => void;
   indexingPolicyContent: DataModels.IndexingPolicy;
-  setIndexingPolicyElementFocussed: (indexingPolicyContentFocussed: boolean) => void;
-  setIndexingPolicyContent: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
-  setIndexingPolicyValidity: (isValid: boolean) => void;
+  onIndexingPolicyElementFocusChange: (indexingPolicyContentFocussed: boolean) => void;
+  onIndexingPolicyContentChange: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
+  onIndexingPolicyValidityChange: (isValid: boolean) => void;
   logIndexingPolicySuccessMessage: () => void;
 }
 
@@ -27,7 +27,6 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
     this.resetIndexingPolicyEditor();
   }
 
-  // public for testing purposes
   public resetIndexingPolicyEditor = (): void => {
     if (!this.indexingPolicyEditor) {
       this.createIndexingPolicyEditor();
@@ -48,8 +47,8 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
       ariaLabel: "Indexing Policy"
     });
     if (this.indexingPolicyEditor) {
-      this.indexingPolicyEditor.onDidFocusEditorText(() => this.props.setIndexingPolicyElementFocussed(true));
-      this.indexingPolicyEditor.onDidBlurEditorText(() => this.props.setIndexingPolicyElementFocussed(false));
+      this.indexingPolicyEditor.onDidFocusEditorText(() => this.props.onIndexingPolicyElementFocusChange(true));
+      this.indexingPolicyEditor.onDidBlurEditorText(() => this.props.onIndexingPolicyElementFocusChange(false));
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
       indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logIndexingPolicySuccessMessage();
@@ -60,21 +59,14 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
     try {
       const newIndexingPolicyContent = JSON.parse(indexingPolicyEditorModel.getValue()) as DataModels.IndexingPolicy;
-      this.props.setIndexingPolicyContent(newIndexingPolicyContent);
-      this.props.setIndexingPolicyValidity(true);
+      this.props.onIndexingPolicyContentChange(newIndexingPolicyContent);
+      this.props.onIndexingPolicyValidityChange(true);
     } catch (e) {
-      this.props.setIndexingPolicyValidity(true);
+      this.props.onIndexingPolicyValidityChange(false);
     }
   };
 
   public render(): JSX.Element {
-    return (
-      <div
-        key="indexingPolicyEditorDiv"
-        className="indexingPolicyEditor"
-        tabIndex={0}
-        ref={this.indexingPolicyDiv}
-      ></div>
-    );
+    return <div className="indexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>;
   }
 }

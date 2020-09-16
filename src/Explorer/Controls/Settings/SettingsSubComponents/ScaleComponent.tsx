@@ -27,7 +27,7 @@ export interface ScaleComponentProps {
   hasAutoPilotV2FeatureFlag: boolean;
   isFixedContainer: boolean;
   autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
-  setThroughput: (newThroughput: number) => void;
+  onThroughputChange: (newThroughput: number) => void;
   throughput: number;
   throughputBaseline: number;
   autoPilotThroughput: number;
@@ -37,13 +37,13 @@ export interface ScaleComponentProps {
   wasAutopilotOriginallySet: boolean;
   userCanChangeProvisioningTypes: boolean;
   overrideWithProvisionedThroughputSettings: () => boolean;
-  setAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
-  setAutoPilotTier: (selectedAutoPilotTier: DataModels.AutopilotTier) => void;
-  setMaxAutoPilotThroughput: (newThroughput: number) => void;
+  onAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
+  onAutoPilotTierChange: (selectedAutoPilotTier: DataModels.AutopilotTier) => void;
+  onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {
-  public canExceedMaximumValue: boolean;
+  private canExceedMaximumValue: boolean;
   private costsVisible: boolean;
   constructor(props: ScaleComponentProps) {
     super(props);
@@ -51,7 +51,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     this.costsVisible = !this.props.container.isEmulator;
   }
 
-  private isAutoScaleEnabled = (): boolean => {
+  public isAutoScaleEnabled = (): boolean => {
     const accountCapabilities: DataModels.Capability[] = this.props.container?.databaseAccount()?.properties
       ?.capabilities;
     const enableAutoScaleCapability =
@@ -83,7 +83,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     );
   };
 
-  private getMaxRUThroughputInputLimit = (): number => {
+  public getMaxRUThroughputInputLimit = (): number => {
     if (this.props.container?.getPlatformType() === PlatformType.Hosted && this.props.collection.partitionKey) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
     }
@@ -103,7 +103,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       : getAutoPilotV2SpendElement(autoPilot, false /* isDatabaseThroughput */);
   };
 
-  private getThroughputTitle = (): string => {
+  public getThroughputTitle = (): string => {
     if (this.props.isAutoPilotSelected) {
       return AutoPilotUtils.getAutoPilotHeaderText(this.props.hasAutoPilotV2FeatureFlag);
     }
@@ -150,21 +150,21 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return estimatedSpend;
   };
 
-  private overrideWithAutoPilotSettings = (): boolean => {
+  public overrideWithAutoPilotSettings = (): boolean => {
     if (this.props.hasAutoPilotV2FeatureFlag) {
       return false;
     }
     return this.props.hasProvisioningTypeChanged() && this.props.wasAutopilotOriginallySet;
   };
 
-  private getThroughputInputComponent = (): JSX.Element => {
-    return this.props.hasAutoPilotV2FeatureFlag ? (
+  private getThroughputInputComponent = (): JSX.Element =>
+    this.props.hasAutoPilotV2FeatureFlag ? (
       <ThroughputInputComponent
         showAsMandatory={false}
         isFixed={false}
         throughput={this.props.throughput}
         throughputBaseline={this.props.throughputBaseline}
-        setThroughput={this.props.setThroughput}
+        onThroughputChange={this.props.onThroughputChange}
         minimum={getMinRUs(this.props.collection, this.props.container)}
         maximum={this.getMaxRUThroughputInputLimit()}
         isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
@@ -176,18 +176,18 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
         showAutoPilot={this.props.userCanChangeProvisioningTypes}
         isAutoPilotSelected={this.props.isAutoPilotSelected}
-        setAutoPilotSelected={this.props.setAutoPilotSelected}
+        onAutoPilotSelected={this.props.onAutoPilotSelected}
         autoPilotTiersList={this.props.autoPilotTiersList}
         spendAckChecked={false}
         selectedAutoPilotTier={this.props.selectedAutoPilotTier}
-        setAutoPilotTier={this.props.setAutoPilotTier}
+        onAutoPilotTierChange={this.props.onAutoPilotTierChange}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
       />
     ) : (
       <ThroughputInputAutoPilotV3Component
         throughput={this.props.throughput}
         throughputBaseline={this.props.throughputBaseline}
-        setThroughput={this.props.setThroughput}
+        onThroughputChange={this.props.onThroughputChange}
         minimum={getMinRUs(this.props.collection, this.props.container)}
         maximum={this.getMaxRUThroughputInputLimit()}
         isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
@@ -197,17 +197,16 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
         showAutoPilot={this.props.userCanChangeProvisioningTypes}
         isAutoPilotSelected={this.props.isAutoPilotSelected}
-        setAutoPilotSelected={this.props.setAutoPilotSelected}
+        onAutoPilotSelected={this.props.onAutoPilotSelected}
         maxAutoPilotThroughput={this.props.autoPilotThroughput}
         maxAutoPilotThroughputBaseline={this.props.autoPilotThroughputBaseline}
-        setMaxAutoPilotThroughput={this.props.setMaxAutoPilotThroughput}
+        onMaxAutoPilotThroughputChange={this.props.onMaxAutoPilotThroughputChange}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
         overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
         overrideWithProvisionedThroughputSettings={this.props.overrideWithProvisionedThroughputSettings()}
         spendAckChecked={false}
       />
     );
-  };
 
   public render(): JSX.Element {
     return (

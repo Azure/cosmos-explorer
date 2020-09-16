@@ -76,35 +76,32 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     { key: TtlType.On, text: "On" }
   ];
 
-  private getTtlComponent = (): JSX.Element => {
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <ChoiceGroup
-          id="timeToLive"
-          label="Time to Live"
-          tabIndex={0}
-          selectedKey={this.props.timeToLive}
-          options={this.ttlChoiceGroupOptions}
-          onChange={this.props.onTtlChange}
-          //onFocus=?
-          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
+  private getTtlComponent = (): JSX.Element => (
+    <Stack {...titleAndInputStackProps}>
+      <ChoiceGroup
+        id="timeToLive"
+        label="Time to Live"
+        tabIndex={0}
+        selectedKey={this.props.timeToLive}
+        options={this.ttlChoiceGroupOptions}
+        onChange={this.props.onTtlChange}
+        styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
+      />
+      {this.props.timeToLive === TtlType.On && (
+        <TextField
+          id="timeToLiveSeconds"
+          styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
+          type="number"
+          required
+          min={1}
+          max={Int32.Max}
+          value={this.props.timeToLiveSeconds?.toString()}
+          onChange={this.props.onTimeToLiveSecondsChange}
+          suffix="second(s)"
         />
-        {this.props.timeToLive === TtlType.On && (
-          <TextField
-            id="timeToLiveSeconds"
-            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
-            type="number"
-            required
-            min={1}
-            max={Int32.Max}
-            value={this.props.timeToLiveSeconds?.toString()}
-            onChange={this.props.onTimeToLiveSecondsChange}
-            suffix="second(s)"
-          />
-        )}
-      </Stack>
-    );
-  };
+      )}
+    </Stack>
+  );
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off", disabled: true },
@@ -112,59 +109,55 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     { key: TtlType.On, text: "On" }
   ];
 
-  private getAnalyticalStorageTtlComponent = (): JSX.Element => {
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <ChoiceGroup
-          id="analyticalStorageTimeToLive"
-          label="Analytical Storage Time to Live"
-          tabIndex={0}
-          selectedKey={this.props.analyticalStorageTtlSelection}
-          options={this.analyticalTtlChoiceGroupOptions}
-          onChange={this.props.onAnalyticalStorageTtlSelectionChange}
-          styles={getChoiceGroupStyles(
-            this.props.analyticalStorageTtlSelection,
-            this.props.analyticalStorageTtlSelectionBaseline
-          )}
-        />
-        {this.props.analyticalStorageTtlSelection === TtlType.On && (
-          <TextField
-            id="analyticalStorageTimeToLiveSeconds"
-            styles={getTextFieldStyles(
-              this.props.analyticalStorageTtlSeconds,
-              this.props.analyticalStorageTtlSecondsBaseline
-            )}
-            type="number"
-            required
-            min={1}
-            max={Int32.Max}
-            value={this.props.analyticalStorageTtlSeconds?.toString()}
-            suffix="second(s)"
-            onChange={this.props.onAnalyticalStorageTtlSecondsChange}
-          />
+  private getAnalyticalStorageTtlComponent = (): JSX.Element => (
+    <Stack {...titleAndInputStackProps}>
+      <ChoiceGroup
+        id="analyticalStorageTimeToLive"
+        label="Analytical Storage Time to Live"
+        tabIndex={0}
+        selectedKey={this.props.analyticalStorageTtlSelection}
+        options={this.analyticalTtlChoiceGroupOptions}
+        onChange={this.props.onAnalyticalStorageTtlSelectionChange}
+        styles={getChoiceGroupStyles(
+          this.props.analyticalStorageTtlSelection,
+          this.props.analyticalStorageTtlSelectionBaseline
         )}
-      </Stack>
-    );
-  };
+      />
+      {this.props.analyticalStorageTtlSelection === TtlType.On && (
+        <TextField
+          id="analyticalStorageTimeToLiveSeconds"
+          styles={getTextFieldStyles(
+            this.props.analyticalStorageTtlSeconds,
+            this.props.analyticalStorageTtlSecondsBaseline
+          )}
+          type="number"
+          required
+          min={1}
+          max={Int32.Max}
+          value={this.props.analyticalStorageTtlSeconds?.toString()}
+          suffix="second(s)"
+          onChange={this.props.onAnalyticalStorageTtlSecondsChange}
+        />
+      )}
+    </Stack>
+  );
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: GeospatialConfigType.Geography, text: "Geography" },
     { key: GeospatialConfigType.Geometry, text: "Geometry" }
   ];
 
-  private getGeoSpatialComponent = (): JSX.Element => {
-    return (
-      <ChoiceGroup
-        id="geoSpatialConfig"
-        label="Geospatial Configuration"
-        tabIndex={0}
-        selectedKey={this.props.geospatialConfigType}
-        options={this.geoSpatialConfigTypeChoiceGroupOptions}
-        onChange={this.props.onGeoSpatialConfigTypeChange}
-        styles={getChoiceGroupStyles(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline)}
-      />
-    );
-  };
+  private getGeoSpatialComponent = (): JSX.Element => (
+    <ChoiceGroup
+      id="geoSpatialConfig"
+      label="Geospatial Configuration"
+      tabIndex={0}
+      selectedKey={this.props.geospatialConfigType}
+      options={this.geoSpatialConfigTypeChoiceGroupOptions}
+      onChange={this.props.onGeoSpatialConfigTypeChange}
+      styles={getChoiceGroupStyles(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline)}
+    />
+  );
 
   private changeFeedChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: ChangeFeedPolicyState.Off, text: "Off" },
@@ -192,43 +185,34 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     );
   };
 
-  private getPartitionKeyComponent = (): JSX.Element => {
-    return (
-      <Stack {...titleAndInputStackProps}>
-        {this.getPartitionKeyVisible() && (
-          <TextField
-            label="Partition Key"
-            disabled
-            styles={getTextFieldStyles(undefined, undefined)}
-            defaultValue={this.partitionKeyValue}
-          />
-        )}
+  private getPartitionKeyComponent = (): JSX.Element => (
+    <Stack {...titleAndInputStackProps}>
+      {this.getPartitionKeyVisible() && (
+        <TextField
+          label={this.partitionKeyName}
+          disabled
+          styles={getTextFieldStyles(undefined, undefined)}
+          defaultValue={this.partitionKeyValue}
+        />
+      )}
 
-        {this.isLargePartitionKeyEnabled() && <Text>Large {this.getLowerCasePartitionKeyName()} has been enabled</Text>}
-      </Stack>
-    );
-  };
+      {this.isLargePartitionKeyEnabled() && <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled</Text>}
+    </Stack>
+  );
 
-  private getLowerCasePartitionKeyName = (): string => this.partitionKeyName.toLowerCase();
-  private getPartitionKeyVisible = (): boolean => {
-    if (this.props.container.isPreferredApiCassandra() || this.props.container.isPreferredApiTable()) {
+  public getPartitionKeyVisible = (): boolean => {
+    if (
+      this.props.container.isPreferredApiCassandra() ||
+      this.props.container.isPreferredApiTable() ||
+      !this.props.collection.partitionKeyProperty ||
+      (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey)
+    ) {
       return false;
     }
-
-    if (!this.props.collection.partitionKeyProperty) {
-      return false;
-    }
-
-    if (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey) {
-      return false;
-    }
-
     return true;
   };
 
-  private isLargePartitionKeyEnabled = (): boolean => {
-    return this.props.collection.partitionKey?.version >= 2;
-  };
+  public isLargePartitionKeyEnabled = (): boolean => this.props.collection.partitionKey?.version >= 2;
 
   public render(): JSX.Element {
     return (

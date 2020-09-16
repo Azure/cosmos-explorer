@@ -17,13 +17,12 @@ exports[`ScaleComponent renders V2 throughput component 1`] = `
           container
            throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
            
-          <a
+          <StyledLinkBase
             href="https://aka.ms/cosmos-autoscale-info"
-            rel="noreferrer"
             target="_blank"
           >
             documentation
-          </a>
+          </StyledLinkBase>
           .
         </span>
       }
@@ -35,11 +34,11 @@ exports[`ScaleComponent renders V2 throughput component 1`] = `
       label="Throughput (6,000 - 40,000 RU/s)"
       maximum={40000}
       minimum={6000}
+      onAutoPilotSelected={[Function]}
+      onAutoPilotTierChange={[Function]}
+      onThroughputChange={[Function]}
       requestUnitsUsageCost={<React.Fragment />}
       selectedAutoPilotTier={1}
-      setAutoPilotSelected={[Function]}
-      setAutoPilotTier={[Function]}
-      setThroughput={[Function]}
       showAsMandatory={false}
       showAutoPilot={false}
       spendAckChecked={false}
@@ -58,7 +57,7 @@ exports[`ScaleComponent renders V2 throughput component 1`] = `
       </Text>
       <Text>
         <b>
-          Fixed
+          Unlimited
         </b>
       </Text>
     </Stack>
@@ -96,14 +95,13 @@ exports[`ScaleComponent renders V3 throughput component 1`] = `
           After the first 
           40
            GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
-          <a
+          <StyledLinkBase
             href="https://aka.ms/cosmos-autoscale-info"
-            rel="noreferrer"
             target="_blank"
           >
              
             Learn more
-          </a>
+          </StyledLinkBase>
           .
         </span>
       }
@@ -116,12 +114,12 @@ exports[`ScaleComponent renders V3 throughput component 1`] = `
       maxAutoPilotThroughputBaseline={4000}
       maximum={40000}
       minimum={6000}
-      overrideWithAutoPilotSettings={false}
+      onAutoPilotSelected={[Function]}
+      onMaxAutoPilotThroughputChange={[Function]}
+      onThroughputChange={[Function]}
+      overrideWithAutoPilotSettings={true}
       overrideWithProvisionedThroughputSettings={false}
       requestUnitsUsageCost={<React.Fragment />}
-      setAutoPilotSelected={[Function]}
-      setMaxAutoPilotThroughput={[Function]}
-      setThroughput={[Function]}
       showAutoPilot={false}
       spendAckChecked={false}
       throughput={1000}
@@ -139,7 +137,7 @@ exports[`ScaleComponent renders V3 throughput component 1`] = `
       </Text>
       <Text>
         <b>
-          Fixed
+          Unlimited
         </b>
       </Text>
     </Stack>

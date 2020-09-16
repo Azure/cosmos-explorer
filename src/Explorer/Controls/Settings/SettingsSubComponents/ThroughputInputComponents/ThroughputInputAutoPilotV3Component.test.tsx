@@ -9,7 +9,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {
     throughput: 100,
     throughputBaseline: 100,
-    setThroughput: undefined,
+    onThroughputChange: undefined,
     minimum: 10000,
     maximum: 400,
     step: 100,
@@ -25,7 +25,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     label: "label",
     infoBubbleText: "infoBubbleText",
     canExceedMaximumValue: true,
-    setAutoPilotSelected: undefined,
+    onAutoPilotSelected: undefined,
     isAutoPilotSelected: false,
     autoPilotUsageCost: undefined,
     showAutoPilot: true,
@@ -33,7 +33,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     overrideWithProvisionedThroughputSettings: false,
     maxAutoPilotThroughput: 4000,
     maxAutoPilotThroughputBaseline: 4000,
-    setMaxAutoPilotThroughput: undefined
+    onMaxAutoPilotThroughputChange: undefined
   };
 
   it("throughput input visible", () => {

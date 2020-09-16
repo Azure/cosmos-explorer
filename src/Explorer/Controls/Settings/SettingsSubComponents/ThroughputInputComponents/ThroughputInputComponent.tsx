@@ -27,7 +27,7 @@ import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 export interface ThroughputInputProps {
   throughput: number;
   throughputBaseline: number;
-  setThroughput: (newThroughput: number) => void;
+  onThroughputChange: (newThroughput: number) => void;
   minimum: number;
   maximum: number;
   step?: number;
@@ -44,11 +44,11 @@ export interface ThroughputInputProps {
   infoBubbleText?: string;
   canExceedMaximumValue?: boolean;
   cssClass?: string;
-  setAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
+  onAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   isAutoPilotSelected: boolean;
   autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   selectedAutoPilotTier: DataModels.AutopilotTier;
-  setAutoPilotTier: (setAutoPilotTier: DataModels.AutopilotTier) => void;
+  onAutoPilotTierChange: (setAutoPilotTier: DataModels.AutopilotTier) => void;
   autoPilotUsageCost: JSX.Element;
   showAutoPilot?: boolean;
 }
@@ -107,15 +107,13 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   ): void => {
     let newThroughput = parseInt(newValue);
     newThroughput = isNaN(newThroughput) ? ThroughputInputComponent.zeroThroughput : newThroughput;
-    this.props.setThroughput(newThroughput);
+    this.props.onThroughputChange(newThroughput);
   };
 
   private onChoiceGroupChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => {
-    this.props.setAutoPilotSelected(option.key === "true");
-  };
+  ): void => this.props.onAutoPilotSelected(option.key === "true");
 
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
@@ -140,62 +138,56 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
     );
   };
 
-  private onAutoPilotTierChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
-    this.props.setAutoPilotTier(option.key as number);
-  };
+  private onAutoPilotTierChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void =>
+    this.props.onAutoPilotTierChange(option.key as number);
 
-  private renderAutoPilotSelector = (): JSX.Element => {
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <Dropdown
-          id="autopilotSelector"
-          className="autoPilotSelector"
-          defaultSelectedKey={this.props.selectedAutoPilotTier}
-          onChange={this.onAutoPilotTierChange}
-          options={this.state.autoPilotTierOptions}
-          styles={this.dropdownStyles}
-        />
-        <Text>{this.props.selectedAutoPilotTier && this.props.autoPilotUsageCost}</Text>
-      </Stack>
-    );
-  };
+  private renderAutoPilotSelector = (): JSX.Element => (
+    <Stack {...titleAndInputStackProps}>
+      <Dropdown
+        id="autopilotSelector"
+        className="autoPilotSelector"
+        defaultSelectedKey={this.props.selectedAutoPilotTier}
+        onChange={this.onAutoPilotTierChange}
+        options={this.state.autoPilotTierOptions}
+        styles={this.dropdownStyles}
+      />
+      <Text>{this.props.selectedAutoPilotTier && this.props.autoPilotUsageCost}</Text>
+    </Stack>
+  );
 
-  private onSpendAckChecked = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
+  private onSpendAckChecked = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void =>
     this.setState({ spendAckChecked: checked });
-  };
 
-  private renderThroughputInput = (): JSX.Element => {
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <TextField
-          required
-          type="number"
-          id="throughputInput"
-          key="provisioned throughput input"
-          styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
-          disabled={!this.props.isEnabled}
-          step={this.step}
-          min={this.props.minimum}
-          max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
-          value={this.props.throughput?.toString()}
-          onChange={this.onThroughputChange}
+  private renderThroughputInput = (): JSX.Element => (
+    <Stack {...titleAndInputStackProps}>
+      <TextField
+        required
+        type="number"
+        id="throughputInput"
+        key="provisioned throughput input"
+        styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
+        disabled={!this.props.isEnabled}
+        step={this.step}
+        min={this.props.minimum}
+        max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
+        value={this.props.throughput?.toString()}
+        onChange={this.onThroughputChange}
+      />
+      {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}
+
+      {this.props.spendAckVisible && (
+        <Checkbox
+          id="spendAckCheckBox"
+          styles={spendAckCheckBoxStyle}
+          label={this.props.spendAckText}
+          checked={this.state.spendAckChecked}
+          onChange={this.onSpendAckChecked}
         />
-        {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}
+      )}
 
-        {this.props.spendAckVisible && (
-          <Checkbox
-            id="spendAckCheckBox"
-            styles={spendAckCheckBoxStyle}
-            label={this.props.spendAckText}
-            checked={this.state.spendAckChecked}
-            onChange={this.onSpendAckChecked}
-          />
-        )}
-
-        {this.props.isFixed && <Text>Choose unlimited storage capacity for more than 10,000 RU/s.</Text>}
-      </Stack>
-    );
-  };
+      {this.props.isFixed && <Text>Choose unlimited storage capacity for more than 10,000 RU/s.</Text>}
+    </Stack>
+  );
 
   public render(): JSX.Element {
     return (

@@ -1327,7 +1327,14 @@ exports[`SettingsComponent renders 1`] = `
               "id": [Function],
               "indexingPolicy": [Function],
               "offer": [Function],
+              "partitionKey": Object {
+                "kind": "hash",
+                "paths": Array [],
+                "version": 2,
+              },
+              "partitionKeyProperty": "partitionKey",
               "quotaInfo": [Function],
+              "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
             }
           }
@@ -2627,12 +2634,12 @@ exports[`SettingsComponent renders 1`] = `
           hasAutoPilotV2FeatureFlag={false}
           hasProvisioningTypeChanged={[Function]}
           isAutoPilotSelected={false}
-          isFixedContainer={true}
+          isFixedContainer={false}
+          onAutoPilotSelected={[Function]}
+          onAutoPilotTierChange={[Function]}
+          onMaxAutoPilotThroughputChange={[Function]}
+          onThroughputChange={[Function]}
           overrideWithProvisionedThroughputSettings={[Function]}
-          setAutoPilotSelected={[Function]}
-          setAutoPilotTier={[Function]}
-          setMaxAutoPilotThroughput={[Function]}
-          setThroughput={[Function]}
           throughput={10000}
           throughputBaseline={10000}
           userCanChangeProvisioningTypes={true}
@@ -2650,10 +2657,6 @@ exports[`SettingsComponent renders 1`] = `
         }
       >
         <SubSettingsComponent
-          analyticalStorageTtlSeconds={5}
-          analyticalStorageTtlSecondsBaseline={5}
-          analyticalStorageTtlSelection="on"
-          analyticalStorageTtlSelectionBaseline="on"
           changeFeedPolicy="Off"
           changeFeedPolicyBaseline="Off"
           changeFeedPolicyVisible={false}
@@ -3960,7 +3963,14 @@ exports[`SettingsComponent renders 1`] = `
               "id": [Function],
               "indexingPolicy": [Function],
               "offer": [Function],
+              "partitionKey": Object {
+                "kind": "hash",
+                "paths": Array [],
+                "version": 2,
+              },
+              "partitionKeyProperty": "partitionKey",
               "quotaInfo": [Function],
+              "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
             }
           }
@@ -5259,7 +5269,7 @@ exports[`SettingsComponent renders 1`] = `
           }
           geospatialConfigType="Geometry"
           geospatialConfigTypeBaseline="Geometry"
-          isAnalyticalStorageEnabled={true}
+          isAnalyticalStorageEnabled={false}
           onAnalyticalStorageTtlSecondsChange={[Function]}
           onAnalyticalStorageTtlSelectionChange={[Function]}
           onChangeFeedPolicyChange={[Function]}
@@ -5292,10 +5302,10 @@ exports[`SettingsComponent renders 1`] = `
             }
           }
           logIndexingPolicySuccessMessage={[Function]}
+          onIndexingPolicyContentChange={[Function]}
+          onIndexingPolicyElementFocusChange={[Function]}
+          onIndexingPolicyValidityChange={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
-          setIndexingPolicyContent={[Function]}
-          setIndexingPolicyElementFocussed={[Function]}
-          setIndexingPolicyValidity={[Function]}
           shouldDiscardIndexingPolicy={false}
         />
       </PivotItem>

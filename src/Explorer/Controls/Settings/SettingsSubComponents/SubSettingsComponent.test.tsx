@@ -4,6 +4,7 @@ import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsCo
 import { container, collection } from "../TestUtils";
 import { TtlType, GeospatialConfigType, ChangeFeedPolicyState } from "../SettingsUtils";
 import ko from "knockout";
+import Explorer from "../../../Explorer";
 
 describe("SubSettingsComponent", () => {
   container.isPreferredApiDocumentDB = ko.computed(() => true);
@@ -90,5 +91,27 @@ describe("SubSettingsComponent", () => {
     const wrapper = shallow(<SubSettingsComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#changeFeedPolicy")).toEqual(false);
+  });
+
+  it("partitionKey is visible", () => {
+    const subSettingsComponent = new SubSettingsComponent(baseProps);
+    expect(subSettingsComponent.getPartitionKeyVisible()).toEqual(true);
+  });
+
+  it("partitionKey not visible", () => {
+    const newContainer = new Explorer({
+      notificationsClient: undefined,
+      isEmulator: false
+    });
+
+    newContainer.isPreferredApiCassandra = ko.computed(() => true);
+    const props = { ...baseProps, container: newContainer };
+    const subSettingsComponent = new SubSettingsComponent(props);
+    expect(subSettingsComponent.getPartitionKeyVisible()).toEqual(false);
+  });
+
+  it("largePartitionKey is enabled", () => {
+    const subSettingsComponent = new SubSettingsComponent(baseProps);
+    expect(subSettingsComponent.isLargePartitionKeyEnabled()).toEqual(true);
   });
 });

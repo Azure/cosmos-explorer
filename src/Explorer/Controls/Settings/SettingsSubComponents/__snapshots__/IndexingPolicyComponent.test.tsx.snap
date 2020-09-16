@@ -3,7 +3,6 @@
 exports[`IndexingPolicyComponent indexing policy is reset 1`] = `
 <div
   className="indexingPolicyEditor"
-  key="indexingPolicyEditorDiv"
   tabIndex={0}
 />
 `;
@@ -11,7 +10,6 @@ exports[`IndexingPolicyComponent indexing policy is reset 1`] = `
 exports[`IndexingPolicyComponent renders 1`] = `
 <div
   className="indexingPolicyEditor"
-  key="indexingPolicyEditorDiv"
   tabIndex={0}
 />
 `;

@@ -14,13 +14,13 @@ describe("IndexingPolicyComponent", () => {
       includedPaths: [],
       excludedPaths: []
     },
-    setIndexingPolicyElementFocussed: () => {
+    onIndexingPolicyElementFocusChange: () => {
       return;
     },
-    setIndexingPolicyContent: () => {
+    onIndexingPolicyContentChange: () => {
       return;
     },
-    setIndexingPolicyValidity: () => {
+    onIndexingPolicyValidityChange: () => {
       return;
     },
     logIndexingPolicySuccessMessage: () => {

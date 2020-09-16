@@ -22,9 +22,7 @@ export class ToolTipLabelComponent extends React.Component<ToolTipLabelComponent
     };
   }
 
-  private toggleIsCalloutVisible = (): void => {
-    this.setState({ isCalloutVisible: !this.state.isCalloutVisible });
-  };
+  private toggleIsCalloutVisible = (): void => this.setState({ isCalloutVisible: !this.state.isCalloutVisible });
 
   public render(): JSX.Element {
     return (

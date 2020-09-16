@@ -8,6 +8,9 @@ import * as PricingUtils from "../../../Utils/PricingUtils";
 import Explorer from "../../Explorer";
 
 export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
+export const TtlOff = "off";
+export const TtlOn = "on";
+export const TtlOnNoDefault = "on-nodefault";
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
@@ -34,7 +37,7 @@ export enum SettingsV2TabTypes {
 
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
   const database: ViewModels.Database = collection.getDatabase();
-  return database?.isDatabaseShared && !collection.offer();
+  return database?.isDatabaseShared() && !collection.offer();
 };
 
 export const canThroughputExceedMaximumValue = (collection: ViewModels.Collection, container: Explorer): boolean => {
@@ -56,13 +59,13 @@ export const getMaxRUs = (collection: ViewModels.Collection, container: Explorer
 
   const numPartitionsFromQuotaInfo: number = collection?.quotaInfo().numPartitions;
 
-  const numPartitions = numPartitionsFromOffer || numPartitionsFromQuotaInfo || 1;
+  const numPartitions = numPartitionsFromOffer ?? numPartitionsFromQuotaInfo ?? 1;
 
   return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
 };
 
 export const getMinRUs = (collection: ViewModels.Collection, container: Explorer): number => {
-  const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription() || false;
+  const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription();
   if (isTryCosmosDBSubscription) {
     return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
   }
@@ -79,7 +82,7 @@ export const getMinRUs = (collection: ViewModels.Collection, container: Explorer
     return collectionThroughputInfo.minimumRUForCollection;
   }
 
-  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions || collection.quotaInfo().numPartitions;
+  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions ?? collection.quotaInfo().numPartitions;
 
   if (!numPartitions || numPartitions === 1) {
     return SharedConstants.CollectionCreation.DefaultCollectionRUs400;

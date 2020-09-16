@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
+exports[`SubSettingssComponent analyticalTimeToLive hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -48,7 +48,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -73,8 +73,8 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -115,7 +115,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                 "borderColor": "",
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -169,7 +169,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -188,11 +188,37 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         "childrenGap": 5,
       }
     }
-  />
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled
+    </Text>
+  </Stack>
 </Stack>
 `;
 
-exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
+exports[`SubSettingssComponent analyticalTimeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -240,7 +266,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -265,8 +291,8 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -307,7 +333,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                 "borderColor": "",
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -354,13 +380,13 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
             Object {
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
+                  "borderColor": undefined,
                 },
                 ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
+                  "borderColor": undefined,
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -415,7 +441,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -434,11 +460,37 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         "childrenGap": 5,
       }
     }
-  />
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled
+    </Text>
+  </Stack>
 </Stack>
 `;
 
-exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
+exports[`SubSettingssComponent changeFeedPolicy hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -486,7 +538,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -511,8 +563,8 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -553,7 +605,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                 "borderColor": "",
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -606,7 +658,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -631,8 +683,8 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -650,11 +702,37 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
         "childrenGap": 5,
       }
     }
-  />
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled
+    </Text>
+  </Stack>
 </Stack>
 `;
 
-exports[`SubSettingsComponent renders 1`] = `
+exports[`SubSettingssComponent renders 1`] = `
 <Stack
   tokens={
     Object {
@@ -702,7 +780,7 @@ exports[`SubSettingsComponent renders 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -727,8 +805,8 @@ exports[`SubSettingsComponent renders 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -769,7 +847,7 @@ exports[`SubSettingsComponent renders 1`] = `
                 "borderColor": "",
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -822,7 +900,7 @@ exports[`SubSettingsComponent renders 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -847,8 +925,8 @@ exports[`SubSettingsComponent renders 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -902,7 +980,7 @@ exports[`SubSettingsComponent renders 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -921,11 +999,37 @@ exports[`SubSettingsComponent renders 1`] = `
         "childrenGap": 5,
       }
     }
-  />
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled
+    </Text>
+  </Stack>
 </Stack>
 `;
 
-exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
+exports[`SubSettingssComponent timeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -967,13 +1071,13 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
             Object {
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "#9b4f96",
+                  "borderColor": undefined,
                 },
                 ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "#9b4f96",
+                  "borderColor": undefined,
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -1015,7 +1119,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                 "borderColor": "",
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -1068,7 +1172,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -1093,8 +1197,8 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
             "height": 25,
             "selectors": Object {
               ":disabled": Object {
-                "backgroundColor": "#ddd",
-                "borderColor": "#969696",
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
             },
             "width": 300,
@@ -1148,7 +1252,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                   "borderColor": "",
                 },
                 ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": "Segoe UI",
+                  "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
@@ -1167,6 +1271,32 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         "childrenGap": 5,
       }
     }
-  />
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled
+    </Text>
+  </Stack>
 </Stack>
 `;

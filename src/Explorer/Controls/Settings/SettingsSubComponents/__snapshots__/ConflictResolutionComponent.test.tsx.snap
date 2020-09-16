@@ -30,13 +30,13 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
           Object {
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
-                "borderColor": "#9b4f96",
+                "borderColor": undefined,
               },
               ".ms-ChoiceField-field.is-checked::before": Object {
-                "borderColor": "#9b4f96",
+                "borderColor": undefined,
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -60,8 +60,8 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
           "height": 25,
           "selectors": Object {
             ":disabled": Object {
-              "backgroundColor": "#ddd",
-              "borderColor": "#969696",
+              "backgroundColor": undefined,
+              "borderColor": undefined,
             },
           },
           "width": 300,
@@ -109,7 +109,7 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
                 "borderColor": "",
               },
               ".ms-ChoiceField-wrapper label": Object {
-                "fontFamily": "Segoe UI",
+                "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
@@ -133,8 +133,8 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
           "height": 25,
           "selectors": Object {
             ":disabled": Object {
-              "backgroundColor": "#ddd",
-              "borderColor": "#969696",
+              "backgroundColor": undefined,
+              "borderColor": undefined,
             },
           },
           "width": 300,
