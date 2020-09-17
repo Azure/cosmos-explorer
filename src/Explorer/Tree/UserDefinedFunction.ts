@@ -1,12 +1,12 @@
+import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
+import { deleteUserDefinedFunction } from "../../Common/dataAccess/deleteUserDefinedFunction";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
-import { deleteUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
+import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 
 export default class UserDefinedFunction {
   public nodeKind: string;
@@ -17,7 +17,7 @@ export default class UserDefinedFunction {
   public id: ko.Observable<string>;
   public body: ko.Observable<string>;
 
-  constructor(container: Explorer, collection: ViewModels.Collection, data: DataModels.UserDefinedFunction) {
+  constructor(container: Explorer, collection: ViewModels.Collection, data: UserDefinedFunctionDefinition & Resource) {
     this.nodeKind = "UserDefinedFunction";
     this.container = container;
 
@@ -25,12 +25,12 @@ export default class UserDefinedFunction {
     this.self = data._self;
     this.rid = data._rid;
     this.id = ko.observable(data.id);
-    this.body = ko.observable(data.body);
+    this.body = ko.observable(data.body as string);
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
-    const userDefinedFunction = <DataModels.UserDefinedFunction>{
+    const userDefinedFunction = {
       id: "",
       body: "function userDefinedFunction(){}"
     };
@@ -64,7 +64,7 @@ export default class UserDefinedFunction {
     if (userDefinedFunctionTab) {
       this.container.tabsManager.activateTab(userDefinedFunctionTab);
     } else {
-      const userDefinedFunctionData = <DataModels.UserDefinedFunction>{
+      const userDefinedFunctionData = {
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
@@ -107,13 +107,7 @@ export default class UserDefinedFunction {
       return;
     }
 
-    const userDefinedFunctionData = <DataModels.UserDefinedFunction>{
-      _rid: this.rid,
-      _self: this.self,
-      id: this.id(),
-      body: this.body()
-    };
-    deleteUserDefinedFunction(this.collection, userDefinedFunctionData).then(
+    deleteUserDefinedFunction(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
         this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
