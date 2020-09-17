@@ -574,7 +574,6 @@ export default class Collection implements ViewModels.Collection {
       tabKind: undefined,
       title: !this.offer() ? "Settings" : "Scale & Settings",
       tabPath: "",
-
       collection: this,
       node: this,
       selfLink: this.self,
