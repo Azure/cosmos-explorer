@@ -68,13 +68,13 @@ describe('Collection Add and Delete SQL spec', () => {
       await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
       await frame.waitFor(1000);
       const elements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await elements[elements.length - 1].click();
+      await elements[4].click();
 
       // confirm delete container
+      await frame.waitFor(5000);
       await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
 
       // click delete
-      await frame.waitFor('input[data-test="deleteCollection"]');
       await frame.click('input[data-test="deleteCollection"]');
       await frame.waitFor(5000);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
