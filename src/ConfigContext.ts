@@ -31,9 +31,9 @@ interface ConfigContext {
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedParentFrameOrigins: [
-    `^https:\\/\\/[\\.\\w]+azure.com$`,
-    `^https:\\/\\/[\\.\\w]+azure.cn$`,
-    `^https:\\/\\/[\\.\\w]+azure.us$`,
+    `^https:\\/\\/cosmos.azure.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]+.portal.azure.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]+.ext.azure.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]+microsoftazure.de$`
   ],
   // Webpack injects this at build time
