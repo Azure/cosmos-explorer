@@ -188,6 +188,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
             "isBeakVisible": false,
             "items": Array [
               Object {
+                "className": undefined,
                 "disabled": true,
                 "key": "menuLabel",
                 "onClick": undefined,
