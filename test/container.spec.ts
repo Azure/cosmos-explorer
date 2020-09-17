@@ -66,7 +66,7 @@ describe('Collection Add and Delete SQL spec', () => {
 
       // click delete container
       await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
-      await frame.waitFor(2000);
+      await frame.waitFor('span[class="treeComponentMenuItemLabel"]')
       const elements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
       await elements[4].click();
 
@@ -87,7 +87,7 @@ describe('Collection Add and Delete SQL spec', () => {
       await button.asElement().click();
 
       // click delete database
-      await frame.waitFor(1000);
+      await frame.waitFor('span[class="treeComponentMenuItemLabel"]')
       const dbElements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
       await dbElements[1].click();
 
