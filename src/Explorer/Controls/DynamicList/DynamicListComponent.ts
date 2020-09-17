@@ -86,7 +86,7 @@ export class DynamicListViewModel extends WaitsForTemplateViewModel {
   public onRemoveItemKeyPress = (data: any, event: KeyboardEvent, source: any): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
       this.removeItem(data, event);
-      document.querySelector(".dynamicListItem:last-of-type input").focus();
+      (document.querySelector(".dynamicListItem:last-of-type input") as HTMLElement).focus();
       event.stopPropagation();
       return false;
     }
@@ -95,7 +95,7 @@ export class DynamicListViewModel extends WaitsForTemplateViewModel {
 
   public addItem(): void {
     this.listItems.push({ value: ko.observable("") });
-    document.querySelector(".dynamicListItem:last-of-type input").focus();    
+    (document.querySelector(".dynamicListItem:last-of-type input") as HTMLElement).focus();
   }
 
   public onAddItemKeyPress = (source: any, event: KeyboardEvent): boolean => {
