@@ -67,8 +67,7 @@
                 name="collectionIdConfirmation"
                 required
                 class="collid"
-                data-bind="value: collectionIdConfirmation, hasFocus: firstFieldHasFocus"
-                aria-label="Confirm by typing the collection id"
+                data-bind="value: collectionIdConfirmation, hasFocus: firstFieldHasFocus, attr: { 'aria-label': collectionIdConfirmationText }"
               />
             </p>
           </div>
