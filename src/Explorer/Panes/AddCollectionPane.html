@@ -24,7 +24,7 @@
 <script type="text/html" id="add-collection-inputs">
                                                                 <!-- Add collection header - Start -->
   <div class="firstdivbg headerline">
-      <span id="containerTitle" data-bind="text: title"></span>
+      <span id="containerTitle" role="heading" aria-level="2" data-bind="text: title" ></span>
       <div class="closeImg" id="closeBtnAddCollection" role="button" aria-label="Add collection close pane"
           data-bind="click: cancel, event: { keypress: onCloseKeyPress }" tabindex="0">
           <img src="../../../images/close-black.svg" title="Close" alt="Close" />
