@@ -65,10 +65,8 @@ describe('Collection Add and Delete SQL spec', () => {
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
 
       // click delete container
-      await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
-      await frame.waitFor('span[class="treeComponentMenuItemLabel"]')
-      const elements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await elements[4].click();
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
+      await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
       // confirm delete container
       await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
@@ -87,9 +85,8 @@ describe('Collection Add and Delete SQL spec', () => {
       await button.asElement().click();
 
       // click delete database
-      await frame.waitFor('span[class="treeComponentMenuItemLabel"]')
-      const dbElements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await dbElements[1].click();
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
+      await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
       // confirm delete database
       await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());

@@ -24,6 +24,7 @@ export interface TreeNodeMenuItem {
   onClick: () => void;
   iconSrc?: string;
   isDisabled?: boolean;
+  styleClass?: string;
 }
 
 export interface TreeNode {
@@ -261,13 +262,20 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
                 onContextMenu={e => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
               >
                 {props.item.onRenderIcon()}
-                <span className="treeComponentMenuItemLabel">{props.item.text}</span>
+                <span
+                  className={
+                    "treeComponentMenuItemLabel" + (props.item.className ? ` ${props.item.className}Label` : "")
+                  }
+                >
+                  {props.item.text}
+                </span>
               </div>
             ),
             items: node.contextMenu.map((menuItem: TreeNodeMenuItem) => ({
               key: menuItem.label,
               text: menuItem.label,
               disabled: menuItem.isDisabled,
+              className: menuItem.styleClass,
               onClick: menuItem.onClick,
               onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />
             }))
