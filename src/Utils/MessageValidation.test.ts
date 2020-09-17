@@ -15,6 +15,7 @@ test.each`
   ${"https://main.documentdb.ext.azure.cn"}          | ${false}
   ${"https://main.documentdb.ext.microsoftazure.de"} | ${false}
   ${"https://random.domain"}                         | ${true}
+  ${"https://malicious.cloudapp.azure.com"}          | ${true}
 `("returns $expected when called with $domain", ({ domain, expected }) => {
   expect(isInvalidParentFrameOrigin({ origin: domain } as MessageEvent)).toBe(expected);
 });
