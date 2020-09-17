@@ -71,7 +71,6 @@ describe('Collection Add and Delete SQL spec', () => {
       await elements[4].click();
 
       // confirm delete container
-      await frame.waitFor(5000);
       await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
 
       // click delete

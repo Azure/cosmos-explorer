@@ -122,8 +122,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
     super.resetData();
   }
 
-  public async open() {
-    await this.container.loadSelectedDatabaseOffer();
+  public open() {
     this.recordDeleteFeedback(this.shouldRecordFeedback());
     super.open();
   }
