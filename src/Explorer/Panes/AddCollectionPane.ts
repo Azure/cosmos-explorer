@@ -721,6 +721,19 @@ export default class AddCollectionPane extends ContextualPaneBase {
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }
 
+  private transferFocus(elementIdToKeepVisible: string, elementIdToFocus: string): void {
+    document.getElementById(elementIdToKeepVisible).style.visibility = "visible";
+    document.getElementById(elementIdToFocus).focus();
+  }
+
+  private onFocusOut(_: any, event: any): void {
+    event.target.parentElement.style.visibility = "";
+  }
+
+  private onMouseOut(_: any, event: any): void {
+    event.target.style.visibility = "";
+  }
+
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
     const cachedDatabaseIdsList = _.map(newDatabaseIds, (database: ViewModels.Database) => {
       if (database && database.offer && database.offer()) {

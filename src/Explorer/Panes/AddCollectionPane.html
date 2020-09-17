@@ -517,13 +517,13 @@
                   <div>
                       <span class="mandatoryStar">*</span>
                       <span class="addCollectionLabel">Analytical store</span>
-                      <span class="infoTooltip" role="tooltip" tabindex="0">
+                      <span class="infoTooltip" role="tooltip" tabindex="0" data-bind="event: { focus: function(data, event) { transferFocus('tooltip1', 'link1') } }">
                           <img class="infoImg" src="/info-bubble.svg" alt="More information">
-                          <span class="tooltiptext infoTooltipWidth">
+                          <span id="tooltip1" class="tooltiptext infoTooltipWidth" data-bind="event: { mouseout: onMouseOut }">
                               Enable analytical store capability to perform near real-time analytics on your operational
                               data, without impacting the performance of transactional workloads.
-                              Learn more <a class="errorLink" href="https://aka.ms/analytical-store-overview"
-                                  target="_blank">here</a>
+                              Learn more <a id="link1" class="errorLink" href="https://aka.ms/analytical-store-overview"
+                                  target="_blank" data-bind="event: { focusout: onFocusOut }">here</a>
                           </span>
                       </span>
                   </div>
