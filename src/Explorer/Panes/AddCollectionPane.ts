@@ -734,6 +734,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
     event.target.style.visibility = "";
   }
 
+  private onKeyDown(previousActiveElementId: string, _: any, event: KeyboardEvent): boolean {
+    if (event.shiftKey && event.keyCode == Constants.KeyCodes.Tab) {
+      document.getElementById(previousActiveElementId).focus();
+      return false;
+    } else {
+      // Execute default action
+      return true;
+    }
+  }
+
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
     const cachedDatabaseIdsList = _.map(newDatabaseIds, (database: ViewModels.Database) => {
       if (database && database.offer && database.offer()) {

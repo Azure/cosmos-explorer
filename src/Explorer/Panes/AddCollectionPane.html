@@ -523,7 +523,7 @@
                               Enable analytical store capability to perform near real-time analytics on your operational
                               data, without impacting the performance of transactional workloads.
                               Learn more <a id="link1" class="errorLink" href="https://aka.ms/analytical-store-overview"
-                                  target="_blank" data-bind="event: { focusout: onFocusOut }">here</a>
+                                  target="_blank" data-bind="event: { focusout: onFocusOut, keydown: onKeyDown.bind($data, 'largePartitionKey') }">here</a>
                           </span>
                       </span>
                   </div>
