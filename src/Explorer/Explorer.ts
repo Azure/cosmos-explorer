@@ -15,7 +15,7 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -1424,71 +1424,40 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-
-    const refreshDatabases = (offers?: DataModels.Offer[]) => {
-      this._setLoadingStatusText("Fetching databases...");
-      readDatabases().then(
-        (databases: DataModels.Database[]) => {
-          this._setLoadingStatusText("Successfully fetched databases.");
-          TelemetryProcessor.traceSuccess(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree
+    this._setLoadingStatusText("Fetching databases...");
+    readDatabases().then(
+      (databases: DataModels.Database[]) => {
+        this._setLoadingStatusText("Successfully fetched databases.");
+        TelemetryProcessor.traceSuccess(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree
+          },
+          startKey
+        );
+        const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+        const deltaDatabases = this.getDeltaDatabases(databases);
+        this.addDatabasesToList(deltaDatabases.toAdd);
+        this.deleteDatabasesFromList(deltaDatabases.toDelete);
+        this.selectedNode(currentlySelectedNode);
+        this._setLoadingStatusText("Fetching containers...");
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+          .then(
+            () => {
+              this._setLoadingStatusText("Successfully fetched containers.");
+              deferred.resolve();
             },
-            startKey
-          );
-          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-          const deltaDatabases = this.getDeltaDatabases(databases, offers);
-          this.addDatabasesToList(deltaDatabases.toAdd);
-          this.deleteDatabasesFromList(deltaDatabases.toDelete);
-          this.selectedNode(currentlySelectedNode);
-          this._setLoadingStatusText("Fetching containers...");
-          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-            .then(
-              () => {
-                this._setLoadingStatusText("Successfully fetched containers.");
-                deferred.resolve();
-              },
-              reason => {
-                this._setLoadingStatusText("Failed to fetch containers.");
-                deferred.reject(reason);
-              }
-            )
-            .finally(() => this.isRefreshingExplorer(false));
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch databases.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    };
-
-    const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers({ isServerless: this.isServerlessEnabled() });
-    this._setLoadingStatusText("Fetching offers...");
-    offerPromise.then(
-      (offers: DataModels.Offer[]) => {
-        this._setLoadingStatusText("Successfully fetched offers.");
-        refreshDatabases(offers);
+            reason => {
+              this._setLoadingStatusText("Failed to fetch containers.");
+              deferred.reject(reason);
+            }
+          )
+          .finally(() => this.isRefreshingExplorer(false));
       },
       error => {
-        this._setLoadingStatusText("Failed to fetch offers.");
+        this._setLoadingStatusText("Failed to fetch databases.");
         this.isRefreshingExplorer(false);
         deferred.reject(error);
         TelemetryProcessor.traceFailure(
@@ -2103,16 +2072,13 @@ export default class Explorer {
       defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree
     });
-    databasesToLoad.forEach((database: ViewModels.Database) => {
-      loadCollectionPromises.push(
-        database.loadCollections().finally(() => {
-          const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.rid === database.rid);
-          if (isNewDatabase) {
-            database.expandDatabase();
-          }
-          this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
-        })
-      );
+    databasesToLoad.forEach(async (database: ViewModels.Database) => {
+      await database.loadCollections();
+      const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.rid === database.rid);
+      if (isNewDatabase) {
+        database.expandDatabase();
+      }
+      this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
     });
 
     Q.all(loadCollectionPromises).done(
@@ -2257,8 +2223,7 @@ export default class Explorer {
   }
 
   private getDeltaDatabases(
-    updatedDatabaseList: DataModels.Database[],
-    updatedOffersList: DataModels.Offer[]
+    updatedDatabaseList: DataModels.Database[]
   ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
@@ -2267,10 +2232,9 @@ export default class Explorer {
       );
       return !databaseExists;
     });
-    const databasesToAdd: ViewModels.Database[] = _.map(newDatabases, (newDatabase: DataModels.Database) => {
-      const databaseOffer: DataModels.Offer = this.getOfferForResource(updatedOffersList, newDatabase._self);
-      return new Database(this, newDatabase, databaseOffer);
-    });
+    const databasesToAdd: ViewModels.Database[] = newDatabases.map(
+      (newDatabase: DataModels.Database) => new Database(this, newDatabase)
+    );
 
     let databasesToDelete: ViewModels.Database[] = [];
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
@@ -2318,10 +2282,6 @@ export default class Explorer {
       }
     }
     return null;
-  }
-
-  private getOfferForResource(offers: DataModels.Offer[], resourceId: string): DataModels.Offer {
-    return _.find(offers, (offer: DataModels.Offer) => offer.resource === resourceId);
   }
 
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
@@ -3159,5 +3119,16 @@ export default class Explorer {
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
       }
     }
+  }
+
+  public async loadSelectedDatabaseOffer(): Promise<void> {
+    const database = this.findSelectedDatabase();
+    await database?.loadOffer();
+  }
+
+  public async loadDatabaseOffers(): Promise<void> {
+    this.databases()?.forEach(async (database: ViewModels.Database) => {
+      await database.loadOffer();
+    });
   }
 }
