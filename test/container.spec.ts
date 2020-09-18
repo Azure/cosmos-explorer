@@ -62,8 +62,9 @@ describe('Collection Add and Delete SQL spec', () => {
 
       // click context menu for container
       await frame.waitFor(`div[data-test="${collectionId}"] > div > button`);
+      await frame.waitFor(`span[title="${collectionId}"]`);
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
-      await frame.waitFor(5000);
+      await frame.waitFor(2000)
       // click delete container
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
