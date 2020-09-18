@@ -28,7 +28,7 @@ import {
   getThroughputApplyShortDelayMessage,
   getThroughputApplyLongDelayMessage
 } from "./SettingsRenderUtils";
-import { ScaleComponent } from "./SettingsSubComponents/ScaleComponent";
+import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   getMaxRUs,
   getMinRUs,
@@ -44,11 +44,11 @@ import {
   TtlOn,
   TtlOnNoDefault
 } from "./SettingsUtils";
-import { ConflictResolutionComponent } from "./SettingsSubComponents/ConflictResolutionComponent";
-import { SubSettingsComponent } from "./SettingsSubComponents/SubSettingsComponent";
+import { ConflictResolutionComponent, ConflictResolutionComponentProps } from "./SettingsSubComponents/ConflictResolutionComponent";
+import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption, Image } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
-import { IndexingPolicyComponent } from "./SettingsSubComponents/IndexingPolicyComponent";
+import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -1151,32 +1151,83 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public render(): JSX.Element {
+    const scaleComponentProps : ScaleComponentProps = {
+      collection: this.collection,
+      container: this.container,
+      hasProvisioningTypeChanged: this.hasProvisioningTypeChanged,
+      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag,
+      isFixedContainer: this.isFixedContainer,
+      autoPilotTiersList: this.autoPilotTiersList,
+      onThroughputChange: this.onThroughputChange,
+      throughput: this.state.throughput,
+      throughputBaseline: this.state.throughputBaseline,
+      autoPilotThroughput: this.state.autoPilotThroughput,
+      autoPilotThroughputBaseline: this.state.autoPilotThroughputBaseline,
+      selectedAutoPilotTier: this.state.selectedAutoPilotTier,
+      isAutoPilotSelected: this.state.isAutoPilotSelected,
+      wasAutopilotOriginallySet: this.state.wasAutopilotOriginallySet,
+      userCanChangeProvisioningTypes: this.state.userCanChangeProvisioningTypes,
+      overrideWithProvisionedThroughputSettings: this.overrideWithProvisionedThroughputSettings,
+      onAutoPilotSelected: this.onAutoPilotSelected,
+      onAutoPilotTierChange: this.onAutoPilotTierChange,
+      onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange
+    }
+    
+    const subSettingsComponentProps : SubSettingsComponentProps = {
+      collection: this.collection,
+      container: this.container,
+      isAnalyticalStorageEnabled: this.isAnalyticalStorageEnabled,
+      changeFeedPolicyVisible: this.changeFeedPolicyVisible,
+      timeToLive: this.state.timeToLive,
+      timeToLiveBaseline: this.state.timeToLiveBaseline,
+      onTtlChange: this.onTtlChange,
+      timeToLiveSeconds: this.state.timeToLiveSeconds,
+      timeToLiveSecondsBaseline: this.state.timeToLiveSecondsBaseline,
+      onTimeToLiveSecondsChange: this.onTimeToLiveSecondsChange,
+      geospatialConfigType: this.state.geospatialConfigType,
+      geospatialConfigTypeBaseline: this.state.geospatialConfigTypeBaseline,
+      onGeoSpatialConfigTypeChange: this.onGeoSpatialConfigTypeChange,
+      analyticalStorageTtlSelection: this.state.analyticalStorageTtlSelection,
+      analyticalStorageTtlSelectionBaseline: this.state.analyticalStorageTtlSelectionBaseline,
+      onAnalyticalStorageTtlSelectionChange: this.onAnalyticalStorageTtlSelectionChange,
+      analyticalStorageTtlSeconds: this.state.analyticalStorageTtlSeconds,
+      analyticalStorageTtlSecondsBaseline: this.state.analyticalStorageTtlSecondsBaseline,
+      onAnalyticalStorageTtlSecondsChange: this.onAnalyticalStorageTtlSecondsChange,
+      changeFeedPolicy: this.state.changeFeedPolicy,
+      changeFeedPolicyBaseline: this.state.changeFeedPolicyBaseline,
+      onChangeFeedPolicyChange: this.onChangeFeedPolicyChange
+    }
+
+    const indexingPolicyComponentProps : IndexingPolicyComponentProps = {
+      shouldDiscardIndexingPolicy: this.state.shouldDiscardIndexingPolicy,
+      resetShouldDiscardIndexingPolicy: this.resetShouldDiscardIndexingPolicy,
+      indexingPolicyContent: this.state.indexingPolicyContent,
+      onIndexingPolicyElementFocusChange: this.onIndexingPolicyElementFocusChange,
+      onIndexingPolicyContentChange: this.onIndexingPolicyContentChange,
+      onIndexingPolicyValidityChange: this.onIndexingPolicyValidityChage,
+      logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage
+    }
+
+    const conflictResolutionPolicyComponentProps : ConflictResolutionComponentProps = {
+      collection: this.collection,
+      container: this.container,
+      conflictResolutionPolicyMode: this.state.conflictResolutionPolicyMode,
+      conflictResolutionPolicyModeBaseline: this.state.conflictResolutionPolicyModeBaseline,
+      onConflictResolutionPolicyModeChange: this.onConflictResolutionPolicyModeChange,
+      conflictResolutionPolicyPath: this.state.conflictResolutionPolicyPath,
+      conflictResolutionPolicyPathBaseline: this.state.conflictResolutionPolicyPathBaseline,
+      onConflictResolutionPolicyPathChange: this.onConflictResolutionPolicyPathChange,
+      conflictResolutionPolicyProcedure: this.state.conflictResolutionPolicyProcedure,
+      conflictResolutionPolicyProcedureBaseline: this.state.conflictResolutionPolicyProcedureBaseline,
+      onConflictResolutionPolicyProcedureChange: this.onConflictResolutionPolicyProcedureChange
+    }
+
     const tabs: SettingsV2TabInfo[] = [];
     if (!hasDatabaseSharedThroughput(this.collection)) {
       tabs.push({
         tab: SettingsV2TabTypes.ScaleTab,
         content: (
-          <ScaleComponent
-            collection={this.collection}
-            container={this.container}
-            hasProvisioningTypeChanged={this.hasProvisioningTypeChanged}
-            hasAutoPilotV2FeatureFlag={this.hasAutoPilotV2FeatureFlag}
-            isFixedContainer={this.isFixedContainer}
-            autoPilotTiersList={this.autoPilotTiersList}
-            onThroughputChange={this.onThroughputChange}
-            throughput={this.state.throughput}
-            throughputBaseline={this.state.throughputBaseline}
-            autoPilotThroughput={this.state.autoPilotThroughput}
-            autoPilotThroughputBaseline={this.state.autoPilotThroughputBaseline}
-            selectedAutoPilotTier={this.state.selectedAutoPilotTier}
-            isAutoPilotSelected={this.state.isAutoPilotSelected}
-            wasAutopilotOriginallySet={this.state.wasAutopilotOriginallySet}
-            userCanChangeProvisioningTypes={this.state.userCanChangeProvisioningTypes}
-            overrideWithProvisionedThroughputSettings={this.overrideWithProvisionedThroughputSettings}
-            onAutoPilotSelected={this.onAutoPilotSelected}
-            onAutoPilotTierChange={this.onAutoPilotTierChange}
-            onMaxAutoPilotThroughputChange={this.onMaxAutoPilotThroughputChange}
-          />
+          <ScaleComponent {...scaleComponentProps}/>
         )
       });
     }
@@ -1184,30 +1235,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     tabs.push({
       tab: SettingsV2TabTypes.SubSettingsTab,
       content: (
-        <SubSettingsComponent
-          collection={this.collection}
-          container={this.container}
-          isAnalyticalStorageEnabled={this.isAnalyticalStorageEnabled}
-          changeFeedPolicyVisible={this.changeFeedPolicyVisible}
-          timeToLive={this.state.timeToLive}
-          timeToLiveBaseline={this.state.timeToLiveBaseline}
-          onTtlChange={this.onTtlChange}
-          timeToLiveSeconds={this.state.timeToLiveSeconds}
-          timeToLiveSecondsBaseline={this.state.timeToLiveSecondsBaseline}
-          onTimeToLiveSecondsChange={this.onTimeToLiveSecondsChange}
-          geospatialConfigType={this.state.geospatialConfigType}
-          geospatialConfigTypeBaseline={this.state.geospatialConfigTypeBaseline}
-          onGeoSpatialConfigTypeChange={this.onGeoSpatialConfigTypeChange}
-          analyticalStorageTtlSelection={this.state.analyticalStorageTtlSelection}
-          analyticalStorageTtlSelectionBaseline={this.state.analyticalStorageTtlSelectionBaseline}
-          onAnalyticalStorageTtlSelectionChange={this.onAnalyticalStorageTtlSelectionChange}
-          analyticalStorageTtlSeconds={this.state.analyticalStorageTtlSeconds}
-          analyticalStorageTtlSecondsBaseline={this.state.analyticalStorageTtlSecondsBaseline}
-          onAnalyticalStorageTtlSecondsChange={this.onAnalyticalStorageTtlSecondsChange}
-          changeFeedPolicy={this.state.changeFeedPolicy}
-          changeFeedPolicyBaseline={this.state.changeFeedPolicyBaseline}
-          onChangeFeedPolicyChange={this.onChangeFeedPolicyChange}
-        />
+        <SubSettingsComponent {...subSettingsComponentProps}/>
       )
     });
 
@@ -1215,15 +1243,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: (
-          <IndexingPolicyComponent
-            shouldDiscardIndexingPolicy={this.state.shouldDiscardIndexingPolicy}
-            resetShouldDiscardIndexingPolicy={this.resetShouldDiscardIndexingPolicy}
-            indexingPolicyContent={this.state.indexingPolicyContent}
-            onIndexingPolicyElementFocusChange={this.onIndexingPolicyElementFocusChange}
-            onIndexingPolicyContentChange={this.onIndexingPolicyContentChange}
-            onIndexingPolicyValidityChange={this.onIndexingPolicyValidityChage}
-            logIndexingPolicySuccessMessage={this.logIndexingPolicySuccessMessage}
-          />
+          <IndexingPolicyComponent {...indexingPolicyComponentProps}/>
         )
       });
     }
@@ -1232,19 +1252,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.ConflictResolutionTab,
         content: (
-          <ConflictResolutionComponent
-            collection={this.collection}
-            container={this.container}
-            conflictResolutionPolicyMode={this.state.conflictResolutionPolicyMode}
-            conflictResolutionPolicyModeBaseline={this.state.conflictResolutionPolicyModeBaseline}
-            onConflictResolutionPolicyModeChange={this.onConflictResolutionPolicyModeChange}
-            conflictResolutionPolicyPath={this.state.conflictResolutionPolicyPath}
-            conflictResolutionPolicyPathBaseline={this.state.conflictResolutionPolicyPathBaseline}
-            onConflictResolutionPolicyPathChange={this.onConflictResolutionPolicyPathChange}
-            conflictResolutionPolicyProcedure={this.state.conflictResolutionPolicyProcedure}
-            conflictResolutionPolicyProcedureBaseline={this.state.conflictResolutionPolicyProcedureBaseline}
-            onConflictResolutionPolicyProcedureChange={this.onConflictResolutionPolicyProcedureChange}
-          />
+          <ConflictResolutionComponent {...conflictResolutionPolicyComponentProps}/>
         )
       });
     }
