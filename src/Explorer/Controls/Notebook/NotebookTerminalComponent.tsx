@@ -8,6 +8,7 @@ import * as Logger from "../../../Common/Logger";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { StringUtils } from "../../../Utils/StringUtils";
+import { userContext } from "../../../UserContext";
 
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
@@ -79,6 +80,8 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     if (serverInfo.authToken && serverInfo.authToken.length > 0) {
       params.set("token", serverInfo.authToken);
     }
+
+    params.set("subscriptionId", userContext.subscriptionId);
 
     let result: string = "terminal.html?";
     for (let key of params.keys()) {

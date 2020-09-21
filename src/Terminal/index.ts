@@ -6,6 +6,7 @@ import { ServerConnection } from "@jupyterlab/services";
 import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import { updateUserContext, userContext } from "../UserContext";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};
@@ -44,6 +45,12 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
 
 const main = async (): Promise<void> => {
   const urlVars = getUrlVars();
+
+  // Initialize userContext. Currently only subscrptionId is required by TelemetryProcessor
+  updateUserContext({
+    subscriptionId: urlVars["subscriptionId"]
+  });
+
   const serverSettings = createServerSettings(urlVars);
 
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, {

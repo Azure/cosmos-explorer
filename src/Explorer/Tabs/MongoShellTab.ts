@@ -142,7 +142,7 @@ export default class MongoShellTab extends TabsBase {
       return;
     }
 
-    const dataToLog: string = event.data.data.logData;
+    const dataToLog = { message: event.data.data.logData };
     const logType: string = event.data.data.logType;
     const shellTraceId: string = event.data.data.traceId || "none";
 

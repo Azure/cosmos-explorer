@@ -97,11 +97,9 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             this.databaseDeleteFeedback()
           );
 
-          TelemetryProcessor.trace(
-            Action.DeleteDatabase,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          );
+          TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          });
 
           this.databaseDeleteFeedback("");
         }
