@@ -170,14 +170,17 @@ export class ResourceTreeAdapter implements ReactAdapter {
         children: [],
         isSelected: () => this.isDataNodeSelected(database.rid, "Database", undefined),
         contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database),
-        onClick: isExpanded => {
+        onClick: async isExpanded => {
           // Rewritten version of expandCollapseDatabase():
-          if (!isExpanded) {
-            database.expandDatabase();
-            database.loadCollections();
-          } else {
+          if (isExpanded) {
             database.collapseDatabase();
+          } else {
+            if (databaseNode.children?.length === 0) {
+              databaseNode.isLoading = true;
+            }
+            await database.expandDatabase();
           }
+          databaseNode.isLoading = false;
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
           this.container.tabsManager.refreshActiveTab(
@@ -202,6 +205,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
         .forEach((collection: ViewModels.Collection) =>
           databaseNode.children.push(this.buildCollectionNode(database, collection))
         );
+
+      database.collections.subscribe((collections: ViewModels.Collection[]) => {
+        collections.forEach((collection: ViewModels.Collection) =>
+          databaseNode.children.push(this.buildCollectionNode(database, collection))
+        );
+      });
 
       return databaseNode;
     });

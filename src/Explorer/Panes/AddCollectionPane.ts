@@ -681,7 +681,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     return true;
   };
 
-  public open(databaseId?: string) {
+  public async open(databaseId?: string) {
     super.open();
     // TODO: Figure out if a database level partition split is about to happen once shared throughput read is available
     this.formWarnings("");
@@ -715,18 +715,40 @@ export default class AddCollectionPane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane
     };
 
+    await this.container.loadDatabaseOffers();
     this._onDatabasesChange(this.container.databases());
     this._setFocus();
 
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }
 
+  private transferFocus(elementIdToKeepVisible: string, elementIdToFocus: string): void {
+    document.getElementById(elementIdToKeepVisible).style.visibility = "visible";
+    document.getElementById(elementIdToFocus).focus();
+  }
+
+  private onFocusOut(_: any, event: any): void {
+    event.target.parentElement.style.visibility = "";
+  }
+
+  private onMouseOut(_: any, event: any): void {
+    event.target.style.visibility = "";
+  }
+
+  private onKeyDown(previousActiveElementId: string, _: any, event: KeyboardEvent): boolean {
+    if (event.shiftKey && event.keyCode == Constants.KeyCodes.Tab) {
+      document.getElementById(previousActiveElementId).focus();
+      return false;
+    } else {
+      // Execute default action
+      return true;
+    }
+  }
+
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
     const cachedDatabaseIdsList = _.map(newDatabaseIds, (database: ViewModels.Database) => {
       if (database && database.offer && database.offer()) {
         this._databaseOffers.set(database.id(), database.offer());
-      } else if (database && database.isDatabaseShared && database.isDatabaseShared()) {
-        database.readSettings();
       }
 
       return database.id();

@@ -56,24 +56,27 @@ describe('Collection Add and Delete SQL spec', () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(`span[title="${collectionId}"]`);
+      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
+      await frame.waitFor(3000)
+      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       
       // delete container
 
       // click context menu for container
-      await frame.waitFor(`div[data-test="${collectionId}"] > div > button`);
+      await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
+      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
-
+      await frame.waitFor(2000)
       // click delete container
-      await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
-      await frame.waitFor(1000);
-      const elements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await elements[4].click();
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
+      await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
       // confirm delete container
+      await frame.waitFor('input[data-test="confirmCollectionId"]', { visible: true })
       await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
 
       // click delete
+      await frame.waitFor('input[data-test="deleteCollection"]', { visible: true })
       await frame.click('input[data-test="deleteCollection"]');
       await frame.waitFor(5000);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
@@ -87,9 +90,8 @@ describe('Collection Add and Delete SQL spec', () => {
       await button.asElement().click();
 
       // click delete database
-      await frame.waitFor(1000);
-      const dbElements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await dbElements[1].click();
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
+      await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
       // confirm delete database
       await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());

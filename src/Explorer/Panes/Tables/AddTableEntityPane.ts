@@ -80,7 +80,7 @@ export default class AddTableEntityPane extends TableEntityPane {
       this.updateIsActionEnabled();
       super.open();
     }
-    const focusElement = document.getElementById("addTableEntityValue");
+    const focusElement = document.getElementById("closeAddEntityPane");
     focusElement && focusElement.focus();
   }
 
