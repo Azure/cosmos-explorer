@@ -18,7 +18,7 @@ import {
 } from "../SettingsRenderUtils";
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Text, TextField, Stack } from "office-ui-fabric-react";
+import { Text, TextField, Stack, Label } from "office-ui-fabric-react";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -78,9 +78,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     const capacity: string = isFixed ? "Fixed" : "Unlimited";
     return (
       <Stack {...titleAndInputStackProps}>
-        <Text>Storage capacity</Text>
+        <Label>Storage capacity</Label>
         <Text>
-          <b>{capacity}</b>
+          {capacity}
         </Text>
       </Stack>
     );
@@ -102,7 +102,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return <></>;
     }
     return !this.props.hasAutoPilotV2FeatureFlag
-      ? getAutoPilotV3SpendElement(autoPilot, false /* isDatabaseThroughput */)
+      ? getAutoPilotV3SpendElement(autoPilot, false /* isDatabaseThroughput */, !this.isEmulator? this.getRequestUnitsUsageCost() : <></>)
       : getAutoPilotV2SpendElement(autoPilot, false /* isDatabaseThroughput */);
   };
 

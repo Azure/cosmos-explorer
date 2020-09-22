@@ -209,11 +209,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
         onChange={this.onAutoPilotThroughputChange}
       />
-      {!this.props.overrideWithProvisionedThroughputSettings && <Text>{this.props.autoPilotUsageCost}</Text>}
-      {!this.props.isEmulator && !this.props.overrideWithProvisionedThroughputSettings && (
-        <Text>{this.props.requestUnitsUsageCost}</Text>
-      )}
-
+      {!this.props.overrideWithProvisionedThroughputSettings && this.props.autoPilotUsageCost}
       {this.props.spendAckVisible && (
         <Checkbox
           id="spendAckCheckBox"

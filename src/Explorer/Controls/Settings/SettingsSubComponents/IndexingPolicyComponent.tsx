@@ -103,6 +103,6 @@ export class IndexingPolicyComponent extends React.Component<
   };
 
   public render(): JSX.Element {
-    return <div className="indexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>;
+    return <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>;
   }
 }

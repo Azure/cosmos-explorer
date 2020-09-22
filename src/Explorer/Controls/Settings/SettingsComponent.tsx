@@ -31,7 +31,6 @@ import {
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   getMaxRUs,
-  getMinRUs,
   hasDatabaseSharedThroughput,
   canThroughputExceedMaximumValue,
   GeospatialConfigType,
@@ -292,8 +291,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             wasAutopilotOriginallySet: true,
             selectedAutoPilotTier: offerAutopilotSettings.tier,
             selectedAutoPilotTierBaseline: offerAutopilotSettings.tier
-          }, () => {
-            console.log("isAutoPilotSelected:" + this.state.isAutoPilotSelected)
           });
         }
       }
@@ -455,7 +452,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
 
     try {
-      if (this.state.isSubSettingsSaveable || this.state.isIndexingPolicyDirty || this.state.isConflictResolutionDirty) {
+      if (
+        this.state.isSubSettingsSaveable ||
+        this.state.isIndexingPolicyDirty ||
+        this.state.isConflictResolutionDirty
+      ) {
         let defaultTtl: number;
         switch (this.state.timeToLive) {
           case TtlType.On:

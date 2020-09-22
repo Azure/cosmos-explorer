@@ -19,13 +19,15 @@ import {
   IStackProps,
   IStackTokens,
   IChoiceGroupStyles,
-  Link
+  Link,
+  Text
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
 export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,
-  isDatabaseThroughput: boolean
+  isDatabaseThroughput: boolean,
+  requestUnitsUsageCostElement?: JSX.Element
 ): JSX.Element => {
   if (!maxAutoPilotThroughputSet) {
     return <></>;
@@ -33,14 +35,17 @@ export const getAutoPilotV3SpendElement = (
 
   const resource: string = isDatabaseThroughput ? "database" : "container";
   return (
-    <span>
+    <>
+    <Text>
       Your {resource} throughput will automatically scale from{" "}
       <b>
         {AutoPilotUtils.getMinRUsBasedOnUserInput(maxAutoPilotThroughputSet)} RU/s (10% of max RU/s) -{" "}
         {maxAutoPilotThroughputSet} RU/s
       </b>{" "}
-      based on usage. <br />
-      <br />
+      based on usage.<br/>
+    </Text>
+    {requestUnitsUsageCostElement}
+    <Text>
       After the first {AutoPilotUtils.getStorageBasedOnUserInput(maxAutoPilotThroughputSet)} GB of data stored, the max
       RU/s will be automatically upgraded based on the new storage value.
       <Link href={AutopilotDocumentation.Url} target="_blank">
@@ -48,7 +53,8 @@ export const getAutoPilotV3SpendElement = (
         Learn more
       </Link>
       .
-    </span>
+    </Text>
+    </>
   );
 };
 
@@ -64,7 +70,7 @@ export const getAutoPilotV2SpendElement = (
   switch (autoPilotTier) {
     case AutopilotTier.Tier1:
       return (
-        <span>
+        <Text>
           Your {resource} throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload
           needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum
           (and minimum) throughput thresholds to the next available value. For more details, see{" "}
@@ -72,11 +78,11 @@ export const getAutoPilotV2SpendElement = (
             documentation
           </Link>
           .
-        </span>
+        </Text>
       );
     case AutopilotTier.Tier2:
       return (
-        <span>
+        <Text>
           Your {resource} throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload
           needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the
           maximum (and minimum) throughput thresholds to the next available value. For more details, see{" "}
@@ -84,11 +90,11 @@ export const getAutoPilotV2SpendElement = (
             documentation
           </Link>
           .
-        </span>
+        </Text>
       );
     case AutopilotTier.Tier3:
       return (
-        <span>
+        <Text>
           Your {resource} throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload
           needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum
           (and minimum) throughput thresholds to the next available value. For more details, see{" "}
@@ -96,11 +102,11 @@ export const getAutoPilotV2SpendElement = (
             documentation
           </Link>
           .
-        </span>
+        </Text>
       );
     case AutopilotTier.Tier4:
       return (
-        <span>
+        <Text>
           Your {resource} throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload
           needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum
           (and minimum) throughput thresholds to the next available value. For more details, see{" "}
@@ -108,10 +114,10 @@ export const getAutoPilotV2SpendElement = (
             documentation
           </Link>
           .
-        </span>
+        </Text>
       );
     default:
-      return <span>Your {resource} throughput will automatically scale based on the workload needs.</span>;
+      return <Text>Your {resource} throughput will automatically scale based on the workload needs.</Text>;
   }
 };
 
@@ -130,8 +136,8 @@ export const getEstimatedAutoscaleSpendElement = (
     getMultimasterMultiplier(regions, multimaster);
 
   return (
-    <span>
-      Estimated monthly cost ({currency}):{" "}
+    <Text>
+      Estimated monthly cost ({currency}) is {" "}
       <b>
         {currencySign}
         {calculateEstimateNumber(monthlyPrice / 10)}
@@ -141,7 +147,7 @@ export const getEstimatedAutoscaleSpendElement = (
       </b>
       ({"regions: "} {regions}, {throughput / 10} - {throughput} RU/s, {currencySign}
       {pricePerRu}/RU)
-    </span>
+    </Text>
   );
 };
 
@@ -160,7 +166,7 @@ export const getEstimatedSpendElement = (
   const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
 
   return (
-    <span>
+    <Text>
       Estimated cost ({currency}):{" "}
       <b>
         {currencySign}
@@ -172,7 +178,7 @@ export const getEstimatedSpendElement = (
       </b>
       ({"regions: "} {regions}, {throughput}RU/s, {currencySign}
       {pricePerRu}/RU)
-    </span>
+    </Text>
   );
 };
 
