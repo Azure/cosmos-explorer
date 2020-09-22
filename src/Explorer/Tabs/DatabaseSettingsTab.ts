@@ -598,7 +598,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         () => {
           this.container.isRefreshingExplorer(false);
           this._setBaseline();
-          this.database.readSettings();
           TelemetryProcessor.traceSuccess(
             Action.UpdateSettings,
             {
@@ -643,8 +642,9 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   };
 
   public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
+    return super.onActivate().then(async () => {
       this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
+      await this.database.loadOffer();
     });
   }
 

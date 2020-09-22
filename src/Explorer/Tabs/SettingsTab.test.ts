@@ -346,7 +346,6 @@ describe("Settings tab", () => {
 
       const offer: DataModels.Offer = null;
       const defaultTtl = 200;
-      const database = new Database(explorer, baseDatabase, null);
       const conflictResolutionPolicy = {
         mode: DataModels.ConflictResolutionMode.LastWriterWins,
         conflictResolutionPath: "/_ts"
@@ -507,7 +506,6 @@ describe("Settings tab", () => {
           }
         }
       };
-      const database = new Database(explorer, baseDatabase, null);
       const container: DataModels.Collection = {
         _rid: "_rid",
         _self: "",

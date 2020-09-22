@@ -9,6 +9,7 @@ import Explorer from "../Explorer";
 
 // TODO: Use specific actions for logging telemetry data
 export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
+  private initalFocusedElement: HTMLElement | undefined;
   public id: string;
   public container: Explorer;
   public firstFieldHasFocus: ko.Observable<boolean>;
@@ -49,9 +50,11 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     this.visible(false);
     this.isExecuting(false);
     this.resetData();
+    this.resetFocus();
   }
 
   public open() {
+    this.initalFocusedElement = document.activeElement as HTMLElement;
     this.visible(true);
     this.firstFieldHasFocus(true);
     this.resizePane();
@@ -122,5 +125,12 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     const newPaneElementHeight = window.innerHeight - $(notificationConsoleElement).height();
 
     $(paneElement).height(newPaneElementHeight);
+  }
+
+  private resetFocus(): void {
+    if (this.initalFocusedElement) {
+      this.initalFocusedElement.focus();
+      this.initalFocusedElement = undefined;
+    }
   }
 }

@@ -1522,6 +1522,10 @@ p {
     .tooltipVisible();
 }
 
+.infoTooltip a {
+    color: @AccentHigh;
+}
+
 .nowrap {
     white-space: nowrap;
 }
@@ -1739,7 +1743,7 @@ input::-webkit-calendar-picker-indicator {
     padding-right: 34px;
     color: @BaseDark;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
     margin: (2 * @MediumSpace) 0px;
 }
 
@@ -2972,6 +2976,10 @@ settings-pane {
     .enableAnalyticalStorageRadio:nth-child(n+2) {
         margin-left: @LargeSpace;
     }
+
+    .enableAnalyticalStorageRadioLabel {
+        padding: 0px
+    }
 }
 
 .addCollectionLabel {
@@ -3009,4 +3017,4 @@ settings-pane {
 
 .infoBoxContent a {
     color: @AccentMediumHigh
-} 
+}
