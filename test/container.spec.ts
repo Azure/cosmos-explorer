@@ -64,6 +64,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
+      await frame.waitFor(2000)
 
       // click delete container
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
