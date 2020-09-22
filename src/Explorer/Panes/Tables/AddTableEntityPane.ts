@@ -69,6 +69,7 @@ export default class AddTableEntityPane extends TableEntityPane {
           );
           this.updateIsActionEnabled();
           super.open();
+          this.focusValueElement()
         });
     } else {
       this.displayedAttributes(
@@ -79,9 +80,13 @@ export default class AddTableEntityPane extends TableEntityPane {
       );
       this.updateIsActionEnabled();
       super.open();
+      this.focusValueElement()
     }
-    const focusElement = document.getElementById("closeAddEntityPane");
-    focusElement && focusElement.focus();
+  }
+
+  private focusValueElement() {
+    const focusElement = document.getElementById("addTableEntityValue");
+    focusElement && focusElement.focus();  
   }
 
   private constructDisplayedAttributes(headers: string[], dataTypes: any): EntityPropertyViewModel[] {
