@@ -2,6 +2,8 @@ import "expect-puppeteer";
 import crypto from 'crypto'
 
 jest.setTimeout(300000);
+const RENDER_DELAY = 400
+const LOADING_STATE_DELAY = 1800
 
 describe('Collection Add and Delete Cassandra spec', () => {
   it('creates a collection', async () => {
@@ -38,21 +40,24 @@ describe('Collection Add and Delete Cassandra spec', () => {
       await frame.click('#cassandraaddcollectionpane > div > form > div.paneFooter > div > input');
 
       // open database menu
-      await frame.waitFor(`div[data-test="${keyspaceId}"]`);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
+      await frame.waitFor(`div[data-test="${keyspaceId}"]`, { visible: true });
+      await frame.waitFor(LOADING_STATE_DELAY)
+      await frame.waitFor(`div[data-test="${keyspaceId}"]`, { visible: true });
       await frame.click(`div[data-test="${keyspaceId}"]`);
-      await frame.waitFor(`span[title="${tableId}"]`);
-      
+      await frame.waitFor(`span[title="${tableId}"]`, { visible: true });
+
       // delete container
 
       // click context menu for container
-      await frame.waitFor(`div[data-test="${tableId}"] > div > button`);
+      await frame.waitFor(`div[data-test="${tableId}"] > div > button`, { visible: true });
       await frame.click(`div[data-test="${tableId}"] > div > button`);
 
       // click delete container
       await frame.waitForSelector('body > div.ms-Layer.ms-Layer--fixed');
-      const elements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
+      await frame.waitFor(RENDER_DELAY)
+      const elements = await frame.$$('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]')
       await elements[0].click()
 
       // confirm delete container
@@ -60,7 +65,7 @@ describe('Collection Add and Delete Cassandra spec', () => {
 
       // click delete
       await frame.click('input[data-test="deleteCollection"]');
-      await frame.waitFor(5000);
+      await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await expect(page).not.toMatchElement(`div[data-test="${tableId}"]`);
@@ -72,9 +77,9 @@ describe('Collection Add and Delete Cassandra spec', () => {
       await button.asElement().click();
 
       // click delete database
-      await frame.waitFor(1000);
-      const dbElements = await frame.$$('span[class="treeComponentMenuItemLabel"]')
-      await dbElements[1].click();
+      await frame.waitFor(RENDER_DELAY);
+      const dbElements = await frame.$$('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]')
+      await dbElements[0].click();
 
       // confirm delete database
       await frame.type('input[data-test="confirmDatabaseId"]', keyspaceId.trim());
@@ -86,8 +91,7 @@ describe('Collection Add and Delete Cassandra spec', () => {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName
-      await page.screenshot({path: `Test Failed ${testName}`});
+      await page.screenshot({path: `Test Failed ${testName}.png`});
       throw error;
     } 
   }) 
-})
