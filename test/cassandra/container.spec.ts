@@ -94,4 +94,5 @@ describe('Collection Add and Delete Cassandra spec', () => {
       await page.screenshot({path: `Test Failed ${testName}.png`});
       throw error;
     } 
-  }) 
+  });
+});
