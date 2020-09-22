@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { actions, ContentRef } from "@nteract/core";
 import loadTransform from "../NotebookComponent/loadTransform";
-import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
+import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import "./NotebookReadOnlyRenderer.less";
 
@@ -35,8 +35,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <CodeCell id={id} contentRef={contentRef}>
                 {{
                   editor: {
-                    codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />
+                    monaco: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <MonacoEditor readOnly={true} {...props} editorType={"monaco"} />
                   }
                 }}
               </CodeCell>
@@ -52,8 +52,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <RawCell id={id} contentRef={contentRef} cell_type="raw">
                 {{
                   editor: {
-                    codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />
+                    monaco: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <MonacoEditor {...props} readOnly={true} editorType={"monaco"} />
                   }
                 }}
               </RawCell>
