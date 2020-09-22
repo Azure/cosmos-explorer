@@ -69,7 +69,7 @@ export default class AddTableEntityPane extends TableEntityPane {
           );
           this.updateIsActionEnabled();
           super.open();
-          this.focusValueElement()
+          this.focusValueElement();
         });
     } else {
       this.displayedAttributes(
@@ -80,13 +80,13 @@ export default class AddTableEntityPane extends TableEntityPane {
       );
       this.updateIsActionEnabled();
       super.open();
-      this.focusValueElement()
+      this.focusValueElement();
     }
   }
 
   private focusValueElement() {
     const focusElement = document.getElementById("addTableEntityValue");
-    focusElement && focusElement.focus();  
+    focusElement && focusElement.focus();
   }
 
   private constructDisplayedAttributes(headers: string[], dataTypes: any): EntityPropertyViewModel[] {
