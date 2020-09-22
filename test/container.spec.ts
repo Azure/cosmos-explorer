@@ -56,6 +56,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.click(`div[data-test="${dbId}"]`);
+      await frame.waitFor(3000)
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
 
       // delete container
