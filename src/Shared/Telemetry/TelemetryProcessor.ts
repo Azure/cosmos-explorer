@@ -4,12 +4,15 @@ import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { appInsights } from "../appInsights";
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
+import { getDataExplorerWindow } from "../../Utils/WindowUtils";
 
 /**
  * Class that persists telemetry data to the portal tables.
  */
 
-export function trace(action: Action, actionModifier: string = ActionModifiers.Mark, data?: unknown): void {
+type TelemetryData = { [key: string]: unknown };
+
+export function trace(action: Action, actionModifier: string = ActionModifiers.Mark, data?: TelemetryData): void {
   sendMessage({
     type: MessageTypes.TelemetryInfo,
     data: {
@@ -22,7 +25,7 @@ export function trace(action: Action, actionModifier: string = ActionModifiers.M
   appInsights.trackEvent({ name: Action[action] }, getData(actionModifier, data));
 }
 
-export function traceStart(action: Action, data?: unknown): number {
+export function traceStart(action: Action, data?: TelemetryData): number {
   const timestamp: number = Date.now();
   sendMessage({
     type: MessageTypes.TelemetryInfo,
@@ -38,7 +41,7 @@ export function traceStart(action: Action, data?: unknown): number {
   return timestamp;
 }
 
-export function traceSuccess(action: Action, data?: unknown, timestamp?: number): void {
+export function traceSuccess(action: Action, data?: TelemetryData, timestamp?: number): void {
   sendMessage({
     type: MessageTypes.TelemetryInfo,
     data: {
@@ -52,7 +55,7 @@ export function traceSuccess(action: Action, data?: unknown, timestamp?: number)
   appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Success, data));
 }
 
-export function traceFailure(action: Action, data?: unknown, timestamp?: number): void {
+export function traceFailure(action: Action, data?: TelemetryData, timestamp?: number): void {
   sendMessage({
     type: MessageTypes.TelemetryInfo,
     data: {
@@ -66,7 +69,7 @@ export function traceFailure(action: Action, data?: unknown, timestamp?: number)
   appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Failed, data));
 }
 
-export function traceCancel(action: Action, data?: unknown, timestamp?: number): void {
+export function traceCancel(action: Action, data?: TelemetryData, timestamp?: number): void {
   sendMessage({
     type: MessageTypes.TelemetryInfo,
     data: {
@@ -80,7 +83,7 @@ export function traceCancel(action: Action, data?: unknown, timestamp?: number):
   appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Cancel, data));
 }
 
-export function traceOpen(action: Action, data?: unknown, timestamp?: number): number {
+export function traceOpen(action: Action, data?: TelemetryData, timestamp?: number): number {
   const validTimestamp = timestamp || Date.now();
   sendMessage({
     type: MessageTypes.TelemetryInfo,
@@ -96,7 +99,7 @@ export function traceOpen(action: Action, data?: unknown, timestamp?: number): n
   return validTimestamp;
 }
 
-export function traceMark(action: Action, data?: unknown, timestamp?: number): number {
+export function traceMark(action: Action, data?: TelemetryData, timestamp?: number): number {
   const validTimestamp = timestamp || Date.now();
   sendMessage({
     type: MessageTypes.TelemetryInfo,
@@ -112,21 +115,16 @@ export function traceMark(action: Action, data?: unknown, timestamp?: number): n
   return validTimestamp;
 }
 
-function getData(actionModifier: string, data: unknown = {}): { [key: string]: string } | undefined {
-  if (typeof data === "string") {
-    data = { message: data };
-  }
-  if (typeof data === "object") {
-    return {
-      // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      authType: (window as any).authType,
-      subscriptionId: userContext.subscriptionId as string,
-      platform: configContext.platform,
-      env: process.env.NODE_ENV as string,
-      actionModifier,
-      ...data
-    };
-  }
-  return undefined;
+function getData(actionModifier: string, data: TelemetryData = {}): { [key: string]: string } {
+  const dataExplorerWindow = getDataExplorerWindow(window);
+  return {
+    // TODO: Need to `any` here since the window imports Explorer which can't be in strict mode yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    authType: dataExplorerWindow && (dataExplorerWindow as any).authType,
+    subscriptionId: userContext.subscriptionId as string,
+    platform: configContext.platform,
+    env: process.env.NODE_ENV as string,
+    actionModifier,
+    ...data
+  };
 }

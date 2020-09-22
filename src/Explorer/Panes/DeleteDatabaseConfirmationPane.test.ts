@@ -120,11 +120,9 @@ describe("Delete Database Confirmation Pane", () => {
 
       return pane.submit().then(() => {
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
-        expect(TelemetryProcessor.trace).toHaveBeenCalledWith(
-          Action.DeleteDatabase,
-          ActionModifiers.Mark,
-          JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-        );
+        expect(TelemetryProcessor.trace).toHaveBeenCalledWith(Action.DeleteDatabase, ActionModifiers.Mark, {
+          message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+        });
       });
     });
   });

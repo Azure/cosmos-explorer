@@ -562,3 +562,11 @@ export class AnalyticalStorageTtl {
   public static readonly Infinite: number = -1;
   public static readonly Disabled: number = 0;
 }
+
+export class TerminalQueryParams {
+  public static readonly Terminal = "terminal";
+  public static readonly Server = "server";
+  public static readonly Token = "token";
+  public static readonly SubscriptionId = "subscriptionId";
+  public static readonly TerminalEndpoint = "terminalEndpoint";
+}

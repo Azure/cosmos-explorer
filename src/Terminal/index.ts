@@ -6,6 +6,8 @@ import { ServerConnection } from "@jupyterlab/services";
 import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import { updateUserContext } from "../UserContext";
+import { TerminalQueryParams } from "../Common/Constants";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};
@@ -18,22 +20,22 @@ const getUrlVars = (): { [key: string]: string } => {
 
 const createServerSettings = (urlVars: { [key: string]: string }): ServerConnection.ISettings => {
   let body: BodyInit;
-  if (urlVars.hasOwnProperty("terminalEndpoint")) {
+  if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
     body = JSON.stringify({
-      endpoint: urlVars["terminalEndpoint"]
+      endpoint: urlVars[TerminalQueryParams.TerminalEndpoint]
     });
   }
 
-  const server = urlVars["server"];
+  const server = urlVars[TerminalQueryParams.Server];
   let options: Partial<ServerConnection.ISettings> = {
     baseUrl: server,
     init: { body },
     fetch: window.parent.fetch
   };
-  if (urlVars.hasOwnProperty("token")) {
+  if (urlVars.hasOwnProperty(TerminalQueryParams.Token)) {
     options = {
       baseUrl: server,
-      token: urlVars["token"],
+      token: urlVars[TerminalQueryParams.Token],
       init: { body },
       fetch: window.parent.fetch
     };
@@ -44,6 +46,12 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
 
 const main = async (): Promise<void> => {
   const urlVars = getUrlVars();
+
+  // Initialize userContext. Currently only subscrptionId is required by TelemetryProcessor
+  updateUserContext({
+    subscriptionId: urlVars[TerminalQueryParams.SubscriptionId]
+  });
+
   const serverSettings = createServerSettings(urlVars);
 
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, {
@@ -51,7 +59,7 @@ const main = async (): Promise<void> => {
   });
 
   try {
-    if (urlVars.hasOwnProperty("terminal")) {
+    if (urlVars.hasOwnProperty(TerminalQueryParams.Terminal)) {
       await JupyterLabAppFactory.createTerminalApp(serverSettings);
     } else {
       throw new Error("Only terminal is supported");
