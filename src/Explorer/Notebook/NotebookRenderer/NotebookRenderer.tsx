@@ -3,7 +3,6 @@ import "./base.css";
 import "./default.css";
 
 import { RawCell, Cells, CodeCell, MarkdownCell } from "@nteract/stateful-components";
-import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 
@@ -104,9 +103,6 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <CodeCell id={id} contentRef={contentRef} cell_type="code">
                           {{
                             editor: {
-                              codemirror: (props: PassedEditorProps) => (
-                                <CodeMirrorEditor {...props} editorType="codemirror" />
-                              ),
                               monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
@@ -125,6 +121,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         "markdown",
                         <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                           {{
+                            editor: {
+                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />
+                            },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
                           }}
                         </MarkdownCell>
@@ -137,6 +136,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         "raw",
                         <RawCell id={id} contentRef={contentRef} cell_type="raw">
                           {{
+                            editor: {
+                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />
+                            },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
                           }}
                         </RawCell>

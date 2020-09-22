@@ -35,7 +35,7 @@ import configureStore from "./NotebookComponent/store";
 import { Notification } from "react-notification-system";
 import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { configOption } from "@nteract/mythic-configuration";
+import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
 
@@ -241,6 +241,18 @@ export class NotebookClientV2 {
     this.store.dispatch(
       configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
     );
+    createConfigCollection({
+      key: "monaco",
+    });
+    defineConfigOption({
+      label: "Show Line numbers",
+      key: "monaco.lineNumbers",
+      values: [
+        { label: "Yes", value: true },
+        { label: "No", value: false },
+      ],
+      defaultValue: true,
+    });
   }
 
   /**

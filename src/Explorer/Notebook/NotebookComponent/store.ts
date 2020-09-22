@@ -1,16 +1,13 @@
 import { AppState, epics as coreEpics, reducers, IContentProvider } from "@nteract/core";
 import {
-  applyMiddleware,
-  combineReducers,
   compose,
-  createStore,
   Store,
   AnyAction,
   Middleware,
   Dispatch,
   MiddlewareAPI
 } from "redux";
-import { combineEpics, createEpicMiddleware, Epic } from "redux-observable";
+import { createEpicMiddleware, Epic } from "redux-observable";
 import { allEpics } from "./epics";
 import { coreReducer, cdbReducer } from "./reducers";
 import { catchError } from "rxjs/operators";
@@ -60,7 +57,7 @@ export default function configureStore(
     }
   };
 
-  const combineAndProtectEpics = (epics: Epic[]): Epic[] => {
+  const protectEpics = (epics: Epic[]): Epic[] => {
     return epics.map(epic => protect(epic));
   };
 
@@ -88,15 +85,6 @@ export default function configureStore(
     coreEpics.publishToBookstoreAfterSave,
     coreEpics.sendInputReplyEpic
   ];
-  const rootEpic = combineAndProtectEpics([...filteredCoreEpics, ...allEpics]);
-  const epicMiddleware = createEpicMiddleware({ dependencies: { contentProvider } });
-  let middlewares: Middleware[] = [epicMiddleware];
-  // TODO: tamitta: errorMiddleware was removed, do we need a substitute?
-
-  if (customMiddlewares) {
-    middlewares = middlewares.concat(customMiddlewares);
-  }
-  middlewares.push(catchErrorMiddleware);
 
   const mythConfigureStore = makeConfigureStore<CdbAppState>()({
     packages: [configuration],
@@ -105,9 +93,10 @@ export default function configureStore(
       core: coreReducer as any,
       cdb: cdbReducer
     },
-    epics: rootEpic,
+    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
     epicDependencies: { contentProvider },
-    enhancer: composeEnhancers //composeEnhancers(applyMiddleware(...middlewares))
+    epicMiddleware: [catchErrorMiddleware],
+    enhancer: composeEnhancers
   });
 
   const store = mythConfigureStore(initialState as any);
