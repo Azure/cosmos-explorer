@@ -10,7 +10,6 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { userContext } from "../UserContext";
-import EnvironmentUtility from "./EnvironmentUtility";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 
@@ -78,7 +77,7 @@ export function queryDocuments(
       collection && collection.partitionKey && !collection.partitionKey.systemKey ? collection.partitionKeyProperty : ""
   };
 
-  const endpoint = getEndpoint(databaseAccount) || "";
+  const endpoint = getEndpoint() || "";
 
   const headers = {
     ...defaultHeaders,
@@ -139,7 +138,7 @@ export function readDocument(
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
   };
 
-  const endpoint = getEndpoint(databaseAccount);
+  const endpoint = getEndpoint();
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
       method: "GET",
@@ -179,7 +178,7 @@ export function createDocument(
     pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : ""
   };
 
-  const endpoint = getEndpoint(databaseAccount);
+  const endpoint = getEndpoint();
 
   return window
     .fetch(`${endpoint}/resourcelist?${queryString.stringify(params)}`, {
@@ -221,7 +220,7 @@ export function updateDocument(
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
   };
-  const endpoint = getEndpoint(databaseAccount);
+  const endpoint = getEndpoint();
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -260,7 +259,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
   };
-  const endpoint = getEndpoint(databaseAccount);
+  const endpoint = getEndpoint();
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -303,7 +302,7 @@ export function createMongoCollectionWithProxy(
     autoPilotThroughput: params.autoPilotMaxThroughput?.toString()
   };
 
-  const endpoint = getEndpoint(databaseAccount);
+  const endpoint = getEndpoint();
 
   return window
     .fetch(
@@ -327,12 +326,9 @@ export function createMongoCollectionWithProxy(
     });
 }
 
-export function getEndpoint(databaseAccount: DataModels.DatabaseAccount): string {
-  const serverId = window.dataExplorer.serverId();
+export function getEndpoint(): string {
   const extensionEndpoint = window.dataExplorer.extensionEndpoint();
-  let url = configContext.MONGO_BACKEND_ENDPOINT
-    ? configContext.MONGO_BACKEND_ENDPOINT + "/api/mongo/explorer"
-    : EnvironmentUtility.getMongoBackendEndpoint(serverId, databaseAccount.location, extensionEndpoint);
+  let url = (configContext.MONGO_BACKEND_ENDPOINT || extensionEndpoint) + "/api/mongo/explorer";
 
   if (window.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");

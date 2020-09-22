@@ -608,7 +608,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiMongoDB() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (this.container.isPreferredApiMongoDB()) {
         return true;
       }
 
