@@ -17,6 +17,7 @@ describe("Collection Add and Delete SQL spec", () => {
       const frame = await handle.contentFrame();
       await frame.waitFor("div > p.switchConnectTypeText", { visible: true });
       await frame.click("div > p.switchConnectTypeText");
+      const connStr = process.env.PORTAL_RUNNER_CONNECTION_STRING;
       await frame.type("input[class='inputToken']", connStr);
       await frame.click("input[value='Connect']");
 
