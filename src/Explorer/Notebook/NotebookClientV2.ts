@@ -242,16 +242,16 @@ export class NotebookClientV2 {
       configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
     );
     createConfigCollection({
-      key: "monaco",
+      key: "monaco"
     });
     defineConfigOption({
       label: "Show Line numbers",
       key: "monaco.lineNumbers",
       values: [
         { label: "Yes", value: true },
-        { label: "No", value: false },
+        { label: "No", value: false }
       ],
-      defaultValue: true,
+      defaultValue: true
     });
   }
 

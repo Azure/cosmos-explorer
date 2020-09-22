@@ -1,12 +1,5 @@
 import { AppState, epics as coreEpics, reducers, IContentProvider } from "@nteract/core";
-import {
-  compose,
-  Store,
-  AnyAction,
-  Middleware,
-  Dispatch,
-  MiddlewareAPI
-} from "redux";
+import { compose, Store, AnyAction, Middleware, Dispatch, MiddlewareAPI } from "redux";
 import { createEpicMiddleware, Epic } from "redux-observable";
 import { allEpics } from "./epics";
 import { coreReducer, cdbReducer } from "./reducers";
