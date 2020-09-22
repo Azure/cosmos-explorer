@@ -33,6 +33,7 @@ export interface ScaleComponentProps {
   autoPilotThroughput: number;
   autoPilotThroughputBaseline: number;
   selectedAutoPilotTier: DataModels.AutopilotTier;
+  selectedAutoPilotTierBaseline: DataModels.AutopilotTier;
   isAutoPilotSelected: boolean;
   wasAutopilotOriginallySet: boolean;
   userCanChangeProvisioningTypes: boolean;
@@ -40,15 +41,17 @@ export interface ScaleComponentProps {
   onAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   onAutoPilotTierChange: (selectedAutoPilotTier: DataModels.AutopilotTier) => void;
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
+  onScaleSaveableChange: (isScaleSaveable: boolean) => void;
+  onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {
   private canExceedMaximumValue: boolean;
-  private costsVisible: boolean;
+  private isEmulator: boolean;
   constructor(props: ScaleComponentProps) {
     super(props);
     this.canExceedMaximumValue = this.props.container.canExceedMaximumValue();
-    this.costsVisible = !this.props.container.isEmulator;
+    this.isEmulator = this.props.container.isEmulator;
   }
 
   public isAutoScaleEnabled = (): boolean => {
@@ -172,7 +175,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
           canThroughputExceedMaximumValue(this.props.collection, this.props.container) || this.canExceedMaximumValue
         }
         label={this.getThroughputTitle()}
-        costsVisible={this.costsVisible}
+        isEmulator={this.isEmulator}
         requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
         showAutoPilot={this.props.userCanChangeProvisioningTypes}
         isAutoPilotSelected={this.props.isAutoPilotSelected}
@@ -180,8 +183,12 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         autoPilotTiersList={this.props.autoPilotTiersList}
         spendAckChecked={false}
         selectedAutoPilotTier={this.props.selectedAutoPilotTier}
+        selectedAutoPilotTierBaseline={this.props.selectedAutoPilotTierBaseline}
         onAutoPilotTierChange={this.props.onAutoPilotTierChange}
         autoPilotUsageCost={this.getAutoPilotUsageCost()}
+        hasProvisioningTypeChanged={this.props.hasProvisioningTypeChanged}
+        onScaleSaveableChange={this.props.onScaleSaveableChange}
+        onScaleDiscardableChange={this.props.onScaleDiscardableChange}
       />
     ) : (
       <ThroughputInputAutoPilotV3Component
@@ -193,7 +200,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
         canExceedMaximumValue={canThroughputExceedMaximumValue(this.props.collection, this.props.container)}
         label={this.getThroughputTitle()}
-        costsVisible={this.costsVisible}
+        isEmulator={this.isEmulator}
+        isFixed={this.props.isFixedContainer}
         requestUnitsUsageCost={this.getRequestUnitsUsageCost()}
         showAutoPilot={this.props.userCanChangeProvisioningTypes}
         isAutoPilotSelected={this.props.isAutoPilotSelected}
@@ -205,6 +213,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         overrideWithAutoPilotSettings={this.overrideWithAutoPilotSettings()}
         overrideWithProvisionedThroughputSettings={this.props.overrideWithProvisionedThroughputSettings()}
         spendAckChecked={false}
+        hasProvisioningTypeChanged={this.props.hasProvisioningTypeChanged}
+        onScaleSaveableChange={this.props.onScaleSaveableChange}
+        onScaleDiscardableChange={this.props.onScaleDiscardableChange}
       />
     );
 

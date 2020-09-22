@@ -10,6 +10,8 @@ import {
 } from "../../SettingsRenderUtils";
 import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label, Link } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
+import { isDirty } from "../../SettingsUtils";
+import * as SharedConstants from "../../../../../Shared/Constants";
 
 export interface ThroughputInputAutoPilotV3Props {
   throughput: number;
@@ -19,14 +21,14 @@ export interface ThroughputInputAutoPilotV3Props {
   maximum: number;
   step?: number;
   isEnabled?: boolean;
-  costsVisible: boolean;
   requestUnitsUsageCost: JSX.Element;
   spendAckChecked?: boolean;
   spendAckId?: string;
   spendAckText?: string;
   spendAckVisible?: boolean;
   showAsMandatory?: boolean;
-  isFixed?: boolean;
+  isFixed: boolean;
+  isEmulator: boolean;
   label: string;
   infoBubbleText?: string;
   canExceedMaximumValue?: boolean;
@@ -39,6 +41,9 @@ export interface ThroughputInputAutoPilotV3Props {
   maxAutoPilotThroughput: number;
   maxAutoPilotThroughputBaseline: number;
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
+  hasProvisioningTypeChanged: () => boolean;
+  onScaleSaveableChange: (isScaleSaveable: boolean) => void;
+  onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -49,6 +54,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
   ThroughputInputAutoPilotV3State
 > {
+  private shouldCheckComponentIsDirty = true;
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
   private step: number;
@@ -57,6 +63,65 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     { key: "true", text: "Autoscale" },
     { key: "false", text: "Manual" }
   ];
+
+  componentDidMount() {
+    this.onComponentUpdate();
+  }
+
+  componentDidUpdate() {
+    this.onComponentUpdate();
+  }
+
+  private onComponentUpdate = (): void => {
+    if (!this.shouldCheckComponentIsDirty) {
+      this.shouldCheckComponentIsDirty = true;
+      return;
+    }
+
+    if (this.props.isEnabled) {
+      if (this.props.hasProvisioningTypeChanged()) {
+        this.props.onScaleSaveableChange(true);
+        this.props.onScaleDiscardableChange(true);
+      } else if (this.props.isAutoPilotSelected) {
+        if (isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)) {
+          this.props.onScaleDiscardableChange(true);
+        } else {
+          this.props.onScaleDiscardableChange(false);
+        }
+
+        if (
+          isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline) &&
+          AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)
+        ) {
+          this.props.onScaleSaveableChange(true);
+        } else {
+          this.props.onScaleSaveableChange(false);
+        }
+      } else {
+        if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
+          this.props.onScaleDiscardableChange(true);
+        } else {
+          this.props.onScaleDiscardableChange(false);
+        }
+
+        if (
+          !this.props.throughput ||
+          this.props.throughput < this.props.minimum ||
+          (this.props.throughput > this.props.maximum && (this.props.isEmulator || this.props.isFixed)) ||
+          (this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+            !this.props.canExceedMaximumValue)
+        ) {
+          this.props.onScaleSaveableChange(false);
+        } else if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
+          this.props.onScaleSaveableChange(true);
+        } else {
+          this.props.onScaleSaveableChange(false);
+        }
+      }
+    }
+
+    this.shouldCheckComponentIsDirty = false;
+  };
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
@@ -145,7 +210,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         onChange={this.onAutoPilotThroughputChange}
       />
       {!this.props.overrideWithProvisionedThroughputSettings && <Text>{this.props.autoPilotUsageCost}</Text>}
-      {this.props.costsVisible && !this.props.overrideWithProvisionedThroughputSettings && (
+      {!this.props.isEmulator && !this.props.overrideWithProvisionedThroughputSettings && (
         <Text>{this.props.requestUnitsUsageCost}</Text>
       )}
 
@@ -173,11 +238,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         step={this.step}
         min={this.props.minimum}
         max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
-        value={this.props.throughput?.toString()}
+        value={
+          this.props.overrideWithAutoPilotSettings
+            ? this.props.maxAutoPilotThroughput?.toString()
+            : this.props.throughput?.toString()
+        }
         onChange={this.onThroughputChange}
       />
 
-      {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}
+      {!this.props.isEmulator && <Text>{this.props.requestUnitsUsageCost}</Text>}
 
       {this.props.spendAckVisible && (
         <Checkbox

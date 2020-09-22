@@ -1,30 +1,49 @@
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
+import { isDirty } from "../SettingsUtils";
 
 export interface IndexingPolicyComponentProps {
   shouldDiscardIndexingPolicy: boolean;
   resetShouldDiscardIndexingPolicy: () => void;
   indexingPolicyContent: DataModels.IndexingPolicy;
+  indexingPolicyContentBaseline: DataModels.IndexingPolicy;
   onIndexingPolicyElementFocusChange: (indexingPolicyContentFocussed: boolean) => void;
   onIndexingPolicyContentChange: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
-  onIndexingPolicyValidityChange: (isValid: boolean) => void;
   logIndexingPolicySuccessMessage: () => void;
+  onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => void;
 }
 
-export class IndexingPolicyComponent extends React.Component<IndexingPolicyComponentProps> {
+interface IndexingPolicyComponentState {
+  indexingPolicyContentIsValid: boolean;
+}
+
+export class IndexingPolicyComponent extends React.Component<
+  IndexingPolicyComponentProps,
+  IndexingPolicyComponentState
+> {
+  private shouldCheckComponentIsDirty = true;
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
+
+  constructor(props: IndexingPolicyComponentProps) {
+    super(props);
+    this.state = {
+      indexingPolicyContentIsValid: true
+    };
+  }
 
   componentDidUpdate(): void {
     if (this.props.shouldDiscardIndexingPolicy) {
       this.resetIndexingPolicyEditor();
       this.props.resetShouldDiscardIndexingPolicy();
     }
+    this.onComponentUpdate();
   }
 
   componentDidMount(): void {
     this.resetIndexingPolicyEditor();
+    this.onComponentUpdate();
   }
 
   public resetIndexingPolicyEditor = (): void => {
@@ -35,6 +54,23 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
       const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
       indexingPolicyEditorModel.setValue(value);
     }
+    this.onComponentUpdate();
+  };
+
+  private onComponentUpdate = (): void => {
+    if (!this.shouldCheckComponentIsDirty) {
+      this.shouldCheckComponentIsDirty = true;
+      return;
+    }
+    if (
+      isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) &&
+      this.state.indexingPolicyContentIsValid
+    ) {
+      this.props.onIndexingPolicyDirtyChange(true);
+    } else {
+      this.props.onIndexingPolicyDirtyChange(false);
+    }
+    this.shouldCheckComponentIsDirty = false;
   };
 
   private createIndexingPolicyEditor = (): void => {
@@ -60,9 +96,9 @@ export class IndexingPolicyComponent extends React.Component<IndexingPolicyCompo
     try {
       const newIndexingPolicyContent = JSON.parse(indexingPolicyEditorModel.getValue()) as DataModels.IndexingPolicy;
       this.props.onIndexingPolicyContentChange(newIndexingPolicyContent);
-      this.props.onIndexingPolicyValidityChange(true);
+      this.setState({ indexingPolicyContentIsValid: true });
     } catch (e) {
-      this.props.onIndexingPolicyValidityChange(false);
+      this.setState({ indexingPolicyContentIsValid: false });
     }
   };
 

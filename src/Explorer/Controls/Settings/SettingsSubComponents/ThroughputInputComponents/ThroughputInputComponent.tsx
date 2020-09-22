@@ -23,6 +23,9 @@ import {
   getChoiceGroupStyles
 } from "../../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
+import { isDirty } from "../../SettingsUtils";
+import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
+import * as SharedConstants from "../../../../../Shared/Constants";
 
 export interface ThroughputInputProps {
   throughput: number;
@@ -32,7 +35,6 @@ export interface ThroughputInputProps {
   maximum: number;
   step?: number;
   isEnabled?: boolean;
-  costsVisible: boolean;
   requestUnitsUsageCost: JSX.Element;
   spendAckChecked?: boolean;
   spendAckId?: string;
@@ -40,6 +42,7 @@ export interface ThroughputInputProps {
   spendAckVisible?: boolean;
   showAsMandatory: boolean;
   isFixed: boolean;
+  isEmulator: boolean;
   label: string;
   infoBubbleText?: string;
   canExceedMaximumValue?: boolean;
@@ -48,9 +51,13 @@ export interface ThroughputInputProps {
   isAutoPilotSelected: boolean;
   autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   selectedAutoPilotTier: DataModels.AutopilotTier;
+  selectedAutoPilotTierBaseline: DataModels.AutopilotTier;
   onAutoPilotTierChange: (setAutoPilotTier: DataModels.AutopilotTier) => void;
   autoPilotUsageCost: JSX.Element;
   showAutoPilot?: boolean;
+  hasProvisioningTypeChanged: () => boolean;
+  onScaleSaveableChange: (isScaleSaveable: boolean) => void;
+  onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
 }
 
 interface ThroughputInputState {
@@ -59,6 +66,7 @@ interface ThroughputInputState {
 }
 
 export class ThroughputInputComponent extends React.Component<ThroughputInputProps, ThroughputInputState> {
+  private shouldCheckComponentIsDirty = true;
   private static readonly defaultStep = 100;
   private static readonly zeroThroughput = 0;
   private step: number;
@@ -78,15 +86,15 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
     this.step = this.props.step ?? ThroughputInputComponent.defaultStep;
   }
 
-  componentDidMount(): void {
-    this.updateAutoPilotTierOptions();
+  componentDidMount() {
+    this.onComponentUpdate();
   }
 
-  componentDidUpdate(): void {
-    this.updateAutoPilotTierOptions();
+  componentDidUpdate() {
+    this.onComponentUpdate();
   }
 
-  private updateAutoPilotTierOptions = (): void => {
+  private onComponentUpdate = (): void => {
     if (this.state.autoPilotTierOptions === undefined && this.props.autoPilotTiersList) {
       const autoPilotTierOptions = [];
       autoPilotTierOptions.push({
@@ -99,6 +107,55 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
       });
       this.setState({ autoPilotTierOptions: autoPilotTierOptions });
     }
+
+    if (!this.shouldCheckComponentIsDirty) {
+      this.shouldCheckComponentIsDirty = true;
+      return;
+    }
+
+    if (this.props.isEnabled) {
+      if (this.props.hasProvisioningTypeChanged()) {
+        this.props.onScaleSaveableChange(true);
+        this.props.onScaleDiscardableChange(true);
+      } else if (this.props.isAutoPilotSelected) {
+        if (isDirty(this.props.selectedAutoPilotTier, this.props.selectedAutoPilotTierBaseline)) {
+          this.props.onScaleDiscardableChange(true);
+        } else {
+          this.props.onScaleDiscardableChange(false);
+        }
+
+        if (
+          isDirty(this.props.selectedAutoPilotTier, this.props.selectedAutoPilotTierBaseline) &&
+          AutoPilotUtils.isValidAutoPilotTier(this.props.selectedAutoPilotTier)
+        ) {
+          this.props.onScaleSaveableChange(true);
+        } else {
+          this.props.onScaleSaveableChange(false);
+        }
+      } else {
+        if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
+          this.props.onScaleDiscardableChange(true);
+        } else {
+          this.props.onScaleDiscardableChange(false);
+        }
+
+        if (
+          !this.props.throughput ||
+          this.props.throughput < this.props.minimum ||
+          (this.props.throughput > this.props.maximum && (this.props.isEmulator || this.props.isFixed)) ||
+          (this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+            !this.props.canExceedMaximumValue)
+        ) {
+          this.props.onScaleSaveableChange(false);
+        } else if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
+          this.props.onScaleSaveableChange(true);
+        } else {
+          this.props.onScaleSaveableChange(false);
+        }
+      }
+    }
+
+    this.shouldCheckComponentIsDirty = false;
   };
 
   private onThroughputChange = (
@@ -146,7 +203,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
       <Dropdown
         id="autopilotSelector"
         className="autoPilotSelector"
-        defaultSelectedKey={this.props.selectedAutoPilotTier}
+        selectedKey={this.props.selectedAutoPilotTier}
         onChange={this.onAutoPilotTierChange}
         options={this.state.autoPilotTierOptions}
         styles={this.dropdownStyles}
@@ -173,7 +230,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
         value={this.props.throughput?.toString()}
         onChange={this.onThroughputChange}
       />
-      {this.props.costsVisible && <Text>{this.props.requestUnitsUsageCost}</Text>}
+      {!this.props.isEmulator && <Text>{this.props.requestUnitsUsageCost}</Text>}
 
       {this.props.spendAckVisible && (
         <Checkbox

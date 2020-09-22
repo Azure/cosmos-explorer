@@ -11,6 +11,7 @@ import {
 } from "../SettingsRenderUtils";
 import { TextField, ITextFieldProps, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
+import { isDirty } from "../SettingsUtils";
 
 export interface ConflictResolutionComponentProps {
   collection: ViewModels.Collection;
@@ -35,9 +36,11 @@ export interface ConflictResolutionComponentProps {
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => void;
+  onConflictResolutionDirtyChange: (isConflictResolutionDirty: boolean) => void;
 }
 
 export class ConflictResolutionComponent extends React.Component<ConflictResolutionComponentProps> {
+  private shouldCheckComponentIsDirty = true;
   private conflictResolutionChoiceGroupOptions: IChoiceGroupOption[] = [
     {
       key: DataModels.ConflictResolutionMode.LastWriterWins,
@@ -45,6 +48,31 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     },
     { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" }
   ];
+
+  componentDidMount() {
+    this.onComponentUpdate();
+  }
+
+  componentDidUpdate() {
+    this.onComponentUpdate();
+  }
+
+  private onComponentUpdate = (): void => {
+    if (!this.shouldCheckComponentIsDirty) {
+      this.shouldCheckComponentIsDirty = true;
+      return;
+    }
+    if (
+      isDirty(this.props.conflictResolutionPolicyMode, this.props.conflictResolutionPolicyModeBaseline) ||
+      isDirty(this.props.conflictResolutionPolicyPath, this.props.conflictResolutionPolicyPathBaseline) ||
+      isDirty(this.props.conflictResolutionPolicyProcedure, this.props.conflictResolutionPolicyProcedureBaseline)
+    ) {
+      this.props.onConflictResolutionDirtyChange(true);
+    } else {
+      this.props.onConflictResolutionDirtyChange(false);
+    }
+    this.shouldCheckComponentIsDirty = false;
+  };
 
   private getConflictResolutionModeComponent = (): JSX.Element => (
     <ChoiceGroup

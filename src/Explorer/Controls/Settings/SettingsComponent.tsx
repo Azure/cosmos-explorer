@@ -44,7 +44,10 @@ import {
   TtlOn,
   TtlOnNoDefault
 } from "./SettingsUtils";
-import { ConflictResolutionComponent, ConflictResolutionComponentProps } from "./SettingsSubComponents/ConflictResolutionComponent";
+import {
+  ConflictResolutionComponent,
+  ConflictResolutionComponentProps
+} from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption, Image } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
@@ -68,36 +71,46 @@ export interface SettingsComponentProps {
 export interface SettingsComponentState {
   throughput: number;
   throughputBaseline: number;
+  autoPilotThroughput: number;
+  autoPilotThroughputBaseline: number;
+  selectedAutoPilotTier: DataModels.AutopilotTier;
+  selectedAutoPilotTierBaseline: DataModels.AutopilotTier;
+  isAutoPilotSelected: boolean;
+  wasAutopilotOriginallySet: boolean;
+  isScaleSaveable: boolean;
+  isScaleDiscardable: boolean;
+
   timeToLive: TtlType;
   timeToLiveBaseline: TtlType;
   timeToLiveSeconds: number;
   timeToLiveSecondsBaseline: number;
   geospatialConfigType: GeospatialConfigType;
   geospatialConfigTypeBaseline: GeospatialConfigType;
-  indexingPolicyContent: DataModels.IndexingPolicy;
-  indexingPolicyContentBaseline: DataModels.IndexingPolicy;
-  indexingPolicyContentIsValid: boolean;
-  conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
-  conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
-  conflictResolutionPolicyPath: string;
-  conflictResolutionPolicyPathBaseline: string;
-  conflictResolutionPolicyProcedure: string;
-  conflictResolutionPolicyProcedureBaseline: string;
   analyticalStorageTtlSelection: TtlType;
   analyticalStorageTtlSelectionBaseline: TtlType;
   analyticalStorageTtlSeconds: number;
   analyticalStorageTtlSecondsBaseline: number;
   changeFeedPolicy: ChangeFeedPolicyState;
   changeFeedPolicyBaseline: ChangeFeedPolicyState;
-  autoPilotThroughput: number;
-  autoPilotThroughputBaseline: number;
+  isSubSettingsSaveable: boolean;
+  isSubSettingsDiscardable: boolean;
+
+  indexingPolicyContent: DataModels.IndexingPolicy;
+  indexingPolicyContentBaseline: DataModels.IndexingPolicy;
   shouldDiscardIndexingPolicy: boolean;
   indexingPolicyElementFocussed: boolean;
+  isIndexingPolicyDirty: boolean;
+
+  conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
+  conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
+  conflictResolutionPolicyPath: string;
+  conflictResolutionPolicyPathBaseline: string;
+  conflictResolutionPolicyProcedure: string;
+  conflictResolutionPolicyProcedureBaseline: string;
+  isConflictResolutionDirty: boolean;
+
   notificationStatusInfo: JSX.Element;
   userCanChangeProvisioningTypes: boolean;
-  selectedAutoPilotTier: DataModels.AutopilotTier;
-  isAutoPilotSelected: boolean;
-  wasAutopilotOriginallySet: boolean;
   selectedTab: SettingsV2TabTypes;
 }
 
@@ -122,6 +135,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection?.container;
+    //console.log("OFFER:" + JSON.stringify(this.collection.offer()))
     this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
@@ -137,36 +151,46 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
 
     this.state = {
-      shouldDiscardIndexingPolicy: false,
       throughput: undefined,
       throughputBaseline: undefined,
+      autoPilotThroughput: undefined,
+      autoPilotThroughputBaseline: undefined,
+      isAutoPilotSelected: false,
+      wasAutopilotOriginallySet: false,
+      selectedAutoPilotTier: undefined,
+      selectedAutoPilotTierBaseline: undefined,
+      isScaleSaveable: false,
+      isScaleDiscardable: false,
+
       timeToLive: undefined,
       timeToLiveBaseline: undefined,
       timeToLiveSeconds: undefined,
       timeToLiveSecondsBaseline: undefined,
       geospatialConfigType: undefined,
       geospatialConfigTypeBaseline: undefined,
-      indexingPolicyContent: undefined,
-      indexingPolicyContentBaseline: undefined,
-      indexingPolicyContentIsValid: true,
-      conflictResolutionPolicyMode: undefined,
-      conflictResolutionPolicyModeBaseline: undefined,
-      conflictResolutionPolicyPath: undefined,
-      conflictResolutionPolicyPathBaseline: undefined,
-      conflictResolutionPolicyProcedure: undefined,
-      conflictResolutionPolicyProcedureBaseline: undefined,
       analyticalStorageTtlSelection: undefined,
       analyticalStorageTtlSelectionBaseline: undefined,
       analyticalStorageTtlSeconds: undefined,
       analyticalStorageTtlSecondsBaseline: undefined,
       changeFeedPolicy: undefined,
       changeFeedPolicyBaseline: undefined,
-      autoPilotThroughput: undefined,
-      autoPilotThroughputBaseline: undefined,
-      isAutoPilotSelected: false,
-      wasAutopilotOriginallySet: false,
-      selectedAutoPilotTier: undefined,
+      isSubSettingsSaveable: false,
+      isSubSettingsDiscardable: false,
+
+      indexingPolicyContent: undefined,
+      indexingPolicyContentBaseline: undefined,
       indexingPolicyElementFocussed: false,
+      shouldDiscardIndexingPolicy: false,
+      isIndexingPolicyDirty: false,
+
+      conflictResolutionPolicyMode: undefined,
+      conflictResolutionPolicyModeBaseline: undefined,
+      conflictResolutionPolicyPath: undefined,
+      conflictResolutionPolicyPathBaseline: undefined,
+      conflictResolutionPolicyProcedure: undefined,
+      conflictResolutionPolicyProcedureBaseline: undefined,
+      isConflictResolutionDirty: false,
+
       notificationStatusInfo: undefined,
       userCanChangeProvisioningTypes: undefined,
       selectedTab: SettingsV2TabTypes.ScaleTab
@@ -213,104 +237,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return false;
     }
 
-    const isCollectionThroughput = !hasDatabaseSharedThroughput(this.collection);
-    if (isCollectionThroughput) {
-      if (this.hasProvisioningTypeChanged()) {
-        return true;
-      } else if (this.state.isAutoPilotSelected) {
-        const validAutopilotChange =
-          (!this.hasAutoPilotV2FeatureFlag &&
-            this.isAutoPilotDirty() &&
-            AutoPilotUtils.isValidAutoPilotThroughput(this.state.autoPilotThroughput)) ||
-          (this.hasAutoPilotV2FeatureFlag &&
-            this.isAutoPilotDirty() &&
-            AutoPilotUtils.isValidAutoPilotTier(this.state.selectedAutoPilotTier));
-        if (validAutopilotChange) {
-          return true;
-        }
-      } else {
-        const isMissingThroughput = !this.state.throughput;
-        if (isMissingThroughput) {
-          return false;
-        }
-
-        const isThroughputLessThanMinRus = this.state.throughput < getMinRUs(this.collection, this.container);
-        if (isThroughputLessThanMinRus) {
-          return false;
-        }
-
-        const isThroughputGreaterThanMaxRus = this.state.throughput > getMaxRUs(this.collection, this.container);
-        const isEmulator = this.container.isEmulator;
-        if (isThroughputGreaterThanMaxRus && isEmulator) {
-          return false;
-        }
-
-        if (isThroughputGreaterThanMaxRus && this.isFixedContainer) {
-          return false;
-        }
-
-        const isThroughputMoreThan1Million =
-          this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-        if (!canThroughputExceedMaximumValue(this.collection, this.container) && isThroughputMoreThan1Million) {
-          return false;
-        }
-
-        if (isDirty(this.state.throughput, this.state.throughputBaseline)) {
-          return true;
-        }
-      }
-    }
-
     if (
-      this.hasConflictResolution() &&
-      (isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
-        isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
-        isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline))
-    ) {
-      return true;
-    }
-
-    if (this.state.timeToLive === TtlType.On && !this.state.timeToLiveSeconds) {
-      return false;
-    }
-
-    if (this.state.analyticalStorageTtlSelection === TtlType.On && !this.state.analyticalStorageTtlSeconds) {
-      return false;
-    }
-
-    if (isDirty(this.state.timeToLive, this.state.timeToLiveBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline)) {
-      return true;
-    }
-
-    if (
-      this.state.timeToLive === TtlType.On &&
-      isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)
-    ) {
-      return true;
-    }
-
-    if (
-      this.state.analyticalStorageTtlSelection === TtlType.On &&
-      isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline)
-    ) {
-      return true;
-    }
-
-    if (
-      isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline) &&
-      this.state.indexingPolicyContentIsValid
+      this.state.isScaleSaveable ||
+      this.state.isSubSettingsSaveable ||
+      this.state.isIndexingPolicyDirty ||
+      this.state.isConflictResolutionDirty
     ) {
       return true;
     }
@@ -319,77 +250,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public isDiscardSettingsButtonEnabled = (): boolean => {
-    if (this.hasProvisioningTypeChanged()) {
-      return true;
-    }
-    if (this.state.isAutoPilotSelected && this.isAutoPilotDirty()) {
-      return true;
-    }
-
-    if (isDirty(this.state.throughput, this.state.throughputBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.timeToLive, this.state.timeToLiveBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline)) {
-      return true;
-    }
-
     if (
-      this.state.timeToLive === TtlType.On &&
-      isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)
-    ) {
-      return true;
-    }
-
-    if (
-      this.state.analyticalStorageTtlSelection === TtlType.On &&
-      isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline)
-    ) {
-      return true;
-    }
-
-    if (isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline)) {
-      return true;
-    }
-
-    if (isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline)) {
-      return true;
-    }
-
-    if (
-      isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
-      isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
-      isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline)
+      this.state.isScaleDiscardable ||
+      this.state.isSubSettingsDiscardable ||
+      this.state.isIndexingPolicyDirty ||
+      this.state.isConflictResolutionDirty
     ) {
       return true;
     }
 
     return false;
-  };
-
-  public shouldUpdateCollection = (): boolean => {
-    return (
-      isDirty(this.state.timeToLive, this.state.timeToLiveBaseline) ||
-      (this.state.timeToLive === TtlType.On &&
-        isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline)) ||
-      isDirty(this.state.geospatialConfigType, this.state.geospatialConfigTypeBaseline) ||
-      isDirty(this.state.conflictResolutionPolicyMode, this.state.conflictResolutionPolicyModeBaseline) ||
-      isDirty(this.state.conflictResolutionPolicyPath, this.state.conflictResolutionPolicyPathBaseline) ||
-      isDirty(this.state.conflictResolutionPolicyProcedure, this.state.conflictResolutionPolicyProcedureBaseline) ||
-      isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline) ||
-      isDirty(this.state.changeFeedPolicy, this.state.changeFeedPolicyBaseline) ||
-      isDirty(this.state.analyticalStorageTtlSelection, this.state.analyticalStorageTtlSelectionBaseline) ||
-      (this.state.analyticalStorageTtlSelection === TtlType.On &&
-        isDirty(this.state.analyticalStorageTtlSeconds, this.state.analyticalStorageTtlSecondsBaseline))
-    );
   };
 
   private setAutoPilotStates = (): void => {
@@ -412,14 +282,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         }
       }
     } else {
-      if (offerAutopilotSettings?.tier) {
+      // tier can be 0
+      if (offerAutopilotSettings?.tier != undefined) {
         if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
           const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
           this.autoPilotTiersList = availableAutoPilotTiers;
           this.setState({
             isAutoPilotSelected: true,
             wasAutopilotOriginallySet: true,
-            selectedAutoPilotTier: offerAutopilotSettings.tier
+            selectedAutoPilotTier: offerAutopilotSettings.tier,
+            selectedAutoPilotTierBaseline: offerAutopilotSettings.tier
+          }, () => {
+            console.log("isAutoPilotSelected:" + this.state.isAutoPilotSelected)
           });
         }
       }
@@ -441,26 +315,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return false;
     }
     return this.hasProvisioningTypeChanged() && !this.state.wasAutopilotOriginallySet;
-  };
-
-  public isAutoPilotDirty = (): boolean => {
-    if (!this.state.isAutoPilotSelected) {
-      return false;
-    }
-    const originalAutoPilotSettings = this.collection?.offer()?.content?.offerAutopilotSettings;
-    if (!originalAutoPilotSettings) {
-      return false;
-    }
-    const originalAutoPilotSetting = !this.hasAutoPilotV2FeatureFlag
-      ? originalAutoPilotSettings?.maxThroughput
-      : originalAutoPilotSettings?.tier;
-    if (
-      (!this.hasAutoPilotV2FeatureFlag && this.state.autoPilotThroughput !== originalAutoPilotSetting) ||
-      (this.hasAutoPilotV2FeatureFlag && this.state.selectedAutoPilotTier !== originalAutoPilotSetting)
-    ) {
-      return true;
-    }
-    return false;
   };
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
@@ -601,7 +455,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
 
     try {
-      if (this.shouldUpdateCollection()) {
+      if (this.state.isSubSettingsSaveable || this.state.isIndexingPolicyDirty || this.state.isConflictResolutionDirty) {
         let defaultTtl: number;
         switch (this.state.timeToLive) {
           case TtlType.On:
@@ -653,11 +507,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.geospatialConfig(updatedCollection.geospatialConfig);
       }
 
-      if (
-        isDirty(this.state.throughput, this.state.throughputBaseline) ||
-        this.isAutoPilotDirty() ||
-        this.hasProvisioningTypeChanged()
-      ) {
+      if (this.state.isScaleSaveable) {
         const newThroughput = this.state.throughput;
         const newOffer: DataModels.Offer = { ...this.collection.offer() };
         const originalThroughputValue: number = this.state.throughput;
@@ -754,7 +604,24 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         } else {
           const updatedOffer: DataModels.Offer = await updateOffer(this.collection.offer(), newOffer, headerOptions);
           this.collection.offer(updatedOffer);
-          this.collection.offer.valueHasMutated();
+          if (this.state.isAutoPilotSelected) {
+            if (!this.hasAutoPilotV2FeatureFlag) {
+              this.setState({
+                autoPilotThroughput: newOffer.content.offerAutopilotSettings.maxThroughput,
+                autoPilotThroughputBaseline: newOffer.content.offerAutopilotSettings.maxThroughput
+              });
+            } else {
+              this.setState({
+                selectedAutoPilotTier: newOffer.content.offerAutopilotSettings.tier,
+                selectedAutoPilotTierBaseline: newOffer.content.offerAutopilotSettings.tier
+              });
+            }
+          } else {
+            this.setState({
+              throughput: newOffer.content.offerThroughput,
+              throughputBaseline: newOffer.content.offerThroughput
+            });
+          }
         }
       }
       this.container.isRefreshingExplorer(false);
@@ -803,36 +670,26 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       analyticalStorageTtlSeconds: this.state.analyticalStorageTtlSecondsBaseline,
       changeFeedPolicy: this.state.changeFeedPolicyBaseline,
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
+      selectedAutoPilotTier: this.state.selectedAutoPilotTierBaseline,
       shouldDiscardIndexingPolicy: true
     });
 
     if (this.state.userCanChangeProvisioningTypes) {
       this.setState({ isAutoPilotSelected: this.state.wasAutopilotOriginallySet });
     }
-
-    if (this.state.isAutoPilotSelected) {
-      const originalAutoPilotSettings = this.collection.offer().content.offerAutopilotSettings;
-      if (!this.hasAutoPilotV2FeatureFlag) {
-        const originalAutoPilotMaxThroughput = originalAutoPilotSettings?.maxThroughput;
-        this.setState({
-          autoPilotThroughput: originalAutoPilotMaxThroughput,
-          autoPilotThroughputBaseline: originalAutoPilotMaxThroughput
-        });
-      } else {
-        const originalAutoPilotTier = originalAutoPilotSettings?.tier;
-        this.setState({ selectedAutoPilotTier: originalAutoPilotTier });
-      }
-    }
   };
+
+  private onScaleSaveableChange = (isScaleSaveable: boolean): void =>
+    this.setState({ isScaleSaveable: isScaleSaveable });
+
+  private onScaleDiscardableChange = (isScaleDiscardable: boolean): void =>
+    this.setState({ isScaleDiscardable: isScaleDiscardable });
 
   private onIndexingPolicyElementFocusChange = (indexingPolicyElementFocussed: boolean): void =>
     this.setState({ indexingPolicyElementFocussed: indexingPolicyElementFocussed });
 
   private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
-
-  private onIndexingPolicyValidityChage = (isValid: boolean): void =>
-    this.setState({ indexingPolicyContentIsValid: isValid });
 
   private resetShouldDiscardIndexingPolicy = (): void => this.setState({ shouldDiscardIndexingPolicy: false });
 
@@ -872,6 +729,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => this.setState({ conflictResolutionPolicyProcedure: newValue });
+
+  private onConflictResolutionDirtyChange = (isConflictResolutionDirty: boolean): void =>
+    this.setState({ isConflictResolutionDirty: isConflictResolutionDirty });
 
   public getTtlValue = (value: string): TtlType => {
     switch (value) {
@@ -914,6 +774,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     option?: IChoiceGroupOption
   ): void =>
     this.setState({ changeFeedPolicy: ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState] });
+
+  private onSubSettingsSaveableChange = (isSubSettingsSaveable: boolean): void =>
+    this.setState({ isSubSettingsSaveable: isSubSettingsSaveable });
+
+  private onSubSettingsDiscardableChange = (isSubSettingsDiscardable: boolean): void =>
+    this.setState({ isSubSettingsDiscardable: isSubSettingsDiscardable });
+
+  private onIndexingPolicyDirtyChange = (isIndexingPolicyDirty: boolean): void =>
+    this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
 
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
@@ -1069,16 +938,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       geospatialConfigType: geoSpatialConfigType,
       geospatialConfigTypeBaseline: geoSpatialConfigType
     });
-
-    if (!this.hasAutoPilotV2FeatureFlag) {
-      const maxThroughput =
-        this.collection?.offer && this.collection.offer()?.content?.offerAutopilotSettings?.maxThroughput;
-      const autoPilotThroughput = maxThroughput || AutoPilotUtils.minAutoPilotThroughput;
-      this.setState({
-        autoPilotThroughput: autoPilotThroughput,
-        autoPilotThroughputBaseline: autoPilotThroughput
-      });
-    }
   };
 
   private getTabsButtons = (): CommandButtonComponentProps[] => {
@@ -1151,7 +1010,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public render(): JSX.Element {
-    const scaleComponentProps : ScaleComponentProps = {
+    const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       container: this.container,
       hasProvisioningTypeChanged: this.hasProvisioningTypeChanged,
@@ -1164,16 +1023,19 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       autoPilotThroughput: this.state.autoPilotThroughput,
       autoPilotThroughputBaseline: this.state.autoPilotThroughputBaseline,
       selectedAutoPilotTier: this.state.selectedAutoPilotTier,
+      selectedAutoPilotTierBaseline: this.state.selectedAutoPilotTierBaseline,
       isAutoPilotSelected: this.state.isAutoPilotSelected,
       wasAutopilotOriginallySet: this.state.wasAutopilotOriginallySet,
       userCanChangeProvisioningTypes: this.state.userCanChangeProvisioningTypes,
       overrideWithProvisionedThroughputSettings: this.overrideWithProvisionedThroughputSettings,
       onAutoPilotSelected: this.onAutoPilotSelected,
       onAutoPilotTierChange: this.onAutoPilotTierChange,
-      onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange
-    }
-    
-    const subSettingsComponentProps : SubSettingsComponentProps = {
+      onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
+      onScaleSaveableChange: this.onScaleSaveableChange,
+      onScaleDiscardableChange: this.onScaleDiscardableChange
+    };
+
+    const subSettingsComponentProps: SubSettingsComponentProps = {
       collection: this.collection,
       container: this.container,
       isAnalyticalStorageEnabled: this.isAnalyticalStorageEnabled,
@@ -1195,20 +1057,23 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onAnalyticalStorageTtlSecondsChange: this.onAnalyticalStorageTtlSecondsChange,
       changeFeedPolicy: this.state.changeFeedPolicy,
       changeFeedPolicyBaseline: this.state.changeFeedPolicyBaseline,
-      onChangeFeedPolicyChange: this.onChangeFeedPolicyChange
-    }
+      onChangeFeedPolicyChange: this.onChangeFeedPolicyChange,
+      onSubSettingsSaveableChange: this.onSubSettingsSaveableChange,
+      onSubSettingsDiscardableChange: this.onSubSettingsDiscardableChange
+    };
 
-    const indexingPolicyComponentProps : IndexingPolicyComponentProps = {
+    const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
       shouldDiscardIndexingPolicy: this.state.shouldDiscardIndexingPolicy,
       resetShouldDiscardIndexingPolicy: this.resetShouldDiscardIndexingPolicy,
       indexingPolicyContent: this.state.indexingPolicyContent,
+      indexingPolicyContentBaseline: this.state.indexingPolicyContentBaseline,
       onIndexingPolicyElementFocusChange: this.onIndexingPolicyElementFocusChange,
       onIndexingPolicyContentChange: this.onIndexingPolicyContentChange,
-      onIndexingPolicyValidityChange: this.onIndexingPolicyValidityChage,
-      logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage
-    }
+      logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage,
+      onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange
+    };
 
-    const conflictResolutionPolicyComponentProps : ConflictResolutionComponentProps = {
+    const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
       collection: this.collection,
       container: this.container,
       conflictResolutionPolicyMode: this.state.conflictResolutionPolicyMode,
@@ -1219,41 +1084,34 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onConflictResolutionPolicyPathChange: this.onConflictResolutionPolicyPathChange,
       conflictResolutionPolicyProcedure: this.state.conflictResolutionPolicyProcedure,
       conflictResolutionPolicyProcedureBaseline: this.state.conflictResolutionPolicyProcedureBaseline,
-      onConflictResolutionPolicyProcedureChange: this.onConflictResolutionPolicyProcedureChange
-    }
+      onConflictResolutionPolicyProcedureChange: this.onConflictResolutionPolicyProcedureChange,
+      onConflictResolutionDirtyChange: this.onConflictResolutionDirtyChange
+    };
 
     const tabs: SettingsV2TabInfo[] = [];
     if (!hasDatabaseSharedThroughput(this.collection)) {
       tabs.push({
         tab: SettingsV2TabTypes.ScaleTab,
-        content: (
-          <ScaleComponent {...scaleComponentProps}/>
-        )
+        content: <ScaleComponent {...scaleComponentProps} />
       });
     }
 
     tabs.push({
       tab: SettingsV2TabTypes.SubSettingsTab,
-      content: (
-        <SubSettingsComponent {...subSettingsComponentProps}/>
-      )
+      content: <SubSettingsComponent {...subSettingsComponentProps} />
     });
 
     if (this.shouldShowIndexingPolicyEditor) {
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
-        content: (
-          <IndexingPolicyComponent {...indexingPolicyComponentProps}/>
-        )
+        content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
       });
     }
 
     if (this.hasConflictResolution()) {
       tabs.push({
         tab: SettingsV2TabTypes.ConflictResolutionTab,
-        content: (
-          <ConflictResolutionComponent {...conflictResolutionPolicyComponentProps}/>
-        )
+        content: <ConflictResolutionComponent {...conflictResolutionPolicyComponentProps} />
       });
     }
 

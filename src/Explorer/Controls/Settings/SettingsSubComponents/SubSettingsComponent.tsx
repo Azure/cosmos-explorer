@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { GeospatialConfigType, TtlType, ChangeFeedPolicyState } from "../SettingsUtils";
+import { GeospatialConfigType, TtlType, ChangeFeedPolicyState, isDirty } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import { Label, Text, TextField, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
@@ -54,9 +54,12 @@ export interface SubSettingsComponentProps {
   changeFeedPolicy: ChangeFeedPolicyState;
   changeFeedPolicyBaseline: ChangeFeedPolicyState;
   onChangeFeedPolicyChange: (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => void;
+  onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => void;
+  onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
 
 export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {
+  private shouldCheckComponentIsDirty = true;
   private ttlVisible: boolean;
   private geospatialVisible: boolean;
   private partitionKeyValue: string;
@@ -69,6 +72,46 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
     this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
   }
+
+  componentDidMount() {
+    this.onComponentUpdate();
+  }
+
+  componentDidUpdate() {
+    this.onComponentUpdate();
+  }
+
+  private onComponentUpdate = (): void => {
+    if (!this.shouldCheckComponentIsDirty) {
+      this.shouldCheckComponentIsDirty = true;
+      return;
+    }
+
+    if (
+      (this.props.timeToLive === TtlType.On && !this.props.timeToLiveSeconds) ||
+      (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds)
+    ) {
+      this.props.onSubSettingsSaveableChange(false);
+      this.props.onSubSettingsDiscardableChange(true);
+    } else if (
+      isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) ||
+      (this.props.timeToLive === TtlType.On &&
+        isDirty(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)) ||
+      isDirty(this.props.analyticalStorageTtlSelection, this.props.analyticalStorageTtlSelectionBaseline) ||
+      (this.props.analyticalStorageTtlSelection === TtlType.On &&
+        isDirty(this.props.analyticalStorageTtlSeconds, this.props.analyticalStorageTtlSecondsBaseline)) ||
+      isDirty(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline) ||
+      isDirty(this.props.changeFeedPolicy, this.props.changeFeedPolicyBaseline)
+    ) {
+      this.props.onSubSettingsSaveableChange(true);
+      this.props.onSubSettingsDiscardableChange(true);
+    } else {
+      this.props.onSubSettingsSaveableChange(false);
+      this.props.onSubSettingsDiscardableChange(false);
+    }
+
+    this.shouldCheckComponentIsDirty = false;
+  };
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off" },
