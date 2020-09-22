@@ -800,11 +800,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private cleanupDatabasesKoSubs(existingDatabaseIds: string[]): void {
-    const databaseIdsToRemove = this.databaseCollectionIdMap
-      .keys()
-      .filter((id: string) => existingDatabaseIds.indexOf(id) === -1);
-
-    databaseIdsToRemove.forEach((databaseId: string) => {
+    existingDatabaseIds.forEach((databaseId: string) => {
       if (this.koSubsDatabaseIdMap.has(databaseId)) {
         this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
         this.koSubsDatabaseIdMap.delete(databaseId);
