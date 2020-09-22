@@ -5,6 +5,7 @@ module.exports = {
     headless: isCI,
     slowMo: 50,
     defaultViewport: null,
-    ignoreHTTPSErrors: true
+    ignoreHTTPSErrors: true,
+    args: ["--disable-web-security"]
   }
 };

@@ -1,5 +1,5 @@
 import "expect-puppeteer";
-import crypto from 'crypto'
+import crypto from "crypto";
 
 jest.setTimeout(300000);
 
@@ -101,7 +101,9 @@ describe('Collection Add and Delete SQL spec', () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {
-      await page.screenshot({path: 'failure.png'});
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const testName = (expect as any).getState().currentTestName
+      await page.screenshot({path: `Test Failed ${testName}.jpg`});
       throw error;
     } 
   }) 
