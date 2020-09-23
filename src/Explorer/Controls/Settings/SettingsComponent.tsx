@@ -18,10 +18,7 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import SettingsTab from "../../Tabs/SettingsTabV2";
-import {
-  getThroughputApplyDelayedMessage,
-  throughputUnit
-} from "./SettingsRenderUtils";
+import { getThroughputApplyDelayedMessage, throughputUnit } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   getMaxRUs,
@@ -34,7 +31,9 @@ import {
   isDirty,
   TtlOff,
   TtlOn,
-  TtlOnNoDefault, parseConflictResolutionMode, parseConflictResolutionProcedure
+  TtlOnNoDefault,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
@@ -108,6 +107,7 @@ export interface SettingsComponentState {
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
+  private static readonly zeroSeconds = 0;
 
   public saveSettingsButton: ButtonV2;
   public discardSettingsChangesButton: ButtonV2;
@@ -317,7 +317,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-
   public onSaveClick = async (): Promise<void> => {
     this.props.settingsTab.isExecutionError(false);
 
@@ -457,7 +456,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             this.setState({
               throughput: originalThroughputValue,
               throughputBaseline: originalThroughputValue,
-              initialNotification: {description: `Throughput update for ${newThroughput} ${throughputUnit}`} as DataModels.Notification 
+              initialNotification: {
+                description: `Throughput update for ${newThroughput} ${throughputUnit}`
+              } as DataModels.Notification
             });
           } catch (error) {
             traceFailure(
@@ -481,19 +482,19 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           if (this.state.isAutoPilotSelected) {
             if (!this.hasAutoPilotV2FeatureFlag) {
               this.setState({
-                autoPilotThroughput: newOffer.content.offerAutopilotSettings.maxThroughput,
-                autoPilotThroughputBaseline: newOffer.content.offerAutopilotSettings.maxThroughput
+                autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
+                autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
               });
             } else {
               this.setState({
-                selectedAutoPilotTier: newOffer.content.offerAutopilotSettings.tier,
-                selectedAutoPilotTierBaseline: newOffer.content.offerAutopilotSettings.tier
+                selectedAutoPilotTier: updatedOffer.content.offerAutopilotSettings.tier,
+                selectedAutoPilotTierBaseline: updatedOffer.content.offerAutopilotSettings.tier
               });
             }
           } else {
             this.setState({
-              throughput: newOffer.content.offerThroughput,
-              throughputBaseline: newOffer.content.offerThroughput
+              throughput: updatedOffer.content.offerThroughput,
+              throughputBaseline: updatedOffer.content.offerThroughput
             });
           }
         }
@@ -625,7 +626,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onTimeToLiveSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => this.setState({ timeToLiveSeconds: parseInt(newValue) });
+  ): void => {
+    let newTimeToLiveSeconds = parseInt(newValue);
+    newTimeToLiveSeconds = isNaN(newTimeToLiveSeconds) ? SettingsComponent.zeroSeconds : newTimeToLiveSeconds;
+    this.setState({ timeToLiveSeconds: newTimeToLiveSeconds });
+  };
 
   private onGeoSpatialConfigTypeChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
@@ -641,7 +646,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onAnalyticalStorageTtlSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => this.setState({ analyticalStorageTtlSeconds: parseInt(newValue) });
+  ): void => {
+    let newAnalyticalStorageTtlSeconds = parseInt(newValue);
+    newAnalyticalStorageTtlSeconds = isNaN(newAnalyticalStorageTtlSeconds)
+      ? SettingsComponent.zeroSeconds
+      : newAnalyticalStorageTtlSeconds;
+    this.setState({ analyticalStorageTtlSeconds: newAnalyticalStorageTtlSeconds });
+  };
 
   private onChangeFeedPolicyChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,

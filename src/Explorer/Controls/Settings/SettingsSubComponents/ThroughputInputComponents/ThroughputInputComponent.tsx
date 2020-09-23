@@ -12,7 +12,9 @@ import {
   IDropdownOption,
   DropdownMenuItemType,
   Stack,
-  Label, MessageBar, MessageBarType
+  Label,
+  MessageBar,
+  MessageBarType
 } from "office-ui-fabric-react";
 import {
   getTextFieldStyles,
@@ -20,7 +22,9 @@ import {
   spendAckCheckBoxStyle,
   checkBoxAndInputStackProps,
   titleAndInputStackProps,
-  getChoiceGroupStyles, messageBarStyles, messageStackTokens
+  getChoiceGroupStyles,
+  messageBarStyles,
+  messageStackTokens
 } from "../../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { isDirty } from "../../SettingsUtils";
@@ -58,7 +62,7 @@ export interface ThroughputInputProps {
   hasProvisioningTypeChanged: () => boolean;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
-  getWarningMessage: () => JSX.Element
+  getWarningMessage: () => JSX.Element;
 }
 
 interface ThroughputInputState {
@@ -177,30 +181,30 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
     const labelId = "settingsV2RadioButtonLabelId";
     return (
       <Stack horizontal tokens={messageStackTokens}>
-      <div>
-        <Label id={labelId}>
-          <ToolTipLabelComponent
-            label={this.props.label}
-            toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
+        <div>
+          <Label id={labelId}>
+            <ToolTipLabelComponent
+              label={this.props.label}
+              toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
+            />
+          </Label>
+          <ChoiceGroup
+            tabIndex={0}
+            selectedKey={this.props.isAutoPilotSelected.toString()}
+            options={this.throughputChoiceOptions}
+            onChange={this.onChoiceGroupChange}
+            required={this.props.showAsMandatory}
+            ariaLabelledBy={labelId}
+            styles={this.choiceGroupFixedStyle}
           />
-        </Label>
-        <ChoiceGroup
-          tabIndex={0}
-          selectedKey={this.props.isAutoPilotSelected.toString()}
-          options={this.throughputChoiceOptions}
-          onChange={this.onChoiceGroupChange}
-          required={this.props.showAsMandatory}
-          ariaLabelledBy={labelId}
-          styles={this.choiceGroupFixedStyle}
-        />
-      </div>
-      {this.props.getWarningMessage() &&
-      <Stack styles={{ root: { maxWidth: 600 } }}>
-        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
-          {this.props.getWarningMessage()}
-        </MessageBar>
-      </Stack>
-      }
+        </div>
+        {this.props.getWarningMessage() && (
+          <Stack styles={{ root: { maxWidth: 600 } }}>
+            <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+              {this.props.getWarningMessage()}
+            </MessageBar>
+          </Stack>
+        )}
       </Stack>
     );
   };

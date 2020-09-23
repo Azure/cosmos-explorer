@@ -16,7 +16,12 @@ import {
   subComponentStackProps,
   titleAndInputStackProps,
   throughputUnit,
-  getThroughputApplyLongDelayMessage, getThroughputApplyShortDelayMessage, manualToAutoscaleDisclaimerElement, updateThroughputBeyondLimitWarningMessage, updateThroughputDelayedApplyWarningMessage, messageBarStyles
+  getThroughputApplyLongDelayMessage,
+  getThroughputApplyShortDelayMessage,
+  manualToAutoscaleDisclaimerElement,
+  updateThroughputBeyondLimitWarningMessage,
+  updateThroughputDelayedApplyWarningMessage,
+  messageBarStyles
 } from "../SettingsRenderUtils";
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
@@ -169,7 +174,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   private getWarningMessage = (): JSX.Element => {
     const throughputExceedsBackendLimits: boolean =
       canThroughputExceedMaximumValue(this.props.collection, this.props.container) &&
-      getMaxRUs(this.props.collection, this.props.container) <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+      getMaxRUs(this.props.collection, this.props.container) <=
+        SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
       this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
 
     const throughputExceedsMaxValue: boolean =
@@ -215,19 +221,11 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return manualToAutoscaleDisclaimerElement;
     }
 
-    if (
-      throughputExceedsBackendLimits &&
-      !!this.props.collection.partitionKey &&
-      !this.props.isFixedContainer
-    ) {
+    if (throughputExceedsBackendLimits && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
       return updateThroughputBeyondLimitWarningMessage;
     }
 
-    if (
-      throughputExceedsMaxValue &&
-      !!this.props.collection.partitionKey &&
-      !this.props.isFixedContainer
-    ) {
+    if (throughputExceedsMaxValue && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
       return updateThroughputDelayedApplyWarningMessage;
     }
 
@@ -300,11 +298,11 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       `Throughput update for (.*) ${throughputUnit}`
     );
 
-    const throughput = this.props.throughput;
+    const throughput = this.props.throughputBaseline;
     const targetThroughput: number = matches.length > 1 && Number(matches[1]);
     if (targetThroughput) {
       return getThroughputApplyLongDelayMessage(
-        this.props.isAutoPilotSelected,
+        this.props.wasAutopilotOriginallySet,
         throughput,
         throughputUnit,
         this.props.collection.databaseId,
@@ -323,8 +321,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         )}
         {!this.isAutoScaleEnabled() && (
           <Stack {...subComponentStackProps}>
-              {this.getThroughputInputComponent()}
-              {this.getStorageCapacityTitle()}
+            {this.getThroughputInputComponent()}
+            {this.getStorageCapacityTitle()}
           </Stack>
         )}
 

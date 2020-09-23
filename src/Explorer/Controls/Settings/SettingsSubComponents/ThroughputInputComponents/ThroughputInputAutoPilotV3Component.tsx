@@ -6,9 +6,22 @@ import {
   spendAckCheckBoxStyle,
   titleAndInputStackProps,
   checkBoxAndInputStackProps,
-  getChoiceGroupStyles, messageBarStyles, messageStackTokens
+  getChoiceGroupStyles,
+  messageBarStyles,
+  messageStackTokens
 } from "../../SettingsRenderUtils";
-import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label, Link, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import {
+  Text,
+  TextField,
+  ChoiceGroup,
+  IChoiceGroupOption,
+  Checkbox,
+  Stack,
+  Label,
+  Link,
+  MessageBar,
+  MessageBarType
+} from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { isDirty } from "../../SettingsUtils";
 import * as SharedConstants from "../../../../../Shared/Constants";
@@ -44,7 +57,7 @@ export interface ThroughputInputAutoPilotV3Props {
   hasProvisioningTypeChanged: () => boolean;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
-  getWarningMessage: () => JSX.Element
+  getWarningMessage: () => JSX.Element;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -165,30 +178,30 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const labelId = "settingsV2RadioButtonLabelId";
     return (
       <Stack horizontal tokens={messageStackTokens}>
-      <div>
-        <Label id={labelId}>
-          <ToolTipLabelComponent
-            label={this.props.label}
-            toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
+        <div>
+          <Label id={labelId}>
+            <ToolTipLabelComponent
+              label={this.props.label}
+              toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
+            />
+          </Label>
+          <ChoiceGroup
+            tabIndex={0}
+            selectedKey={this.props.isAutoPilotSelected.toString()}
+            options={this.options}
+            onChange={this.onChoiceGroupChange}
+            required={this.props.showAsMandatory}
+            ariaLabelledBy={labelId}
+            styles={this.choiceGroupFixedStyle}
           />
-        </Label>
-        <ChoiceGroup
-          tabIndex={0}
-          selectedKey={this.props.isAutoPilotSelected.toString()}
-          options={this.options}
-          onChange={this.onChoiceGroupChange}
-          required={this.props.showAsMandatory}
-          ariaLabelledBy={labelId}
-          styles={this.choiceGroupFixedStyle}
-        />
-      </div>
-      {this.props.getWarningMessage() &&
-      <Stack styles={{ root: { maxWidth: 600 } }}>
-        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
-          {this.props.getWarningMessage()}
-        </MessageBar>
-      </Stack>
-      }
+        </div>
+        {this.props.getWarningMessage() && (
+          <Stack styles={{ root: { maxWidth: 600 } }}>
+            <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+              {this.props.getWarningMessage()}
+            </MessageBar>
+          </Stack>
+        )}
       </Stack>
     );
   };
@@ -246,7 +259,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
         value={
           this.props.overrideWithAutoPilotSettings
-            ? this.props.maxAutoPilotThroughput?.toString()
+            ? this.props.maxAutoPilotThroughputBaseline?.toString()
             : this.props.throughput?.toString()
         }
         onChange={this.onThroughputChange}
