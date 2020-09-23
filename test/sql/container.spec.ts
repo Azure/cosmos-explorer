@@ -56,7 +56,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(3000)
+      await frame.waitFor(3000);
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
 
       // delete container
@@ -65,7 +65,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
-      await frame.waitFor(2000)
+      await frame.waitFor(2000);
 
       // click delete container
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
@@ -101,7 +101,9 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {
-      await page.screenshot({ path: "failure.png" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const testName = (expect as any).getState().currentTestName;
+      await page.screenshot({ path: `Test Failed ${testName}.jpg` });
       throw error;
     }
   });
