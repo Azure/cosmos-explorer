@@ -11,8 +11,6 @@ describe("Collection Add and Delete Cassandra spec", () => {
     try {
       const keyspaceId = `keyspaceid${crypto.randomBytes(8).toString("hex")}`;
       const tableId = `tableid${crypto.randomBytes(3).toString("hex")}`;
-      const prodUrl = "https://localhost:1234/hostedExplorer.html";
-      page.goto(prodUrl);
       const frame = await login(process.env.CASSANDRA_CONNECTION_STRING);
 
       // create new table
