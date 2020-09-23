@@ -42,7 +42,8 @@ export class ResourceTreeContextMenuButtonFactory {
     const deleteDatabaseMenuItem = {
       iconSrc: DeleteDatabaseIcon,
       onClick: () => container.deleteDatabaseConfirmationPane.open(),
-      label: container.deleteDatabaseText()
+      label: container.deleteDatabaseText(),
+      styleClass: "deleteDatabaseMenuItem"
     };
     return [newCollectionMenuItem, deleteDatabaseMenuItem];
   }
@@ -112,7 +113,8 @@ export class ResourceTreeContextMenuButtonFactory {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
         selectedCollection && selectedCollection.onDeleteCollectionContextMenuClick(selectedCollection, null);
       },
-      label: container.deleteCollectionText()
+      label: container.deleteCollectionText(),
+      styleClass: "deleteCollectionMenuItem"
     });
 
     return items;

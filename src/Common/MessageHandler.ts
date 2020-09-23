@@ -2,6 +2,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import Q from "q";
 import * as _ from "underscore";
 import * as Constants from "./Constants";
+import { getDataExplorerWindow } from "../Utils/WindowUtils";
 
 export interface CachedDataPromise<T> {
   deferred: Q.Deferred<T>;
@@ -48,13 +49,16 @@ export function sendCachedDataMessage<TResponseDataModel>(
 
 export function sendMessage(data: any): void {
   if (canSendMessage()) {
-    window.parent.postMessage(
-      {
-        signature: "pcIframe",
-        data: data
-      },
-      window.document.referrer
-    );
+    const dataExplorerWindow = getDataExplorerWindow(window);
+    if (dataExplorerWindow) {
+      dataExplorerWindow.parent.postMessage(
+        {
+          signature: "pcIframe",
+          data: data
+        },
+        dataExplorerWindow.document.referrer
+      );
+    }
   }
 }
 

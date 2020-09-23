@@ -1,17 +1,18 @@
+import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import * as _ from "underscore";
 import Q from "q";
+import * as _ from "underscore";
+import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
+import { createStoredProcedure } from "../../Common/dataAccess/createStoredProcedure";
+import { updateStoredProcedure } from "../../Common/dataAccess/updateStoredProcedure";
+import editable from "../../Common/EditableUtility";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import editable from "../../Common/EditableUtility";
-import ScriptTabBase from "./ScriptTabBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import StoredProcedure from "../Tree/StoredProcedure";
-import { createStoredProcedure, updateStoredProcedure } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import StoredProcedure from "../Tree/StoredProcedure";
+import ScriptTabBase from "./ScriptTabBase";
 
 enum ToggleState {
   Result = "result",
@@ -24,7 +25,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
   public executeResultsEditorId: string;
   public executeLogsEditorId: string;
   public toggleState: ko.Observable<ToggleState>;
-
   public originalSprocBody: ViewModels.Editable<string>;
   public resultsData: ko.Observable<string>;
   public logsData: ko.Observable<string>;
@@ -54,13 +54,11 @@ export default class StoredProcedureTab extends ScriptTabBase {
     this.buildCommandBarOptions();
   }
 
-  public onSaveClick = (): Q.Promise<DataModels.StoredProcedure> => {
-    const resource: DataModels.StoredProcedure = <DataModels.StoredProcedure>{
+  public onSaveClick = (): Promise<StoredProcedureDefinition & Resource> => {
+    return this._createStoredProcedure({
       id: this.id(),
       body: this.editorContent()
-    };
-
-    return this._createStoredProcedure(resource);
+    });
   };
 
   public onDiscard = (): Q.Promise<any> => {
@@ -72,8 +70,8 @@ export default class StoredProcedureTab extends ScriptTabBase {
     return Q();
   };
 
-  public onUpdateClick = (): Q.Promise<any> => {
-    const data: DataModels.StoredProcedure = this._getResource();
+  public onUpdateClick = (): Promise<any> => {
+    const data = this._getResource();
 
     this.isExecutionError(false);
     this.isExecuting(true);
@@ -83,18 +81,18 @@ export default class StoredProcedureTab extends ScriptTabBase {
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle()
     });
-    return updateStoredProcedure(this.collection, data)
+    return updateStoredProcedure(this.collection.databaseId, this.collection.id(), data)
       .then(
-        (updatedResource: DataModels.StoredProcedure) => {
+        updatedResource => {
           this.resource(updatedResource);
           this.tabTitle(updatedResource.id);
           this.node.id(updatedResource.id);
-          this.node.body(updatedResource.body);
+          this.node.body(updatedResource.body as string);
           this.setBaselines();
 
           const editorModel = this.editor() && this.editor().getModel();
-          editorModel && editorModel.setValue(updatedResource.body);
-          this.editorContent.setBaseline(updatedResource.body);
+          editorModel && editorModel.setValue(updatedResource.body as string);
+          this.editorContent.setBaseline(updatedResource.body as string);
           TelemetryProcessor.traceSuccess(
             Action.UpdateStoredProcedure,
             {
@@ -220,18 +218,14 @@ export default class StoredProcedureTab extends ScriptTabBase {
     });
   }
 
-  private _getResource(): DataModels.StoredProcedure {
-    const resource: DataModels.StoredProcedure = <DataModels.StoredProcedure>{
-      _rid: this.resource()._rid,
-      _self: this.resource()._self,
+  private _getResource() {
+    return {
       id: this.id(),
       body: this.editorContent()
     };
-
-    return resource;
   }
 
-  private _createStoredProcedure(resource: DataModels.StoredProcedure): Q.Promise<DataModels.StoredProcedure> {
+  private _createStoredProcedure(resource: StoredProcedureDefinition): Promise<StoredProcedureDefinition & Resource> {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateStoredProcedure, {
@@ -241,7 +235,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
       tabTitle: this.tabTitle()
     });
 
-    return createStoredProcedure(this.collection, resource)
+    return createStoredProcedure(this.collection.databaseId, this.collection.id(), resource)
       .then(
         createdResource => {
           this.tabTitle(createdResource.id);
@@ -256,8 +250,8 @@ export default class StoredProcedureTab extends ScriptTabBase {
           this.setBaselines();
 
           const editorModel = this.editor() && this.editor().getModel();
-          editorModel && editorModel.setValue(createdResource.body);
-          this.editorContent.setBaseline(createdResource.body);
+          editorModel && editorModel.setValue(createdResource.body as string);
+          this.editorContent.setBaseline(createdResource.body as string);
           this.node = this.collection.createStoredProcedureNode(createdResource);
           TelemetryProcessor.traceSuccess(
             Action.CreateStoredProcedure,
@@ -284,7 +278,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
             },
             startKey
           );
-          return Q.reject(createError);
+          return Promise.reject(createError);
         }
       )
       .finally(() => this.isExecuting(false));

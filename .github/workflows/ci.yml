@@ -217,6 +217,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
           PORTAL_RUNNER_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
           MONGO_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
+          CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')

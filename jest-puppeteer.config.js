@@ -3,8 +3,9 @@ const isCI = require("is-ci");
 module.exports = {
   launch: {
     headless: isCI,
-    slowMo: 50,
+    slowMo: 30,
     defaultViewport: null,
-    ignoreHTTPSErrors: true
+    ignoreHTTPSErrors: true,
+    args: ["--disable-web-security"]
   }
 };

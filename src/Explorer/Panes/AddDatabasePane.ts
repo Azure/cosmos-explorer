@@ -16,6 +16,7 @@ import { PlatformType } from "../../PlatformType";
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIdLabel: ko.Computed<string>;
+  public databaseIdPlaceHolder: ko.Computed<string>;
   public databaseId: ko.Observable<string>;
   public databaseIdTooltipText: ko.Computed<string>;
   public databaseLevelThroughputTooltipText: ko.Computed<string>;
@@ -70,6 +71,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseIdLabel = ko.computed<string>(() =>
       this.container.isPreferredApiCassandra() ? "Keyspace id" : "Database id"
     );
+
+    this.databaseIdPlaceHolder = ko.computed<string>(() =>
+      this.container.isPreferredApiCassandra() ? "Type a new keyspace id" : "Type a new database id"
+    );
+
     this.databaseIdTooltipText = ko.computed<string>(() => {
       const isCassandraAccount: boolean = this.container.isPreferredApiCassandra();
       return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${

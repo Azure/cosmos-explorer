@@ -27,7 +27,7 @@ module.exports = {
       plugins: ["react"]
     },
     {
-      files: ["**/*.test.{ts,tsx}"],
+      files: ["**/*.{test,spec}.{ts,tsx}"],
       env: {
         jest: true
       },
