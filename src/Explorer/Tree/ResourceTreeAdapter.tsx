@@ -64,7 +64,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.container.nonSystemDatabases.subscribe((databases: ViewModels.Database[]) => {
       // Clean up old databases
-      this.cleanupDatabasesKoSubs(databases.map((database: ViewModels.Database) => database.id()));
+      this.cleanupDatabasesKoSubs();
 
       databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
       this.triggerRender();
@@ -799,12 +799,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.koSubsCollectionIdMap.push(collectionId, sub);
   }
 
-  private cleanupDatabasesKoSubs(existingDatabaseIds: string[]): void {
-    existingDatabaseIds.forEach((databaseId: string) => {
-      if (this.koSubsDatabaseIdMap.has(databaseId)) {
-        this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
-        this.koSubsDatabaseIdMap.delete(databaseId);
-      }
+  private cleanupDatabasesKoSubs(): void {
+    this.koSubsDatabaseIdMap.keys().forEach((databaseId: string) => {
+      this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
+      this.koSubsDatabaseIdMap.delete(databaseId);
 
       if (this.databaseCollectionIdMap.has(databaseId)) {
         this.databaseCollectionIdMap
