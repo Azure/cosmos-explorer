@@ -1,5 +1,6 @@
 import "expect-puppeteer";
 import crypto from "crypto";
+import { login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const RENDER_DELAY = 400;
@@ -12,15 +13,7 @@ describe("Collection Add and Delete Cassandra spec", () => {
       const tableId = `tableid${crypto.randomBytes(3).toString("hex")}`;
       const prodUrl = "https://localhost:1234/hostedExplorer.html";
       page.goto(prodUrl);
-
-      // log in with connection string
-      const handle = await page.waitForSelector("iframe");
-      const frame = await handle.contentFrame();
-      await frame.waitFor("div > p.switchConnectTypeText", { visible: true });
-      await frame.click("div > p.switchConnectTypeText");
-      const connStr = process.env.CASSANDRA_CONNECTION_STRING;
-      await frame.type("input[class='inputToken']", connStr);
-      await frame.click("input[value='Connect']");
+      const frame = await login(process.env.CASSANDRA_CONNECTION_STRING);
 
       // create new table
       await frame.waitFor('button[data-test="New Table"]', { visible: true });

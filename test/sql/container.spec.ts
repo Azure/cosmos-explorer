@@ -1,5 +1,6 @@
 import "expect-puppeteer";
 import crypto from "crypto";
+import { login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
@@ -11,17 +12,19 @@ describe("Collection Add and Delete SQL spec", () => {
       const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
       const collectionId = `TestCollection${crypto.randomBytes(8).toString("hex")}`;
       const sharedKey = `SharedKey${crypto.randomBytes(8).toString("hex")}`;
-      const prodUrl = "https://localhost:1234/hostedExplorer.html";
-      page.goto(prodUrl);
+      // const prodUrl = "https://localhost:1234/hostedExplorer.html";
+      // page.goto(prodUrl);
 
-      // log in with connection string
-      const handle = await page.waitForSelector("iframe");
-      const frame = await handle.contentFrame();
-      await frame.waitFor("div > p.switchConnectTypeText", { visible: true });
-      await frame.click("div > p.switchConnectTypeText");
-      const connStr = process.env.PORTAL_RUNNER_CONNECTION_STRING;
-      await frame.type("input[class='inputToken']", connStr);
-      await frame.click("input[value='Connect']");
+      // // log in with connection string
+      // const handle = await page.waitForSelector("iframe");
+      // const frame = await handle.contentFrame();
+      // await frame.waitFor("div > p.switchConnectTypeText", { visible: true });
+      // await frame.click("div > p.switchConnectTypeText");
+      // const connStr = process.env.PORTAL_RUNNER_CONNECTION_STRING;
+      // await frame.type("input[class='inputToken']", connStr);
+      // await frame.click("input[value='Connect']");
+
+      const frame = await login(process.env.PORTAL_RUNNER_CONNECTION_STRING);
 
       // create new collection
       await frame.waitFor('button[data-test="New Container"]', { visible: true });
