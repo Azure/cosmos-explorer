@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Stack, Text, IIconStyles, Icon, Callout, TooltipHost, DirectionalHint } from "office-ui-fabric-react";
-import { horizontalStackTokens } from "../SettingsRenderUtils";
+import { toolTipLabelStackTokens } from "../SettingsRenderUtils";
 
 export interface ToolTipLabelComponentProps {
   label: string;
@@ -13,7 +13,7 @@ export class ToolTipLabelComponent extends React.Component<ToolTipLabelComponent
   public render(): JSX.Element {
     return (
       <>
-        <Stack horizontal verticalAlign="center" tokens={horizontalStackTokens}>
+        <Stack horizontal verticalAlign="center" tokens={toolTipLabelStackTokens}>
           {this.props.label && <Text style={{ fontWeight: 600 }}>{this.props.label}</Text>}
           {this.props.toolTipElement && (
             <TooltipHost

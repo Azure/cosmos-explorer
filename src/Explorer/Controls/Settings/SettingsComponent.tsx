@@ -19,20 +19,13 @@ import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import SettingsTab from "../../Tabs/SettingsTabV2";
 import {
-  manualToAutoscaleDisclaimerElement,
-  ttlWarning,
-  indexingPolicyTTLWarningMessage,
-  updateThroughputBeyondLimitWarningMessage,
-  updateThroughputDelayedApplyWarningMessage,
   getThroughputApplyDelayedMessage,
-  getThroughputApplyShortDelayMessage,
-  getThroughputApplyLongDelayMessage
+  throughputUnit
 } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   getMaxRUs,
   hasDatabaseSharedThroughput,
-  canThroughputExceedMaximumValue,
   GeospatialConfigType,
   TtlType,
   ChangeFeedPolicyState,
@@ -108,14 +101,13 @@ export interface SettingsComponentState {
   conflictResolutionPolicyProcedureBaseline: string;
   isConflictResolutionDirty: boolean;
 
-  notificationStatusInfo: JSX.Element;
+  initialNotification: DataModels.Notification;
   userCanChangeProvisioningTypes: boolean;
   selectedTab: SettingsV2TabTypes;
 }
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
-  private static throughputUnit = "RU/s";
 
   public saveSettingsButton: ButtonV2;
   public discardSettingsChangesButton: ButtonV2;
@@ -190,7 +182,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedureBaseline: undefined,
       isConflictResolutionDirty: false,
 
-      notificationStatusInfo: undefined,
+      initialNotification: undefined,
       userCanChangeProvisioningTypes: undefined,
       selectedTab: SettingsV2TabTypes.ScaleTab
     };
@@ -216,18 +208,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.props.settingsTab.isActive()) {
       this.props.settingsTab.getSettingsTabContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
-    if (!!this.getWarningMessage() && !!this.state.notificationStatusInfo) {
-      this.setState({ notificationStatusInfo: undefined });
-    }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
       this.props.settingsTab.getSettingsTabContainer().onUpdateTabsButtons(this.getTabsButtons());
-    }
-
-    if (!!this.getWarningMessage() && !!this.state.notificationStatusInfo) {
-      this.setState({ notificationStatusInfo: undefined });
     }
   }
 
@@ -332,111 +317,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-  private getWarningMessage = (): JSX.Element => {
-    const throughputExceedsBackendLimits: boolean =
-      canThroughputExceedMaximumValue(this.collection, this.container) &&
-      getMaxRUs(this.collection, this.container) <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-      this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-
-    const throughputExceedsMaxValue: boolean =
-      !this.container.isEmulator && this.state.throughput > getMaxRUs(this.collection, this.container);
-
-    const ttlOptionDirty: boolean = isDirty(this.state.timeToLive, this.state.timeToLiveBaseline);
-    const ttlOrIndexingPolicyFieldsDirty: boolean =
-      isDirty(this.state.timeToLive, this.state.timeToLiveBaseline) ||
-      isDirty(this.state.indexingPolicyContent, this.state.indexingPolicyContentBaseline) ||
-      isDirty(this.state.timeToLiveSeconds, this.state.timeToLiveSecondsBaseline);
-    const offer = this.collection?.offer && this.collection.offer();
-
-    if (ttlOptionDirty && this.state.timeToLive === TtlType.On) {
-      return ttlWarning;
-    }
-
-    if (
-      offer &&
-      Object.keys(offer).find(value => {
-        return value === "headers";
-      }) &&
-      !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-    ) {
-      if (AutoPilotUtils.isValidV2AutoPilotOffer(offer)) {
-        return <span>Tier upgrade will take some time to complete.</span>;
-      }
-
-      let throughput: number;
-      if (offer?.content?.offerAutopilotSettings) {
-        if (!this.hasAutoPilotV2FeatureFlag) {
-          throughput = offer.content.offerAutopilotSettings.maxThroughput;
-        } else {
-          throughput = offer.content.offerAutopilotSettings.maximumTierThroughput;
-        }
-      }
-
-      const targetThroughput =
-        (offer?.content?.offerAutopilotSettings && offer.content.offerAutopilotSettings.targetMaxThroughput) ||
-        offer?.content?.offerThroughput;
-
-      return getThroughputApplyShortDelayMessage(
-        this.state.isAutoPilotSelected,
-        throughput,
-        SettingsComponent.throughputUnit,
-        this.collection.databaseId,
-        this.collection.id(),
-        targetThroughput
-      );
-    }
-
-    if (!this.hasAutoPilotV2FeatureFlag && this.overrideWithProvisionedThroughputSettings()) {
-      return manualToAutoscaleDisclaimerElement;
-    }
-
-    if (
-      throughputExceedsBackendLimits &&
-      !!this.collection.partitionKey &&
-      !this.isFixedContainer &&
-      !this.state.indexingPolicyElementFocussed
-    ) {
-      return updateThroughputBeyondLimitWarningMessage;
-    }
-
-    if (
-      throughputExceedsMaxValue &&
-      !!this.collection.partitionKey &&
-      !this.isFixedContainer &&
-      !this.state.indexingPolicyElementFocussed
-    ) {
-      return updateThroughputDelayedApplyWarningMessage;
-    }
-
-    if (this.props.settingsTab.pendingNotification()) {
-      const matches: string[] = this.props.settingsTab
-        .pendingNotification()
-        .description.match(`Throughput update for (.*) ${SettingsComponent.throughputUnit}`);
-
-      const throughput = this.state.throughput;
-      const targetThroughput: number = matches.length > 1 && Number(matches[1]);
-      if (targetThroughput) {
-        return getThroughputApplyLongDelayMessage(
-          this.state.isAutoPilotSelected,
-          throughput,
-          SettingsComponent.throughputUnit,
-          this.collection.databaseId,
-          this.collection.id(),
-          targetThroughput
-        );
-      }
-    }
-
-    if (ttlOrIndexingPolicyFieldsDirty) {
-      return indexingPolicyTTLWarningMessage;
-    }
-
-    return undefined;
-  };
-
-  private shouldShowNotificationStatusPrompt = (): boolean => !!this.state.notificationStatusInfo;
-
-  private shouldShowStatusBar = (): boolean => this.shouldShowNotificationStatusPrompt() || !!this.getWarningMessage();
 
   public onSaveClick = async (): Promise<void> => {
     this.props.settingsTab.isExecutionError(false);
@@ -577,14 +457,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             this.setState({
               throughput: originalThroughputValue,
               throughputBaseline: originalThroughputValue,
-              notificationStatusInfo: getThroughputApplyDelayedMessage(
-                this.state.isAutoPilotSelected,
-                originalThroughputValue,
-                SettingsComponent.throughputUnit,
-                this.collection.databaseId,
-                this.collection.id(),
-                newThroughput
-              )
+              initialNotification: {description: `Throughput update for ${newThroughput} ${throughputUnit}`} as DataModels.Notification 
             });
           } catch (error) {
             traceFailure(
@@ -982,29 +855,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onAutoPilotTierChange = (selectedAutoPilotTier: DataModels.AutopilotTier): void =>
     this.setState({ selectedAutoPilotTier: selectedAutoPilotTier });
 
-  private getStatusBarComponent = (): JSX.Element => (
-    <div className="warningErrorContainer scaleWarningContainer">
-      {this.shouldShowNotificationStatusPrompt() && (
-        <div className="warningErrorContent">
-          <span>
-            <Image src={InfoColor} alt="Info" />
-          </span>
-          <div className="warningErrorDetailsLinkContainer">{this.state.notificationStatusInfo}</div>
-        </div>
-      )}
-      {!this.shouldShowNotificationStatusPrompt() && (
-        <div className="warningErrorContent">
-          <span>
-            <Image src={Warning} alt="Warning" />
-          </span>
-          <div className="warningErrorDetailsLinkContainer">
-            {!!this.getWarningMessage() && this.getWarningMessage()}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
   private onPivotChange = (item: PivotItem): void => {
     const selectedTab = SettingsV2TabTypes[item.props.itemKey as keyof typeof SettingsV2TabTypes];
     this.setState({ selectedTab: selectedTab });
@@ -1033,7 +883,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onAutoPilotTierChange: this.onAutoPilotTierChange,
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,
-      onScaleDiscardableChange: this.onScaleDiscardableChange
+      onScaleDiscardableChange: this.onScaleDiscardableChange,
+      initialNotification: this.props.settingsTab.pendingNotification()
     };
 
     const subSettingsComponentProps: SubSettingsComponentProps = {
@@ -1137,8 +988,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     return (
       <div className="settingsV2MainContainer">
-        {this.shouldShowStatusBar() && this.getStatusBarComponent()}
-
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
           <div>This table shared throughput is configured at the keyspace</div>
         )}

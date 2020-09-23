@@ -14,11 +14,14 @@ import {
   getEstimatedAutoscaleSpendElement,
   getTextFieldStyles,
   subComponentStackProps,
-  titleAndInputStackProps
+  titleAndInputStackProps,
+  throughputUnit,
+  getThroughputApplyLongDelayMessage, getThroughputApplyShortDelayMessage, manualToAutoscaleDisclaimerElement, updateThroughputBeyondLimitWarningMessage, updateThroughputDelayedApplyWarningMessage, messageBarStyles
 } from "../SettingsRenderUtils";
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Text, TextField, Stack, Label } from "office-ui-fabric-react";
+import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import { convertJSDateToUnix } from "../../../Tables/QueryBuilder/DateTimeUtilities";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -43,6 +46,7 @@ export interface ScaleComponentProps {
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
+  initialNotification: DataModels.Notification;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {
@@ -79,9 +83,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return (
       <Stack {...titleAndInputStackProps}>
         <Label>Storage capacity</Label>
-        <Text>
-          {capacity}
-        </Text>
+        <Text>{capacity}</Text>
       </Stack>
     );
   };
@@ -102,7 +104,11 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return <></>;
     }
     return !this.props.hasAutoPilotV2FeatureFlag
-      ? getAutoPilotV3SpendElement(autoPilot, false /* isDatabaseThroughput */, !this.isEmulator? this.getRequestUnitsUsageCost() : <></>)
+      ? getAutoPilotV3SpendElement(
+          autoPilot,
+          false /* isDatabaseThroughput */,
+          !this.isEmulator ? this.getRequestUnitsUsageCost() : <></>
+        )
       : getAutoPilotV2SpendElement(autoPilot, false /* isDatabaseThroughput */);
   };
 
@@ -160,6 +166,74 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return this.props.hasProvisioningTypeChanged() && this.props.wasAutopilotOriginallySet;
   };
 
+  private getWarningMessage = (): JSX.Element => {
+    const throughputExceedsBackendLimits: boolean =
+      canThroughputExceedMaximumValue(this.props.collection, this.props.container) &&
+      getMaxRUs(this.props.collection, this.props.container) <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+      this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
+
+    const throughputExceedsMaxValue: boolean =
+      !this.isEmulator && this.props.throughput > getMaxRUs(this.props.collection, this.props.container);
+
+    const offer = this.props.collection?.offer && this.props.collection.offer();
+
+    if (
+      offer &&
+      Object.keys(offer).find(value => {
+        return value === "headers";
+      }) &&
+      !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
+    ) {
+      if (AutoPilotUtils.isValidV2AutoPilotOffer(offer)) {
+        return <span>Tier upgrade will take some time to complete.</span>;
+      }
+
+      let throughput: number;
+      if (offer?.content?.offerAutopilotSettings) {
+        if (!this.props.hasAutoPilotV2FeatureFlag) {
+          throughput = offer.content.offerAutopilotSettings.maxThroughput;
+        } else {
+          throughput = offer.content.offerAutopilotSettings.maximumTierThroughput;
+        }
+      }
+
+      const targetThroughput =
+        (offer?.content?.offerAutopilotSettings && offer.content.offerAutopilotSettings.targetMaxThroughput) ||
+        offer?.content?.offerThroughput;
+
+      return getThroughputApplyShortDelayMessage(
+        this.props.isAutoPilotSelected,
+        throughput,
+        throughputUnit,
+        this.props.collection.databaseId,
+        this.props.collection.id(),
+        targetThroughput
+      );
+    }
+
+    if (!this.props.hasAutoPilotV2FeatureFlag && this.props.overrideWithProvisionedThroughputSettings()) {
+      return manualToAutoscaleDisclaimerElement;
+    }
+
+    if (
+      throughputExceedsBackendLimits &&
+      !!this.props.collection.partitionKey &&
+      !this.props.isFixedContainer
+    ) {
+      return updateThroughputBeyondLimitWarningMessage;
+    }
+
+    if (
+      throughputExceedsMaxValue &&
+      !!this.props.collection.partitionKey &&
+      !this.props.isFixedContainer
+    ) {
+      return updateThroughputDelayedApplyWarningMessage;
+    }
+
+    return undefined;
+  };
+
   private getThroughputInputComponent = (): JSX.Element =>
     this.props.hasAutoPilotV2FeatureFlag ? (
       <ThroughputInputComponent
@@ -189,6 +263,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         hasProvisioningTypeChanged={this.props.hasProvisioningTypeChanged}
         onScaleSaveableChange={this.props.onScaleSaveableChange}
         onScaleDiscardableChange={this.props.onScaleDiscardableChange}
+        getWarningMessage={this.getWarningMessage}
       />
     ) : (
       <ThroughputInputAutoPilotV3Component
@@ -216,16 +291,40 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         hasProvisioningTypeChanged={this.props.hasProvisioningTypeChanged}
         onScaleSaveableChange={this.props.onScaleSaveableChange}
         onScaleDiscardableChange={this.props.onScaleDiscardableChange}
+        getWarningMessage={this.getWarningMessage}
       />
     );
 
+  private getInitialNotificationElement = (): JSX.Element => {
+    const matches: string[] = this.props.initialNotification.description.match(
+      `Throughput update for (.*) ${throughputUnit}`
+    );
+
+    const throughput = this.props.throughput;
+    const targetThroughput: number = matches.length > 1 && Number(matches[1]);
+    if (targetThroughput) {
+      return getThroughputApplyLongDelayMessage(
+        this.props.isAutoPilotSelected,
+        throughput,
+        throughputUnit,
+        this.props.collection.databaseId,
+        this.props.collection.id(),
+        targetThroughput
+      );
+    }
+    return <></>;
+  };
+
   public render(): JSX.Element {
     return (
-      <>
+      <Stack {...subComponentStackProps}>
+        {this.props.initialNotification && (
+          <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
+        )}
         {!this.isAutoScaleEnabled() && (
           <Stack {...subComponentStackProps}>
-            {this.getThroughputInputComponent()}
-            {this.getStorageCapacityTitle()}
+              {this.getThroughputInputComponent()}
+              {this.getStorageCapacityTitle()}
           </Stack>
         )}
 
@@ -240,7 +339,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
             </Text>
           </Stack>
         )}
-      </>
+      </Stack>
     );
   }
 }

@@ -6,9 +6,9 @@ import {
   spendAckCheckBoxStyle,
   titleAndInputStackProps,
   checkBoxAndInputStackProps,
-  getChoiceGroupStyles
+  getChoiceGroupStyles, messageBarStyles, messageStackTokens
 } from "../../SettingsRenderUtils";
-import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label, Link } from "office-ui-fabric-react";
+import { Text, TextField, ChoiceGroup, IChoiceGroupOption, Checkbox, Stack, Label, Link, MessageBar, MessageBarType } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { isDirty } from "../../SettingsUtils";
 import * as SharedConstants from "../../../../../Shared/Constants";
@@ -44,6 +44,7 @@ export interface ThroughputInputAutoPilotV3Props {
   hasProvisioningTypeChanged: () => boolean;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
+  getWarningMessage: () => JSX.Element
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -163,6 +164,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
     return (
+      <Stack horizontal tokens={messageStackTokens}>
       <div>
         <Label id={labelId}>
           <ToolTipLabelComponent
@@ -180,6 +182,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           styles={this.choiceGroupFixedStyle}
         />
       </div>
+      {this.props.getWarningMessage() &&
+      <Stack styles={{ root: { maxWidth: 600 } }}>
+        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+          {this.props.getWarningMessage()}
+        </MessageBar>
+      </Stack>
+      }
+      </Stack>
     );
   };
 

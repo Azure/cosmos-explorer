@@ -3,13 +3,25 @@ import * as ViewModels from "../../../../Contracts/ViewModels";
 import { GeospatialConfigType, TtlType, ChangeFeedPolicyState, isDirty } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { Label, Text, TextField, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
+import {
+  Label,
+  Text,
+  TextField,
+  Stack,
+  IChoiceGroupOption,
+  ChoiceGroup,
+  MessageBar,
+  MessageBarType
+} from "office-ui-fabric-react";
 import {
   getTextFieldStyles,
   changeFeedPolicyToolTip,
   subComponentStackProps,
   titleAndInputStackProps,
-  getChoiceGroupStyles
+  getChoiceGroupStyles,
+  messageStackTokens,
+  ttlWarning,
+  messageBarStyles
 } from "../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -121,15 +133,24 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private getTtlComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
-      <ChoiceGroup
-        id="timeToLive"
-        label="Time to Live"
-        tabIndex={0}
-        selectedKey={this.props.timeToLive}
-        options={this.ttlChoiceGroupOptions}
-        onChange={this.props.onTtlChange}
-        styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
-      />
+      <Stack horizontal tokens={messageStackTokens}>
+        <ChoiceGroup
+          id="timeToLive"
+          label="Time to Live"
+          tabIndex={0}
+          selectedKey={this.props.timeToLive}
+          options={this.ttlChoiceGroupOptions}
+          onChange={this.props.onTtlChange}
+          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
+        />
+        {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
+          <Stack styles={{ root: { maxWidth: 600 } }}>
+            <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+              {ttlWarning}
+            </MessageBar>
+          </Stack>
+        )}
+      </Stack>
       {this.props.timeToLive === TtlType.On && (
         <TextField
           id="timeToLiveSeconds"

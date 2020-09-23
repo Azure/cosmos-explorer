@@ -20,7 +20,8 @@ import {
   IStackTokens,
   IChoiceGroupStyles,
   Link,
-  Text
+  Text,
+  IMessageBarStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -36,24 +37,25 @@ export const getAutoPilotV3SpendElement = (
   const resource: string = isDatabaseThroughput ? "database" : "container";
   return (
     <>
-    <Text>
-      Your {resource} throughput will automatically scale from{" "}
-      <b>
-        {AutoPilotUtils.getMinRUsBasedOnUserInput(maxAutoPilotThroughputSet)} RU/s (10% of max RU/s) -{" "}
-        {maxAutoPilotThroughputSet} RU/s
-      </b>{" "}
-      based on usage.<br/>
-    </Text>
-    {requestUnitsUsageCostElement}
-    <Text>
-      After the first {AutoPilotUtils.getStorageBasedOnUserInput(maxAutoPilotThroughputSet)} GB of data stored, the max
-      RU/s will be automatically upgraded based on the new storage value.
-      <Link href={AutopilotDocumentation.Url} target="_blank">
-        {" "}
-        Learn more
-      </Link>
-      .
-    </Text>
+      <Text>
+        Your {resource} throughput will automatically scale from{" "}
+        <b>
+          {AutoPilotUtils.getMinRUsBasedOnUserInput(maxAutoPilotThroughputSet)} RU/s (10% of max RU/s) -{" "}
+          {maxAutoPilotThroughputSet} RU/s
+        </b>{" "}
+        based on usage.
+        <br />
+      </Text>
+      {requestUnitsUsageCostElement}
+      <Text>
+        After the first {AutoPilotUtils.getStorageBasedOnUserInput(maxAutoPilotThroughputSet)} GB of data stored, the
+        max RU/s will be automatically upgraded based on the new storage value.
+        <Link href={AutopilotDocumentation.Url} target="_blank">
+          {" "}
+          Learn more
+        </Link>
+        .
+      </Text>
     </>
   );
 };
@@ -137,7 +139,7 @@ export const getEstimatedAutoscaleSpendElement = (
 
   return (
     <Text>
-      Estimated monthly cost ({currency}) is {" "}
+      Estimated monthly cost ({currency}) is{" "}
       <b>
         {currencySign}
         {calculateEstimateNumber(monthlyPrice / 10)}
@@ -399,6 +401,14 @@ export const checkBoxAndInputStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 }
 };
 
-export const horizontalStackTokens: IStackTokens = {
+export const toolTipLabelStackTokens: IStackTokens = {
   childrenGap: 6
 };
+
+export const messageStackTokens: IStackTokens = {
+  childrenGap: 15
+};
+
+export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
+
+export const throughputUnit = "RU/s";

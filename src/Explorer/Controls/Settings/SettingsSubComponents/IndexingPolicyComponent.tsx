@@ -2,6 +2,8 @@ import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
 import { isDirty } from "../SettingsUtils";
+import { MessageBar, MessageBarType, Stack } from "office-ui-fabric-react";
+import { indexingPolicyTTLWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
 
 export interface IndexingPolicyComponentProps {
   shouldDiscardIndexingPolicy: boolean;
@@ -103,6 +105,13 @@ export class IndexingPolicyComponent extends React.Component<
   };
 
   public render(): JSX.Element {
-    return <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>;
+    return (
+      <Stack {...titleAndInputStackProps}>
+        {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
+          <MessageBar messageBarType={MessageBarType.warning}>{indexingPolicyTTLWarningMessage}</MessageBar>
+        )}
+        <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
+      </Stack>
+    );
   }
 }
