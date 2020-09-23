@@ -290,6 +290,10 @@ export default class Database implements ViewModels.Database {
   }
 
   private deleteCollectionsFromList(collectionsToRemove: Collection[]): void {
+    if (collectionsToRemove.length === 0) {
+      return;
+    }
+
     const collectionsToKeep: Collection[] = [];
 
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {

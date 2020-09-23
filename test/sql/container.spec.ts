@@ -49,7 +49,6 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.waitFor(RENDER_DELAY);
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
 
