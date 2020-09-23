@@ -16,7 +16,11 @@ export const readDatabaseOffer = async (
 ): Promise<DataModels.OfferWithHeaders> => {
   let offerId = params.offerId;
   if (!offerId) {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
       try {
         offerId = await getDatabaseOfferIdWithARM(params.databaseId);
       } catch (error) {
