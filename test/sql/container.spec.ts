@@ -2,6 +2,8 @@ import "expect-puppeteer";
 import crypto from "crypto";
 
 jest.setTimeout(300000);
+const LOADING_STATE_DELAY = 2500;
+const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
@@ -57,7 +59,7 @@ describe("Collection Add and Delete SQL spec", () => {
 
       await frame.click(`div[data-test="${dbId}"]`);
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
-      await frame.waitFor(3000);
+      await frame.waitFor(RENDER_DELAY);
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
 
       // delete container
@@ -66,7 +68,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
       await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
-      await frame.waitFor(2000);
+      await frame.waitFor(LOADING_STATE_DELAY);
 
       // click delete container
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
@@ -79,7 +81,7 @@ describe("Collection Add and Delete SQL spec", () => {
       // click delete
       await frame.waitFor('input[data-test="deleteCollection"]', { visible: true });
       await frame.click('input[data-test="deleteCollection"]');
-      await frame.waitFor(5000);
+      await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);

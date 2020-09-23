@@ -94,7 +94,6 @@ describe("Collection Add and Delete Mongo spec", () => {
       await button.asElement().click();
 
       // click delete database
-      await frame.waitFor(RENDER_DELAY);
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
