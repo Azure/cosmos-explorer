@@ -24,7 +24,7 @@ import {
   titleAndInputStackProps,
   getChoiceGroupStyles,
   messageBarStyles,
-  messageStackTokens
+  messageContainerStackTokens, messageStackStyle
 } from "../../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { isDirty } from "../../SettingsUtils";
@@ -180,7 +180,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
     return (
-      <Stack horizontal tokens={messageStackTokens}>
+      <Stack horizontal tokens={messageContainerStackTokens}>
         <div>
           <Label id={labelId}>
             <ToolTipLabelComponent
@@ -199,7 +199,7 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
           />
         </div>
         {this.props.getWarningMessage() && (
-          <Stack styles={{ root: { maxWidth: 600 } }}>
+          <Stack styles={messageStackStyle}>
             <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
               {this.props.getWarningMessage()}
             </MessageBar>

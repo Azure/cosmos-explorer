@@ -19,9 +19,9 @@ import {
   subComponentStackProps,
   titleAndInputStackProps,
   getChoiceGroupStyles,
-  messageStackTokens,
+  messageContainerStackTokens,
   ttlWarning,
-  messageBarStyles
+  messageBarStyles, messageStackStyle
 } from "../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -133,7 +133,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private getTtlComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
-      <Stack horizontal tokens={messageStackTokens}>
+      <Stack horizontal tokens={messageContainerStackTokens}>
         <ChoiceGroup
           id="timeToLive"
           label="Time to Live"
@@ -144,7 +144,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
         />
         {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
-          <Stack styles={{ root: { maxWidth: 600 } }}>
+          <Stack styles={messageStackStyle}>
             <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
               {ttlWarning}
             </MessageBar>

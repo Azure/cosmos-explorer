@@ -8,7 +8,7 @@ import {
   checkBoxAndInputStackProps,
   getChoiceGroupStyles,
   messageBarStyles,
-  messageStackTokens
+  messageContainerStackTokens, messageStackStyle
 } from "../../SettingsRenderUtils";
 import {
   Text,
@@ -177,7 +177,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
     return (
-      <Stack horizontal tokens={messageStackTokens}>
+      <Stack horizontal tokens={messageContainerStackTokens}>
         <div>
           <Label id={labelId}>
             <ToolTipLabelComponent
@@ -196,7 +196,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           />
         </div>
         {this.props.getWarningMessage() && (
-          <Stack styles={{ root: { maxWidth: 600 } }}>
+          <Stack styles={messageStackStyle}>
             <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
               {this.props.getWarningMessage()}
             </MessageBar>
