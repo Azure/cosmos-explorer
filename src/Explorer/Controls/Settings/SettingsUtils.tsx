@@ -99,6 +99,40 @@ export const getMinRUs = (collection: ViewModels.Collection, container: Explorer
   return Math.max(baseRU, baseRUbyPartitions);
 };
 
+export const parseConflictResolutionMode = (modeFromBackend: string): DataModels.ConflictResolutionMode => {
+  // Backend can contain different casing as it does case-insensitive comparisson
+  if (!modeFromBackend) {
+    return undefined;
+  }
+
+  const modeAsLowerCase: string = modeFromBackend.toLowerCase();
+  if (modeAsLowerCase === DataModels.ConflictResolutionMode.Custom.toLowerCase()) {
+    return DataModels.ConflictResolutionMode.Custom;
+  }
+
+  // Default is LWW
+  return DataModels.ConflictResolutionMode.LastWriterWins;
+};
+
+export const parseConflictResolutionProcedure = (procedureFromBackEnd: string): string => {
+  // Backend data comes in /dbs/xxxx/colls/xxxx/sprocs/{name}, to make it easier for users, we just use the name
+  if (!procedureFromBackEnd) {
+    return undefined;
+  }
+
+  if (procedureFromBackEnd.indexOf("/") >= 0) {
+    const sprocsIndex: number = procedureFromBackEnd.indexOf(Constants.HashRoutePrefixes.sprocHash);
+    if (sprocsIndex === -1) {
+      return undefined;
+    }
+
+    return procedureFromBackEnd.substr(sprocsIndex + Constants.HashRoutePrefixes.sprocHash.length);
+  }
+
+  // No path, just a name, in case backend returns just the name
+  return procedureFromBackEnd;
+};
+
 export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
   const currentType = typeof current;
   const baselineType = typeof baseline;

@@ -34,7 +34,7 @@ import {
   isDirty,
   TtlOff,
   TtlOn,
-  TtlOnNoDefault
+  TtlOnNoDefault, parseConflictResolutionMode, parseConflictResolutionProcedure
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
@@ -679,7 +679,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     const policy: DataModels.ConflictResolutionPolicy = {
-      mode: SettingsComponent.parseConflictResolutionMode(this.state.conflictResolutionPolicyMode)
+      mode: parseConflictResolutionMode(this.state.conflictResolutionPolicyMode)
     };
 
     if (
@@ -702,40 +702,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     return policy;
-  };
-
-  private static parseConflictResolutionMode = (modeFromBackend: string): DataModels.ConflictResolutionMode => {
-    // Backend can contain different casing as it does case-insensitive comparisson
-    if (!modeFromBackend) {
-      return undefined;
-    }
-
-    const modeAsLowerCase: string = modeFromBackend.toLowerCase();
-    if (modeAsLowerCase === DataModels.ConflictResolutionMode.Custom.toLowerCase()) {
-      return DataModels.ConflictResolutionMode.Custom;
-    }
-
-    // Default is LWW
-    return DataModels.ConflictResolutionMode.LastWriterWins;
-  };
-
-  private static parseConflictResolutionProcedure = (procedureFromBackEnd: string): string => {
-    // Backend data comes in /dbs/xxxx/colls/xxxx/sprocs/{name}, to make it easier for users, we just use the name
-    if (!procedureFromBackEnd) {
-      return undefined;
-    }
-
-    if (procedureFromBackEnd.indexOf("/") >= 0) {
-      const sprocsIndex: number = procedureFromBackEnd.indexOf(Constants.HashRoutePrefixes.sprocHash);
-      if (sprocsIndex === -1) {
-        return undefined;
-      }
-
-      return procedureFromBackEnd.substr(sprocsIndex + Constants.HashRoutePrefixes.sprocHash.length);
-    }
-
-    // No path, just a name, in case backend returns just the name
-    return procedureFromBackEnd;
   };
 
   public setBaseline = (): void => {
@@ -779,9 +745,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
 
-    const conflictResolutionPolicyMode = SettingsComponent.parseConflictResolutionMode(conflictResolutionPolicy?.mode);
+    const conflictResolutionPolicyMode = parseConflictResolutionMode(conflictResolutionPolicy?.mode);
     const conflictResolutionPolicyPath = conflictResolutionPolicy?.conflictResolutionPath;
-    const conflictResolutionPolicyProcedure = SettingsComponent.parseConflictResolutionProcedure(
+    const conflictResolutionPolicyProcedure = parseConflictResolutionProcedure(
       conflictResolutionPolicy?.conflictResolutionProcedure
     );
     const geospatialConfigTypeString: string =
