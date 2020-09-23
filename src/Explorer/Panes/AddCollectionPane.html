@@ -418,6 +418,11 @@
               </div>
               <!-- large parition key - end -->
 
+              <div tabindex="0"
+              data-bind="visible: container.isPreferredApiMongoDB()"
+              aria-label="Indexing Policy">
+                  <div><h2>sampler</h2></div>
+              </div>
               <!-- Provision collection throughput - start -->
               <!-- ko if: canConfigureThroughput -->
               <!-- Provision collection throughput checkbox - start -->
