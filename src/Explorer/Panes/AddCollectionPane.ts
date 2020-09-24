@@ -838,7 +838,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let createMongoWildCardIndexOnAllFields: boolean;
     // todo - remove mongo indexing policy ticket # 616274
     if (this.container.isPreferredApiMongoDB()) {
-      createMongoWildCardIndexOnAllFields = this.shouldCreateMongoWildCardIndexOnAllFields()
+      createMongoWildCardIndexOnAllFields = this.shouldCreateMongoWildCardIndexOnAllFields();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {
         indexingPolicy = SharedConstants.IndexingPolicies.AllPropertiesIndexed;
