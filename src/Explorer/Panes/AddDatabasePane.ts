@@ -337,7 +337,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const subscriptionType: ViewModels.SubscriptionType =
       this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA) {
+    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
