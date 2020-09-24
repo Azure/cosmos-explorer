@@ -138,6 +138,7 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
 };
 
 const createMongoCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
+  const mongoWildCardIndexOnAllFields : ARMTypes.MongoIndex[] = [{ key: {keys: ["$**"]}}, { key: {keys: ["_id"]}}]
   try {
     const getResponse = await getMongoDBCollection(
       userContext.subscriptionId,
@@ -165,6 +166,9 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
   if (params.partitionKey) {
     const partitionKeyPath: string = params.partitionKey.paths[0];
     resource.shardKey = { [partitionKeyPath]: "Hash" };
+  }
+  if(params.createMongoWildCardIndexOnAllFields) {
+    resource.indexes = mongoWildCardIndexOnAllFields;
   }
 
   const rpPayload: ARMTypes.MongoDBCollectionCreateUpdateParameters = {

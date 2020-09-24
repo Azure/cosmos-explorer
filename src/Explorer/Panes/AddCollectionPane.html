@@ -418,12 +418,20 @@
               </div>
               <!-- large parition key - end -->
 
-              <div tabindex="0"
-              data-bind="visible: container.isPreferredApiMongoDB()"
-              aria-label="Indexing Policy">
-                  <div><h2>sampler</h2></div>
+              <!-- Custom indexes for mongo checkbox- start -->
+              <div data-bind="visible: container.isPreferredApiMongoDB()">
+                  <input type="checkbox" id="mongoWildCardIndex" title="mongoWildCardIndex"
+                    data-bind="checked: shouldCreateMongoWildCardIndexOnAllFields" />
+                    <span>Create a wildcard index on all fields</span>
+                    <span class="infoTooltip" role="tooltip" tabindex="0">
+                        <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                        <span class="tooltiptext">
+                            Add custom index.
+                        </span>
+                    </span>
               </div>
-              <!-- Provision collection throughput - start -->
+              <!-- Custom indexes for mongo checkbox- end -->
+
               <!-- ko if: canConfigureThroughput -->
               <!-- Provision collection throughput checkbox - start -->
               <div class="pkPadding" data-bind="visible: databaseHasSharedOffer() && !databaseCreateNew()">
