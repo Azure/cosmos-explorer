@@ -200,11 +200,10 @@ export default class Database implements ViewModels.Database {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.offer()) {
+    if (!this.container.isServerlessEnabled() && !this.offer()) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
-        databaseResourceId: this.self,
-        isServerless: this.container.isServerlessEnabled()
+        databaseResourceId: this.self
       };
       this.offer(await readDatabaseOffer(params));
     }

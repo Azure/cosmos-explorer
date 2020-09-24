@@ -292,7 +292,6 @@ export interface CreateCollectionParams {
 export interface ReadDatabaseOfferParams {
   databaseId: string;
   databaseResourceId?: string;
-  isServerless?: boolean;
   offerId?: string;
 }
 
