@@ -22,6 +22,9 @@ describe("ConflictResolutionComponent", () => {
     conflictResolutionPolicyProcedureBaseline: "",
     onConflictResolutionPolicyProcedureChange: () => {
       return;
+    },
+    onConflictResolutionDirtyChange: (isConflictResolutionDirty: boolean) => {
+      return;
     }
   };
 

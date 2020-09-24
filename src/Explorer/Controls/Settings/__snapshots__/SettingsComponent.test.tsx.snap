@@ -22,8 +22,6 @@ exports[`SettingsComponent renders 1`] = `
         }
       >
         <ScaleComponent
-          autoPilotThroughput={4000}
-          autoPilotThroughputBaseline={4000}
           collection={
             Object {
               "analyticalStorageTtl": [Function],
@@ -2642,6 +2640,8 @@ exports[`SettingsComponent renders 1`] = `
           onAutoPilotSelected={[Function]}
           onAutoPilotTierChange={[Function]}
           onMaxAutoPilotThroughputChange={[Function]}
+          onScaleDiscardableChange={[Function]}
+          onScaleSaveableChange={[Function]}
           onThroughputChange={[Function]}
           overrideWithProvisionedThroughputSettings={[Function]}
           throughput={10000}
@@ -5282,6 +5282,8 @@ exports[`SettingsComponent renders 1`] = `
           onAnalyticalStorageTtlSelectionChange={[Function]}
           onChangeFeedPolicyChange={[Function]}
           onGeoSpatialConfigTypeChange={[Function]}
+          onSubSettingsDiscardableChange={[Function]}
+          onSubSettingsSaveableChange={[Function]}
           onTimeToLiveSecondsChange={[Function]}
           onTtlChange={[Function]}
           timeToLive="on"
@@ -5309,10 +5311,18 @@ exports[`SettingsComponent renders 1`] = `
               "indexingMode": "default",
             }
           }
+          indexingPolicyContentBaseline={
+            Object {
+              "automatic": true,
+              "excludedPaths": Array [],
+              "includedPaths": Array [],
+              "indexingMode": "default",
+            }
+          }
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
+          onIndexingPolicyDirtyChange={[Function]}
           onIndexingPolicyElementFocusChange={[Function]}
-          onIndexingPolicyValidityChange={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
         />

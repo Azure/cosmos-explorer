@@ -12,7 +12,7 @@ describe("ThroughputInputReactComponent", () => {
     maximum: 400,
     step: 100,
     isEnabled: true,
-    costsVisible: true,
+    isEmulator: false,
     requestUnitsUsageCost: undefined,
     spendAckChecked: false,
     spendAckId: "spendAckId",
@@ -31,9 +31,18 @@ describe("ThroughputInputReactComponent", () => {
       { value: AutopilotTier.Tier2, text: "tier 2" }
     ],
     selectedAutoPilotTier: AutopilotTier.Tier1,
+    selectedAutoPilotTierBaseline: AutopilotTier.Tier1,
     onAutoPilotTierChange: undefined,
     autoPilotUsageCost: undefined,
-    showAutoPilot: true
+    showAutoPilot: true,
+    hasProvisioningTypeChanged: () => false,
+    onScaleSaveableChange: (isScaleSaveable: boolean) => {
+      return;
+    },
+    onScaleDiscardableChange: (isScaleDiscardable: boolean) => {
+      return;
+    },
+    getWarningMessage: () => undefined  
   };
 
   it("throughput input visible", () => {

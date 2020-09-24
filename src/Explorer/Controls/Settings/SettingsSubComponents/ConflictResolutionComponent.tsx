@@ -49,11 +49,11 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" }
   ];
 
-  componentDidMount() {
+  componentDidMount() : void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate() : void {
     this.onComponentUpdate();
   }
 

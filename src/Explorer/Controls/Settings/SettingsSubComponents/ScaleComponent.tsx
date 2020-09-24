@@ -20,13 +20,11 @@ import {
   getThroughputApplyShortDelayMessage,
   manualToAutoscaleDisclaimerElement,
   updateThroughputBeyondLimitWarningMessage,
-  updateThroughputDelayedApplyWarningMessage,
-  messageBarStyles
+  updateThroughputDelayedApplyWarningMessage
 } from "../SettingsRenderUtils";
-import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput, canThroughputExceedMaximumValue } from "../SettingsUtils";
+import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
-import { convertJSDateToUnix } from "../../../Tables/QueryBuilder/DateTimeUtilities";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -124,12 +122,20 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
     const minThroughput: string = getMinRUs(this.props.collection, this.props.container).toLocaleString();
     const maxThroughput: string =
-      canThroughputExceedMaximumValue(this.props.collection, this.props.container) && !this.props.isFixedContainer
+      this.canThroughputExceedMaximumValue() && !this.props.isFixedContainer
         ? "unlimited"
         : getMaxRUs(this.props.collection, this.props.container).toLocaleString();
     return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
   };
 
+  public canThroughputExceedMaximumValue = (): boolean => {
+    const isPublicAzurePortal: boolean =
+      this.props.container.getPlatformType() === PlatformType.Portal && !this.props.container.isRunningOnNationalCloud();
+    const hasPartitionKey = !!this.props.collection.partitionKey;
+  
+    return isPublicAzurePortal && hasPartitionKey;
+  };
+  
   private getRequestUnitsUsageCost = (): JSX.Element => {
     const account = this.props.container.databaseAccount();
     if (!account) {
@@ -173,7 +179,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   private getWarningMessage = (): JSX.Element => {
     const throughputExceedsBackendLimits: boolean =
-      canThroughputExceedMaximumValue(this.props.collection, this.props.container) &&
+      this.canThroughputExceedMaximumValue() &&
       getMaxRUs(this.props.collection, this.props.container) <=
         SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
       this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
@@ -244,7 +250,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         maximum={this.getMaxRUThroughputInputLimit()}
         isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
         canExceedMaximumValue={
-          canThroughputExceedMaximumValue(this.props.collection, this.props.container) || this.canExceedMaximumValue
+          this.canThroughputExceedMaximumValue() || this.canExceedMaximumValue
         }
         label={this.getThroughputTitle()}
         isEmulator={this.isEmulator}
@@ -271,7 +277,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         minimum={getMinRUs(this.props.collection, this.props.container)}
         maximum={this.getMaxRUThroughputInputLimit()}
         isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
-        canExceedMaximumValue={canThroughputExceedMaximumValue(this.props.collection, this.props.container)}
+        canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
         label={this.getThroughputTitle()}
         isEmulator={this.isEmulator}
         isFixed={this.props.isFixedContainer}
@@ -294,7 +300,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     );
 
   private getInitialNotificationElement = (): JSX.Element => {
-    const matches: string[] = this.props.initialNotification.description.match(
+    const matches: string[] = this.props.initialNotification?.description.match(
       `Throughput update for (.*) ${throughputUnit}`
     );
 

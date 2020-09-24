@@ -40,14 +40,6 @@ export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): 
   return database?.isDatabaseShared() && !collection.offer();
 };
 
-export const canThroughputExceedMaximumValue = (collection: ViewModels.Collection, container: Explorer): boolean => {
-  const isPublicAzurePortal: boolean =
-    container.getPlatformType() === PlatformType.Portal && !container.isRunningOnNationalCloud();
-  const hasPartitionKey = !!collection.partitionKey;
-
-  return isPublicAzurePortal && hasPartitionKey;
-};
-
 export const getMaxRUs = (collection: ViewModels.Collection, container: Explorer): number => {
   const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription() || false;
   if (isTryCosmosDBSubscription) {

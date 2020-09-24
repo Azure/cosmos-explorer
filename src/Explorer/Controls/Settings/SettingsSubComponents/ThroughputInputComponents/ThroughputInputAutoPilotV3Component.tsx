@@ -8,7 +8,8 @@ import {
   checkBoxAndInputStackProps,
   getChoiceGroupStyles,
   messageBarStyles,
-  messageContainerStackTokens, messageStackStyle
+  messageContainerStackTokens,
+  messageStackStyle
 } from "../../SettingsRenderUtils";
 import {
   Text,
@@ -78,11 +79,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     { key: "false", text: "Manual" }
   ];
 
-  componentDidMount() {
+  componentDidMount() : void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate() : void {
     this.onComponentUpdate();
   }
 

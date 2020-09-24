@@ -17,7 +17,6 @@ exports[`ThroughputInputReactComponent autopilot input visible 1`] = `
   >
     <StyledWithResponsiveMode
       className="autoPilotSelector"
-      defaultSelectedKey={1}
       id="autopilotSelector"
       onChange={[Function]}
       options={
@@ -37,6 +36,7 @@ exports[`ThroughputInputReactComponent autopilot input visible 1`] = `
           },
         ]
       }
+      selectedKey={1}
       styles={
         Object {
           "dropdown": Object {

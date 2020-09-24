@@ -1,15 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`IndexingPolicyComponent indexing policy is reset 1`] = `
-<div
-  className="indexingPolicyEditor"
-  tabIndex={0}
-/>
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 5,
+    }
+  }
+>
+  <StyledMessageBarBase
+    messageBarType={5}
+  >
+    <span>
+      Changing the Indexing Policy impacts query results while the index transformation occurs. When a change is made and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. For more information see,
+       
+      <StyledLinkBase
+        href="https://aka.ms/cosmosdb/modify-index-policy"
+        target="_blank"
+      >
+        Modifying Indexing Policies
+      </StyledLinkBase>
+      .
+    </span>
+  </StyledMessageBarBase>
+  <div
+    className="settingsV2IndexingPolicyEditor"
+    tabIndex={0}
+  />
+</Stack>
 `;
 
 exports[`IndexingPolicyComponent renders 1`] = `
-<div
-  className="indexingPolicyEditor"
-  tabIndex={0}
-/>
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 5,
+    }
+  }
+>
+  <StyledMessageBarBase
+    messageBarType={5}
+  >
+    <span>
+      Changing the Indexing Policy impacts query results while the index transformation occurs. When a change is made and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. For more information see,
+       
+      <StyledLinkBase
+        href="https://aka.ms/cosmosdb/modify-index-policy"
+        target="_blank"
+      >
+        Modifying Indexing Policies
+      </StyledLinkBase>
+      .
+    </span>
+  </StyledMessageBarBase>
+  <div
+    className="settingsV2IndexingPolicyEditor"
+    tabIndex={0}
+  />
+</Stack>
 `;

@@ -20,10 +20,10 @@ describe("IndexingPolicyComponent", () => {
     onIndexingPolicyContentChange: () => {
       return;
     },
-    onIndexingPolicyValidityChange: () => {
+    logIndexingPolicySuccessMessage: () => {
       return;
     },
-    logIndexingPolicySuccessMessage: () => {
+    onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => {
       return;
     }
   };

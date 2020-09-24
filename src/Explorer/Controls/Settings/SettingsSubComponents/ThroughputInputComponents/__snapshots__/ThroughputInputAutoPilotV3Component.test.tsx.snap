@@ -44,8 +44,6 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     type="number"
     value="4000"
   />
-  <Text />
-  <Text />
 </Stack>
 `;
 
@@ -88,7 +86,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       }
       type="number"
-      value="100"
+      value="4000"
     />
     <Text />
     <StyledCheckboxBase
@@ -154,7 +152,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         }
       }
       type="number"
-      value="100"
+      value="4000"
     />
     <Text />
     <p>

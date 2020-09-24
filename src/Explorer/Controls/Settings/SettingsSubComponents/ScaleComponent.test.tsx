@@ -24,6 +24,7 @@ describe("ScaleComponent", () => {
     autoPilotThroughput: 4000,
     autoPilotThroughputBaseline: 4000,
     selectedAutoPilotTier: DataModels.AutopilotTier.Tier1,
+    selectedAutoPilotTierBaseline: DataModels.AutopilotTier.Tier1,
     isAutoPilotSelected: false,
     wasAutopilotOriginallySet: true,
     userCanChangeProvisioningTypes: false,
@@ -34,7 +35,14 @@ describe("ScaleComponent", () => {
     },
     onMaxAutoPilotThroughputChange: () => {
       return;
-    }
+    },
+    onScaleSaveableChange: (isScaleSaveable: boolean) => {
+      return;
+    },
+    onScaleDiscardableChange: (isScaleDiscardable: boolean) => {
+      return;
+    },
+    initialNotification: undefined 
   };
 
   it("renders V3 throughput component", () => {

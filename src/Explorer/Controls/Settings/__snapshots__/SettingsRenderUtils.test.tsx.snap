@@ -2,7 +2,7 @@
 
 exports[`SettingsUtils functions render 1`] = `
 <Fragment>
-  <span>
+  <Text>
     Your 
     container
      throughput will automatically scale from
@@ -15,9 +15,10 @@ exports[`SettingsUtils functions render 1`] = `
        RU/s
     </b>
      
-    based on usage. 
+    based on usage.
     <br />
-    <br />
+  </Text>
+  <Text>
     After the first 
     10
      GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
@@ -29,8 +30,8 @@ exports[`SettingsUtils functions render 1`] = `
       Learn more
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     database
      throughput will automatically scale from
@@ -43,9 +44,10 @@ exports[`SettingsUtils functions render 1`] = `
        RU/s
     </b>
      
-    based on usage. 
+    based on usage.
     <br />
-    <br />
+  </Text>
+  <Text>
     After the first 
     10
      GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
@@ -57,8 +59,8 @@ exports[`SettingsUtils functions render 1`] = `
       Learn more
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     container
      throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -70,8 +72,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     container
      throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -83,8 +85,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     container
      throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -96,8 +98,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     container
      throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -109,8 +111,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     database
      throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -122,8 +124,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     database
      throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -135,8 +137,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     database
      throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -148,8 +150,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Your 
     database
      throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see
@@ -161,8 +163,8 @@ exports[`SettingsUtils functions render 1`] = `
       documentation
     </StyledLinkBase>
     .
-  </span>
-  <span>
+  </Text>
+  <Text>
     Estimated cost (
     RMB
     ):
@@ -191,11 +193,11 @@ exports[`SettingsUtils functions render 1`] = `
     ¥
     0.00051
     /RU)
-  </span>
-  <span>
+  </Text>
+  <Text>
     Estimated monthly cost (
     RMB
-    ):
+    ) is
      
     <b>
       ¥
@@ -217,7 +219,7 @@ exports[`SettingsUtils functions render 1`] = `
     ¥
     0.000765
     /RU)
-  </span>
+  </Text>
   <span>
     The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.
      
@@ -289,6 +291,9 @@ exports[`SettingsUtils functions render 1`] = `
     <span>
       Sample Text
     </span>
+  </span>
+  <span>
+    Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW) based conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts to decide the winner for the conflicting versions of the document. Specify your own integer property if you want to override the default timestamp based conflict resolution.
   </span>
   <span>
     Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write application defined logic to determine the winner of the conflicting versions of a document. The stored procedure will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the conflicts will be populated in the

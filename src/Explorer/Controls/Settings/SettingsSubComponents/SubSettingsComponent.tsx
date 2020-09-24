@@ -21,7 +21,8 @@ import {
   getChoiceGroupStyles,
   messageContainerStackTokens,
   ttlWarning,
-  messageBarStyles, messageStackStyle
+  messageBarStyles,
+  messageStackStyle
 } from "../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -85,11 +86,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
   }
 
-  componentDidMount() {
+  componentDidMount() : void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate() : void {
     this.onComponentUpdate();
   }
 

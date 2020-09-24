@@ -14,7 +14,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     maximum: 400,
     step: 100,
     isEnabled: true,
-    costsVisible: true,
+    isEmulator: false,
     requestUnitsUsageCost: undefined,
     spendAckChecked: false,
     spendAckId: "spendAckId",
@@ -33,7 +33,15 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     overrideWithProvisionedThroughputSettings: false,
     maxAutoPilotThroughput: 4000,
     maxAutoPilotThroughputBaseline: 4000,
-    onMaxAutoPilotThroughputChange: undefined
+    onMaxAutoPilotThroughputChange: undefined,
+    hasProvisioningTypeChanged: () => false,
+    onScaleSaveableChange: (isScaleSaveable: boolean) => {
+      return;
+    },
+    onScaleDiscardableChange: (isScaleDiscardable: boolean) => {
+      return;
+    },
+    getWarningMessage: () => undefined  
   };
 
   it("throughput input visible", () => {

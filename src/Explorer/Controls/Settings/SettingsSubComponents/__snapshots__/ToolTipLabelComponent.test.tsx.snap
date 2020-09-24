@@ -20,12 +20,30 @@ exports[`ToolTipLabelComponent renders 1`] = `
     >
       sample tool tip label
     </Text>
-    <div>
+    <StyledTooltipHostBase
+      calloutProps={
+        Object {
+          "gapSpace": 0,
+        }
+      }
+      content={
+        <span>
+          sample tool tip text
+        </span>
+      }
+      directionalHint={12}
+      styles={
+        Object {
+          "root": Object {
+            "display": "inline-block",
+            "float": "right",
+          },
+        }
+      }
+    >
       <Memo(StyledIconBase)
         ariaLabel="Info"
         iconName="Info"
-        onMouseOut={[Function]}
-        onMouseOver={[Function]}
         styles={
           Object {
             "root": Object {
@@ -34,7 +52,7 @@ exports[`ToolTipLabelComponent renders 1`] = `
           }
         }
       />
-    </div>
+    </StyledTooltipHostBase>
   </Stack>
 </Fragment>
 `;

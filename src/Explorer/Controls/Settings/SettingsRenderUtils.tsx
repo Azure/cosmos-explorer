@@ -21,7 +21,8 @@ import {
   IChoiceGroupStyles,
   Link,
   Text,
-  IMessageBarStyles, IStackStyles
+  IMessageBarStyles,
+  IStackStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -409,7 +410,7 @@ export const messageContainerStackTokens: IStackTokens = {
   childrenGap: 15
 };
 
-export const messageStackStyle : IStackStyles = { root: { maxWidth: 600, marginTop: 30 } }
+export const messageStackStyle: IStackStyles = { root: { maxWidth: 600, marginTop: 30 } };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
 

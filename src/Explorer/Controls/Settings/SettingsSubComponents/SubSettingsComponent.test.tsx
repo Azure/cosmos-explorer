@@ -48,6 +48,12 @@ describe("SubSettingsComponent", () => {
 
     onChangeFeedPolicyChange: () => {
       return;
+    },
+    onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => {
+      return;
+    },
+    onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => {
+      return;
     }
   };
 

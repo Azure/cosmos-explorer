@@ -15,51 +15,60 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="on"
-      styles={
+    <Stack
+      horizontal={true}
+      tokens={
         Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": undefined,
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
+          "childrenGap": 15,
         }
       }
-      tabIndex={0}
-    />
+    >
+      <StyledChoiceGroupBase
+        id="timeToLive"
+        label="Time to Live"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "off",
+              "text": "Off",
+            },
+            Object {
+              "key": "on-nodefault",
+              "text": "On (no default)",
+            },
+            Object {
+              "key": "on",
+              "text": "On",
+            },
+          ]
+        }
+        selectedKey="on"
+        styles={
+          Object {
+            "flexContainer": Array [
+              Object {
+                "selectors": Object {
+                  ".ms-ChoiceField-field.is-checked::after": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-field.is-checked::before": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-wrapper label": Object {
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "padding": "2px 5px",
+                    "whiteSpace": "nowrap",
+                  },
+                },
+              },
+            ],
+          }
+        }
+        tabIndex={0}
+      />
+    </Stack>
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -233,51 +242,60 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="on"
-      styles={
+    <Stack
+      horizontal={true}
+      tokens={
         Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": undefined,
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
+          "childrenGap": 15,
         }
       }
-      tabIndex={0}
-    />
+    >
+      <StyledChoiceGroupBase
+        id="timeToLive"
+        label="Time to Live"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "off",
+              "text": "Off",
+            },
+            Object {
+              "key": "on-nodefault",
+              "text": "On (no default)",
+            },
+            Object {
+              "key": "on",
+              "text": "On",
+            },
+          ]
+        }
+        selectedKey="on"
+        styles={
+          Object {
+            "flexContainer": Array [
+              Object {
+                "selectors": Object {
+                  ".ms-ChoiceField-field.is-checked::after": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-field.is-checked::before": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-wrapper label": Object {
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "padding": "2px 5px",
+                    "whiteSpace": "nowrap",
+                  },
+                },
+              },
+            ],
+          }
+        }
+        tabIndex={0}
+      />
+    </Stack>
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -505,51 +523,60 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="on"
-      styles={
+    <Stack
+      horizontal={true}
+      tokens={
         Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": undefined,
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
+          "childrenGap": 15,
         }
       }
-      tabIndex={0}
-    />
+    >
+      <StyledChoiceGroupBase
+        id="timeToLive"
+        label="Time to Live"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "off",
+              "text": "Off",
+            },
+            Object {
+              "key": "on-nodefault",
+              "text": "On (no default)",
+            },
+            Object {
+              "key": "on",
+              "text": "On",
+            },
+          ]
+        }
+        selectedKey="on"
+        styles={
+          Object {
+            "flexContainer": Array [
+              Object {
+                "selectors": Object {
+                  ".ms-ChoiceField-field.is-checked::after": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-field.is-checked::before": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-wrapper label": Object {
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "padding": "2px 5px",
+                    "whiteSpace": "nowrap",
+                  },
+                },
+              },
+            ],
+          }
+        }
+        tabIndex={0}
+      />
+    </Stack>
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -747,51 +774,60 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="on"
-      styles={
+    <Stack
+      horizontal={true}
+      tokens={
         Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": undefined,
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
+          "childrenGap": 15,
         }
       }
-      tabIndex={0}
-    />
+    >
+      <StyledChoiceGroupBase
+        id="timeToLive"
+        label="Time to Live"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "off",
+              "text": "Off",
+            },
+            Object {
+              "key": "on-nodefault",
+              "text": "On (no default)",
+            },
+            Object {
+              "key": "on",
+              "text": "On",
+            },
+          ]
+        }
+        selectedKey="on"
+        styles={
+          Object {
+            "flexContainer": Array [
+              Object {
+                "selectors": Object {
+                  ".ms-ChoiceField-field.is-checked::after": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-field.is-checked::before": Object {
+                    "borderColor": "",
+                  },
+                  ".ms-ChoiceField-wrapper label": Object {
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "padding": "2px 5px",
+                    "whiteSpace": "nowrap",
+                  },
+                },
+              },
+            ],
+          }
+        }
+        tabIndex={0}
+      />
+    </Stack>
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -1044,51 +1080,60 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
-      id="timeToLive"
-      label="Time to Live"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "off",
-            "text": "Off",
-          },
-          Object {
-            "key": "on-nodefault",
-            "text": "On (no default)",
-          },
-          Object {
-            "key": "on",
-            "text": "On",
-          },
-        ]
-      }
-      selectedKey="off"
-      styles={
+    <Stack
+      horizontal={true}
+      tokens={
         Object {
-          "flexContainer": Array [
-            Object {
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": undefined,
-                },
-                ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": undefined,
-                },
-                ".ms-ChoiceField-wrapper label": Object {
-                  "fontFamily": undefined,
-                  "fontSize": 14,
-                  "padding": "2px 5px",
-                  "whiteSpace": "nowrap",
-                },
-              },
-            },
-          ],
+          "childrenGap": 15,
         }
       }
-      tabIndex={0}
-    />
+    >
+      <StyledChoiceGroupBase
+        id="timeToLive"
+        label="Time to Live"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "off",
+              "text": "Off",
+            },
+            Object {
+              "key": "on-nodefault",
+              "text": "On (no default)",
+            },
+            Object {
+              "key": "on",
+              "text": "On",
+            },
+          ]
+        }
+        selectedKey="off"
+        styles={
+          Object {
+            "flexContainer": Array [
+              Object {
+                "selectors": Object {
+                  ".ms-ChoiceField-field.is-checked::after": Object {
+                    "borderColor": undefined,
+                  },
+                  ".ms-ChoiceField-field.is-checked::before": Object {
+                    "borderColor": undefined,
+                  },
+                  ".ms-ChoiceField-wrapper label": Object {
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "padding": "2px 5px",
+                    "whiteSpace": "nowrap",
+                  },
+                },
+              },
+            ],
+          }
+        }
+        tabIndex={0}
+      />
+    </Stack>
   </Stack>
   <StyledChoiceGroupBase
     id="geoSpatialConfig"

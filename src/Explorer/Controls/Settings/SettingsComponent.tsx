@@ -6,8 +6,6 @@ import * as SharedConstants from "../../../Shared/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import InfoColor from "../../../../images/info_color.svg";
-import Warning from "../../../../images/warning.svg";
 import { traceStart, traceFailure, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
@@ -18,7 +16,7 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import SettingsTab from "../../Tabs/SettingsTabV2";
-import { getThroughputApplyDelayedMessage, throughputUnit } from "./SettingsRenderUtils";
+import { throughputUnit } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   getMaxRUs,
@@ -40,7 +38,7 @@ import {
   ConflictResolutionComponentProps
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption, Image } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 
@@ -267,7 +265,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     } else {
       // tier can be 0
-      if (offerAutopilotSettings?.tier != undefined) {
+      if (offerAutopilotSettings?.tier !== undefined) {
         if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
           const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
           this.autoPilotTiersList = availableAutoPilotTiers;

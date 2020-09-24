@@ -24,7 +24,8 @@ import {
   titleAndInputStackProps,
   getChoiceGroupStyles,
   messageBarStyles,
-  messageContainerStackTokens, messageStackStyle
+  messageContainerStackTokens,
+  messageStackStyle
 } from "../../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { isDirty } from "../../SettingsUtils";
@@ -91,11 +92,11 @@ export class ThroughputInputComponent extends React.Component<ThroughputInputPro
     this.step = this.props.step ?? ThroughputInputComponent.defaultStep;
   }
 
-  componentDidMount() {
+  componentDidMount() : void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate() : void {
     this.onComponentUpdate();
   }
 

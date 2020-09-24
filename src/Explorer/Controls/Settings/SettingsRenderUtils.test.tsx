@@ -15,7 +15,7 @@ import {
   getThroughputApplyLongDelayMessage,
   getToolTipContainer,
   conflictResolutionCustomToolTip,
-  changeFeedPolicyToolTip
+  changeFeedPolicyToolTip, conflictResolutionLwwTooltip
 } from "./SettingsRenderUtils";
 import { AutopilotTier } from "../../../Contracts/DataModels";
 
@@ -52,6 +52,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {getThroughputApplyLongDelayMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
 
         {getToolTipContainer(<span>Sample Text</span>)}
+        {conflictResolutionLwwTooltip}
         {conflictResolutionCustomToolTip}
         {changeFeedPolicyToolTip}
       </>
