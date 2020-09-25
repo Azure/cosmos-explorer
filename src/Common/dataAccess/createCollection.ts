@@ -29,6 +29,8 @@ import { refreshCachedResources } from "../DataAccessUtilityBase";
 import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 import { createDatabase } from "./createDatabase";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 
 export const createCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   let collection: DataModels.Collection;
@@ -138,7 +140,7 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
 };
 
 const createMongoCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  const mongoWildCardIndexOnAllFields: ARMTypes.MongoIndex[] = [{ key: { keys: ["$**"] } }, { key: { keys: ["_id"] } }];
+  const mongoWildcardIndexOnAllFields: ARMTypes.MongoIndex[] = [{ key: { keys: ["$**"] } }, { key: { keys: ["_id"] } }];
   try {
     const getResponse = await getMongoDBCollection(
       userContext.subscriptionId,
@@ -167,8 +169,8 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
     const partitionKeyPath: string = params.partitionKey.paths[0];
     resource.shardKey = { [partitionKeyPath]: "Hash" };
   }
-  if (params.createMongoWildCardIndexOnAllFields) {
-    resource.indexes = mongoWildCardIndexOnAllFields;
+  if (params.createMongoWildcardIndexOnAllFields) {
+    resource.indexes = mongoWildcardIndexOnAllFields;
   }
 
   const rpPayload: ARMTypes.MongoDBCollectionCreateUpdateParameters = {
@@ -186,6 +188,10 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
     params.collectionId,
     rpPayload
   );
+
+  TelemetryProcessor.trace(Action.CreateMongoCollectionWithWildcardIndex, ActionModifiers.Mark, 
+  { message: "Mongo Collection created with wildcard index on all fields." });
+    
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
 
