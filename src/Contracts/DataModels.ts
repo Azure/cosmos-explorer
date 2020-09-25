@@ -295,6 +295,13 @@ export interface ReadDatabaseOfferParams {
   offerId?: string;
 }
 
+export interface ReadCollectionOfferParams {
+  collectionId: string;
+  databaseId: string;
+  collectionResourceId?: string;
+  offerId?: string;
+}
+
 export interface Notification {
   id: string;
   kind: string;

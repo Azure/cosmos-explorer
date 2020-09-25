@@ -134,7 +134,6 @@ export interface Collection extends CollectionBase {
   openTab(): void;
 
   onSettingsClick: () => void;
-  readSettings(): Q.Promise<void>;
   onDeleteCollectionContextMenuClick(source: Collection, event: MouseEvent): void;
 
   onNewGraphClick(): void;
@@ -162,6 +161,7 @@ export interface Collection extends CollectionBase {
   loadUserDefinedFunctions(): Promise<any>;
   loadStoredProcedures(): Promise<any>;
   loadTriggers(): Promise<any>;
+  loadOffer(): Promise<void>;
 
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
