@@ -49,16 +49,15 @@ export function sendCachedDataMessage<TResponseDataModel>(
 
 export function sendMessage(data: any): void {
   if (canSendMessage()) {
-    const dataExplorerWindow = getDataExplorerWindow(window);
-    if (dataExplorerWindow) {
-      dataExplorerWindow.parent.postMessage(
-        {
-          signature: "pcIframe",
-          data: data
-        },
-        dataExplorerWindow.document.referrer
-      );
-    }
+    // We try to find data explorer window first, then fallback to current window
+    const portalChildWindow = getDataExplorerWindow(window) || window;
+    portalChildWindow.parent.postMessage(
+      {
+        signature: "pcIframe",
+        data: data
+      },
+      portalChildWindow.document.referrer
+    );
   }
 }
 
