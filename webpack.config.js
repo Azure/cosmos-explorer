@@ -11,6 +11,7 @@ const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
 const isCI = require("is-ci");
+const webpack = require("webpack");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -104,6 +105,14 @@ module.exports = function(env = {}, argv = {}) {
     envVars.NODE_ENV = "development";
   }
 
+  const sourceMapPlugin =
+    mode === "development"
+      ? new webpack.EvalSourceMapDevToolPlugin({})
+      : new webpack.SourceMapDevToolPlugin({
+          filename: "[name].js.map",
+          exclude: [/vendor/]
+        });
+
   const plugins = [
     new CleanWebpackPlugin(["dist"]),
     new CreateFileWebpack({
@@ -164,7 +173,8 @@ module.exports = function(env = {}, argv = {}) {
     new CopyWebpackPlugin({
       patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }]
     }),
-    new EnvironmentPlugin(envVars)
+    new EnvironmentPlugin(envVars),
+    sourceMapPlugin
   ];
 
   if (argv.analyze) {
@@ -194,7 +204,7 @@ module.exports = function(env = {}, argv = {}) {
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist")
     },
-    devtool: mode === "development" ? "cheap-eval-source-map" : "source-map",
+    devtool: false,
     plugins,
     module: {
       rules
