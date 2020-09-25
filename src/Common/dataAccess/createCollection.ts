@@ -169,7 +169,7 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
     const partitionKeyPath: string = params.partitionKey.paths[0];
     resource.shardKey = { [partitionKeyPath]: "Hash" };
   }
-  if (params.createMongoWildcardIndexOnAllFields) {
+  if (params.createMongoWildcardIndex) {
     resource.indexes = mongoWildcardIndexOnAllFields;
   }
 
@@ -189,9 +189,11 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
     rpPayload
   );
 
-  TelemetryProcessor.trace(Action.CreateMongoCollectionWithWildcardIndex, ActionModifiers.Mark, {
-    message: "Mongo Collection created with wildcard index on all fields."
-  });
+  if (params.createMongoWildcardIndex) {
+    TelemetryProcessor.trace(Action.CreateMongoCollectionWithWildcardIndex, ActionModifiers.Mark, {
+      message: "Mongo Collection created with wildcard index on all fields."
+    });
+  }
 
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };

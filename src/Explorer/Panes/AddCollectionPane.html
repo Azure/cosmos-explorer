@@ -511,12 +511,12 @@
               <!-- Provision collection throughput - end -->
 
               <!-- Custom indexes for mongo checkbox - start -->
-              <div class="pkPadding" data-bind="visible: container.isPreferredApiMongoDB()">
+              <div class="pkPadding" data-bind="visible: container.isEnableMongoCapabilityPresent()">
                 <p>
                     <span class="addCollectionLabel">Indexing</span>
                 </p>
                 <input type="checkbox" id="mongoWildcardIndex" title="mongoWildcardIndex"
-                data-bind="checked: shouldCreateMongoWildcardIndexOnAllFields" />
+                data-bind="checked: shouldCreateMongoWildcardIndex" />
                 <span>Create a Wildcard Index on all fields</span>
                 <span class="infoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information">

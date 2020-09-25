@@ -287,7 +287,7 @@ export interface CreateCollectionParams {
   indexingPolicy?: IndexingPolicy;
   partitionKey?: PartitionKey;
   uniqueKeyPolicy?: UniqueKeyPolicy;
-  createMongoWildcardIndexOnAllFields?: boolean;
+  createMongoWildcardIndex?: boolean;
 }
 
 export interface ReadDatabaseOfferParams {
