@@ -109,6 +109,7 @@ module.exports = function(env = {}, argv = {}) {
     mode === "development"
       ? new webpack.EvalSourceMapDevToolPlugin({})
       : new webpack.SourceMapDevToolPlugin({
+          // test: [".js", ".mjs", ".css", ".ts", ".tsx"],
           filename: "[name].js.map",
           exclude: [/vendor/]
         });
@@ -174,6 +175,7 @@ module.exports = function(env = {}, argv = {}) {
       patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }]
     }),
     new EnvironmentPlugin(envVars),
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
     sourceMapPlugin
   ];
 
@@ -216,6 +218,7 @@ module.exports = function(env = {}, argv = {}) {
       minimize: mode === "production" ? true : false,
       minimizer: [
         new TerserPlugin({
+          sourceMap: true,
           cache: ".cache/terser",
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
