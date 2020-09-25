@@ -189,9 +189,10 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
     rpPayload
   );
 
-  TelemetryProcessor.trace(Action.CreateMongoCollectionWithWildcardIndex, ActionModifiers.Mark, 
-  { message: "Mongo Collection created with wildcard index on all fields." });
-    
+  TelemetryProcessor.trace(Action.CreateMongoCollectionWithWildcardIndex, ActionModifiers.Mark, {
+    message: "Mongo Collection created with wildcard index on all fields."
+  });
+
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
 
