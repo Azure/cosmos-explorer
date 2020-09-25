@@ -206,7 +206,6 @@ module.exports = function(env = {}, argv = {}) {
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist")
     },
-    devtool: false,
     plugins,
     module: {
       rules
