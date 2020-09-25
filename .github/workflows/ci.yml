@@ -196,27 +196,6 @@ jobs:
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-  endtoendpuppeteer:
-    name: "End to end puppeteer tests"
-    needs: [lint, format, compile, unittest]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: End to End Puppeteer Tests
-        run: |
-          npm ci
-          npm start &
-          npm run wait-for-server
-          npm run test:e2e
-        shell: bash
-        env:
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
-          PORTAL_RUNNER_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
-          CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
