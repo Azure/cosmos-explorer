@@ -34,7 +34,7 @@ describe("SettingsUtils", () => {
         container: undefined,
         self: "",
         id: ko.observable(""),
-        collections: ko.observable(undefined),
+        collections: ko.observableArray(undefined),
         offer: ko.observable(undefined),
         isDatabaseExpanded: ko.observable(false),
         isDatabaseShared: ko.computed(() => true),
@@ -47,7 +47,8 @@ describe("SettingsUtils", () => {
         openAddCollection: undefined,
         onDeleteDatabaseContextMenuClick: undefined,
         readSettings: undefined,
-        onSettingsClick: undefined
+        onSettingsClick: undefined,
+        loadOffer: undefined
       } as ViewModels.Database;
     };
     newCollection.offer(undefined);

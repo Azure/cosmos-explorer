@@ -130,7 +130,8 @@ describe("SettingsComponent", () => {
       openAddCollection: undefined,
       onDeleteDatabaseContextMenuClick: undefined,
       readSettings: undefined,
-      onSettingsClick: undefined
+      onSettingsClick: undefined,
+      loadOffer: undefined
     } as ViewModels.Database;
     newCollection.getDatabase = () => newDatabase;
     newCollection.offer = ko.observable(undefined);
