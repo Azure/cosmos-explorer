@@ -64,7 +64,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.container.nonSystemDatabases.subscribe((databases: ViewModels.Database[]) => {
       // Clean up old databases
-      this.cleanupDatabasesKoSubs(databases.map((database: ViewModels.Database) => database.id()));
+      this.cleanupDatabasesKoSubs();
 
       databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
       this.triggerRender();
@@ -170,14 +170,17 @@ export class ResourceTreeAdapter implements ReactAdapter {
         children: [],
         isSelected: () => this.isDataNodeSelected(database.rid, "Database", undefined),
         contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database),
-        onClick: isExpanded => {
+        onClick: async isExpanded => {
           // Rewritten version of expandCollapseDatabase():
-          if (!isExpanded) {
-            database.expandDatabase();
-            database.loadCollections();
-          } else {
+          if (isExpanded) {
             database.collapseDatabase();
+          } else {
+            if (databaseNode.children?.length === 0) {
+              databaseNode.isLoading = true;
+            }
+            await database.expandDatabase();
           }
+          databaseNode.isLoading = false;
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
           this.container.tabsManager.refreshActiveTab(
@@ -202,6 +205,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
         .forEach((collection: ViewModels.Collection) =>
           databaseNode.children.push(this.buildCollectionNode(database, collection))
         );
+
+      database.collections.subscribe((collections: ViewModels.Collection[]) => {
+        collections.forEach((collection: ViewModels.Collection) =>
+          databaseNode.children.push(this.buildCollectionNode(database, collection))
+        );
+      });
 
       return databaseNode;
     });
@@ -790,16 +799,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.koSubsCollectionIdMap.push(collectionId, sub);
   }
 
-  private cleanupDatabasesKoSubs(existingDatabaseIds: string[]): void {
-    const databaseIdsToRemove = this.databaseCollectionIdMap
-      .keys()
-      .filter((id: string) => existingDatabaseIds.indexOf(id) === -1);
-
-    databaseIdsToRemove.forEach((databaseId: string) => {
-      if (this.koSubsDatabaseIdMap.has(databaseId)) {
-        this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
-        this.koSubsDatabaseIdMap.delete(databaseId);
-      }
+  private cleanupDatabasesKoSubs(): void {
+    this.koSubsDatabaseIdMap.keys().forEach((databaseId: string) => {
+      this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
+      this.koSubsDatabaseIdMap.delete(databaseId);
 
       if (this.databaseCollectionIdMap.has(databaseId)) {
         this.databaseCollectionIdMap

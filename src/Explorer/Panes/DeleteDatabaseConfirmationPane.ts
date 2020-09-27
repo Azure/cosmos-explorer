@@ -97,11 +97,9 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             this.databaseDeleteFeedback()
           );
 
-          TelemetryProcessor.trace(
-            Action.DeleteDatabase,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          );
+          TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          });
 
           this.databaseDeleteFeedback("");
         }
@@ -132,7 +130,8 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
     super.resetData();
   }
 
-  public open() {
+  public async open() {
+    await this.container.loadSelectedDatabaseOffer();
     this.recordDeleteFeedback(this.shouldRecordFeedback());
     super.open();
   }

@@ -289,6 +289,12 @@ export interface CreateCollectionParams {
   uniqueKeyPolicy?: UniqueKeyPolicy;
 }
 
+export interface ReadDatabaseOfferParams {
+  databaseId: string;
+  databaseResourceId?: string;
+  offerId?: string;
+}
+
 export interface Notification {
   id: string;
   kind: string;

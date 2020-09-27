@@ -70,7 +70,8 @@ export enum Action {
   NotebooksGitHubManualRepoAdd,
   NotebooksGitHubManageRepo,
   NotebooksGitHubCommit,
-  NotebooksGitHubDisconnect
+  NotebooksGitHubDisconnect,
+  OpenTerminal
 }
 
 export const ActionModifiers = {

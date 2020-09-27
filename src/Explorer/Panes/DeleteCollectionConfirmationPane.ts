@@ -88,11 +88,9 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             this.containerDeleteFeedback()
           );
 
-          TelemetryProcessor.trace(
-            Action.DeleteCollection,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          );
+          TelemetryProcessor.trace(Action.DeleteCollection, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          });
 
           this.containerDeleteFeedback("");
         }

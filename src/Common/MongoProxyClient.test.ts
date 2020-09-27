@@ -1,9 +1,8 @@
 import { AuthType } from "../AuthType";
-import { configContext, resetConfigContext, updateConfigContext } from "../ConfigContext";
+import { resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
-import { ResourceProviderClient } from "../ResourceProvider/ResourceProviderClient";
 import { updateUserContext } from "../UserContext";
 import { deleteDocument, getEndpoint, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
 jest.mock("../ResourceProvider/ResourceProviderClient.ts");
@@ -237,19 +236,19 @@ describe("MongoProxyClient", () => {
     });
 
     it("returns a production endpoint", () => {
-      const endpoint = getEndpoint(databaseAccount as DatabaseAccount);
+      const endpoint = getEndpoint();
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/mongo/explorer");
     });
 
     it("returns a development endpoint", () => {
       updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
-      const endpoint = getEndpoint(databaseAccount as DatabaseAccount);
+      const endpoint = getEndpoint();
       expect(endpoint).toEqual("https://localhost:1234/api/mongo/explorer");
     });
 
     it("returns a guest endpoint", () => {
       window.authType = AuthType.EncryptedToken;
-      const endpoint = getEndpoint(databaseAccount as DatabaseAccount);
+      const endpoint = getEndpoint();
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/guest/mongo/explorer");
     });
   });

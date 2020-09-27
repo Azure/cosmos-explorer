@@ -69,6 +69,7 @@ export default class AddTableEntityPane extends TableEntityPane {
           );
           this.updateIsActionEnabled();
           super.open();
+          this.focusValueElement();
         });
     } else {
       this.displayedAttributes(
@@ -79,7 +80,11 @@ export default class AddTableEntityPane extends TableEntityPane {
       );
       this.updateIsActionEnabled();
       super.open();
+      this.focusValueElement();
     }
+  }
+
+  private focusValueElement() {
     const focusElement = document.getElementById("addTableEntityValue");
     focusElement && focusElement.focus();
   }

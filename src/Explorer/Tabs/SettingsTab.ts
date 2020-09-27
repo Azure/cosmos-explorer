@@ -1268,8 +1268,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   }
 
   public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
+    return super.onActivate().then(async () => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
+      const database: ViewModels.Database = this.collection.getDatabase();
+      await database.loadOffer();
     });
   }
 
