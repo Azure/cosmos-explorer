@@ -26,7 +26,7 @@ describe("SettingsUtils", () => {
   it("hasDatabaseSharedThroughput", () => {
     expect(hasDatabaseSharedThroughput(collection)).toEqual(undefined);
 
-    let newCollection = { ...collection };
+    const newCollection = { ...collection };
     newCollection.getDatabase = () => {
       return {
         container: undefined,

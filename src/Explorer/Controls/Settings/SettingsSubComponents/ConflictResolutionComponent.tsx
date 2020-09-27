@@ -62,20 +62,20 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       this.shouldCheckComponentIsDirty = true;
       return;
     }
-    this.props.onConflictResolutionDirtyChange(this.IsComponentDirty())
+    this.props.onConflictResolutionDirtyChange(this.IsComponentDirty());
     this.shouldCheckComponentIsDirty = false;
   };
 
-  public IsComponentDirty = () : boolean => {
+  public IsComponentDirty = (): boolean => {
     if (
       isDirty(this.props.conflictResolutionPolicyMode, this.props.conflictResolutionPolicyModeBaseline) ||
       isDirty(this.props.conflictResolutionPolicyPath, this.props.conflictResolutionPolicyPathBaseline) ||
       isDirty(this.props.conflictResolutionPolicyProcedure, this.props.conflictResolutionPolicyProcedureBaseline)
     ) {
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   private getConflictResolutionModeComponent = (): JSX.Element => (
     <ChoiceGroup

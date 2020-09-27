@@ -93,32 +93,32 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       this.shouldCheckComponentIsDirty = true;
       return;
     }
-    const isComponentDirtyResult = this.IsComponentDirty()
-    this.props.onScaleSaveableChange(isComponentDirtyResult.isSaveable)
-    this.props.onScaleDiscardableChange(isComponentDirtyResult.isDiscardable)
-    
+    const isComponentDirtyResult = this.IsComponentDirty();
+    this.props.onScaleSaveableChange(isComponentDirtyResult.isSaveable);
+    this.props.onScaleDiscardableChange(isComponentDirtyResult.isDiscardable);
+
     this.shouldCheckComponentIsDirty = false;
   };
 
-  public IsComponentDirty = () : IsComponentDirtyResult => {
-    let isSaveable = false
-    let isDiscardable = false
+  public IsComponentDirty = (): IsComponentDirtyResult => {
+    let isSaveable = false;
+    let isDiscardable = false;
 
     if (this.props.isEnabled) {
       if (this.hasProvisioningTypeChanged()) {
-        isSaveable = true
-        isDiscardable = true
+        isSaveable = true;
+        isDiscardable = true;
       } else if (this.props.isAutoPilotSelected) {
         if (isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)) {
-          isDiscardable = true
+          isDiscardable = true;
           if (AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)) {
-            isSaveable = true
+            isSaveable = true;
           }
-        } 
+        }
       } else {
         if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
-          isDiscardable = true
-          isSaveable = true
+          isDiscardable = true;
+          isSaveable = true;
           if (
             !this.props.throughput ||
             this.props.throughput < this.props.minimum ||
@@ -126,13 +126,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             (this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
               !this.props.canExceedMaximumValue)
           ) {
-            isSaveable = false
+            isSaveable = false;
           }
         }
       }
     }
-    return {isSaveable, isDiscardable}
-  }
+    return { isSaveable, isDiscardable };
+  };
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);

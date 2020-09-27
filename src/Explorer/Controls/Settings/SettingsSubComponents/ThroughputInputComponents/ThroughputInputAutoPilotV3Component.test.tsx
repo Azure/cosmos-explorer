@@ -70,8 +70,8 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     expect(wrapper.exists("#throughputInput")).toEqual(false);
     expect(wrapper.exists("#manualToAutoscaleDisclaimerElement")).toEqual(true);
 
-    wrapper.setProps({wasAutopilotOriginallySet: true})
-    wrapper.update()
+    wrapper.setProps({ wasAutopilotOriginallySet: true });
+    wrapper.update();
     expect(wrapper.exists("#autoscaleSpendElement")).toEqual(true);
     expect(wrapper.exists("#throughputSpendElement")).toEqual(false);
   });
@@ -84,15 +84,15 @@ describe("ThroughputInputAutoPilotV3Component", () => {
   });
 
   it("scale saveable and discardable are set", () => {
-    let throughputComponent = new ThroughputInputAutoPilotV3Component(baseProps)
-    let isComponentDirtyResult = throughputComponent.IsComponentDirty()
-    expect(isComponentDirtyResult.isSaveable).toEqual(false)
-    expect(isComponentDirtyResult.isDiscardable).toEqual(false)
+    let throughputComponent = new ThroughputInputAutoPilotV3Component(baseProps);
+    let isComponentDirtyResult = throughputComponent.IsComponentDirty();
+    expect(isComponentDirtyResult.isSaveable).toEqual(false);
+    expect(isComponentDirtyResult.isDiscardable).toEqual(false);
 
-    const newProps = {...baseProps, throughput: 1000000}
-    throughputComponent = new ThroughputInputAutoPilotV3Component(newProps)
-    isComponentDirtyResult = throughputComponent.IsComponentDirty()
-    expect(isComponentDirtyResult.isSaveable).toEqual(true)
-    expect(isComponentDirtyResult.isDiscardable).toEqual(true)
+    const newProps = { ...baseProps, throughput: 1000000 };
+    throughputComponent = new ThroughputInputAutoPilotV3Component(newProps);
+    isComponentDirtyResult = throughputComponent.IsComponentDirty();
+    expect(isComponentDirtyResult.isSaveable).toEqual(true);
+    expect(isComponentDirtyResult.isDiscardable).toEqual(true);
   });
 });

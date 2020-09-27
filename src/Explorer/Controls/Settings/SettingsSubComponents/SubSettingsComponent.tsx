@@ -1,6 +1,12 @@
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { GeospatialConfigType, TtlType, ChangeFeedPolicyState, isDirty, IsComponentDirtyResult } from "../SettingsUtils";
+import {
+  GeospatialConfigType,
+  TtlType,
+  ChangeFeedPolicyState,
+  isDirty,
+  IsComponentDirtyResult
+} from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
@@ -97,20 +103,20 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       this.shouldCheckComponentIsDirty = true;
       return;
     }
-    
+
     const isComponentDirtyResult = this.IsComponentDirty();
-    this.props.onSubSettingsSaveableChange(isComponentDirtyResult.isSaveable)
-    this.props.onSubSettingsDiscardableChange(isComponentDirtyResult.isDiscardable)
+    this.props.onSubSettingsSaveableChange(isComponentDirtyResult.isSaveable);
+    this.props.onSubSettingsDiscardableChange(isComponentDirtyResult.isDiscardable);
 
     this.shouldCheckComponentIsDirty = false;
   };
 
-  public IsComponentDirty = () : IsComponentDirtyResult => {
+  public IsComponentDirty = (): IsComponentDirtyResult => {
     if (
       (this.props.timeToLive === TtlType.On && !this.props.timeToLiveSeconds) ||
       (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds)
     ) {
-      return {isSaveable: false, isDiscardable: true}
+      return { isSaveable: false, isDiscardable: true };
     } else if (
       isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) ||
       (this.props.timeToLive === TtlType.On &&
@@ -121,11 +127,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       isDirty(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline) ||
       isDirty(this.props.changeFeedPolicy, this.props.changeFeedPolicyBaseline)
     ) {
-      return {isSaveable: true, isDiscardable: true}
+      return { isSaveable: true, isDiscardable: true };
     }
 
-    return {isSaveable: false, isDiscardable: false}
-  }
+    return { isSaveable: false, isDiscardable: false };
+  };
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off" },

@@ -49,11 +49,11 @@ describe("IndexingPolicyComponent", () => {
   });
 
   it("conflict resolution policy dirty is set", () => {
-    let indexingPolicyComponent = new IndexingPolicyComponent(baseProps)
-    expect(indexingPolicyComponent.IsComponentDirty()).toEqual(false)
+    let indexingPolicyComponent = new IndexingPolicyComponent(baseProps);
+    expect(indexingPolicyComponent.IsComponentDirty()).toEqual(false);
 
-    const newProps = {...baseProps, indexingPolicyContent: undefined as DataModels.IndexingPolicy}
-    indexingPolicyComponent = new IndexingPolicyComponent(newProps)
-    expect(indexingPolicyComponent.IsComponentDirty()).toEqual(true)
+    const newProps = { ...baseProps, indexingPolicyContent: undefined as DataModels.IndexingPolicy };
+    indexingPolicyComponent = new IndexingPolicyComponent(newProps);
+    expect(indexingPolicyComponent.IsComponentDirty()).toEqual(true);
   });
 });

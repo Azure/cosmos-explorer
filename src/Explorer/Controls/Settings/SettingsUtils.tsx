@@ -35,8 +35,8 @@ export enum SettingsV2TabTypes {
 }
 
 export interface IsComponentDirtyResult {
-  isSaveable: boolean,
-  isDiscardable: boolean
+  isSaveable: boolean;
+  isDiscardable: boolean;
 }
 
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {

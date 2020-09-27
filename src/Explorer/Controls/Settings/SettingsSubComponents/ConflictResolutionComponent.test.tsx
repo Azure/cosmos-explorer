@@ -44,11 +44,11 @@ describe("ConflictResolutionComponent", () => {
   });
 
   it("conflict resolution policy dirty is set", () => {
-    let conflictRsolutionComponent = new ConflictResolutionComponent(baseProps)
-    expect(conflictRsolutionComponent.IsComponentDirty()).toEqual(false)
+    let conflictRsolutionComponent = new ConflictResolutionComponent(baseProps);
+    expect(conflictRsolutionComponent.IsComponentDirty()).toEqual(false);
 
-    const newProps = {...baseProps, conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins}
-    conflictRsolutionComponent = new ConflictResolutionComponent(newProps)
-    expect(conflictRsolutionComponent.IsComponentDirty()).toEqual(true)
+    const newProps = { ...baseProps, conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins };
+    conflictRsolutionComponent = new ConflictResolutionComponent(newProps);
+    expect(conflictRsolutionComponent.IsComponentDirty()).toEqual(true);
   });
 });

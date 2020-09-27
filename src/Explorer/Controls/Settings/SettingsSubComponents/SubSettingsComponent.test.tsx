@@ -122,15 +122,15 @@ describe("SubSettingsComponent", () => {
   });
 
   it("sub settings saveable and discardable are set", () => {
-    let subSettingsComponent = new SubSettingsComponent(baseProps)
-    let isComponentDirtyResult = subSettingsComponent.IsComponentDirty()
-    expect(isComponentDirtyResult.isSaveable).toEqual(false)
-    expect(isComponentDirtyResult.isDiscardable).toEqual(false)
+    let subSettingsComponent = new SubSettingsComponent(baseProps);
+    let isComponentDirtyResult = subSettingsComponent.IsComponentDirty();
+    expect(isComponentDirtyResult.isSaveable).toEqual(false);
+    expect(isComponentDirtyResult.isDiscardable).toEqual(false);
 
-    const newProps = {...baseProps, timeToLive: TtlType.OnNoDefault}
-    subSettingsComponent = new SubSettingsComponent(newProps)
-    isComponentDirtyResult = subSettingsComponent.IsComponentDirty()
-    expect(isComponentDirtyResult.isSaveable).toEqual(true)
-    expect(isComponentDirtyResult.isDiscardable).toEqual(true)
+    const newProps = { ...baseProps, timeToLive: TtlType.OnNoDefault };
+    subSettingsComponent = new SubSettingsComponent(newProps);
+    isComponentDirtyResult = subSettingsComponent.IsComponentDirty();
+    expect(isComponentDirtyResult.isSaveable).toEqual(true);
+    expect(isComponentDirtyResult.isDiscardable).toEqual(true);
   });
 });

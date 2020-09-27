@@ -150,7 +150,7 @@ describe("ScaleComponent", () => {
     const throughputBeyondLimit = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million + 1000;
     const throughputBeyondMaxRus = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million - 1000;
 
-    let newProps = { ...baseProps, container: nonNationalCloudContainer, throughput: throughputBeyondLimit };
+    const newProps = { ...baseProps, container: nonNationalCloudContainer, throughput: throughputBeyondLimit };
     let scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.getThroughputWarningMessage().props.id).toEqual("updateThroughputBeyondLimitWarningMessage");
 

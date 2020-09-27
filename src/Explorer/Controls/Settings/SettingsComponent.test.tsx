@@ -54,15 +54,20 @@ describe("SettingsComponent", () => {
     wrapper.update();
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
     expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
-    wrapper.setState({ isScaleSaveable: false, isScaleDiscardable: false, isSubSettingsSaveable: true, isSubSettingsDiscardable: true });
+    wrapper.setState({
+      isScaleSaveable: false,
+      isScaleDiscardable: false,
+      isSubSettingsSaveable: true,
+      isSubSettingsDiscardable: true
+    });
     wrapper.update();
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
     expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
-    wrapper.setState({ isSubSettingsSaveable: false, isSubSettingsDiscardable: false, isIndexingPolicyDirty: true});
+    wrapper.setState({ isSubSettingsSaveable: false, isSubSettingsDiscardable: false, isIndexingPolicyDirty: true });
     wrapper.update();
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
     expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
-    wrapper.setState({ isIndexingPolicyDirty: false, isConflictResolutionDirty: true});
+    wrapper.setState({ isIndexingPolicyDirty: false, isConflictResolutionDirty: true });
     wrapper.update();
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
     expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
