@@ -265,6 +265,9 @@ exports[`test render renders with filters 1`] = `
             "buttonTextDisabled": "#a19f9d",
             "buttonTextHovered": "#201f1e",
             "buttonTextPressed": "#201f1e",
+            "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+            "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+            "cardStandoutBackground": "#ffffff",
             "defaultStateBackground": "#faf9f8",
             "disabledBackground": "#f3f2f1",
             "disabledBodySubtext": "#c8c6c4",
@@ -604,6 +607,9 @@ exports[`test render renders with filters 1`] = `
                             "buttonTextDisabled": "#a19f9d",
                             "buttonTextHovered": "#201f1e",
                             "buttonTextPressed": "#201f1e",
+                            "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                            "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                            "cardStandoutBackground": "#ffffff",
                             "defaultStateBackground": "#faf9f8",
                             "disabledBackground": "#f3f2f1",
                             "disabledBodySubtext": "#c8c6c4",
@@ -997,6 +1003,9 @@ exports[`test render renders with filters 1`] = `
                               "buttonTextDisabled": "#a19f9d",
                               "buttonTextHovered": "#201f1e",
                               "buttonTextPressed": "#201f1e",
+                              "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                              "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                              "cardStandoutBackground": "#ffffff",
                               "defaultStateBackground": "#faf9f8",
                               "disabledBackground": "#f3f2f1",
                               "disabledBodySubtext": "#c8c6c4",
@@ -1113,6 +1122,11 @@ exports[`test render renders with filters 1`] = `
                               },
                               "iconDisabled": Object {
                                 "color": "#a19f9d",
+                                "selectors": Object {
+                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                    "color": "GrayText",
+                                  },
+                                },
                               },
                               "label": Array [
                                 Object {
@@ -1134,6 +1148,11 @@ exports[`test render renders with filters 1`] = `
                               },
                               "menuIconDisabled": Object {
                                 "color": "#a19f9d",
+                                "selectors": Object {
+                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                    "color": "GrayText",
+                                  },
+                                },
                               },
                               "root": Array [
                                 Object {
@@ -1150,7 +1169,6 @@ exports[`test render renders with filters 1`] = `
                                       "right": 2,
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
-                                          "border": "none",
                                           "bottom": -2,
                                           "left": -2,
                                           "outlineColor": "ButtonText",
@@ -1230,7 +1248,6 @@ exports[`test render renders with filters 1`] = `
                                       "right": 2,
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
-                                          "border": "none",
                                           "bottom": -2,
                                           "left": -2,
                                           "outlineColor": "ButtonText",
@@ -1258,10 +1275,6 @@ exports[`test render renders with filters 1`] = `
                                     },
                                     ":hover": Object {
                                       "outline": 0,
-                                    },
-                                    "@media screen and (-ms-high-contrast: active)": Object {
-                                      "borderColor": "grayText",
-                                      "color": "grayText",
                                     },
                                   },
                                 },
@@ -1362,13 +1375,21 @@ exports[`test render renders with filters 1`] = `
                                       "selectors": Object {
                                         "@media screen and (-ms-high-contrast: active)": Object {
                                           "MsHighContrastAdjust": "none",
-                                          "backgroundColor": "WindowText",
-                                          "color": "Window",
+                                          "backgroundColor": "Window",
+                                          "border": "1px solid WindowText",
+                                          "borderRightWidth": "0",
+                                          "color": "WindowText",
                                         },
                                       },
                                     },
                                     ".ms-Button--primary + .ms-Button": Object {
                                       "border": "none",
+                                      "selectors": Object {
+                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                          "border": "1px solid WindowText",
+                                          "borderLeftWidth": "0",
+                                        },
+                                      },
                                     },
                                   },
                                 },
@@ -1407,6 +1428,9 @@ exports[`test render renders with filters 1`] = `
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
+                                  },
+                                  "@media screen and (forced-colors: active)": Object {
+                                    "forcedColorAdjust": "none",
                                   },
                                 },
                               },
@@ -1550,6 +1574,13 @@ exports[`test render renders with filters 1`] = `
                                         "@media screen and (-ms-high-contrast: active)": Object {
                                           "backgroundColor": "Window",
                                           "borderColor": "GrayText",
+                                          "color": "GrayText",
+                                        },
+                                      },
+                                    },
+                                    ".ms-Button-menuIcon": Object {
+                                      "selectors": Object {
+                                        "@media screen and (-ms-high-contrast: active)": Object {
                                           "color": "GrayText",
                                         },
                                       },
@@ -1775,6 +1806,9 @@ exports[`test render renders with filters 1`] = `
                                 "buttonTextDisabled": "#a19f9d",
                                 "buttonTextHovered": "#201f1e",
                                 "buttonTextPressed": "#201f1e",
+                                "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                                "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                                "cardStandoutBackground": "#ffffff",
                                 "defaultStateBackground": "#faf9f8",
                                 "disabledBackground": "#f3f2f1",
                                 "disabledBodySubtext": "#c8c6c4",
