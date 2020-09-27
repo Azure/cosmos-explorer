@@ -64,16 +64,20 @@ export class IndexingPolicyComponent extends React.Component<
       this.shouldCheckComponentIsDirty = true;
       return;
     }
+    this.props.onIndexingPolicyDirtyChange(this.IsComponentDirty())
+    this.shouldCheckComponentIsDirty = false;
+  };
+
+  public IsComponentDirty = () : boolean => {
     if (
       isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) &&
       this.state.indexingPolicyContentIsValid
     ) {
-      this.props.onIndexingPolicyDirtyChange(true);
-    } else {
-      this.props.onIndexingPolicyDirtyChange(false);
-    }
-    this.shouldCheckComponentIsDirty = false;
-  };
+      return true
+    } 
+
+    return false
+  }
 
   private createIndexingPolicyEditor = (): void => {
     const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);

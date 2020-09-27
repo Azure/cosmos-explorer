@@ -15,60 +15,50 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     }
   >
-    <Stack
-      horizontal={true}
-      tokens={
-        Object {
-          "childrenGap": 15,
-        }
-      }
-    >
-      <StyledChoiceGroupBase
-        id="timeToLive"
-        label="Time to Live"
-        onChange={[Function]}
-        options={
-          Array [
-            Object {
-              "key": "off",
-              "text": "Off",
-            },
-            Object {
-              "key": "on-nodefault",
-              "text": "On (no default)",
-            },
-            Object {
-              "key": "on",
-              "text": "On",
-            },
-          ]
-        }
-        selectedKey="on"
-        styles={
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
           Object {
-            "flexContainer": Array [
-              Object {
-                "selectors": Object {
-                  ".ms-ChoiceField-field.is-checked::after": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-field.is-checked::before": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-wrapper label": Object {
-                    "fontFamily": undefined,
-                    "fontSize": 14,
-                    "padding": "2px 5px",
-                    "whiteSpace": "nowrap",
-                  },
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
                 },
               },
-            ],
-          }
+            },
+          ],
         }
-        tabIndex={0}
-      />
-    </Stack>
+      }
+    />
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -134,7 +124,6 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <Stack>
     <StyledLabelBase
@@ -143,9 +132,17 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       <ToolTipLabelComponent
         label="Change feed log retention policy"
         toolTipElement={
-          <span>
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
             Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
-          </span>
+          </Text>
         }
       />
     </StyledLabelBase>
@@ -188,7 +185,6 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
   </Stack>
   <Stack
@@ -242,60 +238,50 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <Stack
-      horizontal={true}
-      tokens={
-        Object {
-          "childrenGap": 15,
-        }
-      }
-    >
-      <StyledChoiceGroupBase
-        id="timeToLive"
-        label="Time to Live"
-        onChange={[Function]}
-        options={
-          Array [
-            Object {
-              "key": "off",
-              "text": "Off",
-            },
-            Object {
-              "key": "on-nodefault",
-              "text": "On (no default)",
-            },
-            Object {
-              "key": "on",
-              "text": "On",
-            },
-          ]
-        }
-        selectedKey="on"
-        styles={
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
           Object {
-            "flexContainer": Array [
-              Object {
-                "selectors": Object {
-                  ".ms-ChoiceField-field.is-checked::after": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-field.is-checked::before": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-wrapper label": Object {
-                    "fontFamily": undefined,
-                    "fontSize": 14,
-                    "padding": "2px 5px",
-                    "whiteSpace": "nowrap",
-                  },
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
                 },
               },
-            ],
-          }
+            },
+          ],
         }
-        tabIndex={0}
-      />
-    </Stack>
+      }
+    />
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -361,7 +347,6 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <Stack
     tokens={
@@ -414,7 +399,6 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
   </Stack>
   <Stack>
@@ -424,9 +408,17 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       <ToolTipLabelComponent
         label="Change feed log retention policy"
         toolTipElement={
-          <span>
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
             Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
-          </span>
+          </Text>
         }
       />
     </StyledLabelBase>
@@ -469,7 +461,6 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
   </Stack>
   <Stack
@@ -523,60 +514,50 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <Stack
-      horizontal={true}
-      tokens={
-        Object {
-          "childrenGap": 15,
-        }
-      }
-    >
-      <StyledChoiceGroupBase
-        id="timeToLive"
-        label="Time to Live"
-        onChange={[Function]}
-        options={
-          Array [
-            Object {
-              "key": "off",
-              "text": "Off",
-            },
-            Object {
-              "key": "on-nodefault",
-              "text": "On (no default)",
-            },
-            Object {
-              "key": "on",
-              "text": "On",
-            },
-          ]
-        }
-        selectedKey="on"
-        styles={
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
           Object {
-            "flexContainer": Array [
-              Object {
-                "selectors": Object {
-                  ".ms-ChoiceField-field.is-checked::after": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-field.is-checked::before": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-wrapper label": Object {
-                    "fontFamily": undefined,
-                    "fontSize": 14,
-                    "padding": "2px 5px",
-                    "whiteSpace": "nowrap",
-                  },
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
                 },
               },
-            ],
-          }
+            },
+          ],
         }
-        tabIndex={0}
-      />
-    </Stack>
+      }
+    />
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -642,7 +623,6 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <Stack
     tokens={
@@ -695,7 +675,6 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
     <StyledTextFieldBase
       id="analyticalStorageTimeToLiveSeconds"
@@ -774,60 +753,50 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <Stack
-      horizontal={true}
-      tokens={
-        Object {
-          "childrenGap": 15,
-        }
-      }
-    >
-      <StyledChoiceGroupBase
-        id="timeToLive"
-        label="Time to Live"
-        onChange={[Function]}
-        options={
-          Array [
-            Object {
-              "key": "off",
-              "text": "Off",
-            },
-            Object {
-              "key": "on-nodefault",
-              "text": "On (no default)",
-            },
-            Object {
-              "key": "on",
-              "text": "On",
-            },
-          ]
-        }
-        selectedKey="on"
-        styles={
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
           Object {
-            "flexContainer": Array [
-              Object {
-                "selectors": Object {
-                  ".ms-ChoiceField-field.is-checked::after": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-field.is-checked::before": Object {
-                    "borderColor": "",
-                  },
-                  ".ms-ChoiceField-wrapper label": Object {
-                    "fontFamily": undefined,
-                    "fontSize": 14,
-                    "padding": "2px 5px",
-                    "whiteSpace": "nowrap",
-                  },
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="on"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
                 },
               },
-            ],
-          }
+            },
+          ],
         }
-        tabIndex={0}
-      />
-    </Stack>
+      }
+    />
     <StyledTextFieldBase
       id="timeToLiveSeconds"
       max={2147483647}
@@ -893,7 +862,6 @@ exports[`SubSettingsComponent renders 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <Stack
     tokens={
@@ -946,7 +914,6 @@ exports[`SubSettingsComponent renders 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
     <StyledTextFieldBase
       id="analyticalStorageTimeToLiveSeconds"
@@ -981,9 +948,17 @@ exports[`SubSettingsComponent renders 1`] = `
       <ToolTipLabelComponent
         label="Change feed log retention policy"
         toolTipElement={
-          <span>
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
             Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
-          </span>
+          </Text>
         }
       />
     </StyledLabelBase>
@@ -1026,7 +1001,6 @@ exports[`SubSettingsComponent renders 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
   </Stack>
   <Stack
@@ -1080,60 +1054,50 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <Stack
-      horizontal={true}
-      tokens={
-        Object {
-          "childrenGap": 15,
-        }
-      }
-    >
-      <StyledChoiceGroupBase
-        id="timeToLive"
-        label="Time to Live"
-        onChange={[Function]}
-        options={
-          Array [
-            Object {
-              "key": "off",
-              "text": "Off",
-            },
-            Object {
-              "key": "on-nodefault",
-              "text": "On (no default)",
-            },
-            Object {
-              "key": "on",
-              "text": "On",
-            },
-          ]
-        }
-        selectedKey="off"
-        styles={
+    <StyledChoiceGroupBase
+      id="timeToLive"
+      label="Time to Live"
+      onChange={[Function]}
+      options={
+        Array [
           Object {
-            "flexContainer": Array [
-              Object {
-                "selectors": Object {
-                  ".ms-ChoiceField-field.is-checked::after": Object {
-                    "borderColor": undefined,
-                  },
-                  ".ms-ChoiceField-field.is-checked::before": Object {
-                    "borderColor": undefined,
-                  },
-                  ".ms-ChoiceField-wrapper label": Object {
-                    "fontFamily": undefined,
-                    "fontSize": 14,
-                    "padding": "2px 5px",
-                    "whiteSpace": "nowrap",
-                  },
+            "key": "off",
+            "text": "Off",
+          },
+          Object {
+            "key": "on-nodefault",
+            "text": "On (no default)",
+          },
+          Object {
+            "key": "on",
+            "text": "On",
+          },
+        ]
+      }
+      selectedKey="off"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": undefined,
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": undefined,
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
                 },
               },
-            ],
-          }
+            },
+          ],
         }
-        tabIndex={0}
-      />
-    </Stack>
+      }
+    />
   </Stack>
   <StyledChoiceGroupBase
     id="geoSpatialConfig"
@@ -1174,7 +1138,6 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <Stack
     tokens={
@@ -1227,7 +1190,6 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
     <StyledTextFieldBase
       id="analyticalStorageTimeToLiveSeconds"
@@ -1262,9 +1224,17 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       <ToolTipLabelComponent
         label="Change feed log retention policy"
         toolTipElement={
-          <span>
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
             Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
-          </span>
+          </Text>
         }
       />
     </StyledLabelBase>
@@ -1307,7 +1277,6 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
           ],
         }
       }
-      tabIndex={0}
     />
   </Stack>
   <Stack

@@ -23,7 +23,7 @@ describe("ConflictResolutionComponent", () => {
     onConflictResolutionPolicyProcedureChange: () => {
       return;
     },
-    onConflictResolutionDirtyChange: (isConflictResolutionDirty: boolean) => {
+    onConflictResolutionDirtyChange: () => {
       return;
     }
   };
@@ -41,5 +41,14 @@ describe("ConflictResolutionComponent", () => {
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#conflictResolutionCustomTextField")).toEqual(false);
     expect(wrapper.exists("#conflictResolutionLwwTextField")).toEqual(true);
+  });
+
+  it("conflict resolution policy dirty is set", () => {
+    let conflictRsolutionComponent = new ConflictResolutionComponent(baseProps)
+    expect(conflictRsolutionComponent.IsComponentDirty()).toEqual(false)
+
+    const newProps = {...baseProps, conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins}
+    conflictRsolutionComponent = new ConflictResolutionComponent(newProps)
+    expect(conflictRsolutionComponent.IsComponentDirty()).toEqual(true)
   });
 });

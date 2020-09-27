@@ -1,6 +1,5 @@
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as DataModels from "../../../Contracts/DataModels";
-import { PlatformType } from "../../../PlatformType";
 import * as Constants from "../../../Common/Constants";
 import * as SharedConstants from "../../../Shared/Constants";
 import * as PricingUtils from "../../../Utils/PricingUtils";
@@ -33,6 +32,11 @@ export enum SettingsV2TabTypes {
   ConflictResolutionTab,
   SubSettingsTab,
   IndexingPolicyTab
+}
+
+export interface IsComponentDirtyResult {
+  isSaveable: boolean,
+  isDiscardable: boolean
 }
 
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {

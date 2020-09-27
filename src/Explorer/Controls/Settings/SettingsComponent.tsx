@@ -62,8 +62,6 @@ export interface SettingsComponentState {
   throughputBaseline: number;
   autoPilotThroughput: number;
   autoPilotThroughputBaseline: number;
-  selectedAutoPilotTier: DataModels.AutopilotTier;
-  selectedAutoPilotTierBaseline: DataModels.AutopilotTier;
   isAutoPilotSelected: boolean;
   wasAutopilotOriginallySet: boolean;
   isScaleSaveable: boolean;
@@ -113,7 +111,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   public isAnalyticalStorageEnabled: boolean;
   private collection: ViewModels.Collection;
   private container: Explorer;
-  private hasAutoPilotV2FeatureFlag: boolean;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
   private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
@@ -124,12 +121,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection?.container;
-    //console.log("OFFER:" + JSON.stringify(this.collection.offer()))
     this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
-    this.hasAutoPilotV2FeatureFlag = this.container.hasAutoPilotV2FeatureFlag();
     this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
       Constants.Features.enableChangeFeedPolicy
     );
@@ -146,8 +141,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       autoPilotThroughputBaseline: undefined,
       isAutoPilotSelected: false,
       wasAutopilotOriginallySet: false,
-      selectedAutoPilotTier: undefined,
-      selectedAutoPilotTierBaseline: undefined,
       isScaleSaveable: false,
       isScaleDiscardable: false,
 
@@ -181,7 +174,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isConflictResolutionDirty: false,
 
       initialNotification: undefined,
-      userCanChangeProvisioningTypes: undefined,
+      userCanChangeProvisioningTypes: true,
       selectedTab: SettingsV2TabTypes.ScaleTab
     };
 
@@ -248,54 +241,20 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const offer = this.collection?.offer && this.collection.offer();
     const offerAutopilotSettings = offer?.content?.offerAutopilotSettings;
 
-    this.setState({
-      userCanChangeProvisioningTypes: !!offerAutopilotSettings || !this.hasAutoPilotV2FeatureFlag
-    });
-
-    if (!this.hasAutoPilotV2FeatureFlag) {
-      if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-        if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-          this.setState({
-            isAutoPilotSelected: true,
-            wasAutopilotOriginallySet: true,
-            autoPilotThroughput: offerAutopilotSettings.maxThroughput,
-            autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
-          });
-        }
-      }
-    } else {
-      // tier can be 0
-      if (offerAutopilotSettings?.tier !== undefined) {
-        if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
-          const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
-          this.autoPilotTiersList = availableAutoPilotTiers;
-          this.setState({
-            isAutoPilotSelected: true,
-            wasAutopilotOriginallySet: true,
-            selectedAutoPilotTier: offerAutopilotSettings.tier,
-            selectedAutoPilotTierBaseline: offerAutopilotSettings.tier
-          });
-        }
+    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
+      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
+        this.setState({
+          isAutoPilotSelected: true,
+          wasAutopilotOriginallySet: true,
+          autoPilotThroughput: offerAutopilotSettings.maxThroughput,
+          autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
+        });
       }
     }
   };
 
-  public hasProvisioningTypeChanged = (): boolean => {
-    if (!this.state.userCanChangeProvisioningTypes) {
-      return false;
-    }
-    if (this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected) {
-      return true;
-    }
-    return false;
-  };
-
-  public overrideWithProvisionedThroughputSettings = (): boolean => {
-    if (this.hasAutoPilotV2FeatureFlag) {
-      return false;
-    }
-    return this.hasProvisioningTypeChanged() && !this.state.wasAutopilotOriginallySet;
-  };
+  public hasProvisioningTypeChanged = (): boolean =>
+    this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected;
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
     this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
@@ -402,18 +361,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         const headerOptions: RequestOptions = { initialHeaders: {} };
 
         if (this.state.isAutoPilotSelected) {
-          if (!this.hasAutoPilotV2FeatureFlag) {
-            newOffer.content.offerAutopilotSettings = {
-              maxThroughput: this.state.autoPilotThroughput
-            };
-          } else {
-            newOffer.content.offerAutopilotSettings = {
-              tier: this.state.selectedAutoPilotTier
-            };
-          }
+          newOffer.content.offerAutopilotSettings = {
+            maxThroughput: this.state.autoPilotThroughput
+          };
 
           // user has changed from provisioned --> autoscale
-          if (!this.hasAutoPilotV2FeatureFlag && this.hasProvisioningTypeChanged()) {
+          if (this.hasProvisioningTypeChanged()) {
             headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
             delete newOffer.content.offerAutopilotSettings;
           } else {
@@ -421,12 +374,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           }
         } else {
           this.setState({
-            isAutoPilotSelected: false,
-            userCanChangeProvisioningTypes: !this.hasAutoPilotV2FeatureFlag
+            isAutoPilotSelected: false
           });
 
           // user has changed from autoscale --> provisioned
-          if (!this.hasAutoPilotV2FeatureFlag && this.hasProvisioningTypeChanged()) {
+          if (this.hasProvisioningTypeChanged()) {
             headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
           } else {
             delete newOffer.content.offerAutopilotSettings;
@@ -478,17 +430,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           const updatedOffer: DataModels.Offer = await updateOffer(this.collection.offer(), newOffer, headerOptions);
           this.collection.offer(updatedOffer);
           if (this.state.isAutoPilotSelected) {
-            if (!this.hasAutoPilotV2FeatureFlag) {
-              this.setState({
-                autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
-                autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
-              });
-            } else {
-              this.setState({
-                selectedAutoPilotTier: updatedOffer.content.offerAutopilotSettings.tier,
-                selectedAutoPilotTierBaseline: updatedOffer.content.offerAutopilotSettings.tier
-              });
-            }
+            this.setState({
+              autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
+              autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
+            });
           } else {
             this.setState({
               throughput: updatedOffer.content.offerThroughput,
@@ -543,7 +488,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       analyticalStorageTtlSeconds: this.state.analyticalStorageTtlSecondsBaseline,
       changeFeedPolicy: this.state.changeFeedPolicyBaseline,
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
-      selectedAutoPilotTier: this.state.selectedAutoPilotTierBaseline,
       shouldDiscardIndexingPolicy: true
     });
 
@@ -827,9 +771,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onAutoPilotSelected = (isAutoPilotSelected: boolean): void =>
     this.setState({ isAutoPilotSelected: isAutoPilotSelected });
 
-  private onAutoPilotTierChange = (selectedAutoPilotTier: DataModels.AutopilotTier): void =>
-    this.setState({ selectedAutoPilotTier: selectedAutoPilotTier });
-
   private onPivotChange = (item: PivotItem): void => {
     const selectedTab = SettingsV2TabTypes[item.props.itemKey as keyof typeof SettingsV2TabTypes];
     this.setState({ selectedTab: selectedTab });
@@ -839,8 +780,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       container: this.container,
-      hasProvisioningTypeChanged: this.hasProvisioningTypeChanged,
-      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag,
       isFixedContainer: this.isFixedContainer,
       autoPilotTiersList: this.autoPilotTiersList,
       onThroughputChange: this.onThroughputChange,
@@ -848,14 +787,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughputBaseline: this.state.throughputBaseline,
       autoPilotThroughput: this.state.autoPilotThroughput,
       autoPilotThroughputBaseline: this.state.autoPilotThroughputBaseline,
-      selectedAutoPilotTier: this.state.selectedAutoPilotTier,
-      selectedAutoPilotTierBaseline: this.state.selectedAutoPilotTierBaseline,
       isAutoPilotSelected: this.state.isAutoPilotSelected,
       wasAutopilotOriginallySet: this.state.wasAutopilotOriginallySet,
       userCanChangeProvisioningTypes: this.state.userCanChangeProvisioningTypes,
-      overrideWithProvisionedThroughputSettings: this.overrideWithProvisionedThroughputSettings,
       onAutoPilotSelected: this.onAutoPilotSelected,
-      onAutoPilotTierChange: this.onAutoPilotTierChange,
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,

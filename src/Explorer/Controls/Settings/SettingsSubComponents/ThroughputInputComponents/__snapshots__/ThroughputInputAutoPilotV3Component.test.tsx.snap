@@ -8,6 +8,97 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     }
   }
 >
+  <Stack>
+    <StyledLabelBase
+      id="settingsV2RadioButtonLabelId"
+    >
+      <ToolTipLabelComponent
+        label="label"
+        toolTipElement={
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
+            infoBubbleText
+          </Text>
+        }
+      />
+    </StyledLabelBase>
+    <StyledMessageBarBase
+      messageBarType={5}
+      styles={
+        Object {
+          "root": Object {
+            "marginTop": "5px",
+          },
+        }
+      }
+    >
+      <Text
+        id="manualToAutoscaleDisclaimerElement"
+        styles={
+          Object {
+            "root": Object {
+              "fontSize": 12,
+            },
+          }
+        }
+      >
+        The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.
+         
+        <a
+          href="https://aka.ms/cosmos-autoscale-migration"
+        >
+          Learn more
+        </a>
+      </Text>
+    </StyledMessageBarBase>
+    <StyledChoiceGroupBase
+      ariaLabelledBy="settingsV2RadioButtonLabelId"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "true",
+            "text": "Autoscale",
+          },
+          Object {
+            "key": "false",
+            "text": "Manual",
+          },
+        ]
+      }
+      required={true}
+      selectedKey="true"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+    />
+  </Stack>
   <Text>
     Provision maximum RU/s required by this resource. Estimate your required RU/s with
     <StyledLinkBase
@@ -18,7 +109,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     </StyledLinkBase>
   </Text>
   <StyledTextFieldBase
-    disabled={false}
+    disabled={true}
     id="autopilotInput"
     key="auto pilot throughput input"
     label="Max RU/s"
@@ -42,7 +133,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       }
     }
     type="number"
-    value="4000"
+    value=""
   />
 </Stack>
 `;
@@ -55,6 +146,68 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
     }
   }
 >
+  <Stack>
+    <StyledLabelBase
+      id="settingsV2RadioButtonLabelId"
+    >
+      <ToolTipLabelComponent
+        label="label"
+        toolTipElement={
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
+            infoBubbleText
+          </Text>
+        }
+      />
+    </StyledLabelBase>
+    <StyledChoiceGroupBase
+      ariaLabelledBy="settingsV2RadioButtonLabelId"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "true",
+            "text": "Autoscale",
+          },
+          Object {
+            "key": "false",
+            "text": "Manual",
+          },
+        ]
+      }
+      required={true}
+      selectedKey="false"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+    />
+  </Stack>
   <Stack
     tokens={
       Object {
@@ -63,7 +216,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
     }
   >
     <StyledTextFieldBase
-      disabled={true}
+      disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
       min={10000}
@@ -86,9 +239,40 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       }
       type="number"
-      value="4000"
+      value="100"
     />
-    <Text />
+    <Text
+      id="throughputSpendElement"
+    >
+      Estimated cost (
+      USD
+      ):
+       
+      <b>
+        $
+        0.0080
+         hourly 
+         / 
+        $
+        0.19
+         daily 
+         / 
+        $
+        5.84
+         monthly
+         
+      </b>
+      (
+      regions: 
+       
+      1
+      , 
+      100
+      RU/s, 
+      $
+      0.00008
+      /RU)
+    </Text>
     <StyledCheckboxBase
       checked={false}
       id="spendAckCheckBox"
@@ -106,9 +290,6 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       }
     />
-    <p>
-      Choose unlimited storage capacity for more than 10,000 RU/s.
-    </p>
   </Stack>
 </Stack>
 `;
@@ -121,6 +302,68 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
     }
   }
 >
+  <Stack>
+    <StyledLabelBase
+      id="settingsV2RadioButtonLabelId"
+    >
+      <ToolTipLabelComponent
+        label="label"
+        toolTipElement={
+          <Text
+            styles={
+              Object {
+                "root": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          >
+            infoBubbleText
+          </Text>
+        }
+      />
+    </StyledLabelBase>
+    <StyledChoiceGroupBase
+      ariaLabelledBy="settingsV2RadioButtonLabelId"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "true",
+            "text": "Autoscale",
+          },
+          Object {
+            "key": "false",
+            "text": "Manual",
+          },
+        ]
+      }
+      required={true}
+      selectedKey="false"
+      styles={
+        Object {
+          "flexContainer": Array [
+            Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field.is-checked::after": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-field.is-checked::before": Object {
+                  "borderColor": "",
+                },
+                ".ms-ChoiceField-wrapper label": Object {
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "padding": "2px 5px",
+                  "whiteSpace": "nowrap",
+                },
+              },
+            },
+          ],
+        }
+      }
+    />
+  </Stack>
   <Stack
     tokens={
       Object {
@@ -129,7 +372,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
     }
   >
     <StyledTextFieldBase
-      disabled={true}
+      disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
       min={10000}
@@ -152,12 +395,40 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         }
       }
       type="number"
-      value="4000"
+      value="100"
     />
-    <Text />
-    <p>
-      Choose unlimited storage capacity for more than 10,000 RU/s.
-    </p>
+    <Text
+      id="throughputSpendElement"
+    >
+      Estimated cost (
+      USD
+      ):
+       
+      <b>
+        $
+        0.0080
+         hourly 
+         / 
+        $
+        0.19
+         daily 
+         / 
+        $
+        5.84
+         monthly
+         
+      </b>
+      (
+      regions: 
+       
+      1
+      , 
+      100
+      RU/s, 
+      $
+      0.00008
+      /RU)
+    </Text>
   </Stack>
 </Stack>
 `;

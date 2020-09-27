@@ -8,8 +8,10 @@ import {
   checkBoxAndInputStackProps,
   getChoiceGroupStyles,
   messageBarStyles,
-  messageContainerStackTokens,
-  messageStackStyle
+  getEstimatedSpendElement,
+  getEstimatedAutoscaleSpendElement,
+  getAutoPilotV3SpendElement,
+  manualToAutoscaleDisclaimerElement
 } from "../../SettingsRenderUtils";
 import {
   Text,
@@ -24,10 +26,13 @@ import {
   MessageBarType
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
-import { isDirty } from "../../SettingsUtils";
+import { IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
 import * as SharedConstants from "../../../../../Shared/Constants";
+import * as DataModels from "../../../../../Contracts/DataModels";
 
 export interface ThroughputInputAutoPilotV3Props {
+  databaseAccount: DataModels.DatabaseAccount;
+  serverId: string;
   throughput: number;
   throughputBaseline: number;
   onThroughputChange: (newThroughput: number) => void;
@@ -35,7 +40,6 @@ export interface ThroughputInputAutoPilotV3Props {
   maximum: number;
   step?: number;
   isEnabled?: boolean;
-  requestUnitsUsageCost: JSX.Element;
   spendAckChecked?: boolean;
   spendAckId?: string;
   spendAckText?: string;
@@ -48,17 +52,14 @@ export interface ThroughputInputAutoPilotV3Props {
   canExceedMaximumValue?: boolean;
   onAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   isAutoPilotSelected: boolean;
-  autoPilotUsageCost: JSX.Element;
+  wasAutopilotOriginallySet: boolean;
   showAutoPilot?: boolean;
-  overrideWithAutoPilotSettings: boolean;
-  overrideWithProvisionedThroughputSettings: boolean;
   maxAutoPilotThroughput: number;
   maxAutoPilotThroughputBaseline: number;
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
-  hasProvisioningTypeChanged: () => boolean;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
-  getWarningMessage: () => JSX.Element;
+  getThroughputWarningMessage: () => JSX.Element;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -79,11 +80,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     { key: "false", text: "Manual" }
   ];
 
-  componentDidMount() : void {
+  componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() : void {
+  componentDidUpdate(): void {
     this.onComponentUpdate();
   }
 
@@ -92,51 +93,46 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       this.shouldCheckComponentIsDirty = true;
       return;
     }
+    const isComponentDirtyResult = this.IsComponentDirty()
+    this.props.onScaleSaveableChange(isComponentDirtyResult.isSaveable)
+    this.props.onScaleDiscardableChange(isComponentDirtyResult.isDiscardable)
+    
+    this.shouldCheckComponentIsDirty = false;
+  };
+
+  public IsComponentDirty = () : IsComponentDirtyResult => {
+    let isSaveable = false
+    let isDiscardable = false
 
     if (this.props.isEnabled) {
-      if (this.props.hasProvisioningTypeChanged()) {
-        this.props.onScaleSaveableChange(true);
-        this.props.onScaleDiscardableChange(true);
+      if (this.hasProvisioningTypeChanged()) {
+        isSaveable = true
+        isDiscardable = true
       } else if (this.props.isAutoPilotSelected) {
         if (isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)) {
-          this.props.onScaleDiscardableChange(true);
-        } else {
-          this.props.onScaleDiscardableChange(false);
-        }
-
-        if (
-          isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline) &&
-          AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)
-        ) {
-          this.props.onScaleSaveableChange(true);
-        } else {
-          this.props.onScaleSaveableChange(false);
-        }
+          isDiscardable = true
+          if (AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)) {
+            isSaveable = true
+          }
+        } 
       } else {
         if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
-          this.props.onScaleDiscardableChange(true);
-        } else {
-          this.props.onScaleDiscardableChange(false);
-        }
-
-        if (
-          !this.props.throughput ||
-          this.props.throughput < this.props.minimum ||
-          (this.props.throughput > this.props.maximum && (this.props.isEmulator || this.props.isFixed)) ||
-          (this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-            !this.props.canExceedMaximumValue)
-        ) {
-          this.props.onScaleSaveableChange(false);
-        } else if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
-          this.props.onScaleSaveableChange(true);
-        } else {
-          this.props.onScaleSaveableChange(false);
+          isDiscardable = true
+          isSaveable = true
+          if (
+            !this.props.throughput ||
+            this.props.throughput < this.props.minimum ||
+            (this.props.throughput > this.props.maximum && (this.props.isEmulator || this.props.isFixed)) ||
+            (this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+              !this.props.canExceedMaximumValue)
+          ) {
+            isSaveable = false
+          }
         }
       }
     }
-
-    this.shouldCheckComponentIsDirty = false;
-  };
+    return {isSaveable, isDiscardable}
+  }
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
@@ -146,6 +142,60 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
   }
+
+  public hasProvisioningTypeChanged = (): boolean =>
+    this.props.wasAutopilotOriginallySet !== this.props.isAutoPilotSelected;
+
+  public overrideWithAutoPilotSettings = (): boolean =>
+    this.hasProvisioningTypeChanged() && this.props.wasAutopilotOriginallySet;
+
+  public overrideWithProvisionedThroughputSettings = (): boolean =>
+    this.hasProvisioningTypeChanged() && !this.props.wasAutopilotOriginallySet;
+
+  private getRequestUnitsUsageCost = (): JSX.Element => {
+    const account = this.props.databaseAccount;
+    if (!account) {
+      return <></>;
+    }
+
+    const serverId: string = this.props.serverId;
+    const offerThroughput: number = this.props.throughput;
+
+    const regions = account?.properties?.readLocations?.length || 1;
+    const multimaster = account?.properties?.enableMultipleWriteLocations || false;
+
+    let estimatedSpend: JSX.Element;
+
+    if (!this.props.isAutoPilotSelected) {
+      estimatedSpend = getEstimatedSpendElement(
+        // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
+        this.overrideWithAutoPilotSettings() ? this.props.maxAutoPilotThroughput : offerThroughput,
+        serverId,
+        regions,
+        multimaster,
+        false
+      );
+    } else {
+      estimatedSpend = getEstimatedAutoscaleSpendElement(
+        this.props.maxAutoPilotThroughput,
+        serverId,
+        regions,
+        multimaster
+      );
+    }
+    return estimatedSpend;
+  };
+
+  private getAutoPilotUsageCost = (): JSX.Element => {
+    if (!this.props.maxAutoPilotThroughput) {
+      return <></>;
+    }
+    return getAutoPilotV3SpendElement(
+      this.props.maxAutoPilotThroughput,
+      false /* isDatabaseThroughput */,
+      !this.props.isEmulator ? this.getRequestUnitsUsageCost() : <></>
+    );
+  };
 
   private onAutoPilotThroughputChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -163,7 +213,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     let newThroughput = parseInt(newValue);
     newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
 
-    if (this.props.overrideWithAutoPilotSettings) {
+    if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
       this.props.onThroughputChange(newThroughput);
@@ -178,31 +228,26 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
     return (
-      <Stack horizontal tokens={messageContainerStackTokens}>
-        <div>
-          <Label id={labelId}>
-            <ToolTipLabelComponent
-              label={this.props.label}
-              toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
-            />
-          </Label>
-          <ChoiceGroup
-            tabIndex={0}
-            selectedKey={this.props.isAutoPilotSelected.toString()}
-            options={this.options}
-            onChange={this.onChoiceGroupChange}
-            required={this.props.showAsMandatory}
-            ariaLabelledBy={labelId}
-            styles={this.choiceGroupFixedStyle}
+      <Stack>
+        <Label id={labelId}>
+          <ToolTipLabelComponent
+            label={this.props.label}
+            toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
           />
-        </div>
-        {this.props.getWarningMessage() && (
-          <Stack styles={messageStackStyle}>
-            <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
-              {this.props.getWarningMessage()}
-            </MessageBar>
-          </Stack>
+        </Label>
+        {this.overrideWithProvisionedThroughputSettings() && (
+          <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+            {manualToAutoscaleDisclaimerElement}
+          </MessageBar>
         )}
+        <ChoiceGroup
+          selectedKey={this.props.isAutoPilotSelected.toString()}
+          options={this.options}
+          onChange={this.onChoiceGroupChange}
+          required={this.props.showAsMandatory}
+          ariaLabelledBy={labelId}
+          styles={this.choiceGroupFixedStyle}
+        />
       </Stack>
     );
   };
@@ -225,15 +270,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         id="autopilotInput"
         key="auto pilot throughput input"
         styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
-        disabled={this.props.overrideWithProvisionedThroughputSettings}
+        disabled={this.overrideWithProvisionedThroughputSettings()}
         step={this.step}
         min={AutoPilotUtils.minAutoPilotThroughput}
-        value={
-          this.props.overrideWithProvisionedThroughputSettings ? "" : this.props.maxAutoPilotThroughput?.toString()
-        }
+        value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
         onChange={this.onAutoPilotThroughputChange}
       />
-      {!this.props.overrideWithProvisionedThroughputSettings && this.props.autoPilotUsageCost}
+      {!this.overrideWithProvisionedThroughputSettings() && this.getAutoPilotUsageCost()}
       {this.props.spendAckVisible && (
         <Checkbox
           id="spendAckCheckBox"
@@ -254,19 +297,25 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         id="throughputInput"
         key="provisioned throughput input"
         styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
-        disabled={this.props.overrideWithAutoPilotSettings}
+        disabled={this.overrideWithAutoPilotSettings()}
         step={this.step}
         min={this.props.minimum}
         max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
         value={
-          this.props.overrideWithAutoPilotSettings
+          this.overrideWithAutoPilotSettings()
             ? this.props.maxAutoPilotThroughputBaseline?.toString()
             : this.props.throughput?.toString()
         }
         onChange={this.onThroughputChange}
       />
 
-      {!this.props.isEmulator && <Text>{this.props.requestUnitsUsageCost}</Text>}
+      {this.props.getThroughputWarningMessage() && (
+        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+          {this.props.getThroughputWarningMessage()}
+        </MessageBar>
+      )}
+
+      {!this.props.isEmulator && this.getRequestUnitsUsageCost()}
 
       {this.props.spendAckVisible && (
         <Checkbox

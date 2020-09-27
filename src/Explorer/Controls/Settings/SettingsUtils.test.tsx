@@ -1,6 +1,16 @@
 import { collection, container } from "./TestUtils";
-import { getMaxRUs, getMinRUs, isDirty, isDirtyTypes } from "./SettingsUtils";
+import {
+  getMaxRUs,
+  getMinRUs,
+  hasDatabaseSharedThroughput,
+  isDirty,
+  isDirtyTypes,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure
+} from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import ko from "knockout";
 
 describe("SettingsUtils", () => {
   it("getMaxRUs", () => {
@@ -11,6 +21,45 @@ describe("SettingsUtils", () => {
   it("getMinRUs", () => {
     expect(collection.offer().content.collectionThroughputInfo.numPhysicalPartitions).toEqual(4);
     expect(getMinRUs(collection, container)).toEqual(6000);
+  });
+
+  it("hasDatabaseSharedThroughput", () => {
+    expect(hasDatabaseSharedThroughput(collection)).toEqual(undefined);
+
+    let newCollection = { ...collection };
+    newCollection.getDatabase = () => {
+      return {
+        container: undefined,
+        self: "",
+        id: ko.observable(""),
+        collections: ko.observable(undefined),
+        offer: ko.observable(undefined),
+        isDatabaseExpanded: ko.observable(false),
+        isDatabaseShared: ko.computed(() => true),
+        selectedSubnodeKind: ko.observable(undefined),
+        selectDatabase: undefined,
+        expandDatabase: undefined,
+        collapseDatabase: undefined,
+        loadCollections: undefined,
+        findCollectionWithId: undefined,
+        openAddCollection: undefined,
+        onDeleteDatabaseContextMenuClick: undefined,
+        readSettings: undefined,
+        onSettingsClick: undefined
+      } as ViewModels.Database;
+    };
+    newCollection.offer(undefined);
+    expect(hasDatabaseSharedThroughput(newCollection)).toEqual(true);
+  });
+
+  it("parseConflictResolutionMode", () => {
+    expect(parseConflictResolutionMode("custom")).toEqual(DataModels.ConflictResolutionMode.Custom);
+    expect(parseConflictResolutionMode("lastwriterwins")).toEqual(DataModels.ConflictResolutionMode.LastWriterWins);
+  });
+
+  it("parseConflictResolutionProcedure", () => {
+    expect(parseConflictResolutionProcedure("/dbs/db/colls/coll/sprocs/conflictResSproc")).toEqual("conflictResSproc");
+    expect(parseConflictResolutionProcedure("conflictResSproc")).toEqual("conflictResSproc");
   });
 
   describe("isDirty", () => {

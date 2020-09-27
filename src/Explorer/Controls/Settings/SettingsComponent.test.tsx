@@ -45,20 +45,29 @@ describe("SettingsComponent", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  /*
-  it("dirty value enables save button, discard button and collection updation", () => {
+  it("dirty value enables save button and discard button", () => {
     const wrapper = shallow(<SettingsComponent {...baseProps} />);
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(false);
     expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(false);
-    expect(settingsComponentInstance.shouldUpdateCollection()).toEqual(false);
-    wrapper.setState({ timeToLive: TtlType.Off });
+    wrapper.setState({ isScaleSaveable: true, isScaleDiscardable: true });
     wrapper.update();
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
     expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
-    expect(settingsComponentInstance.shouldUpdateCollection()).toEqual(true);
+    wrapper.setState({ isScaleSaveable: false, isScaleDiscardable: false, isSubSettingsSaveable: true, isSubSettingsDiscardable: true });
+    wrapper.update();
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
+    expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
+    wrapper.setState({ isSubSettingsSaveable: false, isSubSettingsDiscardable: false, isIndexingPolicyDirty: true});
+    wrapper.update();
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
+    expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
+    wrapper.setState({ isIndexingPolicyDirty: false, isConflictResolutionDirty: true});
+    wrapper.update();
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
+    expect(settingsComponentInstance.isDiscardSettingsButtonEnabled()).toEqual(true);
   });
-*/
+
   it("auto pilot helper functions pass on correct value", () => {
     const newCollection = { ...collection };
     newCollection.offer = ko.observable<DataModels.Offer>({
@@ -75,7 +84,6 @@ describe("SettingsComponent", () => {
     const wrapper = shallow(<SettingsComponent {...props} />);
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
     expect(settingsComponentInstance.hasProvisioningTypeChanged()).toEqual(false);
-    expect(settingsComponentInstance.overrideWithProvisionedThroughputSettings()).toEqual(false);
     wrapper.setState({
       userCanChangeProvisioningTypes: true,
       isAutoPilotSelected: true,
@@ -84,7 +92,6 @@ describe("SettingsComponent", () => {
     });
     wrapper.update();
     expect(settingsComponentInstance.hasProvisioningTypeChanged()).toEqual(true);
-    expect(settingsComponentInstance.overrideWithProvisionedThroughputSettings()).toEqual(true);
   });
 
   it("shouldShowKeyspaceSharedThroughputMessage", () => {
@@ -182,7 +189,7 @@ describe("SettingsComponent", () => {
 
   it("save calls updateCollection and updateOffer", async () => {
     const wrapper = shallow(<SettingsComponent {...baseProps} />);
-    wrapper.setState({ isSubSettingsSaveable: true, isScaleSaveable: true});
+    wrapper.setState({ isSubSettingsSaveable: true, isScaleSaveable: true });
     wrapper.update();
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
     await settingsComponentInstance.onSaveClick();

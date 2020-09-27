@@ -46,7 +46,6 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <StyledTextFieldBase
     id="conflictResolutionLwwTextField"
@@ -119,7 +118,6 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
         ],
       }
     }
-    tabIndex={0}
   />
   <StyledTextFieldBase
     id="conflictResolutionCustomTextField"

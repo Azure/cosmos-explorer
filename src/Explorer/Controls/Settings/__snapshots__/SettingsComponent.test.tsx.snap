@@ -2633,17 +2633,13 @@ exports[`SettingsComponent renders 1`] = `
               },
             }
           }
-          hasAutoPilotV2FeatureFlag={false}
-          hasProvisioningTypeChanged={[Function]}
           isAutoPilotSelected={false}
           isFixedContainer={false}
           onAutoPilotSelected={[Function]}
-          onAutoPilotTierChange={[Function]}
           onMaxAutoPilotThroughputChange={[Function]}
           onScaleDiscardableChange={[Function]}
           onScaleSaveableChange={[Function]}
           onThroughputChange={[Function]}
-          overrideWithProvisionedThroughputSettings={[Function]}
           throughput={10000}
           throughputBaseline={10000}
           userCanChangeProvisioningTypes={true}

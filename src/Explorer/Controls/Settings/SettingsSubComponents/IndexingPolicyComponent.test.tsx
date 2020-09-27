@@ -1,19 +1,22 @@
 import { shallow } from "enzyme";
 import React from "react";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./IndexingPolicyComponent";
+import * as DataModels from "../../../../Contracts/DataModels";
 
 describe("IndexingPolicyComponent", () => {
-  const props: IndexingPolicyComponentProps = {
+  const initialIndexingPolicyContent: DataModels.IndexingPolicy = {
+    automatic: false,
+    indexingMode: "",
+    includedPaths: [],
+    excludedPaths: []
+  };
+  const baseProps: IndexingPolicyComponentProps = {
     shouldDiscardIndexingPolicy: false,
     resetShouldDiscardIndexingPolicy: () => {
       return;
     },
-    indexingPolicyContent: {
-      automatic: false,
-      indexingMode: "",
-      includedPaths: [],
-      excludedPaths: []
-    },
+    indexingPolicyContent: initialIndexingPolicyContent,
+    indexingPolicyContentBaseline: initialIndexingPolicyContent,
     onIndexingPolicyElementFocusChange: () => {
       return;
     },
@@ -23,19 +26,18 @@ describe("IndexingPolicyComponent", () => {
     logIndexingPolicySuccessMessage: () => {
       return;
     },
-    onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => {
+    onIndexingPolicyDirtyChange: () => {
       return;
     }
   };
 
   it("renders", () => {
-    const wrapper = shallow(<IndexingPolicyComponent {...props} />);
+    const wrapper = shallow(<IndexingPolicyComponent {...baseProps} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("indexing policy is reset", () => {
-    const wrapper = shallow(<IndexingPolicyComponent {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = shallow(<IndexingPolicyComponent {...baseProps} />);
 
     const indexingPolicyComponentInstance = wrapper.instance() as IndexingPolicyComponent;
     const resetIndexingPolicyEditorMockFn = jest.fn();
@@ -44,5 +46,14 @@ describe("IndexingPolicyComponent", () => {
     wrapper.setProps({ shouldDiscardIndexingPolicy: true });
     wrapper.update();
     expect(resetIndexingPolicyEditorMockFn.mock.calls.length).toEqual(1);
+  });
+
+  it("conflict resolution policy dirty is set", () => {
+    let indexingPolicyComponent = new IndexingPolicyComponent(baseProps)
+    expect(indexingPolicyComponent.IsComponentDirty()).toEqual(false)
+
+    const newProps = {...baseProps, indexingPolicyContent: undefined as DataModels.IndexingPolicy}
+    indexingPolicyComponent = new IndexingPolicyComponent(newProps)
+    expect(indexingPolicyComponent.IsComponentDirty()).toEqual(true)
   });
 });

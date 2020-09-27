@@ -2,18 +2,28 @@ import { shallow } from "enzyme";
 import React from "react";
 import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
 import { container, collection } from "../TestUtils";
-import * as DataModels from "../../../../Contracts/DataModels";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import { ThroughputInputComponent } from "./ThroughputInputComponents/ThroughputInputComponent";
 import Explorer from "../../../Explorer";
 import * as Constants from "../../../../Common/Constants";
+import { PlatformType } from "../../../../PlatformType";
+import * as DataModels from "../../../../Contracts/DataModels";
+import { throughputUnit } from "../SettingsRenderUtils";
+import * as SharedConstants from "../../../../Shared/Constants";
+import ko from "knockout";
 
 describe("ScaleComponent", () => {
+  const nonNationalCloudContainer = new Explorer({
+    notificationsClient: undefined,
+    isEmulator: false
+  });
+  nonNationalCloudContainer.getPlatformType = () => PlatformType.Portal;
+  nonNationalCloudContainer.isRunningOnNationalCloud = () => false;
+
+  const targetThroughput = 6000;
+
   const baseProps: ScaleComponentProps = {
     collection: collection,
     container: container,
-    hasProvisioningTypeChanged: () => true,
-    hasAutoPilotV2FeatureFlag: false,
     isFixedContainer: false,
     autoPilotTiersList: [],
     onThroughputChange: () => {
@@ -23,41 +33,54 @@ describe("ScaleComponent", () => {
     throughputBaseline: 1000,
     autoPilotThroughput: 4000,
     autoPilotThroughputBaseline: 4000,
-    selectedAutoPilotTier: DataModels.AutopilotTier.Tier1,
-    selectedAutoPilotTierBaseline: DataModels.AutopilotTier.Tier1,
     isAutoPilotSelected: false,
     wasAutopilotOriginallySet: true,
     userCanChangeProvisioningTypes: false,
-    overrideWithProvisionedThroughputSettings: () => false,
     onAutoPilotSelected: () => false,
-    onAutoPilotTierChange: () => {
-      return;
-    },
     onMaxAutoPilotThroughputChange: () => {
       return;
     },
-    onScaleSaveableChange: (isScaleSaveable: boolean) => {
+    onScaleSaveableChange: () => {
       return;
     },
-    onScaleDiscardableChange: (isScaleDiscardable: boolean) => {
+    onScaleDiscardableChange: () => {
       return;
     },
-    initialNotification: undefined 
+    initialNotification: {
+      description: `Throughput update for ${targetThroughput} ${throughputUnit}`
+    } as DataModels.Notification
   };
 
-  it("renders V3 throughput component", () => {
-    const wrapper = shallow(<ScaleComponent {...baseProps} />);
+  it("renders with correct intiial notification", () => {
+    let wrapper = shallow(<ScaleComponent {...baseProps} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists(ThroughputInputAutoPilotV3Component)).toEqual(true);
-    expect(wrapper.exists(ThroughputInputComponent)).toEqual(false);
-  });
+    expect(wrapper.exists("#throughputApplyLongDelayMessage")).toEqual(true);
+    expect(wrapper.exists("#throughputApplyShortDelayMessage")).toEqual(false);
+    expect(wrapper.find("#throughputApplyLongDelayMessage").html()).toContain(targetThroughput);
 
-  it("renders V2 throughput component", () => {
-    const props = { ...baseProps, hasAutoPilotV2FeatureFlag: true };
-    const wrapper = shallow(<ScaleComponent {...props} />);
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.exists(ThroughputInputAutoPilotV3Component)).toEqual(false);
-    expect(wrapper.exists(ThroughputInputComponent)).toEqual(true);
+    const newCollection = { ...collection };
+    const maxThroughput = 5000;
+    const targetMaxThroughput = 50000;
+    newCollection.offer = ko.observable({
+      content: {
+        offerAutopilotSettings: {
+          maxThroughput: maxThroughput,
+          targetMaxThroughput: targetMaxThroughput
+        }
+      },
+      headers: { "x-ms-offer-replace-pending": true }
+    } as DataModels.OfferWithHeaders);
+    const newProps = {
+      ...baseProps,
+      initialNotification: undefined as DataModels.Notification,
+      collection: newCollection
+    };
+    wrapper = shallow(<ScaleComponent {...newProps} />);
+    expect(wrapper.exists("#throughputApplyShortDelayMessage")).toEqual(true);
+    expect(wrapper.exists("#throughputApplyLongDelayMessage")).toEqual(false);
+    expect(wrapper.find("#throughputApplyShortDelayMessage").html()).toContain(maxThroughput);
+    expect(wrapper.find("#throughputApplyShortDelayMessage").html()).toContain(targetMaxThroughput);
   });
 
   it("autoScale disabled", () => {
@@ -102,18 +125,37 @@ describe("ScaleComponent", () => {
   });
 
   it("getThroughputTitle", () => {
-    const scaleComponent = new ScaleComponent(baseProps);
+    let scaleComponent = new ScaleComponent(baseProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - 40,000 RU/s)");
+
+    let newProps = { ...baseProps, container: nonNationalCloudContainer };
+    scaleComponent = new ScaleComponent(newProps);
+    expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
+
+    newProps = { ...baseProps, isAutoPilotSelected: true };
+    scaleComponent = new ScaleComponent(newProps);
+    expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (autoscale)");
   });
 
-  it("should override with AutoPilotSettings", () => {
-    const scaleComponent = new ScaleComponent(baseProps);
-    expect(scaleComponent.overrideWithAutoPilotSettings()).toEqual(true);
+  it("canThroughputExceedMaximumValue", () => {
+    let scaleComponent = new ScaleComponent(baseProps);
+    expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(false);
+
+    const newProps = { ...baseProps, container: nonNationalCloudContainer };
+    scaleComponent = new ScaleComponent(newProps);
+    expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
   });
 
-  it("should not override with AutoPilotSettings", () => {
-    const props = { ...baseProps, hasAutoPilotV2FeatureFlag: true };
-    const scaleComponent = new ScaleComponent(props);
-    expect(scaleComponent.overrideWithAutoPilotSettings()).toEqual(false);
+  it("getThroughputWarningMessage", () => {
+    const throughputBeyondLimit = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million + 1000;
+    const throughputBeyondMaxRus = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million - 1000;
+
+    let newProps = { ...baseProps, container: nonNationalCloudContainer, throughput: throughputBeyondLimit };
+    let scaleComponent = new ScaleComponent(newProps);
+    expect(scaleComponent.getThroughputWarningMessage().props.id).toEqual("updateThroughputBeyondLimitWarningMessage");
+
+    newProps.throughput = throughputBeyondMaxRus;
+    scaleComponent = new ScaleComponent(newProps);
+    expect(scaleComponent.getThroughputWarningMessage().props.id).toEqual("updateThroughputDelayedApplyWarningMessage");
   });
 });

@@ -49,11 +49,11 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" }
   ];
 
-  componentDidMount() : void {
+  componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() : void {
+  componentDidUpdate(): void {
     this.onComponentUpdate();
   }
 
@@ -62,22 +62,24 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       this.shouldCheckComponentIsDirty = true;
       return;
     }
+    this.props.onConflictResolutionDirtyChange(this.IsComponentDirty())
+    this.shouldCheckComponentIsDirty = false;
+  };
+
+  public IsComponentDirty = () : boolean => {
     if (
       isDirty(this.props.conflictResolutionPolicyMode, this.props.conflictResolutionPolicyModeBaseline) ||
       isDirty(this.props.conflictResolutionPolicyPath, this.props.conflictResolutionPolicyPathBaseline) ||
       isDirty(this.props.conflictResolutionPolicyProcedure, this.props.conflictResolutionPolicyProcedureBaseline)
     ) {
-      this.props.onConflictResolutionDirtyChange(true);
-    } else {
-      this.props.onConflictResolutionDirtyChange(false);
+      return true
     }
-    this.shouldCheckComponentIsDirty = false;
-  };
+    return false
+  }
 
   private getConflictResolutionModeComponent = (): JSX.Element => (
     <ChoiceGroup
       label="Mode"
-      tabIndex={0}
       selectedKey={this.props.conflictResolutionPolicyMode}
       options={this.conflictResolutionChoiceGroupOptions}
       onChange={this.props.onConflictResolutionPolicyModeChange}

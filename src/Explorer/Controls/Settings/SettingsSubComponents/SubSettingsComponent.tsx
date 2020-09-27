@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { GeospatialConfigType, TtlType, ChangeFeedPolicyState, isDirty } from "../SettingsUtils";
+import { GeospatialConfigType, TtlType, ChangeFeedPolicyState, isDirty, IsComponentDirtyResult } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
@@ -19,10 +19,8 @@ import {
   subComponentStackProps,
   titleAndInputStackProps,
   getChoiceGroupStyles,
-  messageContainerStackTokens,
   ttlWarning,
-  messageBarStyles,
-  messageStackStyle
+  messageBarStyles
 } from "../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -86,11 +84,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
   }
 
-  componentDidMount() : void {
+  componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate() : void {
+  componentDidUpdate(): void {
     this.onComponentUpdate();
   }
 
@@ -99,13 +97,20 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       this.shouldCheckComponentIsDirty = true;
       return;
     }
+    
+    const isComponentDirtyResult = this.IsComponentDirty();
+    this.props.onSubSettingsSaveableChange(isComponentDirtyResult.isSaveable)
+    this.props.onSubSettingsDiscardableChange(isComponentDirtyResult.isDiscardable)
 
+    this.shouldCheckComponentIsDirty = false;
+  };
+
+  public IsComponentDirty = () : IsComponentDirtyResult => {
     if (
       (this.props.timeToLive === TtlType.On && !this.props.timeToLiveSeconds) ||
       (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds)
     ) {
-      this.props.onSubSettingsSaveableChange(false);
-      this.props.onSubSettingsDiscardableChange(true);
+      return {isSaveable: false, isDiscardable: true}
     } else if (
       isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) ||
       (this.props.timeToLive === TtlType.On &&
@@ -116,15 +121,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       isDirty(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline) ||
       isDirty(this.props.changeFeedPolicy, this.props.changeFeedPolicyBaseline)
     ) {
-      this.props.onSubSettingsSaveableChange(true);
-      this.props.onSubSettingsDiscardableChange(true);
-    } else {
-      this.props.onSubSettingsSaveableChange(false);
-      this.props.onSubSettingsDiscardableChange(false);
+      return {isSaveable: true, isDiscardable: true}
     }
 
-    this.shouldCheckComponentIsDirty = false;
-  };
+    return {isSaveable: false, isDiscardable: false}
+  }
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off" },
@@ -134,24 +135,19 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private getTtlComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
-      <Stack horizontal tokens={messageContainerStackTokens}>
-        <ChoiceGroup
-          id="timeToLive"
-          label="Time to Live"
-          tabIndex={0}
-          selectedKey={this.props.timeToLive}
-          options={this.ttlChoiceGroupOptions}
-          onChange={this.props.onTtlChange}
-          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
-        />
-        {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
-          <Stack styles={messageStackStyle}>
-            <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
-              {ttlWarning}
-            </MessageBar>
-          </Stack>
-        )}
-      </Stack>
+      <ChoiceGroup
+        id="timeToLive"
+        label="Time to Live"
+        selectedKey={this.props.timeToLive}
+        options={this.ttlChoiceGroupOptions}
+        onChange={this.props.onTtlChange}
+        styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
+      />
+      {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
+        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+          {ttlWarning}
+        </MessageBar>
+      )}
       {this.props.timeToLive === TtlType.On && (
         <TextField
           id="timeToLiveSeconds"
@@ -179,7 +175,6 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       <ChoiceGroup
         id="analyticalStorageTimeToLive"
         label="Analytical Storage Time to Live"
-        tabIndex={0}
         selectedKey={this.props.analyticalStorageTtlSelection}
         options={this.analyticalTtlChoiceGroupOptions}
         onChange={this.props.onAnalyticalStorageTtlSelectionChange}
@@ -216,7 +211,6 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     <ChoiceGroup
       id="geoSpatialConfig"
       label="Geospatial Configuration"
-      tabIndex={0}
       selectedKey={this.props.geospatialConfigType}
       options={this.geoSpatialConfigTypeChoiceGroupOptions}
       onChange={this.props.onGeoSpatialConfigTypeChange}
@@ -239,7 +233,6 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         </Label>
         <ChoiceGroup
           id="changeFeedPolicy"
-          tabIndex={0}
           selectedKey={this.props.changeFeedPolicy}
           options={this.changeFeedChoiceGroupOptions}
           onChange={this.props.onChangeFeedPolicyChange}
