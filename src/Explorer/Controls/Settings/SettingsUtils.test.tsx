@@ -29,6 +29,8 @@ describe("SettingsUtils", () => {
     const newCollection = { ...collection };
     newCollection.getDatabase = () => {
       return {
+        nodeKind: undefined,
+        rid: undefined,
         container: undefined,
         self: "",
         id: ko.observable(""),

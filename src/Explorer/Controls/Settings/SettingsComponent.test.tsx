@@ -112,6 +112,8 @@ describe("SettingsComponent", () => {
     const newCollection = { ...collection };
     newCollection.container = newContainer;
     const newDatabase = {
+      nodeKind: undefined,
+      rid: undefined,
       container: newContainer,
       self: undefined,
       id: undefined,
