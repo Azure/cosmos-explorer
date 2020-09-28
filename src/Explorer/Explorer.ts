@@ -562,11 +562,8 @@ export default class Explorer {
       }
 
       for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object") {
-          if (capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-            // version 3.6
-            return true;
-          }
+        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
+          return true;
         }
       }
 
