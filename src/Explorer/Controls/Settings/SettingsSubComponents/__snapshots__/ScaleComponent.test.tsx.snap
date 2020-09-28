@@ -55,7 +55,6 @@ exports[`ScaleComponent renders with correct intiial notification 1`] = `
       onScaleDiscardableChange={[Function]}
       onScaleSaveableChange={[Function]}
       onThroughputChange={[Function]}
-      showAutoPilot={false}
       spendAckChecked={false}
       throughput={1000}
       throughputBaseline={1000}

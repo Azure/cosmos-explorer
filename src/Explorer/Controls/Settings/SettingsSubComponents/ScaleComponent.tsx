@@ -32,7 +32,6 @@ export interface ScaleComponentProps {
   autoPilotThroughputBaseline: number;
   isAutoPilotSelected: boolean;
   wasAutopilotOriginallySet: boolean;
-  userCanChangeProvisioningTypes: boolean;
   onAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
@@ -193,7 +192,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       label={this.getThroughputTitle()}
       isEmulator={this.isEmulator}
       isFixed={this.props.isFixedContainer}
-      showAutoPilot={this.props.userCanChangeProvisioningTypes}
       isAutoPilotSelected={this.props.isAutoPilotSelected}
       onAutoPilotSelected={this.props.onAutoPilotSelected}
       wasAutopilotOriginallySet={this.props.wasAutopilotOriginallySet}

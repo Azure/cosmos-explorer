@@ -30,7 +30,6 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     canExceedMaximumValue: true,
     onAutoPilotSelected: undefined,
     isAutoPilotSelected: false,
-    showAutoPilot: true,
     maxAutoPilotThroughput: 4000,
     maxAutoPilotThroughputBaseline: 4000,
     onMaxAutoPilotThroughputChange: undefined,

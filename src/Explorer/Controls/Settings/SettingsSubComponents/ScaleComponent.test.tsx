@@ -35,7 +35,6 @@ describe("ScaleComponent", () => {
     autoPilotThroughputBaseline: 4000,
     isAutoPilotSelected: false,
     wasAutopilotOriginallySet: true,
-    userCanChangeProvisioningTypes: false,
     onAutoPilotSelected: () => false,
     onMaxAutoPilotThroughputChange: () => {
       return;

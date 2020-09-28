@@ -97,7 +97,6 @@ export interface SettingsComponentState {
   isConflictResolutionDirty: boolean;
 
   initialNotification: DataModels.Notification;
-  userCanChangeProvisioningTypes: boolean;
   selectedTab: SettingsV2TabTypes;
 }
 
@@ -174,7 +173,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isConflictResolutionDirty: false,
 
       initialNotification: undefined,
-      userCanChangeProvisioningTypes: true,
       selectedTab: SettingsV2TabTypes.ScaleTab
     };
 
@@ -342,6 +340,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
         this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
         this.collection.geospatialConfig(updatedCollection.geospatialConfig);
+        this.setState({
+          isSubSettingsSaveable: false,
+          isSubSettingsDiscardable: false,
+          isIndexingPolicyDirty: false,
+          isConflictResolutionDirty: false
+        });
       }
 
       if (this.state.isScaleSaveable) {
@@ -410,6 +414,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                 description: `Throughput update for ${newThroughput} ${throughputUnit}`
               } as DataModels.Notification
             });
+            this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
           } catch (error) {
             traceFailure(
               Action.UpdateSettings,
@@ -429,6 +434,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         } else {
           const updatedOffer: DataModels.Offer = await updateOffer(this.collection.offer(), newOffer, headerOptions);
           this.collection.offer(updatedOffer);
+          this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
           if (this.state.isAutoPilotSelected) {
             this.setState({
               autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
@@ -444,7 +450,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
       this.container.isRefreshingExplorer(false);
       this.setBaseline();
-      this.collection.readSettings();
       this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
       traceSuccess(
         Action.UpdateSettings,
@@ -488,12 +493,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       analyticalStorageTtlSeconds: this.state.analyticalStorageTtlSecondsBaseline,
       changeFeedPolicy: this.state.changeFeedPolicyBaseline,
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
-      shouldDiscardIndexingPolicy: true
+      isAutoPilotSelected: this.state.wasAutopilotOriginallySet,
+      shouldDiscardIndexingPolicy: true,
+      isScaleSaveable: false,
+      isScaleDiscardable: false,
+      isSubSettingsSaveable: false,
+      isSubSettingsDiscardable: false,
+      isIndexingPolicyDirty: false,
+      isConflictResolutionDirty: false
     });
-
-    if (this.state.userCanChangeProvisioningTypes) {
-      this.setState({ isAutoPilotSelected: this.state.wasAutopilotOriginallySet });
-    }
   };
 
   private onScaleSaveableChange = (isScaleSaveable: boolean): void =>
@@ -789,7 +797,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       autoPilotThroughputBaseline: this.state.autoPilotThroughputBaseline,
       isAutoPilotSelected: this.state.isAutoPilotSelected,
       wasAutopilotOriginallySet: this.state.wasAutopilotOriginallySet,
-      userCanChangeProvisioningTypes: this.state.userCanChangeProvisioningTypes,
       onAutoPilotSelected: this.onAutoPilotSelected,
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,

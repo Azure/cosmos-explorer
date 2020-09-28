@@ -53,7 +53,6 @@ export interface ThroughputInputAutoPilotV3Props {
   onAutoPilotSelected: (isAutoPilotSelected: boolean) => void;
   isAutoPilotSelected: boolean;
   wasAutopilotOriginallySet: boolean;
-  showAutoPilot?: boolean;
   maxAutoPilotThroughput: number;
   maxAutoPilotThroughputBaseline: number;
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
@@ -334,7 +333,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   public render(): JSX.Element {
     return (
       <Stack {...checkBoxAndInputStackProps}>
-        {!this.props.isFixed && this.props.showAutoPilot && this.renderThroughputModeChoices()}
+        {!this.props.isFixed && this.renderThroughputModeChoices()}
 
         {this.props.isAutoPilotSelected ? this.renderAutoPilotInput() : this.renderThroughputInput()}
       </Stack>

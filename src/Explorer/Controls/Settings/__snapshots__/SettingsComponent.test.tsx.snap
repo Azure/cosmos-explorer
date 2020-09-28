@@ -148,6 +148,7 @@ exports[`SettingsComponent renders 1`] = `
                     "sharedAutoPilotThroughput": [Function],
                     "sharedAutoPilotTiersList": [Function],
                     "sharedThroughputRangeText": [Function],
+                    "shouldCreateMongoWildcardIndex": [Function],
                     "shouldUseDatabaseThroughput": [Function],
                     "showAnalyticalStore": [Function],
                     "showEnableSynapseLink": [Function],
@@ -649,6 +650,7 @@ exports[`SettingsComponent renders 1`] = `
                   "sharedAutoPilotThroughput": [Function],
                   "sharedAutoPilotTiersList": [Function],
                   "sharedThroughputRangeText": [Function],
+                  "shouldCreateMongoWildcardIndex": [Function],
                   "shouldUseDatabaseThroughput": [Function],
                   "showAnalyticalStore": [Function],
                   "showEnableSynapseLink": [Function],
@@ -982,6 +984,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isCodeOfConductEnabled": [Function],
                 "isCopyNotebookPaneEnabled": [Function],
                 "isEmulator": false,
+                "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isGalleryPublishEnabled": [Function],
                 "isGitHubPaneEnabled": [Function],
@@ -1460,6 +1463,7 @@ exports[`SettingsComponent renders 1`] = `
                   "sharedAutoPilotThroughput": [Function],
                   "sharedAutoPilotTiersList": [Function],
                   "sharedThroughputRangeText": [Function],
+                  "shouldCreateMongoWildcardIndex": [Function],
                   "shouldUseDatabaseThroughput": [Function],
                   "showAnalyticalStore": [Function],
                   "showEnableSynapseLink": [Function],
@@ -1961,6 +1965,7 @@ exports[`SettingsComponent renders 1`] = `
                 "sharedAutoPilotThroughput": [Function],
                 "sharedAutoPilotTiersList": [Function],
                 "sharedThroughputRangeText": [Function],
+                "shouldCreateMongoWildcardIndex": [Function],
                 "shouldUseDatabaseThroughput": [Function],
                 "showAnalyticalStore": [Function],
                 "showEnableSynapseLink": [Function],
@@ -2294,6 +2299,7 @@ exports[`SettingsComponent renders 1`] = `
               "isCodeOfConductEnabled": [Function],
               "isCopyNotebookPaneEnabled": [Function],
               "isEmulator": false,
+              "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isGalleryPublishEnabled": [Function],
               "isGitHubPaneEnabled": [Function],
@@ -2642,7 +2648,6 @@ exports[`SettingsComponent renders 1`] = `
           onThroughputChange={[Function]}
           throughput={10000}
           throughputBaseline={10000}
-          userCanChangeProvisioningTypes={true}
           wasAutopilotOriginallySet={false}
         />
       </PivotItem>
@@ -2786,6 +2791,7 @@ exports[`SettingsComponent renders 1`] = `
                     "sharedAutoPilotThroughput": [Function],
                     "sharedAutoPilotTiersList": [Function],
                     "sharedThroughputRangeText": [Function],
+                    "shouldCreateMongoWildcardIndex": [Function],
                     "shouldUseDatabaseThroughput": [Function],
                     "showAnalyticalStore": [Function],
                     "showEnableSynapseLink": [Function],
@@ -3287,6 +3293,7 @@ exports[`SettingsComponent renders 1`] = `
                   "sharedAutoPilotThroughput": [Function],
                   "sharedAutoPilotTiersList": [Function],
                   "sharedThroughputRangeText": [Function],
+                  "shouldCreateMongoWildcardIndex": [Function],
                   "shouldUseDatabaseThroughput": [Function],
                   "showAnalyticalStore": [Function],
                   "showEnableSynapseLink": [Function],
@@ -3620,6 +3627,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isCodeOfConductEnabled": [Function],
                 "isCopyNotebookPaneEnabled": [Function],
                 "isEmulator": false,
+                "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isGalleryPublishEnabled": [Function],
                 "isGitHubPaneEnabled": [Function],
@@ -4098,6 +4106,7 @@ exports[`SettingsComponent renders 1`] = `
                   "sharedAutoPilotThroughput": [Function],
                   "sharedAutoPilotTiersList": [Function],
                   "sharedThroughputRangeText": [Function],
+                  "shouldCreateMongoWildcardIndex": [Function],
                   "shouldUseDatabaseThroughput": [Function],
                   "showAnalyticalStore": [Function],
                   "showEnableSynapseLink": [Function],
@@ -4599,6 +4608,7 @@ exports[`SettingsComponent renders 1`] = `
                 "sharedAutoPilotThroughput": [Function],
                 "sharedAutoPilotTiersList": [Function],
                 "sharedThroughputRangeText": [Function],
+                "shouldCreateMongoWildcardIndex": [Function],
                 "shouldUseDatabaseThroughput": [Function],
                 "showAnalyticalStore": [Function],
                 "showEnableSynapseLink": [Function],
@@ -4932,6 +4942,7 @@ exports[`SettingsComponent renders 1`] = `
               "isCodeOfConductEnabled": [Function],
               "isCopyNotebookPaneEnabled": [Function],
               "isEmulator": false,
+              "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isGalleryPublishEnabled": [Function],
               "isGitHubPaneEnabled": [Function],
