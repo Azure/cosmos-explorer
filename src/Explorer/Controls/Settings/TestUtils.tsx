@@ -8,7 +8,7 @@ export const container = new Explorer({
   isEmulator: false
 });
 
-export const collection = {
+export const collection = ({
   container: container,
   databaseId: "test",
   id: ko.observable<string>("test"),
@@ -37,7 +37,9 @@ export const collection = {
   ),
   changeFeedPolicy: ko.observable<DataModels.ChangeFeedPolicy>({} as DataModels.ChangeFeedPolicy),
   geospatialConfig: ko.observable<DataModels.GeospatialConfig>({} as DataModels.GeospatialConfig),
-  getDatabase: () => undefined,
+  getDatabase: () => {
+    return;
+  },
   partitionKey: {
     paths: [],
     kind: "hash",
@@ -47,4 +49,4 @@ export const collection = {
   readSettings: () => {
     return;
   }
-} as ViewModels.Collection;
+} as unknown) as ViewModels.Collection;
