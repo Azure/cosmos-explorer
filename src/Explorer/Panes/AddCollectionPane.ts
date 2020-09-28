@@ -99,6 +99,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public ruToolTipText: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
+  public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
   private _databaseOffers: HashMap<DataModels.Offer>;
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
@@ -660,6 +661,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
         changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex
       });
     });
+
+    this.shouldCreateMongoWildcardIndex = ko.observable(false);
   }
 
   public getSharedThroughputDefault(): boolean {
@@ -832,9 +835,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let collectionId: string = this.collectionId().trim();
 
     let indexingPolicy: DataModels.IndexingPolicy;
+    let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
     if (this.container.isPreferredApiMongoDB()) {
-      indexingPolicy = SharedConstants.IndexingPolicies.Mongo;
+      createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {
         indexingPolicy = SharedConstants.IndexingPolicies.AllPropertiesIndexed;
@@ -864,7 +868,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
       autoPilotMaxThroughput,
       indexingPolicy,
       partitionKey,
-      uniqueKeyPolicy
+      uniqueKeyPolicy,
+      createMongoWildcardIndex
     };
 
     createCollection(createCollectionParams).then(

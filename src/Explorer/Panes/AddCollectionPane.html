@@ -418,7 +418,6 @@
               </div>
               <!-- large parition key - end -->
 
-              <!-- Provision collection throughput - start -->
               <!-- ko if: canConfigureThroughput -->
               <!-- Provision collection throughput checkbox - start -->
               <div class="pkPadding" data-bind="visible: databaseHasSharedOffer() && !databaseCreateNew()">
@@ -510,6 +509,23 @@
               <!-- Provision collection throughput spinner - end -->
               <!-- /ko -->
               <!-- Provision collection throughput - end -->
+
+              <!-- Custom indexes for mongo checkbox - start -->
+              <div class="pkPadding" data-bind="visible: container.isEnableMongoCapabilityPresent()">
+                <p>
+                    <span class="addCollectionLabel">Indexing</span>
+                </p>
+                <input type="checkbox" id="mongoWildcardIndex" title="mongoWildcardIndex"
+                data-bind="checked: shouldCreateMongoWildcardIndex" />
+                <span>Create a Wildcard Index on all fields</span>
+                <span class="infoTooltip" role="tooltip" tabindex="0">
+                    <img class="infoImg" src="/info-bubble.svg" alt="More information">
+                    <span class="tooltiptext mongoWildcardIndexTooltipWidth">
+                        By default, only the field _id is indexed. Creating a wildcard index on all fields will quickly optimize query performance and is recommended during development.
+                    </span>
+                </span>
+              </div>
+              <!-- Custom indexes for mongo checkbox - end -->
 
               <!-- Enable analytical storage - start -->
               <div class="enableAnalyticalStorage pkPadding" aria-label="Enable Analytical Store"

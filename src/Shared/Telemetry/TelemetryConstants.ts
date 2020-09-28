@@ -71,7 +71,8 @@ export enum Action {
   NotebooksGitHubManageRepo,
   NotebooksGitHubCommit,
   NotebooksGitHubDisconnect,
-  OpenTerminal
+  OpenTerminal,
+  CreateMongoCollectionWithWildcardIndex
 }
 
 export const ActionModifiers = {
