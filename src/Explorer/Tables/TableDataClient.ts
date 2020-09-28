@@ -6,7 +6,6 @@ import { AuthType } from "../../AuthType";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Constants from "../../Common/Constants";
 import * as Entities from "./Entities";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import * as Logger from "../../Common/Logger";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
@@ -308,7 +307,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestQueryApi
         : Constants.CassandraBackend.queryApi;
-    $.ajax(`${EnvironmentUtility.getCassandraBackendEndpoint(collection.container)}${apiEndpoint}`, {
+    $.ajax(`${collection.container.extensionEndpoint()}${apiEndpoint}`, {
       type: "POST",
       data: {
         accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
@@ -559,7 +558,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
         : Constants.CassandraBackend.keysApi;
-    let endpoint = `${EnvironmentUtility.getCassandraBackendEndpoint(collection.container)}${apiEndpoint}`;
+    let endpoint = `${collection.container.extensionEndpoint()}${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKeys>();
     $.ajax(endpoint, {
       type: "POST",
@@ -614,7 +613,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
         : Constants.CassandraBackend.schemaApi;
-    let endpoint = `${EnvironmentUtility.getCassandraBackendEndpoint(collection.container)}${apiEndpoint}`;
+    let endpoint = `${collection.container.extensionEndpoint()}${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKey[]>();
     $.ajax(endpoint, {
       type: "POST",
@@ -668,7 +667,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi
         : Constants.CassandraBackend.createOrDeleteApi;
-    $.ajax(`${EnvironmentUtility.getCassandraBackendEndpoint(explorer)}${apiEndpoint}`, {
+    $.ajax(`${explorer.extensionEndpoint()}${apiEndpoint}`, {
       type: "POST",
       data: {
         accountName: explorer.databaseAccount() && explorer.databaseAccount().name,

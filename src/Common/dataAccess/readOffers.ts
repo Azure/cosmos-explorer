@@ -6,11 +6,7 @@ import { client } from "../CosmosClient";
 import { sendCachedDataMessage } from "../MessageHandler";
 import { userContext } from "../../UserContext";
 
-export const readOffers = async (isServerless?: boolean): Promise<Offer[]> => {
-  if (isServerless) {
-    return []; // Reading offers is not supported for serverless accounts
-  }
-
+export const readOffers = async (): Promise<Offer[]> => {
   try {
     if (configContext.platform === Platform.Portal) {
       return sendCachedDataMessage<Offer[]>(MessageTypes.AllOffers, [

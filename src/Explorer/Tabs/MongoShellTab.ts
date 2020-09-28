@@ -2,7 +2,6 @@ import * as Constants from "../../Common/Constants";
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import AuthHeadersUtil from "../../Platform/Hosted/Authorization";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import Q from "q";
 import TabsBase from "./TabsBase";
@@ -109,11 +108,7 @@ export default class MongoShellTab extends TabsBase {
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.collection.databaseId;
     const collectionId = this.collection.id();
-    const apiEndpoint = EnvironmentUtility.getMongoBackendEndpoint(
-      this._container.serverId(),
-      userContext.databaseAccount.location,
-      this._container.extensionEndpoint()
-    ).replace("/api/mongo/explorer", "");
+    const apiEndpoint = this._container.extensionEndpoint();
     const encryptedAuthToken: string = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(

@@ -30,7 +30,7 @@ export const readDatabaseOffer = async (
         return undefined;
       }
     } else {
-      offerId = await getDatabaseOfferIdWithSDK(params.databaseResourceId, params.isServerless);
+      offerId = await getDatabaseOfferIdWithSDK(params.databaseResourceId);
       if (!offerId) {
         return undefined;
       }
@@ -80,8 +80,8 @@ const getDatabaseOfferIdWithARM = async (databaseId: string): Promise<string> =>
   return rpResponse?.name;
 };
 
-const getDatabaseOfferIdWithSDK = async (databaseResourceId: string, isServerless: boolean): Promise<string> => {
-  const offers = await readOffers(isServerless);
+const getDatabaseOfferIdWithSDK = async (databaseResourceId: string): Promise<string> => {
+  const offers = await readOffers();
   const offer = offers.find(offer => offer.resource === databaseResourceId);
   return offer?.id;
 };
