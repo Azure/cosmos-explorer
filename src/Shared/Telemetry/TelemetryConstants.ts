@@ -73,7 +73,8 @@ export enum Action {
   NotebooksGitHubDisconnect,
   OpenTerminal,
   CreateMongoCollectionWithWildcardIndex,
-  ClickCommandBarButton
+  ClickCommandBarButton,
+  MyNotebooksRefresh
 }
 
 export const ActionModifiers = {
