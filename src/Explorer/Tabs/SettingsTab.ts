@@ -1181,7 +1181,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
       this.container.isRefreshingExplorer(false);
       this._setBaseline();
-      this.collection.readSettings();
       this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
       TelemetryProcessor.traceSuccess(
         Action.UpdateSettings,

@@ -8,12 +8,16 @@ import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-
 import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { logError } from "../Logger";
 import { readOffers } from "./readOffers";
+import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export const readDatabaseOffer = async (
   params: DataModels.ReadDatabaseOfferParams
 ): Promise<DataModels.OfferWithHeaders> => {
+  const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
   let offerId = params.offerId;
   if (!offerId) {
     if (
@@ -24,14 +28,16 @@ export const readDatabaseOffer = async (
       try {
         offerId = await getDatabaseOfferIdWithARM(params.databaseId);
       } catch (error) {
+        clearMessage();
         if (error.code !== "NotFound") {
-          throw new Error(error);
+          throw new error();
         }
         return undefined;
       }
     } else {
       offerId = await getDatabaseOfferIdWithSDK(params.databaseResourceId);
       if (!offerId) {
+        clearMessage();
         return undefined;
       }
     }
@@ -43,15 +49,24 @@ export const readDatabaseOffer = async (
     }
   };
 
-  const response = await client()
-    .offer(offerId)
-    .read(options);
-  return (
-    response && {
-      ...response.resource,
-      headers: response.headers
-    }
-  );
+  try {
+    const response = await client()
+      .offer(offerId)
+      .read(options);
+    return (
+      response && {
+        ...response.resource,
+        headers: response.headers
+      }
+    );
+  } catch (error) {
+    logConsoleError(`Error while querying offer for database ${params.databaseId}:\n ${JSON.stringify(error)}`);
+    logError(JSON.stringify(error), "ReadDatabaseOffer", error.code);
+    sendNotificationForError(error);
+    throw error;
+  } finally {
+    clearMessage();
+  }
 };
 
 const getDatabaseOfferIdWithARM = async (databaseId: string): Promise<string> => {
