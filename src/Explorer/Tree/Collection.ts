@@ -543,7 +543,7 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onSettingsClick = async () => {
+  public onSettingsClick = async (): Promise<void> => {
     this.container.selectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -630,7 +630,6 @@ export default class Collection implements ViewModels.Collection {
   private async loadCollectionQuotaInfo(): Promise<void> {
     // TODO: Use the collection entity cache to get quota info
     const quotaInfoWithUniqueKeyPolicy = await readCollectionQuotaInfo(this);
-    this.container.isRefreshingExplorer(false);
     this.uniqueKeyPolicy = quotaInfoWithUniqueKeyPolicy.uniqueKeyPolicy;
     const quotaInfo = _.omit(quotaInfoWithUniqueKeyPolicy, "uniqueKeyPolicy");
     this.quotaInfo(quotaInfo);

@@ -133,7 +133,7 @@ export interface Collection extends CollectionBase {
   onMongoDBDocumentsClick(): void;
   openTab(): void;
 
-  onSettingsClick: () => void;
+  onSettingsClick: () => Promise<void>;
   onDeleteCollectionContextMenuClick(source: Collection, event: MouseEvent): void;
 
   onNewGraphClick(): void;
