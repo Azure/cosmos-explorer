@@ -10,7 +10,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { CommandBarComponentButtonFactory } from "./CommandBarComponentButtonFactory";
 import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { StyleConstants } from "../../../Common/Constants";
-import { CommandBarUtil } from "./CommandBarUtil";
+import * as CommandBarUtil from "./CommandBarUtil";
 import Explorer from "../../Explorer";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
