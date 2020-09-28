@@ -15,11 +15,10 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting database ${databaseId}`);
 
   try {
-    if (
-      window.authType === AuthType.AAD &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table &&
-      !userContext.useSDKOperations
-    ) {
+    if (userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
+      throw new Error("Deleting database resources is not allowed for tables accounts");
+    }
+    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       await deleteDatabaseWithARM(databaseId);
     } else {
       await client()
