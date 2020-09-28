@@ -287,11 +287,19 @@ export interface CreateCollectionParams {
   indexingPolicy?: IndexingPolicy;
   partitionKey?: PartitionKey;
   uniqueKeyPolicy?: UniqueKeyPolicy;
+  createMongoWildcardIndex?: boolean;
 }
 
 export interface ReadDatabaseOfferParams {
   databaseId: string;
   databaseResourceId?: string;
+  offerId?: string;
+}
+
+export interface ReadCollectionOfferParams {
+  collectionId: string;
+  databaseId: string;
+  collectionResourceId?: string;
   offerId?: string;
 }
 

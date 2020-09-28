@@ -133,6 +133,7 @@ export default class Explorer {
   public isPreferredApiGraph: ko.Computed<boolean>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
@@ -524,22 +525,7 @@ export default class Explorer {
         return false;
       }
 
-      const capabilities = this.databaseAccount().properties && this.databaseAccount().properties.capabilities;
-
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object") {
-          if (capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-            // version 3.6
-            return true;
-          }
-        }
-      }
-
-      return false;
+      return this.isEnableMongoCapabilityPresent();
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -566,6 +552,21 @@ export default class Explorer {
         this.databaseAccount().kind.toLowerCase() === Constants.AccountKind.MongoDB
       ) {
         return true;
+      }
+
+      return false;
+    });
+
+    this.isEnableMongoCapabilityPresent = ko.computed(() => {
+      const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
+      if (!capabilities) {
+        return false;
+      }
+
+      for (let i = 0; i < capabilities.length; i++) {
+        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
+          return true;
+        }
       }
 
       return false;
