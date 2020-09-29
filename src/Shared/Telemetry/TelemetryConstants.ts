@@ -74,7 +74,8 @@ export enum Action {
   OpenTerminal,
   CreateMongoCollectionWithWildcardIndex,
   ClickCommandBarButton,
-  MyNotebooksRefresh
+  RefreshResourceTreeMyNotebooks,
+  ClickResourceTreeNodeContextMenuItem
 }
 
 export const ActionModifiers = {

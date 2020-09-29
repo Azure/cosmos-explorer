@@ -486,7 +486,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
             break;
         }
       });
-      TelemetryProcessor.trace(Action.MyNotebooksRefresh, ActionModifiers.Mark, { ...nodeCounts });
+      TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
     }
 
     return myNotebooksTree;

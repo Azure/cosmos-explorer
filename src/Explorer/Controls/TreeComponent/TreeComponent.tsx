@@ -18,6 +18,8 @@ import {
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
 import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface TreeNodeMenuItem {
   label: string;
@@ -276,7 +278,12 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               text: menuItem.label,
               disabled: menuItem.isDisabled,
               className: menuItem.styleClass,
-              onClick: menuItem.onClick,
+              onClick: () => {
+                menuItem.onClick();
+                TelemetryProcessor.trace(Action.ClickResourceTreeNodeContextMenuItem, ActionModifiers.Mark, {
+                  label: menuItem.label
+                });
+              },
               onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />
             }))
           }}
