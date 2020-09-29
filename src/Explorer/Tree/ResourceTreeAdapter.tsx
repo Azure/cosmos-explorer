@@ -169,7 +169,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         className: "databaseHeader",
         children: [],
         isSelected: () => this.isDataNodeSelected(database.rid, "Database", undefined),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
         onClick: async isExpanded => {
           // Rewritten version of expandCollapseDatabase():
           if (isExpanded) {

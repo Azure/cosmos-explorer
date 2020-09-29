@@ -34,11 +34,10 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
   let database: DataModels.Database;
   const clearMessage = logConsoleProgress(`Creating a new database ${params.databaseId}`);
   try {
-    if (
-      window.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+      throw new Error("Creating database resources is not allowed for tables accounts");
+    }
+    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       database = await createDatabaseWithARM(params);
     } else {
       database = await createDatabaseWithSDK(params);
