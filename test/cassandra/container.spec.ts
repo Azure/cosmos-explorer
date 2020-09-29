@@ -4,7 +4,7 @@ import { login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const RENDER_DELAY = 400;
-const LOADING_STATE_DELAY = 1800;
+const LOADING_STATE_DELAY = 2500;
 
 describe("Collection Add and Delete Cassandra spec", () => {
   it("creates a collection", async () => {
@@ -56,6 +56,7 @@ describe("Collection Add and Delete Cassandra spec", () => {
 
       // click delete
       await frame.click('input[data-test="deleteCollection"]');
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
@@ -73,6 +74,8 @@ describe("Collection Add and Delete Cassandra spec", () => {
       await dbElements[0].click();
 
       // confirm delete database
+      await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
+      await frame.waitFor(RENDER_DELAY)
       await frame.type('input[data-test="confirmDatabaseId"]', keyspaceId.trim());
 
       // click delete
