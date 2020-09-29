@@ -75,7 +75,7 @@ describe("Collection Add and Delete Cassandra spec", () => {
 
       // confirm delete database
       await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
-      await frame.waitFor(RENDER_DELAY)
+      await frame.waitFor(RENDER_DELAY);
       await frame.type('input[data-test="confirmDatabaseId"]', keyspaceId.trim());
 
       // click delete

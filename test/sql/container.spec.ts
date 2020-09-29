@@ -6,7 +6,7 @@ jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RENDER_DELAY = 1000;
 
-describe.skip("Collection Add and Delete SQL spec", () => {
+describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
     try {
       const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
@@ -60,7 +60,7 @@ describe.skip("Collection Add and Delete SQL spec", () => {
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
 
       // click delete container
-      await frame.waitFor(RENDER_DELAY)
+      await frame.waitFor(RENDER_DELAY);
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
@@ -88,7 +88,7 @@ describe.skip("Collection Add and Delete SQL spec", () => {
 
       // confirm delete database
       await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
-      await frame.waitFor(RENDER_DELAY)
+      await frame.waitFor(RENDER_DELAY);
       await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());
 
       // click delete

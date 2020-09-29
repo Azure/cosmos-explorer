@@ -7,7 +7,7 @@ jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RENDER_DELAY = 1000;
 
-describe.skip("Collection Add and Delete Mongo spec", () => {
+describe("Collection Add and Delete Mongo spec", () => {
   it("creates and deletes a collection", async () => {
     try {
       const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
@@ -49,21 +49,20 @@ describe.skip("Collection Add and Delete Mongo spec", () => {
       await frame.waitFor(`span[title="${dbId}"]`);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
+      await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
       await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.waitFor(RENDER_DELAY);
-      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
+      await frame.waitFor(`div[data-test="${collectionId}"]`, { visible: true });
 
       // delete container
 
       // click context menu for container
       await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
-      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
-      await frame.waitFor(LOADING_STATE_DELAY);
 
       // click delete container
-      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
+      await frame.waitFor(RENDER_DELAY);
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
       // confirm delete container
@@ -89,6 +88,8 @@ describe.skip("Collection Add and Delete Mongo spec", () => {
       await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
       // confirm delete database
+      await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
+      await frame.waitFor(RENDER_DELAY);
       await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());
 
       // click delete
