@@ -71,6 +71,8 @@ export var htmlSelectors = {
   dataTableScrollContainerSelector: ".dataTables_scroll",
   dataTableHeaderTypeSelector: "table thead th",
   dataTablePaginationButtonSelector: ".paginate_button",
+  dataTableHeaderTableSelector: "#storageTable_wrapper .dataTables_scrollHeadInner table",
+  dataTableBodyTableSelector: "#storageTable_wrapper .dataTables_scrollBody table",
   searchInputField: ".search-input",
   uploadDropdownSelector: "#upload-dropdown",
   navigationDropdownSelector: "#navigation-dropdown",
