@@ -17,5 +17,6 @@ function isValidOrigin(allowedOrigins: string[], event: MessageEvent): boolean {
       return true;
     }
   }
+  console.error(`Invalid parent frame origin decected: ${eventOrigin}`);
   return false;
 }

@@ -6,6 +6,9 @@ test.each`
   ${"https://cosmos.azure.us"}                       | ${false}
   ${"https://cosmos.azure.cn"}                       | ${false}
   ${"https://cosmos.microsoftazure.de"}              | ${false}
+  ${"https://portal.azure.com"}                      | ${false}
+  ${"https://portal.azure.us"}                       | ${false}
+  ${"https://portal.azure.cn"}                       | ${false}
   ${"https://subdomain.portal.azure.com"}            | ${false}
   ${"https://subdomain.portal.azure.us"}             | ${false}
   ${"https://subdomain.portal.azure.cn"}             | ${false}
