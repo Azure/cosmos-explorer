@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConflictResolutionComponent Path text field displayed 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <StyledChoiceGroupBase
+    label="Mode"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "LastWriterWins",
+          "text": "Last Write Wins (default)",
+        },
+        Object {
+          "key": "Custom",
+          "text": "Merge Procedure (custom)",
+        },
+      ]
+    }
+    selectedKey="LastWriterWins"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": undefined,
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": undefined,
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": undefined,
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+  />
+  <StyledTextFieldBase
+    id="conflictResolutionLwwTextField"
+    label="Conflict Resolver Property"
+    onChange={[Function]}
+    onRenderLabel={[Function]}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "borderColor": "",
+          "height": 25,
+          "selectors": Object {
+            ":disabled": Object {
+              "backgroundColor": undefined,
+              "borderColor": undefined,
+            },
+          },
+          "width": 300,
+        },
+      }
+    }
+    value=""
+  />
+</Stack>
+`;
+
+exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <StyledChoiceGroupBase
+    label="Mode"
+    onChange={[Function]}
+    options={
+      Array [
+        Object {
+          "key": "LastWriterWins",
+          "text": "Last Write Wins (default)",
+        },
+        Object {
+          "key": "Custom",
+          "text": "Merge Procedure (custom)",
+        },
+      ]
+    }
+    selectedKey="Custom"
+    styles={
+      Object {
+        "flexContainer": Array [
+          Object {
+            "selectors": Object {
+              ".ms-ChoiceField-field.is-checked::after": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-field.is-checked::before": Object {
+                "borderColor": "",
+              },
+              ".ms-ChoiceField-wrapper label": Object {
+                "fontFamily": undefined,
+                "fontSize": 14,
+                "padding": "2px 5px",
+                "whiteSpace": "nowrap",
+              },
+            },
+          },
+        ],
+      }
+    }
+  />
+  <StyledTextFieldBase
+    id="conflictResolutionCustomTextField"
+    label="Stored procedure"
+    onChange={[Function]}
+    onRenderLabel={[Function]}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "borderColor": "",
+          "height": 25,
+          "selectors": Object {
+            ":disabled": Object {
+              "backgroundColor": undefined,
+              "borderColor": undefined,
+            },
+          },
+          "width": 300,
+        },
+      }
+    }
+    value=""
+  />
+</Stack>
+`;
