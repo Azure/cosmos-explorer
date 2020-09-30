@@ -16,6 +16,6 @@ export async function login(connectionString: string): Promise<Frame> {
   return frame;
 }
 
-export function generateUniqueName(baseName: string, length: number = 8) {
+export function generateUniqueName(baseName: string, length = 8): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
 }
