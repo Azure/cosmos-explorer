@@ -22,7 +22,7 @@ export class JupyterLabAppFactory {
     term.addClass("terminalWidget");
 
     let panel = new Panel();
-    panel.addWidget(term as any /* TODO TEST THIS */);
+    panel.addWidget(term as any);
     panel.id = "main";
 
     // Attach the widget to the dom.
