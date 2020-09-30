@@ -35,6 +35,7 @@ const main = (): void => {
     options = {
       baseUrl: server,
       token: urlVars["token"],
+      appendToken: true,
       init: { body },
       fetch: window.parent.fetch
     };

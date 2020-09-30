@@ -6,8 +6,8 @@
   "dependencies": {
     "@azure/cosmos": "3.9.0",
     "@azure/cosmos-language-service": "0.0.4",
-    "@jupyterlab/services": "5.2.3",
-    "@jupyterlab/terminal": "2.2.2",
+    "@jupyterlab/services": "6.0.0-rc.2",
+    "@jupyterlab/terminal": "3.0.0-rc.2",
     "@microsoft/applicationinsights-web": "2.5.4",
     "@nteract/commutable": "7.3.2",
     "@nteract/connected-components": "6.8.2",
