@@ -70,7 +70,9 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
   private renderPanelHeader = (): JSX.Element => {
     return (
       <div className="firstdivbg headerline">
-        <span id="databaseTitle">{this.props.title}</span>
+        <span id="databaseTitle" role="heading" aria-level={2}>
+          {this.props.title}
+        </span>
         <IconButton
           ariaLabel="Close pane"
           title="Close pane"

@@ -9,7 +9,7 @@ import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import editable from "../../Common/EditableUtility";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -99,6 +99,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public ruToolTipText: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
+  public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
   private _databaseOffers: HashMap<DataModels.Offer>;
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
@@ -608,7 +609,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiMongoDB() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (this.container.isPreferredApiMongoDB()) {
         return true;
       }
 
@@ -660,13 +661,15 @@ export default class AddCollectionPane extends ContextualPaneBase {
         changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex
       });
     });
+
+    this.shouldCreateMongoWildcardIndex = ko.observable(false);
   }
 
   public getSharedThroughputDefault(): boolean {
     const subscriptionType: ViewModels.SubscriptionType =
       this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA) {
+    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
@@ -681,7 +684,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     return true;
   };
 
-  public open(databaseId?: string) {
+  public async open(databaseId?: string) {
     super.open();
     // TODO: Figure out if a database level partition split is about to happen once shared throughput read is available
     this.formWarnings("");
@@ -715,18 +718,40 @@ export default class AddCollectionPane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane
     };
 
+    await this.container.loadDatabaseOffers();
     this._onDatabasesChange(this.container.databases());
     this._setFocus();
 
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }
 
+  private transferFocus(elementIdToKeepVisible: string, elementIdToFocus: string): void {
+    document.getElementById(elementIdToKeepVisible).style.visibility = "visible";
+    document.getElementById(elementIdToFocus).focus();
+  }
+
+  private onFocusOut(_: any, event: any): void {
+    event.target.parentElement.style.visibility = "";
+  }
+
+  private onMouseOut(_: any, event: any): void {
+    event.target.style.visibility = "";
+  }
+
+  private onKeyDown(previousActiveElementId: string, _: any, event: KeyboardEvent): boolean {
+    if (event.shiftKey && event.keyCode == Constants.KeyCodes.Tab) {
+      document.getElementById(previousActiveElementId).focus();
+      return false;
+    } else {
+      // Execute default action
+      return true;
+    }
+  }
+
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
     const cachedDatabaseIdsList = _.map(newDatabaseIds, (database: ViewModels.Database) => {
       if (database && database.offer && database.offer()) {
         this._databaseOffers.set(database.id(), database.offer());
-      } else if (database && database.isDatabaseShared && database.isDatabaseShared()) {
-        database.readSettings();
       }
 
       return database.id();
@@ -810,9 +835,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let collectionId: string = this.collectionId().trim();
 
     let indexingPolicy: DataModels.IndexingPolicy;
+    let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
     if (this.container.isPreferredApiMongoDB()) {
-      indexingPolicy = SharedConstants.IndexingPolicies.Mongo;
+      createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {
         indexingPolicy = SharedConstants.IndexingPolicies.AllPropertiesIndexed;
@@ -842,7 +868,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
       autoPilotMaxThroughput,
       indexingPolicy,
       partitionKey,
-      uniqueKeyPolicy
+      uniqueKeyPolicy,
+      createMongoWildcardIndex
     };
 
     createCollection(createCollectionParams).then(

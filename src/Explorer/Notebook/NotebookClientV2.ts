@@ -33,7 +33,7 @@ import { Store, AnyAction, MiddlewareAPI, Middleware, Dispatch } from "redux";
 import configureStore from "./NotebookComponent/store";
 
 import { Notification } from "react-notification-system";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
 

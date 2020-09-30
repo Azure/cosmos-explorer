@@ -7,7 +7,7 @@ import * as CommonConstants from "../../../Common/Constants";
 import * as Constants from "../Constants";
 import * as Entities from "../Entities";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 
 // This is the format of the data we will have to pass to Datatable render callback,

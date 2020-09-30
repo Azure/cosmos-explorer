@@ -24,7 +24,7 @@
 <script type="text/html" id="add-database-inputs">
                                 <!-- Add database header - Start -->
   <div class="firstdivbg headerline">
-      <span id="databaseTitle" data-bind="text: title"></span>
+      <span id="databaseTitle" role="heading" aria-level="2" data-bind="text: title"></span>
       <div class="closeImg" role="button" aria-label="Close pane"
           data-bind="click: cancel, event: { keypress: onCloseKeyPress }" tabindex="0">
           <img src="../../../images/close-black.svg" title="Close" alt="Close" />
@@ -73,8 +73,8 @@
           </p>
 
           <input id="database-id" type="text" aria-required="true" autocomplete="off" pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'" placeholder="Type a new database id"
-              size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus"
+              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus, attr: { placeholder: databaseIdPlaceHolder }"
               aria-label="Database id" autofocus>
 
           <!-- Database provisioned throughput - Start -->

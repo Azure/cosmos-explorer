@@ -6,7 +6,7 @@ export enum Platform {
 
 interface ConfigContext {
   platform: Platform;
-  allowedParentFrameOrigins: RegExp;
+  allowedParentFrameOrigins: string[];
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -30,7 +30,13 @@ interface ConfigContext {
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
-  allowedParentFrameOrigins: /^https:\/\/portal\.azure\.com$|^https:\/\/portal\.azure\.us$|^https:\/\/portal\.azure\.cn$|^https:\/\/portal\.microsoftazure\.de$|^https:\/\/.+\.portal\.azure\.com$|^https:\/\/.+\.portal\.azure\.us$|^https:\/\/.+\.portal\.azure\.cn$|^https:\/\/.+\.portal\.microsoftazure\.de$|^https:\/\/main\.documentdb\.ext\.azure\.com$|^https:\/\/main\.documentdb\.ext\.microsoftazure\.de$|^https:\/\/main\.documentdb\.ext\.azure\.cn$|^https:\/\/main\.documentdb\.ext\.azure\.us$/,
+  allowedParentFrameOrigins: [
+    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`
+  ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -73,8 +79,13 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     const response = await fetch("./config.json");
     if (response.status === 200) {
       try {
-        const externalConfig = await response.json();
+        const { allowedParentFrameOrigins, ...externalConfig } = await response.json();
         Object.assign(configContext, externalConfig);
+        if (allowedParentFrameOrigins && allowedParentFrameOrigins.length > 0) {
+          updateConfigContext({
+            allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins]
+          });
+        }
       } catch (error) {
         console.error("Unable to parse json in config file");
         console.error(error);

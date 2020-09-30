@@ -24,7 +24,7 @@ import {
 } from "office-ui-fabric-react/lib/utilities/selection/index";
 import { StyleConstants } from "../../../Common/Constants";
 import { TextField, ITextFieldProps, ITextField } from "office-ui-fabric-react/lib/TextField";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
 import { QueriesClient } from "../../../Common/QueriesClient";

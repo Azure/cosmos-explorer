@@ -275,8 +275,6 @@ src/Shared/StorageUtility.test.ts
 src/Shared/StorageUtility.ts
 src/Shared/StringUtility.test.ts
 src/Shared/StringUtility.ts
-src/Shared/Telemetry/TelemetryConstants.ts
-src/Shared/Telemetry/TelemetryProcessor.ts
 src/Shared/appInsights.ts
 src/SparkClusterManager/ArcadiaResourceManager.ts
 src/SparkClusterManager/SparkClusterManager.ts

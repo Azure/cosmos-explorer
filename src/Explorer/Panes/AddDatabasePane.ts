@@ -7,7 +7,7 @@ import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import editable from "../../Common/EditableUtility";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
@@ -16,6 +16,7 @@ import { PlatformType } from "../../PlatformType";
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIdLabel: ko.Computed<string>;
+  public databaseIdPlaceHolder: ko.Computed<string>;
   public databaseId: ko.Observable<string>;
   public databaseIdTooltipText: ko.Computed<string>;
   public databaseLevelThroughputTooltipText: ko.Computed<string>;
@@ -70,6 +71,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseIdLabel = ko.computed<string>(() =>
       this.container.isPreferredApiCassandra() ? "Keyspace id" : "Database id"
     );
+
+    this.databaseIdPlaceHolder = ko.computed<string>(() =>
+      this.container.isPreferredApiCassandra() ? "Type a new keyspace id" : "Type a new database id"
+    );
+
     this.databaseIdTooltipText = ko.computed<string>(() => {
       const isCassandraAccount: boolean = this.container.isPreferredApiCassandra();
       return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${
@@ -331,7 +337,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const subscriptionType: ViewModels.SubscriptionType =
       this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA) {
+    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 

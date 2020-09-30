@@ -12,7 +12,7 @@ import editable from "../../Common/EditableUtility";
 import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
@@ -1181,7 +1181,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
       this.container.isRefreshingExplorer(false);
       this._setBaseline();
-      this.collection.readSettings();
       this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
       TelemetryProcessor.traceSuccess(
         Action.UpdateSettings,
@@ -1270,8 +1269,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   }
 
   public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
+    return super.onActivate().then(async () => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
+      const database: ViewModels.Database = this.collection.getDatabase();
+      await database.loadOffer();
     });
   }
 
