@@ -9,6 +9,13 @@ import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2020-04-01";
 
+export const getDatabaseAccountFullName = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string
+): string =>
+  `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
+
 /* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
 export async function listMongoDBDatabases(
   subscriptionId: string,
@@ -111,13 +118,11 @@ export async function listMongoDBCollections(
 
 /* Gets the MongoDB collection under an existing Azure Cosmos DB database account. */
 export async function getMongoDBCollection(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
+  accountFullName: string,
   databaseName: string,
   collectionName: string
 ): Promise<Types.MongoDBCollectionGetResults> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
+  const path = `${accountFullName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 

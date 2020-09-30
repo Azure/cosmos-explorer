@@ -18,6 +18,7 @@ import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/upd
 import SettingsTab from "../../Tabs/SettingsTabV2";
 import { throughputUnit } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
+import {MongoIndexingPolicyComponent, MongoIndexingPolicyComponentProps} from "./SettingsSubComponents/MongoIndexingPolicyComponent"
 import {
   getMaxRUs,
   hasDatabaseSharedThroughput,
@@ -41,6 +42,7 @@ import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubCo
 import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
+import { MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -114,11 +116,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private isFixedContainer: boolean;
   private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
+  private mongoIndexes: MongoIndex[];
 
   constructor(props: SettingsComponentProps) {
     super(props);
 
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
+    this.mongoIndexes = this.collection.mongoIndexes();
     this.container = this.collection?.container;
     this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
@@ -210,44 +214,38 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return false;
     }
 
-    if (
+    return (
       this.state.isScaleSaveable ||
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   public isDiscardSettingsButtonEnabled = (): boolean => {
-    if (
+    return (
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   private setAutoPilotStates = (): void => {
     const offer = this.collection?.offer && this.collection.offer();
     const offerAutopilotSettings = offer?.content?.offerAutopilotSettings;
 
-    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-        this.setState({
-          isAutoPilotSelected: true,
-          wasAutopilotOriginallySet: true,
-          autoPilotThroughput: offerAutopilotSettings.maxThroughput,
-          autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
-        });
-      }
+    if (
+      offerAutopilotSettings &&
+      offerAutopilotSettings.maxThroughput &&
+      AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)
+    ) {
+      this.setState({
+        isAutoPilotSelected: true,
+        wasAutopilotOriginallySet: true,
+        autoPilotThroughput: offerAutopilotSettings.maxThroughput,
+        autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
+      });
     }
   };
 
@@ -842,6 +840,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange
     };
 
+    const mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps = {
+      mongoIndexes: this.mongoIndexes,
+      onMongoIndexingPolicyDirtyChange: undefined
+    };
+
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
       collection: this.collection,
       container: this.container,
@@ -874,6 +877,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
+      });
+    } else if (this.mongoIndexes) {
+      tabs.push({
+        tab: SettingsV2TabTypes.IndexingPolicyTab,
+        content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps}/>
       });
     }
 

@@ -16,6 +16,7 @@ import {
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateMongoDBCollection,
+  getDatabaseAccountFullName,
   getMongoDBCollection
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
@@ -130,7 +131,11 @@ async function updateMongoDBCollection(
   accountName: string,
   newCollection: Collection
 ): Promise<Collection> {
-  const getResponse = await getMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
+  const getResponse = await getMongoDBCollection(
+    getDatabaseAccountFullName(subscriptionId, resourceGroup, accountName),
+    databaseId,
+    collectionId
+  );
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
     getResponse.properties.resource = newCollection as SqlContainerResource & ExtendedResourceProperties;
     const updateResponse = await createUpdateMongoDBCollection(

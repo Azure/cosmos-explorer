@@ -56,7 +56,6 @@ export class IndexingPolicyComponent extends React.Component<
       const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
       indexingPolicyEditorModel.setValue(value);
     }
-    this.onComponentUpdate();
   };
 
   private onComponentUpdate = (): void => {

@@ -1,3 +1,5 @@
+import { MongoIndex } from "../Utils/arm/generatedClients/2020-04-01/types";
+
 export interface DatabaseAccount {
   id: string;
   name: string;
@@ -98,6 +100,10 @@ export interface Collection extends Resource {
   changeFeedPolicy?: ChangeFeedPolicy;
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
+}
+
+export interface MongoCollection extends Collection {
+  mongoIndexes: MongoIndex[];
 }
 
 export interface Database extends Resource {

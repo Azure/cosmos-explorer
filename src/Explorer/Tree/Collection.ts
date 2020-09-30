@@ -40,6 +40,7 @@ import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
+import { MongoIndex } from "../../Utils/arm/generatedClients/2020-04-01/types";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -92,6 +93,7 @@ export default class Collection implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
+  public mongoIndexes: ko.Observable<MongoIndex[]>;
 
   constructor(
     container: Explorer,
@@ -117,6 +119,7 @@ export default class Collection implements ViewModels.Collection {
     this.changeFeedPolicy = ko.observable<DataModels.ChangeFeedPolicy>(data.changeFeedPolicy);
     this.analyticalStorageTtl = ko.observable(data.analyticalStorageTtl);
     this.geospatialConfig = ko.observable(data.geospatialConfig);
+    this.mongoIndexes = ko.observable((data as DataModels.MongoCollection).mongoIndexes);
 
     // TODO fix this to only replace non-excaped single quotes
     this.partitionKeyProperty =
