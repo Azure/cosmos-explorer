@@ -2,21 +2,22 @@ import "expect-puppeteer";
 import { generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
+
 const LOADING_STATE_DELAY = 2500;
 const RENDER_DELAY = 1000;
 
-describe("Collection Add and Delete SQL spec", () => {
-  it("creates a collection", async () => {
+describe("Collection Add and Delete Mongo spec", () => {
+  it("creates and deletes a collection", async () => {
     try {
       const dbId = generateUniqueName("TestDatabase");
       const collectionId = generateUniqueName("TestCollection");
       const sharedKey = generateUniqueName("SharedKey");
-      const frame = await login(process.env.PORTAL_RUNNER_CONNECTION_STRING);
+      const frame = await login(process.env.MONGO_CONNECTION_STRING);
 
       // create new collection
-      await frame.waitFor('button[data-test="New Container"]', { visible: true });
+      await frame.waitFor('button[data-test="New Collection"]', { visible: true });
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await frame.click('button[data-test="New Container"]');
+      await frame.click('button[data-test="New Collection"]');
 
       // check new database
       await frame.waitFor('input[data-test="addCollection-createNewDatabase"]');
@@ -97,7 +98,7 @@ describe("Collection Add and Delete SQL spec", () => {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `Test Failed ${testName}.jpg` });
+      await page.screenshot({ path: `Test Failed ${testName}.png` });
       throw error;
     }
   });
