@@ -2,7 +2,7 @@
 import Q from "q";
 import { schemeCategory10 } from "d3-scale-chromatic";
 import { selectAll, select } from "d3-selection";
-import { zoom, zoomIdentity, D3ZoomEvent } from "d3-zoom";
+import { zoom, zoomIdentity } from "d3-zoom";
 import { scaleOrdinal } from "d3-scale";
 import { forceSimulation, forceLink, forceCollide, forceManyBody } from "d3-force";
 import { interpolateNumber, interpolate } from "d3-interpolate";
