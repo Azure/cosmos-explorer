@@ -1,6 +1,5 @@
 import "expect-puppeteer";
-import crypto from "crypto";
-import { login } from "../utils/shared";
+import { generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const RENDER_DELAY = 400;
@@ -9,8 +8,8 @@ const LOADING_STATE_DELAY = 2500;
 describe("Collection Add and Delete Cassandra spec", () => {
   it("creates a collection", async () => {
     try {
-      const keyspaceId = `keyspaceid${crypto.randomBytes(8).toString("hex")}`;
-      const tableId = `tableid${crypto.randomBytes(3).toString("hex")}`;
+      const keyspaceId = generateUniqueName("keyspaceid");
+      const tableId = generateUniqueName("tableid");
       const frame = await login(process.env.CASSANDRA_CONNECTION_STRING);
 
       // create new table

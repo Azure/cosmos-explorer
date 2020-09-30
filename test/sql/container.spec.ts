@@ -1,6 +1,5 @@
 import "expect-puppeteer";
-import crypto from "crypto";
-import { login } from "../utils/shared";
+import { generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
@@ -9,9 +8,9 @@ const RENDER_DELAY = 1000;
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
     try {
-      const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
-      const collectionId = `TestCollection${crypto.randomBytes(8).toString("hex")}`;
-      const sharedKey = `SharedKey${crypto.randomBytes(8).toString("hex")}`;
+      const dbId = generateUniqueName("TestDatabase");
+      const collectionId = generateUniqueName("TestCollection");
+      const sharedKey = generateUniqueName("SharedKey");
       const frame = await login(process.env.PORTAL_RUNNER_CONNECTION_STRING);
 
       // create new collection

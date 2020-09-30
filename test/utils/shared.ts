@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { Frame } from "puppeteer";
 
 export async function login(connectionString: string): Promise<Frame> {
@@ -13,4 +14,8 @@ export async function login(connectionString: string): Promise<Frame> {
   await frame.type("input[class='inputToken']", connStr);
   await frame.click("input[value='Connect']");
   return frame;
+}
+
+export function generateUniqueName(baseName: string, length: number = 8) {
+  return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
 }
