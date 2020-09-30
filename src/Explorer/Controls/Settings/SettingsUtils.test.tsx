@@ -66,11 +66,6 @@ describe("SettingsUtils", () => {
   });
 
   describe("isDirty", () => {
-    const testStatefulValue = (baseline: isDirtyTypes, current: isDirtyTypes) => {
-      expect(isDirty(baseline, baseline)).toEqual(false);
-      expect(isDirty(baseline, current)).toEqual(true);
-    };
-
     const indexingPolicy = {
       automatic: true,
       indexingMode: "consistent",
@@ -78,24 +73,17 @@ describe("SettingsUtils", () => {
       excludedPaths: []
     } as DataModels.IndexingPolicy;
 
-    it("string", () => {
-      testStatefulValue("baseline", "current");
-    });
+    const cases = [
+      ["baseline", "current"],
+      [0, 1],
+      [true, false],
+      [undefined, indexingPolicy],
+      [indexingPolicy, { ...indexingPolicy, automatic: false }]
+    ];
 
-    it("number", () => {
-      testStatefulValue(0, 1);
-    });
-
-    it("boolean", () => {
-      testStatefulValue(true, false);
-    });
-
-    it("undefined object", () => {
-      testStatefulValue(undefined, indexingPolicy);
-    });
-
-    it("object", () => {
-      testStatefulValue(indexingPolicy, { ...indexingPolicy, automatic: false });
+    test.each(cases)("", (baseline: isDirtyTypes, current: isDirtyTypes) => {
+      expect(isDirty(baseline, baseline)).toEqual(false);
+      expect(isDirty(baseline, current)).toEqual(true);
     });
   });
 });

@@ -210,44 +210,38 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return false;
     }
 
-    if (
+    return (
       this.state.isScaleSaveable ||
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   public isDiscardSettingsButtonEnabled = (): boolean => {
-    if (
+    return (
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   private setAutoPilotStates = (): void => {
     const offer = this.collection?.offer && this.collection.offer();
     const offerAutopilotSettings = offer?.content?.offerAutopilotSettings;
 
-    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-        this.setState({
-          isAutoPilotSelected: true,
-          wasAutopilotOriginallySet: true,
-          autoPilotThroughput: offerAutopilotSettings.maxThroughput,
-          autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
-        });
-      }
+    if (
+      offerAutopilotSettings &&
+      offerAutopilotSettings.maxThroughput &&
+      AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)
+    ) {
+      this.setState({
+        isAutoPilotSelected: true,
+        wasAutopilotOriginallySet: true,
+        autoPilotThroughput: offerAutopilotSettings.maxThroughput,
+        autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
+      });
     }
   };
 
