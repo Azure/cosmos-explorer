@@ -50,7 +50,7 @@ export class ArmApiVersions {
   public static readonly arcadiaLivy: string = "2019-11-01-preview";
   public static readonly arm: string = "2015-11-01";
   public static readonly armFeatures: string = "2014-08-01-preview";
-  public static readonly publicVersion = "2020-04-01";
+  public static readonly publicVersion = "2020-03-01";
 }
 
 export class ArmResourceTypes {

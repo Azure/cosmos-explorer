@@ -7,7 +7,7 @@
 import { armRequest } from "../../request";
 import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2020-04-01";
+const apiVersion = "2020-03-01";
 
 /* Retrieves the metrics determined by the given filter for the given collection and region, split by partition. */
 export async function listMetrics(

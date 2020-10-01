@@ -7,7 +7,7 @@
 import { armRequest } from "../../request";
 import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2020-04-01";
+const apiVersion = "2020-03-01";
 
 /* Lists the MongoDB databases under an existing Azure Cosmos DB database account. */
 export async function listMongoDBDatabases(

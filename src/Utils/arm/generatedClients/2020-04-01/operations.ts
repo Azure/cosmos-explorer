@@ -7,7 +7,7 @@
 import { armRequest } from "../../request";
 import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2020-04-01";
+const apiVersion = "2020-03-01";
 
 /* Lists all of the available Cosmos DB Resource Provider operations. */
 export async function list(): Promise<Types.OperationListResult> {
