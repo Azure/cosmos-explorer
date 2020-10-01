@@ -111,7 +111,6 @@
     "@types/jest-environment-puppeteer": "4.3.2",
     "@types/memoize-one": "4.1.1",
     "@types/node": "12.11.1",
-    "@types/node-fetch": "1.6.9",
     "@types/promise.prototype.finally": "2.0.3",
     "@types/prop-types": "15.5.8",
     "@types/puppeteer": "3.0.1",
