@@ -36,6 +36,7 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
     options = {
       baseUrl: server,
       token: urlVars[TerminalQueryParams.Token],
+      appendToken: true,
       init: { body },
       fetch: window.parent.fetch
     };
