@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ToolTipLabelComponent renders 1`] = `
+<Fragment>
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 6,
+      }
+    }
+    verticalAlign="center"
+  >
+    <Text
+      style={
+        Object {
+          "fontWeight": 600,
+        }
+      }
+    >
+      sample tool tip label
+    </Text>
+    <StyledTooltipHostBase
+      calloutProps={
+        Object {
+          "gapSpace": 0,
+        }
+      }
+      content={
+        <span>
+          sample tool tip text
+        </span>
+      }
+      directionalHint={12}
+      styles={
+        Object {
+          "root": Object {
+            "display": "inline-block",
+            "float": "right",
+          },
+        }
+      }
+    >
+      <Memo(StyledIconBase)
+        ariaLabel="Info"
+        iconName="Info"
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": -3,
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
+  </Stack>
+</Fragment>
+`;
