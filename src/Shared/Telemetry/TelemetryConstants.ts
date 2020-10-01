@@ -71,6 +71,8 @@ export enum Action {
   NotebooksGitHubManageRepo,
   NotebooksGitHubCommit,
   NotebooksGitHubDisconnect,
+  NotebooksFetched,
+  NotebooksKernelSpecName,
   OpenTerminal,
   CreateMongoCollectionWithWildcardIndex,
   ClickCommandBarButton,

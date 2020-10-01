@@ -32,13 +32,14 @@ import {
 import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
 import { sessions, kernels } from "rx-jupyter";
 import { RecordOf } from "immutable";
+import { AnyAction } from "redux";
 
 import * as Constants from "../../../Common/Constants";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as CdbActions from "./actions";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action as TelemetryAction } from "../../../Shared/Telemetry/TelemetryConstants";
+import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as TextFile from "./contents/file/text-file";
@@ -49,7 +50,7 @@ interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
 }
 
-const logToTelemetry = (state: CdbAppState, title: string, error?: string) => {
+const logFailureToTelemetry = (state: CdbAppState, title: string, error?: string) => {
   TelemetryProcessor.traceFailure(TelemetryAction.NotebookErrorNotification, {
     databaseAccountName: state.cdb.databaseAccountName,
     defaultExperience: state.cdb.defaultExperience,
@@ -344,7 +345,7 @@ export const launchWebSocketKernelEpic = (
           kernelSpecToLaunch = currentKernelspecs.defaultKernelName;
           const msg = `No kernelspec name specified to launch, using default kernel: ${kernelSpecToLaunch}`;
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-          logToTelemetry(state$.value, "Launching alternate kernel", msg);
+          logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
         } else {
           return of(
             actions.launchKernelFailed({
@@ -370,7 +371,7 @@ export const launchWebSocketKernelEpic = (
           msg += ` Using default kernel: ${kernelSpecToLaunch}`;
         }
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-        logToTelemetry(state$.value, "Launching alternate kernel", msg);
+        logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
       }
 
       const sessionPayload = {
@@ -670,7 +671,7 @@ const notificationsToUserEpic = (
           const title = "Kernel restart";
           const msg = "Kernel successfully restarted";
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-          logToTelemetry(state$.value, title, msg);
+          logFailureToTelemetry(state$.value, title, msg);
           break;
         }
         case actions.RESTART_KERNEL_FAILED:
@@ -681,7 +682,7 @@ const notificationsToUserEpic = (
           const title = "Save failure";
           const msg = `Failed to save notebook: ${(action as actions.SaveFailed).payload.error}`;
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-          logToTelemetry(state$.value, title, msg);
+          logFailureToTelemetry(state$.value, title, msg);
           break;
         }
         case actions.FETCH_CONTENT_FAILED: {
@@ -690,7 +691,7 @@ const notificationsToUserEpic = (
           const title = "Fetching content failure";
           const msg = `Failed to fetch notebook content: ${filepath}, error: ${typedAction.payload.error}`;
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-          logToTelemetry(state$.value, title, msg);
+          logFailureToTelemetry(state$.value, title, msg);
           break;
         }
       }
@@ -715,7 +716,7 @@ const handleKernelConnectionLostEpic = (
 
       const msg = "Notebook was disconnected from kernel";
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-      logToTelemetry(state, "Error", "Kernel connection error");
+      logFailureToTelemetry(state, "Error", "Kernel connection error");
 
       const host = selectors.currentHost(state);
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host as RecordOf<JupyterHostRecordProps>);
@@ -728,7 +729,7 @@ const handleKernelConnectionLostEpic = (
         const msg =
           "Restarted kernel too many times. Please reload the page to enable Data Explorer to restart the kernel automatically.";
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-        logToTelemetry(state, "Kernel restart error", msg);
+        logFailureToTelemetry(state, "Kernel restart error", msg);
 
         const explorer = window.dataExplorer;
         if (explorer) {
@@ -880,6 +881,75 @@ const closeContentFailedToFetchEpic = (
   );
 };
 
+/**
+ * Log notebook information to telemetry
+ * # raw cells, # markdown cells, # code cells, total
+ * @param action$
+ * @param state$
+ */
+const logNotebookInfoToTelemetryEpic = (
+  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  state$: StateObservable<AppState>
+): Observable<{}> => {
+  return action$.pipe(
+    ofType(actions.FETCH_CONTENT_FULFILLED),
+    mergeMap(action => {
+      const state = state$.value;
+      const contentRef = action.payload.contentRef;
+      const model = selectors.model(state, { contentRef });
+
+      // If it's not a notebook, we shouldn't be here
+      if (!model || model.type !== "notebook") {
+        return EMPTY;
+      }
+
+      const dataToLog = {
+        nbCodeCells: 0,
+        nbRawCells: 0,
+        nbMarkdownCells: 0,
+        nbCells: 0
+      };
+      for (let [id, cell] of selectors.notebook.cellMap(model)) {
+        switch (cell.cell_type) {
+          case "code":
+            dataToLog.nbCodeCells++;
+            break;
+          case "markdown":
+            dataToLog.nbMarkdownCells++;
+            break;
+          case "raw":
+            dataToLog.nbRawCells++;
+            break;
+        }
+        dataToLog.nbCells++;
+      }
+
+      TelemetryProcessor.trace(TelemetryAction.NotebooksFetched, ActionModifiers.Mark, dataToLog);
+      return EMPTY;
+    })
+  );
+};
+
+/**
+ * Kernel spec to start
+ * @param action$
+ * @param state$
+ */
+const logNotebookKernelToTelemetryEpic = (
+  action$: ActionsObservable<AnyAction>,
+  state$: StateObservable<AppState>
+): Observable<{}> => {
+  return action$.pipe(
+    ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
+    mergeMap(action => {
+      TelemetryProcessor.trace(TelemetryAction.NotebooksKernelSpecName, ActionModifiers.Mark, {
+        kernelSpecName: action.payload.kernel.name
+      });
+      return EMPTY;
+    })
+  );
+};
+
 export const allEpics = [
   addInitialCodeCellEpic,
   autoStartKernelEpic,
@@ -893,5 +963,7 @@ export const allEpics = [
   executeFocusedCellAndFocusNextEpic,
   closeUnsupportedMimetypesEpic,
   closeContentFailedToFetchEpic,
-  restartWebSocketKernelEpic
+  restartWebSocketKernelEpic,
+  logNotebookInfoToTelemetryEpic,
+  logNotebookKernelToTelemetryEpic
 ];
