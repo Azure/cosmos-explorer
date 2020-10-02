@@ -946,11 +946,13 @@ const traceNotebookInfoEpic = (
         dataToLog.nbCells++;
       }
 
-      return of(cdbActions.traceNotebookTelemetry({
-        action: TelemetryAction.NotebooksFetched,
-        actionModifier: ActionModifiers.Mark,
-        data: dataToLog
-      }));
+      return of(
+        cdbActions.traceNotebookTelemetry({
+          action: TelemetryAction.NotebooksFetched,
+          actionModifier: ActionModifiers.Mark,
+          data: dataToLog
+        })
+      );
     })
   );
 };
@@ -967,13 +969,15 @@ const traceNotebookKernelEpic = (
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
     mergeMap(action => {
-      return of(cdbActions.traceNotebookTelemetry({
-        action: TelemetryAction.NotebooksKernelSpecName,
-        actionModifier: ActionModifiers.Mark,
-        data: {
-          kernelSpecName: action.payload.kernel.name
-        }
-      }));
+      return of(
+        cdbActions.traceNotebookTelemetry({
+          action: TelemetryAction.NotebooksKernelSpecName,
+          actionModifier: ActionModifiers.Mark,
+          data: {
+            kernelSpecName: action.payload.kernel.name
+          }
+        })
+      );
     })
   );
 };

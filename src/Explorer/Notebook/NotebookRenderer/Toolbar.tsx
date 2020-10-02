@@ -187,7 +187,8 @@ const mapDispatchToProps = (
     dispatch(actions.moveCell({ id, contentRef, destinationId, above })),
   clearOutputs: () => dispatch(actions.clearOutputs({ id, contentRef })),
   deleteCell: () => dispatch(actions.deleteCell({ id, contentRef })),
-  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) => dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data }))
+  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) =>
+    dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data }))
 });
 
 const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
