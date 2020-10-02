@@ -72,17 +72,6 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       return state.set("hoveredCellId", typedAction.payload.cellId);
     }
 
-    case cdbActions.TRACE_NOTEBOOK_TELEMETRY: {
-      const typedAction = action as cdbActions.TraceNotebookTelemetryAction;
-      TelemetryProcessor.trace(typedAction.payload.action, typedAction.payload.actionModifier, {
-        ...typedAction.payload.data,
-        databaseAccountName: state.databaseAccountName,
-        defaultExperience: state.defaultExperience,
-        dataExplorerArea: Areas.Notebook
-      });
-      return state;
-    }
-
     case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELTS: {
       const typedAction = action as cdbActions.UpdateNotebookParentDomEltAction;
       var parentEltsMap = state.get("currentNotebookParentElements");

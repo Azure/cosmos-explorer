@@ -45,6 +45,8 @@ import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as TextFile from "./contents/file/text-file";
 import { NotebookUtil } from "../NotebookUtil";
 import { FileSystemUtil } from "../FileSystemUtil";
+import * as cdbActions from "../NotebookComponent/actions";
+import { Areas } from "../../../Common/Constants";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
@@ -881,16 +883,36 @@ const closeContentFailedToFetchEpic = (
   );
 };
 
+const traceNotebookTelemetryEpic = (
+  action$: ActionsObservable<cdbActions.TraceNotebookTelemetryAction>,
+  state$: StateObservable<CdbAppState>
+): Observable<{}> => {
+  return action$.pipe(
+    ofType(cdbActions.TRACE_NOTEBOOK_TELEMETRY),
+    mergeMap(action => {
+      const state = state$.value;
+
+      TelemetryProcessor.trace(action.payload.action, action.payload.actionModifier, {
+        ...action.payload.data,
+        databaseAccountName: state.cdb.databaseAccountName,
+        defaultExperience: state.cdb.defaultExperience,
+        dataExplorerArea: Areas.Notebook
+      });
+      return EMPTY;
+    })
+  );
+};
+
 /**
  * Log notebook information to telemetry
  * # raw cells, # markdown cells, # code cells, total
  * @param action$
  * @param state$
  */
-const logNotebookInfoToTelemetryEpic = (
+const traceNotebookInfoEpic = (
   action$: ActionsObservable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
-): Observable<{}> => {
+): Observable<{} | cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
     mergeMap(action => {
@@ -924,28 +946,34 @@ const logNotebookInfoToTelemetryEpic = (
         dataToLog.nbCells++;
       }
 
-      TelemetryProcessor.trace(TelemetryAction.NotebooksFetched, ActionModifiers.Mark, dataToLog);
-      return EMPTY;
+      return of(cdbActions.traceNotebookTelemetry({
+        action: TelemetryAction.NotebooksFetched,
+        actionModifier: ActionModifiers.Mark,
+        data: dataToLog
+      }));
     })
   );
 };
 
 /**
- * Kernel spec to start
+ * Log Kernel spec to start
  * @param action$
  * @param state$
  */
-const logNotebookKernelToTelemetryEpic = (
+const traceNotebookKernelEpic = (
   action$: ActionsObservable<AnyAction>,
   state$: StateObservable<AppState>
-): Observable<{}> => {
+): Observable<cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
     mergeMap(action => {
-      TelemetryProcessor.trace(TelemetryAction.NotebooksKernelSpecName, ActionModifiers.Mark, {
-        kernelSpecName: action.payload.kernel.name
-      });
-      return EMPTY;
+      return of(cdbActions.traceNotebookTelemetry({
+        action: TelemetryAction.NotebooksKernelSpecName,
+        actionModifier: ActionModifiers.Mark,
+        data: {
+          kernelSpecName: action.payload.kernel.name
+        }
+      }));
     })
   );
 };
@@ -964,6 +992,7 @@ export const allEpics = [
   closeUnsupportedMimetypesEpic,
   closeContentFailedToFetchEpic,
   restartWebSocketKernelEpic,
-  logNotebookInfoToTelemetryEpic,
-  logNotebookKernelToTelemetryEpic
+  traceNotebookTelemetryEpic,
+  traceNotebookInfoEpic,
+  traceNotebookKernelEpic
 ];
