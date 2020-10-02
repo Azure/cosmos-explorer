@@ -64,7 +64,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
 
     items = items.concat([
       {
-        key: "Divider",
+        key: "Divider2",
         itemType: ContextualMenuItemType.Divider
       },
       {
@@ -88,7 +88,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: this.props.insertTextCellBelow
       },
       {
-        key: "Divider",
+        key: "Divider3",
         itemType: ContextualMenuItemType.Divider
       }
     ]);
@@ -112,7 +112,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
 
     if (moveItems.length > 0) {
       moveItems.push({
-        key: "Divider",
+        key: "Divider4",
         itemType: ContextualMenuItemType.Divider
       });
       items = items.concat(moveItems);
