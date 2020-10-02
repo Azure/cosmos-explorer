@@ -95,7 +95,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
     if (params.has("armAPIVersion")) {
-      const armAPIVersion = params.get("armAPIVersion");
+      const armAPIVersion = params.get("armAPIVersion") || "";
       updateConfigContext({ armAPIVersion });
     }
     if (params.has("platform")) {
