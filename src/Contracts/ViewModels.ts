@@ -15,7 +15,6 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
-import { MongoIndex } from "../Utils/arm/generatedClients/2020-04-01/types";
 import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
 
@@ -124,7 +123,6 @@ export interface Collection extends CollectionBase {
   changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
-  mongoIndexes?: ko.Observable<MongoIndex[]>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];

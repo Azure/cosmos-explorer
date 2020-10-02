@@ -128,14 +128,12 @@ export async function getMongoDBCollection(
 
 /* Create or update an Azure Cosmos DB MongoDB Collection */
 export async function createUpdateMongoDBCollection(
-  subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
+  accountFullName: string,
   databaseName: string,
   collectionName: string,
   body: Types.MongoDBCollectionCreateUpdateParameters
 ): Promise<Types.MongoDBCollectionGetResults | void> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
+  const path = `${accountFullName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 

@@ -5,7 +5,6 @@ import { client } from "../CosmosClient";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
-  getMongoDBCollection,
   listMongoDBCollections
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
@@ -14,9 +13,8 @@ import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationCon
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
-import { ContainerDefinition } from "@azure/cosmos";
 
-export async function readCollections(databaseId: string, accountFullName?: string): Promise<DataModels.Collection[]> {
+export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   let collections: DataModels.Collection[];
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
@@ -32,15 +30,7 @@ export async function readCollections(databaseId: string, accountFullName?: stri
         .database(databaseId)
         .containers.readAll()
         .fetchAll();
-      collections = await Promise.all(
-        sdkResponse.resources.map(async (container: ContainerDefinition & DataModels.Resource) => {
-          const mongoCollection = await getMongoDBCollection(accountFullName, databaseId, container.id);
-          return {
-            ...container,
-            mongoIndexes: mongoCollection.properties.resource.indexes
-          } as DataModels.MongoCollection;
-        })
-      );
+      collections = sdkResponse.resources as DataModels.Collection[]
     }
   } catch (error) {
     logConsoleError(`Error while querying containers for database ${databaseId}:\n ${JSON.stringify(error)}`);

@@ -102,10 +102,6 @@ export interface Collection extends Resource {
   geospatialConfig?: GeospatialConfig;
 }
 
-export interface MongoCollection extends Collection {
-  mongoIndexes: MongoIndex[];
-}
-
 export interface Database extends Resource {
   collections?: Collection[];
 }

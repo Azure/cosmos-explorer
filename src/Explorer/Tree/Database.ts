@@ -177,7 +177,7 @@ export default class Database implements ViewModels.Database {
 
   public async loadCollections(): Promise<void> {
     const collectionVMs: Collection[] = [];
-    const collections: DataModels.Collection[] = await readCollections(this.id(), this.container.databaseAccount().id);
+    const collections: DataModels.Collection[] = await readCollections(this.id());
     const deltaCollections = this.getDeltaCollections(collections);
 
     deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {

@@ -51,6 +51,7 @@ export async function updateCollection(
         .database(databaseId)
         .container(collectionId)
         .replace(newCollection as ContainerDefinition, options);
+
       collection = sdkResponse.resource as Collection;
     }
   } catch (error) {
@@ -138,14 +139,16 @@ async function updateMongoDBCollection(
   );
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
     getResponse.properties.resource = newCollection as SqlContainerResource & ExtendedResourceProperties;
+    
     const updateResponse = await createUpdateMongoDBCollection(
-      subscriptionId,
+      getDatabaseAccountFullName(subscriptionId,
       resourceGroup,
-      accountName,
+      accountName),
       databaseId,
       collectionId,
       getResponse as SqlContainerCreateUpdateParameters
     );
+    
     return updateResponse && (updateResponse.properties.resource as Collection);
   }
 
