@@ -25,6 +25,7 @@ interface ConfigContext {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
+  armAPIVersion?: string;
 }
 
 // Default configuration
@@ -93,6 +94,10 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     }
     // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
+    if (params.has("armAPIVersion")) {
+      const armAPIVersion = params.get("armAPIVersion") || "";
+      updateConfigContext({ armAPIVersion });
+    }
     if (params.has("platform")) {
       const platform = params.get("platform");
       switch (platform) {
