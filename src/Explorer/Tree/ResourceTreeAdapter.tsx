@@ -74,6 +74,30 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.triggerRender();
   }
 
+  private traceMyNotebookTreeInfo() {
+    const myNotebooksTree = this.myNotebooksContentRoot;
+    if (myNotebooksTree.children) {
+      // Count 1st generation children (tree is lazy-loaded)
+      const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
+      myNotebooksTree.children.forEach(treeNode => {
+        switch ((treeNode as NotebookContentItem).type) {
+          case NotebookContentItemType.File:
+            nodeCounts.files++;
+            break;
+          case NotebookContentItemType.Directory:
+            nodeCounts.directories++;
+            break;
+          case NotebookContentItemType.Notebook:
+            nodeCounts.notebooks++;
+            break;
+          default:
+            break;
+        }
+      });
+      TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
+    }
+  }
+
   public renderComponent(): JSX.Element {
     const dataRootNode = this.buildDataTree();
     const notebooksRootNode = this.buildNotebooksTrees();
@@ -116,7 +140,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     // Only if notebook server is available we can refresh
     if (this.container.notebookServerInfo().notebookServerEndpoint) {
       refreshTasks.push(
-        this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => this.triggerRender())
+        this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => {
+          this.triggerRender();
+          this.traceMyNotebookTreeInfo();
+        })
       );
     }
 
@@ -467,28 +494,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     myNotebooksTree.isAlphaSorted = true;
     // Remove "Delete" menu item from context menu
     myNotebooksTree.contextMenu = myNotebooksTree.contextMenu.filter(menuItem => menuItem.label !== "Delete");
-
-    if (myNotebooksTree.children) {
-      // Count 1st generation children (tree is lazy-loaded)
-      const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
-      myNotebooksTree.children.forEach(treeNode => {
-        switch ((treeNode.data as NotebookContentItem).type) {
-          case NotebookContentItemType.File:
-            nodeCounts.files++;
-            break;
-          case NotebookContentItemType.Directory:
-            nodeCounts.directories++;
-            break;
-          case NotebookContentItemType.Notebook:
-            nodeCounts.notebooks++;
-            break;
-          default:
-            break;
-        }
-      });
-      TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
-    }
-
     return myNotebooksTree;
   }
 
