@@ -44,7 +44,6 @@ interface Options {
 // TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
 export async function armRequest<T>({ host, path, apiVersion, method, body: requestBody }: Options): Promise<T> {
   const url = new URL(path, host);
-  console.log(configContext);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
   const response = await window.fetch(url.href, {
     method,
