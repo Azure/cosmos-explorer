@@ -56,8 +56,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.cache = new TableEntityCache();
     this.queryErrorMessage = ko.observable<string>();
     this.queryTablesTab = queryTablesTab;
-    // Enable Context menu for the data table.
-    DataTableContextMenu.contextMenuFactory(this, tableCommands);
     this.id = `tableEntityListViewModel${this.queryTablesTab.tabId}`;
     this.cqlQuery = ko.observable<string>(
       `SELECT * FROM ${this.queryTablesTab.collection.databaseId}.${this.queryTablesTab.collection.id()}`
