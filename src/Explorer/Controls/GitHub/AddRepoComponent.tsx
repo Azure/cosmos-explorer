@@ -6,7 +6,7 @@ import { RepoListItem } from "./GitHubReposComponent";
 import { ChildrenMargin } from "./GitHubStyleConstants";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { IGitHubRepo } from "../../../GitHub/GitHubClient";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import UrlUtility from "../../../Common/UrlUtility";
 import Explorer from "../../Explorer";
 

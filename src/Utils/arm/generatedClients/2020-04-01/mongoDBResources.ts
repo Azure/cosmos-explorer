@@ -39,7 +39,7 @@ export async function createUpdateMongoDBDatabase(
   body: Types.MongoDBDatabaseCreateUpdateParameters
 ): Promise<Types.MongoDBDatabaseGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Deletes an existing Azure Cosmos DB MongoDB database. */
@@ -73,7 +73,7 @@ export async function updateMongoDBDatabaseThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Migrate an Azure Cosmos DB MongoDB database from manual throughput to autoscale */
@@ -131,7 +131,7 @@ export async function createUpdateMongoDBCollection(
   body: Types.MongoDBCollectionCreateUpdateParameters
 ): Promise<Types.MongoDBCollectionGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Deletes an existing Azure Cosmos DB MongoDB Collection. */
@@ -168,7 +168,7 @@ export async function updateMongoDBCollectionThroughput(
   body: Types.ThroughputSettingsUpdateParameters
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: JSON.stringify(body) });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
 }
 
 /* Migrate an Azure Cosmos DB MongoDB collection from manual throughput to autoscale */

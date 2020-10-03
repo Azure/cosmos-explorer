@@ -3,7 +3,7 @@ import { trackEvent, trackException } from "./utils";
 
 jest.setTimeout(300000);
 
-describe("Collection CRUD", () => {
+describe.skip("Collection CRUD", () => {
   it("should complete collection crud", async () => {
     try {
       // Login to Azure Portal
@@ -50,7 +50,7 @@ describe("Collection CRUD", () => {
       //       .find('div[class="treeComponent dataResourceTree"]')
       //       .should("contain", dbId);
     } catch (error) {
-      await page.screenshot({path: 'failure.png'});
+      await page.screenshot({ path: "failure.png" });
       trackException(error);
       throw error;
     }

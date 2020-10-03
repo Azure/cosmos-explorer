@@ -1,164 +1,64 @@
-import * as SharedConstants from "../Shared/Constants";
-import { AddDbUtilities } from "../Shared/AddDatabaseUtility";
-import { CreateCollectionUtilities, CreateSqlCollectionUtilities, Utilities } from "./AddCollectionUtility";
-jest.mock("AddDatabaseUtility");
+import * as ko from "knockout";
+import { Collection, Database } from "../Contracts/ViewModels";
+import { getMaxThroughput } from "./AddCollectionUtility";
+import Explorer from "../Explorer/Explorer";
 
-const armEndpoint = "https://management.azure.com";
+describe("getMaxThroughput", () => {
+  it("default unlimited throughput setting", () => {
+    const defaults = {
+      storage: "100",
+      throughput: {
+        fixed: 400,
+        unlimited: 400,
+        unlimitedmax: 1000000,
+        unlimitedmin: 400,
+        shared: 400
+      }
+    };
 
-describe("Add Collection Utitlity", () => {
-  describe("createSqlCollection", () => {
-    it("should invoke createSqlCollectionWithARM if create database is false", async () => {
-      const properties = {
-        uniqueKeyPolicy: { uniqueKeys: [{ paths: [""] }] },
-        cd: false,
-        coll: "abc-collection",
-        db: "a1-db",
-        dba: "main",
-        offerThroughput: 50000,
-        pk: "state",
-        sid: "a1",
-        rg: "b1",
-        st: true,
-        defaultTtl: -1,
-        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
-        partitionKeyVersion: 2
-      };
-      const additionalOptions = {};
-      CreateSqlCollectionUtilities.createSqlCollectionWithARM = jest.fn().mockResolvedValue(undefined);
-      await CreateSqlCollectionUtilities.createSqlCollection(
-        armEndpoint,
-        properties.db,
-        properties.defaultTtl,
-        properties.coll,
-        properties.indexingPolicy,
-        properties.offerThroughput,
-        properties.pk,
-        properties.partitionKeyVersion,
-        properties.cd,
-        properties.st,
-        properties.sid,
-        properties.rg,
-        properties.dba,
-        properties.uniqueKeyPolicy,
-        additionalOptions
-      );
-      expect(CreateSqlCollectionUtilities.createSqlCollectionWithARM).toHaveBeenCalled();
-    });
-
-    it("should invoke createSqlDatabase + createSqlCollectionWithARM if create database is true", async () => {
-      const properties = {
-        uniqueKeyPolicy: { uniqueKeys: [{ paths: [""] }] },
-        cd: true,
-        coll: "abc-collection",
-        db: "a1-db",
-        dba: "main",
-        offerThroughput: 50000,
-        pk: "state",
-        sid: "a1",
-        rg: "b1",
-        st: true,
-        analyticalStorageTtl: -1,
-        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
-        partitionKeyVersion: 2
-      };
-      const additionalOptions = {};
-      const createSqlCollectionWithARMSpy = (CreateSqlCollectionUtilities.createSqlCollectionWithARM = jest
-        .fn()
-        .mockResolvedValue(undefined));
-      const createSqlDatabaseSpy = (AddDbUtilities.createSqlDatabase = jest.fn().mockResolvedValue(undefined));
-      await CreateSqlCollectionUtilities.createSqlCollection(
-        armEndpoint,
-        properties.db,
-        properties.analyticalStorageTtl,
-        properties.coll,
-        properties.indexingPolicy,
-        properties.offerThroughput,
-        properties.pk,
-        properties.partitionKeyVersion,
-        properties.cd,
-        properties.st,
-        properties.sid,
-        properties.rg,
-        properties.dba,
-        properties.uniqueKeyPolicy,
-        additionalOptions
-      );
-      expect(createSqlCollectionWithARMSpy).toHaveBeenCalled();
-      expect(createSqlDatabaseSpy).toHaveBeenCalled();
-    });
+    expect(getMaxThroughput(defaults, {} as Explorer)).toEqual(defaults.throughput.unlimited);
   });
-});
 
-describe("Add Collection Utitlity", () => {
-  describe("createGremlinGraph", () => {
-    it("should invoke createGremlinGraphWithARM if create database is false", async () => {
-      const properties = {
-        cd: false,
-        coll: "abc-collection",
-        db: "a1-db",
-        dba: "main",
-        offerThroughput: 50000,
-        pk: "state",
-        sid: "a1",
-        rg: "b1",
-        st: true,
-        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
-        partitionKeyVersion: 2
-      };
-      const additionalOptions = {};
-      CreateCollectionUtilities.createGremlinGraphWithARM = jest.fn().mockResolvedValue(undefined);
-      await CreateCollectionUtilities.createGremlinGraph(
-        armEndpoint,
-        properties.db,
-        properties.coll,
-        properties.indexingPolicy,
-        properties.offerThroughput,
-        properties.pk,
-        properties.partitionKeyVersion,
-        properties.cd,
-        properties.st,
-        properties.sid,
-        properties.rg,
-        properties.dba,
-        additionalOptions
+  describe("no unlimited throughput setting", () => {
+    const defaults = {
+      storage: "100",
+      throughput: {
+        fixed: 400,
+        unlimited: {
+          collectionThreshold: 3,
+          lessThanOrEqualToThreshold: 400,
+          greatThanThreshold: 500
+        },
+        unlimitedmax: 1000000,
+        unlimitedmin: 400,
+        shared: 400
+      }
+    };
+
+    const mockCollection1 = { id: ko.observable("collection1") } as Collection;
+    const mockCollection2 = { id: ko.observable("collection2") } as Collection;
+    const mockCollection3 = { id: ko.observable("collection3") } as Collection;
+    const mockCollection4 = { id: ko.observable("collection4") } as Collection;
+    const mockDatabase = {} as Database;
+    const mockContainer = {
+      databases: ko.observableArray([mockDatabase])
+    } as Explorer;
+
+    it("less than or equal to collection threshold", () => {
+      mockDatabase.collections = ko.observableArray([mockCollection1, mockCollection2]);
+      expect(getMaxThroughput(defaults, mockContainer)).toEqual(
+        defaults.throughput.unlimited.lessThanOrEqualToThreshold
       );
-      expect(CreateCollectionUtilities.createGremlinGraphWithARM).toHaveBeenCalled();
     });
 
-    it("should invoke createGremlinDatabase + createGremlinGraphWithARM if create database is true", async () => {
-      const properties = {
-        cd: true,
-        coll: "abc-collection",
-        db: "a1-db",
-        dba: "main",
-        offerThroughput: 50000,
-        pk: "state",
-        sid: "a1",
-        rg: "b1",
-        st: true,
-        indexingPolicy: SharedConstants.IndexingPolicies.AllPropertiesIndexed,
-        partitionKeyVersion: 2
-      };
-      const additionalOptions = {};
-      CreateCollectionUtilities.createGremlinGraphWithARM = jest.fn().mockResolvedValue(undefined);
-      AddDbUtilities.createGremlinDatabase = jest.fn().mockResolvedValue(undefined);
-      await CreateCollectionUtilities.createGremlinGraph(
-        armEndpoint,
-        properties.db,
-        properties.coll,
-        properties.indexingPolicy,
-        properties.offerThroughput,
-        properties.pk,
-        properties.partitionKeyVersion,
-        properties.cd,
-        properties.st,
-        properties.sid,
-        properties.rg,
-        properties.dba,
-        additionalOptions
-      );
-      expect(CreateCollectionUtilities.createGremlinGraphWithARM).toHaveBeenCalled();
-      expect(AddDbUtilities.createGremlinDatabase).toHaveBeenCalled();
+    it("exceeds collection threshold", () => {
+      mockDatabase.collections = ko.observableArray([
+        mockCollection1,
+        mockCollection2,
+        mockCollection3,
+        mockCollection4
+      ]);
+      expect(getMaxThroughput(defaults, mockContainer)).toEqual(defaults.throughput.unlimited.greatThanThreshold);
     });
   });
 });

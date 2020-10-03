@@ -66,7 +66,9 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
 
     return (
       <>
-        <div className={"firstdivbg headerline"}>{header}</div>
+        <div className={"firstdivbg headerline"} role="heading" aria-level={2}>
+          {header}
+        </div>
         <div className={"paneMainContent"}>{content}</div>
         {!this.props.showAuthorizeAccess && (
           <>

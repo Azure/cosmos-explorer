@@ -12,12 +12,13 @@ import editable from "../../Common/EditableUtility";
 import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import { updateOffer, updateCollection } from "../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { updateCollection } from "../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
@@ -181,7 +182,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public partitionKeyVisible: ko.PureComputed<boolean>;
   public partitionKeyValue: ko.Observable<string>;
   public isLargePartitionKeyEnabled: ko.Computed<boolean>;
-  public pendingNotification: ko.Observable<DataModels.Notification>;
   public requestUnitsUsageCost: ko.Computed<string>;
   public rupmOnId: string;
   public rupmOffId: string;
@@ -516,6 +516,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return false;
       }
 
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
       const numPartitions = this.collection.quotaInfo().numPartitions;
       return !!this.collection.partitionKeyProperty || numPartitions > 1;
     });
@@ -525,7 +529,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     );
 
     this.minRUs = ko.computed<number>(() => {
-      if (this.isTryCosmosDBSubscription()) {
+      if (this.isTryCosmosDBSubscription() || this.container.isServerlessEnabled()) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
       }
 
@@ -572,7 +576,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.maxRUs = ko.computed<number>(() => {
       const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription();
-      if (isTryCosmosDBSubscription) {
+      if (isTryCosmosDBSubscription || this.container.isServerlessEnabled()) {
         return Constants.TryCosmosExperience.maxRU;
       }
 
@@ -748,7 +752,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         if (
           this.rupm() === Constants.RUPMStates.on &&
           this.throughput() >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo().numPartitions
+            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo()?.numPartitions
         ) {
           return false;
         }
@@ -858,7 +862,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.ttlOnDefaultFocused = ko.observable<boolean>(false);
     this.ttlOnFocused = ko.observable<boolean>(false);
     this.indexingPolicyElementFocused = ko.observable<boolean>(false);
-    this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
 
     this._offerReplacePending = ko.pureComputed<boolean>(() => {
       const offer = this.collection && this.collection.offer && this.collection.offer();
@@ -1009,8 +1012,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     );
   }
 
-  public onSaveClick = (): Q.Promise<any> => {
-    let promises: Q.Promise<void>[] = [];
+  public onSaveClick = async (): Promise<any> => {
     this.isExecutionError(false);
 
     this.isExecuting(true);
@@ -1023,50 +1025,60 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     const newCollectionAttributes: any = {};
 
-    if (this.shouldUpdateCollection()) {
-      let defaultTtl: number;
-      switch (this.timeToLive()) {
-        case "on":
-          defaultTtl = Number(this.timeToLiveSeconds());
-          break;
-        case "on-nodefault":
-          defaultTtl = -1;
-          break;
-        case "off":
-        default:
-          defaultTtl = undefined;
-          break;
-      }
+    try {
+      if (this.shouldUpdateCollection()) {
+        let defaultTtl: number;
+        switch (this.timeToLive()) {
+          case "on":
+            defaultTtl = Number(this.timeToLiveSeconds());
+            break;
+          case "on-nodefault":
+            defaultTtl = -1;
+            break;
+          case "off":
+          default:
+            defaultTtl = undefined;
+            break;
+        }
 
-      newCollectionAttributes.defaultTtl = defaultTtl;
+        newCollectionAttributes.defaultTtl = defaultTtl;
 
-      newCollectionAttributes.indexingPolicy = this.indexingPolicyContent();
+        newCollectionAttributes.indexingPolicy = this.indexingPolicyContent();
 
-      newCollectionAttributes.changeFeedPolicy =
-        this.changeFeedPolicyVisible() && this.changeFeedPolicyToggled() === ChangeFeedPolicyToggledState.On
-          ? ({
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
-            } as DataModels.ChangeFeedPolicy)
+        newCollectionAttributes.changeFeedPolicy =
+          this.changeFeedPolicyVisible() && this.changeFeedPolicyToggled() === ChangeFeedPolicyToggledState.On
+            ? ({
+                retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
+              } as DataModels.ChangeFeedPolicy)
+            : undefined;
+
+        newCollectionAttributes.analyticalStorageTtl = this.isAnalyticalStorageEnabled
+          ? this.analyticalStorageTtlSelection() === "on"
+            ? Number(this.analyticalStorageTtlSeconds())
+            : Constants.AnalyticalStorageTtl.Infinite
           : undefined;
 
-      newCollectionAttributes.analyticalStorageTtl = this.isAnalyticalStorageEnabled
-        ? this.analyticalStorageTtlSelection() === "on"
-          ? Number(this.analyticalStorageTtlSeconds())
-          : Constants.AnalyticalStorageTtl.Infinite
-        : undefined;
+        newCollectionAttributes.geospatialConfig = {
+          type: this.geospatialConfigType()
+        };
 
-      newCollectionAttributes.geospatialConfig = {
-        type: this.geospatialConfigType()
-      };
+        const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
+        if (!!conflictResolutionChanges) {
+          newCollectionAttributes.conflictResolutionPolicy = conflictResolutionChanges;
+        }
 
-      const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
-      if (!!conflictResolutionChanges) {
-        newCollectionAttributes.conflictResolutionPolicy = conflictResolutionChanges;
-      }
+        const newCollection: DataModels.Collection = _.extend(
+          {},
+          this.collection.rawDataModel,
+          newCollectionAttributes
+        );
+        const updatedCollection: DataModels.Collection = await updateCollection(
+          this.collection.databaseId,
+          this.collection.id(),
+          newCollection
+        );
 
-      const newCollection: DataModels.Collection = _.extend({}, this.collection.rawDataModel, newCollectionAttributes);
-      const updateCollectionPromise = updateCollection(this.collection.databaseId, this.collection, newCollection).then(
-        (updatedCollection: DataModels.Collection) => {
+        if (updatedCollection) {
           this.collection.rawDataModel = updatedCollection;
           this.collection.defaultTtl(updatedCollection.defaultTtl);
           this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
@@ -1076,164 +1088,132 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
           this.collection.geospatialConfig(updatedCollection.geospatialConfig);
         }
-      );
-
-      promises.push(updateCollectionPromise);
-    }
-
-    if (
-      this.throughput.editableIsDirty() ||
-      this.rupm.editableIsDirty() ||
-      this._isAutoPilotDirty() ||
-      this._hasProvisioningTypeChanged()
-    ) {
-      const newThroughput = this.throughput();
-      const isRUPerMinuteThroughputEnabled: boolean = this.rupm() === Constants.RUPMStates.on;
-      let newOffer: DataModels.Offer = _.extend({}, this.collection.offer());
-      const originalThroughputValue: number = this.throughput.getEditableOriginalValue();
-
-      if (newOffer.content) {
-        newOffer.content.offerThroughput = newThroughput;
-        newOffer.content.offerIsRUPerMinuteThroughputEnabled = isRUPerMinuteThroughputEnabled;
-      } else {
-        newOffer = _.extend({}, newOffer, {
-          content: {
-            offerThroughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
-          }
-        });
-      }
-
-      const headerOptions: RequestOptions = { initialHeaders: {} };
-
-      if (this.isAutoPilotSelected()) {
-        if (!this.hasAutoPilotV2FeatureFlag()) {
-          newOffer.content.offerAutopilotSettings = {
-            maxThroughput: this.autoPilotThroughput()
-          };
-        } else {
-          newOffer.content.offerAutopilotSettings = {
-            tier: this.selectedAutoPilotTier()
-          };
-        }
-
-        // user has changed from provisioned --> autoscale
-        if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
-          headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
-          delete newOffer.content.offerAutopilotSettings;
-        } else {
-          delete newOffer.content.offerThroughput;
-        }
-      } else {
-        this.isAutoPilotSelected(false);
-        this.userCanChangeProvisioningTypes(false || !this.hasAutoPilotV2FeatureFlag());
-
-        // user has changed from autoscale --> provisioned
-        if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
-          headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
-        } else {
-          delete newOffer.content.offerAutopilotSettings;
-        }
       }
 
       if (
-        this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-        newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-        this.container != null
+        this.throughput.editableIsDirty() ||
+        this.rupm.editableIsDirty() ||
+        this._isAutoPilotDirty() ||
+        this._hasProvisioningTypeChanged()
       ) {
-        const requestPayload = {
-          subscriptionId: userContext.subscriptionId,
-          databaseAccountName: userContext.databaseAccount.name,
-          resourceGroup: userContext.resourceGroup,
-          databaseName: this.collection.databaseId,
-          collectionName: this.collection.id(),
-          throughput: newThroughput,
-          offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
-        };
-        const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
-          () => {
-            this.collection.offer().content.offerThroughput = originalThroughputValue;
-            this.throughput(originalThroughputValue);
-            this.notificationStatusInfo(
-              throughputApplyDelayedMessage(
-                this.isAutoPilotSelected(),
-                originalThroughputValue,
-                this._getThroughputUnit(),
-                this.collection.databaseId,
-                this.collection.id(),
-                newThroughput
-              )
-            );
-            this.throughput.valueHasMutated(); // force component re-render
-          },
-          (error: any) => {
-            TelemetryProcessor.traceFailure(
-              Action.UpdateSettings,
-              {
-                databaseAccountName: this.container.databaseAccount().name,
-                databaseName: this.collection && this.collection.databaseId,
-                collectionName: this.collection && this.collection.id(),
-                defaultExperience: this.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle(),
-                error: error
-              },
-              startKey
-            );
-          }
-        );
-        promises.push(Q(updateOfferBeyondLimitPromise));
-      } else {
-        const updateOfferPromise = updateOffer(this.collection.offer(), newOffer, headerOptions).then(
-          (updatedOffer: DataModels.Offer) => {
-            this.collection.offer(updatedOffer);
-            this.collection.offer.valueHasMutated();
-          }
-        );
+        const newThroughput = this.throughput();
+        const isRUPerMinuteThroughputEnabled: boolean = this.rupm() === Constants.RUPMStates.on;
+        let newOffer: DataModels.Offer = _.extend({}, this.collection.offer());
+        const originalThroughputValue: number = this.throughput.getEditableOriginalValue();
 
-        promises.push(updateOfferPromise);
-      }
-    }
-
-    if (promises.length === 0) {
-      this.isExecuting(false);
-    }
-
-    return Q.all(promises)
-      .then(
-        () => {
-          this.container.isRefreshingExplorer(false);
-          this._setBaseline();
-          this.collection.readSettings();
-          this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-          TelemetryProcessor.traceSuccess(
-            Action.UpdateSettings,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
-        },
-        (reason: any) => {
-          this.container.isRefreshingExplorer(false);
-          this.isExecutionError(true);
-          console.error(reason);
-          TelemetryProcessor.traceFailure(
-            Action.UpdateSettings,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
+        if (newOffer.content) {
+          newOffer.content.offerThroughput = newThroughput;
+          newOffer.content.offerIsRUPerMinuteThroughputEnabled = isRUPerMinuteThroughputEnabled;
+        } else {
+          newOffer = _.extend({}, newOffer, {
+            content: {
+              offerThroughput: newThroughput,
+              offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+            }
+          });
         }
-      )
-      .finally(() => this.isExecuting(false));
+
+        const headerOptions: RequestOptions = { initialHeaders: {} };
+
+        if (this.isAutoPilotSelected()) {
+          if (!this.hasAutoPilotV2FeatureFlag()) {
+            newOffer.content.offerAutopilotSettings = {
+              maxThroughput: this.autoPilotThroughput()
+            };
+          } else {
+            newOffer.content.offerAutopilotSettings = {
+              tier: this.selectedAutoPilotTier()
+            };
+          }
+
+          // user has changed from provisioned --> autoscale
+          if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
+            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
+            delete newOffer.content.offerAutopilotSettings;
+          } else {
+            delete newOffer.content.offerThroughput;
+          }
+        } else {
+          this.isAutoPilotSelected(false);
+          this.userCanChangeProvisioningTypes(false || !this.hasAutoPilotV2FeatureFlag());
+
+          // user has changed from autoscale --> provisioned
+          if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
+            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
+          } else {
+            delete newOffer.content.offerAutopilotSettings;
+          }
+        }
+
+        if (
+          this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+          newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+          this.container != null
+        ) {
+          const requestPayload = {
+            subscriptionId: userContext.subscriptionId,
+            databaseAccountName: userContext.databaseAccount.name,
+            resourceGroup: userContext.resourceGroup,
+            databaseName: this.collection.databaseId,
+            collectionName: this.collection.id(),
+            throughput: newThroughput,
+            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+          };
+
+          await updateOfferThroughputBeyondLimit(requestPayload);
+          this.collection.offer().content.offerThroughput = originalThroughputValue;
+          this.throughput(originalThroughputValue);
+          this.notificationStatusInfo(
+            throughputApplyDelayedMessage(
+              this.isAutoPilotSelected(),
+              originalThroughputValue,
+              this._getThroughputUnit(),
+              this.collection.databaseId,
+              this.collection.id(),
+              newThroughput
+            )
+          );
+          this.throughput.valueHasMutated(); // force component re-render
+        } else {
+          const updatedOffer: DataModels.Offer = await updateOffer(this.collection.offer(), newOffer, headerOptions);
+          this.collection.offer(updatedOffer);
+          this.collection.offer.valueHasMutated();
+        }
+      }
+
+      this.container.isRefreshingExplorer(false);
+      this._setBaseline();
+      this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
+      TelemetryProcessor.traceSuccess(
+        Action.UpdateSettings,
+        {
+          databaseAccountName: this.container.databaseAccount().name,
+          defaultExperience: this.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle()
+        },
+        startKey
+      );
+    } catch (error) {
+      this.container.isRefreshingExplorer(false);
+      this.isExecutionError(true);
+      console.error(error);
+      TelemetryProcessor.traceFailure(
+        Action.UpdateSettings,
+        {
+          databaseAccountName: this.container.databaseAccount().name,
+          databaseName: this.collection && this.collection.databaseId,
+          collectionName: this.collection && this.collection.id(),
+          defaultExperience: this.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          error: error
+        },
+        startKey
+      );
+    }
+
+    this.isExecuting(false);
   };
 
   public onRevertClick = (): Q.Promise<any> => {
@@ -1291,8 +1271,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   }
 
   public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
+    return super.onActivate().then(async () => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
+      const database: ViewModels.Database = this.collection.getDatabase();
+      await database.loadOffer();
     });
   }
 

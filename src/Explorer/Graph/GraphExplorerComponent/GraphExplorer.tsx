@@ -23,7 +23,7 @@ import { GraphConfig } from "../../Tabs/GraphTab";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as Constants from "../../../Common/Constants";
 import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
@@ -1371,7 +1371,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     if (collectionPartitionKeyProperty && d.hasOwnProperty(collectionPartitionKeyProperty)) {
       let pk = (d as any)[collectionPartitionKeyProperty];
-      if (typeof pk !== "string") {
+      if (typeof pk !== "string" && typeof pk !== "number" && typeof pk !== "boolean") {
         if (Array.isArray(pk) && pk.length > 0) {
           // pk is [{ id: 'id', _value: 'value' }]
           pk = pk[0]["_value"];

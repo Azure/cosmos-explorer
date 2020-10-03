@@ -228,42 +228,6 @@ export class IndexingPolicies {
     ],
     excludedPaths: <any>[]
   };
-
-  // todo - remove mongo indexing policy ticket # 616274
-  public static Mongo = {
-    indexingMode: "consistent",
-    automatic: true,
-    includedPaths: [
-      {
-        path: "/*",
-        indexes: [
-          {
-            kind: "Range",
-            dataType: "Number",
-            precision: -1
-          },
-          {
-            kind: "Range",
-            dataType: "String",
-            precision: -1
-          },
-          {
-            kind: "Spatial",
-            dataType: "Point"
-          },
-          {
-            kind: "Spatial",
-            dataType: "LineString"
-          },
-          {
-            kind: "Spatial",
-            dataType: "Polygon"
-          }
-        ]
-      }
-    ],
-    excludedPaths: <any>[]
-  };
 }
 
 export class SubscriptionUtilMappings {

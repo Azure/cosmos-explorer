@@ -1,6 +1,5 @@
 import Q from "q";
 import * as MessageHandler from "./MessageHandler";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 
 describe("Message Handler", () => {
   it("should handle cached message", async () => {

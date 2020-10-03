@@ -6,7 +6,7 @@ export enum Platform {
 
 interface ConfigContext {
   platform: Platform;
-  allowedParentFrameOrigins: RegExp;
+  allowedParentFrameOrigins: string[];
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -25,12 +25,19 @@ interface ConfigContext {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
+  armAPIVersion?: string;
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
-  allowedParentFrameOrigins: /^https:\/\/portal\.azure\.com$|^https:\/\/portal\.azure\.us$|^https:\/\/portal\.azure\.cn$|^https:\/\/portal\.microsoftazure\.de$|^https:\/\/.+\.portal\.azure\.com$|^https:\/\/.+\.portal\.azure\.us$|^https:\/\/.+\.portal\.azure\.cn$|^https:\/\/.+\.portal\.microsoftazure\.de$|^https:\/\/main\.documentdb\.ext\.azure\.com$|^https:\/\/main\.documentdb\.ext\.microsoftazure\.de$|^https:\/\/main\.documentdb\.ext\.azure\.cn$|^https:\/\/main\.documentdb\.ext\.azure\.us$/,
+  allowedParentFrameOrigins: [
+    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`
+  ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -73,19 +80,36 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     const response = await fetch("./config.json");
     if (response.status === 200) {
       try {
-        const externalConfig = await response.json();
+        const { allowedParentFrameOrigins, ...externalConfig } = await response.json();
         Object.assign(configContext, externalConfig);
+        if (allowedParentFrameOrigins && allowedParentFrameOrigins.length > 0) {
+          updateConfigContext({
+            allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins]
+          });
+        }
       } catch (error) {
         console.error("Unable to parse json in config file");
         console.error(error);
       }
     }
-    // Allow override of any config value with URL query parameters
+    // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
-    params.forEach((value, key) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (configContext as any)[key] = value;
-    });
+    if (params.has("armAPIVersion")) {
+      const armAPIVersion = params.get("armAPIVersion") || "";
+      updateConfigContext({ armAPIVersion });
+    }
+    if (params.has("platform")) {
+      const platform = params.get("platform");
+      switch (platform) {
+        default:
+          console.log("Invalid platform query parameter given, ignoring");
+          break;
+        case Platform.Portal:
+        case Platform.Hosted:
+        case Platform.Emulator:
+          updateConfigContext({ platform });
+      }
+    }
   } catch (error) {
     console.log("No configuration file found using defaults");
   }

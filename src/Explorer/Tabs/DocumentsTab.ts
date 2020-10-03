@@ -14,7 +14,7 @@ import TabsBase from "./TabsBase";
 import { DocumentsGridMetrics } from "../../Common/Constants";
 import { QueryUtils } from "../../Utils/QueryUtils";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";

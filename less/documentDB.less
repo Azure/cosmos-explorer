@@ -1522,6 +1522,10 @@ p {
     .tooltipVisible();
 }
 
+.infoTooltip a {
+    color: @AccentHigh;
+}
+
 .nowrap {
     white-space: nowrap;
 }
@@ -1559,6 +1563,10 @@ p {
 
 .infoTooltipWidth {
     min-width: @tooltipTextWidth;
+}
+
+.mongoWildcardIndexTooltipWidth {
+    min-width: @mongoWildcardIndexTooltipWidth;
 }
 
 .sharedCollectionThroughputTooltipWidth {
@@ -1646,7 +1654,7 @@ p {
 }
 
 .contextual-pane .collid {
-    border: 1px solid #bbbbbb;
+    border: 1px solid #605e5c;
     font-size: 10px;
     padding: 5px 10px;
     color: #000;
@@ -1739,7 +1747,7 @@ input::-webkit-calendar-picker-indicator {
     padding-right: 34px;
     color: @BaseDark;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
     margin: (2 * @MediumSpace) 0px;
 }
 
@@ -2074,7 +2082,7 @@ a:link {
 .resourceTreeAndTabs {
     display: flex;
     flex: 1 1 auto;
-    overflow: hidden;
+    overflow: auto;
     height: 100%;
 }
 
@@ -2421,22 +2429,6 @@ a:link {
 
 .tab [type=radio]:not(:checked)~label~.tabcontent {
     display: none;
-}
-
-::-webkit-input-placeholder {
-    color: #969696;
-}
-
-::-moz-placeholder {
-    color: #969696;
-}
-
-:-ms-input-placeholder {
-    color: #969696;
-}
-
-:-moz-placeholder {
-    color: #969696;
 }
 
 ::-ms-expand {
@@ -2988,6 +2980,10 @@ settings-pane {
     .enableAnalyticalStorageRadio:nth-child(n+2) {
         margin-left: @LargeSpace;
     }
+
+    .enableAnalyticalStorageRadioLabel {
+        padding: 0px
+    }
 }
 
 .addCollectionLabel {
@@ -3017,4 +3013,12 @@ settings-pane {
 
 .italic {
     font-style: italic;
+}
+
+.warningErrorContent a {
+    color: @AccentMediumHigh
+}
+
+.infoBoxContent a {
+    color: @AccentMediumHigh
 }

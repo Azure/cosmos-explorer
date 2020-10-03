@@ -19,7 +19,7 @@ import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import _ from "underscore";
 import { IPinnedRepo } from "../../Juno/JunoClient";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
@@ -64,7 +64,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.container.nonSystemDatabases.subscribe((databases: ViewModels.Database[]) => {
       // Clean up old databases
-      this.cleanupDatabasesKoSubs(databases.map((database: ViewModels.Database) => database.id()));
+      this.cleanupDatabasesKoSubs();
 
       databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
       this.triggerRender();
@@ -169,15 +169,18 @@ export class ResourceTreeAdapter implements ReactAdapter {
         className: "databaseHeader",
         children: [],
         isSelected: () => this.isDataNodeSelected(database.rid, "Database", undefined),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database),
-        onClick: isExpanded => {
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
+        onClick: async isExpanded => {
           // Rewritten version of expandCollapseDatabase():
-          if (!isExpanded) {
-            database.expandDatabase();
-            database.loadCollections();
-          } else {
+          if (isExpanded) {
             database.collapseDatabase();
+          } else {
+            if (databaseNode.children?.length === 0) {
+              databaseNode.isLoading = true;
+            }
+            await database.expandDatabase();
           }
+          databaseNode.isLoading = false;
           database.selectDatabase();
           this.container.onUpdateTabsButtons([]);
           this.container.tabsManager.refreshActiveTab(
@@ -191,7 +194,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         databaseNode.children.push({
           label: "Scale",
           isSelected: () =>
-            this.isDataNodeSelected(database.rid, "Database", ViewModels.CollectionTabKind.DatabaseSettings),
+            this.isDataNodeSelected(database.rid, "Database", [ViewModels.CollectionTabKind.DatabaseSettings]),
           onClick: database.onSettingsClick.bind(database)
         });
       }
@@ -202,6 +205,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
         .forEach((collection: ViewModels.Collection) =>
           databaseNode.children.push(this.buildCollectionNode(database, collection))
         );
+
+      database.collections.subscribe((collections: ViewModels.Collection[]) => {
+        collections.forEach((collection: ViewModels.Collection) =>
+          databaseNode.children.push(this.buildCollectionNode(database, collection))
+        );
+      });
 
       return databaseNode;
     });
@@ -235,14 +244,18 @@ export class ResourceTreeAdapter implements ReactAdapter {
           data: collection.rid
         });
       },
-      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Documents),
+      isSelected: () =>
+        this.isDataNodeSelected(collection.rid, "Collection", [
+          ViewModels.CollectionTabKind.Documents,
+          ViewModels.CollectionTabKind.Graph
+        ]),
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection)
     });
 
     children.push({
       label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
       onClick: collection.onSettingsClick.bind(collection),
-      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Settings)
+      isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Settings])
     });
 
     if (ResourceTreeAdapter.showScriptNodes(this.container)) {
@@ -264,7 +277,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       children.push({
         label: "Conflicts",
         onClick: collection.onConflictsClick.bind(collection),
-        isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Conflicts)
+        isSelected: () =>
+          this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Conflicts])
       });
     }
 
@@ -302,7 +316,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: sp.id(),
         onClick: sp.open.bind(sp),
         isSelected: () =>
-          this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.StoredProcedures),
+          this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.StoredProcedures]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container, sp)
       })),
       onClick: () => {
@@ -321,7 +335,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: udf.id(),
         onClick: udf.open.bind(udf),
         isSelected: () =>
-          this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.UserDefinedFunctions),
+          this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.UserDefinedFunctions]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container, udf)
       })),
       onClick: () => {
@@ -339,7 +353,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       children: collection.triggers().map((trigger: Trigger) => ({
         label: trigger.id(),
         onClick: trigger.open.bind(trigger),
-        isSelected: () => this.isDataNodeSelected(collection.rid, "Collection", ViewModels.CollectionTabKind.Triggers),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.rid, "Collection", [ViewModels.CollectionTabKind.Triggers]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container, trigger)
       })),
       onClick: () => {
@@ -546,41 +561,50 @@ export class ResourceTreeAdapter implements ReactAdapter {
           (activeTab as any).notebookPath() === item.path
         );
       },
-      contextMenu: createFileContextMenu
-        ? [
-            {
-              label: "Rename",
-              iconSrc: NotebookIcon,
-              onClick: () => this.container.renameNotebook(item)
-            },
-            {
-              label: "Delete",
-              iconSrc: DeleteIcon,
-              onClick: () => {
-                this.container.showOkCancelModalDialog(
-                  "Confirm delete",
-                  `Are you sure you want to delete "${item.name}"`,
-                  "Delete",
-                  () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-                  "Cancel",
-                  undefined
-                );
-              }
-            },
-            {
-              label: "Copy to ...",
-              iconSrc: CopyIcon,
-              onClick: () => this.copyNotebook(item)
-            },
-            {
-              label: "Download",
-              iconSrc: NotebookIcon,
-              onClick: () => this.container.downloadFile(item)
-            }
-          ]
-        : undefined,
+      contextMenu: createFileContextMenu && this.createFileContextMenu(item),
       data: item
     };
+  }
+
+  private createFileContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
+    let items: TreeNodeMenuItem[] = [
+      {
+        label: "Rename",
+        iconSrc: NotebookIcon,
+        onClick: () => this.container.renameNotebook(item)
+      },
+      {
+        label: "Delete",
+        iconSrc: DeleteIcon,
+        onClick: () => {
+          this.container.showOkCancelModalDialog(
+            "Confirm delete",
+            `Are you sure you want to delete "${item.name}"`,
+            "Delete",
+            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+            "Cancel",
+            undefined
+          );
+        }
+      },
+      {
+        label: "Copy to ...",
+        iconSrc: CopyIcon,
+        onClick: () => this.copyNotebook(item)
+      },
+      {
+        label: "Download",
+        iconSrc: NotebookIcon,
+        onClick: () => this.container.downloadFile(item)
+      }
+    ];
+
+    // "Copy to ..." isn't needed if github locations are not available
+    if (!this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+      items = items.filter(item => item.label !== "Copy to ...");
+    }
+
+    return items;
   }
 
   private copyNotebook = async (item: NotebookContentItem) => {
@@ -688,13 +712,19 @@ export class ResourceTreeAdapter implements ReactAdapter {
     window.requestAnimationFrame(() => this.parameters(Date.now()));
   }
 
-  private isDataNodeSelected(rid: string, nodeKind: string, subnodeKind: ViewModels.CollectionTabKind): boolean {
+  /**
+   * public for testing purposes
+   * @param rid
+   * @param nodeKind
+   * @param subnodeKinds
+   */
+  public isDataNodeSelected(rid: string, nodeKind: string, subnodeKinds: ViewModels.CollectionTabKind[]): boolean {
     if (!this.container.selectedNode || !this.container.selectedNode()) {
       return false;
     }
     const selectedNode = this.container.selectedNode();
 
-    if (subnodeKind === undefined) {
+    if (subnodeKinds === undefined || !Array.isArray(subnodeKinds)) {
       return selectedNode.rid === rid && selectedNode.nodeKind === nodeKind;
     } else {
       const activeTab = this.container.tabsManager.activeTab();
@@ -707,10 +737,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
       return (
         activeTab &&
-        activeTab.tabKind === subnodeKind &&
+        subnodeKinds.includes(activeTab.tabKind) &&
         selectedNode.rid === rid &&
         selectedSubnodeKind !== undefined &&
-        selectedSubnodeKind === subnodeKind
+        subnodeKinds.includes(selectedSubnodeKind)
       );
     }
   }
@@ -769,16 +799,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.koSubsCollectionIdMap.push(collectionId, sub);
   }
 
-  private cleanupDatabasesKoSubs(existingDatabaseIds: string[]): void {
-    const databaseIdsToRemove = this.databaseCollectionIdMap
-      .keys()
-      .filter((id: string) => existingDatabaseIds.indexOf(id) === -1);
-
-    databaseIdsToRemove.forEach((databaseId: string) => {
-      if (this.koSubsDatabaseIdMap.has(databaseId)) {
-        this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
-        this.koSubsDatabaseIdMap.delete(databaseId);
-      }
+  private cleanupDatabasesKoSubs(): void {
+    this.koSubsDatabaseIdMap.keys().forEach((databaseId: string) => {
+      this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
+      this.koSubsDatabaseIdMap.delete(databaseId);
 
       if (this.databaseCollectionIdMap.has(databaseId)) {
         this.databaseCollectionIdMap

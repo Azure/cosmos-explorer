@@ -15,7 +15,7 @@ import { refreshCachedResources } from "../DataAccessUtilityBase";
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting container ${collectionId}`);
   try {
-    if (window.authType === AuthType.AAD) {
+    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       await deleteCollectionWithARM(databaseId, collectionId);
     } else {
       await client()

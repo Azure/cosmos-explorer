@@ -15,7 +15,7 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
+import { refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -26,7 +26,7 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import TerminalTab from "./Tabs/TerminalTab";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { ActionContracts, MessageTypes } from "../Contracts/ExplorerContracts";
@@ -37,7 +37,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext } from "../ConfigContext";
+import { configContext, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -87,6 +87,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
+import { stringToBlob } from "../Utils/BlobUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -132,6 +133,7 @@ export default class Explorer {
   public isPreferredApiGraph: ko.Computed<boolean>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
@@ -211,6 +213,7 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
+  public isSettingsV2Enabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -420,6 +423,7 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
+    this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -521,22 +525,7 @@ export default class Explorer {
         return false;
       }
 
-      const capabilities = this.databaseAccount().properties && this.databaseAccount().properties.capabilities;
-
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object") {
-          if (capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-            // version 3.6
-            return true;
-          }
-        }
-      }
-
-      return false;
+      return this.isEnableMongoCapabilityPresent();
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -563,6 +552,21 @@ export default class Explorer {
         this.databaseAccount().kind.toLowerCase() === Constants.AccountKind.MongoDB
       ) {
         return true;
+      }
+
+      return false;
+    });
+
+    this.isEnableMongoCapabilityPresent = ko.computed(() => {
+      const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
+      if (!capabilities) {
+        return false;
+      }
+
+      for (let i = 0; i < capabilities.length; i++) {
+        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
+          return true;
+        }
       }
 
       return false;
@@ -973,6 +977,10 @@ export default class Explorer {
           ]
         });
         this.sparkClusterConnectionInfo.valueHasMutated();
+      }
+
+      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
+        updateUserContext({ useSDKOperations: true });
       }
 
       featureSubcription.dispose();
@@ -1419,94 +1427,58 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-
-    const refreshDatabases = (offers?: DataModels.Offer[]) => {
-      this._setLoadingStatusText("Fetching databases...");
-      readDatabases().then(
-        (databases: DataModels.Database[]) => {
-          this._setLoadingStatusText("Successfully fetched databases.");
-          TelemetryProcessor.traceSuccess(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree
+    this._setLoadingStatusText("Fetching databases...");
+    readDatabases().then(
+      (databases: DataModels.Database[]) => {
+        this._setLoadingStatusText("Successfully fetched databases.");
+        TelemetryProcessor.traceSuccess(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree
+          },
+          startKey
+        );
+        const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+        const deltaDatabases = this.getDeltaDatabases(databases);
+        this.addDatabasesToList(deltaDatabases.toAdd);
+        this.deleteDatabasesFromList(deltaDatabases.toDelete);
+        this.selectedNode(currentlySelectedNode);
+        this._setLoadingStatusText("Fetching containers...");
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+          .then(
+            () => {
+              this._setLoadingStatusText("Successfully fetched containers.");
+              deferred.resolve();
             },
-            startKey
-          );
-          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-          const deltaDatabases = this.getDeltaDatabases(databases, offers);
-          this.addDatabasesToList(deltaDatabases.toAdd);
-          this.deleteDatabasesFromList(deltaDatabases.toDelete);
-          this.selectedNode(currentlySelectedNode);
-          this._setLoadingStatusText("Fetching containers...");
-          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-            .then(
-              () => {
-                this._setLoadingStatusText("Successfully fetched containers.");
-                deferred.resolve();
-              },
-              reason => {
-                this._setLoadingStatusText("Failed to fetch containers.");
-                deferred.reject(reason);
-              }
-            )
-            .finally(() => this.isRefreshingExplorer(false));
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch databases.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    };
-
-    if (this.isServerlessEnabled()) {
-      // Serverless accounts don't support offers call
-      refreshDatabases();
-    } else {
-      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
-      this._setLoadingStatusText("Fetching offers...");
-      offerPromise.then(
-        (offers: DataModels.Offer[]) => {
-          this._setLoadingStatusText("Successfully fetched offers.");
-          refreshDatabases(offers);
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch offers.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    }
+            reason => {
+              this._setLoadingStatusText("Failed to fetch containers.");
+              deferred.reject(reason);
+            }
+          )
+          .finally(() => this.isRefreshingExplorer(false));
+      },
+      error => {
+        this._setLoadingStatusText("Failed to fetch databases.");
+        this.isRefreshingExplorer(false);
+        deferred.reject(error);
+        TelemetryProcessor.traceFailure(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree,
+            error: JSON.stringify(error)
+          },
+          startKey
+        );
+        NotificationConsoleUtils.logConsoleMessage(
+          ConsoleDataType.Error,
+          `Error while refreshing databases: ${JSON.stringify(error)}`
+        );
+      }
+    );
 
     return deferred.promise.then(
       () => {
@@ -1894,6 +1866,9 @@ export default class Explorer {
   }
 
   public findSelectedDatabase(): ViewModels.Database {
+    if (!this.selectedNode()) {
+      return null;
+    }
     if (this.selectedNode().nodeKind === "Database") {
       return _.find(this.databases(), (database: ViewModels.Database) => database.rid === this.selectedNode().rid);
     }
@@ -1954,12 +1929,17 @@ export default class Explorer {
 
       this._importExplorerConfigComplete = true;
 
+      updateConfigContext({
+        ARM_ENDPOINT: this.armEndpoint()
+      });
+
       updateUserContext({
         authorizationToken,
         masterKey,
-        databaseAccount
+        databaseAccount,
+        resourceGroup: inputs.resourceGroup,
+        subscriptionId: inputs.subscriptionId
       });
-      updateUserContext({ resourceGroup: inputs.resourceGroup, subscriptionId: inputs.subscriptionId });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
@@ -2095,16 +2075,13 @@ export default class Explorer {
       defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree
     });
-    databasesToLoad.forEach((database: ViewModels.Database) => {
-      loadCollectionPromises.push(
-        database.loadCollections().finally(() => {
-          const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.rid === database.rid);
-          if (isNewDatabase) {
-            database.expandDatabase();
-          }
-          this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
-        })
-      );
+    databasesToLoad.forEach(async (database: ViewModels.Database) => {
+      await database.loadCollections();
+      const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.rid === database.rid);
+      if (isNewDatabase) {
+        database.expandDatabase();
+      }
+      this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
     });
 
     Q.all(loadCollectionPromises).done(
@@ -2249,8 +2226,7 @@ export default class Explorer {
   }
 
   private getDeltaDatabases(
-    updatedDatabaseList: DataModels.Database[],
-    updatedOffersList: DataModels.Offer[]
+    updatedDatabaseList: DataModels.Database[]
   ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
@@ -2259,10 +2235,9 @@ export default class Explorer {
       );
       return !databaseExists;
     });
-    const databasesToAdd: ViewModels.Database[] = _.map(newDatabases, (newDatabase: DataModels.Database) => {
-      const databaseOffer: DataModels.Offer = this.getOfferForResource(updatedOffersList, newDatabase._self);
-      return new Database(this, newDatabase, databaseOffer);
-    });
+    const databasesToAdd: ViewModels.Database[] = newDatabases.map(
+      (newDatabase: DataModels.Database) => new Database(this, newDatabase)
+    );
 
     let databasesToDelete: ViewModels.Database[] = [];
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
@@ -2310,10 +2285,6 @@ export default class Explorer {
       }
     }
     return null;
-  }
-
-  private getOfferForResource(offers: DataModels.Offer[], resourceId: string): DataModels.Offer {
-    return _.find(offers, (offer: DataModels.Offer) => offer.resource === resourceId);
   }
 
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
@@ -2614,9 +2585,11 @@ export default class Explorer {
       throw new Error(error);
     }
 
+    const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Downloading ${notebookFile.path}`);
+
     return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
       (content: string) => {
-        const blob = new Blob([content], { type: "octet/stream" });
+        const blob = stringToBlob(content, "text/plain");
         if (navigator.msSaveBlob) {
           // for IE and Edge
           navigator.msSaveBlob(blob, notebookFile.name);
@@ -2633,12 +2606,16 @@ export default class Explorer {
           downloadLink.click();
           downloadLink.remove();
         }
+
+        clearMessage();
       },
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
           `Could not download notebook ${JSON.stringify(error)}`
         );
+
+        clearMessage();
       }
     );
   }
@@ -3113,12 +3090,6 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
-
-    TelemetryProcessor.trace(
-      Action.LoadingStatus,
-      ActionModifiers.Mark,
-      title !== "Welcome to Azure Cosmos DB" ? `Title: ${title}, Text: ${text}` : text
-    );
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {
@@ -3151,5 +3122,16 @@ export default class Explorer {
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
       }
     }
+  }
+
+  public async loadSelectedDatabaseOffer(): Promise<void> {
+    const database = this.findSelectedDatabase();
+    await database?.loadOffer();
+  }
+
+  public async loadDatabaseOffers(): Promise<void> {
+    this.databases()?.forEach(async (database: ViewModels.Database) => {
+      await database.loadOffer();
+    });
   }
 }

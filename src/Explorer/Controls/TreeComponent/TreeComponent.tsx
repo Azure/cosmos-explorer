@@ -17,12 +17,14 @@ import {
 
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
+import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
 
 export interface TreeNodeMenuItem {
   label: string;
   onClick: () => void;
   iconSrc?: string;
   isDisabled?: boolean;
+  styleClass?: string;
 }
 
 export interface TreeNode {
@@ -37,6 +39,7 @@ export interface TreeNode {
   data?: any; // Piece of data corresponding to this node
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
+  isLoading?: boolean;
   isSelected?: () => boolean;
   onClick?: (isExpanded: boolean) => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => void;
@@ -183,6 +186,9 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
           )}
           {node.contextMenu && this.renderContextMenuButton(node)}
         </div>
+        <div className="loadingIconContainer">
+          <img className="loadingIcon" src={LoadingIndicator_3Squares} hidden={!this.props.node.isLoading} />
+        </div>
         {node.children && (
           <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
             <div className="nodeChildren" data-test={node.label}>
@@ -256,13 +262,20 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
                 onContextMenu={e => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
               >
                 {props.item.onRenderIcon()}
-                <span className="treeComponentMenuItemLabel">{props.item.text}</span>
+                <span
+                  className={
+                    "treeComponentMenuItemLabel" + (props.item.className ? ` ${props.item.className}Label` : "")
+                  }
+                >
+                  {props.item.text}
+                </span>
               </div>
             ),
             items: node.contextMenu.map((menuItem: TreeNodeMenuItem) => ({
               key: menuItem.label,
               text: menuItem.label,
               disabled: menuItem.isDisabled,
+              className: menuItem.styleClass,
               onClick: menuItem.onClick,
               onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />
             }))
@@ -282,7 +295,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
       <img
         className="expandCollapseIcon"
         src={this.state.isExpanded ? TriangleDownIcon : TriangleRightIcon}
-        alt={this.state.isExpanded ? "Branch is expanded" : "Branch is collapsed"}
+        alt={this.state.isExpanded ? `${node.label} branch is expanded` : `${node.label} branch is collapsed`}
         onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onCollapseExpandIconKeyPress(event, node)}
         tabIndex={0}
         role="button"
