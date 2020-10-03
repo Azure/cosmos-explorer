@@ -5,7 +5,6 @@ import Q from "q";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
 import DataTableViewModel from "./DataTableViewModel";
-import DataTableContextMenu from "./DataTableContextMenu";
 import * as DataTableUtilities from "./DataTableUtilities";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
