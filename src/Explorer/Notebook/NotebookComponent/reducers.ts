@@ -1,7 +1,7 @@
 import { actions, CoreRecord, reducers as nteractReducers } from "@nteract/core";
 import { Action } from "redux";
 import { Areas } from "../../../Common/Constants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as cdbActions from "./actions";
 import { CdbRecord } from "./types";
 

@@ -55,6 +55,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       label: "Enable Injecting Notebook Viewer Link into the first cell",
       value: "true"
     },
+    { key: "feature.enablesettingsv2", label: "Enable SettingsV2 Tab", value: "true" },
     { key: "feature.canexceedmaximumvalue", label: "Can exceed max value", value: "true" },
     {
       key: "feature.enablefixedcollectionwithsharedthroughput",

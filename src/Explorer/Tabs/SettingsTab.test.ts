@@ -5,7 +5,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import Collection from "../Tree/Collection";
 import Database from "../Tree/Database";
 import Explorer from "../Explorer";
-import SettingsTab from "../Tabs/SettingsTab";
+import SettingsTab from "./SettingsTab";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { IndexingPolicies } from "../../Shared/Constants";
 
@@ -346,7 +346,6 @@ describe("Settings tab", () => {
 
       const offer: DataModels.Offer = null;
       const defaultTtl = 200;
-      const database = new Database(explorer, baseDatabase, null);
       const conflictResolutionPolicy = {
         mode: DataModels.ConflictResolutionMode.LastWriterWins,
         conflictResolutionPath: "/_ts"
@@ -507,7 +506,6 @@ describe("Settings tab", () => {
           }
         }
       };
-      const database = new Database(explorer, baseDatabase, null);
       const container: DataModels.Collection = {
         _rid: "_rid",
         _self: "",

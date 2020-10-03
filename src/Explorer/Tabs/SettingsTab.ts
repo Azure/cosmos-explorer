@@ -12,7 +12,7 @@ import editable from "../../Common/EditableUtility";
 import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
@@ -182,7 +182,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public partitionKeyVisible: ko.PureComputed<boolean>;
   public partitionKeyValue: ko.Observable<string>;
   public isLargePartitionKeyEnabled: ko.Computed<boolean>;
-  public pendingNotification: ko.Observable<DataModels.Notification>;
   public requestUnitsUsageCost: ko.Computed<string>;
   public rupmOnId: string;
   public rupmOffId: string;
@@ -517,6 +516,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return false;
       }
 
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
       const numPartitions = this.collection.quotaInfo().numPartitions;
       return !!this.collection.partitionKeyProperty || numPartitions > 1;
     });
@@ -526,7 +529,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     );
 
     this.minRUs = ko.computed<number>(() => {
-      if (this.isTryCosmosDBSubscription()) {
+      if (this.isTryCosmosDBSubscription() || this.container.isServerlessEnabled()) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
       }
 
@@ -573,7 +576,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.maxRUs = ko.computed<number>(() => {
       const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription();
-      if (isTryCosmosDBSubscription) {
+      if (isTryCosmosDBSubscription || this.container.isServerlessEnabled()) {
         return Constants.TryCosmosExperience.maxRU;
       }
 
@@ -749,7 +752,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         if (
           this.rupm() === Constants.RUPMStates.on &&
           this.throughput() >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo().numPartitions
+            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo()?.numPartitions
         ) {
           return false;
         }
@@ -859,7 +862,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.ttlOnDefaultFocused = ko.observable<boolean>(false);
     this.ttlOnFocused = ko.observable<boolean>(false);
     this.indexingPolicyElementFocused = ko.observable<boolean>(false);
-    this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
 
     this._offerReplacePending = ko.pureComputed<boolean>(() => {
       const offer = this.collection && this.collection.offer && this.collection.offer();
@@ -1181,7 +1183,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
       this.container.isRefreshingExplorer(false);
       this._setBaseline();
-      this.collection.readSettings();
       this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
       TelemetryProcessor.traceSuccess(
         Action.UpdateSettings,
@@ -1270,8 +1271,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   }
 
   public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
+    return super.onActivate().then(async () => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
+      const database: ViewModels.Database = this.collection.getDatabase();
+      await database.loadOffer();
     });
   }
 

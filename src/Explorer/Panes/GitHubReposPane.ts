@@ -5,7 +5,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../GitHub/GitHubClient";
 import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { JunoUtils } from "../../Utils/JunoUtils";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";

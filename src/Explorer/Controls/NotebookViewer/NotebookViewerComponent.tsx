@@ -30,6 +30,7 @@ export interface NotebookViewerComponentProps {
   isFavorite?: boolean;
   backNavigationText: string;
   hideInputs?: boolean;
+  hidePrompts?: boolean;
   onBackClick: () => void;
   onTagClick: (tag: string) => void;
 }
@@ -57,7 +58,7 @@ export class NotebookViewerComponent extends React.Component<
       databaseAccountName: undefined,
       defaultExperience: "NotebookViewer",
       isReadOnly: true,
-      cellEditorType: "codemirror",
+      cellEditorType: "monaco",
       autoSaveInterval: 365 * 24 * 3600 * 1000, // There is no way to turn off auto-save, set to 1 year
       contentProvider: contents.JupyterContentProvider // NotebookViewer only knows how to talk to Jupyter contents API
     });
@@ -148,7 +149,8 @@ export class NotebookViewerComponent extends React.Component<
         {this.state.showProgressBar && <ProgressIndicator />}
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
-          hideInputs: this.props.hideInputs
+          hideInputs: this.props.hideInputs,
+          hidePrompts: this.props.hidePrompts
         })}
 
         {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}

@@ -2,11 +2,10 @@ import * as Constants from "../../Common/Constants";
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import AuthHeadersUtil from "../../Platform/Hosted/Authorization";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import Q from "q";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../Common/HashMap";
@@ -109,11 +108,7 @@ export default class MongoShellTab extends TabsBase {
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.collection.databaseId;
     const collectionId = this.collection.id();
-    const apiEndpoint = EnvironmentUtility.getMongoBackendEndpoint(
-      this._container.serverId(),
-      userContext.databaseAccount.location,
-      this._container.extensionEndpoint()
-    ).replace("/api/mongo/explorer", "");
+    const apiEndpoint = this._container.extensionEndpoint();
     const encryptedAuthToken: string = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(
@@ -142,7 +137,7 @@ export default class MongoShellTab extends TabsBase {
       return;
     }
 
-    const dataToLog: string = event.data.data.logData;
+    const dataToLog = { message: event.data.data.logData };
     const logType: string = event.data.data.logType;
     const shellTraceId: string = event.data.data.traceId || "none";
 

@@ -8,7 +8,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import DeleteCollectionConfirmationPane from "./DeleteCollectionConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
@@ -134,11 +134,9 @@ describe("Delete Collection Confirmation Pane", () => {
         expect(telemetryProcessorSpy.called).toBe(true);
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
         expect(
-          telemetryProcessorSpy.calledWith(
-            Action.DeleteCollection,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          )
+          telemetryProcessorSpy.calledWith(Action.DeleteCollection, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          })
         ).toBe(true);
       });
     });

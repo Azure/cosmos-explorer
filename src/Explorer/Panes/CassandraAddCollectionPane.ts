@@ -7,7 +7,7 @@ import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -268,8 +268,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
           if (keyspace && keyspace.offer && !!keyspace.offer()) {
             this.keyspaceOffers.set(keyspace.id(), keyspace.offer());
-          } else if (keyspace && keyspace.isDatabaseShared && keyspace.isDatabaseShared()) {
-            keyspace.readSettings();
           }
           return keyspace.id();
         });
@@ -494,9 +492,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.selectedSharedAutoPilotTier(null);
     this.selectedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    this.throughput(
-      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
-    );
+    this.throughput(AddCollectionUtility.getMaxThroughput(this.container.collectionCreationDefaults, this.container));
     this.keyspaceThroughput(throughputDefaults.shared);
     this.maxThroughputRU(throughputDefaults.unlimitedmax);
     this.minThroughputRU(throughputDefaults.unlimitedmin);

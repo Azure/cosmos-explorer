@@ -1,4 +1,3 @@
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
@@ -8,19 +7,16 @@ import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import editable from "../../Common/EditableUtility";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { AddDbUtilities } from "../../Shared/AddDatabaseUtility";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
+import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { PlatformType } from "../../PlatformType";
-import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
-import { userContext } from "../../UserContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIdLabel: ko.Computed<string>;
+  public databaseIdPlaceHolder: ko.Computed<string>;
   public databaseId: ko.Observable<string>;
   public databaseIdTooltipText: ko.Computed<string>;
   public databaseLevelThroughputTooltipText: ko.Computed<string>;
@@ -75,6 +71,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseIdLabel = ko.computed<string>(() =>
       this.container.isPreferredApiCassandra() ? "Keyspace id" : "Database id"
     );
+
+    this.databaseIdPlaceHolder = ko.computed<string>(() =>
+      this.container.isPreferredApiCassandra() ? "Type a new keyspace id" : "Type a new database id"
+    );
+
     this.databaseIdTooltipText = ko.computed<string>(() => {
       const isCassandraAccount: boolean = this.container.isPreferredApiCassandra();
       return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${
@@ -304,74 +305,21 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.formErrors("");
     this.isExecuting(true);
 
-    const createDatabaseParameters: DataModels.RpParameters = {
-      db: addDatabasePaneStartMessage.database.id,
-      st: addDatabasePaneStartMessage.database.shared,
-      offerThroughput: addDatabasePaneStartMessage.offerThroughput,
-      sid: userContext.subscriptionId,
-      rg: userContext.resourceGroup,
-      dba: addDatabasePaneStartMessage.databaseAccountName
+    const createDatabaseParams: DataModels.CreateDatabaseParams = {
+      autoPilotMaxThroughput: this.maxAutoPilotThroughputSet(),
+      databaseId: addDatabasePaneStartMessage.database.id,
+      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
+      offerThroughput: addDatabasePaneStartMessage.offerThroughput
     };
 
-    const autopilotSettings = this._getAutopilotSettings();
-
-    if (this.container.isPreferredApiCassandra()) {
-      this._createKeyspace(createDatabaseParameters, autopilotSettings, startKey);
-    } else if (this.container.isPreferredApiMongoDB() && EnvironmentUtility.isAadUser()) {
-      this._createMongoDatabase(createDatabaseParameters, autopilotSettings, startKey);
-    } else if (this.container.isPreferredApiGraph() && EnvironmentUtility.isAadUser()) {
-      this._createGremlinDatabase(createDatabaseParameters, autopilotSettings, startKey);
-    } else if (this.container.isPreferredApiDocumentDB() && EnvironmentUtility.isAadUser()) {
-      this._createSqlDatabase(createDatabaseParameters, autopilotSettings, startKey);
-    } else {
-      this._createDatabase(offerThroughput, startKey);
-    }
-  }
-
-  private _createSqlDatabase(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ) {
-    AddDbUtilities.createSqlDatabase(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings).then(
-      () => {
-        Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-          this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
-        });
+    createDatabase(createDatabaseParams).then(
+      (database: DataModels.Database) => {
+        this._onCreateDatabaseSuccess(offerThroughput, startKey);
+      },
+      (reason: any) => {
+        this._onCreateDatabaseFailure(reason, offerThroughput, reason);
       }
     );
-  }
-
-  private _createMongoDatabase(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ) {
-    AddDbUtilities.createMongoDatabaseWithARM(
-      this.container.armEndpoint(),
-      createDatabaseParameters,
-      autoPilotSettings
-    ).then(() => {
-      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-        this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
-      });
-    });
-  }
-
-  private _createGremlinDatabase(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ) {
-    AddDbUtilities.createGremlinDatabase(
-      this.container.armEndpoint(),
-      createDatabaseParameters,
-      autoPilotSettings
-    ).then(() => {
-      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-        this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
-      });
-    });
   }
 
   public resetData() {
@@ -389,76 +337,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const subscriptionType: ViewModels.SubscriptionType =
       this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA) {
+    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
     return true;
-  }
-
-  private _createDatabase(offerThroughput: number, telemetryStartKey: number): void {
-    const autoPilot: DataModels.AutoPilotCreationSettings = this._isAutoPilotSelectedAndWhatTier();
-    const createRequest: DataModels.CreateDatabaseRequest = {
-      databaseId: this.databaseId().trim(),
-      offerThroughput,
-      databaseLevelThroughput: this.databaseCreateNewShared(),
-      autoPilot,
-      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
-    };
-    createDatabase(createRequest).then(
-      (database: DataModels.Database) => {
-        this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
-      },
-      (reason: any) => {
-        this._onCreateDatabaseFailure(reason, offerThroughput, reason);
-      }
-    );
-  }
-
-  private _createKeyspace(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ): void {
-    if (EnvironmentUtility.isAadUser()) {
-      this._createKeyspaceUsingRP(createDatabaseParameters, autoPilotSettings, startKey);
-    } else {
-      this._createKeyspaceUsingProxy(createDatabaseParameters.offerThroughput, startKey);
-    }
-  }
-
-  private _createKeyspaceUsingProxy(offerThroughput: number, telemetryStartKey: number): void {
-    const provisionThroughputQueryPart: string = this.databaseCreateNewShared()
-      ? `AND cosmosdb_provisioned_throughput=${offerThroughput}`
-      : "";
-    const createKeyspaceQuery: string = `CREATE KEYSPACE ${this.databaseId().trim()} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 } ${provisionThroughputQueryPart};`;
-    (this.container.tableDataClient as CassandraAPIDataClient)
-      .createKeyspace(
-        this.container.databaseAccount().properties.cassandraEndpoint,
-        this.container.databaseAccount().id,
-        this.container,
-        createKeyspaceQuery
-      )
-      .then(
-        () => {
-          this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
-        },
-        (reason: any) => {
-          this._onCreateDatabaseFailure(reason, offerThroughput, telemetryStartKey);
-        }
-      );
-  }
-
-  private _createKeyspaceUsingRP(
-    createKeyspaceParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ): void {
-    AddDbUtilities.createCassandraKeyspace(createKeyspaceParameters, autoPilotSettings).then(() => {
-      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-        this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
-      });
-    });
   }
 
   private _onCreateDatabaseSuccess(offerThroughput: number, startKey: number): void {
@@ -577,20 +460,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
             maxThroughput: this.maxAutoPilotThroughputSet() * 1
           }
         : { autopilotTier: this.selectedAutoPilotTier() };
-    }
-    return undefined;
-  }
-
-  private _getAutopilotSettings(): DataModels.RpOptions {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.maxAutoPilotThroughputSet() * 1 }
-          }
-        : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
     }
     return undefined;
   }

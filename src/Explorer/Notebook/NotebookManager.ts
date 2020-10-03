@@ -9,7 +9,7 @@ import * as Logger from "../../Common/Logger";
 import { HttpStatusCodes, Areas } from "../../Common/Constants";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
 import ko from "knockout";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { IContentProvider } from "@nteract/core";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
@@ -113,11 +113,14 @@ export default class NotebookManager {
       this.params.resourceTree.initializeGitHubRepos(pinnedRepos);
       this.params.resourceTree.triggerRender();
     });
-    this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
+    this.refreshPinnedRepos();
   }
 
   public refreshPinnedRepos(): void {
-    this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
+    const token = this.gitHubOAuthService.getTokenObservable()();
+    if (token) {
+      this.junoClient.getPinnedRepos(token.scope);
+    }
   }
 
   public async openPublishNotebookPane(

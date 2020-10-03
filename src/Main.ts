@@ -60,7 +60,7 @@ import "url-polyfill/url-polyfill.min";
 // import "./ReactDevTools"
 
 import * as ko from "knockout";
-import TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
 import * as ViewModels from "./Contracts/ViewModels";
 import { Action, ActionModifiers } from "./Shared/Telemetry/TelemetryConstants";
 

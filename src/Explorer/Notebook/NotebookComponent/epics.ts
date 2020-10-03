@@ -1,6 +1,6 @@
-import { empty, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
+import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
-import { ActionsObservable, StateObservable } from "redux-observable";
+import { StateObservable } from "redux-observable";
 import { ofType } from "redux-observable";
 import {
   mergeMap,
@@ -37,7 +37,7 @@ import * as Constants from "../../../Common/Constants";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as CdbActions from "./actions";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action as TelemetryAction } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
@@ -65,7 +65,7 @@ const logToTelemetry = (state: CdbAppState, title: string, error?: string) => {
  * @param state$
  */
 const addInitialCodeCellEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
@@ -77,7 +77,7 @@ const addInitialCodeCellEpic = (
 
       // If it's not a notebook, we shouldn't be here
       if (!model || model.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       const cellOrder = selectors.notebook.cellOrder(model);
@@ -90,7 +90,40 @@ const addInitialCodeCellEpic = (
         );
       }
 
-      return empty();
+      return EMPTY;
+    })
+  );
+};
+
+/**
+ * Automatically start kernel if kernelRef is present.
+ * The kernel is normally lazy-started when a cell is being executed, but a running kernel is
+ * required for code completion to work.
+ * For notebook viewer, there is no kernel
+ * @param action$
+ * @param state$
+ */
+export const autoStartKernelEpic = (
+  action$: Observable<actions.FetchContentFulfilled>,
+  state$: StateObservable<AppState>
+): Observable<{} | actions.CreateCellBelow> => {
+  return action$.pipe(
+    ofType(actions.FETCH_CONTENT_FULFILLED),
+    mergeMap(action => {
+      const state = state$.value;
+      const { contentRef, kernelRef } = action.payload;
+
+      if (!kernelRef) {
+        return EMPTY;
+      }
+
+      return of(
+        actions.restartKernel({
+          contentRef,
+          kernelRef,
+          outputHandling: "None"
+        })
+      );
     })
   );
 };
@@ -124,7 +157,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
  * Override from kernel-lifecycle to improve code mirror language intellisense
  * @param action$
  */
-export const acquireKernelInfoEpic = (action$: ActionsObservable<actions.NewKernelAction>) => {
+export const acquireKernelInfoEpic = (action$: Observable<actions.NewKernelAction>) => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
     switchMap((action: actions.NewKernelAction) => {
@@ -277,7 +310,7 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
  * @param state$
  */
 export const launchWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.LaunchKernelByNameAction>,
+  action$: Observable<actions.LaunchKernelByNameAction>,
   state$: StateObservable<CdbAppState>
 ) => {
   return action$.pipe(
@@ -288,7 +321,7 @@ export const launchWebSocketKernelEpic = (
       const state = state$.value;
       const host = selectors.currentHost(state);
       if (host.type !== "jupyter") {
-        return empty();
+        return EMPTY;
       }
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
       serverConfig.userPuid = getUserPuid();
@@ -299,7 +332,7 @@ export const launchWebSocketKernelEpic = (
 
       const content = selectors.content(state, { contentRef });
       if (!content || content.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       let kernelSpecToLaunch = kernelSpecName;
@@ -389,7 +422,7 @@ export const launchWebSocketKernelEpic = (
  * TODO: Remove this epic once the /restart endpoint is implemented.
  */
 export const restartWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.RestartKernel | actions.NewKernelAction>,
+  action$: Observable<actions.RestartKernel | actions.NewKernelAction>,
   state$: StateObservable<AppState>
 ) =>
   action$.pipe(
@@ -499,7 +532,7 @@ export const restartWebSocketKernelEpic = (
  * @param state$
  */
 const changeWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.ChangeKernelByName>,
+  action$: Observable<actions.ChangeKernelByName>,
   state$: StateObservable<AppState>
 ) => {
   return action$.pipe(
@@ -513,26 +546,26 @@ const changeWebSocketKernelEpic = (
       const state = state$.value;
       const host = selectors.currentHost(state);
       if (host.type !== "jupyter") {
-        return empty();
+        return EMPTY;
       }
 
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
       if (!oldKernelRef) {
-        return empty();
+        return EMPTY;
       }
 
       const oldKernel = selectors.kernel(state, { kernelRef: oldKernelRef });
       if (!oldKernel || oldKernel.type !== "websocket") {
-        return empty();
+        return EMPTY;
       }
       const { sessionId } = oldKernel;
       if (!sessionId) {
-        return empty();
+        return EMPTY;
       }
 
       const content = selectors.content(state, { contentRef });
       if (!content || content.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
       const {
         filepath,
@@ -581,7 +614,7 @@ const changeWebSocketKernelEpic = (
  * @param state$
  */
 const focusInitialCodeCellEpic = (
-  action$: ActionsObservable<actions.CreateCellAppend>,
+  action$: Observable<actions.CreateCellAppend>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.FocusCell> => {
   return action$.pipe(
@@ -593,7 +626,7 @@ const focusInitialCodeCellEpic = (
 
       // If it's not a notebook, we shouldn't be here
       if (!model || model.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       const cellOrder = selectors.notebook.cellOrder(model);
@@ -608,7 +641,7 @@ const focusInitialCodeCellEpic = (
         );
       }
 
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -619,10 +652,7 @@ const focusInitialCodeCellEpic = (
  * @param action$
  * @param state$
  */
-const notificationsToUserEpic = (
-  action$: ActionsObservable<any>,
-  state$: StateObservable<CdbAppState>
-): Observable<{}> => {
+const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservable<CdbAppState>): Observable<{}> => {
   return action$.pipe(
     ofType(
       actions.RESTART_KERNEL_SUCCESSFUL,
@@ -661,7 +691,7 @@ const notificationsToUserEpic = (
           break;
         }
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -672,7 +702,7 @@ const notificationsToUserEpic = (
  * @param state$
  */
 const handleKernelConnectionLostEpic = (
-  action$: ActionsObservable<actions.UpdateDisplayFailed>,
+  action$: Observable<actions.UpdateDisplayFailed>,
   state$: StateObservable<CdbAppState>
 ): Observable<CdbActions.UpdateKernelRestartDelayAction | actions.RestartKernel | {}> => {
   return action$.pipe(
@@ -701,7 +731,7 @@ const handleKernelConnectionLostEpic = (
         if (explorer) {
           explorer.showOkModalDialog("kernel restarts", msg);
         }
-        return of(empty());
+        return of(EMPTY);
       }
 
       return concat(
@@ -733,7 +763,7 @@ const handleKernelConnectionLostEpic = (
  * @param state$
  */
 export const cleanKernelOnConnectionLostEpic = (
-  action$: ActionsObservable<actions.UpdateDisplayFailed>,
+  action$: Observable<actions.UpdateDisplayFailed>,
   state$: StateObservable<AppState>
 ): Observable<actions.KillKernelSuccessful> => {
   return action$.pipe(
@@ -756,7 +786,7 @@ export const cleanKernelOnConnectionLostEpic = (
  * @param state$
  */
 const executeFocusedCellAndFocusNextEpic = (
-  action$: ActionsObservable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
+  action$: Observable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.FocusNextCellEditor> => {
   return action$.pipe(
@@ -796,7 +826,7 @@ function getUserPuid(): string {
  * @param state$
  */
 const closeUnsupportedMimetypesEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{}> => {
   return action$.pipe(
@@ -814,7 +844,7 @@ const closeUnsupportedMimetypesEpic = (
         explorer.showOkModalDialog("File cannot be rendered", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -825,7 +855,7 @@ const closeUnsupportedMimetypesEpic = (
  * @param state$
  */
 const closeContentFailedToFetchEpic = (
-  action$: ActionsObservable<actions.FetchContentFailed>,
+  action$: Observable<actions.FetchContentFailed>,
   state$: StateObservable<AppState>
 ): Observable<{}> => {
   return action$.pipe(
@@ -842,13 +872,14 @@ const closeContentFailedToFetchEpic = (
         explorer.showOkModalDialog("Failure to load", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
 
 export const allEpics = [
   addInitialCodeCellEpic,
+  autoStartKernelEpic,
   focusInitialCodeCellEpic,
   notificationsToUserEpic,
   launchWebSocketKernelEpic,
