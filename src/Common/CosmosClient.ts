@@ -52,7 +52,7 @@ export const endpoint = () => {
 
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
   try {
-    const host = configContext.BACKEND_ENDPOINT || _global.dataExplorer.extensionEndpoint();
+    const host = configContext.BACKEND_ENDPOINT;
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
       method: "POST",
       headers: {
