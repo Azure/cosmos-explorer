@@ -6,6 +6,7 @@ import * as PricingUtils from "../../../Utils/PricingUtils";
 
 import Explorer from "../../Explorer";
 
+const zeroValue = 0;
 export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
 export const TtlOff = "off";
 export const TtlOn = "on";
@@ -128,6 +129,17 @@ export const parseConflictResolutionProcedure = (procedureFromBackEnd: string): 
   // No path, just a name, in case backend returns just the name
   return procedureFromBackEnd;
 };
+
+export const getSanitizedInputValue = (newValueString: string, max: number) : number => {
+  let newValue = parseInt(newValueString);
+  if (isNaN(newValue)) {
+    newValue = zeroValue
+  } else if (newValue > max) {
+    newValue = Math.floor(newValue / 10)
+  }
+  return newValue
+}
+
 
 export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
   const currentType = typeof current;
