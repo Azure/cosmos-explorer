@@ -68,14 +68,14 @@ exports[`NotificationConsoleComponent renders the console (expanded) 1`] = `
       </span>
     </div>
     <div
-      aria-expanded={true}
-      aria-label="collapse console"
+      aria-expanded={false}
+      aria-label="console button collapsed"
       className="expandCollapseButton"
       role="button"
       tabIndex={0}
     >
       <img
-        alt=""
+        alt="ChevronDownIcon"
         src=""
       />
     </div>
