@@ -1924,7 +1924,6 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
       this.setFeatureFlagsFromFlights(inputs.flights)
-      console.log("input flights:" + JSON.stringify(inputs.flights))
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
