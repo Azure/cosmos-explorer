@@ -180,9 +180,9 @@ const mapDispatchToProps = (
 ): DispatchProps => ({
   executeCell: () => dispatch(actions.executeCell({ id, contentRef })),
   insertCodeCellAbove: () => dispatch(actions.createCellAbove({ id, contentRef, cellType: "code" })),
-  insertCodeCellBelow: () => dispatch(actions.createCellBelow({ id, contentRef, cellType: "code", source: "" })),
+  insertCodeCellBelow: () => dispatch(actions.createCellBelow({ id, contentRef, cellType: "code" })),
   insertTextCellAbove: () => dispatch(actions.createCellAbove({ id, contentRef, cellType: "markdown" })),
-  insertTextCellBelow: () => dispatch(actions.createCellBelow({ id, contentRef, cellType: "markdown", source: "" })),
+  insertTextCellBelow: () => dispatch(actions.createCellBelow({ id, contentRef, cellType: "markdown" })),
   moveCell: (destinationId: CellId, above: boolean) =>
     dispatch(actions.moveCell({ id, contentRef, destinationId, above })),
   clearOutputs: () => dispatch(actions.clearOutputs({ id, contentRef })),

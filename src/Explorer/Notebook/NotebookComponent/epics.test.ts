@@ -1,6 +1,6 @@
 import * as Immutable from "immutable";
-import { ActionsObservable, StateObservable } from "redux-observable";
-import { Subject, empty } from "rxjs";
+import { StateObservable } from "redux-observable";
+import { Subject, of } from "rxjs";
 import { toArray } from "rxjs/operators";
 import { makeNotebookRecord } from "@nteract/commutable";
 import { actions, state } from "@nteract/core";
@@ -124,7 +124,7 @@ describe("launchWebSocketKernelEpic", () => {
     const kernelSpecName = "kernelspecname";
     const sessionId = "sessionId";
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -192,7 +192,7 @@ describe("launchWebSocketKernelEpic", () => {
     const kernelSpecName = "kernelspecname";
     const sessionId = "sessionId";
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -247,7 +247,7 @@ describe("launchWebSocketKernelEpic", () => {
     const kernelSpecName = "kernelspecname";
     const sessionId = "sessionId";
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -298,7 +298,7 @@ describe("launchWebSocketKernelEpic", () => {
     const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
     const cwd = "/";
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -398,7 +398,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches supported kernel in kernelspecs", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -421,7 +421,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches undefined kernel uses default kernel from kernelspecs", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -445,7 +445,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches unsupported kernel uses default kernel from kernelspecs", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -469,7 +469,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches unsupported kernel uses kernelspecs with similar name", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -499,7 +499,7 @@ describe("autoStartKernelEpic", () => {
   it("automatically starts kernel when content fetch is successful if kernelRef is defined", async () => {
     const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.fetchContentFulfilled({
         contentRef,
         kernelRef,
@@ -527,7 +527,7 @@ describe("autoStartKernelEpic", () => {
   it("Don't start kernel when content fetch is successful if kernelRef is not defined", async () => {
     const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.fetchContentFulfilled({
         contentRef,
         kernelRef: undefined,

@@ -34,6 +34,7 @@ ko.components.register("stored-procedure-tab", new TabComponents.StoredProcedure
 ko.components.register("trigger-tab", new TabComponents.TriggerTab());
 ko.components.register("user-defined-function-tab", new TabComponents.UserDefinedFunctionTab());
 ko.components.register("settings-tab", new TabComponents.SettingsTab());
+ko.components.register("settings-tab-v2", new TabComponents.SettingsTabV2());
 ko.components.register("query-tab", new TabComponents.QueryTab());
 ko.components.register("tables-query-tab", new TabComponents.QueryTablesTab());
 ko.components.register("graph-tab", new TabComponents.GraphTab());

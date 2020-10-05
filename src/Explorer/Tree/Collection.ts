@@ -8,19 +8,17 @@ import * as Constants from "../../Common/Constants";
 import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
 import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
-import { createDocument, readCollectionQuotaInfo, readOffer, readOffers } from "../../Common/DocumentClientUtilityBase";
+import { createDocument } from "../../Common/DocumentClientUtilityBase";
+import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
+import { readCollectionQuotaInfo } from "../../Common/dataAccess/readCollectionQuotaInfo";
 import * as Logger from "../../Common/Logger";
-import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { PlatformType } from "../../PlatformType";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { OfferUtils } from "../../Utils/OfferUtils";
 import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
-import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
@@ -31,12 +29,17 @@ import MongoQueryTab from "../Tabs/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
+import SettingsTabV2 from "../Tabs/SettingsTabV2";
 import SettingsTab from "../Tabs/SettingsTab";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
+import { configContext } from "../../ConfigContext";
+import Explorer from "../Explorer";
+import { userContext } from "../../UserContext";
+import TabsBase from "../Tabs/TabsBase";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -541,7 +544,7 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onSettingsClick = () => {
+  public onSettingsClick = async (): Promise<void> => {
     this.container.selectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -553,39 +556,56 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
+    await this.loadOffer();
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
       return tab.collection && tab.collection.rid === this.rid;
     });
 
-    let settingsTab: SettingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
-    if (!settingsTab) {
-      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
-        databaseName: this.databaseId,
-        collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
-        dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: tabTitle
-      });
+    const traceStartData = {
+      databaseAccountName: this.container.databaseAccount().name,
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      defaultExperience: this.container.defaultExperience(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: tabTitle
+    };
 
-      Q.all([pendingNotificationsPromise, this.readSettings()]).then(
+    const settingsTabOptions: ViewModels.TabOptions = {
+      tabKind: undefined,
+      title: !this.offer() ? "Settings" : "Scale & Settings",
+      tabPath: "",
+      collection: this,
+      node: this,
+      selfLink: this.self,
+      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
+      isActive: ko.observable(false),
+      onUpdateTabsButtons: this.container.onUpdateTabsButtons
+    };
+
+    const isSettingsV2Enabled = this.container.isSettingsV2Enabled();
+    var settingsTab: TabsBase;
+    if (isSettingsV2Enabled) {
+      settingsTab = matchingTabs && (matchingTabs[0] as SettingsTabV2);
+    } else {
+      settingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
+    }
+
+    if (!settingsTab) {
+      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
+      settingsTabOptions.onLoadStartKey = startKey;
+
+      pendingNotificationsPromise.then(
         (data: any) => {
           const pendingNotification: DataModels.Notification = data && data[0];
-          settingsTab = new SettingsTab({
-            tabKind: ViewModels.CollectionTabKind.Settings,
-            title: !this.offer() ? "Settings" : "Scale & Settings",
-            tabPath: "",
-
-            collection: this,
-            node: this,
-            selfLink: this.self,
-            hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
-            isActive: ko.observable(false),
-            onLoadStartKey: startKey,
-            onUpdateTabsButtons: this.container.onUpdateTabsButtons
-          });
+          if (isSettingsV2Enabled) {
+            settingsTabOptions.tabKind = ViewModels.CollectionTabKind.SettingsV2;
+            settingsTab = new SettingsTabV2(settingsTabOptions);
+          } else {
+            settingsTabOptions.tabKind = ViewModels.CollectionTabKind.Settings;
+            settingsTab = new SettingsTab(settingsTabOptions);
+          }
           this.container.tabsManager.activateNewTab(settingsTab);
           settingsTab.pendingNotification(pendingNotification);
         },
@@ -624,103 +644,12 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public readSettings(): Q.Promise<void> {
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    this.container.isRefreshingExplorer(true);
-    const collectionDataModel: DataModels.Collection = <DataModels.Collection>{
-      id: this.id(),
-      _rid: this.rid,
-      _self: this.self,
-      defaultTtl: this.defaultTtl(),
-      indexingPolicy: this.indexingPolicy(),
-      partitionKey: this.partitionKey
-    };
-    const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
-      databaseAccountName: this.container.databaseAccount().name,
-      databaseName: this.databaseId,
-      collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience()
-    });
+  private async loadCollectionQuotaInfo(): Promise<void> {
     // TODO: Use the collection entity cache to get quota info
-    const quotaInfoPromise: Q.Promise<DataModels.CollectionQuotaInfo> = readCollectionQuotaInfo(this);
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers({
-      isServerless: this.container.isServerlessEnabled()
-    });
-    Q.all([quotaInfoPromise, offerInfoPromise]).then(
-      () => {
-        this.container.isRefreshingExplorer(false);
-        const quotaInfoWithUniqueKeyPolicy: DataModels.CollectionQuotaInfo = quotaInfoPromise.valueOf();
-        this.uniqueKeyPolicy = quotaInfoWithUniqueKeyPolicy.uniqueKeyPolicy;
-        const quotaInfo = _.omit(quotaInfoWithUniqueKeyPolicy, "uniqueKeyPolicy");
-
-        const collectionOffer = this._getOfferForCollection(offerInfoPromise.valueOf(), collectionDataModel);
-        if (!collectionOffer) {
-          this.quotaInfo(quotaInfo);
-          TelemetryProcessor.traceSuccess(
-            Action.LoadOffers,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              databaseName: this.databaseId,
-              collectionName: this.id(),
-              defaultExperience: this.container.defaultExperience()
-            },
-            startKey
-          );
-          deferred.resolve();
-          return;
-        }
-
-        readOffer(collectionOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
-          if (OfferUtils.isNotOfferV1(collectionOffer)) {
-            const offerThroughputInfo: DataModels.OfferThroughputInfo = {
-              minimumRUForCollection:
-                offerDetail.content &&
-                offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
-              numPhysicalPartitions:
-                offerDetail.content &&
-                offerDetail.content.collectionThroughputInfo &&
-                offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
-            };
-
-            collectionOffer.content.collectionThroughputInfo = offerThroughputInfo;
-          }
-
-          (collectionOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
-          this.offer(collectionOffer);
-          this.offer.valueHasMutated();
-          this.quotaInfo(quotaInfo);
-          TelemetryProcessor.traceSuccess(
-            Action.LoadOffers,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              databaseName: this.databaseId,
-              collectionName: this.id(),
-              defaultExperience: this.container.defaultExperience(),
-              offerVersion: collectionOffer && collectionOffer.offerVersion
-            },
-            startKey
-          );
-          deferred.resolve();
-        });
-      },
-      (error: any) => {
-        this.container.isRefreshingExplorer(false);
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadOffers,
-          {
-            databaseAccountName: this.container.databaseAccount().name,
-            databaseName: this.databaseId,
-            collectionName: this.id(),
-            defaultExperience: this.container.defaultExperience()
-          },
-          startKey
-        );
-      }
-    );
-
-    return deferred.promise;
+    const quotaInfoWithUniqueKeyPolicy = await readCollectionQuotaInfo(this);
+    this.uniqueKeyPolicy = quotaInfoWithUniqueKeyPolicy.uniqueKeyPolicy;
+    const quotaInfo = _.omit(quotaInfoWithUniqueKeyPolicy, "uniqueKeyPolicy");
+    this.quotaInfo(quotaInfo);
   }
 
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
@@ -1398,5 +1327,54 @@ export default class Collection implements ViewModels.Collection {
 
   public getDatabase(): ViewModels.Database {
     return this.container.findDatabaseWithId(this.databaseId);
+  }
+
+  public async loadOffer(): Promise<void> {
+    if (!this.container.isServerlessEnabled() && !this.offer()) {
+      this.container.isRefreshingExplorer(true);
+      const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
+        databaseAccountName: this.container.databaseAccount().name,
+        databaseName: this.databaseId,
+        collectionName: this.id(),
+        defaultExperience: this.container.defaultExperience()
+      });
+
+      const params: DataModels.ReadCollectionOfferParams = {
+        collectionId: this.id(),
+        collectionResourceId: this.self,
+        databaseId: this.databaseId
+      };
+
+      try {
+        this.offer(await readCollectionOffer(params));
+        await this.loadCollectionQuotaInfo();
+
+        TelemetryProcessor.traceSuccess(
+          Action.LoadOffers,
+          {
+            databaseAccountName: this.container.databaseAccount().name,
+            databaseName: this.databaseId,
+            collectionName: this.id(),
+            defaultExperience: this.container.defaultExperience(),
+            offerVersion: this.offer()?.offerVersion
+          },
+          startKey
+        );
+      } catch (error) {
+        TelemetryProcessor.traceFailure(
+          Action.LoadOffers,
+          {
+            databaseAccountName: this.container.databaseAccount().name,
+            databaseName: this.databaseId,
+            collectionName: this.id(),
+            defaultExperience: this.container.defaultExperience()
+          },
+          startKey
+        );
+        throw error;
+      } finally {
+        this.container.isRefreshingExplorer(false);
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
-import { ActionsObservable, StateObservable } from "redux-observable";
+import { StateObservable } from "redux-observable";
 import { ofType } from "redux-observable";
 import {
   mergeMap,
@@ -68,7 +68,7 @@ const logFailureToTelemetry = (state: CdbAppState, title: string, error?: string
  * @param state$
  */
 const addInitialCodeCellEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
@@ -107,7 +107,7 @@ const addInitialCodeCellEpic = (
  * @param state$
  */
 export const autoStartKernelEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
@@ -160,7 +160,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
  * Override from kernel-lifecycle to improve code mirror language intellisense
  * @param action$
  */
-export const acquireKernelInfoEpic = (action$: ActionsObservable<actions.NewKernelAction>) => {
+export const acquireKernelInfoEpic = (action$: Observable<actions.NewKernelAction>) => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
     switchMap((action: actions.NewKernelAction) => {
@@ -313,7 +313,7 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
  * @param state$
  */
 export const launchWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.LaunchKernelByNameAction>,
+  action$: Observable<actions.LaunchKernelByNameAction>,
   state$: StateObservable<CdbAppState>
 ) => {
   return action$.pipe(
@@ -425,7 +425,7 @@ export const launchWebSocketKernelEpic = (
  * TODO: Remove this epic once the /restart endpoint is implemented.
  */
 export const restartWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.RestartKernel | actions.NewKernelAction>,
+  action$: Observable<actions.RestartKernel | actions.NewKernelAction>,
   state$: StateObservable<AppState>
 ) =>
   action$.pipe(
@@ -535,7 +535,7 @@ export const restartWebSocketKernelEpic = (
  * @param state$
  */
 const changeWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.ChangeKernelByName>,
+  action$: Observable<actions.ChangeKernelByName>,
   state$: StateObservable<AppState>
 ) => {
   return action$.pipe(
@@ -617,7 +617,7 @@ const changeWebSocketKernelEpic = (
  * @param state$
  */
 const focusInitialCodeCellEpic = (
-  action$: ActionsObservable<actions.CreateCellAppend>,
+  action$: Observable<actions.CreateCellAppend>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.FocusCell> => {
   return action$.pipe(
@@ -655,10 +655,7 @@ const focusInitialCodeCellEpic = (
  * @param action$
  * @param state$
  */
-const notificationsToUserEpic = (
-  action$: ActionsObservable<any>,
-  state$: StateObservable<CdbAppState>
-): Observable<{}> => {
+const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservable<CdbAppState>): Observable<{}> => {
   return action$.pipe(
     ofType(
       actions.RESTART_KERNEL_SUCCESSFUL,
@@ -708,7 +705,7 @@ const notificationsToUserEpic = (
  * @param state$
  */
 const handleKernelConnectionLostEpic = (
-  action$: ActionsObservable<actions.UpdateDisplayFailed>,
+  action$: Observable<actions.UpdateDisplayFailed>,
   state$: StateObservable<CdbAppState>
 ): Observable<CdbActions.UpdateKernelRestartDelayAction | actions.RestartKernel | {}> => {
   return action$.pipe(
@@ -769,7 +766,7 @@ const handleKernelConnectionLostEpic = (
  * @param state$
  */
 export const cleanKernelOnConnectionLostEpic = (
-  action$: ActionsObservable<actions.UpdateDisplayFailed>,
+  action$: Observable<actions.UpdateDisplayFailed>,
   state$: StateObservable<AppState>
 ): Observable<actions.KillKernelSuccessful> => {
   return action$.pipe(
@@ -792,7 +789,7 @@ export const cleanKernelOnConnectionLostEpic = (
  * @param state$
  */
 const executeFocusedCellAndFocusNextEpic = (
-  action$: ActionsObservable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
+  action$: Observable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.FocusNextCellEditor> => {
   return action$.pipe(
@@ -832,7 +829,7 @@ function getUserPuid(): string {
  * @param state$
  */
 const closeUnsupportedMimetypesEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{}> => {
   return action$.pipe(
@@ -861,7 +858,7 @@ const closeUnsupportedMimetypesEpic = (
  * @param state$
  */
 const closeContentFailedToFetchEpic = (
-  action$: ActionsObservable<actions.FetchContentFailed>,
+  action$: Observable<actions.FetchContentFailed>,
   state$: StateObservable<AppState>
 ): Observable<{}> => {
   return action$.pipe(

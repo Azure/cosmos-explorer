@@ -196,7 +196,6 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.createCellBelow({
         cellType: "code",
-        source: "",
         contentRef: this.contentRef
       })
     );
