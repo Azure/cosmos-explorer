@@ -881,12 +881,12 @@ const closeContentFailedToFetchEpic = (
 };
 
 const traceNotebookTelemetryEpic = (
-  action$: ActionsObservable<cdbActions.TraceNotebookTelemetryAction>,
+  action$: Observable<cdbActions.TraceNotebookTelemetryAction>,
   state$: StateObservable<CdbAppState>
 ): Observable<{}> => {
   return action$.pipe(
     ofType(cdbActions.TRACE_NOTEBOOK_TELEMETRY),
-    mergeMap(action => {
+    mergeMap((action: cdbActions.TraceNotebookTelemetryAction) => {
       const state = state$.value;
 
       TelemetryProcessor.trace(action.payload.action, action.payload.actionModifier, {
@@ -907,12 +907,12 @@ const traceNotebookTelemetryEpic = (
  * @param state$
  */
 const traceNotebookInfoEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{} | cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
-    mergeMap(action => {
+    mergeMap((action: { payload: any }) => {
       const state = state$.value;
       const contentRef = action.payload.contentRef;
       const model = selectors.model(state, { contentRef });
@@ -960,12 +960,12 @@ const traceNotebookInfoEpic = (
  * @param state$
  */
 const traceNotebookKernelEpic = (
-  action$: ActionsObservable<AnyAction>,
+  action$: Observable<AnyAction>,
   state$: StateObservable<AppState>
 ): Observable<cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
-    mergeMap(action => {
+    mergeMap((action: { payload: any; type: string }) => {
       return of(
         cdbActions.traceNotebookTelemetry({
           action: TelemetryAction.NotebooksKernelSpecName,
