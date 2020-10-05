@@ -153,7 +153,7 @@ jobs:
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendpuppeteer]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -177,7 +177,7 @@ jobs:
   nugetmpac:
     name: Publish Nuget MPAC
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendsql, endtoendmongo]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendpuppeteer]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
