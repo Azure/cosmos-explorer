@@ -32,13 +32,11 @@ export class ArraysByKeyCache<T> {
     this.cache[key] = elements;
 
     if (index < 0) {
-      console.error("Inserting with negative index is not allowed by ArraysByCache");
       return;
     }
 
     // Check that previous index is populated, if not, ignore
     if (index > elements.length) {
-      console.error("Inserting non-contiguous element is not allowed by ArraysByCache");
       return;
     }
 

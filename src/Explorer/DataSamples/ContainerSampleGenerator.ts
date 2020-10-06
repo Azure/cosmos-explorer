@@ -1,7 +1,6 @@
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import GraphTab from ".././Tabs/GraphTab";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
@@ -96,9 +95,9 @@ export class ContainerSampleGenerator {
         .reduce((previous, current) => previous.then(current), Promise.resolve());
     } else {
       // For SQL all queries are executed at the same time
-      this.sampleDataFile.data.forEach(doc => {
+      this.sampleDataFile.data.map(doc => {
         const subPromise = createDocument(collection, doc);
-        subPromise.catch(reason => NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, reason));
+        subPromise.catch(reason => NotificationConsoleUtils.logConsoleError(reason));
         promises.push(subPromise);
       });
       await Promise.all(promises);
