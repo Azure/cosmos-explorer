@@ -4,8 +4,7 @@ import { NotificationsClient } from "./NotificationsClient";
 export default class HostedExplorerFactory {
   public createExplorer(): Explorer {
     const explorer = new Explorer({
-      notificationsClient: new NotificationsClient(),
-      isEmulator: false
+      notificationsClient: new NotificationsClient()
     });
 
     return explorer;

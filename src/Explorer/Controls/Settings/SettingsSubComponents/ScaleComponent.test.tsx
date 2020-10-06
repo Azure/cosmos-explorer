@@ -13,8 +13,7 @@ import ko from "knockout";
 
 describe("ScaleComponent", () => {
   const nonNationalCloudContainer = new Explorer({
-    notificationsClient: undefined,
-    isEmulator: false
+    notificationsClient: undefined
   });
   nonNationalCloudContainer.getPlatformType = () => PlatformType.Portal;
   nonNationalCloudContainer.isRunningOnNationalCloud = () => false;
@@ -89,8 +88,7 @@ describe("ScaleComponent", () => {
 
   it("autoScale enabled", () => {
     const newContainer = new Explorer({
-      notificationsClient: undefined,
-      isEmulator: false
+      notificationsClient: undefined
     });
 
     newContainer.databaseAccount({

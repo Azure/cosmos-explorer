@@ -4,8 +4,7 @@ import Explorer from "../../Explorer";
 import ko from "knockout";
 
 export const container = new Explorer({
-  notificationsClient: undefined,
-  isEmulator: false
+  notificationsClient: undefined
 });
 
 export const collection = ({

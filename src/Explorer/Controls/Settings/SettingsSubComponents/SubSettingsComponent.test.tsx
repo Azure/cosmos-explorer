@@ -106,8 +106,7 @@ describe("SubSettingsComponent", () => {
 
   it("partitionKey not visible", () => {
     const newContainer = new Explorer({
-      notificationsClient: undefined,
-      isEmulator: false
+      notificationsClient: undefined
     });
 
     newContainer.isPreferredApiCassandra = ko.computed(() => true);
