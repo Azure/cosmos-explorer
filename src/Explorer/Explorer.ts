@@ -3130,8 +3130,10 @@ export default class Explorer {
   }
 
   public async loadDatabaseOffers(): Promise<void> {
-    this.databases()?.forEach(async (database: ViewModels.Database) => {
-      await database.loadOffer();
-    });
+    await Promise.all(
+      this.databases()?.map(async (database: ViewModels.Database) => {
+        await database.loadOffer();
+      })
+    );
   }
 }
