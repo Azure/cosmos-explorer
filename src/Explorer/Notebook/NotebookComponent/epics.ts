@@ -29,7 +29,6 @@ import {
   actions,
   selectors
 } from "@nteract/core";
-import { launchKernelWhenNotebookSetEpic } from "@nteract/epics";
 import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
 import { sessions, kernels } from "rx-jupyter";
 import { RecordOf } from "immutable";
@@ -847,7 +846,6 @@ const closeContentFailedToFetchEpic = (
 
 export const allEpics = [
   addInitialCodeCellEpic,
-  launchKernelWhenNotebookSetEpic,
   focusInitialCodeCellEpic,
   notificationsToUserEpic,
   launchWebSocketKernelEpic,

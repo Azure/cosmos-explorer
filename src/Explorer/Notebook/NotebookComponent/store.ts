@@ -15,7 +15,8 @@ export default function configureStore(
   initialState: Partial<CdbAppState>,
   contentProvider: IContentProvider,
   onTraceFailure: (title: string, message: string) => void,
-  customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[]
+  customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[],
+  autoStartKernelOnNotebookOpen?: boolean
 ): Store<CdbAppState, AnyAction> {
   /**
    * Catches errors in reducers
@@ -78,6 +79,10 @@ export default function configureStore(
     coreEpics.publishToBookstoreAfterSave,
     coreEpics.sendInputReplyEpic
   ];
+
+  if (autoStartKernelOnNotebookOpen) {
+    filteredCoreEpics.push(coreEpics.launchKernelWhenNotebookSetEpic);
+  }
 
   const mythConfigureStore = makeConfigureStore<CdbAppState>()({
     packages: [configuration],
