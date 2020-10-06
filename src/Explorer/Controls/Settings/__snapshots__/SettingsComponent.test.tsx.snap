@@ -953,7 +953,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "extensionEndpoint": [Function],
                 "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
@@ -2268,7 +2267,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "extensionEndpoint": [Function],
               "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
@@ -3596,7 +3594,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "extensionEndpoint": [Function],
                 "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
@@ -4911,7 +4908,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "extensionEndpoint": [Function],
               "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
