@@ -22,6 +22,7 @@ import {
   updateDocument,
   createDocument
 } from "../../Common/DocumentClientUtilityBase";
+import { configContext } from "../../ConfigContext";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -307,7 +308,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestQueryApi
         : Constants.CassandraBackend.queryApi;
-    $.ajax(`${collection.container.extensionEndpoint()}/${apiEndpoint}`, {
+    $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
       type: "POST",
       data: {
         accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
@@ -558,7 +559,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
         : Constants.CassandraBackend.keysApi;
-    let endpoint = `${collection.container.extensionEndpoint()}/${apiEndpoint}`;
+    let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKeys>();
     $.ajax(endpoint, {
       type: "POST",
@@ -613,7 +614,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
         : Constants.CassandraBackend.schemaApi;
-    let endpoint = `${collection.container.extensionEndpoint()}/${apiEndpoint}`;
+    let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKey[]>();
     $.ajax(endpoint, {
       type: "POST",
@@ -667,7 +668,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi
         : Constants.CassandraBackend.createOrDeleteApi;
-    $.ajax(`${explorer.extensionEndpoint()}/${apiEndpoint}`, {
+    $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
       type: "POST",
       data: {
         accountName: explorer.databaseAccount() && explorer.databaseAccount().name,

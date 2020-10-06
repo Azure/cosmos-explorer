@@ -327,8 +327,7 @@ export function createMongoCollectionWithProxy(
 }
 
 export function getEndpoint(): string {
-  const extensionEndpoint = window.dataExplorer.extensionEndpoint();
-  let url = (configContext.MONGO_BACKEND_ENDPOINT || extensionEndpoint) + "/api/mongo/explorer";
+  let url = (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT) + "/api/mongo/explorer";
 
   if (window.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");
