@@ -55,6 +55,29 @@ export default function configureStore(
     return epics.map(epic => protect(epic));
   };
 
+  const filteredCoreEpics = getCoreEpics(autoStartKernelOnNotebookOpen);
+
+  const mythConfigureStore = makeConfigureStore<CdbAppState>()({
+    packages: [configuration],
+    reducers: {
+      app: reducers.app,
+      core: coreReducer as any,
+      cdb: cdbReducer
+    },
+    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
+    epicDependencies: { contentProvider },
+    epicMiddleware: customMiddlewares.concat(catchErrorMiddleware),
+    enhancer: composeEnhancers
+  });
+
+  const store = mythConfigureStore(initialState as any);
+
+  // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
+  // return store as Store<AppState, AnyAction>;
+  return store as any;
+}
+
+export const getCoreEpics = (autoStartKernelOnNotebookOpen: boolean): Epic[] => {
   // This list needs to be consistent and in sync with core.allEpics until we figure
   // out how to safely filter out the ones we are overriding here.
   const filteredCoreEpics = [
@@ -84,22 +107,5 @@ export default function configureStore(
     filteredCoreEpics.push(coreEpics.launchKernelWhenNotebookSetEpic);
   }
 
-  const mythConfigureStore = makeConfigureStore<CdbAppState>()({
-    packages: [configuration],
-    reducers: {
-      app: reducers.app,
-      core: coreReducer as any,
-      cdb: cdbReducer
-    },
-    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
-    epicDependencies: { contentProvider },
-    epicMiddleware: customMiddlewares.concat(catchErrorMiddleware),
-    enhancer: composeEnhancers
-  });
-
-  const store = mythConfigureStore(initialState as any);
-
-  // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
-  // return store as Store<AppState, AnyAction>;
-  return store as any;
-}
+  return filteredCoreEpics;
+};
