@@ -16,7 +16,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import { updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
@@ -455,8 +455,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this._buildCommandBarOptions();
   }
 
-  public onSaveClick = (): Q.Promise<any> => {
-    let promises: Q.Promise<void>[] = [];
+  public onSaveClick = async (): Promise<any> => {
     this.isExecutionError(false);
 
     this.isExecuting(true);
@@ -470,163 +469,81 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
     const headerOptions: RequestOptions = { initialHeaders: {} };
 
-    if (this.isAutoPilotSelected()) {
-      const offer = this.database.offer();
-      let offerAutopilotSettings: any = {};
-      if (!this.hasAutoPilotV2FeatureFlag()) {
-        offerAutopilotSettings.maxThroughput = this.autoPilotThroughput();
+    try {
+      if (this.isAutoPilotSelected()) {
+        const updateOfferParams: DataModels.UpdateOfferParams = {
+          databaseId: this.database.id(),
+          currentOffer: this.database.offer(),
+          autopilotThroughput: this.autoPilotThroughput(),
+          manualThroughput: undefined,
+          migrateToAutoPilot: this._hasProvisioningTypeChanged()
+        };
+
+        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+        this.database.offer(updatedOffer);
+        this.database.offer.valueHasMutated();
+        this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
       } else {
-        offerAutopilotSettings.tier = this.selectedAutoPilotTier();
-      }
-      const newOffer: DataModels.Offer = {
-        content: {
-          offerThroughput: undefined,
-          offerIsRUPerMinuteThroughputEnabled: false,
-          offerAutopilotSettings
-        },
-        _etag: undefined,
-        _ts: undefined,
-        _rid: offer._rid,
-        _self: offer._self,
-        id: offer.id,
-        offerResourceId: offer.offerResourceId,
-        offerVersion: offer.offerVersion,
-        offerType: offer.offerType,
-        resource: offer.resource
-      };
+        if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
+          const originalThroughputValue = this.throughput.getEditableOriginalValue();
+          const newThroughput = this.throughput();
 
-      // user has changed from provisioned --> autoscale
-      if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
-        headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
-        delete newOffer.content.offerAutopilotSettings;
-      }
-
-      const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
-        (updatedOffer: DataModels.Offer) => {
-          this.database.offer(updatedOffer);
-          this.database.offer.valueHasMutated();
-          this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-        }
-      );
-      promises.push(updateOfferPromise);
-    } else {
-      if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
-        const offer = this.database.offer();
-        const originalThroughputValue = this.throughput.getEditableOriginalValue();
-        const newThroughput = this.throughput();
-
-        if (
-          this.canThroughputExceedMaximumValue() &&
-          this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
-        ) {
-          const requestPayload = {
-            subscriptionId: userContext.subscriptionId,
-            databaseAccountName: userContext.databaseAccount.name,
-            resourceGroup: userContext.resourceGroup,
-            databaseName: this.database.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
-          };
-          const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
-            () => {
-              this.database.offer().content.offerThroughput = originalThroughputValue;
-              this.throughput(originalThroughputValue);
-              this.notificationStatusInfo(
-                throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
-              );
-              this.throughput.valueHasMutated(); // force component re-render
-            },
-            (error: any) => {
-              TelemetryProcessor.traceFailure(
-                Action.UpdateSettings,
-                {
-                  databaseAccountName: this.container.databaseAccount().name,
-                  databaseName: this.database && this.database.id(),
-                  defaultExperience: this.container.defaultExperience(),
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle: this.tabTitle(),
-                  error: error
-                },
-                startKey
-              );
-            }
-          );
-          promises.push(Q(updateOfferBeyondLimitPromise));
-        } else {
-          const newOffer: DataModels.Offer = {
-            content: {
-              offerThroughput: newThroughput,
+          if (
+            this.canThroughputExceedMaximumValue() &&
+            this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+            this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
+          ) {
+            const requestPayload = {
+              subscriptionId: userContext.subscriptionId,
+              databaseAccountName: userContext.databaseAccount.name,
+              resourceGroup: userContext.resourceGroup,
+              databaseName: this.database.id(),
+              throughput: newThroughput,
               offerIsRUPerMinuteThroughputEnabled: false
-            },
-            _etag: undefined,
-            _ts: undefined,
-            _rid: offer._rid,
-            _self: offer._self,
-            id: offer.id,
-            offerResourceId: offer.offerResourceId,
-            offerVersion: offer.offerVersion,
-            offerType: offer.offerType,
-            resource: offer.resource
-          };
+            };
+            await updateOfferThroughputBeyondLimit(requestPayload);
+            this.database.offer().content.offerThroughput = originalThroughputValue;
+            this.throughput(originalThroughputValue);
+            this.notificationStatusInfo(
+              throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
+            );
+            this.throughput.valueHasMutated(); // force component re-render
+          } else {
+            const updateOfferParams: DataModels.UpdateOfferParams = {
+              databaseId: this.database.id(),
+              currentOffer: this.database.offer(),
+              autopilotThroughput: undefined,
+              manualThroughput: newThroughput,
+              migrateToManual: this._hasProvisioningTypeChanged()
+            };
 
-          // user has changed from autoscale --> provisioned
-          if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
-            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
-            newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
+            const updatedOffer = await updateOffer(updateOfferParams);
+            this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
+            this.database.offer(updatedOffer);
+            this.database.offer.valueHasMutated();
           }
-
-          const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
-            (updatedOffer: DataModels.Offer) => {
-              this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-              this.database.offer(updatedOffer);
-              this.database.offer.valueHasMutated();
-            }
-          );
-
-          promises.push(updateOfferPromise);
         }
       }
-    }
-
-    if (promises.length === 0) {
+    } catch (error) {
+      this.container.isRefreshingExplorer(false);
+      this.isExecutionError(true);
+      console.error(error);
+      this.displayedError(ErrorParserUtility.parse(error)[0].message);
+      TelemetryProcessor.traceFailure(
+        Action.UpdateSettings,
+        {
+          databaseAccountName: this.container.databaseAccount().name,
+          databaseName: this.database && this.database.id(),
+          defaultExperience: this.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          error: error
+        },
+        startKey
+      );
+    } finally {
       this.isExecuting(false);
     }
-
-    return Q.all(promises)
-      .then(
-        () => {
-          this.container.isRefreshingExplorer(false);
-          this._setBaseline();
-          TelemetryProcessor.traceSuccess(
-            Action.UpdateSettings,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
-        },
-        (reason: any) => {
-          this.container.isRefreshingExplorer(false);
-          this.isExecutionError(true);
-          console.error(reason);
-          this.displayedError(ErrorParserUtility.parse(reason)[0].message);
-          TelemetryProcessor.traceFailure(
-            Action.UpdateSettings,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
-        }
-      )
-      .finally(() => this.isExecuting(false));
   };
 
   public onRevertClick = (): Q.Promise<any> => {
