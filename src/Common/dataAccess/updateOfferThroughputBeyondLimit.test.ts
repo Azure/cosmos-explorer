@@ -9,8 +9,7 @@ describe("updateOfferThroughputBeyondLimit", () => {
     });
     window.dataExplorer = {
       logConsoleData: jest.fn(),
-      deleteInProgressConsoleDataWithId: jest.fn(),
-      extensionEndpoint: jest.fn()
+      deleteInProgressConsoleDataWithId: jest.fn()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     await updateOfferThroughputBeyondLimit({
