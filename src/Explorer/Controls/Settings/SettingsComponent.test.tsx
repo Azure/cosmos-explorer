@@ -6,7 +6,7 @@ import SettingsTabV2 from "../../Tabs/SettingsTabV2";
 import { collection } from "./TestUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
-import { TtlType, isDirty, TtlOnNoDefault, TtlOn, TtlOff } from "./SettingsUtils";
+import { TtlType, isDirty } from "./SettingsUtils";
 import Explorer from "../../Explorer";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
@@ -218,13 +218,6 @@ describe("SettingsComponent", () => {
     state = wrapper.state() as SettingsComponentState;
     expect(isDirty(state.timeToLive, state.timeToLiveBaseline)).toEqual(false);
     expect(isDirty(state.throughput, state.throughputBaseline)).toEqual(false);
-  });
-
-  it("getTtlValue", async () => {
-    const settingsComponentInstance = new SettingsComponent(baseProps);
-    expect(settingsComponentInstance.getTtlValue(TtlType.OnNoDefault)).toEqual(TtlOnNoDefault);
-    expect(settingsComponentInstance.getTtlValue(TtlType.On)).toEqual(TtlOn);
-    expect(settingsComponentInstance.getTtlValue(TtlType.Off)).toEqual(TtlOff);
   });
 
   it("getAnalyticalStorageTtl", () => {

@@ -130,16 +130,15 @@ export const parseConflictResolutionProcedure = (procedureFromBackEnd: string): 
   return procedureFromBackEnd;
 };
 
-export const getSanitizedInputValue = (newValueString: string, max: number) : number => {
+export const getSanitizedInputValue = (newValueString: string, max: number): number => {
   let newValue = parseInt(newValueString);
   if (isNaN(newValue)) {
-    newValue = zeroValue
+    newValue = zeroValue;
   } else if (newValue > max) {
-    newValue = Math.floor(newValue / 10)
+    newValue = Math.floor(newValue / 10);
   }
-  return newValue
-}
-
+  return newValue;
+};
 
 export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
   const currentType = typeof current;

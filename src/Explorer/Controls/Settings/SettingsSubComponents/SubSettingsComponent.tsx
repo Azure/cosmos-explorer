@@ -5,7 +5,11 @@ import {
   TtlType,
   ChangeFeedPolicyState,
   isDirty,
-  IsComponentDirtyResult, TtlOn, TtlOff, TtlOnNoDefault, getSanitizedInputValue
+  IsComponentDirtyResult,
+  TtlOn,
+  TtlOff,
+  TtlOnNoDefault,
+  getSanitizedInputValue
 } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
@@ -140,41 +144,40 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void =>
-    this.props.onTtlChange(this.getTtlValue(option.key))
+    this.props.onTtlChange(this.getTtlValue(option.key));
 
   private onTimeToLiveSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    let newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max)
-    this.props.onTimeToLiveSecondsChange(newTimeToLiveSeconds)
+    const newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max);
+    this.props.onTimeToLiveSecondsChange(newTimeToLiveSeconds);
   };
 
   private onGeoSpatialConfigTypeChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
   ): void =>
-    this.props.onGeoSpatialConfigTypeChange(GeospatialConfigType[option.key as keyof typeof GeospatialConfigType])
+    this.props.onGeoSpatialConfigTypeChange(GeospatialConfigType[option.key as keyof typeof GeospatialConfigType]);
 
   private onAnalyticalStorageTtlSelectionChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => 
-    this.props.onAnalyticalStorageTtlSelectionChange(this.getTtlValue(option.key))
+  ): void => this.props.onAnalyticalStorageTtlSelectionChange(this.getTtlValue(option.key));
 
   private onAnalyticalStorageTtlSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    let newAnalyticalStorageTtlSeconds = getSanitizedInputValue(newValue, Int32.Max)
-    this.props.onAnalyticalStorageTtlSecondsChange(newAnalyticalStorageTtlSeconds)
+    const newAnalyticalStorageTtlSeconds = getSanitizedInputValue(newValue, Int32.Max);
+    this.props.onAnalyticalStorageTtlSecondsChange(newAnalyticalStorageTtlSeconds);
   };
 
   private onChangeFeedPolicyChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
   ): void =>
-    this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState])
+    this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState]);
 
   private getTtlComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>

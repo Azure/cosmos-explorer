@@ -424,7 +424,7 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
     //this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
-    this.isSettingsV2Enabled = ko.observable(false)
+    this.isSettingsV2Enabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1923,7 +1923,8 @@ export default class Explorer {
       this.flight(inputs.addCollectionDefaultFlight);
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
-      this.setFeatureFlagsFromFlights(inputs.flights)
+      this.setFeatureFlagsFromFlights(inputs.flights);
+      console.log(inputs.flights);
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
@@ -1957,13 +1958,13 @@ export default class Explorer {
     return Q();
   }
 
-  public setFeatureFlagsFromFlights(flights: readonly string[]) : void {
+  public setFeatureFlagsFromFlights(flights: readonly string[]): void {
     if (!flights) {
-      return
+      return;
     }
 
-    if (flights.filter((flightName: string) => flightName === Constants.Flights.settingsV2)) {
-      this.isSettingsV2Enabled(true)
+    if (flights.filter((flightName: string) => flightName === Constants.Flights.settingsV2).length === 1) {
+      this.isSettingsV2Enabled(true);
     }
   }
 

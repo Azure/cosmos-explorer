@@ -5329,7 +5329,6 @@ exports[`SettingsComponent renders 1`] = `
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
-          onIndexingPolicyElementFocusChange={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
         />

@@ -72,7 +72,9 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
   ): void =>
-    this.props.onConflictResolutionPolicyModeChange(DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode])
+    this.props.onConflictResolutionPolicyModeChange(
+      DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode]
+    );
 
   private onConflictResolutionPolicyPathChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -82,7 +84,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private onConflictResolutionPolicyProcedureChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
-  ): void => this.props.onConflictResolutionPolicyProcedureChange(newValue)
+  ): void => this.props.onConflictResolutionPolicyProcedureChange(newValue);
 
   private getConflictResolutionModeComponent = (): JSX.Element => (
     <ChoiceGroup

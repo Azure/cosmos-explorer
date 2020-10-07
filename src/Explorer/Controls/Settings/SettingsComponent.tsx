@@ -27,9 +27,6 @@ import {
   SettingsV2TabTypes,
   getTabTitle,
   isDirty,
-  TtlOff,
-  TtlOn,
-  TtlOnNoDefault,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure
 } from "./SettingsUtils";
@@ -38,7 +35,7 @@ import {
   ConflictResolutionComponentProps
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 
@@ -525,34 +522,33 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private onConflictResolutionPolicyModeChange = (newMode: DataModels.ConflictResolutionMode): void =>
-    this.setState({conflictResolutionPolicyMode: newMode});
+    this.setState({ conflictResolutionPolicyMode: newMode });
 
-  private onConflictResolutionPolicyPathChange = (newPath: string): void => 
+  private onConflictResolutionPolicyPathChange = (newPath: string): void =>
     this.setState({ conflictResolutionPolicyPath: newPath });
 
-  private onConflictResolutionPolicyProcedureChange = (newProcedure: string): void => 
+  private onConflictResolutionPolicyProcedureChange = (newProcedure: string): void =>
     this.setState({ conflictResolutionPolicyProcedure: newProcedure });
 
   private onConflictResolutionDirtyChange = (isConflictResolutionDirty: boolean): void =>
     this.setState({ isConflictResolutionDirty: isConflictResolutionDirty });
 
-  private onTtlChange = (newTtl: TtlType): void =>
-    this.setState({ timeToLive: newTtl });
+  private onTtlChange = (newTtl: TtlType): void => this.setState({ timeToLive: newTtl });
 
   private onTimeToLiveSecondsChange = (newTimeToLiveSeconds: number): void =>
     this.setState({ timeToLiveSeconds: newTimeToLiveSeconds });
 
   private onGeoSpatialConfigTypeChange = (newGeoSpatialConfigType: GeospatialConfigType): void =>
-    this.setState({ geospatialConfigType: newGeoSpatialConfigType});
+    this.setState({ geospatialConfigType: newGeoSpatialConfigType });
 
   private onAnalyticalStorageTtlSelectionChange = (newAnalyticalStorageTtlSelection: TtlType): void =>
-    this.setState({ analyticalStorageTtlSelection: newAnalyticalStorageTtlSelection});
+    this.setState({ analyticalStorageTtlSelection: newAnalyticalStorageTtlSelection });
 
-  private onAnalyticalStorageTtlSecondsChange = (newAnalyticalStorageTtlSeconds: number): void => 
+  private onAnalyticalStorageTtlSecondsChange = (newAnalyticalStorageTtlSeconds: number): void =>
     this.setState({ analyticalStorageTtlSeconds: newAnalyticalStorageTtlSeconds });
 
   private onChangeFeedPolicyChange = (newChangeFeedPolicy: ChangeFeedPolicyState): void =>
-    this.setState({ changeFeedPolicy: newChangeFeedPolicy});
+    this.setState({ changeFeedPolicy: newChangeFeedPolicy });
 
   private onSubSettingsSaveableChange = (isSubSettingsSaveable: boolean): void =>
     this.setState({ isSubSettingsSaveable: isSubSettingsSaveable });

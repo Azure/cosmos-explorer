@@ -138,7 +138,7 @@ export class Features {
 }
 
 export class Flights {
-  public static readonly settingsV2 = "settingsv2"
+  public static readonly settingsV2 = "settingsv2";
 }
 
 export class AfecFeatures {

@@ -75,7 +75,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private step: number;
   private throughputInputMaxValue: number;
   private autoPilotInputMaxValue: number;
-  private choiceGroupFixedStyle = getChoiceGroupStyles(undefined, undefined);
   private options: IChoiceGroupOption[] = [
     { key: "true", text: "Autoscale" },
     { key: "false", text: "Manual" }
@@ -143,7 +142,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
     this.throughputInputMaxValue = this.props.canExceedMaximumValue ? Int32.Max : this.props.maximum;
-    this.autoPilotInputMaxValue = Int32.Max
+    this.autoPilotInputMaxValue = Int32.Max;
   }
 
   public hasProvisioningTypeChanged = (): boolean =>
@@ -204,7 +203,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    const newThroughput = getSanitizedInputValue(newValue, this.autoPilotInputMaxValue)
+    const newThroughput = getSanitizedInputValue(newValue, this.autoPilotInputMaxValue);
     this.props.onMaxAutoPilotThroughputChange(newThroughput);
   };
 
@@ -212,7 +211,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    const newThroughput = getSanitizedInputValue(newValue, this.throughputInputMaxValue)
+    const newThroughput = getSanitizedInputValue(newValue, this.throughputInputMaxValue);
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
@@ -271,7 +270,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         key="auto pilot throughput input"
         styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
         disabled={this.overrideWithProvisionedThroughputSettings()}
-        step={this.step}
+        step={AutoPilotUtils.autoPilotIncrementStep}
         value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
         onChange={this.onAutoPilotThroughputChange}
       />
