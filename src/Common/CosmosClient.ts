@@ -52,7 +52,7 @@ export const endpoint = () => {
 
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
   try {
-    const host = configContext.BACKEND_ENDPOINT || _global.dataExplorer.extensionEndpoint();
+    const host = configContext.BACKEND_ENDPOINT;
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
       method: "POST",
       headers: {
@@ -85,8 +85,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal"
   };
 
-  // In development we proxy requests to the backend via webpack. This is removed in production bundles.
-  if (process.env.NODE_ENV === "development") {
+  if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
   return new Cosmos.CosmosClient(options);

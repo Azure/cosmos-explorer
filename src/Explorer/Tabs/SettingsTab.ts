@@ -516,6 +516,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return false;
       }
 
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
       const numPartitions = this.collection.quotaInfo().numPartitions;
       return !!this.collection.partitionKeyProperty || numPartitions > 1;
     });
@@ -525,7 +529,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     );
 
     this.minRUs = ko.computed<number>(() => {
-      if (this.isTryCosmosDBSubscription()) {
+      if (this.isTryCosmosDBSubscription() || this.container.isServerlessEnabled()) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
       }
 
@@ -572,7 +576,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.maxRUs = ko.computed<number>(() => {
       const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription();
-      if (isTryCosmosDBSubscription) {
+      if (isTryCosmosDBSubscription || this.container.isServerlessEnabled()) {
         return Constants.TryCosmosExperience.maxRU;
       }
 
@@ -748,7 +752,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         if (
           this.rupm() === Constants.RUPMStates.on &&
           this.throughput() >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo().numPartitions
+            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo()?.numPartitions
         ) {
           return false;
         }

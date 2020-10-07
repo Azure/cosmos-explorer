@@ -28,8 +28,7 @@ export async function updateOfferThroughputBeyondLimit(request: UpdateOfferThrou
     `Requesting increase in throughput to ${request.throughput} for ${resourceDescriptionInfo}`
   );
 
-  const explorer = window.dataExplorer;
-  const url = `${explorer.extensionEndpoint()}/api/offerthroughputrequest/updatebeyondspecifiedlimit`;
+  const url = `${configContext.BACKEND_ENDPOINT}/api/offerthroughputrequest/updatebeyondspecifiedlimit`;
   const authorizationHeader = getAuthorizationHeader();
 
   const response = await fetch(url, {
