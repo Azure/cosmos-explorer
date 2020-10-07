@@ -49,7 +49,7 @@
 
 .nteract-cell-input .nteract-cell-source {
   flex: 1 1 auto;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /** Adaptation for the R kernel's inline lists **/
