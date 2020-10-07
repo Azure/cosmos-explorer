@@ -18,7 +18,10 @@ import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/upd
 import SettingsTab from "../../Tabs/SettingsTabV2";
 import { throughputUnit } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
-import {MongoIndexingPolicyComponent, MongoIndexingPolicyComponentProps} from "./SettingsSubComponents/MongoIndexingPolicyComponent"
+import {
+  MongoIndexingPolicyComponent,
+  MongoIndexingPolicyComponentProps
+} from "./SettingsSubComponents/MongoIndexingPolicyComponent";
 import {
   getMaxRUs,
   hasDatabaseSharedThroughput,
@@ -43,7 +46,10 @@ import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } fr
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import { MongoDBCollectionGetResults, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import { createUpdateMongoDBCollection, getMongoDBCollection } from "../../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import {
+  createUpdateMongoDBCollection,
+  getMongoDBCollection
+} from "../../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -218,12 +224,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   }
 
-  public loadMongoIndexes = async () : Promise<void> => {
+  public loadMongoIndexes = async (): Promise<void> => {
     if (this.container.isPreferredApiMongoDB() && this.container.databaseAccount()) {
-      this.mongoDBCollectionGetResult = await getMongoDBCollection(this.container.databaseAccount().id, this.collection.databaseId, this.collection.id())
-      this.forceUpdate()
+      this.mongoDBCollectionGetResult = await getMongoDBCollection(
+        this.container.databaseAccount().id,
+        this.collection.databaseId,
+        this.collection.id()
+      );
+      this.forceUpdate();
     }
-  }
+  };
 
   public isSaveSettingsButtonEnabled = (): boolean => {
     if (this.isOfferReplacePending()) {
@@ -300,7 +310,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     });
 
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
-    
+
     try {
       if (
         this.state.isSubSettingsSaveable ||
@@ -341,14 +351,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           newCollection.conflictResolutionPolicy = conflictResolutionChanges;
         }
 
-        newCollection.indexingPolicy = this.state.indexingPolicyContent;  
+        newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
         const updatedCollection: DataModels.Collection = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
           newCollection
         );
-        console.log("updated coll:" + JSON.stringify(updatedCollection))
+        console.log("updated coll:" + JSON.stringify(updatedCollection));
         this.collection.rawDataModel = updatedCollection;
         this.collection.defaultTtl(updatedCollection.defaultTtl);
         this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
@@ -361,28 +371,33 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           isSubSettingsSaveable: false,
           isSubSettingsDiscardable: false,
           isIndexingPolicyDirty: false,
-          isConflictResolutionDirty: false,
+          isConflictResolutionDirty: false
         });
       }
 
       if (this.state.isMongoIndexingPolicyDirty) {
-        const newMongoIndexes = this.getMongoIndexesToSave()
-        this.mongoDBCollectionGetResult = (await createUpdateMongoDBCollection(this.container.databaseAccount().id, this.collection.databaseId, this.collection.id(), {
-          properties: { 
-            resource: {
-              ...this.mongoDBCollectionGetResult.properties.resource, 
-              indexes: newMongoIndexes
-            },
-            options: {}
-          },
-        })) as MongoDBCollectionGetResults
-        
+        const newMongoIndexes = this.getMongoIndexesToSave();
+        this.mongoDBCollectionGetResult = (await createUpdateMongoDBCollection(
+          this.container.databaseAccount().id,
+          this.collection.databaseId,
+          this.collection.id(),
+          {
+            properties: {
+              resource: {
+                ...this.mongoDBCollectionGetResult.properties.resource,
+                indexes: newMongoIndexes
+              },
+              options: {}
+            }
+          }
+        )) as MongoDBCollectionGetResults;
+
         this.setState({
           isMongoIndexingPolicyDirty: false,
           indexesToDelete: [],
           indexesToAdd: []
-        })
-        this.forceUpdate()
+        });
+        this.forceUpdate();
       }
 
       if (this.state.isScaleSaveable) {
@@ -544,16 +559,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     });
   };
 
-  private getMongoIndexesToSave = () : MongoIndex[] => {
-    let finalIndexes : MongoIndex[] = []
+  private getMongoIndexesToSave = (): MongoIndex[] => {
+    let finalIndexes: MongoIndex[] = [];
     this.mongoDBCollectionGetResult.properties.resource.indexes.map((mongoIndex: MongoIndex, index: number) => {
       if (!this.state.indexesToDelete.includes(index)) {
-        finalIndexes.push(mongoIndex)
+        finalIndexes.push(mongoIndex);
       }
-    })
-    finalIndexes = finalIndexes.concat(this.state.indexesToAdd)
-    return finalIndexes
-  }
+    });
+    finalIndexes = finalIndexes.concat(this.state.indexesToAdd);
+    return finalIndexes;
+  };
 
   private onScaleSaveableChange = (isScaleSaveable: boolean): void =>
     this.setState({ isScaleSaveable: isScaleSaveable });
@@ -587,23 +602,23 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   };
 
-  private onIndexDelete = (index: number) : void =>
-    this.setState({indexesToDelete : [...this.state.indexesToDelete, index]})
+  private onIndexDelete = (index: number): void =>
+    this.setState({ indexesToDelete: [...this.state.indexesToDelete, index] });
 
-  private onRevertIndexDelete = (index:number) : void => {
-    let indexesToDelete = [...this.state.indexesToDelete]
-    indexesToDelete.splice(index, 1)
-    this.setState({indexesToDelete : [...indexesToDelete]})
-  }
+  private onRevertIndexDelete = (index: number): void => {
+    let indexesToDelete = [...this.state.indexesToDelete];
+    indexesToDelete.splice(index, 1);
+    this.setState({ indexesToDelete: [...indexesToDelete] });
+  };
 
-  private onRevertIndexAdd = (index: number) : void => {
-    let indexesToAdd = [...this.state.indexesToAdd]
-    indexesToAdd.splice(index, 1)
-    this.setState({indexesToAdd : [...indexesToAdd]})
-  }
+  private onRevertIndexAdd = (index: number): void => {
+    let indexesToAdd = [...this.state.indexesToAdd];
+    indexesToAdd.splice(index, 1);
+    this.setState({ indexesToAdd: [...indexesToAdd] });
+  };
 
-  private onIndexAdd = (newMongoIndex: MongoIndex) : void =>
-    this.setState({indexesToAdd: [...this.state.indexesToAdd , newMongoIndex]})
+  private onIndexAdd = (newMongoIndex: MongoIndex): void =>
+    this.setState({ indexesToAdd: [...this.state.indexesToAdd, newMongoIndex] });
 
   private onConflictResolutionPolicyModeChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
@@ -961,7 +976,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     } else if (this.mongoDBCollectionGetResult) {
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
-        content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps}/>
+        content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
       });
     }
 

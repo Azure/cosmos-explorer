@@ -4,9 +4,7 @@ import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType
 import { client } from "../CosmosClient";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import {
-  listMongoDBCollections
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { listTables } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
@@ -30,7 +28,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
         .database(databaseId)
         .containers.readAll()
         .fetchAll();
-      collections = sdkResponse.resources as DataModels.Collection[]
+      collections = sdkResponse.resources as DataModels.Collection[];
     }
   } catch (error) {
     logConsoleError(`Error while querying containers for database ${databaseId}:\n ${JSON.stringify(error)}`);

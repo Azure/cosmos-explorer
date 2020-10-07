@@ -139,16 +139,14 @@ async function updateMongoDBCollection(
   );
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
     getResponse.properties.resource = newCollection as SqlContainerResource & ExtendedResourceProperties;
-    
+
     const updateResponse = await createUpdateMongoDBCollection(
-      getDatabaseAccountFullName(subscriptionId,
-      resourceGroup,
-      accountName),
+      getDatabaseAccountFullName(subscriptionId, resourceGroup, accountName),
       databaseId,
       collectionId,
       getResponse as SqlContainerCreateUpdateParameters
     );
-    
+
     return updateResponse && (updateResponse.properties.resource as Collection);
   }
 

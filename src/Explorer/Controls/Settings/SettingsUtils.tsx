@@ -27,6 +27,11 @@ export enum GeospatialConfigType {
   Geometry = "Geometry"
 }
 
+export enum MongoIndexTypes {
+  Single = "Single",
+  WildCard = "WildCard"
+}
+
 export enum SettingsV2TabTypes {
   ScaleTab,
   ConflictResolutionTab,
