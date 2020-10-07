@@ -87,7 +87,7 @@ const getDatabaseOfferIdWithARM = async (databaseId: string): Promise<string> =>
     return rpResponse?.name;
   } catch (error) {
     if (error.code !== "NotFound") {
-      throw new error();
+      throw error;
     }
     return undefined;
   }
