@@ -3,11 +3,11 @@ import { StateObservable } from "redux-observable";
 import { Subject, of } from "rxjs";
 import { toArray } from "rxjs/operators";
 import { makeNotebookRecord } from "@nteract/commutable";
-import { actions, state } from "@nteract/core";
+import { actions, state, epics } from "@nteract/core";
 import * as sinon from "sinon";
 
 import { CdbAppState, makeCdbRecord } from "./types";
-import { launchWebSocketKernelEpic, autoStartKernelEpic } from "./epics";
+import { launchWebSocketKernelEpic } from "./epics";
 import { NotebookUtil } from "../NotebookUtil";
 
 import { sessions } from "rx-jupyter";
@@ -489,57 +489,5 @@ describe("launchWebSocketKernelEpic", () => {
         }
       });
     });
-  });
-});
-
-describe("autoStartKernelEpic", () => {
-  const contentRef = "fakeContentRef";
-  const kernelRef = "fake";
-
-  it("automatically starts kernel when content fetch is successful if kernelRef is defined", async () => {
-    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
-
-    const action$ = of(
-      actions.fetchContentFulfilled({
-        contentRef,
-        kernelRef,
-        filepath: "filepath",
-        model: {}
-      })
-    );
-
-    const responseActions = await autoStartKernelEpic(action$, state$)
-      .pipe(toArray())
-      .toPromise();
-
-    expect(responseActions).toMatchObject([
-      {
-        type: actions.RESTART_KERNEL,
-        payload: {
-          contentRef,
-          kernelRef,
-          outputHandling: "None"
-        }
-      }
-    ]);
-  });
-
-  it("Don't start kernel when content fetch is successful if kernelRef is not defined", async () => {
-    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
-
-    const action$ = of(
-      actions.fetchContentFulfilled({
-        contentRef,
-        kernelRef: undefined,
-        filepath: "filepath",
-        model: {}
-      })
-    );
-
-    const responseActions = await autoStartKernelEpic(action$, state$)
-      .pipe(toArray())
-      .toPromise();
-
-    expect(responseActions).toMatchObject([]);
   });
 });
