@@ -234,7 +234,13 @@ export class NotebookClientV2 {
       console.error(`${title}: ${message}`);
     };
 
-    this.store = configureStore(initialState, params.contentProvider, traceErrorFct, [cacheKernelSpecsMiddleware]);
+    this.store = configureStore(
+      initialState,
+      params.contentProvider,
+      traceErrorFct,
+      [cacheKernelSpecsMiddleware],
+      !params.isReadOnly
+    );
 
     // Additional configuration
     this.store.dispatch(configOption("editorType").action(params.cellEditorType ?? "monaco"));

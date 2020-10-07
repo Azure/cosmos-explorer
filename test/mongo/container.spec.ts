@@ -29,15 +29,21 @@ describe("Collection Add and Delete Mongo spec", () => {
 
       // type database id
       await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
-      await frame.type('input[data-test="addCollection-newDatabaseId"]', dbId);
+      const dbInput = await frame.$('input[data-test="addCollection-newDatabaseId"]');
+      await dbInput.press("Backspace");
+      await dbInput.type(dbId);
 
       // type collection id
       await frame.waitFor('input[data-test="addCollection-collectionId"]');
-      await frame.type('input[data-test="addCollection-collectionId"]', collectionId);
+      const input = await frame.$('input[data-test="addCollection-collectionId"]');
+      await input.press("Backspace");
+      await input.type(collectionId);
 
       // type partition key value
       await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
-      await frame.type('input[data-test="addCollection-partitionKeyValue"]', sharedKey);
+      const keyInput = await frame.$('input[data-test="addCollection-partitionKeyValue"]');
+      await keyInput.press("Backspace");
+      await keyInput.type(sharedKey);
 
       // click submit
       await frame.waitFor("#submitBtnAddCollection");
@@ -45,12 +51,12 @@ describe("Collection Add and Delete Mongo spec", () => {
 
       // validate created
       // open database menu
-      await frame.waitFor(`span[title="${dbId}"]`);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
+      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
       await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(RENDER_DELAY);
       await frame.waitFor(`div[data-test="${collectionId}"]`, { visible: true });
 
       // delete container
@@ -61,7 +67,7 @@ describe("Collection Add and Delete Mongo spec", () => {
 
       // click delete container
       await frame.waitFor(RENDER_DELAY);
-      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
       await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
       // confirm delete container
@@ -83,6 +89,7 @@ describe("Collection Add and Delete Mongo spec", () => {
       await button.asElement().click();
 
       // click delete database
+      await frame.waitFor(RENDER_DELAY);
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
