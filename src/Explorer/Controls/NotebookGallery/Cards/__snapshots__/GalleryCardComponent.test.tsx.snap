@@ -26,7 +26,7 @@ exports[`GalleryCardComponent renders 1`] = `
     />
   </CardItem>
   <CardItem>
-    <Memo(StyledImageBase)
+    <StyledImageBase
       alt="name cover image"
       height={144}
       imageFit={2}
@@ -95,7 +95,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <Memo(StyledIconBase)
+        <StyledIconBase
           iconName="RedEye"
           styles={
             Object {
@@ -119,7 +119,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <Memo(StyledIconBase)
+        <StyledIconBase
           iconName="Download"
           styles={
             Object {
@@ -143,7 +143,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <Memo(StyledIconBase)
+        <StyledIconBase
           iconName="Heart"
           styles={
             Object {

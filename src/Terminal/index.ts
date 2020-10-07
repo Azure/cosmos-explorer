@@ -7,7 +7,7 @@ import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../UserContext";
-import { TerminalQueryParams } from "../Common/Constants";
+import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};
@@ -20,23 +20,28 @@ const getUrlVars = (): { [key: string]: string } => {
 
 const createServerSettings = (urlVars: { [key: string]: string }): ServerConnection.ISettings => {
   let body: BodyInit;
+  let headers: HeadersInit;
   if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
     body = JSON.stringify({
       endpoint: urlVars[TerminalQueryParams.TerminalEndpoint]
     });
+    headers = {
+      [HttpHeaders.contentType]: "application/json"
+    };
   }
 
   const server = urlVars[TerminalQueryParams.Server];
   let options: Partial<ServerConnection.ISettings> = {
     baseUrl: server,
-    init: { body },
+    init: { body, headers },
     fetch: window.parent.fetch
   };
   if (urlVars.hasOwnProperty(TerminalQueryParams.Token)) {
     options = {
       baseUrl: server,
       token: urlVars[TerminalQueryParams.Token],
-      init: { body },
+      appendToken: true,
+      init: { body, headers },
       fetch: window.parent.fetch
     };
   }

@@ -133,8 +133,7 @@ export interface Collection extends CollectionBase {
   onMongoDBDocumentsClick(): void;
   openTab(): void;
 
-  onSettingsClick: () => void;
-  readSettings(): Q.Promise<void>;
+  onSettingsClick: () => Promise<void>;
   onDeleteCollectionContextMenuClick(source: Collection, event: MouseEvent): void;
 
   onNewGraphClick(): void;
@@ -162,6 +161,7 @@ export interface Collection extends CollectionBase {
   loadUserDefinedFunctions(): Promise<any>;
   loadStoredProcedures(): Promise<any>;
   loadTriggers(): Promise<any>;
+  loadOffer(): Promise<void>;
 
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
@@ -309,10 +309,6 @@ export interface ScriptTabOption extends TabOptions {
   partitionKey?: DataModels.PartitionKey;
 }
 
-export interface WaitsForTemplate {
-  isTemplateReady: ko.Observable<boolean>;
-}
-
 export interface EditorPosition {
   line: number;
   column: number;
@@ -359,7 +355,8 @@ export enum CollectionTabKind {
   NotebookV2 = 15,
   SparkMasterTab = 16,
   Gallery = 17,
-  NotebookViewer = 18
+  NotebookViewer = 18,
+  SettingsV2 = 19
 }
 
 export enum TerminalKind {

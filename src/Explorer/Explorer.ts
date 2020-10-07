@@ -140,7 +140,6 @@ export default class Explorer {
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
-  public extensionEndpoint: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public notificationsClient: NotificationsClientBase;
@@ -213,6 +212,7 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
+  public isSettingsV2Enabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -382,7 +382,6 @@ export default class Explorer {
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
-    this.extensionEndpoint = ko.observable<string>(undefined);
     this.armEndpoint = ko.observable<string>(undefined);
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
@@ -422,6 +421,7 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
+    this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1910,9 +1910,8 @@ export default class Explorer {
       }
       this.features(inputs.features);
       this.serverId(inputs.serverId);
-      this.extensionEndpoint(inputs.extensionEndpoint || "");
       this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
-      this.notificationsClient.setExtensionEndpoint(this.extensionEndpoint());
+      this.notificationsClient.setExtensionEndpoint(configContext.BACKEND_ENDPOINT);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
       this.quotaId(inputs.quotaId);
@@ -1928,6 +1927,7 @@ export default class Explorer {
       this._importExplorerConfigComplete = true;
 
       updateConfigContext({
+        BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
         ARM_ENDPOINT: this.armEndpoint()
       });
 
@@ -2631,7 +2631,7 @@ export default class Explorer {
 
     const databaseAccount = this.databaseAccount();
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
-    const disallowedLocationsUri = `${this.extensionEndpoint()}/api/disallowedLocations`;
+    const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
       const response = await fetch(disallowedLocationsUri, {
@@ -3128,8 +3128,10 @@ export default class Explorer {
   }
 
   public async loadDatabaseOffers(): Promise<void> {
-    this.databases()?.forEach(async (database: ViewModels.Database) => {
-      await database.loadOffer();
-    });
+    await Promise.all(
+      this.databases()?.map(async (database: ViewModels.Database) => {
+        await database.loadOffer();
+      })
+    );
   }
 }

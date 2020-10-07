@@ -25,16 +25,19 @@ interface ConfigContext {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
+  armAPIVersion?: string;
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedParentFrameOrigins: [
-    `^https:\\/\\/cosmos.azure.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]+.portal.azure.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]+.ext.azure.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]+microsoftazure.de$`
+    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
+    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`
   ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
@@ -92,6 +95,10 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     }
     // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
+    if (params.has("armAPIVersion")) {
+      const armAPIVersion = params.get("armAPIVersion") || "";
+      updateConfigContext({ armAPIVersion });
+    }
     if (params.has("platform")) {
       const platform = params.get("platform");
       switch (platform) {

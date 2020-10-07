@@ -1,4 +1,11 @@
 import { armRequest } from "./request";
+import fetch from "node-fetch";
+
+interface Global {
+  Headers: unknown;
+}
+
+((global as unknown) as Global).Headers = ((fetch as unknown) as Global).Headers;
 
 describe("ARM request", () => {
   it("should call window.fetch", async () => {
