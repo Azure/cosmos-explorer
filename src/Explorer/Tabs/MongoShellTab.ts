@@ -13,6 +13,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { PlatformType } from "../../PlatformType";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
+import { configContext } from "../../ConfigContext";
 
 export default class MongoShellTab extends TabsBase {
   public url: ko.Computed<string>;
@@ -30,9 +31,8 @@ export default class MongoShellTab extends TabsBase {
       const accountName = account && account.name;
       const mongoEndpoint = account && (account.properties.mongoEndpoint || account.properties.documentEndpoint);
 
-      this._runtimeEndpoint =
-        window.dataExplorerPlatform == PlatformType.Hosted ? AuthHeadersUtil.extensionEndpoint : "";
-      const extensionEndpoint: string = this._container.extensionEndpoint() || this._runtimeEndpoint || "";
+      this._runtimeEndpoint = window.dataExplorerPlatform === PlatformType.Hosted ? configContext.BACKEND_ENDPOINT : "";
+      const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
       let baseUrl = "/content/mongoshell/dist/";
       if (this._container.serverId() === "localhost") {
         baseUrl = "/content/mongoshell/";
@@ -108,7 +108,7 @@ export default class MongoShellTab extends TabsBase {
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.collection.databaseId;
     const collectionId = this.collection.id();
-    const apiEndpoint = this._container.extensionEndpoint();
+    const apiEndpoint = configContext.BACKEND_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(
@@ -125,7 +125,7 @@ export default class MongoShellTab extends TabsBase {
           apiEndpoint: apiEndpoint
         }
       },
-      this._container.extensionEndpoint()
+      configContext.BACKEND_ENDPOINT
     );
   }
 

@@ -63,10 +63,9 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         databaseAccount
       });
-      window.dataExplorer = {
-        extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
-      } as any;
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
     afterEach(() => {
@@ -96,10 +95,9 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         databaseAccount
       });
-      window.dataExplorer = {
-        extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
-      } as any;
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
     afterEach(() => {
@@ -129,10 +127,9 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         databaseAccount
       });
-      window.dataExplorer = {
-        extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
-      } as any;
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
     afterEach(() => {
@@ -162,10 +159,9 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         databaseAccount
       });
-      window.dataExplorer = {
-        extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
-      } as any;
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
     afterEach(() => {
@@ -195,10 +191,9 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         databaseAccount
       });
-      window.dataExplorer = {
-        extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
-      } as any;
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
     afterEach(() => {
@@ -229,10 +224,9 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         databaseAccount
       });
-      window.dataExplorer = {
-        extensionEndpoint: () => "https://main.documentdb.ext.azure.com",
-        serverId: () => ""
-      } as any;
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      });
     });
 
     it("returns a production endpoint", () => {
