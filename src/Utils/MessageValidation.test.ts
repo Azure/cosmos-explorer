@@ -8,6 +8,7 @@ test.each`
   ${"https://portal.azure.com"}                                    | ${false}
   ${"https://portal.azure.us"}                                     | ${false}
   ${"https://portal.azure.cn"}                                     | ${false}
+  ${"https://portal.microsoftazure.de/"}                           | ${false}
   ${"https://subdomain.portal.azure.com"}                          | ${false}
   ${"https://subdomain.portal.azure.us"}                           | ${false}
   ${"https://subdomain.portal.azure.cn"}                           | ${false}
