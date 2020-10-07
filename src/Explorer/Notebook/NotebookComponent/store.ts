@@ -1,6 +1,6 @@
 import { AppState, epics as coreEpics, reducers, IContentProvider } from "@nteract/core";
 import { compose, Store, AnyAction, Middleware, Dispatch, MiddlewareAPI } from "redux";
-import { createEpicMiddleware, Epic } from "redux-observable";
+import { Epic } from "redux-observable";
 import { allEpics } from "./epics";
 import { coreReducer, cdbReducer } from "./reducers";
 import { catchError } from "rxjs/operators";
@@ -15,7 +15,8 @@ export default function configureStore(
   initialState: Partial<CdbAppState>,
   contentProvider: IContentProvider,
   onTraceFailure: (title: string, message: string) => void,
-  customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[]
+  customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[],
+  autoStartKernelOnNotebookOpen?: boolean
 ): Store<CdbAppState, AnyAction> {
   /**
    * Catches errors in reducers
@@ -54,6 +55,29 @@ export default function configureStore(
     return epics.map(epic => protect(epic));
   };
 
+  const filteredCoreEpics = getCoreEpics(autoStartKernelOnNotebookOpen);
+
+  const mythConfigureStore = makeConfigureStore<CdbAppState>()({
+    packages: [configuration],
+    reducers: {
+      app: reducers.app,
+      core: coreReducer as any,
+      cdb: cdbReducer
+    },
+    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
+    epicDependencies: { contentProvider },
+    epicMiddleware: customMiddlewares.concat(catchErrorMiddleware),
+    enhancer: composeEnhancers
+  });
+
+  const store = mythConfigureStore(initialState as any);
+
+  // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
+  // return store as Store<AppState, AnyAction>;
+  return store as any;
+}
+
+export const getCoreEpics = (autoStartKernelOnNotebookOpen: boolean): Epic[] => {
   // This list needs to be consistent and in sync with core.allEpics until we figure
   // out how to safely filter out the ones we are overriding here.
   const filteredCoreEpics = [
@@ -79,22 +103,9 @@ export default function configureStore(
     coreEpics.sendInputReplyEpic
   ];
 
-  const mythConfigureStore = makeConfigureStore<CdbAppState>()({
-    packages: [configuration],
-    reducers: {
-      app: reducers.app,
-      core: coreReducer as any,
-      cdb: cdbReducer
-    },
-    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
-    epicDependencies: { contentProvider },
-    epicMiddleware: [catchErrorMiddleware],
-    enhancer: composeEnhancers
-  });
+  if (autoStartKernelOnNotebookOpen) {
+    filteredCoreEpics.push(coreEpics.launchKernelWhenNotebookSetEpic);
+  }
 
-  const store = mythConfigureStore(initialState as any);
-
-  // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
-  // return store as Store<AppState, AnyAction>;
-  return store as any;
-}
+  return filteredCoreEpics;
+};

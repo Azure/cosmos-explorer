@@ -24,12 +24,12 @@ import { SubscriptionUtilMappings } from "../../Shared/Constants";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
 import Explorer from "../../Explorer/Explorer";
 import { updateUserContext } from "../../UserContext";
+import { configContext } from "../../ConfigContext";
 
 export default class Main {
   private static _databaseAccountId: string;
   private static _encryptedToken: string;
   private static _accessInputMetadata: AccessInputMetadata;
-  private static _defaultSubscriptionType: ViewModels.SubscriptionType = ViewModels.SubscriptionType.Free;
   private static _features: { [key: string]: string };
   // For AAD, Need to post message to hosted frame to do the auth
   // Use local deferred variable as work around until we find better solution
@@ -315,7 +315,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -335,7 +335,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -365,7 +365,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -451,11 +451,6 @@ export default class Main {
 
   private static _isResourceToken(connectionString: string): boolean {
     return connectionString && connectionString.includes("type=resource");
-  }
-
-  private static _getSubscriptionTypeFromQuotaId(quotaId: string): ViewModels.SubscriptionType {
-    const subscriptionType: ViewModels.SubscriptionType = SubscriptionUtilMappings.SubscriptionTypeMap[quotaId];
-    return subscriptionType || Main._defaultSubscriptionType;
   }
 
   private static _renewExplorerAccessWithResourceToken = (

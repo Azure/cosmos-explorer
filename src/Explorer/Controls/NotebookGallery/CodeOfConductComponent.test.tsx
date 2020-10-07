@@ -1,29 +1,23 @@
+jest.mock("../../../Juno/JunoClient");
 import { shallow } from "enzyme";
-import * as sinon from "sinon";
 import React from "react";
 import { CodeOfConductComponent, CodeOfConductComponentProps } from "./CodeOfConductComponent";
-import { IJunoResponse, JunoClient } from "../../../Juno/JunoClient";
+import { JunoClient } from "../../../Juno/JunoClient";
 import { HttpStatusCodes } from "../../../Common/Constants";
 
 describe("CodeOfConductComponent", () => {
-  let sandbox: sinon.SinonSandbox;
   let codeOfConductProps: CodeOfConductComponentProps;
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    sandbox.stub(JunoClient.prototype, "acceptCodeOfConduct").returns({
+    const junoClient = new JunoClient(undefined);
+    junoClient.acceptCodeOfConduct = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
       data: true
-    } as IJunoResponse<boolean>);
-    const junoClient = new JunoClient(undefined);
+    });
     codeOfConductProps = {
       junoClient: junoClient,
       onAcceptCodeOfConduct: jest.fn()
     };
-  });
-
-  afterEach(() => {
-    sandbox.restore();
   });
 
   it("renders", () => {
