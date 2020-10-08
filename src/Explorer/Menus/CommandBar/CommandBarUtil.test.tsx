@@ -1,4 +1,4 @@
-import { CommandBarUtil } from "./CommandBarUtil";
+import * as CommandBarUtil from "./CommandBarUtil";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -8,7 +8,7 @@ describe("CommandBarUtil tests", () => {
     return {
       iconSrc: "icon",
       iconAlt: "label",
-      onCommandClick: (e: React.SyntheticEvent): void => {},
+      onCommandClick: jest.fn(),
       commandButtonLabel: "label",
       ariaLabel: "ariaLabel",
       hasPopup: true,
@@ -29,11 +29,14 @@ describe("CommandBarUtil tests", () => {
     expect(!converted.split);
     expect(converted.iconProps.imageProps.src).toEqual(btn.iconSrc);
     expect(converted.iconProps.imageProps.alt).toEqual(btn.iconAlt);
-    expect(converted.onClick).toEqual(btn.onCommandClick);
     expect(converted.text).toEqual(btn.commandButtonLabel);
     expect(converted.ariaLabel).toEqual(btn.ariaLabel);
     expect(converted.disabled).toEqual(btn.disabled);
     expect(converted.className).toEqual(btn.className);
+
+    // Click gets called
+    converted.onClick();
+    expect(btn.onCommandClick).toBeCalled();
   });
 
   it("should convert NavbarButtonConfig to split button", () => {

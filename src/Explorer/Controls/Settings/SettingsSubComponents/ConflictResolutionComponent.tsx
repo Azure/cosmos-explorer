@@ -18,24 +18,15 @@ export interface ConflictResolutionComponentProps {
   container: Explorer;
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
-  onConflictResolutionPolicyModeChange: (
-    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ) => void;
+  onConflictResolutionPolicyModeChange: (newMode: DataModels.ConflictResolutionMode) => void;
   conflictResolutionPolicyPath: string;
   conflictResolutionPolicyPathBaseline: string;
 
-  onConflictResolutionPolicyPathChange: (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => void;
+  onConflictResolutionPolicyPathChange: (newPath: string) => void;
   conflictResolutionPolicyProcedure: string;
   conflictResolutionPolicyProcedureBaseline: string;
 
-  onConflictResolutionPolicyProcedureChange: (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => void;
+  onConflictResolutionPolicyProcedureChange: (newProcedure: string) => void;
   onConflictResolutionDirtyChange: (isConflictResolutionDirty: boolean) => void;
 }
 
@@ -77,12 +68,30 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     return false;
   };
 
+  private onConflictResolutionPolicyModeChange = (
+    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void =>
+    this.props.onConflictResolutionPolicyModeChange(
+      DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode]
+    );
+
+  private onConflictResolutionPolicyPathChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => this.props.onConflictResolutionPolicyPathChange(newValue);
+
+  private onConflictResolutionPolicyProcedureChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => this.props.onConflictResolutionPolicyProcedureChange(newValue);
+
   private getConflictResolutionModeComponent = (): JSX.Element => (
     <ChoiceGroup
       label="Mode"
       selectedKey={this.props.conflictResolutionPolicyMode}
       options={this.conflictResolutionChoiceGroupOptions}
-      onChange={this.props.onConflictResolutionPolicyModeChange}
+      onChange={this.onConflictResolutionPolicyModeChange}
       styles={getChoiceGroupStyles(
         this.props.conflictResolutionPolicyMode,
         this.props.conflictResolutionPolicyModeBaseline
@@ -104,7 +113,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
         this.props.conflictResolutionPolicyPathBaseline
       )}
       value={this.props.conflictResolutionPolicyPath}
-      onChange={this.props.onConflictResolutionPolicyPathChange}
+      onChange={this.onConflictResolutionPolicyPathChange}
     />
   );
 
@@ -122,7 +131,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
         this.props.conflictResolutionPolicyProcedureBaseline
       )}
       value={this.props.conflictResolutionPolicyProcedure}
-      onChange={this.props.onConflictResolutionPolicyProcedureChange}
+      onChange={this.onConflictResolutionPolicyProcedureChange}
     />
   );
 

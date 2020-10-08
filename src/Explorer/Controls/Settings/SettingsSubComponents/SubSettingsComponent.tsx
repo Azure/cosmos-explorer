@@ -5,7 +5,11 @@ import {
   TtlType,
   ChangeFeedPolicyState,
   isDirty,
-  IsComponentDirtyResult
+  IsComponentDirtyResult,
+  TtlOn,
+  TtlOff,
+  TtlOnNoDefault,
+  getSanitizedInputValue
 } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
@@ -37,40 +41,28 @@ export interface SubSettingsComponentProps {
   timeToLive: TtlType;
   timeToLiveBaseline: TtlType;
 
-  onTtlChange: (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => void;
+  onTtlChange: (newTtl: TtlType) => void;
   timeToLiveSeconds: number;
   timeToLiveSecondsBaseline: number;
-  onTimeToLiveSecondsChange: (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => void;
+  onTimeToLiveSecondsChange: (newTimeToLiveSeconds: number) => void;
 
   geospatialConfigType: GeospatialConfigType;
   geospatialConfigTypeBaseline: GeospatialConfigType;
-  onGeoSpatialConfigTypeChange: (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ) => void;
+  onGeoSpatialConfigTypeChange: (newGeoSpatialConfigType: GeospatialConfigType) => void;
 
   isAnalyticalStorageEnabled: boolean;
   analyticalStorageTtlSelection: TtlType;
   analyticalStorageTtlSelectionBaseline: TtlType;
-  onAnalyticalStorageTtlSelectionChange: (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ) => void;
+  onAnalyticalStorageTtlSelectionChange: (newAnalyticalStorageTtlSelection: TtlType) => void;
 
   analyticalStorageTtlSeconds: number;
   analyticalStorageTtlSecondsBaseline: number;
-  onAnalyticalStorageTtlSecondsChange: (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => void;
+  onAnalyticalStorageTtlSecondsChange: (newAnalyticalStorageTtlSeconds: number) => void;
 
   changeFeedPolicyVisible: boolean;
   changeFeedPolicy: ChangeFeedPolicyState;
   changeFeedPolicyBaseline: ChangeFeedPolicyState;
-  onChangeFeedPolicyChange: (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => void;
+  onChangeFeedPolicyChange: (newChangeFeedPolicyState: ChangeFeedPolicyState) => void;
   onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => void;
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
@@ -139,6 +131,54 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     { key: TtlType.On, text: "On" }
   ];
 
+  public getTtlValue = (value: string): TtlType => {
+    switch (value) {
+      case TtlOn:
+        return TtlType.On;
+      case TtlOff:
+        return TtlType.Off;
+      case TtlOnNoDefault:
+        return TtlType.OnNoDefault;
+    }
+    return undefined;
+  };
+
+  private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void =>
+    this.props.onTtlChange(this.getTtlValue(option.key));
+
+  private onTimeToLiveSecondsChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
+    const newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max);
+    this.props.onTimeToLiveSecondsChange(newTimeToLiveSeconds);
+  };
+
+  private onGeoSpatialConfigTypeChange = (
+    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void =>
+    this.props.onGeoSpatialConfigTypeChange(GeospatialConfigType[option.key as keyof typeof GeospatialConfigType]);
+
+  private onAnalyticalStorageTtlSelectionChange = (
+    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void => this.props.onAnalyticalStorageTtlSelectionChange(this.getTtlValue(option.key));
+
+  private onAnalyticalStorageTtlSecondsChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
+    const newAnalyticalStorageTtlSeconds = getSanitizedInputValue(newValue, Int32.Max);
+    this.props.onAnalyticalStorageTtlSecondsChange(newAnalyticalStorageTtlSeconds);
+  };
+
+  private onChangeFeedPolicyChange = (
+    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
+    option?: IChoiceGroupOption
+  ): void =>
+    this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState]);
+
   private getTtlComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
       <ChoiceGroup
@@ -146,7 +186,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         label="Time to Live"
         selectedKey={this.props.timeToLive}
         options={this.ttlChoiceGroupOptions}
-        onChange={this.props.onTtlChange}
+        onChange={this.onTtlChange}
         styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
       />
       {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
@@ -163,7 +203,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           min={1}
           max={Int32.Max}
           value={this.props.timeToLiveSeconds?.toString()}
-          onChange={this.props.onTimeToLiveSecondsChange}
+          onChange={this.onTimeToLiveSecondsChange}
           suffix="second(s)"
         />
       )}
@@ -183,7 +223,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         label="Analytical Storage Time to Live"
         selectedKey={this.props.analyticalStorageTtlSelection}
         options={this.analyticalTtlChoiceGroupOptions}
-        onChange={this.props.onAnalyticalStorageTtlSelectionChange}
+        onChange={this.onAnalyticalStorageTtlSelectionChange}
         styles={getChoiceGroupStyles(
           this.props.analyticalStorageTtlSelection,
           this.props.analyticalStorageTtlSelectionBaseline
@@ -202,7 +242,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           max={Int32.Max}
           value={this.props.analyticalStorageTtlSeconds?.toString()}
           suffix="second(s)"
-          onChange={this.props.onAnalyticalStorageTtlSecondsChange}
+          onChange={this.onAnalyticalStorageTtlSecondsChange}
         />
       )}
     </Stack>
@@ -219,7 +259,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       label="Geospatial Configuration"
       selectedKey={this.props.geospatialConfigType}
       options={this.geoSpatialConfigTypeChoiceGroupOptions}
-      onChange={this.props.onGeoSpatialConfigTypeChange}
+      onChange={this.onGeoSpatialConfigTypeChange}
       styles={getChoiceGroupStyles(this.props.geospatialConfigType, this.props.geospatialConfigTypeBaseline)}
     />
   );
@@ -241,7 +281,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           id="changeFeedPolicy"
           selectedKey={this.props.changeFeedPolicy}
           options={this.changeFeedChoiceGroupOptions}
-          onChange={this.props.onChangeFeedPolicyChange}
+          onChange={this.onChangeFeedPolicyChange}
           styles={getChoiceGroupStyles(this.props.changeFeedPolicy, this.props.changeFeedPolicyBaseline)}
           aria-labelledby={labelId}
         />

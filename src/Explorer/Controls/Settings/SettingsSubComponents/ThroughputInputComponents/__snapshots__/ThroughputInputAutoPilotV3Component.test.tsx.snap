@@ -81,10 +81,10 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             Object {
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
-                  "borderColor": "",
+                  "borderColor": undefined,
                 },
                 ".ms-ChoiceField-field.is-checked::before": Object {
-                  "borderColor": "",
+                  "borderColor": undefined,
                 },
                 ".ms-ChoiceField-wrapper label": Object {
                   "fontFamily": undefined,
@@ -113,10 +113,9 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     id="autopilotInput"
     key="auto pilot throughput input"
     label="Max RU/s"
-    min={4000}
     onChange={[Function]}
     required={true}
-    step={100}
+    step={1000}
     styles={
       Object {
         "fieldGroup": Object {
@@ -219,7 +218,6 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
-      min={10000}
       onChange={[Function]}
       required={true}
       step={100}
@@ -375,7 +373,6 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
-      min={10000}
       onChange={[Function]}
       required={true}
       step={100}

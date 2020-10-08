@@ -388,6 +388,7 @@ export interface DataExplorerInputsFrame {
   dataExplorerVersion?: string;
   isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
+  flights?: readonly string[];
 }
 
 export interface CollectionCreationDefaults {
