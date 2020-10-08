@@ -20,8 +20,8 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     geospatialConfig: undefined
   } as DataModels.Collection)
 }));
-import { updateOffer } from "../../../Common/DocumentClientUtilityBase";
-jest.mock("../../../Common/DocumentClientUtilityBase", () => ({
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer)
 }));
 

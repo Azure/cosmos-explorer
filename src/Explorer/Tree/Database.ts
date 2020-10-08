@@ -14,6 +14,7 @@ import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -200,7 +201,11 @@ export default class Database implements ViewModels.Database {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.container.isServerlessEnabled() && !this.offer()) {
+    if (
+      !this.container.isServerlessEnabled() &&
+      this.container.defaultExperience() !== DefaultAccountExperienceType.Table &&
+      !this.offer()
+    ) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
         databaseResourceId: this.self
