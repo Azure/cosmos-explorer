@@ -88,6 +88,7 @@ import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { IChoiceGroupProps } from "office-ui-fabric-react";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -2381,37 +2382,11 @@ export default class Explorer {
     okLabel: string,
     onOk: () => void,
     cancelLabel: string,
-    onCancel: () => void
-  ): void {
-    this._dialogProps({
-      isModal: true,
-      visible: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        this._closeModalDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        this._closeModalDialog();
-        onCancel && onCancel();
-      }
-    });
-  }
-
-  public showOkCancelTextFieldModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
     onCancel: () => void,
-    textFieldProps: TextFieldProps,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    let textFieldValue: string = null;
     this._dialogProps({
       isModal: true,
       visible: true,
@@ -2427,8 +2402,9 @@ export default class Explorer {
         this._closeModalDialog();
         onCancel && onCancel();
       },
-      primaryButtonDisabled: isPrimaryButtonDisabled,
-      textFieldProps
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled: isPrimaryButtonDisabled
     });
   }
 

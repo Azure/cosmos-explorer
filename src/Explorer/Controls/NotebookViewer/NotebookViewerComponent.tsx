@@ -140,6 +140,7 @@ export class NotebookViewerComponent extends React.Component<
               onFavoriteClick={this.favoriteItem}
               onUnfavoriteClick={this.unfavoriteItem}
               onDownloadClick={this.downloadItem}
+              onReportAbuseClick={this.state.galleryItem.isSample ? undefined : this.reportAbuse}
             />
           </div>
         ) : (
@@ -195,5 +196,9 @@ export class NotebookViewerComponent extends React.Component<
     GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item })
     );
+  };
+
+  private reportAbuse = (): void => {
+    GalleryUtils.reportAbuse(this.props.container, this.props.junoClient, this.state.galleryItem, () => {});
   };
 }
