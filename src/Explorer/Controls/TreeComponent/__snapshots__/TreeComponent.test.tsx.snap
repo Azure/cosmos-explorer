@@ -191,7 +191,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
                 "className": undefined,
                 "disabled": true,
                 "key": "menuLabel",
-                "onClick": undefined,
+                "onClick": [Function],
                 "onRenderIcon": [Function],
                 "text": "menuLabel",
               },
