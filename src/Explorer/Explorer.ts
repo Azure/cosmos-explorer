@@ -1921,7 +1921,6 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      console.log(inputs.flights);
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
@@ -1961,7 +1960,7 @@ export default class Explorer {
       return;
     }
 
-    if (flights.filter((flightName: string) => flightName === Constants.Flights.settingsV2).length === 1) {
+    if (flights.indexOf(Constants.Flights.settingsV2) !== -1) {
       this.isSettingsV2Enabled(true);
     }
   }
