@@ -12,8 +12,6 @@ import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
 
 export default class AuthHeadersUtil {
-  // TODO: Figure out a way to determine the extension endpoint and serverId at runtime
-  public static extensionEndpoint: string = Constants.BackendEndpoints.productionPortal;
   public static serverId: string = Constants.ServerIds.productionPortal;
 
   private static readonly _firstPartyAppId: string = "203f1145-856a-4232-83d4-a43568fba23d";
@@ -41,7 +39,7 @@ export default class AuthHeadersUtil {
 
   public static getAccessInputMetadata(accessInput: string): Q.Promise<DataModels.AccessInputMetadata> {
     const deferred: Q.Deferred<DataModels.AccessInputMetadata> = Q.defer<DataModels.AccessInputMetadata>();
-    const url: string = `${AuthHeadersUtil.extensionEndpoint}${Constants.ApiEndpoints.guestRuntimeProxy}/accessinputmetadata`;
+    const url = `${configContext.BACKEND_ENDPOINT}${Constants.ApiEndpoints.guestRuntimeProxy}/accessinputmetadata`;
     const authType: string = (<any>window).authType;
     const headers: { [headerName: string]: string } = {};
 
@@ -86,9 +84,7 @@ export default class AuthHeadersUtil {
   }
 
   public static generateEncryptedToken(): Q.Promise<DataModels.GenerateTokenResponse> {
-    const url: string = `${
-      AuthHeadersUtil.extensionEndpoint
-    }/api/tokens/generateToken${AuthHeadersUtil._generateResourceUrl()}`;
+    const url = configContext.BACKEND_ENDPOINT + "/api/tokens/generateToken" + AuthHeadersUtil._generateResourceUrl();
     const explorer = window.dataExplorer;
     const headers: any = { authorization: userContext.authorizationToken };
     headers[Constants.HttpHeaders.getReadOnlyKey] = !explorer.hasWriteAccess();
@@ -109,7 +105,7 @@ export default class AuthHeadersUtil {
       return Q.reject("None or empty connection string specified");
     }
 
-    const url: string = `${AuthHeadersUtil.extensionEndpoint}/api/guest/tokens/generateToken`;
+    const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
     const headers: any = {};
     headers[Constants.HttpHeaders.connectionString] = connectionString;
 
