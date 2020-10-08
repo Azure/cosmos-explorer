@@ -17,7 +17,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import { updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { updateCollection } from "../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
@@ -1175,7 +1175,21 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           );
           this.throughput.valueHasMutated(); // force component re-render
         } else {
-          const updatedOffer: DataModels.Offer = await updateOffer(this.collection.offer(), newOffer, headerOptions);
+          const updateOfferParams: DataModels.UpdateOfferParams = {
+            databaseId: this.collection.databaseId,
+            collectionId: this.collection.id(),
+            currentOffer: this.collection.offer(),
+            autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
+            manualThroughput: this.isAutoPilotSelected() ? undefined : newThroughput
+          };
+          if (this._hasProvisioningTypeChanged()) {
+            if (this.isAutoPilotSelected()) {
+              updateOfferParams.migrateToAutoPilot = true;
+            } else {
+              updateOfferParams.migrateToManual = true;
+            }
+          }
+          const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
           this.collection.offer(updatedOffer);
           this.collection.offer.valueHasMutated();
         }

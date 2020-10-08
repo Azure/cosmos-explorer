@@ -17,29 +17,19 @@ import { userContext } from "../../UserContext";
 export const readDatabaseOffer = async (
   params: DataModels.ReadDatabaseOfferParams
 ): Promise<DataModels.OfferWithHeaders> => {
+  if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+    throw new Error("Reading database offer is not allowed for tables accounts");
+  }
+
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
   let offerId = params.offerId;
   if (!offerId) {
-    if (
-      window.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
-      try {
-        offerId = await getDatabaseOfferIdWithARM(params.databaseId);
-      } catch (error) {
-        clearMessage();
-        if (error.code !== "NotFound") {
-          throw new error();
-        }
-        return undefined;
-      }
-    } else {
-      offerId = await getDatabaseOfferIdWithSDK(params.databaseResourceId);
-      if (!offerId) {
-        clearMessage();
-        return undefined;
-      }
+    offerId = await (window.authType === AuthType.AAD && !userContext.useSDKOperations
+      ? getDatabaseOfferIdWithARM(params.databaseId)
+      : getDatabaseOfferIdWithSDK(params.databaseResourceId));
+    if (!offerId) {
+      clearMessage();
+      return undefined;
     }
   }
 
@@ -75,24 +65,32 @@ const getDatabaseOfferIdWithARM = async (databaseId: string): Promise<string> =>
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;
   const defaultExperience = userContext.defaultExperience;
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
-      rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-      break;
-    case DefaultAccountExperienceType.MongoDB:
-      rpResponse = await getMongoDBDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-      break;
-    case DefaultAccountExperienceType.Cassandra:
-      rpResponse = await getCassandraKeyspaceThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-      break;
-    case DefaultAccountExperienceType.Graph:
-      rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-      break;
-    default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
-  }
 
-  return rpResponse?.name;
+  try {
+    switch (defaultExperience) {
+      case DefaultAccountExperienceType.DocumentDB:
+        rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+        break;
+      case DefaultAccountExperienceType.MongoDB:
+        rpResponse = await getMongoDBDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+        break;
+      case DefaultAccountExperienceType.Cassandra:
+        rpResponse = await getCassandraKeyspaceThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+        break;
+      case DefaultAccountExperienceType.Graph:
+        rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+        break;
+      default:
+        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+    }
+
+    return rpResponse?.name;
+  } catch (error) {
+    if (error.code !== "NotFound") {
+      throw error;
+    }
+    return undefined;
+  }
 };
 
 const getDatabaseOfferIdWithSDK = async (databaseResourceId: string): Promise<string> => {
