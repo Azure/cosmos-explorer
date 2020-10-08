@@ -157,41 +157,6 @@ export function updateDocument(
   return deferred.promise;
 }
 
-export function updateOffer(
-  offer: DataModels.Offer,
-  newOffer: DataModels.Offer,
-  options: RequestOptions
-): Q.Promise<DataModels.Offer> {
-  var deferred = Q.defer<any>();
-  const clearMessage = logConsoleProgress(`Updating offer for resource ${offer.resource}`);
-  DataAccessUtilityBase.updateOffer(offer, newOffer, options)
-    .then(
-      (replacedOffer: DataModels.Offer) => {
-        logConsoleInfo(`Successfully updated offer for resource ${offer.resource}`);
-        deferred.resolve(replacedOffer);
-      },
-      (error: any) => {
-        logConsoleError(`Error updating offer for resource ${offer.resource}: ${JSON.stringify(error)}`);
-        Logger.logError(
-          JSON.stringify({
-            oldOffer: offer,
-            newOffer: newOffer,
-            error: error
-          }),
-          "UpdateOffer",
-          error.code
-        );
-        sendNotificationForError(error);
-        deferred.reject(error);
-      }
-    )
-    .finally(() => {
-      clearMessage();
-    });
-
-  return deferred.promise;
-}
-
 export function createDocument(collection: ViewModels.CollectionBase, newDocument: any): Q.Promise<any> {
   var deferred = Q.defer<any>();
   const entityName = getEntityName();
