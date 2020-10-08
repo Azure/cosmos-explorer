@@ -72,22 +72,6 @@ export function getPartitionKeyHeader(partitionKeyDefinition: DataModels.Partiti
   return [partitionKeyValue];
 }
 
-export function updateOffer(
-  offer: DataModels.Offer,
-  newOffer: DataModels.Offer,
-  options?: RequestOptions
-): Q.Promise<DataModels.Offer> {
-  return Q(
-    client()
-      .offer(offer.id)
-      // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
-      .replace((newOffer as unknown) as OfferDefinition, options)
-      .then(response => {
-        return Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => response.resource);
-      })
-  );
-}
-
 export function updateDocument(
   collection: ViewModels.CollectionBase,
   documentId: DocumentId,
