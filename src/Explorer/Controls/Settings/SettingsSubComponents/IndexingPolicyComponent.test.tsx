@@ -17,9 +17,6 @@ describe("IndexingPolicyComponent", () => {
     },
     indexingPolicyContent: initialIndexingPolicyContent,
     indexingPolicyContentBaseline: initialIndexingPolicyContent,
-    onIndexingPolicyElementFocusChange: () => {
-      return;
-    },
     onIndexingPolicyContentChange: () => {
       return;
     },

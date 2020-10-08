@@ -10,7 +10,6 @@ export interface IndexingPolicyComponentProps {
   resetShouldDiscardIndexingPolicy: () => void;
   indexingPolicyContent: DataModels.IndexingPolicy;
   indexingPolicyContentBaseline: DataModels.IndexingPolicy;
-  onIndexingPolicyElementFocusChange: (indexingPolicyContentFocussed: boolean) => void;
   onIndexingPolicyContentChange: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
   logIndexingPolicySuccessMessage: () => void;
   onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => void;
@@ -89,8 +88,6 @@ export class IndexingPolicyComponent extends React.Component<
       ariaLabel: "Indexing Policy"
     });
     if (this.indexingPolicyEditor) {
-      this.indexingPolicyEditor.onDidFocusEditorText(() => this.props.onIndexingPolicyElementFocusChange(true));
-      this.indexingPolicyEditor.onDidBlurEditorText(() => this.props.onIndexingPolicyElementFocusChange(false));
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
       indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logIndexingPolicySuccessMessage();
