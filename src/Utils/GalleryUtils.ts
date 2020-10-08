@@ -86,7 +86,7 @@ export function reportAbuse(
 ): void {
   const notebookId = data.id;
   let abuseCategory = defaultSelectedAbuseCategory;
-  let additionalDetails: string = undefined;
+  let additionalDetails: string;
 
   container.showOkCancelModalDialog(
     "Report Abuse",
