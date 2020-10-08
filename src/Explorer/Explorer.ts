@@ -1960,7 +1960,7 @@ export default class Explorer {
       return;
     }
 
-    if (flights.indexOf(Constants.Flights.settingsV2) !== -1) {
+    if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
       this.isSettingsV2Enabled(true);
     }
   }

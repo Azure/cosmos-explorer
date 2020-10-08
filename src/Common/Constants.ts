@@ -130,8 +130,9 @@ export class Features {
   public static readonly enableSDKoperations = "enablesdkoperations";
 }
 
+// flight names returned from the portal are always lowercase
 export class Flights {
-  public static readonly settingsV2 = "settingsv2";
+  public static readonly SettingsV2 = "settingsv2";
 }
 
 export class AfecFeatures {
