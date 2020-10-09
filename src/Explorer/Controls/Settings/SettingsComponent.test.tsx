@@ -104,8 +104,7 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.shouldShowKeyspaceSharedThroughputMessage()).toEqual(false);
 
     const newContainer = new Explorer({
-      notificationsClient: undefined,
-      isEmulator: false
+      notificationsClient: undefined
     });
     newContainer.isPreferredApiCassandra = ko.computed(() => true);
 
@@ -148,8 +147,7 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.hasConflictResolution()).toEqual(undefined);
 
     const newContainer = new Explorer({
-      notificationsClient: undefined,
-      isEmulator: false
+      notificationsClient: undefined
     });
     newContainer.databaseAccount = ko.observable({
       id: undefined,

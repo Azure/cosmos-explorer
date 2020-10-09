@@ -7,8 +7,7 @@ import { NotificationsClient } from "./NotificationsClient";
 export default class EmulatorExplorerFactory {
   public static createExplorer(): Explorer {
     const explorer: Explorer = new Explorer({
-      notificationsClient: new NotificationsClient(),
-      isEmulator: true
+      notificationsClient: new NotificationsClient()
     });
     explorer.databaseAccount({
       name: "",

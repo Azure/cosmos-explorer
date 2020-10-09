@@ -10,8 +10,7 @@ describe("TabRouteHandler", () => {
 
   beforeAll(() => {
     (<any>window).dataExplorer = new Explorer({
-      notificationsClient: null,
-      isEmulator: false
+      notificationsClient: null
     }); // create a mock to avoid null refs
   });
 

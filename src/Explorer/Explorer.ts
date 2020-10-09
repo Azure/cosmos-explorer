@@ -100,7 +100,6 @@ enum ShareAccessToggleState {
 
 interface ExplorerOptions {
   notificationsClient: NotificationsClientBase;
-  isEmulator: boolean;
 }
 interface AdHocAccessData {
   readWriteUrl: string;
@@ -135,7 +134,6 @@ export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
-  public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
@@ -378,7 +376,6 @@ export default class Explorer {
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
     this.notificationsClient = options.notificationsClient;
-    this.isEmulator = options.isEmulator;
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
