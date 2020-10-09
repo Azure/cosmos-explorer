@@ -8,7 +8,8 @@ import {
   GalleryViewerComponent
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
-import { IChoiceGroupOption } from "office-ui-fabric-react";
+import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
+import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -78,17 +79,30 @@ export interface GalleryViewerProps {
   searchText: string;
 }
 
+export interface DialogHost {
+  showOkCancelModalDialog(
+    title: string,
+    msg: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps
+  ): void;
+}
+
 export function reportAbuse(
-  container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
+  dialogHost: DialogHost,
   onComplete: (success: boolean) => void
 ): void {
   const notebookId = data.id;
   let abuseCategory = defaultSelectedAbuseCategory;
   let additionalDetails: string;
 
-  container.showOkCancelModalDialog(
+  dialogHost.showOkCancelModalDialog(
     "Report Abuse",
     undefined,
     "Report Abuse",
