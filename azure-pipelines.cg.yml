@@ -3,11 +3,8 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- master
-
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 steps:
-- task: ComponentGovernanceComponentDetection@0
+  - task: ComponentGovernanceComponentDetection@0
