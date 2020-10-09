@@ -27,13 +27,9 @@ describe("Documents tab", () => {
   });
 
   describe("showPartitionKey", () => {
-    const explorer = new Explorer({
-      notificationsClient: null
-    });
+    const explorer = new Explorer();
 
-    const mongoExplorer = new Explorer({
-      notificationsClient: null
-    });
+    const mongoExplorer = new Explorer();
     mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{

@@ -12,9 +12,7 @@ import * as SharedConstants from "../../../../Shared/Constants";
 import ko from "knockout";
 
 describe("ScaleComponent", () => {
-  const nonNationalCloudContainer = new Explorer({
-    notificationsClient: undefined
-  });
+  const nonNationalCloudContainer = new Explorer();
   nonNationalCloudContainer.getPlatformType = () => PlatformType.Portal;
   nonNationalCloudContainer.isRunningOnNationalCloud = () => false;
 
@@ -87,9 +85,7 @@ describe("ScaleComponent", () => {
   });
 
   it("autoScale enabled", () => {
-    const newContainer = new Explorer({
-      notificationsClient: undefined
-    });
+    const newContainer = new Explorer();
 
     newContainer.databaseAccount({
       id: undefined,

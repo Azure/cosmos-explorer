@@ -22,7 +22,7 @@ describe("Delete Database Confirmation Pane", () => {
     });
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null });
+      explorer = new Explorer();
     });
 
     it("should be true if only 1 database", () => {
