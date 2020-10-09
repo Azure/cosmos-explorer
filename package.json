@@ -8,7 +8,7 @@
     "@azure/cosmos-language-service": "0.0.4",
     "@jupyterlab/services": "6.0.0-rc.2",
     "@jupyterlab/terminal": "3.0.0-rc.2",
-    "@microsoft/applicationinsights-web": "2.5.8",
+    "@microsoft/applicationinsights-web": "2.5.9",
     "@nteract/commutable": "7.3.2",
     "@nteract/connected-components": "6.8.2",
     "@nteract/core": "15.1.0",
@@ -88,8 +88,8 @@
     "styled-components": "4.3.2",
     "text-encoding": "0.7.0",
     "underscore": "1.9.1",
-    "utility-types": "3.10.0",
     "url-polyfill": "1.1.7",
+    "utility-types": "3.10.0",
     "webcrypto-liner": "1.1.4",
     "webfontloader": "1.6.28",
     "whatwg-fetch": "3.0.0"

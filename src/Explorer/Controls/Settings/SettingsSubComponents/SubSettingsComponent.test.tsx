@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 import { container, collection } from "../TestUtils";
-import { TtlType, GeospatialConfigType, ChangeFeedPolicyState } from "../SettingsUtils";
+import { TtlType, GeospatialConfigType, ChangeFeedPolicyState, TtlOnNoDefault, TtlOn, TtlOff } from "../SettingsUtils";
 import ko from "knockout";
 import Explorer from "../../../Explorer";
 
@@ -131,5 +131,12 @@ describe("SubSettingsComponent", () => {
     isComponentDirtyResult = subSettingsComponent.IsComponentDirty();
     expect(isComponentDirtyResult.isSaveable).toEqual(true);
     expect(isComponentDirtyResult.isDiscardable).toEqual(true);
+  });
+
+  it("getTtlValue", async () => {
+    const subSettingsComponentInstance = new SubSettingsComponent(baseProps);
+    expect(subSettingsComponentInstance.getTtlValue(TtlType.OnNoDefault)).toEqual(TtlOnNoDefault);
+    expect(subSettingsComponentInstance.getTtlValue(TtlType.On)).toEqual(TtlOn);
+    expect(subSettingsComponentInstance.getTtlValue(TtlType.Off)).toEqual(TtlOff);
   });
 });
