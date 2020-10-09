@@ -6,8 +6,8 @@ import * as SharedConstants from "../../../Shared/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import { traceStart, traceFailure, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { traceStart, traceFailure, traceSuccess, trace } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
@@ -122,8 +122,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
       Constants.Features.enableChangeFeedPolicy
     );
-    // Mongo container with system partition key still treat as "Fixed"
 
+    // Mongo container with system partition key still treat as "Fixed"
     this.isFixedContainer =
       !this.collection.partitionKey ||
       (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
@@ -264,7 +264,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.props.settingsTab.isExecutionError(false);
 
     this.props.settingsTab.isExecuting(true);
-    const startKey: number = traceStart(Action.UpdateSettings, {
+    const startKey: number = traceStart(Action.UpdateSettingsV2, {
       databaseAccountName: this.container.databaseAccount()?.name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
@@ -405,7 +405,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
           } catch (error) {
             traceFailure(
-              Action.UpdateSettings,
+              Action.UpdateSettingsV2,
               {
                 databaseAccountName: this.container.databaseAccount().name,
                 databaseName: this.collection && this.collection.databaseId,
@@ -454,7 +454,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.setBaseline();
       this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
       traceSuccess(
-        Action.UpdateSettings,
+        Action.UpdateSettingsV2,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
@@ -468,7 +468,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.props.settingsTab.isExecutionError(true);
       console.error(reason);
       traceFailure(
-        Action.UpdateSettings,
+        Action.UpdateSettingsV2,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
@@ -482,6 +482,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public onRevertClick = (): void => {
+    trace(Action.DiscardSettingsV2, ActionModifiers.Mark, {
+      message: "Settings Discarded"
+    });
+
     this.setState({
       throughput: this.state.throughputBaseline,
       timeToLive: this.state.timeToLiveBaseline,

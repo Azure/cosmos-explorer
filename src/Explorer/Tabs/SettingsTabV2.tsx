@@ -9,6 +9,7 @@ export default class SettingsTabV2 extends TabsBase {
 
   constructor(options: ViewModels.TabOptions) {
     super(options);
+    this.tabId = "SettingsV2-" + this.tabId
     const props: SettingsComponentProps = {
       settingsTab: this
     };

@@ -86,7 +86,10 @@ export enum Action {
   CreateMongoCollectionWithWildcardIndex,
   ClickCommandBarButton,
   RefreshResourceTreeMyNotebooks,
-  ClickResourceTreeNodeContextMenuItem
+  ClickResourceTreeNodeContextMenuItem,
+  DiscardSettings,
+  UpdateSettingsV2,
+  DiscardSettingsV2
 }
 
 export const ActionModifiers = {
