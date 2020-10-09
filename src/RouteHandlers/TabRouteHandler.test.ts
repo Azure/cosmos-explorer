@@ -9,7 +9,9 @@ describe("TabRouteHandler", () => {
   let tabRouteHandler: TabRouteHandler;
 
   beforeAll(() => {
-    (<any>window).dataExplorer = new Explorer(); // create a mock to avoid null refs
+    (<any>window).dataExplorer = new Explorer({
+      notificationsClient: null
+    }); // create a mock to avoid null refs
   });
 
   beforeEach(() => {

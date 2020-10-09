@@ -3,7 +3,9 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
 import ko from "knockout";
 
-export const container = new Explorer();
+export const container = new Explorer({
+  notificationsClient: undefined
+});
 
 export const collection = ({
   container: container,

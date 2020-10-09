@@ -40,7 +40,6 @@ import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -1214,7 +1213,7 @@ export default class Collection implements ViewModels.Collection {
     }
 
     const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    fetchPortalNotifications().then(
+    this.container.notificationsClient.fetchNotifications().then(
       (notifications: DataModels.Notification[]) => {
         if (!notifications || notifications.length === 0) {
           deferred.resolve(undefined);

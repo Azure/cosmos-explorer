@@ -15,7 +15,6 @@ import Explorer from "../Explorer";
 import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -221,8 +220,8 @@ export default class Database implements ViewModels.Database {
     }
 
     const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    fetchPortalNotifications().then(
-      notifications => {
+    this.container.notificationsClient.fetchNotifications().then(
+      (notifications: DataModels.Notification[]) => {
         if (!notifications || notifications.length === 0) {
           deferred.resolve(undefined);
           return;

@@ -40,7 +40,9 @@ describe("Add Database Pane", () => {
     };
 
     beforeEach(() => {
-      explorer = new Explorer();
+      explorer = new Explorer({
+        notificationsClient: null
+      });
     });
 
     it("should be true if subscription type is Benefits", () => {

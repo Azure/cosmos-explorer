@@ -79,7 +79,7 @@ describe("Settings tab", () => {
       };
 
       beforeEach(() => {
-        explorer = new Explorer();
+        explorer = new Explorer({ notificationsClient: null });
         explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       });
 
@@ -178,7 +178,7 @@ describe("Settings tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer();
+      explorer = new Explorer({ notificationsClient: null });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
@@ -256,7 +256,7 @@ describe("Settings tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer();
+      explorer = new Explorer({ notificationsClient: null });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
@@ -337,7 +337,9 @@ describe("Settings tab", () => {
     }
 
     function getCollection(defaultApi: string, partitionKeyOption: PartitionKeyOption) {
-      const explorer = new Explorer();
+      const explorer = new Explorer({
+        notificationsClient: null
+      });
       explorer.defaultExperience(defaultApi);
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
 
@@ -467,7 +469,9 @@ describe("Settings tab", () => {
 
   describe("AutoPilot", () => {
     function getCollection(autoPilotTier: DataModels.AutopilotTier) {
-      const explorer = new Explorer();
+      const explorer = new Explorer({
+        notificationsClient: null
+      });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
 
       explorer.databaseAccount({
