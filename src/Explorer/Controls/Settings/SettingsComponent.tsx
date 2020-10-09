@@ -27,9 +27,6 @@ import {
   SettingsV2TabTypes,
   getTabTitle,
   isDirty,
-  TtlOff,
-  TtlOn,
-  TtlOnNoDefault,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure
 } from "./SettingsUtils";
@@ -38,7 +35,7 @@ import {
   ConflictResolutionComponentProps
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 
@@ -85,7 +82,6 @@ export interface SettingsComponentState {
   indexingPolicyContent: DataModels.IndexingPolicy;
   indexingPolicyContentBaseline: DataModels.IndexingPolicy;
   shouldDiscardIndexingPolicy: boolean;
-  indexingPolicyElementFocussed: boolean;
   isIndexingPolicyDirty: boolean;
 
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
@@ -102,7 +98,6 @@ export interface SettingsComponentState {
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
-  private static readonly zeroSeconds = 0;
 
   public saveSettingsButton: ButtonV2;
   public discardSettingsChangesButton: ButtonV2;
@@ -160,7 +155,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       indexingPolicyContent: undefined,
       indexingPolicyContentBaseline: undefined,
-      indexingPolicyElementFocussed: false,
       shouldDiscardIndexingPolicy: false,
       isIndexingPolicyDirty: false,
 
@@ -518,9 +512,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onScaleDiscardableChange = (isScaleDiscardable: boolean): void =>
     this.setState({ isScaleDiscardable: isScaleDiscardable });
 
-  private onIndexingPolicyElementFocusChange = (indexingPolicyElementFocussed: boolean): void =>
-    this.setState({ indexingPolicyElementFocussed: indexingPolicyElementFocussed });
-
   private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
 
@@ -544,79 +535,34 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   };
 
-  private onConflictResolutionPolicyModeChange = (
-    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void =>
-    this.setState({
-      conflictResolutionPolicyMode:
-        DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode]
-    });
+  private onConflictResolutionPolicyModeChange = (newMode: DataModels.ConflictResolutionMode): void =>
+    this.setState({ conflictResolutionPolicyMode: newMode });
 
-  private onConflictResolutionPolicyPathChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => this.setState({ conflictResolutionPolicyPath: newValue });
+  private onConflictResolutionPolicyPathChange = (newPath: string): void =>
+    this.setState({ conflictResolutionPolicyPath: newPath });
 
-  private onConflictResolutionPolicyProcedureChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => this.setState({ conflictResolutionPolicyProcedure: newValue });
+  private onConflictResolutionPolicyProcedureChange = (newProcedure: string): void =>
+    this.setState({ conflictResolutionPolicyProcedure: newProcedure });
 
   private onConflictResolutionDirtyChange = (isConflictResolutionDirty: boolean): void =>
     this.setState({ isConflictResolutionDirty: isConflictResolutionDirty });
 
-  public getTtlValue = (value: string): TtlType => {
-    switch (value) {
-      case TtlOn:
-        return TtlType.On;
-      case TtlOff:
-        return TtlType.Off;
-      case TtlOnNoDefault:
-        return TtlType.OnNoDefault;
-    }
-    return undefined;
-  };
+  private onTtlChange = (newTtl: TtlType): void => this.setState({ timeToLive: newTtl });
 
-  private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void =>
-    this.setState({ timeToLive: this.getTtlValue(option.key) });
-
-  private onTimeToLiveSecondsChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => {
-    let newTimeToLiveSeconds = parseInt(newValue);
-    newTimeToLiveSeconds = isNaN(newTimeToLiveSeconds) ? SettingsComponent.zeroSeconds : newTimeToLiveSeconds;
+  private onTimeToLiveSecondsChange = (newTimeToLiveSeconds: number): void =>
     this.setState({ timeToLiveSeconds: newTimeToLiveSeconds });
-  };
 
-  private onGeoSpatialConfigTypeChange = (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void =>
-    this.setState({ geospatialConfigType: GeospatialConfigType[option.key as keyof typeof GeospatialConfigType] });
+  private onGeoSpatialConfigTypeChange = (newGeoSpatialConfigType: GeospatialConfigType): void =>
+    this.setState({ geospatialConfigType: newGeoSpatialConfigType });
 
-  private onAnalyticalStorageTtlSelectionChange = (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void => this.setState({ analyticalStorageTtlSelection: this.getTtlValue(option.key) });
+  private onAnalyticalStorageTtlSelectionChange = (newAnalyticalStorageTtlSelection: TtlType): void =>
+    this.setState({ analyticalStorageTtlSelection: newAnalyticalStorageTtlSelection });
 
-  private onAnalyticalStorageTtlSecondsChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => {
-    let newAnalyticalStorageTtlSeconds = parseInt(newValue);
-    newAnalyticalStorageTtlSeconds = isNaN(newAnalyticalStorageTtlSeconds)
-      ? SettingsComponent.zeroSeconds
-      : newAnalyticalStorageTtlSeconds;
+  private onAnalyticalStorageTtlSecondsChange = (newAnalyticalStorageTtlSeconds: number): void =>
     this.setState({ analyticalStorageTtlSeconds: newAnalyticalStorageTtlSeconds });
-  };
 
-  private onChangeFeedPolicyChange = (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void =>
-    this.setState({ changeFeedPolicy: ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState] });
+  private onChangeFeedPolicyChange = (newChangeFeedPolicy: ChangeFeedPolicyState): void =>
+    this.setState({ changeFeedPolicy: newChangeFeedPolicy });
 
   private onSubSettingsSaveableChange = (isSubSettingsSaveable: boolean): void =>
     this.setState({ isSubSettingsSaveable: isSubSettingsSaveable });
@@ -844,7 +790,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       resetShouldDiscardIndexingPolicy: this.resetShouldDiscardIndexingPolicy,
       indexingPolicyContent: this.state.indexingPolicyContent,
       indexingPolicyContentBaseline: this.state.indexingPolicyContentBaseline,
-      onIndexingPolicyElementFocusChange: this.onIndexingPolicyElementFocusChange,
       onIndexingPolicyContentChange: this.onIndexingPolicyContentChange,
       logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage,
       onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange

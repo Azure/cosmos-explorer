@@ -982,7 +982,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isAuthWithResourceToken": [Function],
                 "isCodeOfConductEnabled": [Function],
                 "isCopyNotebookPaneEnabled": [Function],
-                "isEmulator": false,
                 "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isGalleryPublishEnabled": [Function],
@@ -2296,7 +2295,6 @@ exports[`SettingsComponent renders 1`] = `
               "isAuthWithResourceToken": [Function],
               "isCodeOfConductEnabled": [Function],
               "isCopyNotebookPaneEnabled": [Function],
-              "isEmulator": false,
               "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isGalleryPublishEnabled": [Function],
@@ -3623,7 +3621,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isAuthWithResourceToken": [Function],
                 "isCodeOfConductEnabled": [Function],
                 "isCopyNotebookPaneEnabled": [Function],
-                "isEmulator": false,
                 "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isGalleryPublishEnabled": [Function],
@@ -4937,7 +4934,6 @@ exports[`SettingsComponent renders 1`] = `
               "isAuthWithResourceToken": [Function],
               "isCodeOfConductEnabled": [Function],
               "isCopyNotebookPaneEnabled": [Function],
-              "isEmulator": false,
               "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isGalleryPublishEnabled": [Function],
@@ -5325,7 +5321,6 @@ exports[`SettingsComponent renders 1`] = `
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
-          onIndexingPolicyElementFocusChange={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
         />
