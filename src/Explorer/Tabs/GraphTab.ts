@@ -91,8 +91,6 @@ export default class GraphTab extends TabsBase {
       onIsFilterQueryLoading: (isFilterQueryLoading: boolean): void => this.isFilterQueryLoading(isFilterQueryLoading),
       onIsValidQuery: (isValidQuery: boolean): void => this.isValidQuery(isValidQuery),
       collectionPartitionKeyProperty: options.collectionPartitionKeyProperty,
-      collectionRid: this.rid,
-      collectionSelfLink: options.selfLink,
       graphBackendEndpoint: GraphTab.getGremlinEndpoint(options.account),
       databaseId: options.databaseId,
       collectionId: options.collectionId,

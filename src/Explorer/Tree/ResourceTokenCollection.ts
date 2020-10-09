@@ -94,7 +94,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabPath: "",
       collection: this,
       node: this,
-      selfLink: this.self,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
       isActive: ko.observable(false),
       queryText: queryText,
@@ -121,7 +120,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab: TabsBase) => tab.collection && tab.collection.rid === this.rid
+      (tab: TabsBase) =>
+        tab.collection?.id() === this.id() &&
+        (tab.collection as ViewModels.CollectionBase).databaseId === this.databaseId
     ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
@@ -143,7 +144,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        selfLink: this.self,
         isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,

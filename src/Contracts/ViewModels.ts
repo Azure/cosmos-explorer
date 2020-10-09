@@ -85,7 +85,7 @@ export interface Database extends TreeNode {
   collapseDatabase(): void;
 
   loadCollections(): Promise<void>;
-  findCollectionWithId(collectionRid: string): Collection;
+  findCollectionWithId(collectionId: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
   onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
   onSettingsClick: () => void;
@@ -266,7 +266,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  selfLink: string;
   isActive: ko.Observable<boolean>;
   hashLocation: string;
   onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
@@ -305,7 +304,6 @@ export interface QueryTabOptions extends TabOptions {
 export interface ScriptTabOption extends TabOptions {
   resource: any;
   isNew: boolean;
-  collectionSelfLink?: string;
   partitionKey?: DataModels.PartitionKey;
 }
 

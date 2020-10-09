@@ -50,7 +50,6 @@ describe("Tabs manager tests", () => {
       database,
       title: "",
       tabPath: "",
-      selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
       onUpdateTabsButtons: undefined
@@ -63,7 +62,6 @@ describe("Tabs manager tests", () => {
       collection,
       title: "",
       tabPath: "",
-      selfLink: "",
       hashLocation: "",
       isActive: ko.observable<boolean>(false),
       onUpdateTabsButtons: undefined

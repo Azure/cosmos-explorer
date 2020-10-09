@@ -69,12 +69,16 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.isExecuting(false);
         this.close();
         this.container.refreshAllDatabases();
-        this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === selectedDatabase.rid);
+        this.container.tabsManager.closeTabsByComparator(tab => tab.node?.id() === selectedDatabase.id());
         this.container.selectedNode(null);
         selectedDatabase
           .collections()
           .forEach((collection: ViewModels.Collection) =>
-            this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === collection.rid)
+            this.container.tabsManager.closeTabsByComparator(
+              tab =>
+                tab.node?.id() === collection.id() &&
+                (tab.node as ViewModels.Collection).databaseId === collection.databaseId
+            )
           );
         this.resetData();
         TelemetryProcessor.traceSuccess(

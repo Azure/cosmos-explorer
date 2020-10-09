@@ -56,7 +56,7 @@ export default class Database implements ViewModels.Database {
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.DatabaseSettings,
-      tab => tab.rid === this.rid
+      tab => tab.node?.id() === this.id()
     );
     let settingsTab: DatabaseSettingsTab = matchingTabs && (matchingTabs[0] as DatabaseSettingsTab);
     if (!settingsTab) {
@@ -78,7 +78,6 @@ export default class Database implements ViewModels.Database {
             rid: this.rid,
             database: this,
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
-            selfLink: this.self,
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons
@@ -127,8 +126,8 @@ export default class Database implements ViewModels.Database {
       !this.isDatabaseExpanded() &&
       this.container.selectedNode &&
       this.container.selectedNode() &&
-      this.container.selectedNode().rid === this.rid &&
-      this.container.selectedNode().nodeKind === "Database"
+      this.container.selectedNode().nodeKind === "Database" &&
+      this.container.selectedNode().id() === this.id()
     );
   }
 
@@ -265,7 +264,7 @@ export default class Database implements ViewModels.Database {
       (collection: DataModels.Collection) => {
         const collectionExists = _.some(
           this.collections(),
-          (existingCollection: Collection) => existingCollection.rid === collection._rid
+          (existingCollection: Collection) => existingCollection.id() === collection.id
         );
         return !collectionExists;
       }
@@ -275,7 +274,7 @@ export default class Database implements ViewModels.Database {
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {
       const collectionPresentInUpdatedList = _.some(
         updatedCollectionsList,
-        (coll: DataModels.Collection) => coll._rid === collection.rid
+        (coll: DataModels.Collection) => coll.id === collection.id()
       );
       if (!collectionPresentInUpdatedList) {
         collectionsToDelete.push(collection);
@@ -301,7 +300,7 @@ export default class Database implements ViewModels.Database {
     const collectionsToKeep: Collection[] = [];
 
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {
-      const shouldRemoveCollection = _.some(collectionsToRemove, (coll: Collection) => coll.rid === collection.rid);
+      const shouldRemoveCollection = _.some(collectionsToRemove, (coll: Collection) => coll.id() === collection.id());
       if (!shouldRemoveCollection) {
         collectionsToKeep.push(collection);
       }
