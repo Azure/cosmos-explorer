@@ -3,7 +3,7 @@ import { Dialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric
 import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
 import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
 import { Link } from "office-ui-fabric-react/lib/Link";
-import { FontIcon } from "office-ui-fabric-react";
+import { ChoiceGroup, FontIcon, IChoiceGroupProps } from "office-ui-fabric-react";
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -24,6 +24,7 @@ export interface DialogProps {
   subText: string;
   isModal: boolean;
   visible: boolean;
+  choiceGroupProps?: IChoiceGroupProps;
   textFieldProps?: TextFieldProps;
   linkProps?: LinkProps;
   primaryButtonText: string;
@@ -65,6 +66,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
       minWidth: DIALOG_MIN_WIDTH,
       maxWidth: DIALOG_MAX_WIDTH
     };
+    const choiceGroupProps: IChoiceGroupProps = this.props.choiceGroupProps;
     const textFieldProps: ITextFieldProps = this.props.textFieldProps;
     const linkProps: LinkProps = this.props.linkProps;
     const primaryButtonProps: IButtonProps = {
@@ -82,6 +84,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
 
     return (
       <Dialog {...dialogProps}>
+        {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
         {textFieldProps && <TextField {...textFieldProps} />}
         {linkProps && (
           <Link href={linkProps.linkUrl} target="_blank">
