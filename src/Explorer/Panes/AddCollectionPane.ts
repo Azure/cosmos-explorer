@@ -750,8 +750,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
-    const databaseIds: string[] = newDatabaseIds?.map((database: ViewModels.Database) => database.id());
-    this.databaseIds(databaseIds);
+    this.databaseIds(newDatabaseIds?.map((database: ViewModels.Database) => database.id()));
   }
 
   private _computeOfferThroughput(): number {
