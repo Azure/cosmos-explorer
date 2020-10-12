@@ -51,7 +51,8 @@ let configContext: Readonly<ConfigContext> = {
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
-  JUNO_ENDPOINT: "https://tools.cosmos.azure.com"
+  JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
+  BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
 };
 
 export function resetConfigContext(): void {
