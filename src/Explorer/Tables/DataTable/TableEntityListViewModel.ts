@@ -6,6 +6,7 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
 import DataTableViewModel from "./DataTableViewModel";
 import * as DataTableUtilities from "./DataTableUtilities";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
 import * as Constants from "../Constants";
@@ -57,7 +58,9 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.queryTablesTab = queryTablesTab;
     this.id = `tableEntityListViewModel${this.queryTablesTab.tabId}`;
     this.cqlQuery = ko.observable<string>(
-      `SELECT * FROM ${this.queryTablesTab.collection.databaseId}.${this.queryTablesTab.collection.id()}`
+      `SELECT * FROM ${getQuotedCqlIdentifier(this.queryTablesTab.collection.databaseId)}.${getQuotedCqlIdentifier(
+        this.queryTablesTab.collection.id()
+      )}`
     );
     this.oDataQuery = ko.observable<string>();
     this.sqlQuery = ko.observable<string>("SELECT * FROM c");
