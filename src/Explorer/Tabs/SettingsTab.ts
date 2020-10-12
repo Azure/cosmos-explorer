@@ -13,7 +13,7 @@ import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
@@ -1233,6 +1233,9 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   };
 
   public onRevertClick = (): Q.Promise<any> => {
+    TelemetryProcessor.trace(Action.DiscardSettings, ActionModifiers.Mark, {
+      message: "Settings Discarded"
+    });
     this.throughput.setBaseline(this.throughput.getEditableOriginalValue());
     this.timeToLive.setBaseline(this.timeToLive.getEditableOriginalValue());
     this.timeToLiveSeconds.setBaseline(this.timeToLiveSeconds.getEditableOriginalValue());

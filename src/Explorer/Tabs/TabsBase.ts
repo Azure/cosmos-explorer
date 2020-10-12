@@ -88,7 +88,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       databaseAccountName: this.getContainer().databaseAccount().name,
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
+      tabId: this.tabId
     });
   }
 
@@ -145,7 +146,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       databaseAccountName: this.getContainer().databaseAccount().name,
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
+      tabId: this.tabId
     });
     return Q();
   }
