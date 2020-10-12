@@ -21,7 +21,7 @@ import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/Sca
 import {
   MongoIndexingPolicyComponent,
   MongoIndexingPolicyComponentProps
-} from "./SettingsSubComponents/MongoIndexingPolicyComponent";
+} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import {
   getMaxRUs,
   hasDatabaseSharedThroughput,

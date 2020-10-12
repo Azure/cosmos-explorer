@@ -16,9 +16,9 @@ import {
   IDropdownOption,
   Dropdown
 } from "office-ui-fabric-react";
-import { titleAndInputStackProps } from "../SettingsRenderUtils";
-import { MongoIndex } from "../../../../Utils/arm/generatedClients/2020-04-01/types";
-import { MongoIndexTypes } from "../SettingsUtils";
+import { titleAndInputStackProps } from "../../SettingsRenderUtils";
+import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
+import { MongoIndexTypes } from "../../SettingsUtils";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
