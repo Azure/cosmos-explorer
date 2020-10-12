@@ -98,7 +98,7 @@ export class NotebookComponentBootstrapper {
       actions.fetchContentFulfilled({
         filepath: undefined,
         model: NotebookComponentBootstrapper.wrapModelIntoContent(name, undefined, content),
-        kernelRef: undefined, // must be undefined or it will be auto-started by the epic
+        kernelRef: undefined,
         contentRef: this.contentRef
       })
     );

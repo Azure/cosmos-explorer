@@ -26,9 +26,10 @@ import {
   MessageBarType
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
-import { IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
+import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
 import * as SharedConstants from "../../../../../Shared/Constants";
 import * as DataModels from "../../../../../Contracts/DataModels";
+import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;
@@ -71,9 +72,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 > {
   private shouldCheckComponentIsDirty = true;
   private static readonly defaultStep = 100;
-  private static readonly zeroThroughput = 0;
   private step: number;
-  private choiceGroupFixedStyle = getChoiceGroupStyles(undefined, undefined);
+  private throughputInputMaxValue: number;
+  private autoPilotInputMaxValue: number;
   private options: IChoiceGroupOption[] = [
     { key: "true", text: "Autoscale" },
     { key: "false", text: "Manual" }
@@ -140,6 +141,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
+    this.throughputInputMaxValue = this.props.canExceedMaximumValue ? Int32.Max : this.props.maximum;
+    this.autoPilotInputMaxValue = Int32.Max;
   }
 
   public hasProvisioningTypeChanged = (): boolean =>
@@ -200,8 +203,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    let newThroughput = parseInt(newValue);
-    newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
+    const newThroughput = getSanitizedInputValue(newValue, this.autoPilotInputMaxValue);
     this.props.onMaxAutoPilotThroughputChange(newThroughput);
   };
 
@@ -209,9 +211,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    let newThroughput = parseInt(newValue);
-    newThroughput = isNaN(newThroughput) ? ThroughputInputAutoPilotV3Component.zeroThroughput : newThroughput;
-
+    const newThroughput = getSanitizedInputValue(newValue, this.throughputInputMaxValue);
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
@@ -245,7 +245,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           onChange={this.onChoiceGroupChange}
           required={this.props.showAsMandatory}
           ariaLabelledBy={labelId}
-          styles={this.choiceGroupFixedStyle}
+          styles={getChoiceGroupStyles(this.props.wasAutopilotOriginallySet, this.props.isAutoPilotSelected)}
         />
       </Stack>
     );
@@ -270,8 +270,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         key="auto pilot throughput input"
         styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
         disabled={this.overrideWithProvisionedThroughputSettings()}
-        step={this.step}
-        min={AutoPilotUtils.minAutoPilotThroughput}
+        step={AutoPilotUtils.autoPilotIncrementStep}
         value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
         onChange={this.onAutoPilotThroughputChange}
       />
@@ -298,8 +297,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
         disabled={this.overrideWithAutoPilotSettings()}
         step={this.step}
-        min={this.props.minimum}
-        max={this.props.canExceedMaximumValue ? undefined : this.props.maximum}
         value={
           this.overrideWithAutoPilotSettings()
             ? this.props.maxAutoPilotThroughputBaseline?.toString()

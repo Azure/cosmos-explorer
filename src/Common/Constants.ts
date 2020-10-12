@@ -117,7 +117,6 @@ export class Features {
   public static readonly enableGalleryPublish = "enablegallerypublish";
   public static readonly enableCodeOfConduct = "enablecodeofconduct";
   public static readonly enableLinkInjection = "enablelinkinjection";
-  public static readonly enableSettingsV2 = "enablesettingsv2";
   public static readonly enableSpark = "enablespark";
   public static readonly livyEndpoint = "livyendpoint";
   public static readonly notebookServerUrl = "notebookserverurl";
@@ -129,6 +128,11 @@ export class Features {
   public static readonly ttl90Days = "ttl90days";
   public static readonly enableRightPanelV2 = "enablerightpanelv2";
   public static readonly enableSDKoperations = "enablesdkoperations";
+}
+
+// flight names returned from the portal are always lowercase
+export class Flights {
+  public static readonly SettingsV2 = "settingsv2";
 }
 
 export class AfecFeatures {

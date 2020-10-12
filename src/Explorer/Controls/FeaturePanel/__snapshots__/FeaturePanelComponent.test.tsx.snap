@@ -180,12 +180,6 @@ exports[`Feature panel renders all flags 1`] = `
       >
         <StyledCheckboxBase
           checked={false}
-          key="feature.enablesettingsv2"
-          label="Enable SettingsV2 Tab"
-          onChange={[Function]}
-        />
-        <StyledCheckboxBase
-          checked={false}
           key="feature.canexceedmaximumvalue"
           label="Can exceed max value"
           onChange={[Function]}

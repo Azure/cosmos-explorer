@@ -41,18 +41,6 @@ export default class DataTableOperationManager {
     this.tryOpenEditor();
   };
 
-  private contextMenu = (event: JQueryEventObject) => {
-    var elem: JQuery = $(event.currentTarget);
-    this.updateLastSelectedItem(elem, event.shiftKey);
-
-    this.applyContextMenuSelection(elem);
-    setTimeout(function() {
-      $(".context-menu-list")
-        .attr("tabindex", -1)
-        .focus();
-    }, 0);
-  };
-
   private keyDown = (event: JQueryEventObject): boolean => {
     var isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow,
       isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow,
@@ -293,7 +281,6 @@ export default class DataTableOperationManager {
   public bind() {
     this.dataTable.on("click", "tr", this.click);
     this.dataTable.on("dblclick", "tr", this.doubleClick);
-    this.dataTable.on("contextmenu", "tr", this.contextMenu);
     this.dataTable.on("keydown", "td", this.keyDown);
     this.dataTable.on("keyup", "td", this.keyUp);
 

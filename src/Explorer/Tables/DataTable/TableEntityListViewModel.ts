@@ -5,8 +5,8 @@ import Q from "q";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
 import DataTableViewModel from "./DataTableViewModel";
-import DataTableContextMenu from "./DataTableContextMenu";
 import * as DataTableUtilities from "./DataTableUtilities";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
 import * as Constants from "../Constants";
@@ -56,11 +56,11 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.cache = new TableEntityCache();
     this.queryErrorMessage = ko.observable<string>();
     this.queryTablesTab = queryTablesTab;
-    // Enable Context menu for the data table.
-    DataTableContextMenu.contextMenuFactory(this, tableCommands);
     this.id = `tableEntityListViewModel${this.queryTablesTab.tabId}`;
     this.cqlQuery = ko.observable<string>(
-      `SELECT * FROM ${this.queryTablesTab.collection.databaseId}.${this.queryTablesTab.collection.id()}`
+      `SELECT * FROM ${getQuotedCqlIdentifier(this.queryTablesTab.collection.databaseId)}.${getQuotedCqlIdentifier(
+        this.queryTablesTab.collection.id()
+      )}`
     );
     this.oDataQuery = ko.observable<string>();
     this.sqlQuery = ko.observable<string>("SELECT * FROM c");
