@@ -264,7 +264,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.props.settingsTab.isExecutionError(false);
 
     this.props.settingsTab.isExecuting(true);
-    const startKey: number = traceStart(Action.UpdateSettingsV2, {
+    const startKey: number = traceStart(Action.SettingsV2Updated, {
       databaseAccountName: this.container.databaseAccount()?.name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
@@ -405,7 +405,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
           } catch (error) {
             traceFailure(
-              Action.UpdateSettingsV2,
+              Action.SettingsV2Updated,
               {
                 databaseAccountName: this.container.databaseAccount().name,
                 databaseName: this.collection && this.collection.databaseId,
@@ -454,7 +454,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.setBaseline();
       this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
       traceSuccess(
-        Action.UpdateSettingsV2,
+        Action.SettingsV2Updated,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
@@ -468,7 +468,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.props.settingsTab.isExecutionError(true);
       console.error(reason);
       traceFailure(
-        Action.UpdateSettingsV2,
+        Action.SettingsV2Updated,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
@@ -482,7 +482,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public onRevertClick = (): void => {
-    trace(Action.DiscardSettingsV2, ActionModifiers.Mark, {
+    trace(Action.SettingsV2Discarded, ActionModifiers.Mark, {
       message: "Settings Discarded"
     });
 

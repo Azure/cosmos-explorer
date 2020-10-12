@@ -88,8 +88,8 @@ export enum Action {
   RefreshResourceTreeMyNotebooks,
   ClickResourceTreeNodeContextMenuItem,
   DiscardSettings,
-  UpdateSettingsV2,
-  DiscardSettingsV2
+  SettingsV2Updated,
+  SettingsV2Discarded
 }
 
 export const ActionModifiers = {
