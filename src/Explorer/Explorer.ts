@@ -100,7 +100,6 @@ enum ShareAccessToggleState {
 
 interface ExplorerOptions {
   notificationsClient: NotificationsClientBase;
-  isEmulator: boolean;
 }
 interface AdHocAccessData {
   readWriteUrl: string;
@@ -135,7 +134,6 @@ export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
-  public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
@@ -212,7 +210,7 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
-  public isSettingsV2Enabled: ko.Computed<boolean>;
+  public isSettingsV2Enabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -378,7 +376,6 @@ export default class Explorer {
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
     this.notificationsClient = options.notificationsClient;
-    this.isEmulator = options.isEmulator;
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
@@ -421,7 +418,8 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
-    this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
+    //this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
+    this.isSettingsV2Enabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1919,6 +1917,7 @@ export default class Explorer {
       this.flight(inputs.addCollectionDefaultFlight);
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
+      this.setFeatureFlagsFromFlights(inputs.flights);
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
@@ -1951,6 +1950,16 @@ export default class Explorer {
       this.isAccountReady(true);
     }
     return Q();
+  }
+
+  public setFeatureFlagsFromFlights(flights: readonly string[]): void {
+    if (!flights) {
+      return;
+    }
+
+    if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
+      this.isSettingsV2Enabled(true);
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {

@@ -194,7 +194,7 @@ export class CommandBarComponentButtonFactory {
       buttons.push(fullScreenButton);
     }
 
-    if (!container.hasOwnProperty("isEmulator") || !container.isEmulator) {
+    if (configContext.platform !== Platform.Emulator) {
       const label = "Feedback";
       const feedbackButtonOptions: CommandButtonComponentProps = {
         iconSrc: FeedbackIcon,

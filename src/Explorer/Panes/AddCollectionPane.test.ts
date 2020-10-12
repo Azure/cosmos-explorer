@@ -40,7 +40,7 @@ describe("Add Collection Pane", () => {
     };
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
+      explorer = new Explorer({ notificationsClient: null });
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 

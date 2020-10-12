@@ -2,6 +2,7 @@ import { collection, container } from "./TestUtils";
 import {
   getMaxRUs,
   getMinRUs,
+  getSanitizedInputValue,
   hasDatabaseSharedThroughput,
   isDirty,
   isDirtyTypes,
@@ -85,5 +86,12 @@ describe("SettingsUtils", () => {
       expect(isDirty(baseline, baseline)).toEqual(false);
       expect(isDirty(baseline, current)).toEqual(true);
     });
+  });
+
+  it("getSanitizedInputValue", () => {
+    const max = 100;
+    expect(getSanitizedInputValue("", max)).toEqual(0);
+    expect(getSanitizedInputValue("999", max)).toEqual(99);
+    expect(getSanitizedInputValue("10", max)).toEqual(10);
   });
 });

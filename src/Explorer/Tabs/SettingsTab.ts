@@ -13,7 +13,7 @@ import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
@@ -22,6 +22,7 @@ import { updateCollection } from "../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
+import { configContext, Platform } from "../../ConfigContext";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -454,7 +455,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.rupmVisible = ko.computed(() => {
-      if (this.container.isEmulator) {
+      if (configContext.platform === Platform.Emulator) {
         return false;
       }
       if (this.container.isFeatureEnabled(Constants.Features.enableRupm)) {
@@ -484,7 +485,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.costsVisible = ko.computed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.isTryCosmosDBSubscription = ko.computed<boolean>(() => {
@@ -500,7 +501,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.canRequestSupport = ko.pureComputed(() => {
-      if (this.container.isEmulator) {
+      if (configContext.platform === Platform.Emulator) {
         return false;
       }
 
@@ -711,7 +712,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
             }
 
             const isThroughputGreaterThanMaxRus = this.throughput() > this.maxRUs();
-            const isEmulator = this.container.isEmulator;
+            const isEmulator = configContext.platform === Platform.Emulator;
             if (isThroughputGreaterThanMaxRus && isEmulator) {
               return false;
             }
@@ -881,7 +882,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
         this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
 
-      const throughputExceedsMaxValue: boolean = !this.container.isEmulator && this.throughput() > this.maxRUs();
+      const throughputExceedsMaxValue: boolean =
+        configContext.platform !== Platform.Emulator && this.throughput() > this.maxRUs();
 
       const ttlOptionDirty: boolean = this.timeToLive.editableIsDirty();
       const ttlOrIndexingPolicyFieldsDirty: boolean =
@@ -1231,6 +1233,9 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   };
 
   public onRevertClick = (): Q.Promise<any> => {
+    TelemetryProcessor.trace(Action.DiscardSettings, ActionModifiers.Mark, {
+      message: "Settings Discarded"
+    });
     this.throughput.setBaseline(this.throughput.getEditableOriginalValue());
     this.timeToLive.setBaseline(this.timeToLive.getEditableOriginalValue());
     this.timeToLiveSeconds.setBaseline(this.timeToLiveSeconds.getEditableOriginalValue());
