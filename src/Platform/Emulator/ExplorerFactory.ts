@@ -2,13 +2,9 @@ import { AccountKind, TagNames, DefaultAccountExperience } from "../../Common/Co
 
 import Explorer from "../../Explorer/Explorer";
 
-import { NotificationsClient } from "./NotificationsClient";
-
 export default class EmulatorExplorerFactory {
   public static createExplorer(): Explorer {
-    const explorer: Explorer = new Explorer({
-      notificationsClient: new NotificationsClient()
-    });
+    const explorer: Explorer = new Explorer();
     explorer.databaseAccount({
       name: "",
       id: "",

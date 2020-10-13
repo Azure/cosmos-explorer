@@ -1,5 +1,5 @@
 import ko from "knockout";
-import { HttpStatusCodes } from "../Common/Constants";
+import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
@@ -404,6 +404,30 @@ export class JunoClient {
     return `${this.getNotebooksUrl()}/gallery/${id}`;
   }
 
+  public async reportAbuse(notebookId: string, abuseCategory: string, notes: string): Promise<IJunoResponse<boolean>> {
+    const response = await window.fetch(`${this.getNotebooksUrl()}/avert/reportAbuse`, {
+      method: "POST",
+      body: JSON.stringify({
+        notebookId,
+        abuseCategory,
+        notes
+      }),
+      headers: {
+        [HttpHeaders.contentType]: "application/json"
+      }
+    });
+
+    let data: boolean;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
   private async getNotebooks(input: RequestInfo, init?: RequestInit): Promise<IJunoResponse<IGalleryItem[]>> {
     const response = await window.fetch(input, init);
 
@@ -430,7 +454,7 @@ export class JunoClient {
     const authorizationHeader = getAuthorizationHeader();
     return {
       [authorizationHeader.header]: authorizationHeader.token,
-      "content-type": "application/json"
+      [HttpHeaders.contentType]: "application/json"
     };
   }
 

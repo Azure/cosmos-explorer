@@ -166,7 +166,7 @@ export default class NotebookManager {
   private promptForCommitMsg = (title: string, primaryButtonLabel: string) => {
     return new Promise<string>((resolve, reject) => {
       let commitMsg = "Committed from Azure Cosmos DB Notebooks";
-      this.params.container.showOkCancelTextFieldModalDialog(
+      this.params.container.showOkCancelModalDialog(
         title || "Commit",
         undefined,
         primaryButtonLabel || "Commit",
@@ -181,6 +181,7 @@ export default class NotebookManager {
         },
         "Cancel",
         () => reject(new Error("Commit dialog canceled")),
+        undefined,
         {
           label: "Commit message",
           autoAdjustHeight: true,
