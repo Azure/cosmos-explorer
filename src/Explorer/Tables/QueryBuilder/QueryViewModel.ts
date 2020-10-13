@@ -7,6 +7,7 @@ import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
 import { KeyCodes } from "../../../Common/Constants";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
 
 export default class QueryViewModel {
   public topValueLimitMessage: string = "Please input a number between 0 and 1000.";
@@ -189,7 +190,9 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.oDataQuery("");
     this._tableEntityListViewModel.sqlQuery("SELECT * FROM c");
     this._tableEntityListViewModel.cqlQuery(
-      `SELECT * FROM ${this.queryTablesTab.collection.databaseId}.${this.queryTablesTab.collection.id()}`
+      `SELECT * FROM ${getQuotedCqlIdentifier(this.queryTablesTab.collection.databaseId)}.${getQuotedCqlIdentifier(
+        this.queryTablesTab.collection.id()
+      )}`
     );
     return this._tableEntityListViewModel.reloadTable(false);
   };

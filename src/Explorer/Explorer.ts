@@ -82,12 +82,12 @@ import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
-import { NotificationsClientBase } from "../Common/NotificationsClientBase";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { IChoiceGroupProps } from "office-ui-fabric-react";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -98,9 +98,6 @@ enum ShareAccessToggleState {
   Read
 }
 
-interface ExplorerOptions {
-  notificationsClient: NotificationsClientBase;
-}
 interface AdHocAccessData {
   readWriteUrl: string;
   readUrl: string;
@@ -140,7 +137,6 @@ export default class Explorer {
   public serverId: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
-  public notificationsClient: NotificationsClientBase;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -269,7 +265,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(options: ExplorerOptions) {
+  constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
@@ -375,7 +371,6 @@ export default class Explorer {
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
-    this.notificationsClient = options.notificationsClient;
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
@@ -1909,7 +1904,6 @@ export default class Explorer {
       this.features(inputs.features);
       this.serverId(inputs.serverId);
       this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
-      this.notificationsClient.setExtensionEndpoint(configContext.BACKEND_ENDPOINT);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
       this.quotaId(inputs.quotaId);
@@ -2390,37 +2384,11 @@ export default class Explorer {
     okLabel: string,
     onOk: () => void,
     cancelLabel: string,
-    onCancel: () => void
-  ): void {
-    this._dialogProps({
-      isModal: true,
-      visible: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        this._closeModalDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        this._closeModalDialog();
-        onCancel && onCancel();
-      }
-    });
-  }
-
-  public showOkCancelTextFieldModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
     onCancel: () => void,
-    textFieldProps: TextFieldProps,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    let textFieldValue: string = null;
     this._dialogProps({
       isModal: true,
       visible: true,
@@ -2436,8 +2404,9 @@ export default class Explorer {
         this._closeModalDialog();
         onCancel && onCancel();
       },
-      primaryButtonDisabled: isPrimaryButtonDisabled,
-      textFieldProps
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled: isPrimaryButtonDisabled
     });
   }
 

@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as CustomTimestampHelper from "./CustomTimestampHelper";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import QueryClauseViewModel from "./QueryClauseViewModel";
 import ClauseGroup from "./ClauseGroup";
 import ClauseGroupViewModel from "./ClauseGroupViewModel";
@@ -237,7 +238,7 @@ export default class QueryBuilderViewModel {
   public getCqlFilterFromClauses = (): string => {
     const databaseId = this._queryViewModel.queryTablesTab.collection.databaseId;
     const collectionId = this._queryViewModel.queryTablesTab.collection.id();
-    const tableToQuery = `${databaseId}.${collectionId}`;
+    const tableToQuery = `${getQuotedCqlIdentifier(databaseId)}.${getQuotedCqlIdentifier(collectionId)}`;
     var filterString: string = `SELECT * FROM ${tableToQuery}`;
     if (this._queryViewModel.selectText() && this._queryViewModel.selectText().length > 0) {
       filterString = "SELECT";
