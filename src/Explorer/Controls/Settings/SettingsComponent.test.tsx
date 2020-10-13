@@ -33,7 +33,6 @@ describe("SettingsComponent", () => {
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
-      selfLink: undefined,
       hashLocation: "settings",
       isActive: ko.observable(false),
       onUpdateTabsButtons: undefined
@@ -103,9 +102,7 @@ describe("SettingsComponent", () => {
     let settingsComponentInstance = new SettingsComponent(baseProps);
     expect(settingsComponentInstance.shouldShowKeyspaceSharedThroughputMessage()).toEqual(false);
 
-    const newContainer = new Explorer({
-      notificationsClient: undefined
-    });
+    const newContainer = new Explorer();
     newContainer.isPreferredApiCassandra = ko.computed(() => true);
 
     const newCollection = { ...collection };
@@ -146,9 +143,7 @@ describe("SettingsComponent", () => {
     let settingsComponentInstance = new SettingsComponent(baseProps);
     expect(settingsComponentInstance.hasConflictResolution()).toEqual(undefined);
 
-    const newContainer = new Explorer({
-      notificationsClient: undefined
-    });
+    const newContainer = new Explorer();
     newContainer.databaseAccount = ko.observable({
       id: undefined,
       name: undefined,
