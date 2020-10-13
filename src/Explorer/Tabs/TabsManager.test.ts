@@ -16,7 +16,7 @@ describe("Tabs manager tests", () => {
   let documentsTab: DocumentsTab;
 
   beforeAll(() => {
-    explorer = new Explorer({ notificationsClient: undefined });
+    explorer = new Explorer();
     explorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
       id: "test",
       name: "test",

@@ -48,7 +48,7 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null });
+      explorer = new Explorer();
     });
 
     it("should be true for accounts using SQL API", () => {
@@ -68,7 +68,7 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null });
+      explorer = new Explorer();
     });
 
     it("should be visible when using a supported API", () => {
