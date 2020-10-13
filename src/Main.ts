@@ -65,7 +65,6 @@ import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer"
 import * as Emulator from "./Platform/Emulator/Main";
 import Hosted from "./Platform/Hosted/Main";
 import * as Portal from "./Platform/Portal/Main";
-import { PlatformType } from "./PlatformType";
 import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";

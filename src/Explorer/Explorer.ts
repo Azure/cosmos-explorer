@@ -58,7 +58,6 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { PlatformType } from "../PlatformType";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { RenewAdHocAccessPane } from "./Panes/RenewAdHocAccessPane";

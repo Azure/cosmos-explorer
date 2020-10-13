@@ -14,8 +14,6 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
-import { HashMap } from "../../Common/HashMap";
-import { PlatformType } from "../../PlatformType";
 import { refreshCachedResources } from "../../Common/DocumentClientUtilityBase";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 

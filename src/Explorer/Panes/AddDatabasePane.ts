@@ -11,7 +11,6 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
-import { PlatformType } from "../../PlatformType";
 import { configContext, Platform } from "../../ConfigContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {

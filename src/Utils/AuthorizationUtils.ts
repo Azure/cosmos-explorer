@@ -3,7 +3,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
 import * as Logger from "../Common/Logger";
-import { PlatformType } from "../PlatformType";
 import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
 

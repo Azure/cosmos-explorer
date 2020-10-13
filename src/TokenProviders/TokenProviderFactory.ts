@@ -1,6 +1,5 @@
 import { configContext, Platform } from "../ConfigContext";
 import * as ViewModels from "../Contracts/ViewModels";
-import { PlatformType } from "../PlatformType";
 import { PortalTokenProvider } from "./PortalTokenProvider";
 
 export class TokenProviderFactory {

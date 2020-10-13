@@ -1,7 +1,6 @@
 import * as Constants from "../Common/Constants";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 import { AuthType } from "../AuthType";
-import { PlatformType } from "../PlatformType";
 import Explorer from "../Explorer/Explorer";
 import { updateUserContext } from "../UserContext";
 import { Platform, updateConfigContext } from "../ConfigContext";

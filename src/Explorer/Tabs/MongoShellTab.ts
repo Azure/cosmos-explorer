@@ -10,7 +10,6 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../Common/HashMap";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { PlatformType } from "../../PlatformType";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import { configContext, Platform } from "../../ConfigContext";
