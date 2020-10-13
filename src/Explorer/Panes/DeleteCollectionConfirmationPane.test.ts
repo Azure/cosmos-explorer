@@ -17,7 +17,7 @@ describe("Delete Collection Confirmation Pane", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null });
+      explorer = new Explorer();
     });
 
     it("should be true if 1 database and 1 collection", () => {
@@ -56,7 +56,7 @@ describe("Delete Collection Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
-      let fakeExplorer = new Explorer({ notificationsClient: null });
+      let fakeExplorer = new Explorer();
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
 

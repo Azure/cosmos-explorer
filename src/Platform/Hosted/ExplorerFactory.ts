@@ -1,11 +1,8 @@
 import Explorer from "../../Explorer/Explorer";
-import { NotificationsClient } from "./NotificationsClient";
 
 export default class HostedExplorerFactory {
   public createExplorer(): Explorer {
-    const explorer = new Explorer({
-      notificationsClient: new NotificationsClient()
-    });
+    const explorer = new Explorer();
 
     return explorer;
   }
