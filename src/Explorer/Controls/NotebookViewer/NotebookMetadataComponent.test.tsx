@@ -25,7 +25,8 @@ describe("NotebookMetadataComponent", () => {
       onTagClick: undefined,
       onDownloadClick: undefined,
       onFavoriteClick: undefined,
-      onUnfavoriteClick: undefined
+      onUnfavoriteClick: undefined,
+      onReportAbuseClick: undefined
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);
@@ -54,7 +55,8 @@ describe("NotebookMetadataComponent", () => {
       onTagClick: undefined,
       onDownloadClick: undefined,
       onFavoriteClick: undefined,
-      onUnfavoriteClick: undefined
+      onUnfavoriteClick: undefined,
+      onReportAbuseClick: undefined
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);

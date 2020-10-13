@@ -3,10 +3,14 @@ import { Icon, Label, Stack, HoverCard, HoverCardType, Link } from "office-ui-fa
 import { CodeOfConductEndpoints } from "../../../../Common/Constants";
 import "./InfoComponent.less";
 
-export class InfoComponent extends React.Component {
-  private getInfoPanel = (iconName: string, labelText: string, url: string): JSX.Element => {
+export interface InfoComponentProps {
+  onReportAbuseClick?: () => void;
+}
+
+export class InfoComponent extends React.Component<InfoComponentProps> {
+  private getInfoPanel = (iconName: string, labelText: string, url?: string, onClick?: () => void): JSX.Element => {
     return (
-      <Link href={url} target="_blank">
+      <Link href={url} target={url && "_blank"} onClick={onClick}>
         <div className="infoPanel">
           <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} />
           <Label className="infoLabel">{labelText}</Label>
@@ -25,6 +29,11 @@ export class InfoComponent extends React.Component {
         <Stack.Item>
           {this.getInfoPanel("KnowledgeArticle", "Microsoft Terms of Use", CodeOfConductEndpoints.termsOfUse)}
         </Stack.Item>
+        {this.props.onReportAbuseClick !== undefined && (
+          <Stack.Item>
+            {this.getInfoPanel("ReportHacked", "Report Abuse", undefined, () => this.props.onReportAbuseClick())}
+          </Stack.Item>
+        )}
       </Stack>
     );
   };
