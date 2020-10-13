@@ -7,6 +7,7 @@ import * as PricingUtils from "../../../Utils/PricingUtils";
 import Explorer from "../../Explorer";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 
+const zeroValue = 0;
 export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
 export const TtlOff = "off";
 export const TtlOn = "on";
@@ -141,6 +142,16 @@ export const parseConflictResolutionProcedure = (procedureFromBackEnd: string): 
   return procedureFromBackEnd;
 };
 
+export const getSanitizedInputValue = (newValueString: string, max: number): number => {
+  let newValue = parseInt(newValueString);
+  if (isNaN(newValue)) {
+    newValue = zeroValue;
+  } else if (newValue > max) {
+    newValue = Math.floor(newValue / 10);
+  }
+  return newValue;
+};
+
 export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
   const currentType = typeof current;
   const baselineType = typeof baseline;
@@ -183,7 +194,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
 };
 
 export const getMongoErrorMessage = (description: string, type: MongoIndexTypes): string => {
-  let errorMessage: string = undefined;
+  let errorMessage: string;
   if (type && (!description || description.trim().length === 0)) {
     errorMessage = "Please enter an index description.";
   } else if (type === MongoIndexTypes.WildCard && description?.indexOf("$**") === -1) {

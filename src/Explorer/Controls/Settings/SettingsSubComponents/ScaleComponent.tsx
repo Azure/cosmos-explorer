@@ -19,6 +19,7 @@ import {
 import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import { configContext, Platform } from "../../../../ConfigContext";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -43,7 +44,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   private isEmulator: boolean;
   constructor(props: ScaleComponentProps) {
     super(props);
-    this.isEmulator = this.props.container.isEmulator;
+    this.isEmulator = configContext.platform === Platform.Emulator;
   }
 
   public isAutoScaleEnabled = (): boolean => {

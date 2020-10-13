@@ -12,8 +12,6 @@ import {
   Label,
   ProgressIndicator,
   ITextField,
-  ITextFieldProps,
-  ImageIcon,
   Icon
 } from "office-ui-fabric-react";
 import { accordionStackTokens, titleAndInputStackProps } from "../../SettingsRenderUtils";
@@ -113,7 +111,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
   public getType = (keys: string[]): MongoIndexTypes => {
     const length = keys.length;
-    let type: MongoIndexTypes = undefined;
+    let type: MongoIndexTypes;
     if (length === 1) {
       if (keys[0].indexOf("$**") !== -1) {
         type = MongoIndexTypes.WildCard;

@@ -6,7 +6,7 @@ import SettingsTabV2 from "../../Tabs/SettingsTabV2";
 import { collection } from "./TestUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
-import { TtlType, isDirty, TtlOnNoDefault, TtlOn, TtlOff } from "./SettingsUtils";
+import { TtlType, isDirty } from "./SettingsUtils";
 import Explorer from "../../Explorer";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
@@ -20,8 +20,8 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     geospatialConfig: undefined
   } as DataModels.Collection)
 }));
-import { updateOffer } from "../../../Common/DocumentClientUtilityBase";
-jest.mock("../../../Common/DocumentClientUtilityBase", () => ({
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer)
 }));
 
@@ -103,10 +103,7 @@ describe("SettingsComponent", () => {
     let settingsComponentInstance = new SettingsComponent(baseProps);
     expect(settingsComponentInstance.shouldShowKeyspaceSharedThroughputMessage()).toEqual(false);
 
-    const newContainer = new Explorer({
-      notificationsClient: undefined,
-      isEmulator: false
-    });
+    const newContainer = new Explorer();
     newContainer.isPreferredApiCassandra = ko.computed(() => true);
 
     const newCollection = { ...collection };
@@ -147,10 +144,7 @@ describe("SettingsComponent", () => {
     let settingsComponentInstance = new SettingsComponent(baseProps);
     expect(settingsComponentInstance.hasConflictResolution()).toEqual(undefined);
 
-    const newContainer = new Explorer({
-      notificationsClient: undefined,
-      isEmulator: false
-    });
+    const newContainer = new Explorer();
     newContainer.databaseAccount = ko.observable({
       id: undefined,
       name: undefined,
@@ -218,13 +212,6 @@ describe("SettingsComponent", () => {
     state = wrapper.state() as SettingsComponentState;
     expect(isDirty(state.timeToLive, state.timeToLiveBaseline)).toEqual(false);
     expect(isDirty(state.throughput, state.throughputBaseline)).toEqual(false);
-  });
-
-  it("getTtlValue", async () => {
-    const settingsComponentInstance = new SettingsComponent(baseProps);
-    expect(settingsComponentInstance.getTtlValue(TtlType.OnNoDefault)).toEqual(TtlOnNoDefault);
-    expect(settingsComponentInstance.getTtlValue(TtlType.On)).toEqual(TtlOn);
-    expect(settingsComponentInstance.getTtlValue(TtlType.Off)).toEqual(TtlOff);
   });
 
   it("getAnalyticalStorageTtl", () => {

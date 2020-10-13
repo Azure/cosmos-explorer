@@ -17,6 +17,7 @@ import { IGalleryItem } from "../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../Notebook/FileSystemUtil";
 import "./NotebookViewerComponent.less";
 import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
+import { InfoComponent } from "../NotebookGallery/InfoComponent/InfoComponent";
 
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;
@@ -26,6 +27,7 @@ export interface NotebookMetadataComponentProps {
   onFavoriteClick: () => void;
   onUnfavoriteClick: () => void;
   onDownloadClick: () => void;
+  onReportAbuseClick: () => void;
 }
 
 export class NotebookMetadataComponent extends React.Component<NotebookMetadataComponentProps> {
@@ -41,24 +43,39 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
     return (
       <Stack tokens={{ childrenGap: 10 }}>
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 30 }}>
-          <Text variant="xxLarge" nowrap>
-            {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
-          </Text>
-          <Text>
-            {this.props.isFavorite !== undefined && (
-              <>
-                <IconButton
-                  iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
-                  onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
-                />
-                {this.props.data.favorites} likes
-              </>
-            )}
-          </Text>
+          <Stack.Item>
+            <Text variant="xxLarge" nowrap>
+              {FileSystemUtil.stripExtension(this.props.data.name, "ipynb")}
+            </Text>
+          </Stack.Item>
+
+          <Stack.Item>
+            <Text>
+              {this.props.isFavorite !== undefined && (
+                <>
+                  <IconButton
+                    iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
+                    onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
+                  />
+                  {this.props.data.favorites} likes
+                </>
+              )}
+            </Text>
+          </Stack.Item>
 
           {this.props.downloadButtonText && (
-            <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
+            <Stack.Item>
+              <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
+            </Stack.Item>
           )}
+
+          <Stack.Item grow>
+            <></>
+          </Stack.Item>
+
+          <Stack.Item>
+            <InfoComponent onReportAbuseClick={this.props.onReportAbuseClick} />
+          </Stack.Item>
         </Stack>
 
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>

@@ -192,7 +192,6 @@ export class GremlinClient {
   }
 
   private static reportError(msg: string): void {
-    console.error(msg);
     NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
     Logger.logError(msg, GremlinClient.LOG_AREA);
   }

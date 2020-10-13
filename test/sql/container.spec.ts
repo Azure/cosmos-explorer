@@ -1,25 +1,17 @@
 import "expect-puppeteer";
-import crypto from "crypto";
+import { generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
+const LOADING_STATE_DELAY = 2500;
+const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
     try {
-      const dbId = `TestDatabase${crypto.randomBytes(8).toString("hex")}`;
-      const collectionId = `TestCollection${crypto.randomBytes(8).toString("hex")}`;
-      const sharedKey = `SharedKey${crypto.randomBytes(8).toString("hex")}`;
-      const prodUrl = "https://localhost:1234/hostedExplorer.html";
-      page.goto(prodUrl);
-
-      // log in with connection string
-      const handle = await page.waitForSelector("iframe");
-      const frame = await handle.contentFrame();
-      await frame.waitFor("div > p.switchConnectTypeText", { visible: true });
-      await frame.click("div > p.switchConnectTypeText");
-      const connStr = process.env.PORTAL_RUNNER_CONNECTION_STRING;
-      await frame.type("input[class='inputToken']", connStr);
-      await frame.click("input[value='Connect']");
+      const dbId = generateUniqueName("TestDatabase");
+      const collectionId = generateUniqueName("TestCollection");
+      const sharedKey = generateUniqueName("SharedKey");
+      const frame = await login(process.env.PORTAL_RUNNER_CONNECTION_STRING);
 
       // create new collection
       await frame.waitFor('button[data-test="New Container"]', { visible: true });
@@ -36,15 +28,21 @@ describe("Collection Add and Delete SQL spec", () => {
 
       // type database id
       await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
-      await frame.type('input[data-test="addCollection-newDatabaseId"]', dbId);
+      const dbInput = await frame.$('input[data-test="addCollection-newDatabaseId"]');
+      await dbInput.press("Backspace");
+      await dbInput.type(dbId);
 
       // type collection id
       await frame.waitFor('input[data-test="addCollection-collectionId"]');
-      await frame.type('input[data-test="addCollection-collectionId"]', collectionId);
+      const input = await frame.$('input[data-test="addCollection-collectionId"]');
+      await input.press("Backspace");
+      await input.type(collectionId);
 
       // type partition key value
       await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
-      await frame.type('input[data-test="addCollection-partitionKeyValue"]', sharedKey);
+      const keyInput = await frame.$('input[data-test="addCollection-partitionKeyValue"]');
+      await keyInput.press("Backspace");
+      await keyInput.type(sharedKey);
 
       // click submit
       await frame.waitFor("#submitBtnAddCollection");
@@ -52,33 +50,33 @@ describe("Collection Add and Delete SQL spec", () => {
 
       // validate created
       // open database menu
-      await frame.waitFor(`span[title="${dbId}"]`);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
+      await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
+      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
       await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(3000);
-      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
+      await frame.waitFor(`div[data-test="${collectionId}"]`, { visible: true });
 
       // delete container
 
       // click context menu for container
       await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
-      await frame.waitFor(`span[title="${collectionId}"]`, { visible: true });
       await frame.click(`div[data-test="${collectionId}"] > div > button`);
-      await frame.waitFor(2000);
 
       // click delete container
-      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
+      await frame.waitFor(RENDER_DELAY);
+      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
       // confirm delete container
       await frame.waitFor('input[data-test="confirmCollectionId"]', { visible: true });
-      await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
+      await frame.type('input[data-test="confirmCollectionId"]', collectionId);
 
       // click delete
       await frame.waitFor('input[data-test="deleteCollection"]', { visible: true });
       await frame.click('input[data-test="deleteCollection"]');
-      await frame.waitFor(5000);
+      await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);
@@ -90,10 +88,13 @@ describe("Collection Add and Delete SQL spec", () => {
       await button.asElement().click();
 
       // click delete database
+      await frame.waitFor(RENDER_DELAY);
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
       // confirm delete database
+      await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
+      await frame.waitFor(RENDER_DELAY);
       await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());
 
       // click delete

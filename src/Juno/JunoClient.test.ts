@@ -1,6 +1,5 @@
 import ko from "knockout";
-import { HttpStatusCodes } from "../Common/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
+import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { IPinnedRepo, JunoClient, IGalleryItem } from "./JunoClient";
 import { configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
@@ -237,7 +236,7 @@ describe("Gallery", () => {
         method: "PATCH",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          "content-type": "application/json"
+          [HttpHeaders.contentType]: "application/json"
         }
       }
     );
@@ -260,7 +259,7 @@ describe("Gallery", () => {
         method: "PATCH",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          "content-type": "application/json"
+          [HttpHeaders.contentType]: "application/json"
         }
       }
     );
@@ -281,7 +280,7 @@ describe("Gallery", () => {
       method: "PATCH",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -299,7 +298,7 @@ describe("Gallery", () => {
     expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/favorites`, {
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -317,7 +316,7 @@ describe("Gallery", () => {
     expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/published`, {
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -337,7 +336,7 @@ describe("Gallery", () => {
       method: "DELETE",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -364,7 +363,7 @@ describe("Gallery", () => {
         method: "PUT",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          "content-type": "application/json"
+          [HttpHeaders.contentType]: "application/json"
         },
         body: JSON.stringify({
           name,

@@ -184,9 +184,7 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
   };
 
   const createResponse = await createUpdateMongoDBCollection(
-    userContext.subscriptionId,
-    userContext.resourceGroup,
-    userContext.databaseAccount.name,
+    getDatabaseAccountFullName(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
     params.databaseId,
     params.collectionId,
     rpPayload

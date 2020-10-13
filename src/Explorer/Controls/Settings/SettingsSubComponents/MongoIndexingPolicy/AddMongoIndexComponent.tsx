@@ -7,7 +7,6 @@ import {
   TextField,
   Dropdown,
   IDropdownOption,
-  ITextFieldProps,
   ITextField
 } from "office-ui-fabric-react";
 import { titleAndInputStackProps } from "../../SettingsRenderUtils";
@@ -22,9 +21,7 @@ export interface AddMongoIndexComponentProps {
   setRef: (textField: ITextField) => void;
 }
 
-interface AddMongoIndexComponentState {}
-
-export class AddMongoIndexComponent extends React.Component<AddMongoIndexComponentProps, AddMongoIndexComponentState> {
+export class AddMongoIndexComponent extends React.Component<AddMongoIndexComponentProps> {
   private indexTypes: IDropdownOption[] = [MongoIndexTypes.Single, MongoIndexTypes.WildCard].map((value: string) => ({
     text: value,
     key: value
@@ -32,7 +29,6 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
 
   constructor(props: AddMongoIndexComponentProps) {
     super(props);
-    this.state = {};
   }
 
   public render(): JSX.Element {
@@ -56,7 +52,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
             label="Type"
             selectedKey={this.props.type}
             options={this.indexTypes}
-            onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
+            onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => {
               const newType = MongoIndexTypes[option.key as keyof typeof MongoIndexTypes];
               this.props.onIndexAddOrChange(this.props.description, newType);
             }}

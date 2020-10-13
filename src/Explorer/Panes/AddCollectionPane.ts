@@ -101,12 +101,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public showUpsellMessage: ko.PureComputed<boolean>;
   public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
-  private _databaseOffers: HashMap<DataModels.Offer>;
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
 
   constructor(options: AddCollectionPaneOptions) {
     super(options);
-    this._databaseOffers = new HashMap<DataModels.Offer>();
     this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
@@ -327,7 +325,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !this.container.isEmulator &&
+        configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
         this.container.getPlatformType() !== PlatformType.Portal
       ) {
@@ -339,7 +337,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.maxCollectionsReached = ko.computed<boolean>(() => {
@@ -481,7 +479,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
       }
 
       if (!this.databaseCreateNew()) {
-        this.databaseHasSharedOffer(this._databaseOffers.has(selectedDatabaseId));
+        const selectedDatabase: ViewModels.Database = this.container
+          .databases()
+          .find((database: ViewModels.Database) => database.id() === selectedDatabaseId);
+        this.databaseHasSharedOffer(!!selectedDatabase?.offer());
       }
     });
 
@@ -749,15 +750,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
-    const cachedDatabaseIdsList = _.map(newDatabaseIds, (database: ViewModels.Database) => {
-      if (database && database.offer && database.offer()) {
-        this._databaseOffers.set(database.id(), database.offer());
-      }
-
-      return database.id();
-    });
-
-    this.databaseIds(cachedDatabaseIdsList);
+    this.databaseIds(newDatabaseIds?.map((database: ViewModels.Database) => database.id()));
   }
 
   private _computeOfferThroughput(): number {

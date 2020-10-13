@@ -14,6 +14,8 @@ import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -200,7 +202,11 @@ export default class Database implements ViewModels.Database {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.container.isServerlessEnabled() && !this.offer()) {
+    if (
+      !this.container.isServerlessEnabled() &&
+      this.container.defaultExperience() !== DefaultAccountExperienceType.Table &&
+      !this.offer()
+    ) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
         databaseResourceId: this.self
@@ -215,8 +221,8 @@ export default class Database implements ViewModels.Database {
     }
 
     const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    this.container.notificationsClient.fetchNotifications().then(
-      (notifications: DataModels.Notification[]) => {
+    fetchPortalNotifications().then(
+      notifications => {
         if (!notifications || notifications.length === 0) {
           deferred.resolve(undefined);
           return;

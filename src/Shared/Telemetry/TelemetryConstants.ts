@@ -71,8 +71,25 @@ export enum Action {
   NotebooksGitHubManageRepo,
   NotebooksGitHubCommit,
   NotebooksGitHubDisconnect,
+  NotebooksFetched,
+  NotebooksKernelSpecName,
+  NotebooksExecuteCellFromMenu,
+  NotebooksClearOutputsFromMenu,
+  NotebooksInsertCodeCellAboveFromMenu,
+  NotebooksInsertCodeCellBelowFromMenu,
+  NotebooksInsertTextCellAboveFromMenu,
+  NotebooksInsertTextCellBelowFromMenu,
+  NotebooksMoveCellUpFromMenu,
+  NotebooksMoveCellDownFromMenu,
+  DeleteCellFromMenu,
   OpenTerminal,
-  CreateMongoCollectionWithWildcardIndex
+  CreateMongoCollectionWithWildcardIndex,
+  ClickCommandBarButton,
+  RefreshResourceTreeMyNotebooks,
+  ClickResourceTreeNodeContextMenuItem,
+  DiscardSettings,
+  SettingsV2Updated,
+  SettingsV2Discarded
 }
 
 export const ActionModifiers = {

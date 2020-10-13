@@ -60,7 +60,7 @@ describe("AuthorizationUtils", () => {
   });
 
   describe("displayTokenRenewalPromptForStatus()", () => {
-    let explorer = new Explorer({} as any) as jest.Mocked<Explorer>;
+    let explorer = new Explorer() as jest.Mocked<Explorer>;
 
     beforeEach(() => {
       jest.clearAllMocks();

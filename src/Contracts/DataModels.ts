@@ -305,6 +305,16 @@ export interface ReadCollectionOfferParams {
   offerId?: string;
 }
 
+export interface UpdateOfferParams {
+  currentOffer: Offer;
+  databaseId: string;
+  autopilotThroughput: number;
+  manualThroughput: number;
+  collectionId?: string;
+  migrateToAutoPilot?: boolean;
+  migrateToManual?: boolean;
+}
+
 export interface Notification {
   id: string;
   kind: string;

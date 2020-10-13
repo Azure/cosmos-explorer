@@ -25,16 +25,19 @@ interface ConfigContext {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
+  armAPIVersion?: string;
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedParentFrameOrigins: [
-    `^https:\\/\\/cosmos.azure.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]+.portal.azure.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]+.ext.azure.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]+microsoftazure.de$`
+    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
+    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`
   ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
@@ -48,7 +51,8 @@ let configContext: Readonly<ConfigContext> = {
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
-  JUNO_ENDPOINT: "https://tools.cosmos.azure.com"
+  JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
+  BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
 };
 
 export function resetConfigContext(): void {
@@ -92,6 +96,10 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     }
     // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
+    if (params.has("armAPIVersion")) {
+      const armAPIVersion = params.get("armAPIVersion") || "";
+      updateConfigContext({ armAPIVersion });
+    }
     if (params.has("platform")) {
       const platform = params.get("platform");
       switch (platform) {

@@ -6,11 +6,11 @@ import * as SharedConstants from "../../../Shared/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import { traceStart, traceFailure, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { traceStart, traceFailure, traceSuccess, trace } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
-import { updateOffer } from "../../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../../UserContext";
@@ -31,21 +31,18 @@ import {
   SettingsV2TabTypes,
   getTabTitle,
   isDirty,
-  TtlOff,
-  TtlOn,
-  TtlOnNoDefault,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
   AddMongoIndexProps,
   MongoIndexTypes,
-  getMongoErrorMessage
+  getMongoErrorMessage,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps, IChoiceGroupOption } from "office-ui-fabric-react";
+import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import { MongoDBCollectionGetResults, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
@@ -97,7 +94,6 @@ export interface SettingsComponentState {
   indexingPolicyContent: DataModels.IndexingPolicy;
   indexingPolicyContentBaseline: DataModels.IndexingPolicy;
   shouldDiscardIndexingPolicy: boolean;
-  indexingPolicyElementFocussed: boolean;
   isIndexingPolicyDirty: boolean;
 
   isMongoIndexingPolicyDirty: boolean;
@@ -118,8 +114,6 @@ export interface SettingsComponentState {
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
-  private static readonly zeroSeconds = 0;
-
   public saveSettingsButton: ButtonV2;
   public discardSettingsChangesButton: ButtonV2;
 
@@ -145,8 +139,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
       Constants.Features.enableChangeFeedPolicy
     );
-    // Mongo container with system partition key still treat as "Fixed"
 
+    // Mongo container with system partition key still treat as "Fixed"
     this.isFixedContainer =
       !this.collection.partitionKey ||
       (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
@@ -178,7 +172,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       indexingPolicyContent: undefined,
       indexingPolicyContentBaseline: undefined,
-      indexingPolicyElementFocussed: false,
       shouldDiscardIndexingPolicy: false,
       isIndexingPolicyDirty: false,
 
@@ -248,7 +241,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      (this.mongoDBCollectionGetResult && this.state.isMongoIndexingPolicyDirty)
+      (!!this.mongoDBCollectionGetResult && this.state.isMongoIndexingPolicyDirty)
     );
   };
 
@@ -258,7 +251,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      (this.mongoDBCollectionGetResult && this.state.isMongoIndexingPolicyDirty)
+      (!!this.mongoDBCollectionGetResult && this.state.isMongoIndexingPolicyDirty)
     );
   };
 
@@ -305,7 +298,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.props.settingsTab.isExecutionError(false);
 
     this.props.settingsTab.isExecuting(true);
-    const startKey: number = traceStart(Action.UpdateSettings, {
+    const startKey: number = traceStart(Action.SettingsV2Updated, {
       databaseAccountName: this.container.databaseAccount()?.name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
@@ -336,6 +329,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
         newCollection.defaultTtl = defaultTtl;
 
+        newCollection.indexingPolicy = this.state.indexingPolicyContent;
+
         newCollection.changeFeedPolicy =
           this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
             ? {
@@ -353,8 +348,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         if (conflictResolutionChanges) {
           newCollection.conflictResolutionPolicy = conflictResolutionChanges;
         }
-
-        newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
         const updatedCollection: DataModels.Collection = await updateCollection(
           this.collection.databaseId,
@@ -471,7 +464,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
           } catch (error) {
             traceFailure(
-              Action.UpdateSettings,
+              Action.SettingsV2Updated,
               {
                 databaseAccountName: this.container.databaseAccount().name,
                 databaseName: this.collection && this.collection.databaseId,
@@ -486,7 +479,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             throw error;
           }
         } else {
-          const updatedOffer: DataModels.Offer = await updateOffer(this.collection.offer(), newOffer, headerOptions);
+          const updateOfferParams: DataModels.UpdateOfferParams = {
+            databaseId: this.collection.databaseId,
+            collectionId: this.collection.id(),
+            currentOffer: this.collection.offer(),
+            autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
+            manualThroughput: this.state.isAutoPilotSelected ? undefined : newThroughput
+          };
+          if (this.hasProvisioningTypeChanged()) {
+            if (this.state.isAutoPilotSelected) {
+              updateOfferParams.migrateToAutoPilot = true;
+            } else {
+              updateOfferParams.migrateToManual = true;
+            }
+          }
+          const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
           this.collection.offer(updatedOffer);
           this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
           if (this.state.isAutoPilotSelected) {
@@ -506,7 +513,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.setBaseline();
       this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
       traceSuccess(
-        Action.UpdateSettings,
+        Action.SettingsV2Updated,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
@@ -520,7 +527,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.props.settingsTab.isExecutionError(true);
       console.error(reason);
       traceFailure(
-        Action.UpdateSettings,
+        Action.SettingsV2Updated,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
@@ -534,6 +541,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public onRevertClick = (): void => {
+    trace(Action.SettingsV2Discarded, ActionModifiers.Mark, {
+      message: "Settings Discarded"
+    });
+
     this.setState({
       throughput: this.state.throughputBaseline,
       timeToLive: this.state.timeToLiveBaseline,
@@ -578,9 +589,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onScaleDiscardableChange = (isScaleDiscardable: boolean): void =>
     this.setState({ isScaleDiscardable: isScaleDiscardable });
 
-  private onIndexingPolicyElementFocusChange = (indexingPolicyElementFocussed: boolean): void =>
-    this.setState({ indexingPolicyElementFocussed: indexingPolicyElementFocussed });
-
   private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
 
@@ -608,13 +616,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ indexesToDelete: [...this.state.indexesToDelete, index] });
 
   private onRevertIndexDelete = (index: number): void => {
-    let indexesToDelete = [...this.state.indexesToDelete];
+    const indexesToDelete = [...this.state.indexesToDelete];
     indexesToDelete.splice(index, 1);
     this.setState({ indexesToDelete: [...indexesToDelete] });
   };
 
   private onRevertIndexAdd = (index: number): void => {
-    let indexesToAdd = [...this.state.indexesToAdd];
+    const indexesToAdd = [...this.state.indexesToAdd];
     indexesToAdd.splice(index, 1);
     this.setState({ indexesToAdd: [...indexesToAdd] });
   };
@@ -635,79 +643,34 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ indexesToAdd: newIndexesToAdd });
   };
 
-  private onConflictResolutionPolicyModeChange = (
-    event?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void =>
-    this.setState({
-      conflictResolutionPolicyMode:
-        DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode]
-    });
+  private onConflictResolutionPolicyModeChange = (newMode: DataModels.ConflictResolutionMode): void =>
+    this.setState({ conflictResolutionPolicyMode: newMode });
 
-  private onConflictResolutionPolicyPathChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => this.setState({ conflictResolutionPolicyPath: newValue });
+  private onConflictResolutionPolicyPathChange = (newPath: string): void =>
+    this.setState({ conflictResolutionPolicyPath: newPath });
 
-  private onConflictResolutionPolicyProcedureChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => this.setState({ conflictResolutionPolicyProcedure: newValue });
+  private onConflictResolutionPolicyProcedureChange = (newProcedure: string): void =>
+    this.setState({ conflictResolutionPolicyProcedure: newProcedure });
 
   private onConflictResolutionDirtyChange = (isConflictResolutionDirty: boolean): void =>
     this.setState({ isConflictResolutionDirty: isConflictResolutionDirty });
 
-  public getTtlValue = (value: string): TtlType => {
-    switch (value) {
-      case TtlOn:
-        return TtlType.On;
-      case TtlOff:
-        return TtlType.Off;
-      case TtlOnNoDefault:
-        return TtlType.OnNoDefault;
-    }
-    return undefined;
-  };
+  private onTtlChange = (newTtl: TtlType): void => this.setState({ timeToLive: newTtl });
 
-  private onTtlChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void =>
-    this.setState({ timeToLive: this.getTtlValue(option.key) });
-
-  private onTimeToLiveSecondsChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => {
-    let newTimeToLiveSeconds = parseInt(newValue);
-    newTimeToLiveSeconds = isNaN(newTimeToLiveSeconds) ? SettingsComponent.zeroSeconds : newTimeToLiveSeconds;
+  private onTimeToLiveSecondsChange = (newTimeToLiveSeconds: number): void =>
     this.setState({ timeToLiveSeconds: newTimeToLiveSeconds });
-  };
 
-  private onGeoSpatialConfigTypeChange = (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void =>
-    this.setState({ geospatialConfigType: GeospatialConfigType[option.key as keyof typeof GeospatialConfigType] });
+  private onGeoSpatialConfigTypeChange = (newGeoSpatialConfigType: GeospatialConfigType): void =>
+    this.setState({ geospatialConfigType: newGeoSpatialConfigType });
 
-  private onAnalyticalStorageTtlSelectionChange = (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void => this.setState({ analyticalStorageTtlSelection: this.getTtlValue(option.key) });
+  private onAnalyticalStorageTtlSelectionChange = (newAnalyticalStorageTtlSelection: TtlType): void =>
+    this.setState({ analyticalStorageTtlSelection: newAnalyticalStorageTtlSelection });
 
-  private onAnalyticalStorageTtlSecondsChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => {
-    let newAnalyticalStorageTtlSeconds = parseInt(newValue);
-    newAnalyticalStorageTtlSeconds = isNaN(newAnalyticalStorageTtlSeconds)
-      ? SettingsComponent.zeroSeconds
-      : newAnalyticalStorageTtlSeconds;
+  private onAnalyticalStorageTtlSecondsChange = (newAnalyticalStorageTtlSeconds: number): void =>
     this.setState({ analyticalStorageTtlSeconds: newAnalyticalStorageTtlSeconds });
-  };
 
-  private onChangeFeedPolicyChange = (
-    ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
-  ): void =>
-    this.setState({ changeFeedPolicy: ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState] });
+  private onChangeFeedPolicyChange = (newChangeFeedPolicy: ChangeFeedPolicyState): void =>
+    this.setState({ changeFeedPolicy: newChangeFeedPolicy });
 
   private onSubSettingsSaveableChange = (isSubSettingsSaveable: boolean): void =>
     this.setState({ isSubSettingsSaveable: isSubSettingsSaveable });
@@ -938,7 +901,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       resetShouldDiscardIndexingPolicy: this.resetShouldDiscardIndexingPolicy,
       indexingPolicyContent: this.state.indexingPolicyContent,
       indexingPolicyContentBaseline: this.state.indexingPolicyContentBaseline,
-      onIndexingPolicyElementFocusChange: this.onIndexingPolicyElementFocusChange,
       onIndexingPolicyContentChange: this.onIndexingPolicyContentChange,
       logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage,
       onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange

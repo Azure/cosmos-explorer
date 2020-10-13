@@ -42,6 +42,7 @@ export async function updateCollection(
   try {
     if (
       window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
       userContext.defaultExperience !== DefaultAccountExperienceType.Table
     ) {
@@ -54,16 +55,18 @@ export async function updateCollection(
 
       collection = sdkResponse.resource as Collection;
     }
+
+    logConsoleInfo(`Successfully updated container ${collectionId}`);
+    await refreshCachedResources();
+    return collection;
   } catch (error) {
     logConsoleError(`Failed to update container ${collectionId}: ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "UpdateCollection", error.code);
     sendNotificationForError(error);
     throw error;
+  } finally {
+    clearMessage();
   }
-  logConsoleInfo(`Successfully updated container ${collectionId}`);
-  clearMessage();
-  await refreshCachedResources();
-  return collection;
 }
 
 async function updateCollectionWithARM(

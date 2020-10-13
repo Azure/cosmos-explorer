@@ -1,5 +1,4 @@
 import { AutopilotTier } from "../Contracts/DataModels";
-import { configContext } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -11,12 +10,6 @@ export class CodeOfConductEndpoints {
   public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
   public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
   public static termsOfUse: string = "https://aka.ms/ms-terms-of-use";
-}
-
-export class BackendEndpoints {
-  public static localhost: string = "https://localhost:12900";
-  public static dev: string = "https://ext.documents-dev.windows-int.net";
-  public static productionPortal: string = configContext.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
 }
 
 export class EndpointsRegex {
@@ -136,6 +129,11 @@ export class Features {
   public static readonly ttl90Days = "ttl90days";
   public static readonly enableRightPanelV2 = "enablerightpanelv2";
   public static readonly enableSDKoperations = "enablesdkoperations";
+}
+
+// flight names returned from the portal are always lowercase
+export class Flights {
+  public static readonly SettingsV2 = "settingsv2";
 }
 
 export class AfecFeatures {

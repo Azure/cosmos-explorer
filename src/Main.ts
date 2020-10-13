@@ -17,7 +17,6 @@ import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../externals/jquery.dataTables.min.css";
 import "../less/TableStyles/fulldatatables.less";
-import "../externals/jquery.contextMenu.css";
 import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/CustomizeColumns.less";
 import "../less/resourceTree.less";
@@ -43,7 +42,6 @@ import "es6-symbol/implement";
 import "webcrypto-liner/build/webcrypto-liner.shim.min";
 import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
-import "../externals/jquery.contextMenu.js";
 import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
 import "../externals/adal.js";
@@ -61,7 +59,6 @@ import "url-polyfill/url-polyfill.min";
 
 import * as ko from "knockout";
 import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
-import * as ViewModels from "./Contracts/ViewModels";
 import { Action, ActionModifiers } from "./Shared/Telemetry/TelemetryConstants";
 
 import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";

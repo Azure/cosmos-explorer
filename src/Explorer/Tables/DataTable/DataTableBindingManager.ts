@@ -143,6 +143,21 @@ function createDataTable(
     fnInitComplete: initializeTable,
     fnDrawCallback: updateSelectionStatus
   });
+
+  (tableEntityListViewModel.table.table(0).container() as Element)
+    .querySelectorAll(Constants.htmlSelectors.dataTableHeaderTableSelector)
+    .forEach(table => {
+      table.setAttribute(
+        "summary",
+        `Header for sorting results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`
+      );
+    });
+
+  (tableEntityListViewModel.table.table(0).container() as Element)
+    .querySelectorAll(Constants.htmlSelectors.dataTableBodyTableSelector)
+    .forEach(table => {
+      table.setAttribute("summary", `Results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`);
+    });
 }
 
 function bindColumn(data: any, type: string, full: any) {

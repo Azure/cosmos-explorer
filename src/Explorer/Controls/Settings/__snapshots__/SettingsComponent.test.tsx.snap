@@ -84,9 +84,6 @@ exports[`SettingsComponent renders 1`] = `
                     "visible": [Function],
                   },
                   AddCollectionPane {
-                    "_databaseOffers": HashMap {
-                      "container": Object {},
-                    },
                     "_isSynapseLinkEnabled": [Function],
                     "autoPilotThroughput": [Function],
                     "autoPilotTiersList": [Function],
@@ -586,9 +583,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_refreshSparkEnabledStateForAccount": [Function],
                 "_resetNotebookWorkspace": [Function],
                 "addCollectionPane": AddCollectionPane {
-                  "_databaseOffers": HashMap {
-                    "container": Object {},
-                  },
                   "_isSynapseLinkEnabled": [Function],
                   "autoPilotThroughput": [Function],
                   "autoPilotTiersList": [Function],
@@ -953,7 +947,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "extensionEndpoint": [Function],
                 "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
@@ -983,7 +976,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isAuthWithResourceToken": [Function],
                 "isCodeOfConductEnabled": [Function],
                 "isCopyNotebookPaneEnabled": [Function],
-                "isEmulator": false,
                 "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isGalleryPublishEnabled": [Function],
@@ -1059,7 +1051,6 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                 },
                 "notificationConsoleData": [Function],
-                "notificationsClient": undefined,
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
@@ -1399,9 +1390,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 AddCollectionPane {
-                  "_databaseOffers": HashMap {
-                    "container": Object {},
-                  },
                   "_isSynapseLinkEnabled": [Function],
                   "autoPilotThroughput": [Function],
                   "autoPilotTiersList": [Function],
@@ -1901,9 +1889,6 @@ exports[`SettingsComponent renders 1`] = `
               "_refreshSparkEnabledStateForAccount": [Function],
               "_resetNotebookWorkspace": [Function],
               "addCollectionPane": AddCollectionPane {
-                "_databaseOffers": HashMap {
-                  "container": Object {},
-                },
                 "_isSynapseLinkEnabled": [Function],
                 "autoPilotThroughput": [Function],
                 "autoPilotTiersList": [Function],
@@ -2268,7 +2253,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "extensionEndpoint": [Function],
               "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
@@ -2298,7 +2282,6 @@ exports[`SettingsComponent renders 1`] = `
               "isAuthWithResourceToken": [Function],
               "isCodeOfConductEnabled": [Function],
               "isCopyNotebookPaneEnabled": [Function],
-              "isEmulator": false,
               "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isGalleryPublishEnabled": [Function],
@@ -2374,7 +2357,6 @@ exports[`SettingsComponent renders 1`] = `
                 "parameters": [Function],
               },
               "notificationConsoleData": [Function],
-              "notificationsClient": undefined,
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
@@ -2727,9 +2709,6 @@ exports[`SettingsComponent renders 1`] = `
                     "visible": [Function],
                   },
                   AddCollectionPane {
-                    "_databaseOffers": HashMap {
-                      "container": Object {},
-                    },
                     "_isSynapseLinkEnabled": [Function],
                     "autoPilotThroughput": [Function],
                     "autoPilotTiersList": [Function],
@@ -3229,9 +3208,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_refreshSparkEnabledStateForAccount": [Function],
                 "_resetNotebookWorkspace": [Function],
                 "addCollectionPane": AddCollectionPane {
-                  "_databaseOffers": HashMap {
-                    "container": Object {},
-                  },
                   "_isSynapseLinkEnabled": [Function],
                   "autoPilotThroughput": [Function],
                   "autoPilotTiersList": [Function],
@@ -3596,7 +3572,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "extensionEndpoint": [Function],
                 "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
@@ -3626,7 +3601,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isAuthWithResourceToken": [Function],
                 "isCodeOfConductEnabled": [Function],
                 "isCopyNotebookPaneEnabled": [Function],
-                "isEmulator": false,
                 "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isGalleryPublishEnabled": [Function],
@@ -3702,7 +3676,6 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                 },
                 "notificationConsoleData": [Function],
-                "notificationsClient": undefined,
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
@@ -4042,9 +4015,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 AddCollectionPane {
-                  "_databaseOffers": HashMap {
-                    "container": Object {},
-                  },
                   "_isSynapseLinkEnabled": [Function],
                   "autoPilotThroughput": [Function],
                   "autoPilotTiersList": [Function],
@@ -4544,9 +4514,6 @@ exports[`SettingsComponent renders 1`] = `
               "_refreshSparkEnabledStateForAccount": [Function],
               "_resetNotebookWorkspace": [Function],
               "addCollectionPane": AddCollectionPane {
-                "_databaseOffers": HashMap {
-                  "container": Object {},
-                },
                 "_isSynapseLinkEnabled": [Function],
                 "autoPilotThroughput": [Function],
                 "autoPilotTiersList": [Function],
@@ -4911,7 +4878,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "extensionEndpoint": [Function],
               "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
@@ -4941,7 +4907,6 @@ exports[`SettingsComponent renders 1`] = `
               "isAuthWithResourceToken": [Function],
               "isCodeOfConductEnabled": [Function],
               "isCopyNotebookPaneEnabled": [Function],
-              "isEmulator": false,
               "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isGalleryPublishEnabled": [Function],
@@ -5017,7 +4982,6 @@ exports[`SettingsComponent renders 1`] = `
                 "parameters": [Function],
               },
               "notificationConsoleData": [Function],
-              "notificationsClient": undefined,
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
@@ -5329,7 +5293,6 @@ exports[`SettingsComponent renders 1`] = `
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
-          onIndexingPolicyElementFocusChange={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
         />

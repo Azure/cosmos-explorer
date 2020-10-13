@@ -3,11 +3,10 @@
  */
 import { Notebook } from "@nteract/commutable";
 import { createContentRef } from "@nteract/core";
-import { Icon, Link, ProgressIndicator } from "office-ui-fabric-react";
+import { IChoiceGroupProps, Icon, Link, ProgressIndicator } from "office-ui-fabric-react";
 import * as React from "react";
 import { contents } from "rx-jupyter";
 import * as Logger from "../../../Common/Logger";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
@@ -15,12 +14,13 @@ import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationCon
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
-import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
+import { DialogComponent, DialogProps, TextFieldProps } from "../DialogReactComponent/DialogComponent";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
 import Explorer from "../../Explorer";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
 import { SessionStorageUtility } from "../../../Shared/StorageUtility";
+import { DialogHost } from "../../../Utils/GalleryUtils";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -43,10 +43,8 @@ interface NotebookViewerComponentState {
   showProgressBar: boolean;
 }
 
-export class NotebookViewerComponent extends React.Component<
-  NotebookViewerComponentProps,
-  NotebookViewerComponentState
-> {
+export class NotebookViewerComponent extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
+  implements DialogHost {
   private clientManager: NotebookClientV2;
   private notebookComponentBootstrapper: NotebookComponentBootstrapper;
 
@@ -58,7 +56,7 @@ export class NotebookViewerComponent extends React.Component<
       databaseAccountName: undefined,
       defaultExperience: "NotebookViewer",
       isReadOnly: true,
-      cellEditorType: "codemirror",
+      cellEditorType: "monaco",
       autoSaveInterval: 365 * 24 * 3600 * 1000, // There is no way to turn off auto-save, set to 1 year
       contentProvider: contents.JupyterContentProvider // NotebookViewer only knows how to talk to Jupyter contents API
     });
@@ -140,6 +138,7 @@ export class NotebookViewerComponent extends React.Component<
               onFavoriteClick={this.favoriteItem}
               onUnfavoriteClick={this.unfavoriteItem}
               onDownloadClick={this.downloadItem}
+              onReportAbuseClick={this.state.galleryItem.isSample ? undefined : this.reportAbuse}
             />
           </div>
         ) : (
@@ -179,6 +178,39 @@ export class NotebookViewerComponent extends React.Component<
     };
   }
 
+  // DialogHost
+  showOkCancelModalDialog(
+    title: string,
+    msg: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps
+  ): void {
+    this.setState({
+      dialogProps: {
+        isModal: true,
+        visible: true,
+        title,
+        subText: msg,
+        primaryButtonText: okLabel,
+        secondaryButtonText: cancelLabel,
+        onPrimaryButtonClick: () => {
+          this.setState({ dialogProps: undefined });
+          onOk && onOk();
+        },
+        onSecondaryButtonClick: () => {
+          this.setState({ dialogProps: undefined });
+          onCancel && onCancel();
+        },
+        choiceGroupProps,
+        textFieldProps
+      }
+    });
+  }
+
   private favoriteItem = async (): Promise<void> => {
     GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item, isFavorite: true })
@@ -195,5 +227,9 @@ export class NotebookViewerComponent extends React.Component<
     GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item })
     );
+  };
+
+  private reportAbuse = (): void => {
+    GalleryUtils.reportAbuse(this.props.junoClient, this.state.galleryItem, this, () => {});
   };
 }

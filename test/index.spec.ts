@@ -50,7 +50,7 @@ describe.skip("Collection CRUD", () => {
       //       .find('div[class="treeComponent dataResourceTree"]')
       //       .should("contain", dbId);
     } catch (error) {
-      await page.screenshot({path: 'failure.png'});
+      await page.screenshot({ path: "failure.png" });
       trackException(error);
       throw error;
     }

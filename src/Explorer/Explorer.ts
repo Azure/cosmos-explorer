@@ -82,12 +82,12 @@ import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
-import { NotificationsClientBase } from "../Common/NotificationsClientBase";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { IChoiceGroupProps } from "office-ui-fabric-react";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -98,10 +98,6 @@ enum ShareAccessToggleState {
   Read
 }
 
-interface ExplorerOptions {
-  notificationsClient: NotificationsClientBase;
-  isEmulator: boolean;
-}
 interface AdHocAccessData {
   readWriteUrl: string;
   readUrl: string;
@@ -135,15 +131,12 @@ export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
-  public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
-  public extensionEndpoint: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
-  public notificationsClient: NotificationsClientBase;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -213,7 +206,7 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
-  public isSettingsV2Enabled: ko.Computed<boolean>;
+  public isSettingsV2Enabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -272,7 +265,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(options: ExplorerOptions) {
+  constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
@@ -378,12 +371,9 @@ export default class Explorer {
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
-    this.notificationsClient = options.notificationsClient;
-    this.isEmulator = options.isEmulator;
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
-    this.extensionEndpoint = ko.observable<string>(undefined);
     this.armEndpoint = ko.observable<string>(undefined);
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
@@ -423,7 +413,8 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
-    this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
+
+    this.isSettingsV2Enabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1912,9 +1903,7 @@ export default class Explorer {
       }
       this.features(inputs.features);
       this.serverId(inputs.serverId);
-      this.extensionEndpoint(inputs.extensionEndpoint || "");
       this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
-      this.notificationsClient.setExtensionEndpoint(this.extensionEndpoint());
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
       this.quotaId(inputs.quotaId);
@@ -1922,6 +1911,7 @@ export default class Explorer {
       this.flight(inputs.addCollectionDefaultFlight);
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
+      this.setFeatureFlagsFromFlights(inputs.flights);
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
@@ -1930,6 +1920,7 @@ export default class Explorer {
       this._importExplorerConfigComplete = true;
 
       updateConfigContext({
+        BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
         ARM_ENDPOINT: this.armEndpoint()
       });
 
@@ -1953,6 +1944,16 @@ export default class Explorer {
       this.isAccountReady(true);
     }
     return Q();
+  }
+
+  public setFeatureFlagsFromFlights(flights: readonly string[]): void {
+    if (!flights) {
+      return;
+    }
+
+    if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
+      this.isSettingsV2Enabled(true);
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
@@ -2383,37 +2384,11 @@ export default class Explorer {
     okLabel: string,
     onOk: () => void,
     cancelLabel: string,
-    onCancel: () => void
-  ): void {
-    this._dialogProps({
-      isModal: true,
-      visible: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        this._closeModalDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        this._closeModalDialog();
-        onCancel && onCancel();
-      }
-    });
-  }
-
-  public showOkCancelTextFieldModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
     onCancel: () => void,
-    textFieldProps: TextFieldProps,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    let textFieldValue: string = null;
     this._dialogProps({
       isModal: true,
       visible: true,
@@ -2429,8 +2404,9 @@ export default class Explorer {
         this._closeModalDialog();
         onCancel && onCancel();
       },
-      primaryButtonDisabled: isPrimaryButtonDisabled,
-      textFieldProps
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled: isPrimaryButtonDisabled
     });
   }
 
@@ -2633,7 +2609,7 @@ export default class Explorer {
 
     const databaseAccount = this.databaseAccount();
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
-    const disallowedLocationsUri = `${this.extensionEndpoint()}/api/disallowedLocations`;
+    const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
       const response = await fetch(disallowedLocationsUri, {
@@ -3130,8 +3106,10 @@ export default class Explorer {
   }
 
   public async loadDatabaseOffers(): Promise<void> {
-    this.databases()?.forEach(async (database: ViewModels.Database) => {
-      await database.loadOffer();
-    });
+    await Promise.all(
+      this.databases()?.map(async (database: ViewModels.Database) => {
+        await database.loadOffer();
+      })
+    );
   }
 }
