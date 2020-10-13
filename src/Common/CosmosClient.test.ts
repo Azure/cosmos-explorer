@@ -112,7 +112,6 @@ describe("endpoint", () => {
 
 describe("requestPlugin", () => {
   beforeEach(() => {
-    delete window.dataExplorerPlatform;
     resetConfigContext();
   });
 

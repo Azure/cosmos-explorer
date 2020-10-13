@@ -327,7 +327,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       if (
         configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
-        this.container.getPlatformType() !== PlatformType.Portal
+        configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this._getThroughput();
         return offerThroughput <= 100000;

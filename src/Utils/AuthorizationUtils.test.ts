@@ -4,6 +4,7 @@ import { AuthType } from "../AuthType";
 import { PlatformType } from "../PlatformType";
 import Explorer from "../Explorer/Explorer";
 import { updateUserContext } from "../UserContext";
+import { Platform, updateConfigContext } from "../ConfigContext";
 jest.mock("../Explorer/Explorer");
 
 describe("AuthorizationUtils", () => {
@@ -65,12 +66,13 @@ describe("AuthorizationUtils", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       window.dataExplorer = explorer;
-      window.dataExplorerPlatform = PlatformType.Hosted;
+      updateConfigContext({
+        platform: Platform.Hosted
+      });
     });
 
     afterEach(() => {
       window.dataExplorer = undefined;
-      window.dataExplorerPlatform = undefined;
     });
 
     it("should not open token renewal prompt if status code is undefined", () => {
@@ -89,7 +91,9 @@ describe("AuthorizationUtils", () => {
     });
 
     it("should not open token renewal prompt if running on a different platform", () => {
-      window.dataExplorerPlatform = PlatformType.Portal;
+      updateConfigContext({
+        platform: Platform.Portal
+      });
       AuthorizationUtils.displayTokenRenewalPromptForStatus(Constants.HttpStatusCodes.Unauthorized);
       expect(explorer.displayGuestAccessTokenRenewalPrompt).not.toHaveBeenCalled();
     });

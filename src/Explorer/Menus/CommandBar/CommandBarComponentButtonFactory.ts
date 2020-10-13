@@ -159,7 +159,7 @@ export class CommandBarComponentButtonFactory {
 
   public static createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    if (window.dataExplorerPlatform === PlatformType.Hosted) {
+    if (configContext.platform === Platform.Hosted) {
       return buttons;
     }
 

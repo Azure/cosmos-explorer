@@ -13,7 +13,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import { PlatformType } from "../../PlatformType";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
-import { configContext } from "../../ConfigContext";
+import { configContext, Platform } from "../../ConfigContext";
 
 export default class MongoShellTab extends TabsBase {
   public url: ko.Computed<string>;
@@ -31,7 +31,7 @@ export default class MongoShellTab extends TabsBase {
       const accountName = account && account.name;
       const mongoEndpoint = account && (account.properties.mongoEndpoint || account.properties.documentEndpoint);
 
-      this._runtimeEndpoint = window.dataExplorerPlatform === PlatformType.Hosted ? configContext.BACKEND_ENDPOINT : "";
+      this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
       const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
       let baseUrl = "/content/mongoshell/dist/";
       if (this._container.serverId() === "localhost") {

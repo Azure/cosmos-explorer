@@ -5,7 +5,6 @@ import Explorer from "./Explorer/Explorer";
 declare global {
   interface Window {
     authType: AuthType;
-    dataExplorerPlatform: PlatformType;
     dataExplorer: Explorer;
     __REACT_DEVTOOLS_GLOBAL_HOOK__: any;
     $: any;

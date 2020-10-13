@@ -183,7 +183,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       if (
         configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
-        this.container.getPlatformType() !== PlatformType.Portal
+        configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;

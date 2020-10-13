@@ -14,7 +14,6 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
@@ -494,7 +493,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(() => {
       const isPublicAzurePortal: boolean =
-        this.container.getPlatformType() === PlatformType.Portal && !this.container.isRunningOnNationalCloud();
+        configContext.platform === Platform.Portal && !this.container.isRunningOnNationalCloud();
       const hasPartitionKey = !!this.collection.partitionKey;
 
       return isPublicAzurePortal && hasPartitionKey;
@@ -513,7 +512,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return false;
       }
 
-      if (this.container.getPlatformType() === PlatformType.Hosted) {
+      if (configContext.platform === Platform.Hosted) {
         return false;
       }
 
@@ -526,7 +525,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(
-      () => this.container.getPlatformType() === PlatformType.Hosted && !!this.collection.partitionKey
+      () => configContext.platform === Platform.Hosted && !!this.collection.partitionKey
     );
 
     this.minRUs = ko.computed<number>(() => {
@@ -597,7 +596,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
-      if (this.container && this.container.getPlatformType() === PlatformType.Hosted && this.collection.partitionKey) {
+      if (configContext.platform === Platform.Hosted && this.collection.partitionKey) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
       }
 
