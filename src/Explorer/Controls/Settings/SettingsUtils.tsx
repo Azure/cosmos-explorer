@@ -5,6 +5,7 @@ import * as SharedConstants from "../../../Shared/Constants";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 
 import Explorer from "../../Explorer";
+import { MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 
 export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
 export const TtlOff = "off";
@@ -30,6 +31,12 @@ export enum GeospatialConfigType {
 export enum MongoIndexTypes {
   Single = "Single",
   WildCard = "WildCard"
+}
+
+export interface AddMongoIndexProps {
+  mongoIndex: MongoIndex;
+  type: MongoIndexTypes;
+  errorMessage: string;
 }
 
 export enum SettingsV2TabTypes {
@@ -173,4 +180,15 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
+};
+
+export const getMongoErrorMessage = (description: string, type: MongoIndexTypes): string => {
+  let errorMessage: string = undefined;
+  if (type && (!description || description.trim().length === 0)) {
+    errorMessage = "Please enter an index description.";
+  } else if (type === MongoIndexTypes.WildCard && description?.indexOf("$**") === -1) {
+    errorMessage = "Wild Card path is not present in the index description.";
+  }
+
+  return errorMessage;
 };

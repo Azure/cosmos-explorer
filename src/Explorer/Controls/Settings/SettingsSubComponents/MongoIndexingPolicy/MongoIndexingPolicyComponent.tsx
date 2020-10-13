@@ -2,8 +2,6 @@ import * as React from "react";
 import {
   DetailsList,
   DetailsListLayoutMode,
-  MessageBar,
-  MessageBarType,
   Stack,
   IconButton,
   Text,
@@ -12,30 +10,32 @@ import {
   IDetailsRowStyles,
   DetailsRow,
   Label,
-  TextField,
-  IDropdownOption,
-  Dropdown
+  ProgressIndicator,
+  ITextField,
+  ITextFieldProps,
+  ImageIcon,
+  Icon
 } from "office-ui-fabric-react";
-import { titleAndInputStackProps } from "../../SettingsRenderUtils";
+import { accordionStackTokens, titleAndInputStackProps } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
-import { MongoIndexTypes } from "../../SettingsUtils";
+import { MongoIndexTypes, AddMongoIndexProps } from "../../SettingsUtils";
+import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
   onIndexDelete: (index: number) => void;
   indexesToDelete: number[];
   onRevertIndexDelete: (index: number) => void;
-  indexesToAdd: MongoIndex[];
+  indexesToAdd: AddMongoIndexProps[];
   onRevertIndexAdd: (index: number) => void;
-  onIndexAdd: (newMongoIndex: MongoIndex) => void;
+  onIndexAddOrChange: (index: number, description: string, type: MongoIndexTypes) => void;
   onMongoIndexingPolicyDirtyChange: (isMongoIndexingPolicyDirty: boolean) => void;
 }
 
 interface MongoIndexingPolicyComponentState {
-  isAddingIndex: boolean;
-  newIndexDefinition: string;
-  newIndexType: MongoIndexTypes;
-  errorMessage: string;
+  indexesToBeAddedExpanded: boolean;
+  indexesToBeDeletedExpanded: boolean;
+  initialIndexesExpanded: boolean;
 }
 
 interface MongoIndexDisplayProps {
@@ -48,27 +48,32 @@ export class MongoIndexingPolicyComponent extends React.Component<
   MongoIndexingPolicyComponentState
 > {
   private shouldCheckComponentIsDirty = true;
-  private columns = [
+  private currentTextFields: ITextField[] = [];
+  private initialIndexesColumns = [
     { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "dropIndex", name: "Drop Index", fieldName: "dropIndex", minWidth: 100, maxWidth: 200, isResizable: true }
   ];
-  private indexTypes: IDropdownOption[] = [MongoIndexTypes.Single, MongoIndexTypes.WildCard].map((value: string) => ({
-    text: value,
-    key: value
-  }));
+
+  private indexesToBeAddedColumns = [
+    { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: "dropIndex", name: "Undo", fieldName: "dropIndex", minWidth: 100, maxWidth: 200, isResizable: true }
+  ];
 
   constructor(props: MongoIndexingPolicyComponentProps) {
     super(props);
     this.state = {
-      isAddingIndex: false,
-      newIndexDefinition: undefined,
-      newIndexType: undefined,
-      errorMessage: undefined
+      indexesToBeAddedExpanded: true,
+      indexesToBeDeletedExpanded: true,
+      initialIndexesExpanded: true
     };
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
+    if (this.props.indexesToAdd.length > prevProps.indexesToAdd.length) {
+      this.currentTextFields[prevProps.indexesToAdd.length].focus();
+    }
     this.onComponentUpdate();
   }
 
@@ -86,7 +91,10 @@ export class MongoIndexingPolicyComponent extends React.Component<
   };
 
   public IsComponentDirty = (): boolean => {
-    return this.props.indexesToAdd.length > 0 || this.props.indexesToDelete.length > 0;
+    const addErrorsExist = this.props.indexesToAdd.find(
+      (addMongoIndexProps: AddMongoIndexProps) => addMongoIndexProps.errorMessage
+    );
+    return !addErrorsExist || this.props.indexesToDelete.length > 0;
   };
 
   private onRenderRow(props: IDetailsRowProps): JSX.Element {
@@ -103,9 +111,9 @@ export class MongoIndexingPolicyComponent extends React.Component<
     return <DetailsRow {...props} styles={rowStyles} />;
   }
 
-  public getType = (keys: string[]): string => {
+  public getType = (keys: string[]): MongoIndexTypes => {
     const length = keys.length;
-    let type: string = undefined;
+    let type: MongoIndexTypes = undefined;
     if (length === 1) {
       if (keys[0].indexOf("$**") !== -1) {
         type = MongoIndexTypes.WildCard;
@@ -145,15 +153,27 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
     return (
       <Stack {...titleAndInputStackProps}>
-        <Label>Existing Indexes</Label>
-        <DetailsList
-          disableSelectionZone
-          items={initialIndexes}
-          columns={this.columns}
-          selectionMode={SelectionMode.none}
-          onRenderRow={this.onRenderRow}
-          layoutMode={DetailsListLayoutMode.justified}
-        />
+        <Stack
+          horizontal
+          tokens={accordionStackTokens}
+          onClick={() => this.setState({ initialIndexesExpanded: !this.state.initialIndexesExpanded })}
+        >
+          <Icon
+            iconName={this.state.initialIndexesExpanded ? "ChevronDown" : "ChevronRight"}
+            styles={{ root: { verticalAlign: "middle" } }}
+          />
+          <Label>Existing Indexes</Label>
+        </Stack>
+        {this.state.initialIndexesExpanded && (
+          <DetailsList
+            disableSelectionZone
+            items={initialIndexes}
+            columns={this.initialIndexesColumns}
+            selectionMode={SelectionMode.none}
+            onRenderRow={this.onRenderRow}
+            layoutMode={DetailsListLayoutMode.justified}
+          />
+        )}
       </Stack>
     );
   };
@@ -168,7 +188,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
           type: <Text>{type}</Text>,
           dropIndex: (
             <IconButton
-              iconProps={{ iconName: "Delete" }}
+              iconProps={{ iconName: "Undo" }}
               onClick={() => {
                 this.props.onRevertIndexDelete(index);
               }}
@@ -178,152 +198,99 @@ export class MongoIndexingPolicyComponent extends React.Component<
       }
     );
 
-    return indexesToBeDeleted.length != 0 ? (
+    return (
       <Stack {...titleAndInputStackProps}>
-        <Label>Indexes to be deleted</Label>
-        <DetailsList
-          disableSelectionZone
-          items={indexesToBeDeleted}
-          columns={this.columns}
-          selectionMode={SelectionMode.none}
-          onRenderRow={this.onRenderRow}
-          layoutMode={DetailsListLayoutMode.justified}
-        />
+        <Stack
+          horizontal
+          tokens={accordionStackTokens}
+          onClick={() => this.setState({ indexesToBeDeletedExpanded: !this.state.indexesToBeDeletedExpanded })}
+        >
+          <Icon
+            iconName={this.state.indexesToBeDeletedExpanded ? "ChevronDown" : "ChevronRight"}
+            styles={{ root: { verticalAlign: "middle" } }}
+          />
+          <Label>Indexes to be deleted</Label>
+        </Stack>
+        {this.state.indexesToBeDeletedExpanded && indexesToBeDeleted.length > 0 && (
+          <DetailsList
+            disableSelectionZone
+            items={indexesToBeDeleted}
+            columns={this.indexesToBeAddedColumns}
+            selectionMode={SelectionMode.none}
+            onRenderRow={this.onRenderRow}
+            layoutMode={DetailsListLayoutMode.justified}
+          />
+        )}
       </Stack>
-    ) : (
-      <></>
     );
   };
 
   public renderIndexesToBeAdded = (): JSX.Element => {
-    const indexesToBeAdded: MongoIndexDisplayProps[] = this.props.indexesToAdd.map(
-      (mongoIndex: MongoIndex, index: number) => {
-        const keys = mongoIndex.key.keys;
-        const type = this.getType(keys);
-        return {
-          definition: <Text>{keys.join(",")}</Text>,
-          type: <Text>{type}</Text>,
-          dropIndex: (
-            <IconButton
-              iconProps={{ iconName: "Delete" }}
-              onClick={() => {
-                this.props.onRevertIndexAdd(index);
-              }}
-            />
-          )
-        } as MongoIndexDisplayProps;
-      }
-    );
-
-    return indexesToBeAdded.length != 0 ? (
-      <Stack {...titleAndInputStackProps}>
-        <Label>Indexes to be added</Label>
-        <DetailsList
-          disableSelectionZone
-          items={indexesToBeAdded}
-          columns={this.columns}
-          selectionMode={SelectionMode.none}
-          onRenderRow={this.onRenderRow}
-          layoutMode={DetailsListLayoutMode.justified}
-        />
-      </Stack>
-    ) : (
-      <></>
-    );
-  };
-
-  private onNewIndexDefinitionChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => this.setState({ newIndexDefinition: newValue });
-
-  private onNewIndexTypeChange = (
-    event: React.FormEvent<HTMLDivElement>,
-    option?: IDropdownOption,
-    index?: number
-  ): void => this.setState({ newIndexType: MongoIndexTypes[option.key as keyof typeof MongoIndexTypes] });
-
-  public renderAddIndexComponent = (): JSX.Element => {
+    const indexesToAddLength = this.props.indexesToAdd.length;
     return (
       <Stack {...titleAndInputStackProps}>
-        <IconButton
-          iconProps={{ iconName: "Add" }}
-          disabled={this.state.isAddingIndex}
-          onClick={() => {
-            this.setState({ isAddingIndex: true });
-          }}
-        />
-        {this.state.isAddingIndex && (
-          <Stack horizontal tokens={{ childrenGap: 20 }}>
-            <TextField
-              styles={{ root: { width: 300 } }}
-              label="Defintion"
-              placeholder={this.state.newIndexType === MongoIndexTypes.WildCard ? "placeholder.$**" : undefined}
-              onChange={this.onNewIndexDefinitionChange}
-            />
-
-            <Dropdown
-              styles={{ dropdown: { width: 300 } }}
-              placeholder="Select an index type"
-              label="Type"
-              options={this.indexTypes}
-              onChange={this.onNewIndexTypeChange}
-            />
-
-            <IconButton
-              iconProps={{ iconName: "Save" }}
-              onClick={() => {
-                if (this.state.newIndexType === undefined) {
-                  this.setState({ errorMessage: "Please select the type of the index" });
-                  return;
-                }
-
-                if (
-                  this.state.newIndexType === MongoIndexTypes.WildCard &&
-                  this.state.newIndexDefinition.indexOf("$**") === -1
-                ) {
-                  this.setState({ errorMessage: "Wild Card path is not present" });
-                  return;
-                }
-
-                const newMongoIndex = { key: { keys: [this.state.newIndexDefinition] } } as MongoIndex;
-                this.props.onIndexAdd(newMongoIndex);
-                this.setState({
-                  isAddingIndex: false,
-                  newIndexDefinition: undefined,
-                  newIndexType: undefined,
-                  errorMessage: undefined
-                });
+        <Stack
+          horizontal
+          tokens={accordionStackTokens}
+          onClick={() => this.setState({ indexesToBeAddedExpanded: !this.state.indexesToBeAddedExpanded })}
+        >
+          <Icon
+            iconName={this.state.indexesToBeAddedExpanded ? "ChevronDown" : "ChevronRight"}
+            styles={{ root: { verticalAlign: "middle" } }}
+          />
+          <Label>Index To Be Added</Label>
+        </Stack>
+        {this.state.indexesToBeAddedExpanded && (
+          <>
+            {this.props.indexesToAdd.map((mongoIndexWithType: AddMongoIndexProps, index: number) => {
+              const keys = mongoIndexWithType.mongoIndex.key.keys;
+              const type = mongoIndexWithType.type;
+              const errorMessage = mongoIndexWithType.errorMessage;
+              return (
+                <AddMongoIndexComponent
+                  key={index}
+                  description={keys.join()}
+                  type={type}
+                  errorMessage={errorMessage}
+                  setRef={(textField: ITextField) => (this.currentTextFields[index] = textField)}
+                  onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
+                    this.props.onIndexAddOrChange(index, description, type)
+                  }
+                  onDiscard={() => {
+                    this.currentTextFields.splice(index, 1);
+                    this.props.onRevertIndexAdd(index);
+                  }}
+                />
+              );
+            })}
+            <AddMongoIndexComponent
+              key={indexesToAddLength}
+              description={undefined}
+              type={undefined}
+              errorMessage={undefined}
+              setRef={(textField: ITextField) => (this.currentTextFields[indexesToAddLength] = textField)}
+              onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
+                this.props.onIndexAddOrChange(indexesToAddLength, description, type)
+              }
+              onDiscard={() => {
+                this.props.onRevertIndexAdd(indexesToAddLength);
               }}
             />
-            <IconButton
-              iconProps={{ iconName: "Cancel" }}
-              onClick={() => {
-                this.setState({
-                  isAddingIndex: false,
-                  newIndexDefinition: undefined,
-                  newIndexType: undefined,
-                  errorMessage: undefined
-                });
-              }}
-            />
-          </Stack>
-        )}
-        {this.state.errorMessage && (
-          <MessageBar messageBarType={MessageBarType.error}>{this.state.errorMessage}</MessageBar>
+          </>
         )}
       </Stack>
     );
   };
 
   public render(): JSX.Element {
-    return (
+    return this.props.mongoIndexes ? (
       <Stack {...titleAndInputStackProps}>
-        {this.renderInitialIndexes()}
         {this.renderIndexesToBeAdded()}
-        {this.renderAddIndexComponent()}
         {this.renderIndexesToBeDeleted()}
+        {this.renderInitialIndexes()}
       </Stack>
+    ) : (
+      <ProgressIndicator />
     );
   }
 }

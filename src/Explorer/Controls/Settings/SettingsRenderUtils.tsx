@@ -53,6 +53,10 @@ export const toolTipLabelStackTokens: IStackTokens = {
   childrenGap: 6
 };
 
+export const accordionStackTokens: IStackTokens = {
+  childrenGap: 5
+};
+
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
 
 export const throughputUnit = "RU/s";

@@ -35,7 +35,10 @@ import {
   TtlOn,
   TtlOnNoDefault,
   parseConflictResolutionMode,
-  parseConflictResolutionProcedure
+  parseConflictResolutionProcedure,
+  AddMongoIndexProps,
+  MongoIndexTypes,
+  getMongoErrorMessage
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
@@ -99,7 +102,7 @@ export interface SettingsComponentState {
 
   isMongoIndexingPolicyDirty: boolean;
   indexesToDelete: number[];
-  indexesToAdd: MongoIndex[];
+  indexesToAdd: AddMongoIndexProps[];
 
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
@@ -358,7 +361,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           this.collection.id(),
           newCollection
         );
-        console.log("updated coll:" + JSON.stringify(updatedCollection));
         this.collection.rawDataModel = updatedCollection;
         this.collection.defaultTtl(updatedCollection.defaultTtl);
         this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
@@ -566,7 +568,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         finalIndexes.push(mongoIndex);
       }
     });
-    finalIndexes = finalIndexes.concat(this.state.indexesToAdd);
+    finalIndexes = finalIndexes.concat(this.state.indexesToAdd.map((m: AddMongoIndexProps) => m.mongoIndex));
     return finalIndexes;
   };
 
@@ -617,8 +619,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ indexesToAdd: [...indexesToAdd] });
   };
 
-  private onIndexAdd = (newMongoIndex: MongoIndex): void =>
-    this.setState({ indexesToAdd: [...this.state.indexesToAdd, newMongoIndex] });
+  private onIndexAddOrChange = (index: number, description: string, type: MongoIndexTypes): void => {
+    const newIndexesToAdd = this.state.indexesToAdd.slice();
+    const errorMessage = getMongoErrorMessage(description, type);
+    const newMongoIndexWithType: AddMongoIndexProps = {
+      mongoIndex: { key: { keys: [description] } } as MongoIndex,
+      type: type,
+      errorMessage: errorMessage
+    };
+    if (index === newIndexesToAdd.length) {
+      newIndexesToAdd.push(newMongoIndexWithType);
+    } else {
+      newIndexesToAdd[index] = newMongoIndexWithType;
+    }
+    this.setState({ indexesToAdd: newIndexesToAdd });
+  };
 
   private onConflictResolutionPolicyModeChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
@@ -936,7 +951,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onRevertIndexDelete: this.onRevertIndexDelete,
       indexesToAdd: this.state.indexesToAdd,
       onRevertIndexAdd: this.onRevertIndexAdd,
-      onIndexAdd: this.onIndexAdd,
+      onIndexAddOrChange: this.onIndexAddOrChange,
       onMongoIndexingPolicyDirtyChange: this.onMongoIndexingPolicyDirtyChange
     };
 
@@ -973,7 +988,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
       });
-    } else if (this.mongoDBCollectionGetResult) {
+    } else if (this.container.isPreferredApiMongoDB()) {
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
