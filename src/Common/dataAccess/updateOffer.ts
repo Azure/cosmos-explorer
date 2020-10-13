@@ -120,10 +120,6 @@ const updateCollectionOfferWithARM = async (params: UpdateOfferParams): Promise<
 };
 
 const updateDatabaseOfferWithARM = async (params: UpdateOfferParams): Promise<Offer> => {
-  if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
-    throw new Error("Updating database offer is not allowed for tables accounts");
-  }
-
   try {
     switch (userContext.defaultExperience) {
       case DefaultAccountExperienceType.DocumentDB:
