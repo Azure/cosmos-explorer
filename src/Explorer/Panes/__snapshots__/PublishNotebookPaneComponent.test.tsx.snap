@@ -103,6 +103,8 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             "isSample": false,
             "name": "SampleNotebook.ipynb",
             "newCellId": undefined,
+            "pendingScanJobIds": undefined,
+            "policyViolations": undefined,
             "tags": Array [
               "",
             ],
