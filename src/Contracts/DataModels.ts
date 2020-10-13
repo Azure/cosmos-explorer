@@ -1,5 +1,3 @@
-import { MongoIndex } from "../Utils/arm/generatedClients/2020-04-01/types";
-
 export interface DatabaseAccount {
   id: string;
   name: string;

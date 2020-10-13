@@ -40,7 +40,6 @@ import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
-import { MongoIndex } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 
 export default class Collection implements ViewModels.Collection {
