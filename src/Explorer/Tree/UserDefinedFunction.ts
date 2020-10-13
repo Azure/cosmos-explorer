@@ -44,7 +44,6 @@ export default class UserDefinedFunction {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
-      selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
@@ -83,7 +82,6 @@ export default class UserDefinedFunction {
           this.collection.databaseId,
           this.collection.id()
         )}/udfs/${this.id()}`,
-        selfLink: "",
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });

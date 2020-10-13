@@ -47,8 +47,6 @@ export interface GraphExplorerProps {
   onIsValidQueryChange: (isValidQuery: boolean) => void;
 
   collectionPartitionKeyProperty: string;
-  collectionRid: string;
-  collectionSelfLink: string;
   graphBackendEndpoint: string;
   databaseId: string;
   collectionId: string;
@@ -1761,7 +1759,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${queryInfoStr}`);
 
     return queryDocumentsPage(
-      this.props.collectionRid,
+      this.props.collectionId,
       this.currentDocDBQueryInfo.iterator,
       this.currentDocDBQueryInfo.index,
       {

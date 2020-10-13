@@ -24,7 +24,6 @@ describe("Query Tab", () => {
       database: database,
       title: "",
       tabPath: "",
-      selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
       onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}

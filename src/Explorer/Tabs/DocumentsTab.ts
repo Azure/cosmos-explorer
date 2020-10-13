@@ -70,7 +70,6 @@ export default class DocumentsTab extends TabsBase {
 
   private _documentsIterator: QueryIterator<ItemDefinition & Resource>;
   private _resourceTokenPartitionKey: string;
-  protected _selfLink: string;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
@@ -91,7 +90,6 @@ export default class DocumentsTab extends TabsBase {
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
     this._resourceTokenPartitionKey = options.resourceTokenPartitionKey;
     this.documentIds = options.documentIds;
-    this._selfLink = options.selfLink || (this.collection && this.collection.self);
 
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
