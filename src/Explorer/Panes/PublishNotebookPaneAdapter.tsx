@@ -161,7 +161,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
       const data = response.data;
       if (data) {
-        if (data.pendingScanJobIds && data.pendingScanJobIds.length > 0) {
+        if (data.pendingScanJobIds?.length > 0) {
           NotificationConsoleUtils.logConsoleInfo(
             `Content of ${this.name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`
           );

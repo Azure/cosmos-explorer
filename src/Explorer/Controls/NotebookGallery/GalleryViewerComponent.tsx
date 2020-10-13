@@ -214,22 +214,19 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
     const content = (
       <Stack tokens={{ childrenGap: 10 }}>
-        {published &&
-          published.length > 0 &&
+        {published?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             undefined,
             "You have successfully published the following notebook(s) to public gallery and shared with other Azure Cosmos DB users.",
             this.createCardsTabContent(published)
           )}
-        {underReview &&
-          underReview.length > 0 &&
+        {underReview?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             "Under Review",
             "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
             this.createCardsTabContent(underReview)
           )}
-        {removed &&
-          removed.length > 0 &&
+        {removed?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             "Removed",
             "These notebooks were found to contain illegal content and has been taken down.",
