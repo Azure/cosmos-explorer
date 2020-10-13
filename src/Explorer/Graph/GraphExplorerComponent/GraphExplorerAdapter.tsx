@@ -17,8 +17,6 @@ interface Parameter {
   graphConfig?: GraphConfig;
 
   collectionPartitionKeyProperty: string;
-  collectionRid: string;
-  collectionSelfLink: string;
   graphBackendEndpoint: string;
   databaseId: string;
   collectionId: string;
@@ -49,8 +47,6 @@ export class GraphExplorerAdapter implements ReactAdapter {
         onIsGraphDisplayed={this.params.onIsGraphDisplayed}
         onResetDefaultGraphConfigValues={this.params.onResetDefaultGraphConfigValues}
         collectionPartitionKeyProperty={this.params.collectionPartitionKeyProperty}
-        collectionRid={this.params.collectionRid}
-        collectionSelfLink={this.params.collectionSelfLink}
         graphBackendEndpoint={this.params.graphBackendEndpoint}
         databaseId={this.params.databaseId}
         collectionId={this.params.collectionId}

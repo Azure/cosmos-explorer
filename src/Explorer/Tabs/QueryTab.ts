@@ -55,7 +55,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   protected monacoSettings: ViewModels.MonacoEditorSettings;
   private _executeQueryButtonTitle: ko.Observable<string>;
   protected _iterator: MinimalQueryIterator;
-  private _selfLink: string;
   private _isSaveQueriesEnabled: ko.Computed<boolean>;
   private _resourceTokenPartitionKey: string;
 
@@ -86,7 +85,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.errors = ko.observableArray<ViewModels.QueryError>([]);
     this._partitionKey = options.partitionKey;
     this._resourceTokenPartitionKey = options.resourceTokenPartitionKey;
-    this._selfLink = options.selfLink;
     this.splitterId = this.tabId + "_splitter";
     this.isPreferredApiMongoDB = false;
     this.aggregatedQueryMetrics = ko.observable<DataModels.QueryMetrics>();

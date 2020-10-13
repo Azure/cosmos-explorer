@@ -239,7 +239,9 @@ export default class Collection implements ViewModels.Collection {
       this.expandCollection();
     }
     this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+    );
   }
 
   public collapseCollection() {
@@ -290,7 +292,7 @@ export default class Collection implements ViewModels.Collection {
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      tab => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
     ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
@@ -312,8 +314,6 @@ export default class Collection implements ViewModels.Collection {
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-
-        selfLink: this.self,
         isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
@@ -341,7 +341,7 @@ export default class Collection implements ViewModels.Collection {
 
     const conflictsTabs: ConflictsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Conflicts,
-      tab => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
     ) as ConflictsTab[];
     let conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
 
@@ -363,8 +363,6 @@ export default class Collection implements ViewModels.Collection {
         conflictIds: ko.observableArray<ConflictId>([]),
         tabKind: ViewModels.CollectionTabKind.Conflicts,
         title: "Conflicts",
-
-        selfLink: this.self,
         isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
@@ -398,7 +396,7 @@ export default class Collection implements ViewModels.Collection {
 
     const queryTablesTabs: QueryTablesTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.QueryTables,
-      tab => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
     ) as QueryTablesTab[];
     let queryTablesTab: QueryTablesTab = queryTablesTabs && queryTablesTabs[0];
 
@@ -427,7 +425,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
 
         node: this,
-        selfLink: this.self,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
         isActive: ko.observable(false),
         onLoadStartKey: startKey,
@@ -452,7 +449,7 @@ export default class Collection implements ViewModels.Collection {
 
     const graphTabs: GraphTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Graph,
-      tab => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
     ) as GraphTab[];
     let graphTab: GraphTab = graphTabs && graphTabs[0];
 
@@ -478,7 +475,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
 
         collection: this,
-        selfLink: this.self,
         masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperty,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
@@ -508,7 +504,7 @@ export default class Collection implements ViewModels.Collection {
 
     const mongoDocumentsTabs: MongoDocumentsTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      tab => tab.collection && tab.collection.rid === this.rid
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
     ) as MongoDocumentsTab[];
     let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
@@ -535,7 +531,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
 
         node: this,
-        selfLink: this.self,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
         isActive: ko.observable(false),
         onLoadStartKey: startKey,
@@ -561,7 +556,7 @@ export default class Collection implements ViewModels.Collection {
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
-      return tab.collection && tab.collection.rid === this.rid;
+      return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
     });
 
     const traceStartData = {
@@ -579,7 +574,6 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       node: this,
-      selfLink: this.self,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
       isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons
@@ -672,7 +666,6 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       node: this,
-      selfLink: this.self,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
       isActive: ko.observable(false),
       queryText: queryText,
@@ -704,7 +697,6 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       node: this,
-      selfLink: this.self,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
       isActive: ko.observable(false),
       partitionKey: collection.partitionKey,
@@ -735,7 +727,6 @@ export default class Collection implements ViewModels.Collection {
       title: title,
       tabPath: "",
       collection: this,
-      selfLink: this.self,
       masterKey: userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperty,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
@@ -759,7 +750,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      selfLink: this.self,
       isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons
     });
@@ -822,7 +812,9 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandStoredProcedures();
     }
-    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+    );
   }
 
   public expandStoredProcedures() {
@@ -879,7 +871,9 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandUserDefinedFunctions();
     }
-    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+    );
   }
 
   public expandUserDefinedFunctions() {
@@ -936,7 +930,9 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandTriggers();
     }
-    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.rid === this.rid);
+    this.container.tabsManager.refreshActiveTab(
+      tab => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+    );
   }
 
   public expandTriggers() {
@@ -1027,26 +1023,6 @@ export default class Collection implements ViewModels.Collection {
     event.originalEvent.stopPropagation();
     event.originalEvent.preventDefault();
     this.uploadFiles(event.originalEvent.dataTransfer.files);
-  }
-
-  public isCollectionNodeSelected(): boolean {
-    return (
-      this.isSubNodeSelected(ViewModels.CollectionTabKind.Query) ||
-      (!this.isCollectionExpanded() &&
-        this.container.selectedNode &&
-        this.container.selectedNode() &&
-        this.container.selectedNode().rid === this.rid &&
-        this.container.selectedNode().nodeKind === "Collection")
-    );
-  }
-
-  public isSubNodeSelected(nodeKind: ViewModels.CollectionTabKind): boolean {
-    return (
-      this.container.selectedNode &&
-      this.container.selectedNode() &&
-      this.container.selectedNode().rid === this.rid &&
-      this.selectedSubnodeKind() === nodeKind
-    );
   }
 
   public onDeleteCollectionContextMenuClick(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
@@ -1282,10 +1258,6 @@ export default class Collection implements ViewModels.Collection {
         } items created, ${record.numFailed} errors`
       );
     });
-  }
-
-  protected _getOfferForCollection(offers: DataModels.Offer[], collection: DataModels.Collection): DataModels.Offer {
-    return _.find(offers, (offer: DataModels.Offer) => offer.resource.indexOf(collection._rid) >= 0);
   }
 
   /**
