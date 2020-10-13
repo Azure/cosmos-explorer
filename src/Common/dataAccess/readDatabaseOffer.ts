@@ -17,14 +17,12 @@ import { userContext } from "../../UserContext";
 export const readDatabaseOffer = async (
   params: DataModels.ReadDatabaseOfferParams
 ): Promise<DataModels.OfferWithHeaders> => {
-  if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
-    throw new Error("Reading database offer is not allowed for tables accounts");
-  }
-
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
   let offerId = params.offerId;
   if (!offerId) {
-    offerId = await (window.authType === AuthType.AAD && !userContext.useSDKOperations
+    offerId = await (window.authType === AuthType.AAD &&
+    !userContext.useSDKOperations &&
+    userContext.defaultExperience !== DefaultAccountExperienceType.Table
       ? getDatabaseOfferIdWithARM(params.databaseId)
       : getDatabaseOfferIdWithSDK(params.databaseResourceId));
     if (!offerId) {
