@@ -60,9 +60,14 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
 
   try {
     if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
-      updatedOffer = await (params.collectionId
-        ? updateCollectionOfferWithARM(params)
-        : updateDatabaseOfferWithARM(params));
+      if (params.collectionId) {
+        updatedOffer = await updateCollectionOfferWithARM(params);
+      } else if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+        // update table's database offer with SDK since RP doesn't support it
+        updatedOffer = await updateOfferWithSDK(params);
+      } else {
+        updatedOffer = await updateDatabaseOfferWithARM(params);
+      }
     } else {
       updatedOffer = await updateOfferWithSDK(params);
     }
