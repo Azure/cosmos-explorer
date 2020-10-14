@@ -20,6 +20,7 @@ import UploadFilePaneTemplate from "./UploadFilePane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
+import SupportPaneTemplate from "./SupportPane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -221,6 +222,15 @@ export class GitHubReposPaneComponent {
     return {
       viewModel: PaneComponent,
       template: GitHubReposPaneTemplate
+    };
+  }
+}
+
+export class SupportPaneComponent {
+  constructor() {
+    return {
+      viewModel: PaneComponent,
+      template: SupportPaneTemplate
     };
   }
 }

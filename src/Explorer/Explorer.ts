@@ -69,6 +69,7 @@ import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
+import { SupportPane } from "./Panes/SupportPane";
 import { SplashScreenComponentAdapter } from "./SplashScreen/SplashScreenComponentApdapter";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
@@ -175,6 +176,7 @@ export default class Explorer {
   public isAuthWithResourceToken: ko.Observable<boolean>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
+  public conversationToken: ko.Observable<string>;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -195,6 +197,7 @@ export default class Explorer {
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public settingsPane: SettingsPane;
+  public supportPane: SupportPane;
   public executeSprocParamsPane: ExecuteSprocParamsPane;
   public renewAdHocAccessPane: RenewAdHocAccessPane;
   public uploadItemsPane: UploadItemsPane;
@@ -325,10 +328,12 @@ export default class Explorer {
     this.hasStorageAnalyticsAfecFeature = ko.observable(false);
     this.hasStorageAnalyticsAfecFeature.subscribe((enabled: boolean) => this.refreshCommandBarButtons());
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
+    this.conversationToken = ko.observable<string>();
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
         this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
+        this.generateConversationToken();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager(this.armEndpoint());
         this.arcadiaWorkspaces = ko.observableArray();
         this._arcadiaManager = new ArcadiaResourceManager(this.armEndpoint());
@@ -699,6 +704,12 @@ export default class Explorer {
       id: "settingspane",
       visible: ko.observable<boolean>(false),
 
+      container: this
+    });
+
+    this.supportPane = new SupportPane({
+      id: "supportpane",
+      visible: ko.observable<boolean>(false),
       container: this
     });
 
@@ -1590,6 +1601,53 @@ export default class Explorer {
         }
       );
     });
+  }
+
+  private async generateConversationToken() {
+    const response = await fetch("https://directline.botframework.com/v3/directline/tokens/generate", {
+      method: "POST",
+      headers: {
+        [Constants.HttpHeaders.authorization]: "Bearer BSjLmJJHZRA.PxahjJGCNOKl7q9tiodWyVcqJOIzG894vAAqCme639o",
+        Accept: "application/json",
+        [Constants.HttpHeaders.contentType]: "application/json"
+      },
+      body: JSON.stringify({
+        "user": {
+          "id": `dl_${_.uniqueId()}`,
+          "name": this.getUserName()
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+
+    const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
+    this.conversationToken(tokenResponse?.token);
+
+    if (tokenResponse?.expires_in) {
+      setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
+    }
+  }
+
+  private getUserName() {
+    const accessToken = userContext?.authorizationToken;
+    if (!accessToken) {
+      return "Cosmos DB User";
+    }
+
+    let name;
+    try {
+      const tokenPayload = decryptJWTToken(accessToken);
+      if (tokenPayload && tokenPayload.hasOwnProperty("name")) {
+        name = tokenPayload.name;
+      }
+    } catch (error) {
+      // ignore
+    } finally {
+      return name;
+    }
   }
 
   private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {

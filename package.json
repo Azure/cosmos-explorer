@@ -42,6 +42,7 @@
     "applicationinsights": "1.8.0",
     "babel-polyfill": "6.26.0",
     "bootstrap": "3.4.1",
+    "botframework-webchat": "4.10.1",
     "canvas": "2.6.1",
     "clean-webpack-plugin": "0.1.19",
     "copy-webpack-plugin": "6.0.2",

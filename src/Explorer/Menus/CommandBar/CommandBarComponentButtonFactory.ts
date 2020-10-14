@@ -27,6 +27,7 @@ import SynapseIcon from "../../../../images/synapse-link.svg";
 import { configContext, Platform } from "../../../ConfigContext";
 import Explorer from "../../Explorer";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { AuthType } from "../../../AuthType";
 
 export class CommandBarComponentButtonFactory {
   private static counter: number = 0;
@@ -176,6 +177,21 @@ export class CommandBarComponentButtonFactory {
         disabled: false
       };
       buttons.push(settingsPaneButton);
+    }
+
+    if (window.authType === AuthType.AAD) {
+      const label = "Support";
+      const supportPaneButton: CommandButtonComponentProps = {
+        iconSrc: FeedbackIcon,
+        iconAlt: label,
+        onCommandClick: () => container.supportPane.open(),
+        commandButtonLabel: null,
+        ariaLabel: label,
+        tooltipText: label,
+        hasPopup: true,
+        disabled: false
+      };
+      buttons.push(supportPaneButton);
     }
 
     if (container.isHostedDataExplorerEnabled()) {

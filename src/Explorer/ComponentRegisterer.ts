@@ -78,3 +78,4 @@ ko.components.register("upload-file-pane", new PaneComponents.UploadFilePaneComp
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());
+ko.components.register("support-pane", new PaneComponents.SupportPaneComponent());
