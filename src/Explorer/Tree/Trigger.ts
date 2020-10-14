@@ -59,7 +59,6 @@ export default class Trigger {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
-      selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
@@ -100,7 +99,6 @@ export default class Trigger {
           this.collection.databaseId,
           this.collection.id()
         )}/triggers/${this.id()}`,
-        selfLink: "",
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });

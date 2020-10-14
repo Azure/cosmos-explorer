@@ -64,7 +64,6 @@ describe("Settings tab", () => {
           tabKind: ViewModels.CollectionTabKind.Settings,
           title: "Scale & Settings",
           tabPath: "",
-          selfLink: "",
           hashLocation: "",
           isActive: ko.observable(false),
           collection: new Collection(
@@ -79,7 +78,7 @@ describe("Settings tab", () => {
       };
 
       beforeEach(() => {
-        explorer = new Explorer({ notificationsClient: null });
+        explorer = new Explorer();
         explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       });
 
@@ -178,7 +177,7 @@ describe("Settings tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null });
+      explorer = new Explorer();
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
@@ -187,7 +186,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -209,8 +207,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -227,8 +223,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -256,7 +250,7 @@ describe("Settings tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null });
+      explorer = new Explorer();
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
@@ -265,8 +259,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -281,8 +273,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -306,8 +296,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -337,9 +325,7 @@ describe("Settings tab", () => {
     }
 
     function getCollection(defaultApi: string, partitionKeyOption: PartitionKeyOption) {
-      const explorer = new Explorer({
-        notificationsClient: null
-      });
+      const explorer = new Explorer();
       explorer.defaultExperience(defaultApi);
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
 
@@ -382,8 +368,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(defaultApi, partitionKeyOption),
@@ -469,9 +453,7 @@ describe("Settings tab", () => {
 
   describe("AutoPilot", () => {
     function getCollection(autoPilotTier: DataModels.AutopilotTier) {
-      const explorer = new Explorer({
-        notificationsClient: null
-      });
+      const explorer = new Explorer();
       explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
 
       explorer.databaseAccount({
@@ -524,8 +506,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(autoPilotTier),

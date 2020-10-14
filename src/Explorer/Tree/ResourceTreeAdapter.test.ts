@@ -51,11 +51,11 @@ describe("ResourceTreeAdapter", () => {
       explorer.selectedNode(({
         nodeKind: "Database",
         rid: "dbrid",
-        id: ko.observable<string>("id"),
+        id: ko.observable<string>("dbid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
       } as unknown) as ViewModels.TreeNode);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbrid", "Database", [
+      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", undefined, [
         ViewModels.CollectionTabKind.Documents
       ]);
       expect(isDataNodeSelected).toBeTruthy();
@@ -70,11 +70,12 @@ describe("ResourceTreeAdapter", () => {
       explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
-        id: ko.observable<string>("id"),
+        databaseId: "dbid",
+        id: ko.observable<string>("collid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
       } as unknown) as ViewModels.TreeNode);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      let isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [subNodeKind]);
+      let isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
 
       subNodeKind = ViewModels.CollectionTabKind.Graph;
@@ -84,10 +85,11 @@ describe("ResourceTreeAdapter", () => {
       explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
-        id: ko.observable<string>("id"),
+        databaseId: "dbid",
+        id: ko.observable<string>("collid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
       } as unknown) as ViewModels.TreeNode);
-      isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [subNodeKind]);
+      isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
     });
 
@@ -96,14 +98,15 @@ describe("ResourceTreeAdapter", () => {
       explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
-        id: ko.observable<string>("id"),
+        databaseId: "dbid",
+        id: ko.observable<string>("collid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(ViewModels.CollectionTabKind.Documents)
       } as unknown) as ViewModels.TreeNode);
       explorer.tabsManager.activeTab({
         tabKind: ViewModels.CollectionTabKind.Documents
       } as TabsBase);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("collrid", "Collection", [
+      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [
         ViewModels.CollectionTabKind.Settings
       ]);
       expect(isDataNodeSelected).toBeFalsy();

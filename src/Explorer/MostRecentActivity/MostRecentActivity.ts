@@ -15,7 +15,10 @@ export interface OpenNotebookItem {
   path: string;
 }
 
-export type OpenCollectionItem = string;
+export interface OpenCollectionItem {
+  databaseId: string;
+  collectionId: string;
+}
 
 export interface Item {
   type: Type;
@@ -121,7 +124,11 @@ export class MostRecentActivity {
   public onItemClicked(item: Item) {
     switch (item.type) {
       case Type.OpenCollection: {
-        const collection = this.container.findCollection(item.data as OpenCollectionItem);
+        const openCollectionitem = item.data as OpenCollectionItem;
+        const collection = this.container.findCollection(
+          openCollectionitem.databaseId,
+          openCollectionitem.collectionId
+        );
         if (collection) {
           collection.openTab();
         }

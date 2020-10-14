@@ -105,9 +105,7 @@ describe("SubSettingsComponent", () => {
   });
 
   it("partitionKey not visible", () => {
-    const newContainer = new Explorer({
-      notificationsClient: undefined
-    });
+    const newContainer = new Explorer();
 
     newContainer.isPreferredApiCassandra = ko.computed(() => true);
     const props = { ...baseProps, container: newContainer };

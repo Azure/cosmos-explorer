@@ -58,7 +58,6 @@ export default class ConflictsTab extends TabsBase {
   private _documentsIterator: MinimalQueryIterator;
   private _container: Explorer;
   private _acceptButtonLabel: ko.Observable<string> = ko.observable("Save");
-  protected _selfLink: string;
 
   constructor(options: ViewModels.ConflictsTabOptions) {
     super(options);
@@ -74,7 +73,6 @@ export default class ConflictsTab extends TabsBase {
     this.selectedConflictCurrent = editable.observable<any>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
     this.conflictIds = options.conflictIds;
-    this._selfLink = options.selfLink || (this.collection && this.collection.self);
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
     this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
