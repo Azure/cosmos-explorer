@@ -51,8 +51,6 @@ describe("Collection Add and Delete SQL spec", () => {
       // validate created
       // open database menu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);

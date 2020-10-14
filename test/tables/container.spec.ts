@@ -29,13 +29,11 @@ describe("Collection Add and Delete Tables spec", () => {
       // validate created
       // open database menu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       await frame.waitFor(`div[data-test="TablesDB"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
       const button = await frame.waitForSelector(`div[data-test="TablesDB"]`);
-      await button.click();
+      await button.focus();
       await button.asElement().click();
       await frame.waitFor(`div[data-test="${tableId}"]`, { visible: true });
 
