@@ -12,16 +12,14 @@ import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
+  if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+    return [{ id: "TablesDB" } as DataModels.Database];
+  }
+
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
-    if (
-      window.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Cassandra
-    ) {
+    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       databases = await readDatabasesWithARM();
     } else {
       const sdkResponse = await client()
