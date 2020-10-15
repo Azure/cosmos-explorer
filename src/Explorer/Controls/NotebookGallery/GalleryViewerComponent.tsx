@@ -1,6 +1,7 @@
 import {
   Dropdown,
   FocusZone,
+  FontWeights,
   IDropdownOption,
   IPageSpecification,
   IPivotItemProps,
@@ -11,7 +12,8 @@ import {
   Pivot,
   PivotItem,
   SearchBox,
-  Stack
+  Stack,
+  Text
 } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Logger from "../../../Common/Logger";
@@ -151,7 +153,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
       // Displaying code of conduct component on gallery load should not be the default behavior.
       if (this.state.isCodeOfConductAccepted !== false) {
-        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+        tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
       }
     }
 
@@ -197,9 +199,58 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
     return {
       tab,
-      content: this.createTabContent(data)
+      content: this.createSearchBarHeader(this.createCardsTabContent(data))
     };
   }
+
+  private createPublishedNotebooksTab = (tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo => {
+    return {
+      tab,
+      content: this.createPublishedNotebooksTabContent(data)
+    };
+  };
+
+  private createPublishedNotebooksTabContent = (data: IGalleryItem[]): JSX.Element => {
+    const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
+    const content = (
+      <Stack tokens={{ childrenGap: 10 }}>
+        {published?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            undefined,
+            "You have successfully published the following notebook(s) to public gallery and shared with other Azure Cosmos DB users.",
+            this.createCardsTabContent(published)
+          )}
+        {underReview?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            "Under Review",
+            "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
+            this.createCardsTabContent(underReview)
+          )}
+        {removed?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            "Removed",
+            "These notebooks were found to contain illegal content and has been taken down.",
+            this.createPolicyViolationsListContent(removed)
+          )}
+      </Stack>
+    );
+
+    return this.createSearchBarHeader(content);
+  };
+
+  private createPublishedNotebooksSectionContent = (
+    title: string,
+    description: string,
+    content: JSX.Element
+  ): JSX.Element => {
+    return (
+      <Stack tokens={{ childrenGap: 5 }}>
+        {title && <Text styles={{ root: { fontWeight: FontWeights.semibold } }}>{title}</Text>}
+        {description && <Text>{description}</Text>}
+        {content}
+      </Stack>
+    );
+  };
 
   private createPublicGalleryTabContent(data: IGalleryItem[], acceptedCodeOfConduct: boolean): JSX.Element {
     return acceptedCodeOfConduct === false ? (
@@ -210,11 +261,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         }}
       />
     ) : (
-      this.createTabContent(data)
+      this.createSearchBarHeader(this.createCardsTabContent(data))
     );
   }
 
-  private createTabContent(data: IGalleryItem[]): JSX.Element {
+  private createSearchBarHeader(content: JSX.Element): JSX.Element {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
         <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
@@ -233,7 +284,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
             </Stack.Item>
           )}
         </Stack>
-        {data && this.createCardsTabContent(data)}
+        <Stack.Item>{content}</Stack.Item>
       </Stack>
     );
   }
@@ -248,6 +299,25 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           onRenderCell={this.onRenderCell}
         />
       </FocusZone>
+    );
+  }
+
+  private createPolicyViolationsListContent(data: IGalleryItem[]): JSX.Element {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <th>Policy violations</th>
+          </tr>
+          {data.map(item => (
+            <tr key={`policy-violations-tr-${item.id}`}>
+              <td>{item.name}</td>
+              <td>{item.policyViolations.join(", ")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
   }
 

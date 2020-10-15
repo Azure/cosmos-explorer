@@ -3,8 +3,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
 import * as Logger from "../Common/Logger";
-import { PlatformType } from "../PlatformType";
-import { configContext } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
@@ -57,13 +56,12 @@ export function decryptJWTToken(token: string) {
 }
 
 export function displayTokenRenewalPromptForStatus(httpStatusCode: number): void {
-  const platformType = window.dataExplorerPlatform;
   const explorer = window.dataExplorer;
 
   if (
     httpStatusCode == null ||
     httpStatusCode != Constants.HttpStatusCodes.Unauthorized ||
-    platformType !== PlatformType.Hosted
+    configContext.platform !== Platform.Hosted
   ) {
     return;
   }

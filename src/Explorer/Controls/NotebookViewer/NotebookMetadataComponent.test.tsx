@@ -18,7 +18,9 @@ describe("NotebookMetadataComponent", () => {
         downloads: 0,
         favorites: 0,
         views: 0,
-        newCellId: undefined
+        newCellId: undefined,
+        policyViolations: undefined,
+        pendingScanJobIds: undefined
       },
       isFavorite: false,
       downloadButtonText: "Download",
@@ -48,7 +50,9 @@ describe("NotebookMetadataComponent", () => {
         downloads: 0,
         favorites: 0,
         views: 0,
-        newCellId: undefined
+        newCellId: undefined,
+        policyViolations: undefined,
+        pendingScanJobIds: undefined
       },
       isFavorite: true,
       downloadButtonText: "Download",
