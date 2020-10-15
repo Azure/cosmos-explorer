@@ -1,7 +1,10 @@
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { AuthType } from "../../AuthType";
 import { client } from "../CosmosClient";
+import { deleteSqlStoredProcedure } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
+import { userContext } from "../../UserContext";
 
 export async function deleteStoredProcedure(
   databaseId: string,
@@ -10,17 +13,28 @@ export async function deleteStoredProcedure(
 ): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting stored procedure ${storedProcedureId}`);
   try {
-    await client()
-      .database(databaseId)
-      .container(collectionId)
-      .scripts.storedProcedure(storedProcedureId)
-      .delete();
+    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+      await deleteSqlStoredProcedure(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
+        databaseId,
+        collectionId,
+        storedProcedureId
+      );
+    } else {
+      await client()
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.storedProcedure(storedProcedureId)
+        .delete();
+    }
   } catch (error) {
     logConsoleError(`Error while deleting stored procedure ${storedProcedureId}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "DeleteStoredProcedure", error.code);
     sendNotificationForError(error);
+    throw error;
+  } finally {
+    clearMessage();
   }
-
-  clearMessage();
-  return undefined;
 }

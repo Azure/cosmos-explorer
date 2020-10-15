@@ -13,10 +13,13 @@ export const readOffers = async (): Promise<Offer[]> => {
   const clearMessage = logConsoleProgress(`Querying offers`);
   try {
     if (configContext.platform === Platform.Portal) {
-      return sendCachedDataMessage<Offer[]>(MessageTypes.AllOffers, [
+      const offers = sendCachedDataMessage<Offer[]>(MessageTypes.AllOffers, [
         userContext.databaseAccount.id,
         ClientDefaults.portalCacheTimeoutMs
       ]);
+      clearMessage();
+
+      return offers;
     }
   } catch (error) {
     // If error getting cached Offers, continue on and read via SDK
