@@ -1,5 +1,4 @@
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { PlatformType } from "../../../PlatformType";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../../Common/Constants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -159,7 +158,7 @@ export class CommandBarComponentButtonFactory {
 
   public static createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    if (window.dataExplorerPlatform === PlatformType.Hosted) {
+    if (configContext.platform === Platform.Hosted) {
       return buttons;
     }
 

@@ -56,7 +56,6 @@
     "./src/GitHub/GitHubConnector.ts",
     "./src/Index.ts",
     "./src/NotebookWorkspaceManager/NotebookWorkspaceResourceProviderMockClients.ts",
-    "./src/PlatformType.ts",
     "./src/ReactDevTools.ts",
     "./src/ResourceProvider/IResourceProviderClient.ts",
     "./src/Shared/ExplorerSettings.ts",

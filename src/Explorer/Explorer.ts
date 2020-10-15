@@ -37,7 +37,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext, updateConfigContext } from "../ConfigContext";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -58,7 +58,6 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { PlatformType } from "../PlatformType";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { RenewAdHocAccessPane } from "./Panes/RenewAdHocAccessPane";
@@ -565,9 +564,7 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        this.getPlatformType() === PlatformType.Portal &&
-        !this.isRunningOnNationalCloud() &&
-        !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
@@ -1793,7 +1790,7 @@ export default class Explorer {
     const message: any = event.data.data;
     const inputs: ViewModels.DataExplorerInputsFrame = message.inputs;
 
-    const isRunningInPortal = window.dataExplorerPlatform == PlatformType.Portal;
+    const isRunningInPortal = configContext.platform === Platform.Portal;
     const isRunningInDevMode = process.env.NODE_ENV === "development";
     if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
       inputs.extensionEndpoint = configContext.PROXY_PATH;
@@ -2007,10 +2004,6 @@ export default class Explorer {
 
   public closeAllPanes(): void {
     this._panes.forEach((pane: ContextualPaneBase) => pane.close());
-  }
-
-  public getPlatformType(): PlatformType {
-    return window.dataExplorerPlatform;
   }
 
   public isRunningOnNationalCloud(): boolean {
