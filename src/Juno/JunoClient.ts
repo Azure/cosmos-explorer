@@ -37,6 +37,8 @@ export interface IGalleryItem {
   favorites: number;
   views: number;
   newCellId: string;
+  policyViolations: string[];
+  pendingScanJobIds: string[];
 }
 
 export interface IPublicGalleryData {

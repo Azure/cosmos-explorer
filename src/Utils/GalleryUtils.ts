@@ -323,3 +323,27 @@ export function getTabTitle(tab: GalleryTab): string {
       throw new Error(`Unknown tab ${tab}`);
   }
 }
+
+export function filterPublishedNotebooks(
+  items: IGalleryItem[]
+): {
+  published: IGalleryItem[];
+  underReview: IGalleryItem[];
+  removed: IGalleryItem[];
+} {
+  const underReview: IGalleryItem[] = [];
+  const removed: IGalleryItem[] = [];
+  const published: IGalleryItem[] = [];
+
+  items?.forEach(item => {
+    if (item.policyViolations?.length > 0) {
+      removed.push(item);
+    } else if (item.pendingScanJobIds?.length > 0) {
+      underReview.push(item);
+    } else {
+      published.push(item);
+    }
+  });
+
+  return { published, underReview, removed };
+}

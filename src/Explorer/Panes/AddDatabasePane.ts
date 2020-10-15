@@ -11,7 +11,6 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
-import { PlatformType } from "../../PlatformType";
 import { configContext, Platform } from "../../ConfigContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
@@ -183,7 +182,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       if (
         configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
-        this.container.getPlatformType() !== PlatformType.Portal
+        configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
