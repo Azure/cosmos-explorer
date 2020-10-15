@@ -14,7 +14,6 @@ import { readCollectionQuotaInfo } from "../../Common/dataAccess/readCollectionQ
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { PlatformType } from "../../PlatformType";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
@@ -36,7 +35,7 @@ import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-import { configContext } from "../../ConfigContext";
+import { configContext, Platform } from "../../ConfigContext";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
@@ -1030,9 +1029,8 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public uploadFiles = (fileList: FileList): Q.Promise<UploadDetails> => {
-    const platformType: string = PlatformType[(<any>window).dataExplorerPlatform];
     // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
-    if (platformType === PlatformType[PlatformType.Hosted] && window.authType === AuthType.AAD) {
+    if (configContext.platform === Platform.Hosted && window.authType === AuthType.AAD) {
       return this._uploadFilesCors(fileList);
     }
     const documentUploader: Worker = new UploadWorker();
