@@ -5,7 +5,7 @@ jest.setTimeout(300000);
 const RENDER_DELAY = 400;
 const LOADING_STATE_DELAY = 2500;
 
-describe("Collection Add and Delete Cassandra spec", () => {
+describe.skip("Collection Add and Delete Cassandra spec", () => {
   it("creates a collection", async () => {
     try {
       const keyspaceId = generateUniqueName("keyspaceid");

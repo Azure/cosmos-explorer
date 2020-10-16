@@ -29,21 +29,21 @@ describe("Collection Add and Delete SQL spec", () => {
       // type database id
       await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
       const dbInput = await frame.$('input[data-test="addCollection-newDatabaseId"]');
-      await dbInput.press("Backspace");
-      await dbInput.type(dbId);
+      await dbInput.focus()
+      await frame.evaluate((text) => { (document.getElementById('databaseId')).value = text; }, dbId);
 
       // type collection id
       await frame.waitFor('input[data-test="addCollection-collectionId"]');
       const input = await frame.$('input[data-test="addCollection-collectionId"]');
-      await input.press("Backspace");
-      await input.type(collectionId);
+      await input.focus();
+      await frame.evaluate((text) => { (document.getElementById('containerId')).value = text; }, collectionId);
 
       // type partition key value
       await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
       const keyInput = await frame.$('input[data-test="addCollection-partitionKeyValue"]');
-      await keyInput.press("Backspace");
-      await keyInput.type(sharedKey);
-
+      await keyInput.focus();
+      await frame.evaluate((text) => { (document.getElementById('partitionKeyValue')).value = text; }, sharedKey);
+      
       // click submit
       await frame.waitFor("#submitBtnAddCollection");
       await frame.click("#submitBtnAddCollection");
