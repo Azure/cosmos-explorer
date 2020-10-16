@@ -101,7 +101,7 @@ describe("Collection Add and Delete Mongo spec", () => {
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await frame.waitFor(LOADING_STATE_DELAY)
+      await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {
