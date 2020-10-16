@@ -150,7 +150,7 @@ jobs:
           PORTAL_RUNNER_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
           MONGO_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
           CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
-          TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLES }}
+          TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
       - uses: actions/upload-artifact@v2
         with:
           name: screenshots
