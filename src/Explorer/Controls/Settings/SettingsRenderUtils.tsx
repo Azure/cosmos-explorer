@@ -379,7 +379,7 @@ export const mongoIndexingPolicyDisclaimer: JSX.Element = (
   <Text>
     This indexing policy editor currently does not support compond indexes. if you need to add a compound index, please
     add it using a different method. Please refer to
-    <Link href="www.google.com" target="_blank">
+    <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction" target="_blank">
       {` documentation `}
     </Link>
     for best practices of managing indexing.

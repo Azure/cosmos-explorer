@@ -313,7 +313,7 @@ exports[`SettingsUtils functions render 1`] = `
   <Text>
     This indexing policy editor currently does not support compond indexes. if you need to add a compound index, please add it using a different method. Please refer to
     <StyledLinkBase
-      href="www.google.com"
+      href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction"
       target="_blank"
     >
        documentation 
