@@ -5,7 +5,10 @@ import {
   SqlStoredProcedureResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
-import { createUpdateSqlStoredProcedure } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import {
+  createUpdateSqlStoredProcedure,
+  getSqlStoredProcedure
+} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
@@ -19,6 +22,26 @@ export async function createStoredProcedure(
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
   try {
     if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+      try {
+        const getResponse = await getSqlStoredProcedure(
+          userContext.subscriptionId,
+          userContext.resourceGroup,
+          userContext.databaseAccount.name,
+          databaseId,
+          collectionId,
+          storedProcedure.id
+        );
+        if (getResponse?.properties?.resource) {
+          throw new Error(
+            `Create stored procedure failed: stored procedure with id ${storedProcedure.id} already exists`
+          );
+        }
+      } catch (error) {
+        if (error.code !== "NotFound") {
+          throw error;
+        }
+      }
+
       const createSprocParams: SqlStoredProcedureCreateUpdateParameters = {
         properties: {
           resource: storedProcedure as SqlStoredProcedureResource,

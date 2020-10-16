@@ -5,11 +5,11 @@ import {
   SqlStoredProcedureResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
@@ -60,8 +60,9 @@ export async function updateStoredProcedure(
       .replace(storedProcedure);
     return response?.resource;
   } catch (error) {
-    logConsoleError(`Error while updating stored procedure ${storedProcedure.id}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "UpdateStoredProcedure", error.code);
+    const errorMessage = error.code === "NotFound" ? `${storedProcedure.id} does not exist.` : JSON.stringify(error);
+    logConsoleError(`Error while updating stored procedure ${storedProcedure.id}:\n ${errorMessage}`);
+    logError(errorMessage, "UpdateStoredProcedure", error.code);
     sendNotificationForError(error);
     throw error;
   } finally {
