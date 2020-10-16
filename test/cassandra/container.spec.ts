@@ -5,7 +5,7 @@ jest.setTimeout(300000);
 const RENDER_DELAY = 400;
 const LOADING_STATE_DELAY = 2500;
 
-describe.skip("Collection Add and Delete Cassandra spec", () => {
+describe("Collection Add and Delete Cassandra spec", () => {
   it("creates a collection", async () => {
     try {
       const keyspaceId = generateUniqueName("keyspaceid");
@@ -79,6 +79,8 @@ describe.skip("Collection Add and Delete Cassandra spec", () => {
 
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.waitFor(LOADING_STATE_DELAY)
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${keyspaceId}"]`);
     } catch (error) {

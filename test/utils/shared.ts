@@ -3,7 +3,7 @@ import { Frame } from "puppeteer";
 
 export async function login(connectionString: string): Promise<Frame> {
   const prodUrl = "https://localhost:1234/hostedExplorer.html";
-  page.goto(prodUrl);
+  page.goto(prodUrl, { waitUntil: 'networkidle2' });
 
   // log in with connection string
   const handle = await page.waitForSelector("iframe");

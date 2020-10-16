@@ -29,21 +29,21 @@ describe("Collection Add and Delete SQL spec", () => {
       // type database id
       await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
       const dbInput = await frame.$('input[data-test="addCollection-newDatabaseId"]');
-      await dbInput.focus()
-      await frame.evaluate((text) => { (document.getElementById('databaseId')).value = text; }, dbId);
+      await dbInput.press("Backspace");
+      await dbInput.type(dbId);
 
       // type collection id
       await frame.waitFor('input[data-test="addCollection-collectionId"]');
       const input = await frame.$('input[data-test="addCollection-collectionId"]');
-      await input.focus();
-      await frame.evaluate((text) => { (document.getElementById('containerId')).value = text; }, collectionId);
+      await input.press("Backspace");
+      await input.type(collectionId);
 
       // type partition key value
       await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
       const keyInput = await frame.$('input[data-test="addCollection-partitionKeyValue"]');
-      await keyInput.focus();
-      await frame.evaluate((text) => { (document.getElementById('partitionKeyValue')).value = text; }, sharedKey);
-      
+      await keyInput.press("Backspace");
+      await keyInput.type(sharedKey);
+
       // click submit
       await frame.waitFor("#submitBtnAddCollection");
       await frame.click("#submitBtnAddCollection");
@@ -99,6 +99,8 @@ describe("Collection Add and Delete SQL spec", () => {
 
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.waitFor(LOADING_STATE_DELAY)
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {

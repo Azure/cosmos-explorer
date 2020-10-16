@@ -6,7 +6,7 @@ jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RENDER_DELAY = 1000;
 
-describe.skip("Collection Add and Delete Mongo spec", () => {
+describe("Collection Add and Delete Mongo spec", () => {
   it("creates and deletes a collection", async () => {
     try {
       const dbId = generateUniqueName("TestDatabase");
@@ -100,6 +100,8 @@ describe.skip("Collection Add and Delete Mongo spec", () => {
 
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.waitFor(LOADING_STATE_DELAY)
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
     } catch (error) {

@@ -5,7 +5,7 @@ jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RENDER_DELAY = 1000;
 
-describe.skip("Collection Add and Delete Tables spec", () => {
+describe("Collection Add and Delete Tables spec", () => {
   it("creates a collection", async () => {
     try {
       const tableId = generateUniqueName("TestTable");
@@ -35,7 +35,6 @@ describe.skip("Collection Add and Delete Tables spec", () => {
       await frame.waitFor(`div[data-test="TablesDB"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
       const button = await frame.$(`div[data-test="TablesDB"]`);
-      console.log({ button })
       await button.focus();
       await button.asElement().click();
       await frame.waitFor(`div[data-test="${tableId}"]`, { visible: true });
