@@ -1,49 +1,39 @@
 import { getDataExplorerWindow } from "./WindowUtils";
 
-const createWindow = (dataExplorerPlatform: unknown, parent: Window): Window => {
-  // TODO: Need to `any` here since we're creating a mock window object
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mockWindow: any = {};
-  if (dataExplorerPlatform !== undefined) {
-    mockWindow.dataExplorerPlatform = dataExplorerPlatform;
-  }
-  if (parent) {
-    mockWindow.parent = parent;
-  }
-  return mockWindow;
-};
+interface MockWindow {
+  parent?: MockWindow;
+  top?: MockWindow;
+}
 
 describe("WindowUtils", () => {
   describe("getDataExplorerWindow", () => {
-    it("should return current window if current window has dataExplorerPlatform property", () => {
-      const currentWindow = createWindow(0, undefined);
+    it("should return undefined if current window is at the top", () => {
+      const mockWindow: MockWindow = {};
+      mockWindow.parent = mockWindow;
 
-      expect(getDataExplorerWindow(currentWindow)).toEqual(currentWindow);
+      expect(getDataExplorerWindow(mockWindow as Window)).toEqual(undefined);
     });
 
-    it("should return current window's parent if current window's parent has dataExplorerPlatform property", () => {
-      const parentWindow = createWindow(0, undefined);
-      const currentWindow = createWindow(undefined, parentWindow);
+    it("should return current window if parent is top", () => {
+      const dataExplorerWindow: MockWindow = {};
+      const portalWindow: MockWindow = {};
+      dataExplorerWindow.parent = portalWindow;
+      dataExplorerWindow.top = portalWindow;
 
-      expect(getDataExplorerWindow(currentWindow)).toEqual(parentWindow);
+      expect(getDataExplorerWindow(dataExplorerWindow as Window)).toEqual(dataExplorerWindow);
     });
 
-    it("should return undefined if none of the windows in the hierarchy have dataExplorerPlatform property and window's parent is reference to itself", () => {
-      const parentWindow = createWindow(undefined, undefined);
+    it("should return closest window to top if in nested windows", () => {
+      const terminalWindow: MockWindow = {};
+      const dataExplorerWindow: MockWindow = {};
+      const portalWindow: MockWindow = {};
+      dataExplorerWindow.top = portalWindow;
+      dataExplorerWindow.parent = portalWindow;
+      terminalWindow.top = portalWindow;
+      terminalWindow.parent = dataExplorerWindow;
 
-      // TODO: Need to `any` here since parent is a readonly property
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (parentWindow as any).parent = parentWindow; // If a window does not have a parent, its parent property is a reference to itself.
-      const currentWindow = createWindow(undefined, parentWindow);
-
-      expect(getDataExplorerWindow(currentWindow)).toBeUndefined();
-    });
-
-    it("should return undefined if none of the windows in the hierarchy have dataExplorerPlatform property and window's parent is not defined", () => {
-      const parentWindow = createWindow(undefined, undefined);
-      const currentWindow = createWindow(undefined, parentWindow);
-
-      expect(getDataExplorerWindow(currentWindow)).toBeUndefined();
+      expect(getDataExplorerWindow(terminalWindow as Window)).toEqual(dataExplorerWindow);
+      expect(getDataExplorerWindow(dataExplorerWindow as Window)).toEqual(dataExplorerWindow);
     });
   });
 });

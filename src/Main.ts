@@ -65,7 +65,6 @@ import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer"
 import * as Emulator from "./Platform/Emulator/Main";
 import Hosted from "./Platform/Hosted/Main";
 import * as Portal from "./Platform/Portal/Main";
-import { PlatformType } from "./PlatformType";
 import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
@@ -81,8 +80,6 @@ window.authType = AuthType.AAD;
 initializeConfiguration().then(config => {
   if (config.platform === Platform.Hosted) {
     try {
-      // TODO Remove. All window variables should move to src/Config file
-      window.dataExplorerPlatform = PlatformType.Hosted;
       Hosted.initializeExplorer().then(
         (explorer: Explorer) => {
           applyExplorerBindings(explorer);
@@ -108,14 +105,10 @@ initializeConfiguration().then(config => {
       console.log(e);
     }
   } else if (config.platform === Platform.Emulator) {
-    // TODO Remove. All window variables should move to src/Config file
-    window.dataExplorerPlatform = PlatformType.Emulator;
     window.authType = AuthType.MasterKey;
     const explorer = Emulator.initializeExplorer();
     applyExplorerBindings(explorer);
   } else if (config.platform === Platform.Portal) {
-    // TODO Remove. All window variables should move to src/Config file
-    window.dataExplorerPlatform = PlatformType.Portal;
     TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.Open, {});
     const explorer = Portal.initializeExplorer();
     TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.IFrameReady, {});

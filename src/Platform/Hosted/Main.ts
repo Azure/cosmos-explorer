@@ -1,7 +1,5 @@
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
 import AuthHeadersUtil from "./Authorization";
-import HostedExplorerFactory from "./ExplorerFactory";
 import Q from "q";
 import {
   AccessInputMetadata,
@@ -211,7 +209,7 @@ export default class Main {
         Main._getAccessInputMetadata(Main._encryptedToken).then(
           () => {
             if (explorer.isConnectExplorerVisible()) {
-              HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(explorer);
+              explorer.notificationConsoleData([]);
               explorer.hideConnectExplorerForm();
             }
 
@@ -378,8 +376,7 @@ export default class Main {
   }
 
   private static _instantiateExplorer(): Explorer {
-    const hostedExplorerFactory = new HostedExplorerFactory();
-    const explorer = hostedExplorerFactory.createExplorer();
+    const explorer = new Explorer();
     // workaround to resolve cyclic refs with view
     explorer.renewExplorerShareAccess = Main.renewExplorerAccess;
     window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
@@ -483,7 +480,7 @@ export default class Main {
     Main._accessInputMetadata = Main._getAccessInputMetadataFromAccountEndpoint(properties.accountEndpoint);
 
     if (explorer.isConnectExplorerVisible()) {
-      HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(explorer);
+      explorer.notificationConsoleData([]);
       explorer.hideConnectExplorerForm();
     }
 
@@ -570,7 +567,7 @@ export default class Main {
     this._explorer.hideConnectExplorerForm();
 
     const masterKey = Main._getMasterKey(keys);
-    HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(this._explorer);
+    this._explorer.notificationConsoleData([]);
     Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
   }
 
