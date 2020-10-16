@@ -13,7 +13,6 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
@@ -200,16 +199,14 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return configContext.platform !== Platform.Emulator;
     });
 
-    this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(
-      () => this.container.getPlatformType() === PlatformType.Hosted
-    );
+    this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(() => configContext.platform === Platform.Hosted);
     this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(
-      () => this.container.getPlatformType() === PlatformType.Portal && !this.container.isRunningOnNationalCloud()
+      () => configContext.platform === Platform.Portal && !this.container.isRunningOnNationalCloud()
     );
     this.canRequestSupport = ko.pureComputed(() => {
       if (
         configContext.platform === Platform.Emulator ||
-        this.container.getPlatformType() === PlatformType.Hosted ||
+        configContext.platform === Platform.Hosted ||
         this.canThroughputExceedMaximumValue()
       ) {
         return false;
@@ -273,7 +270,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
-      if (this.container && this.container.getPlatformType() === PlatformType.Hosted) {
+      if (configContext.platform === Platform.Hosted) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
       }
 

@@ -29,7 +29,7 @@ export class InfoComponent extends React.Component<InfoComponentProps> {
         <Stack.Item>
           {this.getInfoPanel("KnowledgeArticle", "Microsoft Terms of Use", CodeOfConductEndpoints.termsOfUse)}
         </Stack.Item>
-        {this.props.onReportAbuseClick !== undefined && (
+        {this.props.onReportAbuseClick && (
           <Stack.Item>
             {this.getInfoPanel("ReportHacked", "Report Abuse", undefined, () => this.props.onReportAbuseClick())}
           </Stack.Item>

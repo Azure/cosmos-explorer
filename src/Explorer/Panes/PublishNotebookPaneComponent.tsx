@@ -296,7 +296,9 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 downloads: 0,
                 favorites: 0,
                 views: 0,
-                newCellId: undefined
+                newCellId: undefined,
+                policyViolations: undefined,
+                pendingScanJobIds: undefined
               }}
               isFavorite={false}
               showDownload={true}

@@ -140,10 +140,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   }
 
   public async submit(): Promise<void> {
-    const notificationId = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      `Publishing ${this.name} to gallery`
-    );
+    const clearPublishingMessage = NotificationConsoleUtils.logConsoleProgress(`Publishing ${this.name} to gallery`);
     this.isExecuting = true;
     this.triggerRender();
 
@@ -161,8 +158,16 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         this.content,
         this.isLinkInjectionEnabled
       );
-      if (response.data) {
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Published ${name} to gallery`);
+
+      const data = response.data;
+      if (data) {
+        if (data.pendingScanJobIds?.length > 0) {
+          NotificationConsoleUtils.logConsoleInfo(
+            `Content of ${this.name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`
+          );
+        } else {
+          NotificationConsoleUtils.logConsoleInfo(`Published ${this.name} to gallery`);
+        }
       }
     } catch (error) {
       this.formError = `Failed to publish ${this.name} to gallery`;
@@ -170,10 +175,10 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
       const message = `${this.formError}: ${this.formErrorDetail}`;
       Logger.logError(message, "PublishNotebookPaneAdapter/submit");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      NotificationConsoleUtils.logConsoleError(message);
       return;
     } finally {
-      NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
+      clearPublishingMessage();
       this.isExecuting = false;
       this.triggerRender();
     }

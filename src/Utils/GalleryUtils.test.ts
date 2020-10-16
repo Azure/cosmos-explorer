@@ -17,7 +17,9 @@ const galleryItem: IGalleryItem = {
   downloads: 0,
   favorites: 0,
   views: 0,
-  newCellId: undefined
+  newCellId: undefined,
+  policyViolations: undefined,
+  pendingScanJobIds: undefined
 };
 
 describe("GalleryUtils", () => {

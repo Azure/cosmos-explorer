@@ -1,6 +1,6 @@
 import ko from "knockout";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
-import { IPinnedRepo, JunoClient, IGalleryItem } from "./JunoClient";
+import { IPinnedRepo, JunoClient } from "./JunoClient";
 import { configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DatabaseAccount } from "../Contracts/DataModels";
@@ -30,24 +30,6 @@ const samplePinnedRepos: IPinnedRepo[] = [
         name: "name"
       }
     ]
-  }
-];
-
-const sampleGalleryItems: IGalleryItem[] = [
-  {
-    id: "id",
-    name: "name",
-    description: "description",
-    gitSha: "gitSha",
-    tags: ["tag1"],
-    author: "author",
-    thumbnailUrl: "thumbnailUrl",
-    created: "created",
-    isSample: false,
-    downloads: 0,
-    favorites: 0,
-    views: 0,
-    newCellId: undefined
   }
 ];
 

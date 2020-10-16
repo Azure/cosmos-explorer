@@ -5,7 +5,6 @@ import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as SharedConstants from "../../../../Shared/Constants";
 import Explorer from "../../../Explorer";
-import { PlatformType } from "../../../../PlatformType";
 import {
   getTextFieldStyles,
   subComponentStackProps,
@@ -78,7 +77,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMaxRUThroughputInputLimit = (): number => {
-    if (this.props.container?.getPlatformType() === PlatformType.Hosted && this.props.collection.partitionKey) {
+    if (configContext.platform === Platform.Hosted && this.props.collection.partitionKey) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
     }
 
@@ -100,8 +99,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   public canThroughputExceedMaximumValue = (): boolean => {
     const isPublicAzurePortal: boolean =
-      this.props.container.getPlatformType() === PlatformType.Portal &&
-      !this.props.container.isRunningOnNationalCloud();
+      configContext.platform === Platform.Portal && !this.props.container.isRunningOnNationalCloud();
     const hasPartitionKey = !!this.props.collection.partitionKey;
 
     return isPublicAzurePortal && hasPartitionKey;
