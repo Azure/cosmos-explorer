@@ -406,10 +406,14 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
 
   const options: RequestOptions = {};
   if (params.migrateToAutoPilot) {
-    options.initialHeaders[HttpHeaders.migrateOfferToAutopilot] = "true";
+    options.initialHeaders = {
+      [HttpHeaders.migrateOfferToAutopilot]: "true"
+    };
     delete newOffer.content.offerAutopilotSettings;
   } else if (params.migrateToManual) {
-    options.initialHeaders[HttpHeaders.migrateOfferToManualThroughput] = "true";
+    options.initialHeaders = {
+      [HttpHeaders.migrateOfferToManualThroughput]: "true"
+    };
     newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
   }
 
