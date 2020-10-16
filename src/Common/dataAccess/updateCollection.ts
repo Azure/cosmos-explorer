@@ -3,7 +3,10 @@ import { Collection } from "../../Contracts/DataModels";
 import { ContainerDefinition } from "@azure/cosmos";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import {
+  CreateUpdateOptions,
   ExtendedResourceProperties,
+  MongoDBCollectionCreateUpdateParameters,
+  MongoDBCollectionResource,
   SqlContainerCreateUpdateParameters,
   SqlContainerResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
@@ -16,7 +19,6 @@ import {
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateMongoDBCollection,
-  getDatabaseAccountFullName,
   getMongoDBCollection
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
@@ -82,15 +84,6 @@ async function updateCollectionWithARM(
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
       return updateSqlContainer(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.MongoDB:
-      return updateMongoDBCollection(
-        databaseId,
-        collectionId,
-        subscriptionId,
-        resourceGroup,
-        accountName,
-        newCollection
-      );
     case DefaultAccountExperienceType.Cassandra:
       return updateCassandraTable(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
     case DefaultAccountExperienceType.Graph:
@@ -127,30 +120,35 @@ async function updateSqlContainer(
   throw new Error(`Sql container to update does not exist. Database id: ${databaseId} Collection id: ${collectionId}`);
 }
 
-async function updateMongoDBCollection(
+export async function updateMongoDBCollectionThroughRP(
   databaseId: string,
   collectionId: string,
-  subscriptionId: string,
-  resourceGroup: string,
-  accountName: string,
-  newCollection: Collection
-): Promise<Collection> {
-  const getResponse = await getMongoDBCollection(
-    getDatabaseAccountFullName(subscriptionId, resourceGroup, accountName),
-    databaseId,
-    collectionId
-  );
+  newCollection: MongoDBCollectionResource,
+  updateOptions?: CreateUpdateOptions
+): Promise<MongoDBCollectionResource> {
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroup = userContext.resourceGroup;
+  const accountName = userContext.databaseAccount.name;
+
+  const getResponse = await getMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
-    getResponse.properties.resource = newCollection as SqlContainerResource & ExtendedResourceProperties;
+    const updateParams: MongoDBCollectionCreateUpdateParameters = {
+      properties: {
+        resource: newCollection,
+        options: updateOptions
+      }
+    };
 
     const updateResponse = await createUpdateMongoDBCollection(
-      getDatabaseAccountFullName(subscriptionId, resourceGroup, accountName),
+      subscriptionId,
+      resourceGroup,
+      accountName,
       databaseId,
       collectionId,
-      getResponse as SqlContainerCreateUpdateParameters
+      updateParams
     );
 
-    return updateResponse && (updateResponse.properties.resource as Collection);
+    return updateResponse && (updateResponse.properties.resource as MongoDBCollectionResource);
   }
 
   throw new Error(

@@ -11,7 +11,7 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { updateCollection } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
@@ -33,9 +33,9 @@ import {
   isDirty,
   AddMongoIndexProps,
   MongoIndexTypes,
-  getMongoErrorMessage,
   parseConflictResolutionMode,
-  parseConflictResolutionProcedure
+  parseConflictResolutionProcedure,
+  getMongoNotification
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
@@ -45,11 +45,8 @@ import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubCo
 import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
-import { MongoDBCollectionGetResults, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import {
-  createUpdateMongoDBCollection,
-  getMongoDBCollection
-} from "../../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readCollection";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -96,8 +93,9 @@ export interface SettingsComponentState {
   shouldDiscardIndexingPolicy: boolean;
   isIndexingPolicyDirty: boolean;
 
-  isMongoIndexingPolicyDirty: boolean;
-  indexesToDelete: number[];
+  isMongoIndexingPolicySaveable: boolean;
+  isMongoIndexingPolicyDiscardable: boolean;
+  indexesToDrop: number[];
   indexesToAdd: AddMongoIndexProps[];
 
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
@@ -124,7 +122,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private isFixedContainer: boolean;
   private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
-  private mongoDBCollectionGetResult: MongoDBCollectionGetResults;
+  private mongoDBCollectionResource: MongoDBCollectionResource;
 
   constructor(props: SettingsComponentProps) {
     super(props);
@@ -175,9 +173,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       shouldDiscardIndexingPolicy: false,
       isIndexingPolicyDirty: false,
 
-      indexesToDelete: [],
+      indexesToDrop: [],
       indexesToAdd: [],
-      isMongoIndexingPolicyDirty: false,
+      isMongoIndexingPolicySaveable: false,
+      isMongoIndexingPolicyDiscardable: false,
 
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
@@ -222,8 +221,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public loadMongoIndexes = async (): Promise<void> => {
     if (this.container.isPreferredApiMongoDB() && this.container.databaseAccount()) {
-      this.mongoDBCollectionGetResult = await getMongoDBCollection(
-        this.container.databaseAccount().id,
+      this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
       );
@@ -241,7 +239,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      (!!this.mongoDBCollectionGetResult && this.state.isMongoIndexingPolicyDirty)
+      (!!this.mongoDBCollectionResource && this.state.isMongoIndexingPolicySaveable)
     );
   };
 
@@ -251,7 +249,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      (!!this.mongoDBCollectionGetResult && this.state.isMongoIndexingPolicyDirty)
+      (!!this.mongoDBCollectionResource && this.state.isMongoIndexingPolicyDiscardable)
     );
   };
 
@@ -370,26 +368,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         });
       }
 
-      if (this.state.isMongoIndexingPolicyDirty) {
+      if (this.state.isMongoIndexingPolicySaveable) {
         const newMongoIndexes = this.getMongoIndexesToSave();
-        this.mongoDBCollectionGetResult = (await createUpdateMongoDBCollection(
-          this.container.databaseAccount().id,
+        const newMongoCollection: MongoDBCollectionResource = {
+          ...this.mongoDBCollectionResource,
+          indexes: newMongoIndexes
+        };
+        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
           this.collection.databaseId,
           this.collection.id(),
-          {
-            properties: {
-              resource: {
-                ...this.mongoDBCollectionGetResult.properties.resource,
-                indexes: newMongoIndexes
-              },
-              options: {}
-            }
-          }
-        )) as MongoDBCollectionGetResults;
+          newMongoCollection
+        );
 
         this.setState({
-          isMongoIndexingPolicyDirty: false,
-          indexesToDelete: [],
+          isMongoIndexingPolicySaveable: false,
+          indexesToDrop: [],
           indexesToAdd: []
         });
         this.forceUpdate();
@@ -552,7 +545,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       geospatialConfigType: this.state.geospatialConfigTypeBaseline,
       indexingPolicyContent: this.state.indexingPolicyContentBaseline,
       indexesToAdd: [],
-      indexesToDelete: [],
+      indexesToDrop: [],
       conflictResolutionPolicyMode: this.state.conflictResolutionPolicyModeBaseline,
       conflictResolutionPolicyPath: this.state.conflictResolutionPolicyPathBaseline,
       conflictResolutionPolicyProcedure: this.state.conflictResolutionPolicyProcedureBaseline,
@@ -567,15 +560,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isSubSettingsSaveable: false,
       isSubSettingsDiscardable: false,
       isIndexingPolicyDirty: false,
-      isMongoIndexingPolicyDirty: false,
+      isMongoIndexingPolicySaveable: false,
+      isMongoIndexingPolicyDiscardable: false,
       isConflictResolutionDirty: false
     });
   };
 
   private getMongoIndexesToSave = (): MongoIndex[] => {
     let finalIndexes: MongoIndex[] = [];
-    this.mongoDBCollectionGetResult.properties.resource.indexes.map((mongoIndex: MongoIndex, index: number) => {
-      if (!this.state.indexesToDelete.includes(index)) {
+    this.mongoDBCollectionResource?.indexes.map((mongoIndex: MongoIndex, index: number) => {
+      if (!this.state.indexesToDrop.includes(index)) {
         finalIndexes.push(mongoIndex);
       }
     });
@@ -612,13 +606,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   };
 
-  private onIndexDelete = (index: number): void =>
-    this.setState({ indexesToDelete: [...this.state.indexesToDelete, index] });
+  private onIndexDrop = (index: number): void => this.setState({ indexesToDrop: [...this.state.indexesToDrop, index] });
 
-  private onRevertIndexDelete = (index: number): void => {
-    const indexesToDelete = [...this.state.indexesToDelete];
-    indexesToDelete.splice(index, 1);
-    this.setState({ indexesToDelete: [...indexesToDelete] });
+  private onRevertIndexDrop = (index: number): void => {
+    const indexesToDrop = [...this.state.indexesToDrop];
+    indexesToDrop.splice(index, 1);
+    this.setState({ indexesToDrop: [...indexesToDrop] });
   };
 
   private onRevertIndexAdd = (index: number): void => {
@@ -629,11 +622,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onIndexAddOrChange = (index: number, description: string, type: MongoIndexTypes): void => {
     const newIndexesToAdd = this.state.indexesToAdd.slice();
-    const errorMessage = getMongoErrorMessage(description, type);
+    const notification = getMongoNotification(description, type);
     const newMongoIndexWithType: AddMongoIndexProps = {
       mongoIndex: { key: { keys: [description] } } as MongoIndex,
       type: type,
-      errorMessage: errorMessage
+      notification: notification
     };
     if (index === newIndexesToAdd.length) {
       newIndexesToAdd.push(newMongoIndexWithType);
@@ -681,8 +674,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onIndexingPolicyDirtyChange = (isIndexingPolicyDirty: boolean): void =>
     this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
 
-  private onMongoIndexingPolicyDirtyChange = (isMongoIndexingPolicyDirty: boolean): void =>
-    this.setState({ isMongoIndexingPolicyDirty: isMongoIndexingPolicyDirty });
+  private onMongoIndexingPolicySaveableChange = (isMongoIndexingPolicySaveable: boolean): void =>
+    this.setState({ isMongoIndexingPolicySaveable: isMongoIndexingPolicySaveable });
+
+  private onMongoIndexingPolicyDiscardableChange = (isMongoIndexingPolicyDiscardable: boolean): void =>
+    this.setState({ isMongoIndexingPolicyDiscardable: isMongoIndexingPolicyDiscardable });
 
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
@@ -907,14 +903,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     const mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps = {
-      mongoIndexes: this.mongoDBCollectionGetResult?.properties.resource.indexes,
-      onIndexDelete: this.onIndexDelete,
-      indexesToDelete: this.state.indexesToDelete,
-      onRevertIndexDelete: this.onRevertIndexDelete,
+      mongoIndexes: this.mongoDBCollectionResource?.indexes,
+      onIndexDrop: this.onIndexDrop,
+      indexesToDrop: this.state.indexesToDrop,
+      onRevertIndexDrop: this.onRevertIndexDrop,
       indexesToAdd: this.state.indexesToAdd,
       onRevertIndexAdd: this.onRevertIndexAdd,
       onIndexAddOrChange: this.onIndexAddOrChange,
-      onMongoIndexingPolicyDirtyChange: this.onMongoIndexingPolicyDirtyChange
+      onMongoIndexingPolicySaveableChange: this.onMongoIndexingPolicySaveableChange,
+      onMongoIndexingPolicyDiscardableChange: this.onMongoIndexingPolicyDiscardableChange
     };
 
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {

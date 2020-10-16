@@ -9,13 +9,20 @@ import {
   IDropdownOption,
   ITextField
 } from "office-ui-fabric-react";
-import { titleAndInputStackProps } from "../../SettingsRenderUtils";
-import { MongoIndexTypes } from "../../SettingsUtils";
+import {
+  addMongoIndexSubElementsTokens,
+  mongoWarningStackProps,
+  shortWidthDropDownStyles,
+  shortWidthTextFieldStyles,
+  undoButtonStyles
+} from "../../SettingsRenderUtils";
+import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType } from "../../SettingsUtils";
 
 export interface AddMongoIndexComponentProps {
+  isFirst: boolean;
   description: string;
   type: MongoIndexTypes;
-  errorMessage: string;
+  notification: MongoNotificationMessage;
   onIndexAddOrChange: (description: string, type: MongoIndexTypes) => void;
   onDiscard: () => void;
   setRef: (textField: ITextField) => void;
@@ -31,43 +38,49 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
     super(props);
   }
 
+  private onDescriptionChange = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ): void => {
+    this.props.onIndexAddOrChange(newValue, this.props.type);
+  };
+
+  private onTypeChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
+    const newType = MongoIndexTypes[option.key as keyof typeof MongoIndexTypes];
+    this.props.onIndexAddOrChange(this.props.description, newType);
+  };
+
   public render(): JSX.Element {
     return (
-      <Stack {...titleAndInputStackProps}>
-        <Stack horizontal tokens={{ childrenGap: 20 }}>
+      <Stack {...mongoWarningStackProps}>
+        <Stack horizontal tokens={addMongoIndexSubElementsTokens}>
           <TextField
-            styles={{ root: { width: 300 } }}
+            styles={shortWidthTextFieldStyles}
             componentRef={this.props.setRef}
-            label="Defintion"
+            label={this.props.isFirst ? "Defintion" : undefined}
             value={this.props.description}
             placeholder={this.props.type === MongoIndexTypes.WildCard ? "placeholder.$**" : undefined}
-            onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-              this.props.onIndexAddOrChange(newValue, this.props.type);
-            }}
+            onChange={this.onDescriptionChange}
           />
 
           <Dropdown
-            styles={{ dropdown: { width: 300 } }}
+            styles={shortWidthDropDownStyles}
             placeholder="Select an index type"
-            label="Type"
+            label={this.props.isFirst ? "Type" : undefined}
             selectedKey={this.props.type}
             options={this.indexTypes}
-            onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => {
-              const newType = MongoIndexTypes[option.key as keyof typeof MongoIndexTypes];
-              this.props.onIndexAddOrChange(this.props.description, newType);
-            }}
+            onChange={this.onTypeChange}
           />
 
           <IconButton
+            styles={this.props.isFirst ? undoButtonStyles : undefined}
             iconProps={{ iconName: "Undo" }}
             disabled={!this.props.description && !this.props.type}
             onClick={() => this.props.onDiscard()}
           />
         </Stack>
-        {this.props.errorMessage && (
-          <MessageBar className="AddMongoIndexError" messageBarType={MessageBarType.error}>
-            {this.props.errorMessage}
-          </MessageBar>
+        {this.props.notification?.type === MongoNotificationType.Error && (
+          <MessageBar messageBarType={MessageBarType.error}>{this.props.notification.message}</MessageBar>
         )}
       </Stack>
     );

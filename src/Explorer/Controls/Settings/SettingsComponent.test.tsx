@@ -8,7 +8,7 @@ import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
 import { TtlType, isDirty } from "./SettingsUtils";
 import Explorer from "../../Explorer";
-import { updateCollection } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
   updateCollection: jest.fn().mockReturnValue({
     id: undefined,
@@ -18,9 +18,16 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined
-  } as DataModels.Collection)
+  } as DataModels.Collection),
+  updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
+    id: undefined,
+    shardKey: undefined,
+    indexes: undefined,
+    analyticalStorageTtl: undefined
+  } as MongoDBCollectionResource)
 }));
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer)
 }));
@@ -189,13 +196,14 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.isOfferReplacePending()).toEqual(true);
   });
 
-  it("save calls updateCollection and updateOffer", async () => {
+  it("save calls updateCollection, updateMongoDBCollectionThroughRP and updateOffer", async () => {
     const wrapper = shallow(<SettingsComponent {...baseProps} />);
-    wrapper.setState({ isSubSettingsSaveable: true, isScaleSaveable: true });
+    wrapper.setState({ isSubSettingsSaveable: true, isScaleSaveable: true, isMongoIndexingPolicySaveable: true });
     wrapper.update();
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
+    expect(updateMongoDBCollectionThroughRP).toBeCalled();
     expect(updateOffer).toBeCalled();
   });
 

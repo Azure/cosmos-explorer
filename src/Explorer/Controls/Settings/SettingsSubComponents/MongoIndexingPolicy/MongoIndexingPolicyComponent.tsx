@@ -7,70 +7,97 @@ import {
   Text,
   SelectionMode,
   IDetailsRowProps,
-  IDetailsRowStyles,
   DetailsRow,
   Label,
   ProgressIndicator,
   ITextField,
-  Icon
+  Icon,
+  IColumn,
+  MessageBar,
+  MessageBarType
 } from "office-ui-fabric-react";
-import { accordionStackTokens, titleAndInputStackProps } from "../../SettingsRenderUtils";
+import {
+  accordionIconStyles,
+  accordionStackTokens,
+  addMongoIndexStackProps,
+  customDetailsListStyles,
+  longGrayLine,
+  mongoIndexingPolicyDisclaimer,
+  mediumWidthStackStyles,
+  subComponentStackProps,
+  transparentDetailsRowStyles
+} from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
-import { MongoIndexTypes, AddMongoIndexProps } from "../../SettingsUtils";
+import {
+  MongoIndexTypes,
+  AddMongoIndexProps,
+  MongoIndexIdField,
+  MongoNotificationType,
+  getMongoIndexType
+} from "../../SettingsUtils";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
-  onIndexDelete: (index: number) => void;
-  indexesToDelete: number[];
-  onRevertIndexDelete: (index: number) => void;
+  onIndexDrop: (index: number) => void;
+  indexesToDrop: number[];
+  onRevertIndexDrop: (index: number) => void;
   indexesToAdd: AddMongoIndexProps[];
   onRevertIndexAdd: (index: number) => void;
   onIndexAddOrChange: (index: number, description: string, type: MongoIndexTypes) => void;
-  onMongoIndexingPolicyDirtyChange: (isMongoIndexingPolicyDirty: boolean) => void;
+  onMongoIndexingPolicySaveableChange: (isMongoIndexingPolicySaveable: boolean) => void;
+  onMongoIndexingPolicyDiscardableChange: (isMongoIndexingPolicyDiscardable: boolean) => void;
 }
 
 interface MongoIndexingPolicyComponentState {
   indexesToBeAddedExpanded: boolean;
-  indexesToBeDeletedExpanded: boolean;
+  indexesToBeDroppedExpanded: boolean;
   initialIndexesExpanded: boolean;
 }
 
 interface MongoIndexDisplayProps {
   definition: JSX.Element;
   type: JSX.Element;
-  dropIndex: JSX.Element;
+  actionButton: JSX.Element;
 }
+
 export class MongoIndexingPolicyComponent extends React.Component<
   MongoIndexingPolicyComponentProps,
   MongoIndexingPolicyComponentState
 > {
   private shouldCheckComponentIsDirty = true;
   private currentTextFields: ITextField[] = [];
-  private initialIndexesColumns = [
+  private initialIndexesColumns: IColumn[] = [
     { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "dropIndex", name: "Drop Index", fieldName: "dropIndex", minWidth: 100, maxWidth: 200, isResizable: true }
+    {
+      key: "actionButton",
+      name: "Drop Index",
+      fieldName: "actionButton",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true
+    }
   ];
 
-  private indexesToBeAddedColumns = [
+  private indexesToBeAddedColumns: IColumn[] = [
     { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "dropIndex", name: "Undo", fieldName: "dropIndex", minWidth: 100, maxWidth: 200, isResizable: true }
+    { key: "actionButton", name: "Undo", fieldName: "actionButton", minWidth: 100, maxWidth: 200, isResizable: true }
   ];
 
   constructor(props: MongoIndexingPolicyComponentProps) {
     super(props);
     this.state = {
       indexesToBeAddedExpanded: true,
-      indexesToBeDeletedExpanded: true,
+      indexesToBeDroppedExpanded: true,
       initialIndexesExpanded: true
     };
   }
 
   componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
     if (this.props.indexesToAdd.length > prevProps.indexesToAdd.length) {
-      this.currentTextFields[prevProps.indexesToAdd.length].focus();
+      this.currentTextFields[prevProps.indexesToAdd.length]?.focus();
     }
     this.onComponentUpdate();
   }
@@ -84,172 +111,112 @@ export class MongoIndexingPolicyComponent extends React.Component<
       this.shouldCheckComponentIsDirty = true;
       return;
     }
-    this.props.onMongoIndexingPolicyDirtyChange(this.IsComponentDirty());
+    this.props.onMongoIndexingPolicySaveableChange(this.isMongoIndexingPolicySaveable());
+    this.props.onMongoIndexingPolicyDiscardableChange(this.isMongoIndexingPolicyDiscardable());
     this.shouldCheckComponentIsDirty = false;
   };
 
-  public IsComponentDirty = (): boolean => {
+  private toggleIndexesToBeAddedExpanded = (): void => {
+    this.setState({ indexesToBeAddedExpanded: !this.state.indexesToBeAddedExpanded });
+  };
+
+  private toggleIndexesToBeDroppedExpanded = (): void => {
+    this.setState({ indexesToBeDroppedExpanded: !this.state.indexesToBeDroppedExpanded });
+  };
+
+  private toggleInitialIndexesExpanded = (): void => {
+    this.setState({ initialIndexesExpanded: !this.state.initialIndexesExpanded });
+  };
+
+  public isMongoIndexingPolicySaveable = (): boolean => {
     const addErrorsExist = this.props.indexesToAdd.find(
-      (addMongoIndexProps: AddMongoIndexProps) => addMongoIndexProps.errorMessage
+      (addMongoIndexProps: AddMongoIndexProps) => addMongoIndexProps.notification
     );
-    return !addErrorsExist || this.props.indexesToDelete.length > 0;
+    return (this.props.indexesToAdd.length > 0 && !addErrorsExist) || this.props.indexesToDrop.length > 0;
   };
 
-  private onRenderRow(props: IDetailsRowProps): JSX.Element {
-    const rowStyles: Partial<IDetailsRowStyles> = {
-      root: {
-        selectors: {
-          ":hover": {
-            background: "transparent"
-          }
-        }
-      }
-    };
+  public isMongoIndexingPolicyDiscardable = (): boolean => {
+    return this.props.indexesToAdd.length > 0 || this.props.indexesToDrop.length > 0;
+  };
 
-    return <DetailsRow {...props} styles={rowStyles} />;
-  }
+  public getMongoWarningNotificationMessage = (): string => {
+    return this.props.indexesToAdd.find(
+      (addMongoIndexProps: AddMongoIndexProps) =>
+        addMongoIndexProps.notification?.type === MongoNotificationType.Warning
+    )?.notification.message;
+  };
 
-  public getType = (keys: string[]): MongoIndexTypes => {
-    const length = keys.length;
-    let type: MongoIndexTypes;
-    if (length === 1) {
-      if (keys[0].indexOf("$**") !== -1) {
-        type = MongoIndexTypes.WildCard;
-      } else {
-        type = MongoIndexTypes.Single;
-      }
+  private onRenderRow = (props: IDetailsRowProps): JSX.Element => {
+    return <DetailsRow {...props} styles={transparentDetailsRowStyles} />;
+  };
+
+  private getActionButton = (arrayPosition: number, isCurrentIndex: boolean): JSX.Element => {
+    return isCurrentIndex ? (
+      <IconButton
+        disabled={this.props.indexesToDrop.includes(arrayPosition)}
+        iconProps={{ iconName: "Delete" }}
+        onClick={() => {
+          this.props.onIndexDrop(arrayPosition);
+        }}
+      />
+    ) : (
+      <IconButton
+        iconProps={{ iconName: "Undo" }}
+        onClick={() => {
+          this.props.onRevertIndexDrop(arrayPosition);
+        }}
+      />
+    );
+  };
+
+  private getMongoIndexDisplayProps = (
+    mongoIndex: MongoIndex,
+    arrayPosition: number,
+    isCurrentIndex: boolean
+  ): MongoIndexDisplayProps => {
+    const keys = mongoIndex.key.keys;
+    const type = getMongoIndexType(keys);
+    const definition = keys.join();
+    let mongoIndexDisplayProps: MongoIndexDisplayProps;
+    if (type) {
+      mongoIndexDisplayProps = {
+        definition: <Text>{definition}</Text>,
+        type: <Text>{type}</Text>,
+        actionButton: definition === MongoIndexIdField ? <></> : this.getActionButton(arrayPosition, isCurrentIndex)
+      };
     }
-    return type;
+    return mongoIndexDisplayProps;
   };
 
-  public renderInitialIndexes = (): JSX.Element => {
-    const initialIndexes: MongoIndexDisplayProps[] = this.props.mongoIndexes.map(
-      (mongoIndex: MongoIndex, index: number) => {
-        const keys = mongoIndex.key.keys;
-        const type = this.getType(keys);
-        const definition = keys.join();
-        return type
-          ? ({
-              definition: <Text>{definition}</Text>,
-              type: <Text>{type}</Text>,
-              dropIndex:
-                definition === "_id" ? (
-                  <></>
-                ) : (
-                  <IconButton
-                    disabled={this.props.indexesToDelete.includes(index)}
-                    iconProps={{ iconName: "Delete" }}
-                    onClick={() => {
-                      this.props.onIndexDelete(index);
-                    }}
-                  />
-                )
-            } as MongoIndexDisplayProps)
-          : undefined;
-      }
-    );
-
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <Stack
-          horizontal
-          tokens={accordionStackTokens}
-          onClick={() => this.setState({ initialIndexesExpanded: !this.state.initialIndexesExpanded })}
-        >
-          <Icon
-            iconName={this.state.initialIndexesExpanded ? "ChevronDown" : "ChevronRight"}
-            styles={{ root: { verticalAlign: "middle" } }}
-          />
-          <Label>Existing Indexes</Label>
-        </Stack>
-        {this.state.initialIndexesExpanded && (
-          <DetailsList
-            disableSelectionZone
-            items={initialIndexes}
-            columns={this.initialIndexesColumns}
-            selectionMode={SelectionMode.none}
-            onRenderRow={this.onRenderRow}
-            layoutMode={DetailsListLayoutMode.justified}
-          />
-        )}
-      </Stack>
-    );
-  };
-
-  public renderIndexesToBeDeleted = (): JSX.Element => {
-    const indexesToBeDeleted: MongoIndexDisplayProps[] = this.props.indexesToDelete.map(
-      (deleteIndex: number, index: number) => {
-        const keys = this.props.mongoIndexes[deleteIndex].key.keys;
-        const type = this.getType(keys);
-        return {
-          definition: <Text>{keys.join(",")}</Text>,
-          type: <Text>{type}</Text>,
-          dropIndex: (
-            <IconButton
-              iconProps={{ iconName: "Undo" }}
-              onClick={() => {
-                this.props.onRevertIndexDelete(index);
-              }}
-            />
-          )
-        } as MongoIndexDisplayProps;
-      }
-    );
-
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <Stack
-          horizontal
-          tokens={accordionStackTokens}
-          onClick={() => this.setState({ indexesToBeDeletedExpanded: !this.state.indexesToBeDeletedExpanded })}
-        >
-          <Icon
-            iconName={this.state.indexesToBeDeletedExpanded ? "ChevronDown" : "ChevronRight"}
-            styles={{ root: { verticalAlign: "middle" } }}
-          />
-          <Label>Indexes to be deleted</Label>
-        </Stack>
-        {this.state.indexesToBeDeletedExpanded && indexesToBeDeleted.length > 0 && (
-          <DetailsList
-            disableSelectionZone
-            items={indexesToBeDeleted}
-            columns={this.indexesToBeAddedColumns}
-            selectionMode={SelectionMode.none}
-            onRenderRow={this.onRenderRow}
-            layoutMode={DetailsListLayoutMode.justified}
-          />
-        )}
-      </Stack>
-    );
-  };
-
-  public renderIndexesToBeAdded = (): JSX.Element => {
+  private renderIndexesToBeAdded = (): JSX.Element => {
     const indexesToAddLength = this.props.indexesToAdd.length;
     return (
-      <Stack {...titleAndInputStackProps}>
+      <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
         <Stack
+          className="collapsibleLabel"
           horizontal
           tokens={accordionStackTokens}
-          onClick={() => this.setState({ indexesToBeAddedExpanded: !this.state.indexesToBeAddedExpanded })}
+          onClick={this.toggleIndexesToBeAddedExpanded}
         >
           <Icon
             iconName={this.state.indexesToBeAddedExpanded ? "ChevronDown" : "ChevronRight"}
-            styles={{ root: { verticalAlign: "middle" } }}
+            styles={accordionIconStyles}
           />
-          <Label>Index To Be Added</Label>
+          <Label>Index(es) to be added</Label>
         </Stack>
         {this.state.indexesToBeAddedExpanded && (
           <>
             {this.props.indexesToAdd.map((mongoIndexWithType: AddMongoIndexProps, index: number) => {
               const keys = mongoIndexWithType.mongoIndex.key.keys;
               const type = mongoIndexWithType.type;
-              const errorMessage = mongoIndexWithType.errorMessage;
+              const notification = mongoIndexWithType.notification;
               return (
                 <AddMongoIndexComponent
                   key={index}
+                  isFirst={index === 0}
                   description={keys.join()}
                   type={type}
-                  errorMessage={errorMessage}
+                  notification={notification}
                   setRef={(textField: ITextField) => (this.currentTextFields[index] = textField)}
                   onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
                     this.props.onIndexAddOrChange(index, description, type)
@@ -263,9 +230,10 @@ export class MongoIndexingPolicyComponent extends React.Component<
             })}
             <AddMongoIndexComponent
               key={indexesToAddLength}
+              isFirst={indexesToAddLength === 0}
               description={undefined}
               type={undefined}
-              errorMessage={undefined}
+              notification={undefined}
               setRef={(textField: ITextField) => (this.currentTextFields[indexesToAddLength] = textField)}
               onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
                 this.props.onIndexAddOrChange(indexesToAddLength, description, type)
@@ -280,11 +248,102 @@ export class MongoIndexingPolicyComponent extends React.Component<
     );
   };
 
+  private renderInitialIndexes = (): JSX.Element => {
+    const initialIndexes: MongoIndexDisplayProps[] = this.props.mongoIndexes.map(
+      (mongoIndex: MongoIndex, arrayPosition: number) => this.getMongoIndexDisplayProps(mongoIndex, arrayPosition, true)
+    );
+
+    return (
+      <Stack styles={mediumWidthStackStyles}>
+        <Stack
+          className="collapsibleLabel"
+          horizontal
+          tokens={accordionStackTokens}
+          onClick={this.toggleInitialIndexesExpanded}
+        >
+          <Icon
+            iconName={this.state.initialIndexesExpanded ? "ChevronDown" : "ChevronRight"}
+            styles={accordionIconStyles}
+          />
+          <Label>Current index(es)</Label>
+        </Stack>
+        {this.state.initialIndexesExpanded && (
+          <DetailsList
+            styles={customDetailsListStyles}
+            disableSelectionZone
+            items={initialIndexes}
+            columns={this.initialIndexesColumns}
+            selectionMode={SelectionMode.none}
+            onRenderRow={this.onRenderRow}
+            layoutMode={DetailsListLayoutMode.justified}
+          />
+        )}
+      </Stack>
+    );
+  };
+
+  private renderIndexesToBeDropped = (): JSX.Element => {
+    const indexesToBeDropped: MongoIndexDisplayProps[] = this.props.indexesToDrop.map(
+      (dropIndex: number, arrayPosition: number) =>
+        this.getMongoIndexDisplayProps(this.props.mongoIndexes[dropIndex], arrayPosition, false)
+    );
+
+    return (
+      <Stack styles={mediumWidthStackStyles}>
+        <Stack
+          className="collapsibleLabel"
+          horizontal
+          tokens={accordionStackTokens}
+          onClick={this.toggleIndexesToBeDroppedExpanded}
+        >
+          <Icon
+            iconName={this.state.indexesToBeDroppedExpanded ? "ChevronDown" : "ChevronRight"}
+            styles={accordionIconStyles}
+          />
+          <Label>Index(es) to be dropped</Label>
+        </Stack>
+        {this.state.indexesToBeDroppedExpanded && indexesToBeDropped.length > 0 && (
+          <DetailsList
+            styles={customDetailsListStyles}
+            disableSelectionZone
+            items={indexesToBeDropped}
+            columns={this.indexesToBeAddedColumns}
+            selectionMode={SelectionMode.none}
+            onRenderRow={this.onRenderRow}
+            layoutMode={DetailsListLayoutMode.justified}
+          />
+        )}
+      </Stack>
+    );
+  };
+
+  private renderWarningMessage = (): JSX.Element => {
+    let warningMessage: string;
+    if (this.getMongoWarningNotificationMessage()) {
+      warningMessage = this.getMongoWarningNotificationMessage();
+    } else if (this.isMongoIndexingPolicySaveable()) {
+      warningMessage =
+        "You have not saved the latest changes made to your indexing policy. Please click save to confirm the changes.";
+    }
+
+    return (
+      warningMessage && (
+        <MessageBar messageBarType={MessageBarType.warning}>
+          <Text>{warningMessage}</Text>
+        </MessageBar>
+      )
+    );
+  };
+
   public render(): JSX.Element {
     return this.props.mongoIndexes ? (
-      <Stack {...titleAndInputStackProps}>
+      <Stack {...subComponentStackProps}>
+        {this.renderWarningMessage()}
+        {mongoIndexingPolicyDisclaimer}
         {this.renderIndexesToBeAdded()}
-        {this.renderIndexesToBeDeleted()}
+        {longGrayLine}
+        {this.renderIndexesToBeDropped()}
+        {longGrayLine}
         {this.renderInitialIndexes()}
       </Stack>
     ) : (

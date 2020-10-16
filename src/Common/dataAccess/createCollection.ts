@@ -16,7 +16,6 @@ import {
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateMongoDBCollection,
-  getDatabaseAccountFullName,
   getMongoDBCollection
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
@@ -144,11 +143,9 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
   const mongoWildcardIndexOnAllFields: ARMTypes.MongoIndex[] = [{ key: { keys: ["$**"] } }, { key: { keys: ["_id"] } }];
   try {
     const getResponse = await getMongoDBCollection(
-      getDatabaseAccountFullName(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name
-      ),
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
       params.databaseId,
       params.collectionId
     );
@@ -184,7 +181,9 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
   };
 
   const createResponse = await createUpdateMongoDBCollection(
-    getDatabaseAccountFullName(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
+    userContext.subscriptionId,
+    userContext.resourceGroup,
+    userContext.databaseAccount.name,
     params.databaseId,
     params.collectionId,
     rpPayload

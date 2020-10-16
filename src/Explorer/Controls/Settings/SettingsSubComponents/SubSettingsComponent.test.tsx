@@ -6,7 +6,7 @@ import { TtlType, GeospatialConfigType, ChangeFeedPolicyState, TtlOnNoDefault, T
 import ko from "knockout";
 import Explorer from "../../../Explorer";
 
-describe("SubSettingsComponent", () => {
+describe("SubSeettingsComponent", () => {
   container.isPreferredApiDocumentDB = ko.computed(() => true);
 
   const baseProps: SubSettingsComponentProps = {

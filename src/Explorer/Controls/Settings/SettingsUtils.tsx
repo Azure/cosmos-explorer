@@ -12,6 +12,7 @@ export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
+export const MongoIndexIdField = "_id";
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
@@ -37,7 +38,7 @@ export enum MongoIndexTypes {
 export interface AddMongoIndexProps {
   mongoIndex: MongoIndex;
   type: MongoIndexTypes;
-  errorMessage: string;
+  notification: MongoNotificationMessage;
 }
 
 export enum SettingsV2TabTypes {
@@ -50,6 +51,16 @@ export enum SettingsV2TabTypes {
 export interface IsComponentDirtyResult {
   isSaveable: boolean;
   isDiscardable: boolean;
+}
+
+export enum MongoNotificationType {
+  Warning = "Warning",
+  Error = "Error"
+}
+
+export interface MongoNotificationMessage {
+  type: MongoNotificationType;
+  message: string;
 }
 
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
@@ -193,13 +204,40 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
   }
 };
 
-export const getMongoErrorMessage = (description: string, type: MongoIndexTypes): string => {
-  let errorMessage: string;
-  if (type && (!description || description.trim().length === 0)) {
-    errorMessage = "Please enter an index description.";
-  } else if (type === MongoIndexTypes.WildCard && description?.indexOf("$**") === -1) {
-    errorMessage = "Wild Card path is not present in the index description.";
+export const getMongoNotification = (description: string, type: MongoIndexTypes): MongoNotificationMessage => {
+  if (description && !type) {
+    return {
+      type: MongoNotificationType.Warning,
+      message: "Please select a type for each index."
+    };
   }
 
-  return errorMessage;
+  if (type && (!description || description.trim().length === 0)) {
+    return {
+      type: MongoNotificationType.Error,
+      message: "Please enter an index description."
+    };
+  } else if (type === MongoIndexTypes.WildCard && description?.indexOf("$**") === -1) {
+    return {
+      type: MongoNotificationType.Error,
+      message: "Wild Card path is not present in the index description."
+    };
+  }
+
+  return undefined;
+};
+
+export const getMongoIndexType = (keys: string[]): MongoIndexTypes => {
+  const length = keys.length;
+  let type: MongoIndexTypes;
+
+  if (length === 1) {
+    if (keys[0].indexOf("$**") !== -1) {
+      type = MongoIndexTypes.WildCard;
+    } else {
+      type = MongoIndexTypes.Single;
+    }
+  }
+
+  return type;
 };

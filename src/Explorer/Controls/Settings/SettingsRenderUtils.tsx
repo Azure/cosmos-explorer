@@ -21,7 +21,13 @@ import {
   Link,
   Text,
   IMessageBarStyles,
-  ITextStyles
+  ITextStyles,
+  IDetailsRowStyles,
+  IStackStyles,
+  IIconStyles,
+  IDetailsListStyles,
+  IDropdownStyles,
+  IButtonStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -45,7 +51,15 @@ export const titleAndInputStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 5 }
 };
 
+export const mongoWarningStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 5 }
+};
+
 export const checkBoxAndInputStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 10 }
+};
+
+export const addMongoIndexStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 }
 };
 
@@ -54,7 +68,41 @@ export const toolTipLabelStackTokens: IStackTokens = {
 };
 
 export const accordionStackTokens: IStackTokens = {
-  childrenGap: 5
+  childrenGap: 10
+};
+
+export const addMongoIndexSubElementsTokens: IStackTokens = {
+  childrenGap: 20
+};
+
+export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
+
+export const undoButtonStyles: IButtonStyles = { root: { marginTop: 30 } };
+
+export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
+
+export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { width: 300 } };
+
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { width: 300 } };
+
+export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
+  root: {
+    selectors: {
+      ":hover": {
+        background: "transparent"
+      }
+    }
+  }
+};
+
+export const customDetailsListStyles: Partial<IDetailsListStyles> = {
+  root: {
+    selectors: {
+      ".ms-FocusZone": {
+        paddingTop: 0
+      }
+    }
+  }
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
@@ -156,6 +204,16 @@ export const getEstimatedSpendElement = (
     </Text>
   );
 };
+
+export const longGrayLine: JSX.Element = (
+  <div
+    style={{
+      borderBottomWidth: 1,
+      borderBottomStyle: "solid",
+      borderBottomColor: StyleConstants.BaseMedium
+    }}
+  ></div>
+);
 
 export const manualToAutoscaleDisclaimerElement: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="manualToAutoscaleDisclaimerElement">
@@ -314,6 +372,17 @@ export const changeFeedPolicyToolTip: JSX.Element = (
     Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default.
     To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes.
     Reads are unaffected.
+  </Text>
+);
+
+export const mongoIndexingPolicyDisclaimer: JSX.Element = (
+  <Text>
+    This indexing policy editor currently does not support compond indexes. if you need to add a compound index, please
+    add it using a different method. Please refer to
+    <Link href="www.google.com" target="_blank">
+      {` documentation `}
+    </Link>
+    for best practices of managing indexing.
   </Text>
 );
 

@@ -15,7 +15,9 @@ import {
   getToolTipContainer,
   conflictResolutionCustomToolTip,
   changeFeedPolicyToolTip,
-  conflictResolutionLwwTooltip
+  conflictResolutionLwwTooltip,
+  mongoIndexingPolicyDisclaimer,
+  longGrayLine
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
@@ -45,6 +47,9 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {conflictResolutionLwwTooltip}
         {conflictResolutionCustomToolTip}
         {changeFeedPolicyToolTip}
+
+        {mongoIndexingPolicyDisclaimer}
+        {longGrayLine}
       </>
     );
   }

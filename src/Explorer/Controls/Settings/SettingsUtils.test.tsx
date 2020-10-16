@@ -2,10 +2,14 @@ import { collection, container } from "./TestUtils";
 import {
   getMaxRUs,
   getMinRUs,
+  getMongoIndexType,
+  getMongoNotification,
   getSanitizedInputValue,
   hasDatabaseSharedThroughput,
   isDirty,
   isDirtyTypes,
+  MongoIndexTypes,
+  MongoNotificationType,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure
 } from "./SettingsUtils";
@@ -93,5 +97,34 @@ describe("SettingsUtils", () => {
     expect(getSanitizedInputValue("", max)).toEqual(0);
     expect(getSanitizedInputValue("999", max)).toEqual(99);
     expect(getSanitizedInputValue("10", max)).toEqual(10);
+  });
+
+  it("getMongoIndexType", () => {
+    expect(getMongoIndexType(["Single"])).toEqual(MongoIndexTypes.Single);
+    expect(getMongoIndexType(["WildCard.$**"])).toEqual(MongoIndexTypes.WildCard);
+    expect(getMongoIndexType(["Key1", "Key2"])).toEqual(undefined);
+  });
+
+  it("getMongoNotification", () => {
+    const singleIndexDescription = "sampleKey";
+    const wildcardIndexDescription = "sampleKey.$**";
+
+    let notification = getMongoNotification(singleIndexDescription, undefined);
+    expect(notification.message).toEqual("Please select a type for each index.");
+    expect(notification.type).toEqual(MongoNotificationType.Warning);
+
+    notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.Single);
+    expect(notification).toEqual(undefined);
+
+    notification = getMongoNotification(wildcardIndexDescription, MongoIndexTypes.WildCard);
+    expect(notification).toEqual(undefined);
+
+    notification = getMongoNotification("", MongoIndexTypes.Single);
+    expect(notification.message).toEqual("Please enter an index description.");
+    expect(notification.type).toEqual(MongoNotificationType.Error);
+
+    notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.WildCard);
+    expect(notification.message).toEqual("Wild Card path is not present in the index description.");
+    expect(notification.type).toEqual(MongoNotificationType.Error);
   });
 });
