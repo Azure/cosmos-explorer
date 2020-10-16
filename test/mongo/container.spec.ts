@@ -107,7 +107,7 @@ describe("Collection Add and Delete Mongo spec", () => {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `Test Failed ${testName}.png` });
+      await page.screenshot({ path: `screenshots/failed-${testName}.jpg` });
       throw error;
     }
   });

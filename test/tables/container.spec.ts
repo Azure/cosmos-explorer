@@ -64,7 +64,7 @@ describe("Collection Add and Delete Tables spec", () => {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `Test Failed ${testName}.jpg` });
+      await page.screenshot({ path: `screenshots/failed-${testName}.jpg` });
       throw error;
     }
   });

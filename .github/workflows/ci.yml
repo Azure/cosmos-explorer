@@ -151,6 +151,10 @@ jobs:
           MONGO_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
           CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
           TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLES }}
+        - uses: actions/upload-artifact@v2
+          with:
+            name: screenshots
+            path: screenshots/
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
