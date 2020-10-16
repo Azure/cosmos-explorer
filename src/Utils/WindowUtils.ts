@@ -1,5 +1,5 @@
 export const getDataExplorerWindow = (currentWindow: Window): Window | undefined => {
-  // Data explorer is always loaded in an iframe, so traverse the parents until you hit the top and return the first child window.
+  // Data explorer is always loaded in an iframe, so traverse the parents until we hit the top and return the first child window.
   try {
     while (currentWindow) {
       if (currentWindow.parent === currentWindow) {
