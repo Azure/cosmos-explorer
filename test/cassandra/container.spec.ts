@@ -86,7 +86,7 @@ describe("Collection Add and Delete Cassandra spec", () => {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `screenshots/failed-${testName}.jpg` });
+      await page.screenshot({ path: `failed-${testName}.jpg` });
       throw error;
     }
   });

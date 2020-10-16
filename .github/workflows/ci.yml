@@ -154,7 +154,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: screenshots
-          path: screenshots/
+          path: failed-*
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
