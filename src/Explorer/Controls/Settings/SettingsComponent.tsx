@@ -473,8 +473,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         Action.SettingsV2Updated,
         {
           databaseAccountName: this.container.databaseAccount()?.name,
-          databaseName: this.collection && this.collection.databaseId,
-          collectionName: this.collection && this.collection.id(),
+          databaseName: this.collection?.databaseId,
+          collectionName: this.collection?.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
