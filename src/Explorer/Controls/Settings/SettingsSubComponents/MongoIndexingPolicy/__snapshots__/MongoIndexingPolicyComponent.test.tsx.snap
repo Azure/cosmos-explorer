@@ -9,7 +9,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   }
 >
   <Text>
-    This indexing policy editor currently does not support compond indexes. if you need to add a compound index, please add it using a different method. Please refer to
+    This indexing policy editor currently does not support compound indexes. if you need to add a compound index, please add it using a different method. Please refer to
     <StyledLinkBase
       href="www.google.com"
       target="_blank"

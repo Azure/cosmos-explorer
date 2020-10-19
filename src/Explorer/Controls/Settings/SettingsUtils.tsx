@@ -13,6 +13,7 @@ export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
 export const MongoIndexIdField = "_id";
+export const MongoWildcardPlaceHolder = "properties.$**"
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
@@ -220,7 +221,7 @@ export const getMongoNotification = (description: string, type: MongoIndexTypes)
   } else if (type === MongoIndexTypes.WildCard && description?.indexOf("$**") === -1) {
     return {
       type: MongoNotificationType.Error,
-      message: "Wild Card path is not present in the index description."
+      message: "Wild Card path is not present in the index description. Use a pattern like " + MongoWildcardPlaceHolder
     };
   }
 

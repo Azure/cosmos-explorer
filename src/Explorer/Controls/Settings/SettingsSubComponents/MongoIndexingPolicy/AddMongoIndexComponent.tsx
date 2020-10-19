@@ -13,13 +13,11 @@ import {
   addMongoIndexSubElementsTokens,
   mongoWarningStackProps,
   shortWidthDropDownStyles,
-  shortWidthTextFieldStyles,
-  undoButtonStyles
+  shortWidthTextFieldStyles
 } from "../../SettingsRenderUtils";
-import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType } from "../../SettingsUtils";
+import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType, MongoWildcardPlaceHolder } from "../../SettingsUtils";
 
 export interface AddMongoIndexComponentProps {
-  isFirst: boolean;
   description: string;
   type: MongoIndexTypes;
   notification: MongoNotificationMessage;
@@ -57,23 +55,20 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
           <TextField
             styles={shortWidthTextFieldStyles}
             componentRef={this.props.setRef}
-            label={this.props.isFirst ? "Defintion" : undefined}
             value={this.props.description}
-            placeholder={this.props.type === MongoIndexTypes.WildCard ? "placeholder.$**" : undefined}
+            placeholder={this.props.type === MongoIndexTypes.WildCard ? MongoWildcardPlaceHolder : undefined}
             onChange={this.onDescriptionChange}
           />
 
           <Dropdown
             styles={shortWidthDropDownStyles}
             placeholder="Select an index type"
-            label={this.props.isFirst ? "Type" : undefined}
             selectedKey={this.props.type}
             options={this.indexTypes}
             onChange={this.onTypeChange}
           />
 
           <IconButton
-            styles={this.props.isFirst ? undoButtonStyles : undefined}
             iconProps={{ iconName: "Undo" }}
             disabled={!this.props.description && !this.props.type}
             onClick={() => this.props.onDiscard()}

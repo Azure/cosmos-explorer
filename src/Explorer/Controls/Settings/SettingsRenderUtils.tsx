@@ -33,7 +33,7 @@ import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
 const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
 
-export const spendAckCheckBoxStyle: ICheckboxStyles = {
+export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
     margin: 0,
     padding: "2 0 2 0"
@@ -52,6 +52,10 @@ export const titleAndInputStackProps: Partial<IStackProps> = {
 };
 
 export const mongoWarningStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 5 }
+};
+
+export const createAndAddMongoIndexStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 5 }
 };
 
@@ -80,6 +84,8 @@ export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
 export const undoButtonStyles: IButtonStyles = { root: { marginTop: 30 } };
 
 export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
+
+export const horizontalStackStyles: IStackStyles = { root: { alignItems: "center" } };
 
 export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { width: 300 } };
 
@@ -377,9 +383,9 @@ export const changeFeedPolicyToolTip: JSX.Element = (
 
 export const mongoIndexingPolicyDisclaimer: JSX.Element = (
   <Text>
-    This indexing policy editor currently does not support compond indexes. if you need to add a compound index, please
+    This indexing policy editor currently does not support compound indexes. if you need to add a compound index, please
     add it using a different method. Please refer to
-    <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction" target="_blank">
+    <Link href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#compound-indexes-mongodb-server-version-36" target="_blank">
       {` documentation `}
     </Link>
     for best practices of managing indexing.

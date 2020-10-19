@@ -3,7 +3,7 @@ import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
 import {
   getTextFieldStyles,
   getToolTipContainer,
-  spendAckCheckBoxStyle,
+  noLeftPaddingCheckBoxStyle,
   titleAndInputStackProps,
   checkBoxAndInputStackProps,
   getChoiceGroupStyles,
@@ -278,7 +278,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       {this.props.spendAckVisible && (
         <Checkbox
           id="spendAckCheckBox"
-          styles={spendAckCheckBoxStyle}
+          styles={noLeftPaddingCheckBoxStyle}
           label={this.props.spendAckText}
           checked={this.state.spendAckChecked}
           onChange={this.onSpendAckChecked}
@@ -316,7 +316,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       {this.props.spendAckVisible && (
         <Checkbox
           id="spendAckCheckBox"
-          styles={spendAckCheckBoxStyle}
+          styles={noLeftPaddingCheckBoxStyle}
           label={this.props.spendAckText}
           checked={this.state.spendAckChecked}
           onChange={this.onSpendAckChecked}

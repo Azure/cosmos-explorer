@@ -46,7 +46,7 @@ import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readCollection";
+import { getMongoCollectionIndexTransformationProgress, readCollection, readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readCollection";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -95,8 +95,10 @@ export interface SettingsComponentState {
 
   isMongoIndexingPolicySaveable: boolean;
   isMongoIndexingPolicyDiscardable: boolean;
+  currentMongoIndexes: MongoIndex[];
   indexesToDrop: number[];
   indexesToAdd: AddMongoIndexProps[];
+  indexTransformationProgress: number;
 
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
@@ -175,8 +177,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       indexesToDrop: [],
       indexesToAdd: [],
+      currentMongoIndexes: undefined,
       isMongoIndexingPolicySaveable: false,
       isMongoIndexingPolicyDiscardable: false,
+      indexTransformationProgress: undefined,
 
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
@@ -220,12 +224,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   public loadMongoIndexes = async (): Promise<void> => {
-    if (this.container.isPreferredApiMongoDB() && this.container.databaseAccount()) {
+    if (this.container.isMongoIndexEditorEnabled() && this.container.isPreferredApiMongoDB() && this.container.databaseAccount()) {
+      const progress = await getMongoCollectionIndexTransformationProgress(this.collection.databaseId, this.collection.id())
+      
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
       );
-      this.forceUpdate();
+
+      this.setState({
+        indexTransformationProgress: progress,
+        currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+      })
     }
   };
 
@@ -239,7 +249,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      (!!this.mongoDBCollectionResource && this.state.isMongoIndexingPolicySaveable)
+      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable)
     );
   };
 
@@ -249,7 +259,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      (!!this.mongoDBCollectionResource && this.state.isMongoIndexingPolicyDiscardable)
+      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable)
     );
   };
 
@@ -380,12 +390,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           newMongoCollection
         );
 
+        const progress = await getMongoCollectionIndexTransformationProgress(this.collection.databaseId, this.collection.id())
         this.setState({
           isMongoIndexingPolicySaveable: false,
           indexesToDrop: [],
-          indexesToAdd: []
+          indexesToAdd: [],
+          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes],
+          indexTransformationProgress: progress
         });
-        this.forceUpdate();
       }
 
       if (this.state.isScaleSaveable) {
@@ -525,7 +537,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           databaseAccountName: this.container.databaseAccount()?.name,
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
-          tabTitle: this.props.settingsTab.tabTitle()
+          tabTitle: this.props.settingsTab.tabTitle(),
+          error: reason
         },
         startKey
       );
@@ -568,7 +581,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private getMongoIndexesToSave = (): MongoIndex[] => {
     let finalIndexes: MongoIndex[] = [];
-    this.mongoDBCollectionResource?.indexes.map((mongoIndex: MongoIndex, index: number) => {
+    this.state.currentMongoIndexes.map((mongoIndex: MongoIndex, index: number) => {
       if (!this.state.indexesToDrop.includes(index)) {
         finalIndexes.push(mongoIndex);
       }
@@ -611,7 +624,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onRevertIndexDrop = (index: number): void => {
     const indexesToDrop = [...this.state.indexesToDrop];
     indexesToDrop.splice(index, 1);
-    this.setState({ indexesToDrop: [...indexesToDrop] });
+    this.setState({ indexesToDrop: [...indexesToDrop] })
   };
 
   private onRevertIndexAdd = (index: number): void => {
@@ -903,13 +916,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     const mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps = {
-      mongoIndexes: this.mongoDBCollectionResource?.indexes,
+      mongoIndexes: this.state.currentMongoIndexes,
       onIndexDrop: this.onIndexDrop,
       indexesToDrop: this.state.indexesToDrop,
       onRevertIndexDrop: this.onRevertIndexDrop,
       indexesToAdd: this.state.indexesToAdd,
       onRevertIndexAdd: this.onRevertIndexAdd,
       onIndexAddOrChange: this.onIndexAddOrChange,
+      indexTransformationProgress: this.state.indexTransformationProgress,
       onMongoIndexingPolicySaveableChange: this.onMongoIndexingPolicySaveableChange,
       onMongoIndexingPolicyDiscardableChange: this.onMongoIndexingPolicyDiscardableChange
     };
@@ -947,7 +961,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
       });
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (this.container.isMongoIndexEditorEnabled() && this.container.isPreferredApiMongoDB()) {
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />

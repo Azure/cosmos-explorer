@@ -9,12 +9,15 @@ import {
   IDetailsRowProps,
   DetailsRow,
   Label,
-  ProgressIndicator,
   ITextField,
   Icon,
   IColumn,
   MessageBar,
-  MessageBarType
+  MessageBarType,
+  Spinner,
+  SpinnerSize,
+  Checkbox,
+  ITextStyles
 } from "office-ui-fabric-react";
 import {
   accordionIconStyles,
@@ -25,7 +28,8 @@ import {
   mongoIndexingPolicyDisclaimer,
   mediumWidthStackStyles,
   subComponentStackProps,
-  transparentDetailsRowStyles
+  transparentDetailsRowStyles,
+  createAndAddMongoIndexStackProps,
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -45,6 +49,7 @@ export interface MongoIndexingPolicyComponentProps {
   indexesToAdd: AddMongoIndexProps[];
   onRevertIndexAdd: (index: number) => void;
   onIndexAddOrChange: (index: number, description: string, type: MongoIndexTypes) => void;
+  indexTransformationProgress: number,
   onMongoIndexingPolicySaveableChange: (isMongoIndexingPolicySaveable: boolean) => void;
   onMongoIndexingPolicyDiscardableChange: (isMongoIndexingPolicyDiscardable: boolean) => void;
 }
@@ -54,6 +59,7 @@ interface MongoIndexingPolicyComponentState {
   indexesToBeDroppedExpanded: boolean;
   initialIndexesExpanded: boolean;
 }
+
 
 interface MongoIndexDisplayProps {
   definition: JSX.Element;
@@ -80,10 +86,10 @@ export class MongoIndexingPolicyComponent extends React.Component<
     }
   ];
 
-  private indexesToBeAddedColumns: IColumn[] = [
+  private indexesToBeDroppedColumns: IColumn[] = [
     { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "actionButton", name: "Undo", fieldName: "actionButton", minWidth: 100, maxWidth: 200, isResizable: true }
+    { key: "actionButton", name: "Add index back", fieldName: "actionButton", minWidth: 100, maxWidth: 200, isResizable: true }
   ];
 
   constructor(props: MongoIndexingPolicyComponentProps) {
@@ -161,7 +167,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
       />
     ) : (
       <IconButton
-        iconProps={{ iconName: "Undo" }}
+        iconProps={{ iconName: "Add" }}
         onClick={() => {
           this.props.onRevertIndexDrop(arrayPosition);
         }}
@@ -192,20 +198,6 @@ export class MongoIndexingPolicyComponent extends React.Component<
     const indexesToAddLength = this.props.indexesToAdd.length;
     return (
       <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
-        <Stack
-          className="collapsibleLabel"
-          horizontal
-          tokens={accordionStackTokens}
-          onClick={this.toggleIndexesToBeAddedExpanded}
-        >
-          <Icon
-            iconName={this.state.indexesToBeAddedExpanded ? "ChevronDown" : "ChevronRight"}
-            styles={accordionIconStyles}
-          />
-          <Label>Index(es) to be added</Label>
-        </Stack>
-        {this.state.indexesToBeAddedExpanded && (
-          <>
             {this.props.indexesToAdd.map((mongoIndexWithType: AddMongoIndexProps, index: number) => {
               const keys = mongoIndexWithType.mongoIndex.key.keys;
               const type = mongoIndexWithType.type;
@@ -213,7 +205,6 @@ export class MongoIndexingPolicyComponent extends React.Component<
               return (
                 <AddMongoIndexComponent
                   key={index}
-                  isFirst={index === 0}
                   description={keys.join()}
                   type={type}
                   notification={notification}
@@ -227,10 +218,10 @@ export class MongoIndexingPolicyComponent extends React.Component<
                   }}
                 />
               );
-            })}
+            })
+            }
             <AddMongoIndexComponent
               key={indexesToAddLength}
-              isFirst={indexesToAddLength === 0}
               description={undefined}
               type={undefined}
               notification={undefined}
@@ -242,8 +233,6 @@ export class MongoIndexingPolicyComponent extends React.Component<
                 this.props.onRevertIndexAdd(indexesToAddLength);
               }}
             />
-          </>
-        )}
       </Stack>
     );
   };
@@ -251,10 +240,11 @@ export class MongoIndexingPolicyComponent extends React.Component<
   private renderInitialIndexes = (): JSX.Element => {
     const initialIndexes: MongoIndexDisplayProps[] = this.props.mongoIndexes.map(
       (mongoIndex: MongoIndex, arrayPosition: number) => this.getMongoIndexDisplayProps(mongoIndex, arrayPosition, true)
-    );
+    )
+    .filter((value: MongoIndexDisplayProps, index: number) => !!value && this.props.indexesToDrop.indexOf(index) !== -1)
 
     return (
-      <Stack styles={mediumWidthStackStyles}>
+      <Stack {...createAndAddMongoIndexStackProps} styles={mediumWidthStackStyles}>
         <Stack
           className="collapsibleLabel"
           horizontal
@@ -268,6 +258,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
           <Label>Current index(es)</Label>
         </Stack>
         {this.state.initialIndexesExpanded && (
+          <>
           <DetailsList
             styles={customDetailsListStyles}
             disableSelectionZone
@@ -277,6 +268,8 @@ export class MongoIndexingPolicyComponent extends React.Component<
             onRenderRow={this.onRenderRow}
             layoutMode={DetailsListLayoutMode.justified}
           />
+          {this.renderIndexesToBeAdded()}
+          </>
         )}
       </Stack>
     );
@@ -307,7 +300,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
             styles={customDetailsListStyles}
             disableSelectionZone
             items={indexesToBeDropped}
-            columns={this.indexesToBeAddedColumns}
+            columns={this.indexesToBeDroppedColumns}
             selectionMode={SelectionMode.none}
             onRenderRow={this.onRenderRow}
             layoutMode={DetailsListLayoutMode.justified}
@@ -327,11 +320,19 @@ export class MongoIndexingPolicyComponent extends React.Component<
     }
 
     return (
-      warningMessage && (
+      <>
+      {this.props.indexTransformationProgress !== undefined && this.props.indexTransformationProgress!== 100 &&
+        <MessageBar messageBarType={MessageBarType.warning}>
+          <Text>An index Transformation is already under progress</Text>
+        </MessageBar>      
+      }
+      {warningMessage && (
         <MessageBar messageBarType={MessageBarType.warning}>
           <Text>{warningMessage}</Text>
         </MessageBar>
       )
+      }
+      </>
     );
   };
 
@@ -340,14 +341,12 @@ export class MongoIndexingPolicyComponent extends React.Component<
       <Stack {...subComponentStackProps}>
         {this.renderWarningMessage()}
         {mongoIndexingPolicyDisclaimer}
-        {this.renderIndexesToBeAdded()}
+        {this.renderInitialIndexes()}
         {longGrayLine}
         {this.renderIndexesToBeDropped()}
-        {longGrayLine}
-        {this.renderInitialIndexes()}
       </Stack>
     ) : (
-      <ProgressIndicator />
+      <Spinner size={SpinnerSize.large} />
     );
   }
 }
