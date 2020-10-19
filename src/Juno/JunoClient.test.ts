@@ -1,9 +1,12 @@
 import ko from "knockout";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
-import { IPinnedRepo, JunoClient } from "./JunoClient";
+import { IPinnedRepo, JunoClient, IPublishNotebookRequest } from "./JunoClient";
 import { configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DatabaseAccount } from "../Contracts/DataModels";
+import { updateUserContext, userContext } from "../UserContext";
+
+const sampleSubscriptionId = "subscriptionId";
 
 const sampleDatabaseAccount: DatabaseAccount = {
   id: "id",
@@ -131,8 +134,16 @@ describe("GitHub", () => {
 
 describe("Gallery", () => {
   const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const originalUserContext = userContext;
+
+  beforeEach(() => {
+    updateUserContext({
+      subscriptionId: sampleSubscriptionId
+    });
+  });
 
   afterEach(() => {
+    updateUserContext(originalUserContext);
     jest.resetAllMocks();
   });
 
@@ -295,12 +306,15 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/published`, {
-      headers: {
-        [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json"
+    expect(window.fetch).toBeCalledWith(
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/gallery/published`,
+      {
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [HttpHeaders.contentType]: "application/json"
+        }
       }
-    });
+    );
   });
 
   it("deleteNotebook", async () => {
@@ -330,17 +344,26 @@ describe("Gallery", () => {
     const author = "author";
     const thumbnailUrl = "thumbnailUrl";
     const content = `{ "key": "value" }`;
+    const addLinkToNotebookViewer = false;
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
       json: () => undefined as any
     });
 
-    const response = await junoClient.publishNotebook(name, description, tags, author, thumbnailUrl, content, false);
+    const response = await junoClient.publishNotebook(
+      name,
+      description,
+      tags,
+      author,
+      thumbnailUrl,
+      content,
+      addLinkToNotebookViewer
+    );
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/${sampleDatabaseAccount.name}/gallery`,
       {
         method: "PUT",
         headers: {
@@ -353,8 +376,9 @@ describe("Gallery", () => {
           tags,
           author,
           thumbnailUrl,
-          content: JSON.parse(content)
-        })
+          content: JSON.parse(content),
+          addLinkToNotebookViewer
+        } as IPublishNotebookRequest)
       }
     );
   });
