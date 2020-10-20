@@ -80,11 +80,13 @@ describe("Collection Add and Delete Cassandra spec", () => {
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${keyspaceId}"]`);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `Test Failed ${testName}.png` });
+      await page.screenshot({ path: `failed-${testName}.jpg` });
       throw error;
     }
   });
