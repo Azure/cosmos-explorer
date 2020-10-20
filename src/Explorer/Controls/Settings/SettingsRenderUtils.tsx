@@ -87,9 +87,9 @@ export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 
 export const horizontalStackStyles: IStackStyles = { root: { alignItems: "center" } };
 
-export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { width: 300 } };
+export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft:10, width: 210 } };
 
-export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { width: 300 } };
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingleft:10, width: 202 } };
 
 export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   root: {

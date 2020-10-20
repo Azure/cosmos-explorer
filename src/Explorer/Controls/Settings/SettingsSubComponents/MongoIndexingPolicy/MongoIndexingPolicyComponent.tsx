@@ -16,8 +16,6 @@ import {
   MessageBarType,
   Spinner,
   SpinnerSize,
-  Checkbox,
-  ITextStyles,
   Link
 } from "office-ui-fabric-react";
 import {
