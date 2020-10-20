@@ -15,7 +15,7 @@ export async function readCollection(databaseId: string, collectionId: string): 
     const response = await client()
       .database(databaseId)
       .container(collectionId)
-      .read({ populateQuotaInfo: true });
+      .read();
     collection = response.resource as DataModels.Collection;
   } catch (error) {
     logConsoleError(`Error while querying container ${collectionId}:\n ${JSON.stringify(error)}`);

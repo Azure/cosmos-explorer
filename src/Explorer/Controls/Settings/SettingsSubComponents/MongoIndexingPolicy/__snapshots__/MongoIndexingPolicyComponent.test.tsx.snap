@@ -9,7 +9,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   }
 >
   <Text>
-    This indexing policy editor currently does not support compound indexes. if you need to add a compound index, please add it using a different method. Please refer to
+    This indexing policy editor currently does not support compound indexes. If you need to add a compound index, please add it using a different method. Please refer to
     <StyledLinkBase
       href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#compound-indexes-mongodb-server-version-36"
       target="_blank"
