@@ -85,6 +85,13 @@
           <span>Learn more about minimum throughput </span>
           <a href="https://docs.microsoft.com/azure/cosmos-db/set-throughput" target="_blank">here.</a>
         </p>
+        <p data-bind="visible: canRequestBelowMinRU">
+          Need to scale below <span data-bind="text: minRUsText"></span> RU/s? Reach out by filling
+          <a
+            href="https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbRzBPrdEMjvxPuDm8fCLUtXpUQ0JLV1Y5VVlDS1RNUE1aRzVHQlVQTVA1SS4u"
+            >this questionnaire</a
+          >.
+        </p>
         <p data-bind="visible: canRequestSupport">
           <!-- TODO: Replace link with call to the Azure Support blade -->
           <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request"

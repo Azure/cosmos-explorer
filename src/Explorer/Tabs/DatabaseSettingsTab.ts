@@ -61,6 +61,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public saveSettingsButton: ViewModels.Button;
   public discardSettingsChangesButton: ViewModels.Button;
 
+  public canRequestBelowMinRU: ko.PureComputed<boolean>;
   public canRequestSupport: ko.PureComputed<boolean>;
   public canThroughputExceedMaximumValue: ko.Computed<boolean>;
   public costsVisible: ko.Computed<boolean>;
@@ -68,6 +69,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public isTemplateReady: ko.Observable<boolean>;
   public minRUAnotationVisible: ko.Computed<boolean>;
   public minRUs: ko.Computed<number>;
+  public minRUsText: ko.PureComputed<string>;
   public maxRUs: ko.Computed<number>;
   public maxRUsText: ko.PureComputed<string>;
   public maxRUThroughputInputLimit: ko.Computed<number>;
@@ -203,6 +205,11 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(
       () => configContext.platform === Platform.Portal && !this.container.isRunningOnNationalCloud()
     );
+
+    this.canRequestBelowMinRU = ko.pureComputed(() => {
+      return true; // TODO: Implement and test
+    });
+
     this.canRequestSupport = ko.pureComputed(() => {
       if (
         configContext.platform === Platform.Emulator ||
@@ -276,6 +283,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
       return this.maxRUs();
     });
+
+    this.minRUsText = ko.pureComputed(() => this.minRUs().toLocaleString());
 
     this.maxRUsText = ko.pureComputed(() => {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million.toLocaleString();
