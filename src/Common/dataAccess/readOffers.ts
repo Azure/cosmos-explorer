@@ -3,10 +3,9 @@ import { ClientDefaults } from "../Constants";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { Platform, configContext } from "../../ConfigContext";
 import { client } from "../CosmosClient";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { sendCachedDataMessage } from "../MessageHandler";
-import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export const readOffers = async (): Promise<Offer[]> => {
@@ -36,9 +35,7 @@ export const readOffers = async (): Promise<Offer[]> => {
       return [];
     }
 
-    logConsoleError(`Error while querying offers:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadOffers", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while querying offers`, "ReadOffers");
     throw error;
   } finally {
     clearMessage();

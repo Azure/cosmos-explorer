@@ -776,7 +776,7 @@ export default class DocumentsTab extends TabsBase {
           this.isExecutionError(true);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            typeof error === "string" ? error : JSON.stringify(error)
+            typeof error === "string" ? error : error.message
           );
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(

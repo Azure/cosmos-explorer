@@ -1,9 +1,8 @@
 import { AuthType } from "../../AuthType";
 import { client } from "../CosmosClient";
 import { deleteSqlUserDefinedFunction } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function deleteUserDefinedFunction(databaseId: string, collectionId: string, id: string): Promise<void> {
@@ -26,9 +25,7 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
         .delete();
     }
   } catch (error) {
-    logConsoleError(`Error while deleting user defined function ${id}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "DeleteUserDefinedFunction", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while deleting user defined function ${id}`, "DeleteUserDefinedFunction");
     throw error;
   } finally {
     clearMessage();
