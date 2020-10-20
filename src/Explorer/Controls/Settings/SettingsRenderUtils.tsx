@@ -26,8 +26,7 @@ import {
   IStackStyles,
   IIconStyles,
   IDetailsListStyles,
-  IDropdownStyles,
-  IButtonStyles
+  IDropdownStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -59,11 +58,11 @@ export const createAndAddMongoIndexStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 5 }
 };
 
-export const checkBoxAndInputStackProps: Partial<IStackProps> = {
+export const addMongoIndexStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 }
 };
 
-export const addMongoIndexStackProps: Partial<IStackProps> = {
+export const checkBoxAndInputStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 }
 };
 
@@ -81,15 +80,11 @@ export const addMongoIndexSubElementsTokens: IStackTokens = {
 
 export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
 
-export const undoButtonStyles: IButtonStyles = { root: { marginTop: 30 } };
-
 export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 
-export const horizontalStackStyles: IStackStyles = { root: { alignItems: "center" } };
+export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft: 10, width: 210 } };
 
-export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft:10, width: 210 } };
-
-export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingleft:10, width: 202 } };
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingleft: 10, width: 202 } };
 
 export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   root: {

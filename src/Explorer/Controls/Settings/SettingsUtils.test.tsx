@@ -11,7 +11,8 @@ import {
   MongoIndexTypes,
   MongoNotificationType,
   parseConflictResolutionMode,
-  parseConflictResolutionProcedure
+  parseConflictResolutionProcedure,
+  MongoWildcardPlaceHolder
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -124,7 +125,9 @@ describe("SettingsUtils", () => {
     expect(notification.type).toEqual(MongoNotificationType.Error);
 
     notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.WildCard);
-    expect(notification.message).toEqual("Wild Card path is not present in the index description.");
+    expect(notification.message).toEqual(
+      "Wild Card path is not present in the index description. Use a pattern like " + MongoWildcardPlaceHolder
+    );
     expect(notification.type).toEqual(MongoNotificationType.Error);
   });
 });

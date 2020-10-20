@@ -18,19 +18,18 @@ exports[`AddMongoIndexComponent renders 1`] = `
   >
     <StyledTextFieldBase
       componentRef={[Function]}
-      label="Defintion"
       onChange={[Function]}
       styles={
         Object {
           "root": Object {
-            "width": 300,
+            "paddingLeft": 10,
+            "width": 210,
           },
         }
       }
       value="sample_key"
     />
     <StyledWithResponsiveMode
-      label="Type"
       onChange={[Function]}
       options={
         Array [
@@ -49,7 +48,8 @@ exports[`AddMongoIndexComponent renders 1`] = `
       styles={
         Object {
           "dropdown": Object {
-            "width": 300,
+            "paddingleft": 10,
+            "width": 202,
           },
         }
       }
@@ -62,13 +62,6 @@ exports[`AddMongoIndexComponent renders 1`] = `
         }
       }
       onClick={[Function]}
-      styles={
-        Object {
-          "root": Object {
-            "marginTop": 30,
-          },
-        }
-      }
     />
   </Stack>
   <StyledMessageBarBase

@@ -20,6 +20,11 @@ describe("MongoIndexingPolicyComponent", () => {
     onIndexAddOrChange: () => {
       return;
     },
+    indexTransformationProgress: undefined,
+    refreshIndexTransformationProgress: () =>
+      new Promise(() => {
+        return;
+      }),
     onMongoIndexingPolicySaveableChange: () => {
       return;
     },
@@ -31,6 +36,16 @@ describe("MongoIndexingPolicyComponent", () => {
   it("renders", () => {
     const wrapper = shallow(<MongoIndexingPolicyComponent {...baseProps} />);
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it("isIndexingTransforming", () => {
+    const wrapper = shallow(<MongoIndexingPolicyComponent {...baseProps} />);
+    const mongoIndexingPolicyComponent = wrapper.instance() as MongoIndexingPolicyComponent;
+    expect(mongoIndexingPolicyComponent.isIndexingTransforming()).toEqual(false);
+    wrapper.setProps({ indexTransformationProgress: 50 });
+    expect(mongoIndexingPolicyComponent.isIndexingTransforming()).toEqual(true);
+    wrapper.setProps({ indexTransformationProgress: 100 });
+    expect(mongoIndexingPolicyComponent.isIndexingTransforming()).toEqual(false);
   });
 
   describe("AddMongoIndexProps test", () => {

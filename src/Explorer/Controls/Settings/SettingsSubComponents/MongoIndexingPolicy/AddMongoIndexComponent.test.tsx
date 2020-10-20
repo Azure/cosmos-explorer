@@ -6,7 +6,6 @@ import { AddMongoIndexComponent, AddMongoIndexComponentProps } from "./AddMongoI
 describe("AddMongoIndexComponent", () => {
   it("renders", () => {
     const props: AddMongoIndexComponentProps = {
-      isFirst: true,
       description: "sample_key",
       type: MongoIndexTypes.Single,
       notification: { type: MongoNotificationType.Error, message: "sample error" },

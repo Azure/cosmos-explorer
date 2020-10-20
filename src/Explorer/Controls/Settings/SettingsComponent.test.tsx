@@ -8,6 +8,9 @@ import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
 import { TtlType, isDirty } from "./SettingsUtils";
 import Explorer from "../../Explorer";
+jest.mock("../../../Common/dataAccess/readCollection", () => ({
+  getMongoCollectionIndexTransformationProgress: jest.fn().mockReturnValue(undefined)
+}));
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
   updateCollection: jest.fn().mockReturnValue({
@@ -22,7 +25,7 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
   updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
     id: undefined,
     shardKey: undefined,
-    indexes: undefined,
+    indexes: [],
     analyticalStorageTtl: undefined
   } as MongoDBCollectionResource)
 }));

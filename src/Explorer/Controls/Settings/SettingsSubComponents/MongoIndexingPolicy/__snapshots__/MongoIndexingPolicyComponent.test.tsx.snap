@@ -11,7 +11,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   <Text>
     This indexing policy editor currently does not support compound indexes. if you need to add a compound index, please add it using a different method. Please refer to
     <StyledLinkBase
-      href="www.google.com"
+      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#compound-indexes-mongodb-server-version-36"
       target="_blank"
     >
        documentation 
@@ -28,100 +28,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
     }
     tokens={
       Object {
-        "childrenGap": 10,
-      }
-    }
-  >
-    <Stack
-      className="collapsibleLabel"
-      horizontal={true}
-      onClick={[Function]}
-      tokens={
-        Object {
-          "childrenGap": 10,
-        }
-      }
-    >
-      <StyledIconBase
-        iconName="ChevronDown"
-        styles={
-          Object {
-            "root": Object {
-              "paddingTop": 7,
-            },
-          }
-        }
-      />
-      <StyledLabelBase>
-        Index(es) to be added
-      </StyledLabelBase>
-    </Stack>
-    <AddMongoIndexComponent
-      isFirst={true}
-      key="0"
-      onDiscard={[Function]}
-      onIndexAddOrChange={[Function]}
-      setRef={[Function]}
-    />
-  </Stack>
-  <div
-    style={
-      Object {
-        "borderBottomColor": undefined,
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": 1,
-      }
-    }
-  />
-  <Stack
-    styles={
-      Object {
-        "root": Object {
-          "width": 600,
-        },
-      }
-    }
-  >
-    <Stack
-      className="collapsibleLabel"
-      horizontal={true}
-      onClick={[Function]}
-      tokens={
-        Object {
-          "childrenGap": 10,
-        }
-      }
-    >
-      <StyledIconBase
-        iconName="ChevronDown"
-        styles={
-          Object {
-            "root": Object {
-              "paddingTop": 7,
-            },
-          }
-        }
-      />
-      <StyledLabelBase>
-        Index(es) to be dropped
-      </StyledLabelBase>
-    </Stack>
-  </Stack>
-  <div
-    style={
-      Object {
-        "borderBottomColor": undefined,
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": 1,
-      }
-    }
-  />
-  <Stack
-    styles={
-      Object {
-        "root": Object {
-          "width": 600,
-        },
+        "childrenGap": 5,
       }
     }
   >
@@ -195,6 +102,71 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
         }
       }
     />
+    <Stack
+      styles={
+        Object {
+          "root": Object {
+            "width": 600,
+          },
+        }
+      }
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <AddMongoIndexComponent
+        disabled={false}
+        key="0"
+        onDiscard={[Function]}
+        onIndexAddOrChange={[Function]}
+        setRef={[Function]}
+      />
+    </Stack>
+  </Stack>
+  <div
+    style={
+      Object {
+        "borderBottomColor": undefined,
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": 1,
+      }
+    }
+  />
+  <Stack
+    styles={
+      Object {
+        "root": Object {
+          "width": 600,
+        },
+      }
+    }
+  >
+    <Stack
+      className="collapsibleLabel"
+      horizontal={true}
+      onClick={[Function]}
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StyledIconBase
+        iconName="ChevronDown"
+        styles={
+          Object {
+            "root": Object {
+              "paddingTop": 7,
+            },
+          }
+        }
+      />
+      <StyledLabelBase>
+        Index(es) to be dropped
+      </StyledLabelBase>
+    </Stack>
   </Stack>
 </Stack>
 `;

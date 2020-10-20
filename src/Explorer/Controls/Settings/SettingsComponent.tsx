@@ -48,7 +48,6 @@ import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./Setting
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
   getMongoCollectionIndexTransformationProgress,
-  readCollection,
   readMongoDBCollectionThroughRP
 } from "../../../Common/dataAccess/readCollection";
 
@@ -599,7 +598,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private getMongoIndexesToSave = (): MongoIndex[] => {
     let finalIndexes: MongoIndex[] = [];
-    this.state.currentMongoIndexes.map((mongoIndex: MongoIndex, index: number) => {
+    this.state.currentMongoIndexes?.map((mongoIndex: MongoIndex, index: number) => {
       if (!this.state.indexesToDrop.includes(index)) {
         finalIndexes.push(mongoIndex);
       }

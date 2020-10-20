@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SubSeettingsComponent analyticalTimeToLive hidden 1`] = `
+exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -223,7 +223,7 @@ exports[`SubSeettingsComponent analyticalTimeToLive hidden 1`] = `
 </Stack>
 `;
 
-exports[`SubSeettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
+exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -499,7 +499,7 @@ exports[`SubSeettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
 </Stack>
 `;
 
-exports[`SubSeettingsComponent changeFeedPolicy hidden 1`] = `
+exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
 <Stack
   tokens={
     Object {
@@ -738,7 +738,7 @@ exports[`SubSeettingsComponent changeFeedPolicy hidden 1`] = `
 </Stack>
 `;
 
-exports[`SubSeettingsComponent renders 1`] = `
+exports[`SubSettingsComponent renders 1`] = `
 <Stack
   tokens={
     Object {
@@ -1039,7 +1039,7 @@ exports[`SubSeettingsComponent renders 1`] = `
 </Stack>
 `;
 
-exports[`SubSeettingsComponent timeToLiveSeconds hidden 1`] = `
+exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
     Object {
