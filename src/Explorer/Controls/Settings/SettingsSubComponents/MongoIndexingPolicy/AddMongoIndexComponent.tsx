@@ -15,7 +15,12 @@ import {
   shortWidthDropDownStyles,
   shortWidthTextFieldStyles
 } from "../../SettingsRenderUtils";
-import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType, MongoWildcardPlaceHolder } from "../../SettingsUtils";
+import {
+  MongoIndexTypes,
+  MongoNotificationMessage,
+  MongoNotificationType,
+  MongoWildcardPlaceHolder
+} from "../../SettingsUtils";
 
 export interface AddMongoIndexComponentProps {
   description: string;
@@ -24,6 +29,7 @@ export interface AddMongoIndexComponentProps {
   onIndexAddOrChange: (description: string, type: MongoIndexTypes) => void;
   onDiscard: () => void;
   setRef: (textField: ITextField) => void;
+  disabled?: boolean;
 }
 
 export class AddMongoIndexComponent extends React.Component<AddMongoIndexComponentProps> {
@@ -53,6 +59,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
       <Stack {...mongoWarningStackProps}>
         <Stack horizontal tokens={addMongoIndexSubElementsTokens}>
           <TextField
+            disabled={this.props.disabled}
             styles={shortWidthTextFieldStyles}
             componentRef={this.props.setRef}
             value={this.props.description}
@@ -61,6 +68,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
           />
 
           <Dropdown
+            disabled={this.props.disabled}
             styles={shortWidthDropDownStyles}
             placeholder="Select an index type"
             selectedKey={this.props.type}

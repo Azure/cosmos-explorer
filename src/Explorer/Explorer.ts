@@ -1952,12 +1952,9 @@ export default class Explorer {
       return;
     }
 
-    /*
     if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
       this.isSettingsV2Enabled(true);
     }
-    */
-   this.isSettingsV2Enabled(true);
 
     if (flights.indexOf(Constants.Flights.MongoIndexEditor) !== -1) {
       this.isMongoIndexEditorEnabled(true);

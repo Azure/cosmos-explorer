@@ -15,7 +15,7 @@ export async function readCollection(databaseId: string, collectionId: string): 
     const response = await client()
       .database(databaseId)
       .container(collectionId)
-      .read({populateQuotaInfo: true});
+      .read({ populateQuotaInfo: true });
     collection = response.resource as DataModels.Collection;
   } catch (error) {
     logConsoleError(`Error while querying container ${collectionId}:\n ${JSON.stringify(error)}`);
@@ -27,16 +27,21 @@ export async function readCollection(databaseId: string, collectionId: string): 
   return collection;
 }
 
-export async function getMongoCollectionIndexTransformationProgress(databaseId: string, collectionId: string): Promise<number> {
-  let indexTransformationPercentage : number
+export async function getMongoCollectionIndexTransformationProgress(
+  databaseId: string,
+  collectionId: string
+): Promise<number> {
+  let indexTransformationPercentage: number;
   const clearMessage = logConsoleProgress(`Reading container ${collectionId}`);
   try {
     const response = await client()
       .database(databaseId)
       .container(collectionId)
-      .read({populateQuotaInfo: true});
+      .read({ populateQuotaInfo: true });
 
-    indexTransformationPercentage = parseInt(response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string)
+    indexTransformationPercentage = parseInt(
+      response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
+    );
   } catch (error) {
     logConsoleError(`Error while reading container ${collectionId}:\n ${JSON.stringify(error)}`);
     logError(JSON.stringify(error), "ReadCollection", error.code);

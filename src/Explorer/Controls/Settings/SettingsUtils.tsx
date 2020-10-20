@@ -13,7 +13,7 @@ export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
 export const MongoIndexIdField = "_id";
-export const MongoWildcardPlaceHolder = "properties.$**"
+export const MongoWildcardPlaceHolder = "properties.$**";
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
