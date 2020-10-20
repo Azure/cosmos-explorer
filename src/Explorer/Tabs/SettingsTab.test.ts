@@ -64,7 +64,6 @@ describe("Settings tab", () => {
           tabKind: ViewModels.CollectionTabKind.Settings,
           title: "Scale & Settings",
           tabPath: "",
-          selfLink: "",
           hashLocation: "",
           isActive: ko.observable(false),
           collection: new Collection(
@@ -187,7 +186,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -209,8 +207,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -227,8 +223,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -265,8 +259,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -281,8 +273,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -306,8 +296,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
@@ -380,8 +368,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(defaultApi, partitionKeyOption),
@@ -520,8 +506,6 @@ describe("Settings tab", () => {
         tabKind: ViewModels.CollectionTabKind.Settings,
         title: "Scale & Settings",
         tabPath: "",
-
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable(false),
         collection: getCollection(autoPilotTier),

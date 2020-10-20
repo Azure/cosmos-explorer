@@ -39,13 +39,13 @@ exports[`ScaleComponent renders with correct intiial notification 1`] = `
     }
   >
     <ThroughputInputAutoPilotV3Component
-      canExceedMaximumValue={false}
+      canExceedMaximumValue={true}
       getThroughputWarningMessage={[Function]}
       isAutoPilotSelected={false}
       isEmulator={false}
       isEnabled={true}
       isFixed={false}
-      label="Throughput (6,000 - 40,000 RU/s)"
+      label="Throughput (6,000 - unlimited RU/s)"
       maxAutoPilotThroughput={4000}
       maxAutoPilotThroughputBaseline={4000}
       maximum={40000}

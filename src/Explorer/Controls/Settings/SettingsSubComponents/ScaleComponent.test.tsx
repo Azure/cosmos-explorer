@@ -5,7 +5,6 @@ import { container, collection } from "../TestUtils";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 import Explorer from "../../../Explorer";
 import * as Constants from "../../../../Common/Constants";
-import { PlatformType } from "../../../../PlatformType";
 import * as DataModels from "../../../../Contracts/DataModels";
 import { throughputUnit } from "../SettingsRenderUtils";
 import * as SharedConstants from "../../../../Shared/Constants";
@@ -13,7 +12,6 @@ import ko from "knockout";
 
 describe("ScaleComponent", () => {
   const nonNationalCloudContainer = new Explorer();
-  nonNationalCloudContainer.getPlatformType = () => PlatformType.Portal;
   nonNationalCloudContainer.isRunningOnNationalCloud = () => false;
 
   const targetThroughput = 6000;
@@ -119,7 +117,7 @@ describe("ScaleComponent", () => {
 
   it("getThroughputTitle", () => {
     let scaleComponent = new ScaleComponent(baseProps);
-    expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - 40,000 RU/s)");
+    expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
 
     let newProps = { ...baseProps, container: nonNationalCloudContainer };
     scaleComponent = new ScaleComponent(newProps);
@@ -132,7 +130,7 @@ describe("ScaleComponent", () => {
 
   it("canThroughputExceedMaximumValue", () => {
     let scaleComponent = new ScaleComponent(baseProps);
-    expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(false);
+    expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
 
     const newProps = { ...baseProps, container: nonNationalCloudContainer };
     scaleComponent = new ScaleComponent(newProps);

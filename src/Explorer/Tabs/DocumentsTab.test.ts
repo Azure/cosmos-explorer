@@ -15,7 +15,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -89,7 +88,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -107,7 +105,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -125,7 +122,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -143,7 +139,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -161,7 +156,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 

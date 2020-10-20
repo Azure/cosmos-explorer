@@ -43,7 +43,6 @@ describe("SettingsComponent", () => {
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
-      selfLink: undefined,
       hashLocation: "settings",
       isActive: ko.observable(false),
       onUpdateTabsButtons: undefined

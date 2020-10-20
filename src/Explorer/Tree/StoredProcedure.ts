@@ -74,7 +74,6 @@ export default class StoredProcedure {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
-      selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
@@ -123,7 +122,6 @@ export default class StoredProcedure {
           this.collection.databaseId,
           this.collection.id()
         )}/sprocs/${this.id()}`,
-        selfLink: this.self,
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });

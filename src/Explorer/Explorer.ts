@@ -37,7 +37,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext, updateConfigContext } from "../ConfigContext";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -58,7 +58,6 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { PlatformType } from "../PlatformType";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { RenewAdHocAccessPane } from "./Panes/RenewAdHocAccessPane";
@@ -566,9 +565,7 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        this.getPlatformType() === PlatformType.Portal &&
-        !this.isRunningOnNationalCloud() &&
-        !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
@@ -1794,7 +1791,7 @@ export default class Explorer {
     const message: any = event.data.data;
     const inputs: ViewModels.DataExplorerInputsFrame = message.inputs;
 
-    const isRunningInPortal = window.dataExplorerPlatform == PlatformType.Portal;
+    const isRunningInPortal = configContext.platform === Platform.Portal;
     const isRunningInDevMode = process.env.NODE_ENV === "development";
     if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
       inputs.extensionEndpoint = configContext.PROXY_PATH;
@@ -1862,7 +1859,7 @@ export default class Explorer {
       return null;
     }
     if (this.selectedNode().nodeKind === "Database") {
-      return _.find(this.databases(), (database: ViewModels.Database) => database.rid === this.selectedNode().rid);
+      return _.find(this.databases(), (database: ViewModels.Database) => database.id() === this.selectedNode().id());
     }
     return this.findSelectedCollection().database;
   }
@@ -1962,11 +1959,9 @@ export default class Explorer {
   }
 
   public findSelectedCollection(): ViewModels.Collection {
-    if (this.selectedNode().nodeKind === "Collection") {
-      return this.findSelectedCollectionForSelectedNode();
-    } else {
-      return this.findSelectedCollectionForSubNode();
-    }
+    return (this.selectedNode().nodeKind === "Collection"
+      ? this.selectedNode()
+      : this.selectedNode().collection) as ViewModels.Collection;
   }
 
   // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
@@ -2014,10 +2009,6 @@ export default class Explorer {
 
   public closeAllPanes(): void {
     this._panes.forEach((pane: ContextualPaneBase) => pane.close());
-  }
-
-  public getPlatformType(): PlatformType {
-    return window.dataExplorerPlatform;
   }
 
   public isRunningOnNationalCloud(): boolean {
@@ -2083,11 +2074,11 @@ export default class Explorer {
     });
     databasesToLoad.forEach(async (database: ViewModels.Database) => {
       await database.loadCollections();
-      const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.rid === database.rid);
+      const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
       if (isNewDatabase) {
         database.expandDatabase();
       }
-      this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
+      this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().id() === database.id());
     });
 
     Q.all(loadCollectionPromises).done(
@@ -2199,21 +2190,11 @@ export default class Explorer {
     }
   }
 
-  private findSelectedCollectionForSelectedNode(): ViewModels.Collection {
-    return this.findCollection(this.selectedNode().rid);
-  }
-
-  public findCollection(rid: string): ViewModels.Collection {
-    for (let i = 0; i < this.databases().length; i++) {
-      const database = this.databases()[i];
-      for (let j = 0; j < database.collections().length; j++) {
-        const collection = database.collections()[j];
-        if (collection.rid === rid) {
-          return collection;
-        }
-      }
-    }
-    return null;
+  public findCollection(databaseId: string, collectionId: string): ViewModels.Collection {
+    const database: ViewModels.Database = this.databases().find(
+      (database: ViewModels.Database) => database.id() === databaseId
+    );
+    return database?.collections().find((collection: ViewModels.Collection) => collection.id() === collectionId);
   }
 
   public isLastCollection(): boolean {
@@ -2237,7 +2218,7 @@ export default class Explorer {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         this.databases(),
-        (existingDatabase: ViewModels.Database) => existingDatabase.rid === database._rid
+        (existingDatabase: ViewModels.Database) => existingDatabase.id() === database.id
       );
       return !databaseExists;
     });
@@ -2249,7 +2230,7 @@ export default class Explorer {
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
       const databasePresentInUpdatedList = _.some(
         updatedDatabaseList,
-        (db: DataModels.Database) => db._rid === database.rid
+        (db: DataModels.Database) => db.id === database.id()
       );
       if (!databasePresentInUpdatedList) {
         databasesToDelete.push(database);
@@ -2271,26 +2252,13 @@ export default class Explorer {
     const databasesToKeep: ViewModels.Database[] = [];
 
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
-      const shouldRemoveDatabase = _.some(databasesToRemove, (db: ViewModels.Database) => db.rid === database.rid);
+      const shouldRemoveDatabase = _.some(databasesToRemove, (db: ViewModels.Database) => db.id === database.id);
       if (!shouldRemoveDatabase) {
         databasesToKeep.push(database);
       }
     });
 
     this.databases(databasesToKeep);
-  }
-
-  private findSelectedCollectionForSubNode(): ViewModels.Collection {
-    for (let i = 0; i < this.databases().length; i++) {
-      const database = this.databases()[i];
-      for (let j = 0; j < database.collections().length; j++) {
-        const collection = database.collections()[j];
-        if (this.selectedNode().collection && collection.rid === this.selectedNode().collection.rid) {
-          return collection;
-        }
-      }
-    }
-    return null;
   }
 
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
@@ -2452,7 +2420,6 @@ export default class Explorer {
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
         collection: null,
-        selfLink: null,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
         isActive: ko.observable(false),
@@ -2904,7 +2871,6 @@ export default class Explorer {
         title: title,
         tabPath: title,
         collection: null,
-        selfLink: null,
         hashLocation: hashLocation,
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
@@ -2948,7 +2914,6 @@ export default class Explorer {
         title: title,
         tabPath: title,
         documentClientUtility: null,
-        selfLink: null,
         isActive: ko.observable(false),
         hashLocation: hashLocation,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2991,7 +2956,6 @@ export default class Explorer {
         tabPath: title,
         documentClientUtility: null,
         collection: null,
-        selfLink: null,
         hashLocation: hashLocation,
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
