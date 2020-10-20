@@ -32,105 +32,92 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
       }
     }
   >
-    <Stack
-      className="collapsibleLabel"
-      horizontal={true}
-      onClick={[Function]}
-      tokens={
-        Object {
-          "childrenGap": 10,
-        }
-      }
+    <CollapsibleSectionComponent
+      title="Current index(es)"
     >
-      <StyledIconBase
-        iconName="ChevronDown"
+      <StyledWithViewportComponent
+        columns={
+          Array [
+            Object {
+              "fieldName": "definition",
+              "isResizable": true,
+              "key": "definition",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Definition",
+            },
+            Object {
+              "fieldName": "type",
+              "isResizable": true,
+              "key": "type",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Type",
+            },
+            Object {
+              "fieldName": "actionButton",
+              "isResizable": true,
+              "key": "actionButton",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Drop Index",
+            },
+          ]
+        }
+        disableSelectionZone={true}
+        items={Array []}
+        layoutMode={1}
+        onRenderRow={[Function]}
+        selectionMode={0}
         styles={
           Object {
             "root": Object {
-              "paddingTop": 7,
+              "selectors": Object {
+                ".ms-FocusZone": Object {
+                  "paddingTop": 0,
+                },
+              },
             },
           }
         }
       />
-      <StyledLabelBase>
-        Current index(es)
-      </StyledLabelBase>
-    </Stack>
-    <StyledWithViewportComponent
-      columns={
-        Array [
+      <Stack
+        styles={
           Object {
-            "fieldName": "definition",
-            "isResizable": true,
-            "key": "definition",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "Definition",
-          },
+            "root": Object {
+              "width": 600,
+            },
+          }
+        }
+        tokens={
           Object {
-            "fieldName": "type",
-            "isResizable": true,
-            "key": "type",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "Type",
-          },
+            "childrenGap": 10,
+          }
+        }
+      >
+        <AddMongoIndexComponent
+          disabled={false}
+          key="0"
+          onDiscard={[Function]}
+          onIndexAddOrChange={[Function]}
+          position={0}
+          setRef={[Function]}
+        />
+      </Stack>
+    </CollapsibleSectionComponent>
+  </Stack>
+  <Styled
+    styles={
+      Object {
+        "root": Array [
           Object {
-            "fieldName": "actionButton",
-            "isResizable": true,
-            "key": "actionButton",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "Drop Index",
-          },
-        ]
-      }
-      disableSelectionZone={true}
-      items={Array []}
-      layoutMode={1}
-      onRenderRow={[Function]}
-      selectionMode={0}
-      styles={
-        Object {
-          "root": Object {
             "selectors": Object {
-              ".ms-FocusZone": Object {
-                "paddingTop": 0,
+              "::before": Object {
+                "background": undefined,
               },
             },
           },
-        }
-      }
-    />
-    <Stack
-      styles={
-        Object {
-          "root": Object {
-            "width": 600,
-          },
-        }
-      }
-      tokens={
-        Object {
-          "childrenGap": 10,
-        }
-      }
-    >
-      <AddMongoIndexComponent
-        disabled={false}
-        key="0"
-        onDiscard={[Function]}
-        onIndexAddOrChange={[Function]}
-        setRef={[Function]}
-      />
-    </Stack>
-  </Stack>
-  <div
-    style={
-      Object {
-        "borderBottomColor": undefined,
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": 1,
+        ],
       }
     }
   />
@@ -143,30 +130,9 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
       }
     }
   >
-    <Stack
-      className="collapsibleLabel"
-      horizontal={true}
-      onClick={[Function]}
-      tokens={
-        Object {
-          "childrenGap": 10,
-        }
-      }
-    >
-      <StyledIconBase
-        iconName="ChevronDown"
-        styles={
-          Object {
-            "root": Object {
-              "paddingTop": 7,
-            },
-          }
-        }
-      />
-      <StyledLabelBase>
-        Index(es) to be dropped
-      </StyledLabelBase>
-    </Stack>
+    <CollapsibleSectionComponent
+      title="Index(es) to be dropped"
+    />
   </Stack>
 </Stack>
 `;

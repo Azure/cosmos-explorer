@@ -320,14 +320,5 @@ exports[`SettingsUtils functions render 1`] = `
     </StyledLinkBase>
     for best practices of managing indexing.
   </Text>
-  <div
-    style={
-      Object {
-        "borderBottomColor": undefined,
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": 1,
-      }
-    }
-  />
 </Fragment>
 `;

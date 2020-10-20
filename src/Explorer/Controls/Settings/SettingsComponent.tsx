@@ -641,17 +641,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onRevertIndexDrop = (index: number): void => {
     const indexesToDrop = [...this.state.indexesToDrop];
     indexesToDrop.splice(index, 1);
-    this.setState({ indexesToDrop: [...indexesToDrop] });
+    this.setState({ indexesToDrop });
   };
 
   private onRevertIndexAdd = (index: number): void => {
     const indexesToAdd = [...this.state.indexesToAdd];
     indexesToAdd.splice(index, 1);
-    this.setState({ indexesToAdd: [...indexesToAdd] });
+    this.setState({ indexesToAdd });
   };
 
   private onIndexAddOrChange = (index: number, description: string, type: MongoIndexTypes): void => {
-    const newIndexesToAdd = this.state.indexesToAdd.slice();
+    const newIndexesToAdd = [...this.state.indexesToAdd];
     const notification = getMongoNotification(description, type);
     const newMongoIndexWithType: AddMongoIndexProps = {
       mongoIndex: { key: { keys: [description] } } as MongoIndex,
@@ -705,10 +705,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
 
   private onMongoIndexingPolicySaveableChange = (isMongoIndexingPolicySaveable: boolean): void =>
-    this.setState({ isMongoIndexingPolicySaveable: isMongoIndexingPolicySaveable });
+    this.setState({ isMongoIndexingPolicySaveable });
 
   private onMongoIndexingPolicyDiscardableChange = (isMongoIndexingPolicyDiscardable: boolean): void =>
-    this.setState({ isMongoIndexingPolicyDiscardable: isMongoIndexingPolicyDiscardable });
+    this.setState({ isMongoIndexingPolicyDiscardable });
 
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {

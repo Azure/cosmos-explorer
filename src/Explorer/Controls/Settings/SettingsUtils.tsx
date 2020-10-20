@@ -14,6 +14,8 @@ export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
 export const MongoIndexIdField = "_id";
 export const MongoWildcardPlaceHolder = "properties.$**";
+export const SingleFieldText = "Single Field";
+export const WildcardText = "Wildcard";
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
@@ -33,7 +35,7 @@ export enum GeospatialConfigType {
 
 export enum MongoIndexTypes {
   Single = "Single",
-  WildCard = "WildCard"
+  Wildcard = "Wildcard"
 }
 
 export interface AddMongoIndexProps {
@@ -216,12 +218,12 @@ export const getMongoNotification = (description: string, type: MongoIndexTypes)
   if (type && (!description || description.trim().length === 0)) {
     return {
       type: MongoNotificationType.Error,
-      message: "Please enter an index description."
+      message: "Please enter a field name."
     };
-  } else if (type === MongoIndexTypes.WildCard && description?.indexOf("$**") === -1) {
+  } else if (type === MongoIndexTypes.Wildcard && description?.indexOf("$**") === -1) {
     return {
       type: MongoNotificationType.Error,
-      message: "Wild Card path is not present in the index description. Use a pattern like " + MongoWildcardPlaceHolder
+      message: "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder
     };
   }
 
@@ -234,11 +236,18 @@ export const getMongoIndexType = (keys: string[]): MongoIndexTypes => {
 
   if (length === 1) {
     if (keys[0].indexOf("$**") !== -1) {
-      type = MongoIndexTypes.WildCard;
+      type = MongoIndexTypes.Wildcard;
     } else {
       type = MongoIndexTypes.Single;
     }
   }
 
   return type;
+};
+
+export const getMongoIndexTypeText = (index: MongoIndexTypes): string => {
+  if (index === MongoIndexTypes.Single) {
+    return SingleFieldText;
+  }
+  return WildcardText;
 };

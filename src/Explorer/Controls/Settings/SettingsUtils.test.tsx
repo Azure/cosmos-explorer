@@ -12,7 +12,10 @@ import {
   MongoNotificationType,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
-  MongoWildcardPlaceHolder
+  MongoWildcardPlaceHolder,
+  getMongoIndexTypeText,
+  SingleFieldText,
+  WildcardText
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -102,8 +105,13 @@ describe("SettingsUtils", () => {
 
   it("getMongoIndexType", () => {
     expect(getMongoIndexType(["Single"])).toEqual(MongoIndexTypes.Single);
-    expect(getMongoIndexType(["WildCard.$**"])).toEqual(MongoIndexTypes.WildCard);
+    expect(getMongoIndexType(["Wildcard.$**"])).toEqual(MongoIndexTypes.Wildcard);
     expect(getMongoIndexType(["Key1", "Key2"])).toEqual(undefined);
+  });
+
+  it("getMongoIndexTypeText", () => {
+    expect(getMongoIndexTypeText(MongoIndexTypes.Single)).toEqual(SingleFieldText);
+    expect(getMongoIndexTypeText(MongoIndexTypes.Wildcard)).toEqual(WildcardText);
   });
 
   it("getMongoNotification", () => {
@@ -117,16 +125,16 @@ describe("SettingsUtils", () => {
     notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.Single);
     expect(notification).toEqual(undefined);
 
-    notification = getMongoNotification(wildcardIndexDescription, MongoIndexTypes.WildCard);
+    notification = getMongoNotification(wildcardIndexDescription, MongoIndexTypes.Wildcard);
     expect(notification).toEqual(undefined);
 
     notification = getMongoNotification("", MongoIndexTypes.Single);
-    expect(notification.message).toEqual("Please enter an index description.");
+    expect(notification.message).toEqual("Please enter a field name.");
     expect(notification.type).toEqual(MongoNotificationType.Error);
 
-    notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.WildCard);
+    notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.Wildcard);
     expect(notification.message).toEqual(
-      "Wild Card path is not present in the index description. Use a pattern like " + MongoWildcardPlaceHolder
+      "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder
     );
     expect(notification.type).toEqual(MongoNotificationType.Error);
   });

@@ -17,6 +17,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
     }
   >
     <StyledTextFieldBase
+      ariaLabel="Index Field Name 1"
       componentRef={[Function]}
       onChange={[Function]}
       styles={
@@ -30,16 +31,17 @@ exports[`AddMongoIndexComponent renders 1`] = `
       value="sample_key"
     />
     <StyledWithResponsiveMode
+      ariaLabel="Index Type 1"
       onChange={[Function]}
       options={
         Array [
           Object {
             "key": "Single",
-            "text": "Single",
+            "text": "Single Field",
           },
           Object {
-            "key": "WildCard",
-            "text": "WildCard",
+            "key": "Wildcard",
+            "text": "Wildcard",
           },
         ]
       }
@@ -55,6 +57,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
       }
     />
     <CustomizedIconButton
+      ariaLabel="Undo Button 1"
       disabled={false}
       iconProps={
         Object {
@@ -66,6 +69,13 @@ exports[`AddMongoIndexComponent renders 1`] = `
   </Stack>
   <StyledMessageBarBase
     messageBarType={1}
+    styles={
+      Object {
+        "root": Object {
+          "marginLeft": 10,
+        },
+      }
+    }
   >
     sample error
   </StyledMessageBarBase>

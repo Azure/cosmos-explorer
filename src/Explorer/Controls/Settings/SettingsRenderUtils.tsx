@@ -26,7 +26,8 @@ import {
   IStackStyles,
   IIconStyles,
   IDetailsListStyles,
-  IDropdownStyles
+  IDropdownStyles,
+  ISeparatorStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -53,6 +54,8 @@ export const titleAndInputStackProps: Partial<IStackProps> = {
 export const mongoWarningStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 5 }
 };
+
+export const mongoErrorMessageStyles: Partial<IMessageBarStyles> = { root: { marginLeft: 10 } };
 
 export const createAndAddMongoIndexStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 5 }
@@ -104,6 +107,18 @@ export const customDetailsListStyles: Partial<IDetailsListStyles> = {
       }
     }
   }
+};
+
+export const separatorStyles: Partial<ISeparatorStyles> = {
+  root: [
+    {
+      selectors: {
+        "::before": {
+          background: StyleConstants.BaseMedium
+        }
+      }
+    }
+  ]
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
@@ -205,16 +220,6 @@ export const getEstimatedSpendElement = (
     </Text>
   );
 };
-
-export const longGrayLine: JSX.Element = (
-  <div
-    style={{
-      borderBottomWidth: 1,
-      borderBottomStyle: "solid",
-      borderBottomColor: StyleConstants.BaseMedium
-    }}
-  ></div>
-);
 
 export const manualToAutoscaleDisclaimerElement: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="manualToAutoscaleDisclaimerElement">

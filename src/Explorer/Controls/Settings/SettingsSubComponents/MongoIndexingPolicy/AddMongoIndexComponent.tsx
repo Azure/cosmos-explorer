@@ -11,11 +11,13 @@ import {
 } from "office-ui-fabric-react";
 import {
   addMongoIndexSubElementsTokens,
+  mongoErrorMessageStyles,
   mongoWarningStackProps,
   shortWidthDropDownStyles,
   shortWidthTextFieldStyles
 } from "../../SettingsRenderUtils";
 import {
+  getMongoIndexTypeText,
   MongoIndexTypes,
   MongoNotificationMessage,
   MongoNotificationType,
@@ -23,6 +25,7 @@ import {
 } from "../../SettingsUtils";
 
 export interface AddMongoIndexComponentProps {
+  position: number;
   description: string;
   type: MongoIndexTypes;
   notification: MongoNotificationMessage;
@@ -33,14 +36,12 @@ export interface AddMongoIndexComponentProps {
 }
 
 export class AddMongoIndexComponent extends React.Component<AddMongoIndexComponentProps> {
-  private indexTypes: IDropdownOption[] = [MongoIndexTypes.Single, MongoIndexTypes.WildCard].map((value: string) => ({
-    text: value,
-    key: value
-  }));
-
-  constructor(props: AddMongoIndexComponentProps) {
-    super(props);
-  }
+  private indexTypes: IDropdownOption[] = [MongoIndexTypes.Single, MongoIndexTypes.Wildcard].map(
+    (value: MongoIndexTypes) => ({
+      text: getMongoIndexTypeText(value),
+      key: value
+    })
+  );
 
   private onDescriptionChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -59,15 +60,17 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
       <Stack {...mongoWarningStackProps}>
         <Stack horizontal tokens={addMongoIndexSubElementsTokens}>
           <TextField
+            ariaLabel={"Index Field Name " + this.props.position}
             disabled={this.props.disabled}
             styles={shortWidthTextFieldStyles}
             componentRef={this.props.setRef}
             value={this.props.description}
-            placeholder={this.props.type === MongoIndexTypes.WildCard ? MongoWildcardPlaceHolder : undefined}
+            placeholder={this.props.type === MongoIndexTypes.Wildcard ? MongoWildcardPlaceHolder : undefined}
             onChange={this.onDescriptionChange}
           />
 
           <Dropdown
+            ariaLabel={"Index Type " + this.props.position}
             disabled={this.props.disabled}
             styles={shortWidthDropDownStyles}
             placeholder="Select an index type"
@@ -77,13 +80,16 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
           />
 
           <IconButton
+            ariaLabel={"Undo Button " + this.props.position}
             iconProps={{ iconName: "Undo" }}
             disabled={!this.props.description && !this.props.type}
             onClick={() => this.props.onDiscard()}
           />
         </Stack>
         {this.props.notification?.type === MongoNotificationType.Error && (
-          <MessageBar messageBarType={MessageBarType.error}>{this.props.notification.message}</MessageBar>
+          <MessageBar styles={mongoErrorMessageStyles} messageBarType={MessageBarType.error}>
+            {this.props.notification.message}
+          </MessageBar>
         )}
       </Stack>
     );
