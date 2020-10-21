@@ -1,5 +1,4 @@
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../ErrorParserUtility";
 import { AuthType } from "../../AuthType";
 import { ContainerResponse, DatabaseResponse } from "@azure/cosmos";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
@@ -23,21 +22,20 @@ import {
   getGremlinGraph
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress, logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { refreshCachedResources } from "../DataAccessUtilityBase";
-import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 import { createDatabase } from "./createDatabase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { handleError } from "../ErrorHandlingUtils";
 
 export const createCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  let collection: DataModels.Collection;
   const clearMessage = logConsoleProgress(
     `Creating a new container ${params.collectionId} for database ${params.databaseId}`
   );
   try {
+    let collection: DataModels.Collection;
     if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       if (params.createNewDatabase) {
         const createDatabaseParams: DataModels.CreateDatabaseParams = {
@@ -54,18 +52,16 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
     } else {
       collection = await createCollectionWithSDK(params);
     }
+
+    logConsoleInfo(`Successfully created container ${params.collectionId}`);
+    await refreshCachedResources();
+    return collection;
   } catch (error) {
-    const sanitizedError = ErrorParserUtility.replaceKnownError(JSON.stringify(error));
-    logConsoleError(`Error while creating container ${params.collectionId}:\n ${sanitizedError}`);
-    logError(JSON.stringify(error), "CreateCollection", error.code);
-    sendNotificationForError(error);
-    clearMessage();
+    handleError(error, `Error while creating container ${params.collectionId}`, "CreateCollection");
     throw error;
+  } finally {
+    clearMessage();
   }
-  logConsoleInfo(`Successfully created container ${params.collectionId}`);
-  await refreshCachedResources();
-  clearMessage();
-  return collection;
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {

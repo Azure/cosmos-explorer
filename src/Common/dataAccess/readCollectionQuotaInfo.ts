@@ -5,9 +5,8 @@ import { ContainerDefinition, Resource } from "@azure/cosmos";
 import { HttpHeaders } from "../Constants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { client } from "../CosmosClient";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 interface ResourceWithStatistics {
   statistics: DataModels.Statistic[];
@@ -38,9 +37,7 @@ export const readCollectionQuotaInfo = async (
 
     return quota;
   } catch (error) {
-    logConsoleError(`Error while querying quota info for container ${collection.id}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadCollectionQuotaInfo", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while querying quota info for container ${collection.id}`, "ReadCollectionQuotaInfo");
     throw error;
   } finally {
     clearMessage();

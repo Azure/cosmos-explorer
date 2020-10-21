@@ -69,7 +69,7 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
     const result = JSON.parse(await response.json());
     return result;
   } catch (error) {
-    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${JSON.stringify(error)}`);
+    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${error.message}`);
     return Promise.reject(error);
   }
 }

@@ -82,7 +82,7 @@ export class RenewAdHocAccessPane extends ContextualPaneBase {
     this.container
       .renewShareAccess(this.accessKey())
       .fail((error: any) => {
-        const errorMessage: string = JSON.stringify(error);
+        const errorMessage: string = error.message;
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${errorMessage}`);
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);

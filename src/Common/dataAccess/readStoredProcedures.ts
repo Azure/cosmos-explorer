@@ -1,10 +1,9 @@
 import { AuthType } from "../../AuthType";
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function readStoredProcedures(
@@ -31,9 +30,7 @@ export async function readStoredProcedures(
       .fetchAll();
     return response?.resources;
   } catch (error) {
-    logConsoleError(`Failed to query stored procedures for container ${collectionId}: ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadStoredProcedures", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Failed to query stored procedures for container ${collectionId}`, "ReadStoredProcedures");
     throw error;
   } finally {
     clearMessage();

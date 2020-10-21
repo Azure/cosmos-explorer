@@ -24,36 +24,31 @@ import {
   createUpdateGremlinDatabase,
   getGremlinDatabase
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { logConsoleProgress, logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { refreshCachedOffers, refreshCachedResources } from "../DataAccessUtilityBase";
-import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export async function createDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  let database: DataModels.Database;
   const clearMessage = logConsoleProgress(`Creating a new database ${params.databaseId}`);
   try {
     if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
       throw new Error("Creating database resources is not allowed for tables accounts");
     }
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
-      database = await createDatabaseWithARM(params);
-    } else {
-      database = await createDatabaseWithSDK(params);
-    }
+    const database: DataModels.Database = await (window.authType === AuthType.AAD && !userContext.useSDKOperations
+      ? createDatabaseWithARM(params)
+      : createDatabaseWithSDK(params));
+
+    await refreshCachedResources();
+    await refreshCachedOffers();
+    logConsoleInfo(`Successfully created database ${params.databaseId}`);
+    return database;
   } catch (error) {
-    logConsoleError(`Error while creating database ${params.databaseId}:\n ${error.message}`);
-    logError(JSON.stringify(error), "CreateDatabase", error.code);
-    sendNotificationForError(error);
-    clearMessage();
+    handleError(error, `Error while creating database ${params.databaseId}`, "CreateDatabase");
     throw error;
+  } finally {
+    clearMessage();
   }
-  logConsoleInfo(`Successfully created database ${params.databaseId}`);
-  await refreshCachedResources();
-  await refreshCachedOffers();
-  clearMessage();
-  return database;
 }
 
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
