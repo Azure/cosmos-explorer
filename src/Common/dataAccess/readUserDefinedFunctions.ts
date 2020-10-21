@@ -1,10 +1,9 @@
 import { AuthType } from "../../AuthType";
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 import { listSqlUserDefinedFunctions } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function readUserDefinedFunctions(
@@ -31,9 +30,11 @@ export async function readUserDefinedFunctions(
       .fetchAll();
     return response?.resources;
   } catch (error) {
-    logConsoleError(`Failed to query user defined functions for container ${collectionId}: ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadUserDefinedFunctions", error.code);
-    sendNotificationForError(error);
+    handleError(
+      error,
+      `Failed to query user defined functions for container ${collectionId}`,
+      "ReadUserDefinedFunctions"
+    );
     throw error;
   } finally {
     clearMessage();

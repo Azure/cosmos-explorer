@@ -85,7 +85,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
         "Successfully created a default notebook workspace for the account"
       );
     } catch (error) {
-      const errorMessage = typeof error == "string" ? error : JSON.stringify(error);
+      const errorMessage = typeof error == "string" ? error : error.message;
       TelemetryProcessor.traceFailure(
         Action.CreateNotebookWorkspace,
         {

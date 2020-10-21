@@ -70,8 +70,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
         },
         startKey
       );
-      this.formErrors("Failed to setup a collection for saved queries");
-      this.formErrors(`Failed to setup a collection for saved queries: ${JSON.stringify(error)}`);
+      this.formErrors(`Failed to setup a collection for saved queries: ${error.message}`);
     } finally {
       this.isExecuting(false);
     }
