@@ -245,7 +245,7 @@ export default class Main {
         );
       },
       (error: any) => {
-        deferred.reject(`Failed to generate encrypted token: ${JSON.stringify(error)}`);
+        deferred.reject(`Failed to generate encrypted token: ${error.message}`);
       }
     );
 

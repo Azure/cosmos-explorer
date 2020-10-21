@@ -892,7 +892,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     backendPromise.then(
       (result: UserQueryResult) => (this.queryTotalRequestCharge = result.requestCharge),
       (error: any) => {
-        const errorMsg = `Failure in submitting query: ${query}: ${JSON.stringify(error)}`;
+        const errorMsg = `Failure in submitting query: ${query}: ${error.message}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
           filterQueryError: errorMsg
@@ -1826,7 +1826,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     promise
       .then((result: GremlinClient.GremlinRequestResult) => this.processGremlinQueryResults(result))
       .catch((error: any) => {
-        const errorMsg = `Failed to process query result: ${JSON.stringify(error)}`;
+        const errorMsg = `Failed to process query result: ${error.message}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
           filterQueryError: errorMsg

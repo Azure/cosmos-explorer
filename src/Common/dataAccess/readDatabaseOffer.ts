@@ -8,10 +8,9 @@ import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-
 import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { readOffers } from "./readOffers";
-import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export const readDatabaseOffer = async (
@@ -48,9 +47,7 @@ export const readDatabaseOffer = async (
       }
     );
   } catch (error) {
-    logConsoleError(`Error while querying offer for database ${params.databaseId}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadDatabaseOffer", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while querying offer for database ${params.databaseId}`, "ReadDatabaseOffer");
     throw error;
   } finally {
     clearMessage();

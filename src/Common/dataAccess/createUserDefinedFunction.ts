@@ -9,9 +9,8 @@ import {
   createUpdateSqlUserDefinedFunction,
   getSqlUserDefinedFunction
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function createUserDefinedFunction(
@@ -66,9 +65,11 @@ export async function createUserDefinedFunction(
       .scripts.userDefinedFunctions.create(userDefinedFunction);
     return response?.resource;
   } catch (error) {
-    logConsoleError(`Error while creating user defined function ${userDefinedFunction.id}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "CreateUserupdateUserDefinedFunction", error.code);
-    sendNotificationForError(error);
+    handleError(
+      error,
+      `Error while creating user defined function ${userDefinedFunction.id}`,
+      "CreateUserupdateUserDefinedFunction"
+    );
     throw error;
   } finally {
     clearMessage();

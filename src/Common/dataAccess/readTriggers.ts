@@ -2,10 +2,9 @@ import { AuthType } from "../../AuthType";
 import { Resource, TriggerDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
 import { listSqlTriggers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function readTriggers(
   databaseId: string,
@@ -31,9 +30,7 @@ export async function readTriggers(
       .fetchAll();
     return response?.resources;
   } catch (error) {
-    logConsoleError(`Failed to query triggers for container ${collectionId}: ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadTriggers", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Failed to query triggers for container ${collectionId}`, "ReadTriggers");
     throw error;
   } finally {
     clearMessage();

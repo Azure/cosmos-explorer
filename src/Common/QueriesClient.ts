@@ -53,7 +53,7 @@ export class QueriesClient {
           return Promise.resolve(collection);
         },
         (error: any) => {
-          const stringifiedError: string = JSON.stringify(error);
+          const stringifiedError: string = error.message;
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
             `Failed to set up account for saving queries: ${stringifiedError}`
@@ -163,7 +163,7 @@ export class QueriesClient {
               return Promise.resolve(queries);
             },
             (error: any) => {
-              const stringifiedError: string = JSON.stringify(error);
+              const stringifiedError: string = error.message;
               NotificationConsoleUtils.logConsoleMessage(
                 ConsoleDataType.Error,
                 `Failed to fetch saved queries: ${stringifiedError}`
@@ -175,7 +175,7 @@ export class QueriesClient {
         },
         (error: any) => {
           // should never get into this state but we handle this regardless
-          const stringifiedError: string = JSON.stringify(error);
+          const stringifiedError: string = error.message;
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
             `Failed to fetch saved queries: ${stringifiedError}`
@@ -232,7 +232,7 @@ export class QueriesClient {
           return Promise.resolve();
         },
         (error: any) => {
-          const stringifiedError: string = JSON.stringify(error);
+          const stringifiedError: string = error.message;
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
             `Failed to delete query ${query.queryName}: ${stringifiedError}`
