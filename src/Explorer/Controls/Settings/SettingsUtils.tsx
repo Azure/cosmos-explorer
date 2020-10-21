@@ -80,7 +80,7 @@ export const getMaxRUs = (collection: ViewModels.Collection, container: Explorer
   const numPartitionsFromOffer: number =
     collection?.offer && collection.offer()?.content?.collectionThroughputInfo?.numPhysicalPartitions;
 
-  const numPartitionsFromQuotaInfo: number = collection?.quotaInfo().numPartitions;
+  const numPartitionsFromQuotaInfo: number = collection?.quotaInfo()?.numPartitions;
 
   const numPartitions = numPartitionsFromOffer ?? numPartitionsFromQuotaInfo ?? 1;
 
@@ -105,7 +105,7 @@ export const getMinRUs = (collection: ViewModels.Collection, container: Explorer
     return collectionThroughputInfo.minimumRUForCollection;
   }
 
-  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions ?? collection.quotaInfo().numPartitions;
+  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions ?? collection.quotaInfo()?.numPartitions;
 
   if (!numPartitions || numPartitions === 1) {
     return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
