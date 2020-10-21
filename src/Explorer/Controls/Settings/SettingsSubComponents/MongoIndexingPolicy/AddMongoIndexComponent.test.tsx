@@ -15,9 +15,6 @@ describe("AddMongoIndexComponent", () => {
       },
       onDiscard: () => {
         return;
-      },
-      setRef: () => {
-        return;
       }
     };
 
