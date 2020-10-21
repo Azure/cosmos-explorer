@@ -103,7 +103,7 @@ export default class Database implements ViewModels.Database {
           );
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Error while fetching database settings for database ${this.id()}: ${JSON.stringify(error)}`
+            `Error while fetching database settings for database ${this.id()}: ${error.message}`
           );
           throw error;
         }
@@ -239,7 +239,7 @@ export default class Database implements ViewModels.Database {
       (error: any) => {
         Logger.logError(
           JSON.stringify({
-            error: JSON.stringify(error),
+            error: error.message,
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.id(),
             collectionName: this.id()

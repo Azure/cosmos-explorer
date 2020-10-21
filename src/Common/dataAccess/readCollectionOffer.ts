@@ -4,15 +4,14 @@ import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType
 import { HttpHeaders } from "../Constants";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { getTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { readOffers } from "./readOffers";
-import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export const readCollectionOffer = async (
@@ -57,9 +56,7 @@ export const readCollectionOffer = async (
       }
     );
   } catch (error) {
-    logConsoleError(`Error while querying offer for collection ${params.collectionId}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadCollectionOffer", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while querying offer for collection ${params.collectionId}`, "ReadCollectionOffer");
     throw error;
   } finally {
     clearMessage();

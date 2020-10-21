@@ -1,17 +1,14 @@
 import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Q from "q";
-import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
+import { logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import * as Constants from "./Constants";
-import { sendNotificationForError } from "./dataAccess/sendNotificationForError";
 import * as DataAccessUtilityBase from "./DataAccessUtilityBase";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
-import * as Logger from "./Logger";
+import { handleError } from "./ErrorHandlingUtils";
 
 // TODO: Log all promise resolutions and errors with verbosity levels
 export function queryDocuments(
@@ -59,13 +56,11 @@ export function executeStoredProcedure(
         );
       },
       (error: any) => {
-        logConsoleError(
-          `Failed to execute stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}: ${JSON.stringify(
-            error
-          )}`
+        handleError(
+          error,
+          `Failed to execute stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`,
+          "ExecuteStoredProcedure"
         );
-        Logger.logError(JSON.stringify(error), "ExecuteStoredProcedure", error.code);
-        sendNotificationForError(error);
         deferred.reject(error);
       }
     )
@@ -93,9 +88,7 @@ export function queryDocumentsPage(
         deferred.resolve(result);
       },
       (error: any) => {
-        logConsoleError(`Failed to query ${entityName} for container ${resourceName}: ${JSON.stringify(error)}`);
-        Logger.logError(JSON.stringify(error), "QueryDocumentsPage", error.code);
-        sendNotificationForError(error);
+        handleError(error, `Failed to query ${entityName} for container ${resourceName}`, "QueryDocumentsPage");
         deferred.reject(error);
       }
     )
@@ -116,9 +109,7 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
         deferred.resolve(document);
       },
       (error: any) => {
-        logConsoleError(`Failed to read ${entityName} ${documentId.id()}: ${JSON.stringify(error)}`);
-        Logger.logError(JSON.stringify(error), "ReadDocument", error.code);
-        sendNotificationForError(error);
+        handleError(error, `Failed to read ${entityName} ${documentId.id()}`, "ReadDocument");
         deferred.reject(error);
       }
     )
@@ -144,9 +135,7 @@ export function updateDocument(
         deferred.resolve(updatedDocument);
       },
       (error: any) => {
-        logConsoleError(`Failed to update ${entityName} ${documentId.id()}: ${JSON.stringify(error)}`);
-        Logger.logError(JSON.stringify(error), "UpdateDocument", error.code);
-        sendNotificationForError(error);
+        handleError(error, `Failed to update ${entityName} ${documentId.id()}`, "UpdateDocument");
         deferred.reject(error);
       }
     )
@@ -168,11 +157,7 @@ export function createDocument(collection: ViewModels.CollectionBase, newDocumen
         deferred.resolve(savedDocument);
       },
       (error: any) => {
-        logConsoleError(
-          `Error while creating new ${entityName} for container ${collection.id()}:\n ${JSON.stringify(error)}`
-        );
-        Logger.logError(JSON.stringify(error), "CreateDocument", error.code);
-        sendNotificationForError(error);
+        handleError(error, `Error while creating new ${entityName} for container ${collection.id()}`, "CreateDocument");
         deferred.reject(error);
       }
     )
@@ -194,9 +179,7 @@ export function deleteDocument(collection: ViewModels.CollectionBase, documentId
         deferred.resolve(response);
       },
       (error: any) => {
-        logConsoleError(`Error while deleting ${entityName} ${documentId.id()}:\n ${JSON.stringify(error)}`);
-        Logger.logError(JSON.stringify(error), "DeleteDocument", error.code);
-        sendNotificationForError(error);
+        handleError(error, `Error while deleting ${entityName} ${documentId.id()}`, "DeleteDocument");
         deferred.reject(error);
       }
     )
@@ -222,9 +205,7 @@ export function deleteConflict(
         deferred.resolve(response);
       },
       (error: any) => {
-        logConsoleError(`Error while deleting conflict ${conflictId.id()}:\n ${JSON.stringify(error)}`);
-        Logger.logError(JSON.stringify(error), "DeleteConflict", error.code);
-        sendNotificationForError(error);
+        handleError(error, `Error while deleting conflict ${conflictId.id()}`, "DeleteConflict");
         deferred.reject(error);
       }
     )

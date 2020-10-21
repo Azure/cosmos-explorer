@@ -10,9 +10,8 @@ import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function updateStoredProcedure(
@@ -65,10 +64,7 @@ export async function updateStoredProcedure(
       .replace(storedProcedure);
     return response?.resource;
   } catch (error) {
-    const errorMessage = error.code === "NotFound" ? `${storedProcedure.id} does not exist.` : JSON.stringify(error);
-    logConsoleError(`Error while updating stored procedure ${storedProcedure.id}:\n ${errorMessage}`);
-    logError(errorMessage, "UpdateStoredProcedure", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while updating stored procedure ${storedProcedure.id}`, "UpdateStoredProcedure");
     throw error;
   } finally {
     clearMessage();

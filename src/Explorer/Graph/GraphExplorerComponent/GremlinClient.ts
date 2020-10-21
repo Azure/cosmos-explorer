@@ -57,9 +57,9 @@ export class GremlinClient {
           this.flushResult(result.requestId);
         }
       },
-      failureCallback: (result: Result, error: string) => {
+      failureCallback: (result: Result, error: any) => {
         if (typeof error !== "string") {
-          error = JSON.stringify(error);
+          error = error.message;
         }
 
         const requestId = result.requestId;

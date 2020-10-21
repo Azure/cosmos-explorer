@@ -2,7 +2,7 @@ import * as Constants from "../Constants";
 import { sendMessage } from "../MessageHandler";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 
-interface CosmosError {
+export interface CosmosError {
   code: number;
   message?: string;
 }

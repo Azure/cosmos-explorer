@@ -10,9 +10,8 @@ import {
   createUpdateSqlUserDefinedFunction,
   getSqlUserDefinedFunction
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function updateUserDefinedFunction(
@@ -65,11 +64,11 @@ export async function updateUserDefinedFunction(
       .replace(userDefinedFunction);
     return response?.resource;
   } catch (error) {
-    const errorMessage =
-      error.code === "NotFound" ? `${userDefinedFunction.id} does not exist.` : JSON.stringify(error);
-    logConsoleError(`Error while updating user defined function ${userDefinedFunction.id}:\n ${errorMessage}`);
-    logError(errorMessage, "UpdateUserupdateUserDefinedFunction", error.code);
-    sendNotificationForError(error);
+    handleError(
+      error,
+      `Error while updating user defined function ${userDefinedFunction.id}`,
+      "UpdateUserupdateUserDefinedFunction"
+    );
     throw error;
   } finally {
     clearMessage();
