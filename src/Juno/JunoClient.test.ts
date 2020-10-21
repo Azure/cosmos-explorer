@@ -134,17 +134,18 @@ describe("GitHub", () => {
 
 describe("Gallery", () => {
   const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
-  const originalUserContext = userContext;
+  const originalSubscriptionId = userContext.subscriptionId;
 
-  beforeEach(() => {
-    updateUserContext({
-      subscriptionId: sampleSubscriptionId
-    });
+  beforeAll(() => {
+    updateUserContext({ subscriptionId: sampleSubscriptionId });
   });
 
   afterEach(() => {
-    updateUserContext(originalUserContext);
     jest.resetAllMocks();
+  });
+
+  afterAll(() => {
+    updateUserContext({ subscriptionId: originalSubscriptionId });
   });
 
   it("getSampleNotebooks", async () => {
