@@ -101,7 +101,6 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
           onDiscard={[Function]}
           onIndexAddOrChange={[Function]}
           position={0}
-          setRef={[Function]}
         />
       </Stack>
     </CollapsibleSectionComponent>

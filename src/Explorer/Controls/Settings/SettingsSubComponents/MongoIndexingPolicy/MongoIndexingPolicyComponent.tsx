@@ -8,7 +8,6 @@ import {
   SelectionMode,
   IDetailsRowProps,
   DetailsRow,
-  ITextField,
   IColumn,
   MessageBar,
   MessageBarType,
@@ -69,7 +68,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
   MongoIndexingPolicyComponentState
 > {
   private shouldCheckComponentIsDirty = true;
-  private currentTextFields: ITextField[] = [];
+  private addMongoIndexComponentRefs: React.RefObject<AddMongoIndexComponent>[] = [];
   private initialIndexesColumns: IColumn[] = [
     { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
@@ -105,7 +104,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
   componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
     if (this.props.indexesToAdd.length > prevProps.indexesToAdd.length) {
-      this.currentTextFields[prevProps.indexesToAdd.length]?.focus();
+      this.addMongoIndexComponentRefs[prevProps.indexesToAdd.length]?.current?.focus();
     }
     this.onComponentUpdate();
   }
@@ -188,6 +187,13 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
   private renderIndexesToBeAdded = (): JSX.Element => {
     const indexesToAddLength = this.props.indexesToAdd.length;
+    for (let i = 0; i < indexesToAddLength; i++) {
+      const existingIndexToAddRef = React.createRef<AddMongoIndexComponent>();
+      this.addMongoIndexComponentRefs[i] = existingIndexToAddRef;
+    }
+    const newIndexToAddRef = React.createRef<AddMongoIndexComponent>();
+    this.addMongoIndexComponentRefs[indexesToAddLength] = newIndexToAddRef;
+
     return (
       <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
         {this.props.indexesToAdd.map((mongoIndexWithType: AddMongoIndexProps, arrayPosition: number) => {
@@ -196,17 +202,17 @@ export class MongoIndexingPolicyComponent extends React.Component<
           const notification = mongoIndexWithType.notification;
           return (
             <AddMongoIndexComponent
+              ref={this.addMongoIndexComponentRefs[arrayPosition]}
               position={arrayPosition}
               key={arrayPosition}
               description={keys.join()}
               type={type}
               notification={notification}
-              setRef={(textField: ITextField) => (this.currentTextFields[arrayPosition] = textField)}
               onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
                 this.props.onIndexAddOrChange(arrayPosition, description, type)
               }
               onDiscard={() => {
-                this.currentTextFields.splice(arrayPosition, 1);
+                this.addMongoIndexComponentRefs.splice(arrayPosition, 1);
                 this.props.onRevertIndexAdd(arrayPosition);
               }}
             />
@@ -214,13 +220,13 @@ export class MongoIndexingPolicyComponent extends React.Component<
         })}
 
         <AddMongoIndexComponent
+          ref={this.addMongoIndexComponentRefs[indexesToAddLength]}
           disabled={this.isIndexingTransforming()}
           position={indexesToAddLength}
           key={indexesToAddLength}
           description={undefined}
           type={undefined}
           notification={undefined}
-          setRef={(textField: ITextField) => (this.currentTextFields[indexesToAddLength] = textField)}
           onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
             this.props.onIndexAddOrChange(indexesToAddLength, description, type)
           }

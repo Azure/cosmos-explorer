@@ -31,11 +31,11 @@ export interface AddMongoIndexComponentProps {
   notification: MongoNotificationMessage;
   onIndexAddOrChange: (description: string, type: MongoIndexTypes) => void;
   onDiscard: () => void;
-  setRef: (textField: ITextField) => void;
   disabled?: boolean;
 }
 
 export class AddMongoIndexComponent extends React.Component<AddMongoIndexComponentProps> {
+  private descriptionTextField: ITextField;
   private indexTypes: IDropdownOption[] = [MongoIndexTypes.Single, MongoIndexTypes.Wildcard].map(
     (value: MongoIndexTypes) => ({
       text: getMongoIndexTypeText(value),
@@ -55,6 +55,12 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
     this.props.onIndexAddOrChange(this.props.description, newType);
   };
 
+  private setRef = (textField: ITextField) => (this.descriptionTextField = textField);
+
+  public focus = (): void => {
+    this.descriptionTextField.focus();
+  };
+
   public render(): JSX.Element {
     return (
       <Stack {...mongoWarningStackProps}>
@@ -63,7 +69,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
             ariaLabel={"Index Field Name " + this.props.position}
             disabled={this.props.disabled}
             styles={shortWidthTextFieldStyles}
-            componentRef={this.props.setRef}
+            componentRef={this.setRef}
             value={this.props.description}
             placeholder={this.props.type === MongoIndexTypes.Wildcard ? MongoWildcardPlaceHolder : undefined}
             onChange={this.onDescriptionChange}
