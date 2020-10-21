@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import {
   SqlStoredProcedureCreateUpdateParameters,
@@ -21,7 +22,11 @@ export async function updateStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       const getResponse = await getSqlStoredProcedure(
         userContext.subscriptionId,
         userContext.resourceGroup,

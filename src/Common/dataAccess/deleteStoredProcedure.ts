@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { client } from "../CosmosClient";
 import { deleteSqlStoredProcedure } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -13,7 +14,11 @@ export async function deleteStoredProcedure(
 ): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting stored procedure ${storedProcedureId}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       await deleteSqlStoredProcedure(
         userContext.subscriptionId,
         userContext.resourceGroup,

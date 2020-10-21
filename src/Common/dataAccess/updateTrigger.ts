@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import {
   SqlTriggerCreateUpdateParameters,
   SqlTriggerResource
@@ -18,7 +19,11 @@ export async function updateTrigger(
 ): Promise<TriggerDefinition> {
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       const getResponse = await getSqlTrigger(
         userContext.subscriptionId,
         userContext.resourceGroup,

@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, TriggerDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
 import { listSqlTriggers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
@@ -13,7 +14,11 @@ export async function readTriggers(
 ): Promise<(TriggerDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying triggers for container ${collectionId}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       const rpResponse = await listSqlTriggers(
         userContext.subscriptionId,
         userContext.resourceGroup,
