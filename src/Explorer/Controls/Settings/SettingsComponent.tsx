@@ -396,13 +396,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           await updateOfferThroughputBeyondLimit(requestPayload);
           this.collection.offer().content.offerThroughput = originalThroughputValue;
           this.setState({
+            isScaleSaveable: false,
+            isScaleDiscardable: false,
             throughput: originalThroughputValue,
             throughputBaseline: originalThroughputValue,
             initialNotification: {
               description: `Throughput update for ${newThroughput} ${throughputUnit}`
             } as DataModels.Notification
           });
-          this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
         } else {
           const updateOfferParams: DataModels.UpdateOfferParams = {
             databaseId: this.collection.databaseId,
