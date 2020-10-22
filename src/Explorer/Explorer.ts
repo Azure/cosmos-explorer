@@ -1511,7 +1511,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    this.refreshAllDatabases();
+    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
