@@ -25,7 +25,6 @@ import {
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { refreshCachedResources } from "../DataAccessUtilityBase";
 import { userContext } from "../../UserContext";
 
 export async function updateCollection(
@@ -54,7 +53,6 @@ export async function updateCollection(
     }
 
     logConsoleInfo(`Successfully updated container ${collectionId}`);
-    await refreshCachedResources();
     return collection;
   } catch (error) {
     handleError(error, `Failed to update container ${collectionId}`, "UpdateCollection");

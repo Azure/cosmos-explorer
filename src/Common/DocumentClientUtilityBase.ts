@@ -215,11 +215,3 @@ export function deleteConflict(
 
   return deferred.promise;
 }
-
-export function refreshCachedResources(options: any = {}): Q.Promise<void> {
-  return DataAccessUtilityBase.refreshCachedResources(options);
-}
-
-export function refreshCachedOffers(): Q.Promise<void> {
-  return DataAccessUtilityBase.refreshCachedOffers();
-}

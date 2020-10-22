@@ -26,7 +26,6 @@ import {
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { refreshCachedOffers, refreshCachedResources } from "../DataAccessUtilityBase";
 import { userContext } from "../../UserContext";
 
 export async function createDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
@@ -39,8 +38,6 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
       ? createDatabaseWithARM(params)
       : createDatabaseWithSDK(params));
 
-    await refreshCachedResources();
-    await refreshCachedOffers();
     logConsoleInfo(`Successfully created database ${params.databaseId}`);
     return database;
   } catch (error) {

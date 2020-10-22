@@ -168,22 +168,6 @@ export function deleteConflict(
   );
 }
 
-export function refreshCachedOffers(): Q.Promise<void> {
-  if (configContext.platform === Platform.Portal) {
-    return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
-  } else {
-    return Q();
-  }
-}
-
-export function refreshCachedResources(options?: any): Q.Promise<void> {
-  if (configContext.platform === Platform.Portal) {
-    return sendCachedDataMessage(MessageTypes.RefreshResources, []);
-  } else {
-    return Q();
-  }
-}
-
 export function queryConflicts(
   databaseId: string,
   containerId: string,

@@ -15,7 +15,6 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -1512,41 +1511,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    refreshCachedResources().then(
-      () => {
-        TelemetryProcessor.traceSuccess(
-          Action.LoadDatabases,
-          {
-            description: "Refresh successful",
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree
-          },
-          startKey
-        );
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
-      },
-      (error: any) => {
-        this.isRefreshingExplorer(false);
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing data: ${error.message}`
-        );
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            description: "Unable to refresh cached resources",
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: error
-          },
-          startKey
-        );
-        throw error;
-      }
-    );
-
+    this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
