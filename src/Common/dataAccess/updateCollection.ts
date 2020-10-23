@@ -26,10 +26,9 @@ import {
   getGremlinGraph
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { refreshCachedResources } from "../DataAccessUtilityBase";
-import { sendNotificationForError } from "./sendNotificationForError";
 import { userContext } from "../../UserContext";
 
 export async function updateCollection(
@@ -62,9 +61,7 @@ export async function updateCollection(
     await refreshCachedResources();
     return collection;
   } catch (error) {
-    logConsoleError(`Failed to update container ${collectionId}: ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "UpdateCollection", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Failed to update container ${collectionId}`, "UpdateCollection");
     throw error;
   } finally {
     clearMessage();

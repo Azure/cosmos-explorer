@@ -6,6 +6,7 @@ import { logError } from "../Logger";
 import { sendNotificationForError } from "./sendNotificationForError";
 import * as Constants from "../Constants";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function readMongoDBCollectionThroughRP(
   databaseId: string,
@@ -21,9 +22,7 @@ export async function readMongoDBCollectionThroughRP(
     const response = await getMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
     collection = response.properties.resource;
   } catch (error) {
-    logConsoleError(`Error while querying container ${collectionId}:\n ${error.message}`);
-    logError(error.message, "ReadMongoDBCollection", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
     throw error;
   }
   clearMessage();
@@ -46,9 +45,7 @@ export async function getMongoDBCollectionIndexTransformationProgress(
       response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
     );
   } catch (error) {
-    logConsoleError(`Error while reading container ${collectionId}:\n ${error.message}`);
-    logError(error.message, "ReadCollection", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
     throw error;
   }
   clearMessage();

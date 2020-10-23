@@ -423,7 +423,7 @@ export class GitHubContentProvider implements IContentProvider {
       request: {},
       status: error.errno,
       response: error,
-      responseText: JSON.stringify(error),
+      responseText: error.message,
       responseType: "json"
     };
   }

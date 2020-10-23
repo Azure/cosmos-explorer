@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 import { listSqlUserDefinedFunctions } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function readUserDefinedFunctions(
@@ -13,7 +13,11 @@ export async function readUserDefinedFunctions(
 ): Promise<(UserDefinedFunctionDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       const rpResponse = await listSqlUserDefinedFunctions(
         userContext.subscriptionId,
         userContext.resourceGroup,
@@ -31,9 +35,11 @@ export async function readUserDefinedFunctions(
       .fetchAll();
     return response?.resources;
   } catch (error) {
-    logConsoleError(`Failed to query user defined functions for container ${collectionId}: ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadUserDefinedFunctions", error.code);
-    sendNotificationForError(error);
+    handleError(
+      error,
+      `Failed to query user defined functions for container ${collectionId}`,
+      "ReadUserDefinedFunctions"
+    );
     throw error;
   } finally {
     clearMessage();

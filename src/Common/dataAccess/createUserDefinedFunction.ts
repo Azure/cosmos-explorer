@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import {
   SqlUserDefinedFunctionCreateUpdateParameters,
@@ -9,9 +10,8 @@ import {
   createUpdateSqlUserDefinedFunction,
   getSqlUserDefinedFunction
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function createUserDefinedFunction(
@@ -21,7 +21,11 @@ export async function createUserDefinedFunction(
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       try {
         const getResponse = await getSqlUserDefinedFunction(
           userContext.subscriptionId,
@@ -66,9 +70,11 @@ export async function createUserDefinedFunction(
       .scripts.userDefinedFunctions.create(userDefinedFunction);
     return response?.resource;
   } catch (error) {
-    logConsoleError(`Error while creating user defined function ${userDefinedFunction.id}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "CreateUserupdateUserDefinedFunction", error.code);
-    sendNotificationForError(error);
+    handleError(
+      error,
+      `Error while creating user defined function ${userDefinedFunction.id}`,
+      "CreateUserupdateUserDefinedFunction"
+    );
     throw error;
   } finally {
     clearMessage();

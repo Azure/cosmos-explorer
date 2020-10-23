@@ -630,7 +630,7 @@ export default class Collection implements ViewModels.Collection {
           );
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Error while fetching container settings for container ${this.id()}: ${JSON.stringify(error)}`
+            `Error while fetching container settings for container ${this.id()}: ${error.message}`
           );
           throw error;
         }
@@ -852,7 +852,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : JSON.stringify(error)
+          error: typeof error === "string" ? error : error.message
         });
       }
     );
@@ -911,7 +911,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : JSON.stringify(error)
+          error: typeof error === "string" ? error : error.message
         });
       }
     );
@@ -971,7 +971,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : JSON.stringify(error)
+          error: typeof error === "string" ? error : error.message
         });
       }
     );
@@ -1168,7 +1168,7 @@ export default class Collection implements ViewModels.Collection {
           },
           error => {
             record.numFailed++;
-            record.errors = [...record.errors, JSON.stringify(error)];
+            record.errors = [...record.errors, error.message];
             return Q.resolve();
           }
         );
@@ -1221,7 +1221,7 @@ export default class Collection implements ViewModels.Collection {
       (error: any) => {
         Logger.logError(
           JSON.stringify({
-            error: JSON.stringify(error),
+            error: error.message,
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.databaseId,
             collectionName: this.id()
