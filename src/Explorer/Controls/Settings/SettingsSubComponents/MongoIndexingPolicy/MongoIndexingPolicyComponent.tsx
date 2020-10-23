@@ -38,6 +38,7 @@ import {
 } from "../../SettingsUtils";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
+import { handleError } from "../../../../../Common/ErrorHandlingUtils";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
@@ -299,6 +300,8 @@ export class MongoIndexingPolicyComponent extends React.Component<
     this.setState({ isRefreshingIndexTransformationProgress: true });
     try {
       await this.props.refreshIndexTransformationProgress();
+    } catch(error) {
+      handleError(error, "Refreshing index transformation progress failed.", "RefreshIndexTransformationProgress")
     } finally {
       this.setState({ isRefreshingIndexTransformationProgress: false });
     }
