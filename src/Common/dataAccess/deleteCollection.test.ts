@@ -7,7 +7,6 @@ import { AuthType } from "../../AuthType";
 import { client } from "../CosmosClient";
 import { updateUserContext } from "../../UserContext";
 import { DatabaseAccount } from "../../Contracts/DataModels";
-import { sendCachedDataMessage } from "../MessageHandler";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 
 describe("deleteCollection", () => {
@@ -18,7 +17,6 @@ describe("deleteCollection", () => {
       } as DatabaseAccount,
       defaultExperience: DefaultAccountExperienceType.DocumentDB
     });
-    (sendCachedDataMessage as jest.Mock).mockResolvedValue(undefined);
   });
 
   it("should call ARM if logged in with AAD", async () => {
