@@ -231,7 +231,7 @@ export const getMongoNotification = (description: string, type: MongoIndexTypes)
 };
 
 export const getMongoIndexType = (keys: string[]): MongoIndexTypes => {
-  const length = keys.length;
+  const length = keys?.length;
   let type: MongoIndexTypes;
 
   if (length === 1) {

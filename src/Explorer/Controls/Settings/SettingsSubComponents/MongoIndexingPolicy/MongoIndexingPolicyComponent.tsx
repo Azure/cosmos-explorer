@@ -124,10 +124,17 @@ export class MongoIndexingPolicyComponent extends React.Component<
   };
 
   public isMongoIndexingPolicySaveable = (): boolean => {
-    const addErrorsExist = this.props.indexesToAdd.find(
-      (addMongoIndexProps: AddMongoIndexProps) => addMongoIndexProps.notification
-    );
-    return (this.props.indexesToAdd.length > 0 && !addErrorsExist) || this.props.indexesToDrop.length > 0;
+    if (this.props.indexesToAdd.length === 0 && this.props.indexesToDrop.length === 0) {
+      return false;
+    }
+
+    const addErrorsExist = !!this.props.indexesToAdd.find(addMongoIndexProps => addMongoIndexProps.notification);
+
+    if (addErrorsExist) {
+      return false;
+    }
+
+    return true;
   };
 
   public isMongoIndexingPolicyDiscardable = (): boolean => {
@@ -136,8 +143,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
   public getMongoWarningNotificationMessage = (): string => {
     return this.props.indexesToAdd.find(
-      (addMongoIndexProps: AddMongoIndexProps) =>
-        addMongoIndexProps.notification?.type === MongoNotificationType.Warning
+      addMongoIndexProps => addMongoIndexProps.notification?.type === MongoNotificationType.Warning
     )?.notification.message;
   };
 
@@ -171,9 +177,9 @@ export class MongoIndexingPolicyComponent extends React.Component<
     arrayPosition: number,
     isCurrentIndex: boolean
   ): MongoIndexDisplayProps => {
-    const keys = mongoIndex.key.keys;
+    const keys = mongoIndex?.key?.keys;
     const type = getMongoIndexType(keys);
-    const definition = keys.join();
+    const definition = keys?.join();
     let mongoIndexDisplayProps: MongoIndexDisplayProps;
     if (type) {
       mongoIndexDisplayProps = {
@@ -196,7 +202,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
     return (
       <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
-        {this.props.indexesToAdd.map((mongoIndexWithType: AddMongoIndexProps, arrayPosition: number) => {
+        {this.props.indexesToAdd.map((mongoIndexWithType, arrayPosition) => {
           const keys = mongoIndexWithType.mongoIndex.key.keys;
           const type = mongoIndexWithType.type;
           const notification = mongoIndexWithType.notification;
@@ -208,7 +214,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
               description={keys.join()}
               type={type}
               notification={notification}
-              onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
+              onIndexAddOrChange={(description, type) =>
                 this.props.onIndexAddOrChange(arrayPosition, description, type)
               }
               onDiscard={() => {
@@ -227,7 +233,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
           description={undefined}
           type={undefined}
           notification={undefined}
-          onIndexAddOrChange={(description: string, type: MongoIndexTypes) =>
+          onIndexAddOrChange={(description, type) =>
             this.props.onIndexAddOrChange(indexesToAddLength, description, type)
           }
           onDiscard={() => {
@@ -239,14 +245,9 @@ export class MongoIndexingPolicyComponent extends React.Component<
   };
 
   private renderInitialIndexes = (): JSX.Element => {
-    const initialIndexes: MongoIndexDisplayProps[] = this.props.mongoIndexes
-      .map((mongoIndex: MongoIndex, arrayPosition: number) =>
-        this.getMongoIndexDisplayProps(mongoIndex, arrayPosition, true)
-      )
-      .filter(
-        (value: MongoIndexDisplayProps, arrayPosition: number) =>
-          !!value && !this.props.indexesToDrop.includes(arrayPosition)
-      );
+    const initialIndexes = this.props.mongoIndexes
+      .map((mongoIndex, arrayPosition) => this.getMongoIndexDisplayProps(mongoIndex, arrayPosition, true))
+      .filter((value, arrayPosition) => !!value && !this.props.indexesToDrop.includes(arrayPosition));
 
     return (
       <Stack {...createAndAddMongoIndexStackProps} styles={mediumWidthStackStyles}>
@@ -271,9 +272,8 @@ export class MongoIndexingPolicyComponent extends React.Component<
   };
 
   private renderIndexesToBeDropped = (): JSX.Element => {
-    const indexesToBeDropped: MongoIndexDisplayProps[] = this.props.indexesToDrop.map(
-      (dropIndex: number, arrayPosition: number) =>
-        this.getMongoIndexDisplayProps(this.props.mongoIndexes[dropIndex], arrayPosition, false)
+    const indexesToBeDropped = this.props.indexesToDrop.map((dropIndex, arrayPosition) =>
+      this.getMongoIndexDisplayProps(this.props.mongoIndexes[dropIndex], arrayPosition, false)
     );
 
     return (
@@ -310,9 +310,8 @@ export class MongoIndexingPolicyComponent extends React.Component<
   private onClickRefreshIndexingTransformationLink = async () => await this.refreshIndexTransformationProgress();
 
   private renderIndexTransformationWarning = (): JSX.Element => {
-    let indexTransformationWarning: JSX.Element;
     if (this.state.isRefreshingIndexTransformationProgress) {
-      indexTransformationWarning = (
+      return (
         <Stack horizontal {...mongoWarningStackProps}>
           <Text>Refreshing indexing policy update information</Text>
           <Spinner size={SpinnerSize.medium} />
@@ -324,7 +323,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
       const updateInfoString = "The indexing policy is being updated in the background. ";
 
       if (this.props.indexTransformationProgress === 0) {
-        indexTransformationWarning = (
+        return (
           <Text>
             {updateInfoString}
             <Link onClick={this.onClickRefreshIndexingTransformationLink}>
@@ -333,7 +332,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
           </Text>
         );
       } else {
-        indexTransformationWarning = (
+        return (
           <Text>
             {updateInfoString} The update is {this.props.indexTransformationProgress}% complete.
             <Link onClick={this.onClickRefreshIndexingTransformationLink}>{` Refresh to check the progress.`}</Link>
@@ -342,7 +341,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
       }
     }
 
-    return indexTransformationWarning;
+    return undefined;
   };
 
   private renderWarningMessage = (): JSX.Element => {

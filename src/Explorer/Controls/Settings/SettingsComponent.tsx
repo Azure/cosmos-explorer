@@ -47,9 +47,9 @@ import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
-  getMongoCollectionIndexTransformationProgress,
+  getMongoDBCollectionIndexTransformationProgress,
   readMongoDBCollectionThroughRP
-} from "../../../Common/dataAccess/readCollection";
+} from "../../../Common/dataAccess/readMongoDBCollection";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -246,7 +246,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public refreshIndexTransformationProgress = async (): Promise<void> => {
-    const currentProgress = await getMongoCollectionIndexTransformationProgress(
+    const currentProgress = await getMongoDBCollectionIndexTransformationProgress(
       this.collection.databaseId,
       this.collection.id()
     );

@@ -65,17 +65,33 @@ describe("MongoIndexingPolicyComponent", () => {
       [
         { type: MongoNotificationType.Warning, message: sampleWarning } as MongoNotificationMessage,
         false,
+        false,
         true,
         sampleWarning
       ],
-      [{ type: MongoNotificationType.Error, message: sampleError } as MongoNotificationMessage, false, true, undefined],
-      [undefined, true, true, undefined]
+      [
+        { type: MongoNotificationType.Error, message: sampleError } as MongoNotificationMessage,
+        false,
+        false,
+        true,
+        undefined
+      ],
+      [
+        { type: MongoNotificationType.Error, message: sampleError } as MongoNotificationMessage,
+        true,
+        false,
+        true,
+        undefined
+      ],
+      [undefined, false, true, true, undefined],
+      [undefined, true, true, true, undefined]
     ];
 
     test.each(cases)(
       "",
       (
         notification: MongoNotificationMessage,
+        indexToDropIsPresent: boolean,
         isMongoIndexingPolicySaveable: boolean,
         isMongoIndexingPolicyDiscardable: boolean,
         mongoWarningNotificationMessage: string
@@ -86,7 +102,11 @@ describe("MongoIndexingPolicyComponent", () => {
           notification: notification
         };
 
-        wrapper.setProps({ indexesToAdd: [addMongoIndexProps] });
+        let indexesToDrop: number[] = [];
+        if (indexToDropIsPresent) {
+          indexesToDrop = [0];
+        }
+        wrapper.setProps({ indexesToAdd: [addMongoIndexProps], indexesToDrop: indexesToDrop });
         wrapper.update();
 
         expect(mongoIndexingPolicyComponent.isMongoIndexingPolicySaveable()).toEqual(isMongoIndexingPolicySaveable);

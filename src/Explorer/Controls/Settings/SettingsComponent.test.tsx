@@ -8,8 +8,8 @@ import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
 import { TtlType, isDirty } from "./SettingsUtils";
 import Explorer from "../../Explorer";
-jest.mock("../../../Common/dataAccess/readCollection", () => ({
-  getMongoCollectionIndexTransformationProgress: jest.fn().mockReturnValue(undefined)
+jest.mock("../../../Common/dataAccess/readMongoDBCollection", () => ({
+  getMongoDBCollectionIndexTransformationProgress: jest.fn().mockReturnValue(undefined)
 }));
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
