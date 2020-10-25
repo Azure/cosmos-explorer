@@ -14,7 +14,6 @@ const notificationsPath = () => {
       throw new Error(`Unknown platform: ${configContext.platform}`);
   }
 };
-
 export const fetchPortalNotifications = async (): Promise<DataModels.Notification[]> => {
   if (configContext.platform === Platform.Emulator) {
     return [];
