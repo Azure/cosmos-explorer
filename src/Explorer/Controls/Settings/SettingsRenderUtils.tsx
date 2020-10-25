@@ -27,7 +27,9 @@ import {
   IIconStyles,
   IDetailsListStyles,
   IDropdownStyles,
-  ISeparatorStyles
+  ISeparatorStyles,
+  MessageBar,
+  MessageBarType
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -393,6 +395,17 @@ export const mongoIndexingPolicyDisclaimer: JSX.Element = (
     </Link>
     for best practices of managing indexing.
   </Text>
+);
+
+export const mongoIndexingPolicyAADError: JSX.Element = (
+  <MessageBar messageBarType={MessageBarType.error}>
+    <Text>
+      To use the indexing policy editor, please login to the
+      <Link target="_blank" href="https://portal.azure.com">
+        {"azure portal."}
+      </Link>
+    </Text>
+  </MessageBar>
 );
 
 export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<ITextFieldStyles> => ({

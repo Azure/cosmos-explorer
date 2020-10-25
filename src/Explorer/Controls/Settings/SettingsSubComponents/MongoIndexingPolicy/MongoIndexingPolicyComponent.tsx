@@ -25,7 +25,8 @@ import {
   transparentDetailsRowStyles,
   createAndAddMongoIndexStackProps,
   mongoWarningStackProps,
-  separatorStyles
+  separatorStyles,
+  mongoIndexingPolicyAADError
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -39,6 +40,7 @@ import {
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import { handleError } from "../../../../../Common/ErrorHandlingUtils";
+import { AuthType } from "../../../../../AuthType";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
@@ -300,8 +302,8 @@ export class MongoIndexingPolicyComponent extends React.Component<
     this.setState({ isRefreshingIndexTransformationProgress: true });
     try {
       await this.props.refreshIndexTransformationProgress();
-    } catch(error) {
-      handleError(error, "Refreshing index transformation progress failed.", "RefreshIndexTransformationProgress")
+    } catch (error) {
+      handleError(error, "Refreshing index transformation progress failed.", "RefreshIndexTransformationProgress");
     } finally {
       this.setState({ isRefreshingIndexTransformationProgress: false });
     }
@@ -372,16 +374,18 @@ export class MongoIndexingPolicyComponent extends React.Component<
   };
 
   public render(): JSX.Element {
-    return this.props.mongoIndexes ? (
-      <Stack {...subComponentStackProps}>
-        {this.renderWarningMessage()}
-        {mongoIndexingPolicyDisclaimer}
-        {this.renderInitialIndexes()}
-        <Separator styles={separatorStyles} />
-        {this.renderIndexesToBeDropped()}
-      </Stack>
-    ) : (
-      <Spinner size={SpinnerSize.large} />
-    );
+    if (this.props.mongoIndexes) {
+      return (
+        <Stack {...subComponentStackProps}>
+          {this.renderWarningMessage()}
+          {mongoIndexingPolicyDisclaimer}
+          {this.renderInitialIndexes()}
+          <Separator styles={separatorStyles} />
+          {this.renderIndexesToBeDropped()}
+        </Stack>
+      );
+    } else {
+      return window.authType !== AuthType.AAD ? mongoIndexingPolicyAADError : <Spinner size={SpinnerSize.large} />;
+    }
   }
 }

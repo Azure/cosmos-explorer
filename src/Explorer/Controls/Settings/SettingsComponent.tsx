@@ -117,17 +117,17 @@ export interface SettingsComponentState {
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
-  public saveSettingsButton: ButtonV2;
-  public discardSettingsChangesButton: ButtonV2;
+  private saveSettingsButton: ButtonV2;
+  private discardSettingsChangesButton: ButtonV2;
 
-  public isAnalyticalStorageEnabled: boolean;
+  private isAnalyticalStorageEnabled: boolean;
   private collection: ViewModels.Collection;
   private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
   private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
-  private mongoDBCollectionResource: MongoDBCollectionResource;
+  public mongoDBCollectionResource: MongoDBCollectionResource;
 
   constructor(props: SettingsComponentProps) {
     super(props);
@@ -239,9 +239,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.id()
       );
 
-      this.setState({
-        currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
-      });
+      if (this.mongoDBCollectionResource) {
+        this.setState({
+          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+        });
+      }
     }
   };
 
@@ -392,7 +394,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         });
       }
 
-      if (this.state.isMongoIndexingPolicySaveable) {
+      if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
         const newMongoIndexes = this.getMongoIndexesToSave();
         const newMongoCollection: MongoDBCollectionResource = {
           ...this.mongoDBCollectionResource,

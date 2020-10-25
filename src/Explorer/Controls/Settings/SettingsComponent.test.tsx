@@ -207,6 +207,9 @@ describe("SettingsComponent", () => {
     wrapper.setState({ isSubSettingsSaveable: true, isScaleSaveable: true, isMongoIndexingPolicySaveable: true });
     wrapper.update();
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+    settingsComponentInstance.mongoDBCollectionResource = {
+      id: "id"
+    };
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
     expect(updateMongoDBCollectionThroughRP).toBeCalled();
