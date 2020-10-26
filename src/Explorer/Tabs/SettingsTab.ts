@@ -492,11 +492,11 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(() => {
-      const isPublicAzurePortal: boolean =
-        configContext.platform === Platform.Portal && !this.container.isRunningOnNationalCloud();
-      const hasPartitionKey = !!this.collection.partitionKey;
-
-      return isPublicAzurePortal && hasPartitionKey;
+      return (
+        this._isFixedContainer() &&
+        configContext.platform === Platform.Portal &&
+        !this.container.isRunningOnNationalCloud()
+      );
     });
 
     this.canRequestSupport = ko.pureComputed(() => {

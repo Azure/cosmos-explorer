@@ -99,7 +99,7 @@ describe("SettingsUtils", () => {
   it("getSanitizedInputValue", () => {
     const max = 100;
     expect(getSanitizedInputValue("", max)).toEqual(0);
-    expect(getSanitizedInputValue("999", max)).toEqual(99);
+    expect(getSanitizedInputValue("999", max)).toEqual(100);
     expect(getSanitizedInputValue("10", max)).toEqual(10);
   });
 
