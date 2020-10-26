@@ -5,9 +5,8 @@ import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-0
 import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 import { client } from "../CosmosClient";
 import { refreshCachedResources } from "../DataAccessUtilityBase";
@@ -23,15 +22,14 @@ export async function deleteCollection(databaseId: string, collectionId: string)
         .container(collectionId)
         .delete();
     }
+    logConsoleInfo(`Successfully deleted container ${collectionId}`);
+    await refreshCachedResources();
   } catch (error) {
-    logConsoleError(`Error while deleting container ${collectionId}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "DeleteCollection", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while deleting container ${collectionId}`, "DeleteCollection");
     throw error;
+  } finally {
+    clearMessage();
   }
-  logConsoleInfo(`Successfully deleted container ${collectionId}`);
-  clearMessage();
-  await refreshCachedResources();
 }
 
 function deleteCollectionWithARM(databaseId: string, collectionId: string): Promise<void> {

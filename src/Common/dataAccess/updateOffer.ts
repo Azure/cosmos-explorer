@@ -6,12 +6,11 @@ import { OfferDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { readCollectionOffer } from "./readCollectionOffer";
 import { readDatabaseOffer } from "./readDatabaseOffer";
 import { refreshCachedOffers, refreshCachedResources } from "../DataAccessUtilityBase";
-import { sendNotificationForError } from "./sendNotificationForError";
 import {
   updateSqlDatabaseThroughput,
   migrateSqlDatabaseToAutoscale,
@@ -76,9 +75,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
     logConsoleInfo(`Successfully updated offer for ${offerResourceText}`);
     return updatedOffer;
   } catch (error) {
-    logConsoleError(`Error updating offer for ${offerResourceText}: ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "UpdateCollection", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error updating offer for ${offerResourceText}`, "UpdateCollection");
     throw error;
   } finally {
     clearMessage();

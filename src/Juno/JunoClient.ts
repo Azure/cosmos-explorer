@@ -5,6 +5,7 @@ import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
+import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export interface IJunoResponse<T> {
@@ -55,13 +56,15 @@ export interface IUserGallery {
   published: string[];
 }
 
-interface IPublishNotebookRequest {
+// Only exported for unit test
+export interface IPublishNotebookRequest {
   name: string;
   description: string;
   tags: string[];
   author: string;
   thumbnailUrl: string;
   content: any;
+  addLinkToNotebookViewer: boolean;
 }
 
 export class JunoClient {
@@ -331,7 +334,7 @@ export class JunoClient {
   }
 
   public async getPublishedNotebooks(): Promise<IJunoResponse<IGalleryItem[]>> {
-    return await this.getNotebooks(`${this.getNotebooksUrl()}/gallery/published`, {
+    return await this.getNotebooks(`${this.getNotebooksUrl()}/${this.getSubscriptionId()}/gallery/published`, {
       headers: JunoClient.getHeaders()
     });
   }
@@ -362,28 +365,22 @@ export class JunoClient {
     content: string,
     isLinkInjectionEnabled: boolean
   ): Promise<IJunoResponse<IGalleryItem>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery`, {
-      method: "PUT",
-      headers: JunoClient.getHeaders(),
-      body: isLinkInjectionEnabled
-        ? JSON.stringify({
-            name,
-            description,
-            tags,
-            author,
-            thumbnailUrl,
-            content: JSON.parse(content),
-            addLinkToNotebookViewer: isLinkInjectionEnabled
-          } as IPublishNotebookRequest)
-        : JSON.stringify({
-            name,
-            description,
-            tags,
-            author,
-            thumbnailUrl,
-            content: JSON.parse(content)
-          } as IPublishNotebookRequest)
-    });
+    const response = await window.fetch(
+      `${this.getNotebooksUrl()}/${this.getSubscriptionId()}/${this.getAccount()}/gallery`,
+      {
+        method: "PUT",
+        headers: JunoClient.getHeaders(),
+        body: JSON.stringify({
+          name,
+          description,
+          tags,
+          author,
+          thumbnailUrl,
+          content: JSON.parse(content),
+          addLinkToNotebookViewer: isLinkInjectionEnabled
+        } as IPublishNotebookRequest)
+      }
+    );
 
     let data: IGalleryItem;
     if (response.status === HttpStatusCodes.OK) {
@@ -448,8 +445,16 @@ export class JunoClient {
     return `${configContext.JUNO_ENDPOINT}/api/notebooks`;
   }
 
+  private getAccount(): string {
+    return this.databaseAccount().name;
+  }
+
+  private getSubscriptionId(): string {
+    return userContext.subscriptionId;
+  }
+
   private getNotebooksAccountUrl(): string {
-    return `${configContext.JUNO_ENDPOINT}/api/notebooks/${this.databaseAccount().name}`;
+    return `${this.getNotebooksUrl()}/${this.getAccount()}`;
   }
 
   private static getHeaders(): HeadersInit {

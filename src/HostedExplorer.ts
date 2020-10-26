@@ -514,7 +514,7 @@ class HostedExplorer {
         actionType: ActionType.TransmitCachedData,
         message: {
           id: message && message.id,
-          error: JSON.stringify(error)
+          error: error.message
         }
       });
     }
@@ -1008,7 +1008,7 @@ class HostedExplorer {
 
       return accounts;
     } catch (error) {
-      this._logConsoleMessage(ConsoleDataType.Error, `Failed to fetch accounts: ${JSON.stringify(error)}`);
+      this._logConsoleMessage(ConsoleDataType.Error, `Failed to fetch accounts: ${error.message}`);
       this._clearInProgressMessageWithId(id);
 
       throw error;
@@ -1047,7 +1047,7 @@ class HostedExplorer {
         displayText: "Error loading account"
       });
       this._updateLoadingStatusText(`Failed to load selected account: ${newAccount.name}`);
-      this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${JSON.stringify(error)}`);
+      this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${error.message}`);
       this._clearInProgressMessageWithId(id);
       throw error;
     }

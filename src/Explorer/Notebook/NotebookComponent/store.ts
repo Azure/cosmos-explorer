@@ -47,7 +47,7 @@ export default function configureStore(
       onTraceFailure(title, `${error.message} ${JSON.stringify(error.stack)}`);
       console.error(error);
     } else {
-      onTraceFailure(title, JSON.stringify(error));
+      onTraceFailure(title, error.message);
     }
   };
 

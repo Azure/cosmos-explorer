@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, TriggerDefinition } from "@azure/cosmos";
 import {
   SqlTriggerCreateUpdateParameters,
@@ -18,7 +19,11 @@ export async function createTrigger(
 ): Promise<TriggerDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       try {
         const getResponse = await getSqlTrigger(
           userContext.subscriptionId,
@@ -29,7 +34,7 @@ export async function createTrigger(
           trigger.id
         );
         if (getResponse?.properties?.resource) {
-          throw new Error(`Create trigger failed: trigger with id ${trigger.id} already exists`);
+          throw new Error(`Create trigger failed: ${trigger.id} already exists`);
         }
       } catch (error) {
         if (error.code !== "NotFound") {
@@ -61,8 +66,8 @@ export async function createTrigger(
       .scripts.triggers.create(trigger);
     return response.resource;
   } catch (error) {
-    logConsoleError(`Error while creating trigger ${trigger.id}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "CreateTrigger", error.code);
+    logConsoleError(`Error while creating trigger ${trigger.id}:\n ${error.message}`);
+    logError(error.message, "CreateTrigger", error.code);
     sendNotificationForError(error);
     throw error;
   } finally {

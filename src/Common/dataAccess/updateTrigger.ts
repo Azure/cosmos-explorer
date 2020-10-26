@@ -1,4 +1,5 @@
 import { AuthType } from "../../AuthType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import {
   SqlTriggerCreateUpdateParameters,
   SqlTriggerResource
@@ -6,9 +7,8 @@ import {
 import { TriggerDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function updateTrigger(
@@ -18,7 +18,11 @@ export async function updateTrigger(
 ): Promise<TriggerDefinition> {
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+    ) {
       const getResponse = await getSqlTrigger(
         userContext.subscriptionId,
         userContext.resourceGroup,
@@ -57,10 +61,7 @@ export async function updateTrigger(
       .replace(trigger);
     return response?.resource;
   } catch (error) {
-    const errorMessage = error.code === "NotFound" ? `${trigger.id} does not exist.` : JSON.stringify(error);
-    logConsoleError(`Error while updating trigger ${trigger.id}:\n ${errorMessage}`);
-    logError(errorMessage, "UpdateTrigger", error.code);
-    sendNotificationForError(error);
+    handleError(error, `Error while updating trigger ${trigger.id}`, "UpdateTrigger");
     throw error;
   } finally {
     clearMessage();

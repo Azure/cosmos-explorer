@@ -44,7 +44,7 @@
 
     <input
       class="throughputModeRadio nonFirstRadio"
-      aria-label="Provisioned Throughput mode"
+      aria-label="Manual mode"
       type="radio"
       role="radio"
       tabindex="0"
@@ -118,6 +118,10 @@
       />
       <span data-bind="text: spendAckText, attr: { for: spendAckId }"></span>
     </p>
+    <!-- /ko -->
+
+    <!-- ko if: isFixed -->
+    <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>
     <!-- /ko -->
   </div>
 

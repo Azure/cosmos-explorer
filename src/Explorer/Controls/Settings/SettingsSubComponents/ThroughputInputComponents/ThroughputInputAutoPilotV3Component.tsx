@@ -142,7 +142,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
     this.throughputInputMaxValue = this.props.canExceedMaximumValue ? Int32.Max : this.props.maximum;
-    this.autoPilotInputMaxValue = Int32.Max;
+    this.autoPilotInputMaxValue = this.props.isFixed ? this.props.maximum : Int32.Max;
   }
 
   public hasProvisioningTypeChanged = (): boolean =>
@@ -284,6 +284,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           onChange={this.onSpendAckChecked}
         />
       )}
+      {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
     </>
   );
 
@@ -323,14 +324,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         />
       )}
 
-      {this.props.isFixed && <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>}
+      {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
     </Stack>
   );
 
   public render(): JSX.Element {
     return (
       <Stack {...checkBoxAndInputStackProps}>
-        {!this.props.isFixed && this.renderThroughputModeChoices()}
+        {this.renderThroughputModeChoices()}
 
         {this.props.isAutoPilotSelected ? this.renderAutoPilotInput() : this.renderThroughputInput()}
       </Stack>

@@ -88,7 +88,7 @@ export class SaveQueryPane extends ContextualPaneBase {
       (error: any) => {
         this.isExecuting(false);
         if (typeof error != "string") {
-          error = JSON.stringify(error);
+          error = error.message;
         }
         this.formErrors("Failed to save query");
         this.formErrorsDetails(`Failed to save query: ${error}`);
@@ -143,7 +143,7 @@ export class SaveQueryPane extends ContextualPaneBase {
         startKey
       );
       this.formErrors("Failed to setup a container for saved queries");
-      this.formErrors(`Failed to setup a container for saved queries: ${JSON.stringify(error)}`);
+      this.formErrors(`Failed to setup a container for saved queries: ${error.message}`);
     } finally {
       this.isExecuting(false);
     }
