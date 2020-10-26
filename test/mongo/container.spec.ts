@@ -1,17 +1,18 @@
 import "expect-puppeteer";
+import { Frame } from "puppeteer";
 import { generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
-
 const LOADING_STATE_DELAY = 2500;
+const RETRY_DELAY = 5000;
 const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete Mongo spec", () => {
-  it("creates and deletes a collection", async () => {
+  it("creates a collection", async () => {
     try {
-      const dbId = generateUniqueName("TestDatabase");
-      const collectionId = generateUniqueName("TestCollection");
-      const sharedKey = generateUniqueName("SharedKey");
+      const dbId = generateUniqueName("db");
+      const collectionId = generateUniqueName("col");
+      const sharedKey = `${generateUniqueName()}`;
       const frame = await login(process.env.MONGO_CONNECTION_STRING);
 
       // create new collection
@@ -52,39 +53,69 @@ describe("Collection Add and Delete Mongo spec", () => {
       // validate created
       // open database menu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-
-      await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
-      await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.waitFor(`div[data-test="${dbId}"]`), { visible: true };
-      await frame.click(`div[data-test="${dbId}"]`);
-      await frame.waitFor(`div[data-test="${collectionId}"]`, { visible: true });
-
-      // delete container
-
-      // click context menu for container
-      await frame.waitFor(`div[data-test="${collectionId}"] > div > button`, { visible: true });
-      await frame.click(`div[data-test="${collectionId}"] > div > button`);
-
-      // click delete container
-      await frame.waitFor(RENDER_DELAY);
-      await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]', { visible: true });
-      await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
-
-      // confirm delete container
-      await frame.waitFor('input[data-test="confirmCollectionId"]', { visible: true });
-      await frame.type('input[data-test="confirmCollectionId"]', collectionId.trim());
-
-      // click delete
-      await frame.waitFor('input[data-test="deleteCollection"]', { visible: true });
-      await frame.click('input[data-test="deleteCollection"]');
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
-      await expect(page).not.toMatchElement(`div[data-test="${collectionId}"]`);
+      const databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
+      const selectedDbId = await frame.evaluate(element => {
+        return element.attributes["data-test"].textContent;
+      }, databases[0]);
+
+      await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
+      await frame.waitFor(LOADING_STATE_DELAY);
+
+      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", elements => {
+        return elements.some(el => el.textContent.includes("Successfully created"));
+      });
+
+      expect(didCreateContainer).toBe(true);
+
+      await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
+      await frame.waitFor(LOADING_STATE_DELAY);
+
+      await clickDBMenu(selectedDbId, frame);
+
+      const collections = await frame.$$(
+        `div[class="collectionHeader main2 nodeItem "] > div[class="treeNodeHeader "]`
+      );
+
+      if (collections.length) {
+        await frame.waitFor(`div[class="collectionHeader main2 nodeItem "] > div[class="treeNodeHeader "]`, {
+          visible: true
+        });
+
+        const textId = await frame.evaluate(element => {
+          return element.attributes["data-test"].textContent;
+        }, collections[0]);
+        await frame.waitFor(`div[data-test="${textId}"]`, { visible: true });
+        // delete container
+
+        // click context menu for container
+        await frame.waitFor(`div[data-test="${textId}"] > div > button`, { visible: true });
+        await frame.click(`div[data-test="${textId}"] > div > button`);
+
+        // click delete container
+        await frame.waitFor(RENDER_DELAY);
+        await frame.waitFor('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
+        await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
+
+        // confirm delete container
+        await frame.waitFor('input[data-test="confirmCollectionId"]', { visible: true });
+        await frame.type('input[data-test="confirmCollectionId"]', textId);
+
+        // click delete
+        await frame.waitFor('input[data-test="deleteCollection"]', { visible: true });
+        await frame.click('input[data-test="deleteCollection"]');
+        await frame.waitFor(LOADING_STATE_DELAY);
+        await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
+
+        await expect(page).not.toMatchElement(`div[data-test="${textId}"]`);
+      }
 
       // click context menu for database
-      await frame.waitFor(`div[data-test="${dbId}"] > div > button`);
-      const button = await frame.$(`div[data-test="${dbId}"] > div > button`);
+      await frame.waitFor(`div[data-test="${selectedDbId}"] > div > button`);
+      await frame.waitFor(RENDER_DELAY);
+      const button = await frame.$(`div[data-test="${selectedDbId}"] > div > button`);
       await button.focus();
       await button.asElement().click();
 
@@ -96,14 +127,14 @@ describe("Collection Add and Delete Mongo spec", () => {
       // confirm delete database
       await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
       await frame.waitFor(RENDER_DELAY);
-      await frame.type('input[data-test="confirmDatabaseId"]', dbId.trim());
+      await frame.type('input[data-test="confirmDatabaseId"]', selectedDbId);
 
       // click delete
       await frame.click('input[data-test="deleteDatabase"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await expect(page).not.toMatchElement(`div[data-test="${dbId}"]`);
+      await expect(page).not.toMatchElement(`div[data-test="${selectedDbId}"]`);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
@@ -112,3 +143,24 @@ describe("Collection Add and Delete Mongo spec", () => {
     }
   });
 });
+
+async function clickDBMenu(dbId: string, frame: Frame, retries = 0) {
+  const button = await frame.$(`div[data-test="${dbId}"]`);
+  await button.focus();
+  const handler = await button.asElement();
+  await handler.click();
+  await ensureMenuIsOpen(dbId, frame, retries);
+  return button;
+}
+
+async function ensureMenuIsOpen(dbId: string, frame: Frame, retries: number) {
+  await frame.waitFor(RETRY_DELAY);
+  const button = await frame.$(`div[data-test="${dbId}"]`);
+  const classList = await frame.evaluate(button => {
+    return button.parentElement.classList;
+  }, button);
+  if (!Object.values(classList).includes("selected") && retries < 5) {
+    retries = retries + 1;
+    await clickDBMenu(dbId, frame, retries);
+  }
+}
