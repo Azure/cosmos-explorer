@@ -9,7 +9,6 @@ import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 import { client } from "../CosmosClient";
-import { refreshCachedResources } from "../DataAccessUtilityBase";
 
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting container ${collectionId}`);
@@ -23,7 +22,6 @@ export async function deleteCollection(databaseId: string, collectionId: string)
         .delete();
     }
     logConsoleInfo(`Successfully deleted container ${collectionId}`);
-    await refreshCachedResources();
   } catch (error) {
     handleError(error, `Error while deleting container ${collectionId}`, "DeleteCollection");
     throw error;

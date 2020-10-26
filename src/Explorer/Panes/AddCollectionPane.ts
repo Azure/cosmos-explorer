@@ -14,7 +14,6 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
-import { refreshCachedResources } from "../../Common/DocumentClientUtilityBase";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
@@ -896,9 +895,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
         this.resetData();
-        return refreshCachedResources().then(() => {
-          this.container.refreshAllDatabases();
-        });
+        this.container.refreshAllDatabases();
       },
       (reason: any) => {
         this.isExecuting(false);

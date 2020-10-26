@@ -8,7 +8,6 @@ import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 import { client } from "../CosmosClient";
-import { refreshCachedResources } from "../DataAccessUtilityBase";
 
 export async function deleteDatabase(databaseId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting database ${databaseId}`);
@@ -25,7 +24,6 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
         .delete();
     }
     logConsoleInfo(`Successfully deleted database ${databaseId}`);
-    await refreshCachedResources();
   } catch (error) {
     handleError(error, `Error while deleting database ${databaseId}`, "DeleteDatabase");
     throw error;

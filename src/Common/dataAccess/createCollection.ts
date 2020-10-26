@@ -23,7 +23,6 @@ import {
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { refreshCachedResources } from "../DataAccessUtilityBase";
 import { userContext } from "../../UserContext";
 import { createDatabase } from "./createDatabase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -54,7 +53,6 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
     }
 
     logConsoleInfo(`Successfully created container ${params.collectionId}`);
-    await refreshCachedResources();
     return collection;
   } catch (error) {
     handleError(error, `Error while creating container ${params.collectionId}`, "CreateCollection");
