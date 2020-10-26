@@ -212,7 +212,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   componentDidMount(): void {
-    this.loadMongoIndexes()
+    this.loadMongoIndexes();
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
