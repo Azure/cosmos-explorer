@@ -4,17 +4,11 @@ import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { SettingsComponent, SettingsComponentProps } from "./SettingsComponent";
 
 export class SettingsComponentAdapter implements ReactAdapter {
-  public parameters: ko.Observable<number>;
+  public parameters: ko.Computed<boolean>;
 
-  constructor(private props: SettingsComponentProps) {
-    this.parameters = ko.observable<number>(Date.now());
-  }
+  constructor(private props: SettingsComponentProps) {}
 
   public renderComponent(): JSX.Element {
-    return <SettingsComponent {...this.props} />;
-  }
-
-  public triggerRender(): void {
-    window.requestAnimationFrame(() => this.parameters(Date.now()));
+    return this.parameters() ? <SettingsComponent {...this.props} /> : <></>;
   }
 }

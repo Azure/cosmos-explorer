@@ -133,6 +133,7 @@ export class Features {
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
+  public static readonly MongoIndexEditor = "mongoindexeditor";
 }
 
 export class AfecFeatures {
