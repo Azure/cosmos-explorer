@@ -1120,7 +1120,7 @@ export default class Explorer {
     );
     this.renewExplorerShareAccess(this, this.tokenForRenewal())
       .fail((error: any) => {
-        const stringifiedError: string = JSON.stringify(error);
+        const stringifiedError: string = error.message;
         this.renewTokenError("Invalid connection string specified");
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
@@ -1149,7 +1149,7 @@ export default class Explorer {
         NotificationConsoleUtils.clearInProgressMessageWithId(id);
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Failed to generate share url: ${JSON.stringify(error)}`
+          `Failed to generate share url: ${error.message}`
         );
         console.error(error);
       }
@@ -1174,10 +1174,7 @@ export default class Explorer {
           deferred.resolve();
         },
         (error: any) => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to connect: ${JSON.stringify(error)}`
-          );
+          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${error.message}`);
           deferred.reject(error);
         }
       )
@@ -1457,13 +1454,13 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            error: JSON.stringify(error)
+            error: error.message
           },
           startKey
         );
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Error while refreshing databases: ${JSON.stringify(error)}`
+          `Error while refreshing databases: ${error.message}`
         );
       }
     );
@@ -1533,7 +1530,7 @@ export default class Explorer {
         this.isRefreshingExplorer(false);
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Error while refreshing data: ${JSON.stringify(error)}`
+          `Error while refreshing data: ${error.message}`
         );
         TelemetryProcessor.traceFailure(
           Action.LoadDatabases,
@@ -1600,7 +1597,7 @@ export default class Explorer {
       return Promise.all(sparkPromises).then(() => workspaceItems);
     } catch (error) {
       Logger.logError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, JSON.stringify(error));
+      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error.message);
       return Promise.resolve([]);
     }
   }
@@ -1638,7 +1635,7 @@ export default class Explorer {
       Logger.logError(error, "initNotebooks/getNotebookConnectionInfoAsync");
       NotificationConsoleUtils.logConsoleMessage(
         ConsoleDataType.Error,
-        `Failed to get notebook workspace connection info: ${JSON.stringify(error)}`
+        `Failed to get notebook workspace connection info: ${error.message}`
       );
       throw error;
     } finally {
@@ -1715,7 +1712,7 @@ export default class Explorer {
       }
     } catch (error) {
       Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
-      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${JSON.stringify(error)}`);
+      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${error.message}`);
     } finally {
       clearMessage && clearMessage();
     }
@@ -2093,7 +2090,7 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            trace: JSON.stringify(error)
+            trace: error.message
           },
           startKey
         );
@@ -2555,7 +2552,7 @@ export default class Explorer {
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Could not download notebook ${JSON.stringify(error)}`
+          `Could not download notebook ${error.message}`
         );
 
         clearMessage();

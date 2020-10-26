@@ -93,7 +93,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
         })
         .catch(error => {
           console.error(error);
-          recordUploadDetailErrorForFile(fileName, JSON.stringify(error));
+          recordUploadDetailErrorForFile(fileName, error.message);
           numUploadsFailed++;
         })
         .finally(() => {

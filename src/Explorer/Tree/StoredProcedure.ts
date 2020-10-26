@@ -158,7 +158,7 @@ export default class StoredProcedure {
             sprocTab.onExecuteSprocsResult(result, result.scriptLogs);
           },
           (error: any) => {
-            sprocTab.onExecuteSprocsError(JSON.stringify(error));
+            sprocTab.onExecuteSprocsError(error.message);
           }
         )
         .finally(() => {
