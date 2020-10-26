@@ -583,30 +583,25 @@ export default class Collection implements ViewModels.Collection {
     };
 
     if (isSettingsV2Enabled) {
-      const settingsTabV2Options: ViewModels.SettingsTabV2Options = {
-        ...settingsTabOptions,
-        getPendingNotification: pendingNotificationsPromise
-      };
-
       let settingsTabV2 = matchingTabs && (matchingTabs[0] as SettingsTabV2);
-      if (!settingsTabV2) {
-        const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
-        settingsTabV2Options.onLoadStartKey = startKey;
-        settingsTabV2Options.tabKind = ViewModels.CollectionTabKind.SettingsV2;
-        settingsTabV2 = new SettingsTabV2(settingsTabV2Options);
-        this.container.tabsManager.activateNewTab(settingsTabV2);
-      } else {
-        this.container.tabsManager.activateTab(settingsTabV2);
-      }
-      return;
+      this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions, pendingNotificationsPromise);
+    } else {
+      let settingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
+      this.launchSettingsTabV1(settingsTab, traceStartData, settingsTabOptions, pendingNotificationsPromise);
     }
+  };
 
-    let settingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
+  private launchSettingsTabV1 = (
+    settingsTab: SettingsTab,
+    traceStartData: any,
+    settingsTabOptions: ViewModels.TabOptions,
+    getPendingNotification: Q.Promise<DataModels.Notification>
+  ): void => {
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
       settingsTabOptions.onLoadStartKey = startKey;
 
-      pendingNotificationsPromise.then(
+      getPendingNotification.then(
         (data: any) => {
           const pendingNotification: DataModels.Notification = data && data[0];
           settingsTabOptions.tabKind = ViewModels.CollectionTabKind.Settings;
@@ -623,7 +618,7 @@ export default class Collection implements ViewModels.Collection {
               collectionName: this.id(),
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: tabTitle,
+              tabTitle: settingsTabOptions.title,
               error: error
             },
             startKey
@@ -636,7 +631,7 @@ export default class Collection implements ViewModels.Collection {
         }
       );
     } else {
-      pendingNotificationsPromise.then(
+      getPendingNotification.then(
         (pendingNotification: DataModels.Notification) => {
           settingsTab.pendingNotification(pendingNotification);
           this.container.tabsManager.activateTab(settingsTab);
@@ -646,6 +641,28 @@ export default class Collection implements ViewModels.Collection {
           this.container.tabsManager.activateTab(settingsTab);
         }
       );
+    }
+  };
+
+  private launchSettingsTabV2 = (
+    settingsTabV2: SettingsTabV2,
+    traceStartData: any,
+    settingsTabOptions: ViewModels.TabOptions,
+    getPendingNotification: Q.Promise<DataModels.Notification>
+  ): void => {
+    const settingsTabV2Options: ViewModels.SettingsTabV2Options = {
+      ...settingsTabOptions,
+      getPendingNotification: getPendingNotification
+    };
+
+    if (!settingsTabV2) {
+      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
+      settingsTabV2Options.onLoadStartKey = startKey;
+      settingsTabV2Options.tabKind = ViewModels.CollectionTabKind.SettingsV2;
+      settingsTabV2 = new SettingsTabV2(settingsTabV2Options);
+      this.container.tabsManager.activateNewTab(settingsTabV2);
+    } else {
+      this.container.tabsManager.activateTab(settingsTabV2);
     }
   };
 

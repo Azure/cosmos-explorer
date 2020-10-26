@@ -16,7 +16,10 @@ import {
   conflictResolutionCustomToolTip,
   changeFeedPolicyToolTip,
   conflictResolutionLwwTooltip,
-  mongoIndexingPolicyDisclaimer
+  mongoIndexingPolicyDisclaimer,
+  mongoIndexingPolicyAADError,
+  mongoIndexTransformationRefreshingMessage,
+  renderMongoIndexTransformationRefreshMessage
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
@@ -48,6 +51,14 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {changeFeedPolicyToolTip}
 
         {mongoIndexingPolicyDisclaimer}
+        {mongoIndexingPolicyAADError}
+        {mongoIndexTransformationRefreshingMessage}
+        {renderMongoIndexTransformationRefreshMessage(0, () => {
+          return;
+        })}
+        {renderMongoIndexTransformationRefreshMessage(90, () => {
+          return;
+        })}
       </>
     );
   }

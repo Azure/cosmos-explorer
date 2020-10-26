@@ -134,7 +134,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     this.collection = this.props.settingsTab.collection as ViewModels.Collection;
     this.container = this.collection?.container;
-    this.loadMongoIndexes();
     this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
     this.shouldShowIndexingPolicyEditor =
       this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
@@ -213,6 +212,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   componentDidMount(): void {
+    this.loadMongoIndexes()
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {

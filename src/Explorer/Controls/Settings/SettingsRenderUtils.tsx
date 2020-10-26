@@ -29,7 +29,10 @@ import {
   IDropdownStyles,
   ISeparatorStyles,
   MessageBar,
-  MessageBarType
+  MessageBarType,
+  Stack,
+  Spinner,
+  SpinnerSize
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -404,6 +407,34 @@ export const mongoIndexingPolicyAADError: JSX.Element = (
     </Text>
   </MessageBar>
 );
+
+export const mongoIndexTransformationRefreshingMessage: JSX.Element = (
+  <Stack horizontal {...mongoWarningStackProps}>
+    <Text>Refreshing index transformation progress</Text>
+    <Spinner size={SpinnerSize.medium} />
+  </Stack>
+);
+
+export const renderMongoIndexTransformationRefreshMessage = (
+  progress: number,
+  performRefresh: () => void
+): JSX.Element => {
+  if (progress === 0) {
+    return (
+      <Text>
+        {"You can make more indexing changes once the current index transformation is complete. "}
+        <Link onClick={performRefresh}>{"Refresh to check if it has completed."}</Link>
+      </Text>
+    );
+  } else {
+    return (
+      <Text>
+        {`You can make more indexing changes once the current index transformation has completed. It is ${progress}% complete. `}
+        <Link onClick={performRefresh}>{"Refresh to check the progress."}</Link>
+      </Text>
+    );
+  }
+};
 
 export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<ITextFieldStyles> => ({
   fieldGroup: {

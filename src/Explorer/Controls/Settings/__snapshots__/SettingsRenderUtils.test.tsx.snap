@@ -311,14 +311,58 @@ exports[`SettingsUtils functions render 1`] = `
     Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
   </Text>
   <Text>
-    This indexing policy editor currently does not support compound indexes. If you need to add a compound index, please add it using a different method. Please refer to
+    For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
     <StyledLinkBase
-      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#compound-indexes-mongodb-server-version-36"
+      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
       target="_blank"
     >
-       documentation 
+       Compound indexes 
     </StyledLinkBase>
-    for best practices of managing indexing.
+    are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.
+  </Text>
+  <StyledMessageBarBase
+    messageBarType={1}
+  >
+    <Text>
+      To use the indexing policy editor, please login to the
+      <StyledLinkBase
+        href="https://portal.azure.com"
+        target="_blank"
+      >
+        azure portal.
+      </StyledLinkBase>
+    </Text>
+  </StyledMessageBarBase>
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <Text>
+      Refreshing index transformation progress
+    </Text>
+    <StyledSpinnerBase
+      size={2}
+    />
+  </Stack>
+  <Text>
+    You can make more indexing changes once the current index transformation is complete. 
+    <StyledLinkBase
+      onClick={[Function]}
+    >
+      Refresh to check if it has completed.
+    </StyledLinkBase>
+  </Text>
+  <Text>
+    You can make more indexing changes once the current index transformation has completed. It is 90% complete. 
+    <StyledLinkBase
+      onClick={[Function]}
+    >
+      Refresh to check the progress.
+    </StyledLinkBase>
   </Text>
 </Fragment>
 `;

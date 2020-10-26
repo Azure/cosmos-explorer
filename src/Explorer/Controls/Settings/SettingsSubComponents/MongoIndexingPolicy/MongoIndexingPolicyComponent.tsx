@@ -13,7 +13,6 @@ import {
   MessageBarType,
   Spinner,
   SpinnerSize,
-  Link,
   Separator
 } from "office-ui-fabric-react";
 import {
@@ -24,9 +23,10 @@ import {
   subComponentStackProps,
   transparentDetailsRowStyles,
   createAndAddMongoIndexStackProps,
-  mongoWarningStackProps,
   separatorStyles,
-  mongoIndexingPolicyAADError
+  mongoIndexingPolicyAADError,
+  mongoIndexTransformationRefreshingMessage,
+  renderMongoIndexTransformationRefreshMessage
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -310,42 +310,20 @@ export class MongoIndexingPolicyComponent extends React.Component<
   };
 
   public isIndexingTransforming = (): boolean =>
+    // index transformation progress can be 0
     this.props.indexTransformationProgress !== undefined && this.props.indexTransformationProgress !== 100;
 
   private onClickRefreshIndexingTransformationLink = async () => await this.refreshIndexTransformationProgress();
 
   private renderIndexTransformationWarning = (): JSX.Element => {
     if (this.state.isRefreshingIndexTransformationProgress) {
-      return (
-        <Stack horizontal {...mongoWarningStackProps}>
-          <Text>Refreshing indexing policy update information</Text>
-          <Spinner size={SpinnerSize.medium} />
-        </Stack>
-      );
-
-      // index transformation progress can be 0
+      return mongoIndexTransformationRefreshingMessage;
     } else if (this.isIndexingTransforming()) {
-      const updateInfoString = "The indexing policy is being updated in the background. ";
-
-      if (this.props.indexTransformationProgress === 0) {
-        return (
-          <Text>
-            {updateInfoString}
-            <Link onClick={this.onClickRefreshIndexingTransformationLink}>
-              {`Refresh to check if it has completed.`}
-            </Link>
-          </Text>
-        );
-      } else {
-        return (
-          <Text>
-            {updateInfoString} The update is {this.props.indexTransformationProgress}% complete.
-            <Link onClick={this.onClickRefreshIndexingTransformationLink}>{` Refresh to check the progress.`}</Link>
-          </Text>
-        );
-      }
+      return renderMongoIndexTransformationRefreshMessage(
+        this.props.indexTransformationProgress,
+        this.onClickRefreshIndexingTransformationLink
+      );
     }
-
     return undefined;
   };
 

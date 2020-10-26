@@ -9,14 +9,14 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   }
 >
   <Text>
-    This indexing policy editor currently does not support compound indexes. If you need to add a compound index, please add it using a different method. Please refer to
+    For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
     <StyledLinkBase
-      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#compound-indexes-mongodb-server-version-36"
+      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
       target="_blank"
     >
-       documentation 
+       Compound indexes 
     </StyledLinkBase>
-    for best practices of managing indexing.
+    are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.
   </Text>
   <Stack
     styles={
