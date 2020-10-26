@@ -385,15 +385,12 @@ export const changeFeedPolicyToolTip: JSX.Element = (
 
 export const mongoIndexingPolicyDisclaimer: JSX.Element = (
   <Text>
-    This indexing policy editor currently does not support compound indexes. If you need to add a compound index, please
-    add it using a different method. Please refer to
-    <Link
-      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#compound-indexes-mongodb-server-version-36"
-      target="_blank"
-    >
-      {` documentation `}
+    For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
+    <Link href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types" target="_blank">
+      {` Compound indexes `}
     </Link>
-    for best practices of managing indexing.
+    are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo
+    shell.
   </Text>
 );
 
