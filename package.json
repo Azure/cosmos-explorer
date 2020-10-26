@@ -12,7 +12,7 @@
     "@nteract/commutable": "7.3.2",
     "@nteract/connected-components": "6.8.2",
     "@nteract/core": "15.1.0",
-    "@nteract/data-explorer": "8.2.9",
+    "@nteract/data-explorer": "8.0.3",
     "@nteract/directory-listing": "2.0.6",
     "@nteract/dropdown-menu": "1.0.1",
     "@nteract/editor": "10.1.2",
