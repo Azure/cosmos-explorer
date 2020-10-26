@@ -392,33 +392,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             throughput: newThroughput,
             offerIsRUPerMinuteThroughputEnabled: false
           };
-          try {
-            await updateOfferThroughputBeyondLimit(requestPayload);
-            this.collection.offer().content.offerThroughput = originalThroughputValue;
-            this.setState({
-              throughput: originalThroughputValue,
-              throughputBaseline: originalThroughputValue,
-              initialNotification: {
-                description: `Throughput update for ${newThroughput} ${throughputUnit}`
-              } as DataModels.Notification
-            });
-            this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
-          } catch (error) {
-            traceFailure(
-              Action.SettingsV2Updated,
-              {
-                databaseAccountName: this.container.databaseAccount().name,
-                databaseName: this.collection?.databaseId,
-                collectionName: this.collection?.id(),
-                defaultExperience: this.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.props.settingsTab.tabTitle(),
-                error: error
-              },
-              startKey
-            );
-            throw error;
-          }
+
+          await updateOfferThroughputBeyondLimit(requestPayload);
+          this.collection.offer().content.offerThroughput = originalThroughputValue;
+          this.setState({
+            isScaleSaveable: false,
+            isScaleDiscardable: false,
+            throughput: originalThroughputValue,
+            throughputBaseline: originalThroughputValue,
+            initialNotification: {
+              description: `Throughput update for ${newThroughput} ${throughputUnit}`
+            } as DataModels.Notification
+          });
         } else {
           const updateOfferParams: DataModels.UpdateOfferParams = {
             databaseId: this.collection.databaseId,
