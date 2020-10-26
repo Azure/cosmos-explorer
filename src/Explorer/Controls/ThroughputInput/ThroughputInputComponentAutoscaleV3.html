@@ -119,6 +119,10 @@
       <span data-bind="text: spendAckText, attr: { for: spendAckId }"></span>
     </p>
     <!-- /ko -->
+
+    <!-- ko if: isFixed -->
+    <p>Choose unlimited storage capacity for more than 10,000 RU/s.</p>
+    <!-- /ko -->
   </div>
 
   <div data-bind="visible: !isAutoPilotSelected()">

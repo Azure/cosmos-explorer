@@ -98,11 +98,11 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public canThroughputExceedMaximumValue = (): boolean => {
-    const isPublicAzurePortal: boolean =
-      configContext.platform === Platform.Portal && !this.props.container.isRunningOnNationalCloud();
-    const hasPartitionKey = !!this.props.collection.partitionKey;
-
-    return isPublicAzurePortal && hasPartitionKey;
+    return (
+      !this.props.isFixedContainer &&
+      configContext.platform === Platform.Portal &&
+      !this.props.container.isRunningOnNationalCloud()
+    );
   };
 
   public getInitialNotificationElement = (): JSX.Element => {

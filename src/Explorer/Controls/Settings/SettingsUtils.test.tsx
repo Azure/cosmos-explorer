@@ -2,12 +2,20 @@ import { collection, container } from "./TestUtils";
 import {
   getMaxRUs,
   getMinRUs,
+  getMongoIndexType,
+  getMongoNotification,
   getSanitizedInputValue,
   hasDatabaseSharedThroughput,
   isDirty,
   isDirtyTypes,
+  MongoIndexTypes,
+  MongoNotificationType,
   parseConflictResolutionMode,
-  parseConflictResolutionProcedure
+  parseConflictResolutionProcedure,
+  MongoWildcardPlaceHolder,
+  getMongoIndexTypeText,
+  SingleFieldText,
+  WildcardText
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -91,7 +99,43 @@ describe("SettingsUtils", () => {
   it("getSanitizedInputValue", () => {
     const max = 100;
     expect(getSanitizedInputValue("", max)).toEqual(0);
-    expect(getSanitizedInputValue("999", max)).toEqual(99);
+    expect(getSanitizedInputValue("999", max)).toEqual(100);
     expect(getSanitizedInputValue("10", max)).toEqual(10);
+  });
+
+  it("getMongoIndexType", () => {
+    expect(getMongoIndexType(["Single"])).toEqual(MongoIndexTypes.Single);
+    expect(getMongoIndexType(["Wildcard.$**"])).toEqual(MongoIndexTypes.Wildcard);
+    expect(getMongoIndexType(["Key1", "Key2"])).toEqual(undefined);
+  });
+
+  it("getMongoIndexTypeText", () => {
+    expect(getMongoIndexTypeText(MongoIndexTypes.Single)).toEqual(SingleFieldText);
+    expect(getMongoIndexTypeText(MongoIndexTypes.Wildcard)).toEqual(WildcardText);
+  });
+
+  it("getMongoNotification", () => {
+    const singleIndexDescription = "sampleKey";
+    const wildcardIndexDescription = "sampleKey.$**";
+
+    let notification = getMongoNotification(singleIndexDescription, undefined);
+    expect(notification.message).toEqual("Please select a type for each index.");
+    expect(notification.type).toEqual(MongoNotificationType.Warning);
+
+    notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.Single);
+    expect(notification).toEqual(undefined);
+
+    notification = getMongoNotification(wildcardIndexDescription, MongoIndexTypes.Wildcard);
+    expect(notification).toEqual(undefined);
+
+    notification = getMongoNotification("", MongoIndexTypes.Single);
+    expect(notification.message).toEqual("Please enter a field name.");
+    expect(notification.type).toEqual(MongoNotificationType.Error);
+
+    notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.Wildcard);
+    expect(notification.message).toEqual(
+      "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder
+    );
+    expect(notification.type).toEqual(MongoNotificationType.Error);
   });
 });
