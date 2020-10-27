@@ -230,6 +230,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (
       this.container.isMongoIndexEditorEnabled() &&
       this.container.isPreferredApiMongoDB() &&
+      this.container.isEnableMongoCapabilityPresent() &&
       this.container.databaseAccount()
     ) {
       await this.refreshIndexTransformationProgress();
@@ -395,24 +396,54 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
 
       if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
-        const newMongoIndexes = this.getMongoIndexesToSave();
-        const newMongoCollection: MongoDBCollectionResource = {
-          ...this.mongoDBCollectionResource,
-          indexes: newMongoIndexes
-        };
-        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
-          this.collection.databaseId,
-          this.collection.id(),
-          newMongoCollection
-        );
+        try {
+          const newMongoIndexes = this.getMongoIndexesToSave();
+          const newMongoCollection: MongoDBCollectionResource = {
+            ...this.mongoDBCollectionResource,
+            indexes: newMongoIndexes
+          };
 
-        await this.refreshIndexTransformationProgress();
-        this.setState({
-          isMongoIndexingPolicySaveable: false,
-          indexesToDrop: [],
-          indexesToAdd: [],
-          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
-        });
+          this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+            this.collection.databaseId,
+            this.collection.id(),
+            newMongoCollection
+          );
+
+          await this.refreshIndexTransformationProgress();
+          this.setState({
+            isMongoIndexingPolicySaveable: false,
+            indexesToDrop: [],
+            indexesToAdd: [],
+            currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+          });
+          traceSuccess(
+            Action.MongoIndexUpdated,
+            {
+              databaseAccountName: this.container.databaseAccount()?.name,
+              databaseName: this.collection?.databaseId,
+              collectionName: this.collection?.id(),
+              defaultExperience: this.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.props.settingsTab.tabTitle()
+            },
+            startKey
+          );
+        } catch (error) {
+          traceFailure(
+            Action.MongoIndexUpdated,
+            {
+              databaseAccountName: this.container.databaseAccount()?.name,
+              databaseName: this.collection?.databaseId,
+              collectionName: this.collection?.id(),
+              defaultExperience: this.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.props.settingsTab.tabTitle(),
+              error: error.message
+            },
+            startKey
+          );
+          throw error;
+        }
       }
 
       if (this.state.isScaleSaveable) {
@@ -542,7 +573,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
-          error: reason
+          error: reason.message
         },
         startKey
       );
