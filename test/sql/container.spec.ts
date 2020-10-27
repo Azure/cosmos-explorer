@@ -5,6 +5,7 @@ import { generateUniqueName, login } from "../utils/shared";
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RETRY_DELAY = 5000;
+const CREATE_DELAY = 10000;
 const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete SQL spec", () => {
@@ -61,7 +62,8 @@ describe("Collection Add and Delete SQL spec", () => {
       }, databases[0]);
 
       await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(CREATE_DELAY);
+      await frame.waitFor("div[class='rowData'] > span[class='message']")
 
       const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", elements => {
         return elements.some(el => el.textContent.includes("Successfully created"));
