@@ -1222,7 +1222,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
-          error: error
+          error: error.message
         },
         startKey
       );
