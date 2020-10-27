@@ -21,13 +21,24 @@ import {
   Link,
   Text,
   IMessageBarStyles,
-  ITextStyles
+  ITextStyles,
+  IDetailsRowStyles,
+  IStackStyles,
+  IIconStyles,
+  IDetailsListStyles,
+  IDropdownStyles,
+  ISeparatorStyles,
+  MessageBar,
+  MessageBarType,
+  Stack,
+  Spinner,
+  SpinnerSize
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
 const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
 
-export const spendAckCheckBoxStyle: ICheckboxStyles = {
+export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
     margin: 0,
     padding: "2 0 2 0"
@@ -45,12 +56,74 @@ export const titleAndInputStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 5 }
 };
 
+export const mongoWarningStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 5 }
+};
+
+export const mongoErrorMessageStyles: Partial<IMessageBarStyles> = { root: { marginLeft: 10 } };
+
+export const createAndAddMongoIndexStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 5 }
+};
+
+export const addMongoIndexStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 10 }
+};
+
 export const checkBoxAndInputStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 }
 };
 
 export const toolTipLabelStackTokens: IStackTokens = {
   childrenGap: 6
+};
+
+export const accordionStackTokens: IStackTokens = {
+  childrenGap: 10
+};
+
+export const addMongoIndexSubElementsTokens: IStackTokens = {
+  childrenGap: 20
+};
+
+export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
+
+export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
+
+export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft: 10, width: 210 } };
+
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingleft: 10, width: 202 } };
+
+export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
+  root: {
+    selectors: {
+      ":hover": {
+        background: "transparent"
+      }
+    }
+  }
+};
+
+export const customDetailsListStyles: Partial<IDetailsListStyles> = {
+  root: {
+    selectors: {
+      ".ms-FocusZone": {
+        paddingTop: 0
+      }
+    }
+  }
+};
+
+export const separatorStyles: Partial<ISeparatorStyles> = {
+  root: [
+    {
+      selectors: {
+        "::before": {
+          background: StyleConstants.BaseMedium
+        }
+      }
+    }
+  ]
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
@@ -312,6 +385,56 @@ export const changeFeedPolicyToolTip: JSX.Element = (
     Reads are unaffected.
   </Text>
 );
+
+export const mongoIndexingPolicyDisclaimer: JSX.Element = (
+  <Text>
+    For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
+    <Link href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types" target="_blank">
+      {` Compound indexes `}
+    </Link>
+    are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo
+    shell.
+  </Text>
+);
+
+export const mongoIndexingPolicyAADError: JSX.Element = (
+  <MessageBar messageBarType={MessageBarType.error}>
+    <Text>
+      To use the indexing policy editor, please login to the
+      <Link target="_blank" href="https://portal.azure.com">
+        {"azure portal."}
+      </Link>
+    </Text>
+  </MessageBar>
+);
+
+export const mongoIndexTransformationRefreshingMessage: JSX.Element = (
+  <Stack horizontal {...mongoWarningStackProps}>
+    <Text>Refreshing index transformation progress</Text>
+    <Spinner size={SpinnerSize.medium} />
+  </Stack>
+);
+
+export const renderMongoIndexTransformationRefreshMessage = (
+  progress: number,
+  performRefresh: () => void
+): JSX.Element => {
+  if (progress === 0) {
+    return (
+      <Text>
+        {"You can make more indexing changes once the current index transformation is complete. "}
+        <Link onClick={performRefresh}>{"Refresh to check if it has completed."}</Link>
+      </Text>
+    );
+  } else {
+    return (
+      <Text>
+        {`You can make more indexing changes once the current index transformation has completed. It is ${progress}% complete. `}
+        <Link onClick={performRefresh}>{"Refresh to check the progress."}</Link>
+      </Text>
+    );
+  }
+};
 
 export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<ITextFieldStyles> => ({
   fieldGroup: {

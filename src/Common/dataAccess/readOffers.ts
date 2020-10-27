@@ -1,28 +1,10 @@
 import { Offer } from "../../Contracts/DataModels";
-import { ClientDefaults } from "../Constants";
-import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { Platform, configContext } from "../../ConfigContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { sendCachedDataMessage } from "../MessageHandler";
-import { userContext } from "../../UserContext";
 
 export const readOffers = async (): Promise<Offer[]> => {
   const clearMessage = logConsoleProgress(`Querying offers`);
-  try {
-    if (configContext.platform === Platform.Portal) {
-      const offers = sendCachedDataMessage<Offer[]>(MessageTypes.AllOffers, [
-        userContext.databaseAccount.id,
-        ClientDefaults.portalCacheTimeoutMs
-      ]);
-      clearMessage();
-
-      return offers;
-    }
-  } catch (error) {
-    // If error getting cached Offers, continue on and read via SDK
-  }
 
   try {
     const response = await client()

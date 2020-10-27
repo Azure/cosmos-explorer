@@ -289,6 +289,10 @@ export interface DocumentsTabOptions extends TabOptions {
   resourceTokenPartitionKey?: string;
 }
 
+export interface SettingsTabV2Options extends TabOptions {
+  getPendingNotification: Q.Promise<DataModels.Notification>;
+}
+
 export interface ConflictsTabOptions extends TabOptions {
   partitionKey: DataModels.PartitionKey;
   conflictIds: ko.ObservableArray<ConflictId>;
