@@ -64,7 +64,7 @@ describe("Collection Add and Delete Mongo spec", () => {
 
       await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
       await frame.waitFor(CREATE_DELAY);
-      await frame.waitFor("div[class='rowData'] > span[class='message']")
+      await frame.waitFor("div[class='rowData'] > span[class='message']");
 
       const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", elements => {
         return elements.some(el => el.textContent.includes("Successfully created"));
