@@ -89,7 +89,8 @@ export enum Action {
   ClickResourceTreeNodeContextMenuItem,
   DiscardSettings,
   SettingsV2Updated,
-  SettingsV2Discarded
+  SettingsV2Discarded,
+  MongoIndexUpdated
 }
 
 export const ActionModifiers = {
