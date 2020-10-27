@@ -206,7 +206,6 @@ src/Explorer/Tabs/QueryTablesTab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
 src/Explorer/Tabs/SettingsTab.test.ts
 src/Explorer/Tabs/SettingsTab.ts
-src/Explorer/Tabs/SparkMasterTab.ts
 src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
