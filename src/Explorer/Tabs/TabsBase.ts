@@ -85,6 +85,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     explorer.tabsManager.closeTab(this.tabId, explorer);
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
+      tabName: this.constructor.name,
       databaseAccountName: this.getContainer().databaseAccount().name,
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
@@ -143,6 +144,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.updateNavbarWithTabsButtons();
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Open, {
+      tabName: this.constructor.name,
       databaseAccountName: this.getContainer().databaseAccount().name,
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
