@@ -379,7 +379,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
             return true;
           }
 
-          if (true && this.isAutoPilotSelected.editableIsDirty()) {
+          if (this.isAutoPilotSelected.editableIsDirty()) {
             return true;
           }
         }
