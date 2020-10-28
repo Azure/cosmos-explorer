@@ -325,7 +325,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return false;
       }
       const originalAutoPilotSetting = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
-      if (this.autoPilotThroughput() != originalAutoPilotSetting) {
+      if (this.autoPilotThroughput() !== originalAutoPilotSetting) {
         return true;
       }
       return false;
