@@ -24,7 +24,6 @@ export interface ScaleComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
   isFixedContainer: boolean;
-  autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   onThroughputChange: (newThroughput: number) => void;
   throughput: number;
   throughputBaseline: number;
@@ -86,7 +85,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   public getThroughputTitle = (): string => {
     if (this.props.isAutoPilotSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText(false);
+      return AutoPilotUtils.getAutoPilotHeaderText();
     }
 
     const minThroughput: string = getMinRUs(this.props.collection, this.props.container).toLocaleString();

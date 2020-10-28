@@ -19,7 +19,6 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.isPreferredApiTable = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiCassandra = ko.computed<boolean>(() => false);
     explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
-    explorerStub.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     explorerStub.findDatabaseWithId = () => database;
     explorerStub.refreshAllDatabases = () => Q.resolve();
     return explorerStub;

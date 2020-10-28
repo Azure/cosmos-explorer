@@ -30,10 +30,8 @@ describe.skip("Throughput Input Component", () => {
       label: ko.observable("Label"),
       requestUnitsUsageCost: ko.observable("requestUnitsUsageCost"),
       showAsMandatory: false,
-      autoPilotTiersList: null,
       autoPilotUsageCost: null,
       isAutoPilotSelected: null,
-      selectedAutoPilotTier: null,
       throughputAutoPilotRadioId: null,
       throughputProvisionedRadioId: null,
       throughputModeRadioName: null

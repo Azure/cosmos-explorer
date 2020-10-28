@@ -124,8 +124,6 @@ export interface ThroughputInputParams {
   throughputAutoPilotRadioId: string;
   throughputProvisionedRadioId: string;
   throughputModeRadioName: string;
-  autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
-  selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
   autoPilotUsageCost: ko.Computed<string>;
   showAutoPilot?: ko.Observable<boolean>;
 }
@@ -157,8 +155,6 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
   public throughputAutoPilotRadioId: string;
   public throughputProvisionedRadioId: string;
   public throughputModeRadioName: string;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
   public autoPilotUsageCost: ko.Computed<string>;
 
   public constructor(options: ThroughputInputParams) {
@@ -196,8 +192,6 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     this.throughputAutoPilotRadioId = options.throughputAutoPilotRadioId;
     this.throughputProvisionedRadioId = options.throughputProvisionedRadioId;
     this.throughputModeRadioName = options.throughputModeRadioName;
-    this.autoPilotTiersList = options.autoPilotTiersList;
-    this.selectedAutoPilotTier = options.selectedAutoPilotTier;
     this.autoPilotUsageCost = options.autoPilotUsageCost;
   }
 
