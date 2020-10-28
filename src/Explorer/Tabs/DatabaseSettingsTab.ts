@@ -20,7 +20,6 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
-import { truncate } from "fs";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
