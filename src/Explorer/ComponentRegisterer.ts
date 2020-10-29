@@ -11,7 +11,6 @@ import { InputTypeaheadComponent } from "./Controls/InputTypeahead/InputTypeahea
 import { JsonEditorComponent } from "./Controls/JsonEditor/JsonEditorComponent";
 import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
 import { TabsManagerKOComponent } from "./Tabs/TabsManager";
-import { ThroughputInputComponent } from "./Controls/ThroughputInput/ThroughputInputComponent";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
 
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
