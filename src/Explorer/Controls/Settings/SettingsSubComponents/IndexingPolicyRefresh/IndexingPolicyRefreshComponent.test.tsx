@@ -5,12 +5,12 @@ import { IndexingPolicyRefreshComponentProps, IndexingPolicyRefreshComponent } f
 describe("IndexingPolicyRefreshComponent", () => {
   it("renders", () => {
     const props: IndexingPolicyRefreshComponentProps = {
-        indexTransformationProgress: 90,
-        refreshIndexTransformationProgress: () =>
+      indexTransformationProgress: 90,
+      refreshIndexTransformationProgress: () =>
         new Promise(() => {
           return;
-        }),
-      };
+        })
+    };
 
     const wrapper = shallow(<IndexingPolicyRefreshComponent {...props} />);
     expect(wrapper).toMatchSnapshot();

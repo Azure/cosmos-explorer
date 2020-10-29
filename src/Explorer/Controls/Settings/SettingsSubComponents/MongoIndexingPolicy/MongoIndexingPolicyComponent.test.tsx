@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType } from "../../SettingsUtils";
 import { MongoIndexingPolicyComponent, MongoIndexingPolicyComponentProps } from "./MongoIndexingPolicyComponent";
-import { renderToString } from 'react-dom/server'
+import { renderToString } from "react-dom/server";
 
 describe("MongoIndexingPolicyComponent", () => {
   const baseProps: MongoIndexingPolicyComponentProps = {
@@ -105,10 +105,10 @@ describe("MongoIndexingPolicyComponent", () => {
           isMongoIndexingPolicyDiscardable
         );
         if (mongoWarningNotificationMessage) {
-          const elementAsString = renderToString(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage())
+          const elementAsString = renderToString(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage());
           expect(elementAsString).toContain(mongoWarningNotificationMessage);
         } else {
-          expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined()
+          expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined();
         }
       }
     );

@@ -54,7 +54,9 @@ export class IndexingPolicyComponent extends React.Component<
     if (!this.indexingPolicyEditor) {
       this.createIndexingPolicyEditor();
     } else {
-      this.indexingPolicyEditor.updateOptions({readOnly: isIndexTransforming(this.props.indexTransformationProgress)})
+      this.indexingPolicyEditor.updateOptions({
+        readOnly: isIndexTransforming(this.props.indexTransformationProgress)
+      });
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
       const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
       indexingPolicyEditorModel.setValue(value);

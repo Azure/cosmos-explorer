@@ -5,25 +5,24 @@ import * as Constants from "../Constants";
 import { AuthType } from "../../AuthType";
 
 export async function getIndexTransformationProgress(databaseId: string, collectionId: string): Promise<number> {
-    if (window.authType !== AuthType.AAD) {
-      return undefined;
-    }
-    let indexTransformationPercentage: number;
-    const clearMessage = logConsoleProgress(`Reading container ${collectionId}`);
-    try {
-      const response = await client()
-        .database(databaseId)
-        .container(collectionId)
-        .read({ populateQuotaInfo: true });
-  
-      indexTransformationPercentage = parseInt(
-        response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
-      );
-    } catch (error) {
-      handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
-      throw error;
-    }
-    clearMessage();
-    return indexTransformationPercentage;
+  if (window.authType !== AuthType.AAD) {
+    return undefined;
   }
-  
+  let indexTransformationPercentage: number;
+  const clearMessage = logConsoleProgress(`Reading container ${collectionId}`);
+  try {
+    const response = await client()
+      .database(databaseId)
+      .container(collectionId)
+      .read({ populateQuotaInfo: true });
+
+    indexTransformationPercentage = parseInt(
+      response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
+    );
+  } catch (error) {
+    handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
+    throw error;
+  }
+  clearMessage();
+  return indexTransformationPercentage;
+}

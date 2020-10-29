@@ -28,9 +28,9 @@ describe("IndexingPolicyComponent", () => {
     },
     indexTransformationProgress: undefined,
     refreshIndexTransformationProgress: () =>
-    new Promise(() => {
-      return;
-    }),
+      new Promise(() => {
+        return;
+      })
   };
 
   it("renders", () => {

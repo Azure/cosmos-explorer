@@ -210,7 +210,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   componentDidMount(): void {
-    this.refreshIndexTransformationProgress()
+    this.refreshIndexTransformationProgress();
     this.loadMongoIndexes();
     this.setAutoPilotStates();
     this.setBaseline();
@@ -346,7 +346,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             break;
         }
 
-        const wasIndexingPolicyModified = this.state.isIndexingPolicyDirty
+        const wasIndexingPolicyModified = this.state.isIndexingPolicyDirty;
         newCollection.defaultTtl = defaultTtl;
 
         newCollection.indexingPolicy = this.state.indexingPolicyContent;
@@ -382,7 +382,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
         this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
         this.collection.geospatialConfig(updatedCollection.geospatialConfig);
-        
+
         if (wasIndexingPolicyModified) {
           await this.refreshIndexTransformationProgress();
         }
