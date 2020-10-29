@@ -1,4 +1,3 @@
-import { AutopilotTier } from "../Contracts/DataModels";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -124,7 +123,6 @@ export class Features {
   public static readonly notebookBasePath = "notebookbasepath";
   public static readonly canExceedMaximumValue = "canexceedmaximumvalue";
   public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
-  public static readonly enableAutoPilotV2 = "enableautopilotv2";
   public static readonly ttl90Days = "ttl90days";
   public static readonly enableRightPanelV2 = "enablerightpanelv2";
   public static readonly enableSDKoperations = "enablesdkoperations";
@@ -262,7 +260,6 @@ export class HttpHeaders {
   public static usePolygonsSmallerThanAHemisphere = "x-ms-documentdb-usepolygonssmallerthanahemisphere";
   public static autoPilotThroughput = "autoscaleSettings";
   public static autoPilotThroughputSDK = "x-ms-cosmos-offer-autopilot-settings";
-  public static autoPilotTier = "x-ms-cosmos-offer-autopilot-tier";
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
@@ -406,54 +403,6 @@ export enum ConflictOperationType {
   Create = "create",
   Delete = "delete"
 }
-
-export class AutoPilot {
-  public static tier1Text: string = "4,000 RU/s";
-  public static tier2Text: string = "20,000 RU/s";
-  public static tier3Text: string = "100,000 RU/s";
-  public static tier4Text: string = "500,000 RU/s";
-
-  public static tierText = {
-    [AutopilotTier.Tier1]: "Tier 1",
-    [AutopilotTier.Tier2]: "Tier 2",
-    [AutopilotTier.Tier3]: "Tier 3",
-    [AutopilotTier.Tier4]: "Tier 4"
-  };
-
-  public static tierMaxRus = {
-    [AutopilotTier.Tier1]: 2000,
-    [AutopilotTier.Tier2]: 20000,
-    [AutopilotTier.Tier3]: 100000,
-    [AutopilotTier.Tier4]: 500000
-  };
-
-  public static tierMinRus = {
-    [AutopilotTier.Tier1]: 0,
-    [AutopilotTier.Tier2]: 0,
-    [AutopilotTier.Tier3]: 0,
-    [AutopilotTier.Tier4]: 0
-  };
-
-  public static tierStorageInGB = {
-    [AutopilotTier.Tier1]: 50,
-    [AutopilotTier.Tier2]: 200,
-    [AutopilotTier.Tier3]: 1000,
-    [AutopilotTier.Tier4]: 5000
-  };
-}
-
-export class DataExplorerVersions {
-  public static readonly v_1_0_0: string = "1.0.0";
-  public static readonly v_1_0_1: string = "1.0.1";
-}
-
-export class DataExplorerFeatures {
-  public static offerCache: string = "OfferCache";
-}
-
-export const DataExplorerFeaturesVersions: any = {
-  OfferCache: DataExplorerVersions.v_1_0_1
-};
 
 export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]

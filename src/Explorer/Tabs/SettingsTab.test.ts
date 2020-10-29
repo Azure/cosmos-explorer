@@ -79,7 +79,6 @@ describe("Settings tab", () => {
 
       beforeEach(() => {
         explorer = new Explorer();
-        explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
       });
 
       it("single master, should not show conflict resolution", () => {
@@ -178,7 +177,6 @@ describe("Settings tab", () => {
 
     beforeEach(() => {
       explorer = new Explorer();
-      explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
     it("On TTL changed", () => {
@@ -251,7 +249,6 @@ describe("Settings tab", () => {
 
     beforeEach(() => {
       explorer = new Explorer();
-      explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     });
 
     it("null if it didnt change", () => {
@@ -327,7 +324,6 @@ describe("Settings tab", () => {
     function getCollection(defaultApi: string, partitionKeyOption: PartitionKeyOption) {
       const explorer = new Explorer();
       explorer.defaultExperience(defaultApi);
-      explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
 
       const offer: DataModels.Offer = null;
       const defaultTtl = 200;
@@ -448,160 +444,6 @@ describe("Settings tab", () => {
     it("on Table container with non-system partition key should be false", () => {
       const settingsTab = getSettingsTab(Constants.DefaultAccountExperience.Table, PartitionKeyOption.NonSystem);
       expect(settingsTab.partitionKeyVisible()).toBe(false);
-    });
-  });
-
-  describe("AutoPilot", () => {
-    function getCollection(autoPilotTier: DataModels.AutopilotTier) {
-      const explorer = new Explorer();
-      explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
-
-      explorer.databaseAccount({
-        id: "test",
-        kind: "",
-        location: "",
-        name: "",
-        tags: "",
-        type: "",
-        properties: {
-          enableMultipleWriteLocations: true,
-          documentEndpoint: "",
-          cassandraEndpoint: "",
-          gremlinEndpoint: "",
-          tableEndpoint: ""
-        }
-      });
-
-      const offer: DataModels.Offer = {
-        id: "test",
-        _etag: "_etag",
-        _rid: "_rid",
-        _self: "_self",
-        _ts: "_ts",
-        content: {
-          offerThroughput: 0,
-          offerIsRUPerMinuteThroughputEnabled: false,
-          offerAutopilotSettings: {
-            tier: autoPilotTier
-          }
-        }
-      };
-      const container: DataModels.Collection = {
-        _rid: "_rid",
-        _self: "",
-        _etag: "",
-        _ts: 0,
-        id: "mycoll",
-        conflictResolutionPolicy: {
-          mode: DataModels.ConflictResolutionMode.LastWriterWins,
-          conflictResolutionPath: "/_ts"
-        }
-      };
-
-      return new Collection(explorer, "mydb", container, quotaInfo, offer);
-    }
-
-    function getSettingsTab(autoPilotTier: DataModels.AutopilotTier = DataModels.AutopilotTier.Tier1): SettingsTab {
-      return new SettingsTab({
-        tabKind: ViewModels.CollectionTabKind.Settings,
-        title: "Scale & Settings",
-        tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable(false),
-        collection: getCollection(autoPilotTier),
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
-      });
-    }
-    describe("Visible", () => {
-      it("no autopilot configured, should not be visible", () => {
-        const settingsTab1 = getSettingsTab(0);
-        expect(settingsTab1.isAutoPilotSelected()).toBe(false);
-
-        const settingsTab2 = getSettingsTab(2);
-        expect(settingsTab2.isAutoPilotSelected()).toBe(true);
-      });
-    });
-
-    describe("Autopilot Save", () => {
-      it("edit with valid new tier, save should be enabled", () => {
-        const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier2);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-
-        settingsTab.selectedAutoPilotTier(DataModels.AutopilotTier.Tier3);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(true);
-
-        settingsTab.selectedAutoPilotTier(DataModels.AutopilotTier.Tier2);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      });
-
-      it("edit with same tier, save should be disabled", () => {
-        const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier2);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-
-        settingsTab.selectedAutoPilotTier(DataModels.AutopilotTier.Tier2);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      });
-
-      it("edit with invalid tier, save should be disabled", () => {
-        const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier2);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-
-        settingsTab.selectedAutoPilotTier(5);
-        expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      });
-    });
-
-    describe("Autopilot Discard", () => {
-      it("edit tier, discard should be enabled and correctly dicard", () => {
-        const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier2);
-        expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(false);
-
-        settingsTab.selectedAutoPilotTier(DataModels.AutopilotTier.Tier3);
-        expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(true);
-
-        settingsTab.onRevertClick();
-        expect(settingsTab.selectedAutoPilotTier()).toBe(DataModels.AutopilotTier.Tier2);
-
-        settingsTab.selectedAutoPilotTier(0);
-        expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(true);
-
-        settingsTab.onRevertClick();
-        expect(settingsTab.selectedAutoPilotTier()).toBe(DataModels.AutopilotTier.Tier2);
-      });
-    });
-
-    it("On TTL changed", () => {
-      const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier1);
-
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      settingsTab.timeToLive("on");
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(true);
-      expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(true);
-    });
-
-    it("On Index Policy changed", () => {
-      const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier1);
-
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      settingsTab.indexingPolicyContent({ somethingDifferent: "" });
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(true);
-      expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(true);
-    });
-
-    it("On Conflict Resolution Mode changed", () => {
-      const settingsTab = getSettingsTab(DataModels.AutopilotTier.Tier1);
-
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      settingsTab.conflictResolutionPolicyPath("/somethingElse");
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(true);
-      expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(true);
-
-      settingsTab.onRevertClick();
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(false);
-      settingsTab.conflictResolutionPolicyMode(DataModels.ConflictResolutionMode.Custom);
-      settingsTab.conflictResolutionPolicyProcedure("resolver");
-      expect(settingsTab.saveSettingsButton.enabled()).toBe(true);
-      expect(settingsTab.discardSettingsChangesButton.enabled()).toBe(true);
     });
   });
 });

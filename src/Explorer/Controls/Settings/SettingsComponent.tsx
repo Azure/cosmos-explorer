@@ -125,7 +125,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
-  private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
@@ -898,7 +897,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       collection: this.collection,
       container: this.container,
       isFixedContainer: this.isFixedContainer,
-      autoPilotTiersList: this.autoPilotTiersList,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,
