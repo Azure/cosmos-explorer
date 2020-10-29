@@ -22,10 +22,7 @@ describe("MongoIndexingPolicyComponent", () => {
       return;
     },
     indexTransformationProgress: undefined,
-    refreshIndexTransformationProgress: () =>
-      new Promise(() => {
-        return;
-      }),
+    refreshIndexTransformationProgress: () => new Promise(jest.fn()),
     onMongoIndexingPolicySaveableChange: () => {
       return;
     },

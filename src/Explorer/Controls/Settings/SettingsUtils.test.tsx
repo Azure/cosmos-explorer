@@ -142,8 +142,8 @@ describe("SettingsUtils", () => {
 });
 
 it("isIndexingTransforming", () => {
-  expect(isIndexTransforming(undefined)).toEqual(false);
-  expect(isIndexTransforming(0)).toEqual(true);
-  expect(isIndexTransforming(90)).toEqual(true);
-  expect(isIndexTransforming(100)).toEqual(false);
+  expect(isIndexTransforming(undefined)).toBeFalsy();
+  expect(isIndexTransforming(0)).toBeTruthy();
+  expect(isIndexTransforming(90)).toBeTruthy();
+  expect(isIndexTransforming(100)).toBeFalsy();
 });
