@@ -10,7 +10,6 @@ import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { readCollectionOffer } from "./readCollectionOffer";
 import { readDatabaseOffer } from "./readDatabaseOffer";
-import { refreshCachedOffers, refreshCachedResources } from "../DataAccessUtilityBase";
 import {
   updateSqlDatabaseThroughput,
   migrateSqlDatabaseToAutoscale,
@@ -70,8 +69,6 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
     } else {
       updatedOffer = await updateOfferWithSDK(params);
     }
-    await refreshCachedOffers();
-    await refreshCachedResources();
     logConsoleInfo(`Successfully updated offer for ${offerResourceText}`);
     return updatedOffer;
   } catch (error) {

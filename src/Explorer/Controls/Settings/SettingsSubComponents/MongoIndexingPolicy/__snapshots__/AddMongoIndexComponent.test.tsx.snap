@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddMongoIndexComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 5,
+    }
+  }
+>
+  <Stack
+    horizontal={true}
+    tokens={
+      Object {
+        "childrenGap": 20,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      ariaLabel="Index Field Name 1"
+      componentRef={[Function]}
+      onChange={[Function]}
+      styles={
+        Object {
+          "root": Object {
+            "paddingLeft": 10,
+            "width": 210,
+          },
+        }
+      }
+      value="sample_key"
+    />
+    <StyledWithResponsiveMode
+      ariaLabel="Index Type 1"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "Single",
+            "text": "Single Field",
+          },
+          Object {
+            "key": "Wildcard",
+            "text": "Wildcard",
+          },
+        ]
+      }
+      placeholder="Select an index type"
+      selectedKey="Single"
+      styles={
+        Object {
+          "dropdown": Object {
+            "paddingleft": 10,
+            "width": 202,
+          },
+        }
+      }
+    />
+    <CustomizedIconButton
+      ariaLabel="Undo Button 1"
+      disabled={false}
+      iconProps={
+        Object {
+          "iconName": "Undo",
+        }
+      }
+      onClick={[Function]}
+    />
+  </Stack>
+  <StyledMessageBarBase
+    messageBarType={1}
+    styles={
+      Object {
+        "root": Object {
+          "marginLeft": 10,
+        },
+      }
+    }
+  >
+    sample error
+  </StyledMessageBarBase>
+</Stack>
+`;

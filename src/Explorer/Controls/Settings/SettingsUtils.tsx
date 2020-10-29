@@ -5,12 +5,17 @@ import * as SharedConstants from "../../../Shared/Constants";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 
 import Explorer from "../../Explorer";
+import { MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 
 const zeroValue = 0;
 export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
+export const MongoIndexIdField = "_id";
+export const MongoWildcardPlaceHolder = "properties.$**";
+export const SingleFieldText = "Single Field";
+export const WildcardText = "Wildcard";
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
@@ -28,6 +33,17 @@ export enum GeospatialConfigType {
   Geometry = "Geometry"
 }
 
+export enum MongoIndexTypes {
+  Single = "Single",
+  Wildcard = "Wildcard"
+}
+
+export interface AddMongoIndexProps {
+  mongoIndex: MongoIndex;
+  type: MongoIndexTypes;
+  notification: MongoNotificationMessage;
+}
+
 export enum SettingsV2TabTypes {
   ScaleTab,
   ConflictResolutionTab,
@@ -38,6 +54,16 @@ export enum SettingsV2TabTypes {
 export interface IsComponentDirtyResult {
   isSaveable: boolean;
   isDiscardable: boolean;
+}
+
+export enum MongoNotificationType {
+  Warning = "Warning",
+  Error = "Error"
+}
+
+export interface MongoNotificationMessage {
+  type: MongoNotificationType;
+  message: string;
 }
 
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
@@ -54,7 +80,7 @@ export const getMaxRUs = (collection: ViewModels.Collection, container: Explorer
   const numPartitionsFromOffer: number =
     collection?.offer && collection.offer()?.content?.collectionThroughputInfo?.numPhysicalPartitions;
 
-  const numPartitionsFromQuotaInfo: number = collection?.quotaInfo().numPartitions;
+  const numPartitionsFromQuotaInfo: number = collection?.quotaInfo()?.numPartitions;
 
   const numPartitions = numPartitionsFromOffer ?? numPartitionsFromQuotaInfo ?? 1;
 
@@ -79,7 +105,7 @@ export const getMinRUs = (collection: ViewModels.Collection, container: Explorer
     return collectionThroughputInfo.minimumRUForCollection;
   }
 
-  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions ?? collection.quotaInfo().numPartitions;
+  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions ?? collection.quotaInfo()?.numPartitions;
 
   if (!numPartitions || numPartitions === 1) {
     return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
@@ -131,13 +157,12 @@ export const parseConflictResolutionProcedure = (procedureFromBackEnd: string): 
 };
 
 export const getSanitizedInputValue = (newValueString: string, max: number): number => {
-  let newValue = parseInt(newValueString);
+  const newValue = parseInt(newValueString);
   if (isNaN(newValue)) {
-    newValue = zeroValue;
-  } else if (newValue > max) {
-    newValue = Math.floor(newValue / 10);
+    return zeroValue;
   }
-  return newValue;
+  // make sure new value does not exceed the maximum throughput
+  return Math.min(newValue, max);
 };
 
 export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
@@ -179,4 +204,49 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
+};
+
+export const getMongoNotification = (description: string, type: MongoIndexTypes): MongoNotificationMessage => {
+  if (description && !type) {
+    return {
+      type: MongoNotificationType.Warning,
+      message: "Please select a type for each index."
+    };
+  }
+
+  if (type && (!description || description.trim().length === 0)) {
+    return {
+      type: MongoNotificationType.Error,
+      message: "Please enter a field name."
+    };
+  } else if (type === MongoIndexTypes.Wildcard && description?.indexOf("$**") === -1) {
+    return {
+      type: MongoNotificationType.Error,
+      message: "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder
+    };
+  }
+
+  return undefined;
+};
+
+export const getMongoIndexType = (keys: string[]): MongoIndexTypes => {
+  const length = keys?.length;
+  let type: MongoIndexTypes;
+
+  if (length === 1) {
+    if (keys[0].indexOf("$**") !== -1) {
+      type = MongoIndexTypes.Wildcard;
+    } else {
+      type = MongoIndexTypes.Single;
+    }
+  }
+
+  return type;
+};
+
+export const getMongoIndexTypeText = (index: MongoIndexTypes): string => {
+  if (index === MongoIndexTypes.Single) {
+    return SingleFieldText;
+  }
+  return WildcardText;
 };

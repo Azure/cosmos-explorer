@@ -42,6 +42,13 @@ module.exports = {
     "no-null/no-null": "error",
     "@typescript-eslint/no-explicit-any": "error",
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
-    eqeqeq: "error"
+    eqeqeq: "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector: "CallExpression[callee.object.name='JSON'][callee.property.name='stringify'] Identifier[name=/$err/]",
+        message: "Do not use JSON.stringify(error). It will print '{}'"
+      }
+    ]
   }
 };

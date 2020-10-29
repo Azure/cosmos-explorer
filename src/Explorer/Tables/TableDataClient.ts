@@ -15,13 +15,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { sendMessage } from "../../Common/MessageHandler";
 import Explorer from "../Explorer";
-import {
-  queryDocuments,
-  refreshCachedResources,
-  deleteDocument,
-  updateDocument,
-  createDocument
-} from "../../Common/DocumentClientUtilityBase";
+import { queryDocuments, deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
 import { configContext } from "../../ConfigContext";
 
 export interface CassandraTableKeys {
@@ -424,7 +418,7 @@ export class CassandraAPIDataClient extends TableDataClient {
             ConsoleDataType.Info,
             `Successfully created a keyspace with query ${createKeyspaceQuery}`
           );
-          refreshCachedResources().finally(() => deferred.resolve());
+          deferred.resolve();
         },
         reason => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -471,15 +465,7 @@ export class CassandraAPIDataClient extends TableDataClient {
                 ConsoleDataType.Info,
                 `Successfully created a table with query ${createTableQuery}`
               );
-              refreshCachedResources(null).then(
-                () => {
-                  deferred.resolve();
-                },
-                reason => {
-                  // Still resolve since the keyspace/table was successfully created at this point.
-                  deferred.resolve();
-                }
-              );
+              deferred.resolve();
             },
             reason => {
               NotificationConsoleUtils.logConsoleMessage(
@@ -520,15 +506,7 @@ export class CassandraAPIDataClient extends TableDataClient {
             ConsoleDataType.Info,
             `Successfully deleted resource with query ${deleteQuery}`
           );
-          refreshCachedResources(null).then(
-            () => {
-              deferred.resolve();
-            },
-            reason => {
-              // Still resolve since the keyspace/table was successfully deleted at this point.
-              deferred.resolve();
-            }
-          );
+          deferred.resolve();
         },
         reason => {
           NotificationConsoleUtils.logConsoleMessage(

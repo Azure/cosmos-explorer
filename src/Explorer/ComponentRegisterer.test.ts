@@ -123,8 +123,4 @@ describe("Component Registerer", () => {
   it("should register dynamic-list component", () => {
     expect(ko.components.isRegistered("dynamic-list")).toBe(true);
   });
-
-  it("should register throughput-input component", () => {
-    expect(ko.components.isRegistered("throughput-input")).toBe(true);
-  });
 });

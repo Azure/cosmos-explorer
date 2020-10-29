@@ -24,7 +24,6 @@
       <span class="scaleSettingTitle">Scale</span>
     </div>
     <div class="ssTextAllignment" id="scaleRegion">
-      <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
       <throughput-input-autopilot-v3
         params="{ 
                     testId: testId,
@@ -51,34 +50,6 @@
                  }"
       >
       </throughput-input-autopilot-v3>
-      <!-- /ko -->
-      <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
-      <throughput-input
-        params="{ 
-                    testId: testId,
-                    class: 'scaleForm dirty',
-                    value: throughput,
-                    minimum: minRUs,
-                    maximum: maxRUThroughputInputLimit,
-                    canExceedMaximumValue: canThroughputExceedMaximumValue,
-                    step: throughputIncreaseFactor,
-                    label: throughputTitle,
-                    ariaLabel: throughputAriaLabel,
-                    costsVisible: costsVisible,
-                    requestUnitsUsageCost: requestUnitsUsageCost,
-                    throughputAutoPilotRadioId: throughputAutoPilotRadioId,
-                    throughputProvisionedRadioId: throughputProvisionedRadioId,
-                    throughputModeRadioName: throughputModeRadioName,
-                    showAutoPilot: userCanChangeProvisioningTypes,
-                    isAutoPilotSelected: isAutoPilotSelected,
-                    autoPilotTiersList: autoPilotTiersList,
-                    selectedAutoPilotTier: selectedAutoPilotTier,
-                    autoPilotUsageCost: autoPilotUsageCost,
-                    canExceedMaximumValue: canExceedMaximumValue
-                 }"
-      >
-      </throughput-input>
-      <!-- /ko -->
 
       <div class="estimatedCost" data-bind="visible: costsVisible">
         <p data-bind="visible: minRUAnotationVisible">

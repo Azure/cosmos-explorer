@@ -1,6 +1,5 @@
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
-import { AutopilotTier } from "../Contracts/DataModels";
 
 /**
  * Anything that is not a number should return 0
@@ -14,10 +13,7 @@ export function normalizeNumber(number: null | undefined | string | number): num
   return Math.floor(Number(number));
 }
 
-export function getRuToolTipText(isV2AutoPilot: boolean): string {
-  if (isV2AutoPilot) {
-    return "Provisioned throughput is measured in Request Units per second (RU/s). 1 RU corresponds to the throughput of a read of a 1 KB document.";
-  }
+export function getRuToolTipText(): string {
   return `Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage.`;
 }
 
@@ -159,26 +155,6 @@ export function getPricePerRuPm(serverId: string): number {
   }
 
   return Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRUPM;
-}
-
-export function getAutoPilotV2SpendHtml(autoPilotTier: AutopilotTier, isDatabaseThroughput: boolean): string {
-  if (!autoPilotTier) {
-    return "";
-  }
-
-  const resource: string = isDatabaseThroughput ? "database" : "container";
-  switch (autoPilotTier) {
-    case AutopilotTier.Tier1:
-      return `Your ${resource} throughput will automatically scale between 400 RU/s and 4,000 RU/s based on the workload needs, as long as your storage does not exceed 50GB. If your storage exceeds 50GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see <a href='${Constants.AutopilotDocumentation.Url}' target='_blank'>documentation</a>.`;
-    case AutopilotTier.Tier2:
-      return `Your ${resource} throughput will automatically scale between 2,000 RU/s and 20,000 RU/s based on the workload needs, as long as your storage does not exceed 200GB. If your storage exceeds 200GB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see <a href='${Constants.AutopilotDocumentation.Url}' target='_blank'>documentation</a>.`;
-    case AutopilotTier.Tier3:
-      return `Your ${resource} throughput will automatically scale between 10,000 RU/s and 100,000 RU/s based on the workload needs, as long as your storage does not exceed 1TB. If your storage exceeds 1TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see <a href='${Constants.AutopilotDocumentation.Url}' target='_blank'>documentation</a>.`;
-    case AutopilotTier.Tier4:
-      return `Your ${resource} throughput will automatically scale between 50,000 RU/s and 500,000 RU/s based on the workload needs, as long as your storage does not exceed 5TB. If your storage exceeds 5TB, we will upgrade the maximum (and minimum) throughput thresholds to the next available value. For more details, see <a href='${Constants.AutopilotDocumentation.Url}' target='_blank'>documentation</a>.`;
-    default:
-      return `Your ${resource} throughput will automatically scale based on the workload needs.`;
-  }
 }
 
 export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDatabaseThroughput: boolean): string {

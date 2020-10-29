@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CollapsibleSectionComponent renders 1`] = `
+<Fragment>
+  <Stack
+    className="collapsibleSection"
+    horizontal={true}
+    onClick={[Function]}
+    tokens={
+      Object {
+        "childrenGap": 10,
+      }
+    }
+  >
+    <StyledIconBase
+      iconName="ChevronDown"
+      styles={
+        Object {
+          "root": Object {
+            "paddingTop": 7,
+          },
+        }
+      }
+    />
+    <StyledLabelBase>
+      Sample title
+    </StyledLabelBase>
+  </Stack>
+</Fragment>
+`;

@@ -24,7 +24,6 @@ export interface ScaleComponentProps {
   collection: ViewModels.Collection;
   container: Explorer;
   isFixedContainer: boolean;
-  autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   onThroughputChange: (newThroughput: number) => void;
   throughput: number;
   throughputBaseline: number;
@@ -86,7 +85,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   public getThroughputTitle = (): string => {
     if (this.props.isAutoPilotSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText(false);
+      return AutoPilotUtils.getAutoPilotHeaderText();
     }
 
     const minThroughput: string = getMinRUs(this.props.collection, this.props.container).toLocaleString();
@@ -98,11 +97,11 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public canThroughputExceedMaximumValue = (): boolean => {
-    const isPublicAzurePortal: boolean =
-      configContext.platform === Platform.Portal && !this.props.container.isRunningOnNationalCloud();
-    const hasPartitionKey = !!this.props.collection.partitionKey;
-
-    return isPublicAzurePortal && hasPartitionKey;
+    return (
+      !this.props.isFixedContainer &&
+      configContext.platform === Platform.Portal &&
+      !this.props.container.isRunningOnNationalCloud()
+    );
   };
 
   public getInitialNotificationElement = (): JSX.Element => {

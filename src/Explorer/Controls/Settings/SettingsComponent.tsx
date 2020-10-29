@@ -11,13 +11,17 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { updateCollection } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import SettingsTab from "../../Tabs/SettingsTabV2";
 import { throughputUnit } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
+import {
+  MongoIndexingPolicyComponent,
+  MongoIndexingPolicyComponentProps
+} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import {
   getMaxRUs,
   hasDatabaseSharedThroughput,
@@ -27,8 +31,11 @@ import {
   SettingsV2TabTypes,
   getTabTitle,
   isDirty,
+  AddMongoIndexProps,
+  MongoIndexTypes,
   parseConflictResolutionMode,
-  parseConflictResolutionProcedure
+  parseConflictResolutionProcedure,
+  getMongoNotification
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
@@ -38,6 +45,11 @@ import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubCo
 import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import {
+  getMongoDBCollectionIndexTransformationProgress,
+  readMongoDBCollectionThroughRP
+} from "../../../Common/dataAccess/readMongoDBCollection";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -84,6 +96,13 @@ export interface SettingsComponentState {
   shouldDiscardIndexingPolicy: boolean;
   isIndexingPolicyDirty: boolean;
 
+  isMongoIndexingPolicySaveable: boolean;
+  isMongoIndexingPolicyDiscardable: boolean;
+  currentMongoIndexes: MongoIndex[];
+  indexesToDrop: number[];
+  indexesToAdd: AddMongoIndexProps[];
+  indexTransformationProgress: number;
+
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyPath: string;
@@ -98,17 +117,16 @@ export interface SettingsComponentState {
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
   private static readonly sixMonthsInSeconds = 15768000;
+  private saveSettingsButton: ButtonV2;
+  private discardSettingsChangesButton: ButtonV2;
 
-  public saveSettingsButton: ButtonV2;
-  public discardSettingsChangesButton: ButtonV2;
-
-  public isAnalyticalStorageEnabled: boolean;
+  private isAnalyticalStorageEnabled: boolean;
   private collection: ViewModels.Collection;
   private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
-  private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
+  public mongoDBCollectionResource: MongoDBCollectionResource;
 
   constructor(props: SettingsComponentProps) {
     super(props);
@@ -158,6 +176,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       shouldDiscardIndexingPolicy: false,
       isIndexingPolicyDirty: false,
 
+      indexesToDrop: [],
+      indexesToAdd: [],
+      currentMongoIndexes: undefined,
+      isMongoIndexingPolicySaveable: false,
+      isMongoIndexingPolicyDiscardable: false,
+      indexTransformationProgress: undefined,
+
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
       conflictResolutionPolicyPath: undefined,
@@ -186,6 +211,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   componentDidMount(): void {
+    this.loadMongoIndexes();
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
@@ -199,6 +225,36 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   }
 
+  public loadMongoIndexes = async (): Promise<void> => {
+    if (
+      this.container.isMongoIndexEditorEnabled() &&
+      this.container.isPreferredApiMongoDB() &&
+      this.container.isEnableMongoCapabilityPresent() &&
+      this.container.databaseAccount()
+    ) {
+      await this.refreshIndexTransformationProgress();
+
+      this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
+        this.collection.databaseId,
+        this.collection.id()
+      );
+
+      if (this.mongoDBCollectionResource) {
+        this.setState({
+          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+        });
+      }
+    }
+  };
+
+  public refreshIndexTransformationProgress = async (): Promise<void> => {
+    const currentProgress = await getMongoDBCollectionIndexTransformationProgress(
+      this.collection.databaseId,
+      this.collection.id()
+    );
+    this.setState({ indexTransformationProgress: currentProgress });
+  };
+
   public isSaveSettingsButtonEnabled = (): boolean => {
     if (this.isOfferReplacePending()) {
       return false;
@@ -208,7 +264,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isScaleSaveable ||
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
-      this.state.isConflictResolutionDirty
+      this.state.isConflictResolutionDirty ||
+      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable)
     );
   };
 
@@ -217,7 +274,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
-      this.state.isConflictResolutionDirty
+      this.state.isConflictResolutionDirty ||
+      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable)
     );
   };
 
@@ -334,6 +392,57 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           isIndexingPolicyDirty: false,
           isConflictResolutionDirty: false
         });
+      }
+
+      if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
+        try {
+          const newMongoIndexes = this.getMongoIndexesToSave();
+          const newMongoCollection: MongoDBCollectionResource = {
+            ...this.mongoDBCollectionResource,
+            indexes: newMongoIndexes
+          };
+
+          this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+            this.collection.databaseId,
+            this.collection.id(),
+            newMongoCollection
+          );
+
+          await this.refreshIndexTransformationProgress();
+          this.setState({
+            isMongoIndexingPolicySaveable: false,
+            indexesToDrop: [],
+            indexesToAdd: [],
+            currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+          });
+          traceSuccess(
+            Action.MongoIndexUpdated,
+            {
+              databaseAccountName: this.container.databaseAccount()?.name,
+              databaseName: this.collection?.databaseId,
+              collectionName: this.collection?.id(),
+              defaultExperience: this.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.props.settingsTab.tabTitle()
+            },
+            startKey
+          );
+        } catch (error) {
+          traceFailure(
+            Action.MongoIndexUpdated,
+            {
+              databaseAccountName: this.container.databaseAccount()?.name,
+              databaseName: this.collection?.databaseId,
+              collectionName: this.collection?.id(),
+              defaultExperience: this.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.props.settingsTab.tabTitle(),
+              error: error.message
+            },
+            startKey
+          );
+          throw error;
+        }
       }
 
       if (this.state.isScaleSaveable) {
@@ -463,7 +572,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
-          error: reason
+          error: reason.message
         },
         startKey
       );
@@ -482,6 +591,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       timeToLiveSeconds: this.state.timeToLiveSecondsBaseline,
       geospatialConfigType: this.state.geospatialConfigTypeBaseline,
       indexingPolicyContent: this.state.indexingPolicyContentBaseline,
+      indexesToAdd: [],
+      indexesToDrop: [],
       conflictResolutionPolicyMode: this.state.conflictResolutionPolicyModeBaseline,
       conflictResolutionPolicyPath: this.state.conflictResolutionPolicyPathBaseline,
       conflictResolutionPolicyProcedure: this.state.conflictResolutionPolicyProcedureBaseline,
@@ -496,8 +607,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isSubSettingsSaveable: false,
       isSubSettingsDiscardable: false,
       isIndexingPolicyDirty: false,
+      isMongoIndexingPolicySaveable: false,
+      isMongoIndexingPolicyDiscardable: false,
       isConflictResolutionDirty: false
     });
+  };
+
+  private getMongoIndexesToSave = (): MongoIndex[] => {
+    let finalIndexes: MongoIndex[] = [];
+    this.state.currentMongoIndexes?.map((mongoIndex: MongoIndex, index: number) => {
+      if (!this.state.indexesToDrop.includes(index)) {
+        finalIndexes.push(mongoIndex);
+      }
+    });
+    finalIndexes = finalIndexes.concat(this.state.indexesToAdd.map((m: AddMongoIndexProps) => m.mongoIndex));
+    return finalIndexes;
   };
 
   private onScaleSaveableChange = (isScaleSaveable: boolean): void =>
@@ -527,6 +651,36 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       );
       this.props.settingsTab.onLoadStartKey = undefined;
     }
+  };
+
+  private onIndexDrop = (index: number): void => this.setState({ indexesToDrop: [...this.state.indexesToDrop, index] });
+
+  private onRevertIndexDrop = (index: number): void => {
+    const indexesToDrop = [...this.state.indexesToDrop];
+    indexesToDrop.splice(index, 1);
+    this.setState({ indexesToDrop });
+  };
+
+  private onRevertIndexAdd = (index: number): void => {
+    const indexesToAdd = [...this.state.indexesToAdd];
+    indexesToAdd.splice(index, 1);
+    this.setState({ indexesToAdd });
+  };
+
+  private onIndexAddOrChange = (index: number, description: string, type: MongoIndexTypes): void => {
+    const newIndexesToAdd = [...this.state.indexesToAdd];
+    const notification = getMongoNotification(description, type);
+    const newMongoIndexWithType: AddMongoIndexProps = {
+      mongoIndex: { key: { keys: [description] } } as MongoIndex,
+      type: type,
+      notification: notification
+    };
+    if (index === newIndexesToAdd.length) {
+      newIndexesToAdd.push(newMongoIndexWithType);
+    } else {
+      newIndexesToAdd[index] = newMongoIndexWithType;
+    }
+    this.setState({ indexesToAdd: newIndexesToAdd });
   };
 
   private onConflictResolutionPolicyModeChange = (newMode: DataModels.ConflictResolutionMode): void =>
@@ -566,6 +720,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onIndexingPolicyDirtyChange = (isIndexingPolicyDirty: boolean): void =>
     this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
+
+  private onMongoIndexingPolicySaveableChange = (isMongoIndexingPolicySaveable: boolean): void =>
+    this.setState({ isMongoIndexingPolicySaveable });
+
+  private onMongoIndexingPolicyDiscardableChange = (isMongoIndexingPolicyDiscardable: boolean): void =>
+    this.setState({ isMongoIndexingPolicyDiscardable });
 
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
@@ -737,7 +897,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       collection: this.collection,
       container: this.container,
       isFixedContainer: this.isFixedContainer,
-      autoPilotTiersList: this.autoPilotTiersList,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,
@@ -789,6 +948,20 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange
     };
 
+    const mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps = {
+      mongoIndexes: this.state.currentMongoIndexes,
+      onIndexDrop: this.onIndexDrop,
+      indexesToDrop: this.state.indexesToDrop,
+      onRevertIndexDrop: this.onRevertIndexDrop,
+      indexesToAdd: this.state.indexesToAdd,
+      onRevertIndexAdd: this.onRevertIndexAdd,
+      onIndexAddOrChange: this.onIndexAddOrChange,
+      indexTransformationProgress: this.state.indexTransformationProgress,
+      refreshIndexTransformationProgress: this.refreshIndexTransformationProgress,
+      onMongoIndexingPolicySaveableChange: this.onMongoIndexingPolicySaveableChange,
+      onMongoIndexingPolicyDiscardableChange: this.onMongoIndexingPolicyDiscardableChange
+    };
+
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
       collection: this.collection,
       container: this.container,
@@ -805,7 +978,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     const tabs: SettingsV2TabInfo[] = [];
-    if (!hasDatabaseSharedThroughput(this.collection)) {
+    if (!hasDatabaseSharedThroughput(this.collection) && this.collection.offer()) {
       tabs.push({
         tab: SettingsV2TabTypes.ScaleTab,
         content: <ScaleComponent {...scaleComponentProps} />
@@ -821,6 +994,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
+      });
+    } else if (
+      this.container.isMongoIndexEditorEnabled() &&
+      this.container.isPreferredApiMongoDB() &&
+      this.container.isEnableMongoCapabilityPresent()
+    ) {
+      tabs.push({
+        tab: SettingsV2TabTypes.IndexingPolicyTab,
+        content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
       });
     }
 

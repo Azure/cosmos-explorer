@@ -15,7 +15,6 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -206,13 +205,13 @@ export default class Explorer {
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isSettingsV2Enabled: ko.Observable<boolean>;
+  public isMongoIndexEditorEnabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
@@ -412,8 +411,8 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
-    //this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
     this.isSettingsV2Enabled = ko.observable(false);
+    this.isMongoIndexEditorEnabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -421,13 +420,6 @@ export default class Explorer {
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
-
-    this.hasAutoPilotV2FeatureFlag = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableAutoPilotV2)) {
-        return true;
-      }
-      return false;
-    });
 
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
@@ -1512,41 +1504,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    refreshCachedResources().then(
-      () => {
-        TelemetryProcessor.traceSuccess(
-          Action.LoadDatabases,
-          {
-            description: "Refresh successful",
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree
-          },
-          startKey
-        );
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
-      },
-      (error: any) => {
-        this.isRefreshingExplorer(false);
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing data: ${error.message}`
-        );
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            description: "Unable to refresh cached resources",
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: error
-          },
-          startKey
-        );
-        throw error;
-      }
-    );
-
+    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -1947,6 +1905,10 @@ export default class Explorer {
 
     if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
       this.isSettingsV2Enabled(true);
+    }
+
+    if (flights.indexOf(Constants.Flights.MongoIndexEditor) !== -1) {
+      this.isMongoIndexEditorEnabled(true);
     }
   }
 
