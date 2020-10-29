@@ -5297,6 +5297,7 @@ exports[`SettingsComponent renders 1`] = `
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
+          refreshIndexTransformationProgress={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
         />

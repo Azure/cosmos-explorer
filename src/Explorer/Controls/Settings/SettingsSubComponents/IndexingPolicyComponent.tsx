@@ -1,9 +1,10 @@
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
-import { isDirty } from "../SettingsUtils";
+import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { MessageBar, MessageBarType, Stack } from "office-ui-fabric-react";
-import { indexingPolicyTTLWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
+import { indexingPolicynUnsavedWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
+import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
 export interface IndexingPolicyComponentProps {
   shouldDiscardIndexingPolicy: boolean;
@@ -12,6 +13,8 @@ export interface IndexingPolicyComponentProps {
   indexingPolicyContentBaseline: DataModels.IndexingPolicy;
   onIndexingPolicyContentChange: (newIndexingPolicy: DataModels.IndexingPolicy) => void;
   logIndexingPolicySuccessMessage: () => void;
+  indexTransformationProgress: number;
+  refreshIndexTransformationProgress: () => Promise<void>;
   onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => void;
 }
 
@@ -51,6 +54,7 @@ export class IndexingPolicyComponent extends React.Component<
     if (!this.indexingPolicyEditor) {
       this.createIndexingPolicyEditor();
     } else {
+      this.indexingPolicyEditor.updateOptions({readOnly: isIndexTransforming(this.props.indexTransformationProgress)})
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
       const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
       indexingPolicyEditorModel.setValue(value);
@@ -84,7 +88,7 @@ export class IndexingPolicyComponent extends React.Component<
     this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
       value: value,
       language: "json",
-      readOnly: false,
+      readOnly: isIndexTransforming(this.props.indexTransformationProgress),
       ariaLabel: "Indexing Policy"
     });
     if (this.indexingPolicyEditor) {
@@ -108,8 +112,12 @@ export class IndexingPolicyComponent extends React.Component<
   public render(): JSX.Element {
     return (
       <Stack {...titleAndInputStackProps}>
+        <IndexingPolicyRefreshComponent
+          indexTransformationProgress={this.props.indexTransformationProgress}
+          refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
+        />
         {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
-          <MessageBar messageBarType={MessageBarType.warning}>{indexingPolicyTTLWarningMessage}</MessageBar>
+          <MessageBar messageBarType={MessageBarType.warning}>{indexingPolicynUnsavedWarningMessage}</MessageBar>
         )}
         <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
       </Stack>
