@@ -70,35 +70,13 @@ export async function armRequest<T>({ host, path, apiVersion, method, body: requ
     throw error;
   }
 
-  const operationStatusUrl = response.headers && response.headers.get("azure-asyncoperation");
+  const operationStatusUrl = response.headers && response.headers.get("location");
   if (operationStatusUrl) {
-    await promiseRetry(() => getOperationStatus(operationStatusUrl));
-    // TODO: ARM is supposed to return a resourceLocation property, but it does not https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md#target-resource-location
-    // When Cosmos RP adds resourceLocation, we should use it instead
-    // For now manually execute a GET if the operation was a mutation and not a deletion
-    if (method === "POST" || method === "PATCH" || method === "PUT") {
-      return armRequest({
-        host,
-        path,
-        apiVersion,
-        method: "GET"
-      });
-    }
+    return await promiseRetry(() => getOperationStatus(operationStatusUrl));
   }
 
   const responseBody = (await response.json()) as T;
   return responseBody;
-}
-
-const SUCCEEDED = "Succeeded" as const;
-const FAILED = "Failed" as const;
-const CANCELED = "Canceled" as const;
-
-type Status = typeof SUCCEEDED | typeof FAILED | typeof CANCELED;
-
-interface OperationResponse {
-  status: Status;
-  error: unknown;
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
@@ -107,18 +85,20 @@ async function getOperationStatus(operationStatusUrl: string) {
       Authorization: userContext.authorizationToken
     }
   });
+
   if (!response.ok) {
     const errorResponse = (await response.json()) as ErrorResponse;
     const error = new Error(errorResponse.message) as ARMError;
     error.code = errorResponse.code;
     throw new AbortError(error);
   }
-  const body = (await response.json()) as OperationResponse;
+
+  const body = await response.json();
   const status = body.status;
-  if (status === SUCCEEDED) {
-    return;
+  if (!status && response.status === 200) {
+    return body;
   }
-  if (status === CANCELED || status === FAILED) {
+  if (status === "Canceled" || status === "Failed") {
     const errorMessage = body.error ? JSON.stringify(body.error) : "Operation could not be completed";
     const error = new Error(errorMessage);
     throw new AbortError(error);
