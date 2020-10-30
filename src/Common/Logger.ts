@@ -1,3 +1,4 @@
+import { CosmosError, getErrorMessage } from "./ErrorHandlingUtils";
 import { sendMessage } from "./MessageHandler";
 import { Diagnostics, MessageTypes } from "../Contracts/ExplorerContracts";
 import { appInsights } from "../Shared/appInsights";
@@ -21,14 +22,9 @@ export function logWarning(message: string, area: string, code?: number): void {
   return _logEntry(entry);
 }
 
-export function logError(message: string | Error, area: string, code?: number): void {
-  let logMessage: string;
-  if (typeof message === "string") {
-    logMessage = message;
-  } else {
-    logMessage = JSON.stringify(message, Object.getOwnPropertyNames(message));
-  }
-  const entry: Diagnostics.LogEntry = _generateLogEntry(Diagnostics.LogEntryLevel.Error, logMessage, area, code);
+export function logError(error: string | CosmosError | Error, area: string, code?: number): void {
+  const errorMessage: string = getErrorMessage(error);
+  const entry: Diagnostics.LogEntry = _generateLogEntry(Diagnostics.LogEntryLevel.Error, errorMessage, area, code);
   return _logEntry(entry);
 }
 

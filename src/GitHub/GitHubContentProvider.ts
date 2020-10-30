@@ -9,6 +9,7 @@ import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 import * as GitHubUtils from "../Utils/GitHubUtils";
 import UrlUtility from "../Common/UrlUtility";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export interface GitHubContentProviderParams {
   gitHubClient: GitHubClient;
@@ -423,7 +424,7 @@ export class GitHubContentProvider implements IContentProvider {
       request: {},
       status: error.errno,
       response: error,
-      responseText: error.message,
+      responseText: getErrorMessage(error),
       responseType: "json"
     };
   }

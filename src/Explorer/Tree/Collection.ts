@@ -40,6 +40,7 @@ import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -610,6 +611,7 @@ export default class Collection implements ViewModels.Collection {
           settingsTab.pendingNotification(pendingNotification);
         },
         (error: any) => {
+          const errorMessage = getErrorMessage(error);
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
@@ -619,13 +621,13 @@ export default class Collection implements ViewModels.Collection {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: settingsTabOptions.title,
-              error: error
+              error: errorMessage
             },
             startKey
           );
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Error while fetching container settings for container ${this.id()}: ${error.message}`
+            `Error while fetching container settings for container ${this.id()}: ${errorMessage}`
           );
           throw error;
         }
@@ -869,7 +871,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : error.message
+          error: getErrorMessage(error)
         });
       }
     );
@@ -928,7 +930,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : error.message
+          error: getErrorMessage(error)
         });
       }
     );
@@ -988,7 +990,7 @@ export default class Collection implements ViewModels.Collection {
           collectionName: this.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ResourceTree,
-          error: typeof error === "string" ? error : error.message
+          error: getErrorMessage(error)
         });
       }
     );
@@ -1185,7 +1187,7 @@ export default class Collection implements ViewModels.Collection {
           },
           error => {
             record.numFailed++;
-            record.errors = [...record.errors, error.message];
+            record.errors = [...record.errors, getErrorMessage(error)];
             return Q.resolve();
           }
         );
@@ -1238,7 +1240,7 @@ export default class Collection implements ViewModels.Collection {
       (error: any) => {
         Logger.logError(
           JSON.stringify({
-            error: error.message,
+            error: getErrorMessage(error),
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.databaseId,
             collectionName: this.id()

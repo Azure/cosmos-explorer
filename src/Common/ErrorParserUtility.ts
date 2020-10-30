@@ -1,18 +1,4 @@
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
-
-export function replaceKnownError(err: string): string {
-  if (
-    window.dataExplorer.subscriptionType() === ViewModels.SubscriptionType.Internal &&
-    err.indexOf("SharedOffer is Disabled for your account") >= 0
-  ) {
-    return "Database throughput is not supported for internal subscriptions.";
-  } else if (err.indexOf("Partition key paths must contain only valid") >= 0) {
-    return "Partition key paths must contain only valid characters and not contain a trailing slash or wildcard character.";
-  }
-
-  return err;
-}
 
 export function parse(err: any): DataModels.ErrorDataModel[] {
   try {
