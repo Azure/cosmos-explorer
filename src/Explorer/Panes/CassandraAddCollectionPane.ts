@@ -392,7 +392,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             storage: Constants.BackendDefaults.multiPartitionStorageInGb,
             offerThroughput: this.throughput(),
             partitionKey: "",
-            databaseId: this.keyspaceId()
+            databaseId: this.keyspaceId(),
             hasDedicatedThroughput: this.dedicateTableThroughput()
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
@@ -421,7 +421,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             storage: Constants.BackendDefaults.multiPartitionStorageInGb,
             offerThroughput: this.throughput(),
             partitionKey: "",
-            databaseId: this.keyspaceId()
+            databaseId: this.keyspaceId(),
             hasDedicatedThroughput: this.dedicateTableThroughput()
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),

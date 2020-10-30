@@ -174,8 +174,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         this.overrideWithAutoPilotSettings() ? this.props.maxAutoPilotThroughput : offerThroughput,
         serverId,
         regions,
-        multimaster,
-        false
+        multimaster
       );
     } else {
       estimatedSpend = getEstimatedAutoscaleSpendElement(

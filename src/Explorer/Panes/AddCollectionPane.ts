@@ -209,7 +209,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
           this.sharedAutoPilotThroughput(),
           serverId,
           regions,
-          multimaster
+          multimaster,
           this.isSharedAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -842,7 +842,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             id: this.collectionId(),
             storage: this.storage(),
             partitionKey,
-    
+
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           }),
@@ -878,7 +878,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             id: this.collectionId(),
             storage: this.storage(),
             partitionKey,
-    
+
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           },
