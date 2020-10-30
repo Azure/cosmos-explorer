@@ -376,8 +376,7 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
   const currentOffer = params.currentOffer;
   const newOffer: Offer = {
     content: {
-      offerThroughput: undefined,
-      offerIsRUPerMinuteThroughputEnabled: false
+      offerThroughput: undefined
     },
     _etag: undefined,
     _ts: undefined,

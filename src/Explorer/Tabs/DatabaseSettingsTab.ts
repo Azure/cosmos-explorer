@@ -163,8 +163,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           this.overrideWithAutoPilotSettings() ? this.autoPilotThroughput() : this.throughput(),
           serverId,
           regions,
-          multimaster,
-          false /*rupmEnabled*/
+          multimaster
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -460,8 +459,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
               databaseAccountName: userContext.databaseAccount.name,
               resourceGroup: userContext.resourceGroup,
               databaseName: this.database.id(),
-              throughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: false
+              throughput: newThroughput
             };
             await updateOfferThroughputBeyondLimit(requestPayload);
             this.database.offer().content.offerThroughput = originalThroughputValue;

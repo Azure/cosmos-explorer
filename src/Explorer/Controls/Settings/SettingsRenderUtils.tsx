@@ -199,10 +199,9 @@ export const getEstimatedSpendElement = (
   throughput: number,
   serverId: string,
   regions: number,
-  multimaster: boolean,
-  rupmEnabled: boolean
+  multimaster: boolean
 ): JSX.Element => {
-  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
+  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);

@@ -11,7 +11,6 @@ interface UpdateOfferThroughputRequest {
   databaseName: string;
   collectionName?: string;
   throughput: number;
-  offerIsRUPerMinuteThroughputEnabled: boolean;
   offerAutopilotSettings?: AutoPilotOfferSettings;
 }
 

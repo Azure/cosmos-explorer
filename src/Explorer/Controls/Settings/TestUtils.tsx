@@ -22,7 +22,6 @@ export const collection = ({
   offer: ko.observable<DataModels.Offer>({
     content: {
       offerThroughput: 10000,
-      offerIsRUPerMinuteThroughputEnabled: false,
       collectionThroughputInfo: {
         minimumRUForCollection: 6000,
         numPhysicalPartitions: 4

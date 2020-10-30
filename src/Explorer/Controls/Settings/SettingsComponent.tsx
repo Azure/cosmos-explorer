@@ -454,8 +454,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           newOffer.content.offerThroughput = newThroughput;
         } else {
           newOffer.content = {
-            offerThroughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
+            offerThroughput: newThroughput
           };
         }
 
@@ -498,8 +497,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             resourceGroup: userContext.resourceGroup,
             databaseName: this.collection.databaseId,
             collectionName: this.collection.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
+            throughput: newThroughput
           };
 
           await updateOfferThroughputBeyondLimit(requestPayload);

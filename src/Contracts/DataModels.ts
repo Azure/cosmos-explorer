@@ -179,7 +179,6 @@ export interface Offer extends Resource {
   offerType?: string;
   content?: {
     offerThroughput: number;
-    offerIsRUPerMinuteThroughputEnabled: boolean;
     collectionThroughputInfo?: OfferThroughputInfo;
     offerAutopilotSettings?: AutoPilotOfferSettings;
   };
@@ -233,7 +232,6 @@ export interface CreateDatabaseAndCollectionRequest {
   collectionId: string;
   offerThroughput: number;
   databaseLevelThroughput: boolean;
-  rupmEnabled?: boolean;
   partitionKey?: PartitionKey;
   indexingPolicy?: IndexingPolicy;
   uniqueKeyPolicy?: UniqueKeyPolicy;

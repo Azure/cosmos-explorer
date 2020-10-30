@@ -17,8 +17,7 @@ describe("updateOfferThroughputBeyondLimit", () => {
       resourceGroup: "foo",
       databaseAccountName: "foo",
       databaseName: "foo",
-      throughput: 1000000000,
-      offerIsRUPerMinuteThroughputEnabled: false
+      throughput: 1000000000
     });
     expect(window.fetch).toHaveBeenCalled();
   });

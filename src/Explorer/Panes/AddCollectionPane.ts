@@ -41,8 +41,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public partitionKeyVisible: ko.Computed<boolean>;
   public partitionKeyPattern: ko.Computed<string>;
   public partitionKeyTitle: ko.Computed<string>;
-  public rupm: ko.Observable<string>;
-  public rupmVisible: ko.Observable<boolean>;
   public storage: ko.Observable<string>;
   public throughputSinglePartition: ViewModels.Editable<number>;
   public throughputMultiPartition: ViewModels.Editable<number>;
@@ -142,12 +140,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
       }
       return "";
     });
-    this.rupm = ko.observable<string>(Constants.RUPMStates.off);
-    this.rupmVisible = ko.observable<boolean>(false);
-    const featureSubcription = this.container.features.subscribe(() => {
-      this.rupmVisible(this.container.isFeatureEnabled(Constants.Features.enableRupm));
-      featureSubcription.dispose();
-    });
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -200,7 +192,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
           account.properties.readLocations.length) ||
         1;
       const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
-      const rupmEnabled: boolean = this.rupm() === Constants.RUPMStates.on;
 
       let throughputSpendAckText: string;
       let estimatedSpend: string;
@@ -210,23 +201,15 @@ export default class AddCollectionPane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          rupmEnabled,
           this.isSharedAutoPilotSelected()
         );
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
-          offerThroughput,
-          serverId,
-          regions,
-          multimaster,
-          rupmEnabled
-        );
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
       } else {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.sharedAutoPilotThroughput(),
           serverId,
           regions,
-          multimaster,
-          rupmEnabled,
+          multimaster
           this.isSharedAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -263,7 +246,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
           account.properties.readLocations.length) ||
         1;
       const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
-      const rupmEnabled: boolean = this.rupm() === Constants.RUPMStates.on;
 
       let throughputSpendAckText: string;
       let estimatedSpend: string;
@@ -273,15 +255,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          rupmEnabled,
           this.isAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedSpendHtml(
           this.throughputMultiPartition(),
           serverId,
           regions,
-          multimaster,
-          rupmEnabled
+          multimaster
         );
       } else {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
@@ -289,7 +269,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          rupmEnabled,
           this.isAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -687,8 +666,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         storage: this.storage(),
         offerThroughput: this._getThroughput(),
         partitionKey: this.partitionKey(),
-        databaseId: this.databaseId(),
-        rupm: this.rupm()
+        databaseId: this.databaseId()
       }),
       subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
@@ -789,7 +767,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         id: this.collectionId(),
         storage: this.storage(),
         partitionKey,
-        rupm: this.rupm(),
+
         uniqueKeyPolicy,
         collectionWithThroughputInShared: this.collectionWithThroughputInShared()
       }),
@@ -864,7 +842,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             id: this.collectionId(),
             storage: this.storage(),
             partitionKey,
-            rupm: this.rupm(),
+    
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           }),
@@ -900,7 +878,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             id: this.collectionId(),
             storage: this.storage(),
             partitionKey,
-            rupm: this.rupm(),
+    
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           },
@@ -982,20 +960,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     return true;
   }
 
-  public onRupmOptionsKeyDown(source: any, event: KeyboardEvent): boolean {
-    if (event.key === "ArrowRight") {
-      this.rupm("off");
-      return false;
-    }
-
-    if (event.key === "ArrowLeft") {
-      this.rupm("on");
-      return false;
-    }
-
-    return true;
-  }
-
   public onEnableSynapseLinkButtonClicked() {
     this.container.openEnableSynapseLinkDialog();
   }
@@ -1019,15 +983,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     }
 
     const throughput = this._getThroughput();
-    const maxThroughputWithRUPM =
-      SharedConstants.CollectionCreation.MaxRUPMPerPartition * this._calculateNumberOfPartitions();
-
-    if (this.rupm() === Constants.RUPMStates.on && throughput > maxThroughputWithRUPM) {
-      this.formErrors(
-        `The maximum supported provisioned throughput with RU/m enabled is ${maxThroughputWithRUPM} RU/s. Please turn off RU/m to incease thoughput above ${maxThroughputWithRUPM} RU/s.`
-      );
-      return false;
-    }
 
     if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !this.throughputSpendAck()) {
       this.formErrors(`Please acknowledge the estimated daily spend.`);

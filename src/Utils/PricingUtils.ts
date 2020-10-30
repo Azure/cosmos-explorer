@@ -49,7 +49,6 @@ export function getMultimasterMultiplier(numberOfRegions: number, multimasterEna
 
 export function computeRUUsagePriceHourly(
   serverId: string,
-  rupmEnabled: boolean,
   requestUnits: number,
   numberOfRegions: number,
   multimasterEnabled: boolean
@@ -58,12 +57,10 @@ export function computeRUUsagePriceHourly(
   const multimasterMultiplier: number = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
 
   const pricePerRu = getPricePerRu(serverId);
-  const pricePerRuPm = getPricePerRuPm(serverId);
 
   const ruCharge = requestUnits * pricePerRu * multimasterMultiplier * regionMultiplier;
-  const rupmCharge = rupmEnabled ? requestUnits * pricePerRuPm : 0;
 
-  return Number((ruCharge + rupmCharge).toFixed(5));
+  return Number(ruCharge.toFixed(5));
 }
 
 export function getPriceCurrency(serverId: string): string {
@@ -149,14 +146,6 @@ export function getPricePerRu(serverId: string): number {
   return Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRU;
 }
 
-export function getPricePerRuPm(serverId: string): number {
-  if (serverId === "mooncake") {
-    return Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRUPM;
-  }
-
-  return Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRUPM;
-}
-
 export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDatabaseThroughput: boolean): string {
   if (!maxAutoPilotThroughputSet) {
     return "";
@@ -214,10 +203,9 @@ export function getEstimatedSpendHtml(
   throughput: number,
   serverId: string,
   regions: number,
-  multimaster: boolean,
-  rupmEnabled: boolean
+  multimaster: boolean
 ): string {
-  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
+  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
@@ -238,12 +226,11 @@ export function getEstimatedSpendAcknowledgeString(
   serverId: string,
   regions: number,
   multimaster: boolean,
-  rupmEnabled: boolean,
   isAutoscale: boolean
 ): string {
   const hourlyPrice: number = isAutoscale
     ? computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster)
-    : computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
+    : computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currencySign: string = getCurrencySign(serverId);

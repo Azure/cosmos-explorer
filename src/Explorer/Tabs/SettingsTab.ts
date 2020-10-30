@@ -143,7 +143,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public geospatialVisible: ko.Computed<boolean>;
   public indexingPolicyContent: ViewModels.Editable<any>;
   public isIndexingPolicyEditorInitializing: ko.Observable<boolean>;
-  public rupm: ViewModels.Editable<string>;
   public conflictResolutionPolicyMode: ViewModels.Editable<string>;
   public conflictResolutionPolicyPath: ViewModels.Editable<string>;
   public conflictResolutionPolicyProcedure: ViewModels.Editable<string>;
@@ -182,9 +181,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public partitionKeyValue: ko.Observable<string>;
   public isLargePartitionKeyEnabled: ko.Computed<boolean>;
   public requestUnitsUsageCost: ko.Computed<string>;
-  public rupmOnId: string;
-  public rupmOffId: string;
-  public rupmVisible: ko.Computed<boolean>;
   public scaleExpanded: ko.Observable<boolean>;
   public settingsExpanded: ko.Observable<boolean>;
   public shouldDisplayPortalUsePrompt: ko.Computed<boolean>;
@@ -241,8 +237,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.ttlOnId = `ttlOn${this.tabId}`;
     this.changeFeedPolicyOffId = `changeFeedOff${this.tabId}`;
     this.changeFeedPolicyOnId = `changeFeedOn${this.tabId}`;
-    this.rupmOnId = `rupmOn${this.tabId}`;
-    this.rupmOffId = `rupmOff${this.tabId}`;
     this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.tabId}`;
     this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.tabId}`;
     this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.tabId}`;
@@ -274,7 +268,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.analyticalStorageTtlSelection = editable.observable<string>();
     this.analyticalStorageTtlSeconds = editable.observable<number>();
     this.indexingPolicyContent = editable.observable<any>();
-    this.rupm = editable.observable<string>();
     // Mongo container with system partition key still treat as "Fixed"
     this._isFixedContainer = ko.pureComputed(
       () =>
@@ -346,7 +339,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
       const serverId: string = this.container.serverId();
       const offerThroughput: number = this.throughput();
-      const rupmEnabled = this.rupm() === Constants.RUPMStates.on;
 
       const regions =
         (account &&
@@ -364,8 +356,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           this.overrideWithAutoPilotSettings() ? this.autoPilotThroughput() : offerThroughput,
           serverId,
           regions,
-          multimaster,
-          rupmEnabled
+          multimaster
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -420,32 +411,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           !!this.collection.conflictResolutionPolicy()) ||
         false
       );
-    });
-
-    this.rupmVisible = ko.computed(() => {
-      if (configContext.platform === Platform.Emulator) {
-        return false;
-      }
-      if (this.container.isFeatureEnabled(Constants.Features.enableRupm)) {
-        return true;
-      }
-      for (let i = 0, len = this.container.databases().length; i < len; i++) {
-        for (let j = 0, len2 = this.container.databases()[i].collections().length; j < len2; j++) {
-          const collectionOffer = this.container
-            .databases()
-            [i].collections()
-            [j].offer();
-          if (
-            collectionOffer &&
-            collectionOffer.content &&
-            collectionOffer.content.offerIsRUPerMinuteThroughputEnabled
-          ) {
-            return true;
-          }
-        }
-      }
-
-      return false;
     });
 
     this.ttlVisible = ko.computed(() => {
@@ -713,14 +678,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           return false;
         }
 
-        if (
-          this.rupm() === Constants.RUPMStates.on &&
-          this.throughput() >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo()?.numPartitions
-        ) {
-          return false;
-        }
-
         if (this.timeToLive.editableIsDirty()) {
           return true;
         }
@@ -746,10 +703,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         }
 
         if (this.indexingPolicyContent.editableIsDirty() && this.indexingPolicyContent.editableIsValid()) {
-          return true;
-        }
-
-        if (this.rupm.editableIsDirty()) {
           return true;
         }
 
@@ -799,10 +752,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         }
 
         if (this.indexingPolicyContent.editableIsDirty()) {
-          return true;
-        }
-
-        if (this.rupm.editableIsDirty()) {
           return true;
         }
 
@@ -1049,25 +998,17 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         }
       }
 
-      if (
-        this.throughput.editableIsDirty() ||
-        this.rupm.editableIsDirty() ||
-        this._isAutoPilotDirty() ||
-        this._hasProvisioningTypeChanged()
-      ) {
+      if (this.throughput.editableIsDirty() || this._isAutoPilotDirty() || this._hasProvisioningTypeChanged()) {
         const newThroughput = this.throughput();
-        const isRUPerMinuteThroughputEnabled: boolean = this.rupm() === Constants.RUPMStates.on;
         let newOffer: DataModels.Offer = _.extend({}, this.collection.offer());
         const originalThroughputValue: number = this.throughput.getEditableOriginalValue();
 
         if (newOffer.content) {
           newOffer.content.offerThroughput = newThroughput;
-          newOffer.content.offerIsRUPerMinuteThroughputEnabled = isRUPerMinuteThroughputEnabled;
         } else {
           newOffer = _.extend({}, newOffer, {
             content: {
-              offerThroughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+              offerThroughput: newThroughput
             }
           });
         }
@@ -1109,8 +1050,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
             resourceGroup: userContext.resourceGroup,
             databaseName: this.collection.databaseId,
             collectionName: this.collection.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
+            throughput: newThroughput
           };
 
           await updateOfferThroughputBeyondLimit(requestPayload);
@@ -1193,7 +1133,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.geospatialConfigType.setBaseline(this.geospatialConfigType.getEditableOriginalValue());
     this.analyticalStorageTtlSelection.setBaseline(this.analyticalStorageTtlSelection.getEditableOriginalValue());
     this.analyticalStorageTtlSeconds.setBaseline(this.analyticalStorageTtlSeconds.getEditableOriginalValue());
-    this.rupm.setBaseline(this.rupm.getEditableOriginalValue());
     this.changeFeedPolicyToggled.setBaseline(this.changeFeedPolicyToggled.getEditableOriginalValue());
 
     this.conflictResolutionPolicyMode.setBaseline(this.conflictResolutionPolicyMode.getEditableOriginalValue());
@@ -1400,7 +1339,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   }
 
   private _getThroughputUnit(): string {
-    return this.rupm() === Constants.RUPMStates.on ? "RU/m" : "RU/s";
+    return "RU/s";
   }
 
   public getUpdatedConflictResolutionPolicy(): DataModels.ConflictResolutionPolicy {
@@ -1517,13 +1456,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       this.collection.offer().content &&
       this.collection.offer().content.offerThroughput;
 
-    const offerIsRUPerMinuteThroughputEnabled =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.offerIsRUPerMinuteThroughputEnabled;
-
     const changeFeedPolicyToggled: ChangeFeedPolicyToggledState = this.changeFeedPolicyToggled();
     this.changeFeedPolicyToggled.setBaseline(changeFeedPolicyToggled);
     this.throughput.setBaseline(offerThroughput);
@@ -1543,7 +1475,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         conflictResolutionPolicy && conflictResolutionPolicy.conflictResolutionProcedure
       )
     );
-    this.rupm.setBaseline(offerIsRUPerMinuteThroughputEnabled ? Constants.RUPMStates.on : Constants.RUPMStates.off);
 
     const indexingPolicyContent = this.collection.indexingPolicy();
     const value: string = JSON.stringify(indexingPolicyContent, null, 4);
