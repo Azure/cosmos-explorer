@@ -32,6 +32,7 @@ import {
   createDocument
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class DocumentsTab extends TabsBase {
   public selectedDocumentId: ko.Observable<DocumentId>;
@@ -774,10 +775,8 @@ export default class DocumentsTab extends TabsBase {
         },
         error => {
           this.isExecutionError(true);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            typeof error === "string" ? error : error.message
-          );
+          const errorMessage = getErrorMessage(error);
+          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,
@@ -788,7 +787,7 @@ export default class DocumentsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: errorMessage
               },
               this.onLoadStartKey
             );

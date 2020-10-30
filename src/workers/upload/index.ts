@@ -3,6 +3,7 @@ import { DocumentClientParams, UploadDetailsRecord, UploadDetails } from "./defi
 import { client } from "../../Common/CosmosClient";
 import { configContext, updateConfigContext } from "../../ConfigContext";
 import { updateUserContext } from "../../UserContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 let numUploadsSuccessful = 0;
 let numUploadsFailed = 0;
@@ -93,7 +94,7 @@ function createDocumentsFromFile(fileName: string, documentContent: string): voi
         })
         .catch(error => {
           console.error(error);
-          recordUploadDetailErrorForFile(fileName, error.message);
+          recordUploadDetailErrorForFile(fileName, getErrorMessage(error));
           numUploadsFailed++;
         })
         .finally(() => {

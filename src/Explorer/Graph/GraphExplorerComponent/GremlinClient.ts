@@ -8,6 +8,7 @@ import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUti
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../../Common/HashMap";
 import * as Logger from "../../../Common/Logger";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 export interface GremlinClientParameters {
   endpoint: string;
@@ -58,14 +59,11 @@ export class GremlinClient {
         }
       },
       failureCallback: (result: Result, error: any) => {
-        if (typeof error !== "string") {
-          error = error.message;
-        }
-
+        const errorMessage = getErrorMessage(error);
         const requestId = result.requestId;
 
         if (!requestId || !this.pendingResults.has(requestId)) {
-          const msg = `Error: ${error}, unknown requestId:${requestId} ${GremlinClient.getRequestChargeString(
+          const msg = `Error: ${errorMessage}, unknown requestId:${requestId} ${GremlinClient.getRequestChargeString(
             result.requestCharge
           )}`;
           GremlinClient.reportError(msg);
@@ -73,11 +71,11 @@ export class GremlinClient {
           // Fail all pending requests if no request id (fatal)
           if (!requestId) {
             this.pendingResults.keys().forEach((reqId: string) => {
-              this.abortPendingRequest(reqId, error, null);
+              this.abortPendingRequest(reqId, errorMessage, null);
             });
           }
         } else {
-          this.abortPendingRequest(requestId, error, result.requestCharge);
+          this.abortPendingRequest(requestId, errorMessage, result.requestCharge);
         }
       },
       infoCallback: (msg: string) => {

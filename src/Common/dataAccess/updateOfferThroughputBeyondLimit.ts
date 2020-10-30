@@ -1,8 +1,9 @@
 import { Platform, configContext } from "../../ConfigContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AutoPilotOfferSettings } from "../../Contracts/DataModels";
-import { logConsoleProgress, logConsoleInfo, logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { HttpHeaders } from "../Constants";
+import { handleError } from "../ErrorHandlingUtils";
 
 interface UpdateOfferThroughputRequest {
   subscriptionId: string;
@@ -44,8 +45,13 @@ export async function updateOfferThroughputBeyondLimit(request: UpdateOfferThrou
     clearMessage();
     return undefined;
   }
+
   const error = await response.json();
-  logConsoleError(`Failed to request an increase in throughput for ${request.throughput}: ${error.message}`);
+  handleError(
+    error,
+    `Failed to request an increase in throughput for ${request.throughput}`,
+    "updateOfferThroughputBeyondLimit"
+  );
   clearMessage();
-  throw new Error(error.message);
+  throw error;
 }

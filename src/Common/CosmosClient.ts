@@ -1,6 +1,7 @@
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
 import { configContext, Platform } from "../ConfigContext";
+import { getErrorMessage } from "./ErrorHandlingUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { userContext } from "../UserContext";
@@ -69,7 +70,7 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
     const result = JSON.parse(await response.json());
     return result;
   } catch (error) {
-    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${error.message}`);
+    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${getErrorMessage(error)}`);
     return Promise.reject(error);
   }
 }

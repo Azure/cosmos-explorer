@@ -86,6 +86,7 @@ import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandBut
 import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
+import { getErrorMessage, handleError } from "../Common/ErrorHandlingUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -1120,7 +1121,7 @@ export default class Explorer {
     );
     this.renewExplorerShareAccess(this, this.tokenForRenewal())
       .fail((error: any) => {
-        const stringifiedError: string = error.message;
+        const stringifiedError: string = getErrorMessage(error);
         this.renewTokenError("Invalid connection string specified");
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
@@ -1149,7 +1150,7 @@ export default class Explorer {
         NotificationConsoleUtils.clearInProgressMessageWithId(id);
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Failed to generate share url: ${error.message}`
+          `Failed to generate share url: ${getErrorMessage(error)}`
         );
         console.error(error);
       }
@@ -1174,7 +1175,10 @@ export default class Explorer {
           deferred.resolve();
         },
         (error: any) => {
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${error.message}`);
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Failed to connect: ${getErrorMessage(error)}`
+          );
           deferred.reject(error);
         }
       )
@@ -1448,19 +1452,20 @@ export default class Explorer {
         this._setLoadingStatusText("Failed to fetch databases.");
         this.isRefreshingExplorer(false);
         deferred.reject(error);
+        const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
           Action.LoadDatabases,
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            error: error.message
+            error: errorMessage
           },
           startKey
         );
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Error while refreshing databases: ${error.message}`
+          `Error while refreshing databases: ${errorMessage}`
         );
       }
     );
@@ -1562,8 +1567,7 @@ export default class Explorer {
 
       return Promise.all(sparkPromises).then(() => workspaceItems);
     } catch (error) {
-      Logger.logError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error.message);
+      handleError(error, "Get Arcadia workspaces failed", "Explorer/this._arcadiaManager.listWorkspacesAsync");
       return Promise.resolve([]);
     }
   }
@@ -1598,10 +1602,10 @@ export default class Explorer {
       );
     } catch (error) {
       this._isInitializingNotebooks = false;
-      Logger.logError(error, "initNotebooks/getNotebookConnectionInfoAsync");
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to get notebook workspace connection info: ${error.message}`
+      handleError(
+        error,
+        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`,
+        "initNotebooks/getNotebookConnectionInfoAsync"
       );
       throw error;
     } finally {
@@ -1677,8 +1681,7 @@ export default class Explorer {
         await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
       }
     } catch (error) {
-      Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
-      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${error.message}`);
+      handleError(error, "Failed to initialize notebook workspace", "Explorer/ensureNotebookWorkspaceRunning");
     } finally {
       clearMessage && clearMessage();
     }
@@ -2060,7 +2063,7 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            trace: error.message
+            trace: getErrorMessage(error)
           },
           startKey
         );
@@ -2522,7 +2525,7 @@ export default class Explorer {
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Could not download notebook ${error.message}`
+          `Could not download notebook ${getErrorMessage(error)}`
         );
 
         clearMessage();
