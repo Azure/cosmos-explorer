@@ -239,19 +239,10 @@ export interface CreateDatabaseAndCollectionRequest {
   uniqueKeyPolicy?: UniqueKeyPolicy;
   autoPilot?: AutoPilotCreationSettings;
   analyticalStorageTtl?: number;
-  hasAutoPilotV2FeatureFlag?: boolean;
 }
 
 export interface AutoPilotCreationSettings {
-  autopilotTier?: AutopilotTier;
   maxThroughput?: number;
-}
-
-export enum AutopilotTier {
-  Tier1 = 1,
-  Tier2 = 2,
-  Tier3 = 3,
-  Tier4 = 4
 }
 
 export interface Query {
@@ -262,9 +253,7 @@ export interface Query {
 }
 
 export interface AutoPilotOfferSettings {
-  tier?: AutopilotTier;
   maximumTierThroughput?: number;
-  targetTier?: AutopilotTier;
   maxThroughput?: number;
   targetMaxThroughput?: number;
 }
@@ -491,7 +480,6 @@ export interface MongoParameters extends RpParameters {
   rid?: string;
   rtype?: string;
   isAutoPilot?: Boolean;
-  autoPilotTier?: string;
   autoPilotThroughput?: string;
   analyticalStorageTtl?: number;
 }
