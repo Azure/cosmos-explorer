@@ -40,7 +40,7 @@ const sendNotificationForError = (errorMessage: string, errorCode: number): void
 
 const replaceKnownError = (errorMessage: string): string => {
   if (
-    window.dataExplorer.subscriptionType() === SubscriptionType.Internal &&
+    window.dataExplorer?.subscriptionType() === SubscriptionType.Internal &&
     errorMessage.indexOf("SharedOffer is Disabled for your account") >= 0
   ) {
     return "Database throughput is not supported for internal subscriptions.";
