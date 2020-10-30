@@ -51,7 +51,6 @@
 
       <div class="ssTextAllignment" data-bind="visible: scaleExpanded" id="scaleRegion">
         <!-- ko ifnot: isAutoScaleEnabled -->
-        <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
         <throughput-input-autopilot-v3
           params="{
                         testId: testId,
@@ -77,34 +76,6 @@
                     }"
         >
         </throughput-input-autopilot-v3>
-        <!-- /ko -->
-        <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
-        <throughput-input
-          params="{
-                        testId: testId,
-                        class: 'scaleForm dirty',
-                        value: throughput,
-                        minimum: minRUs,
-                        maximum: maxRUThroughputInputLimit,
-                        isEnabled: !hasDatabaseSharedThroughput(),
-                        canExceedMaximumValue: canThroughputExceedMaximumValue,
-                        label: throughputTitle,
-                        ariaLabel: throughputAriaLabel,
-                        costsVisible: costsVisible,
-                        requestUnitsUsageCost: requestUnitsUsageCost,
-                        throughputAutoPilotRadioId: throughputAutoPilotRadioId,
-                        throughputProvisionedRadioId: throughputProvisionedRadioId,
-                        throughputModeRadioName: throughputModeRadioName,
-                        showAutoPilot: userCanChangeProvisioningTypes,
-                        isAutoPilotSelected: isAutoPilotSelected,
-                        autoPilotTiersList: autoPilotTiersList,
-                        selectedAutoPilotTier: selectedAutoPilotTier,
-                        autoPilotUsageCost: autoPilotUsageCost,
-                        canExceedMaximumValue: canExceedMaximumValue
-                    }"
-        >
-        </throughput-input>
-        <!-- /ko -->
 
         <div class="storageCapacityTitle throughputStorageValue" data-bind="html: storageCapacityTitle"></div>
         <!-- /ko -->

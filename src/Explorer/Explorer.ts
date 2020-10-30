@@ -213,7 +213,6 @@ export default class Explorer {
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
@@ -422,13 +421,6 @@ export default class Explorer {
     this.canExceedMaximumValue = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
-
-    this.hasAutoPilotV2FeatureFlag = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableAutoPilotV2)) {
-        return true;
-      }
-      return false;
-    });
 
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 

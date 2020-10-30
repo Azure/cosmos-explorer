@@ -20,7 +20,6 @@ describe("ScaleComponent", () => {
     collection: collection,
     container: container,
     isFixedContainer: false,
-    autoPilotTiersList: [],
     onThroughputChange: () => {
       return;
     },
