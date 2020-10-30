@@ -15,7 +15,6 @@
     "./src/Common/DeleteFeedback.ts",
     "./src/Common/HashMap.ts",
     "./src/Common/HeadersUtility.ts",
-    "./src/Common/Logger.ts",
     "./src/Common/MessageHandler.ts",
     "./src/Common/MongoUtility.ts",
     "./src/Common/ObjectCache.ts",

@@ -1,8 +1,8 @@
 import { HttpStatusCodes } from "./Constants";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
+import { SubscriptionType } from "../Contracts/ViewModels";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { logError } from "./Logger";
-import { replaceKnownError } from "./ErrorParserUtility";
 import { sendMessage } from "./MessageHandler";
 
 export interface CosmosError {
@@ -36,4 +36,17 @@ const sendNotificationForError = (errorMessage: string, errorCode: number): void
       reason: errorMessage
     });
   }
+};
+
+const replaceKnownError = (errorMessage: string): string => {
+  if (
+    window.dataExplorer.subscriptionType() === SubscriptionType.Internal &&
+    errorMessage.indexOf("SharedOffer is Disabled for your account") >= 0
+  ) {
+    return "Database throughput is not supported for internal subscriptions.";
+  } else if (errorMessage.indexOf("Partition key paths must contain only valid") >= 0) {
+    return "Partition key paths must contain only valid characters and not contain a trailing slash or wildcard character.";
+  }
+
+  return errorMessage;
 };
