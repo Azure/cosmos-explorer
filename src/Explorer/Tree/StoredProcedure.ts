@@ -9,6 +9,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TabsBase from "../Tabs/TabsBase";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -158,7 +159,7 @@ export default class StoredProcedure {
             sprocTab.onExecuteSprocsResult(result, result.scriptLogs);
           },
           (error: any) => {
-            sprocTab.onExecuteSprocsError(error.message);
+            sprocTab.onExecuteSprocsError(getErrorMessage(error));
           }
         )
         .finally(() => {

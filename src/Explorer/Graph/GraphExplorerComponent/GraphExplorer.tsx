@@ -29,6 +29,7 @@ import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
 import { queryDocuments, queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 export interface GraphAccessor {
   applyFilter: () => void;
@@ -892,7 +893,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     backendPromise.then(
       (result: UserQueryResult) => (this.queryTotalRequestCharge = result.requestCharge),
       (error: any) => {
-        const errorMsg = `Failure in submitting query: ${query}: ${error.message}`;
+        const errorMsg = `Failure in submitting query: ${query}: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
           filterQueryError: errorMsg
@@ -1826,7 +1827,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     promise
       .then((result: GremlinClient.GremlinRequestResult) => this.processGremlinQueryResults(result))
       .catch((error: any) => {
-        const errorMsg = `Failed to process query result: ${error.message}`;
+        const errorMsg = `Failed to process query result: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
           filterQueryError: errorMsg

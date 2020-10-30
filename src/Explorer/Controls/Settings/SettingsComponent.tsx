@@ -50,6 +50,7 @@ import {
   getMongoDBCollectionIndexTransformationProgress,
   readMongoDBCollectionThroughRP
 } from "../../../Common/dataAccess/readMongoDBCollection";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -437,7 +438,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.props.settingsTab.tabTitle(),
-              error: error.message
+              error: getErrorMessage(error)
             },
             startKey
           );

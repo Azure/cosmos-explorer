@@ -7,6 +7,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export class RenewAdHocAccessPane extends ContextualPaneBase {
   public accessKey: ko.Observable<string>;
@@ -82,7 +83,7 @@ export class RenewAdHocAccessPane extends ContextualPaneBase {
     this.container
       .renewShareAccess(this.accessKey())
       .fail((error: any) => {
-        const errorMessage: string = error.message;
+        const errorMessage: string = getErrorMessage(error);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${errorMessage}`);
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);
