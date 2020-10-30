@@ -20,7 +20,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
-      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
@@ -62,7 +62,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
-      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
@@ -126,7 +126,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
-      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
@@ -208,7 +208,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
-      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
@@ -289,7 +289,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
-      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -348,7 +348,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isAuthWithResourceToken = ko.observable(true);
       mockExplorer.isPreferredApiDocumentDB = ko.computed(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
+
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });

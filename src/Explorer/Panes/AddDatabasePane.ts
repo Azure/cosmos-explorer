@@ -38,12 +38,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public upsellAnchorUrl: ko.PureComputed<string>;
   public upsellAnchorText: ko.PureComputed<string>;
   public isAutoPilotSelected: ko.Observable<boolean>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
   public maxAutoPilotThroughputSet: ko.Observable<number>;
   public autoPilotUsageCost: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
@@ -53,8 +50,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     super(options);
     this.title((this.container && this.container.addDatabaseText()) || "New Database");
     this.databaseId = ko.observable<string>();
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
-    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
@@ -94,10 +90,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.minThroughputRU = ko.observable<number>();
     this.throughputSpendAckText = ko.observable<string>();
     this.throughputSpendAck = ko.observable<boolean>(false);
-    this.selectedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
     this.isAutoPilotSelected = ko.observable<boolean>(false);
     this.maxAutoPilotThroughputSet = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
@@ -105,13 +97,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
       if (!autoPilot) {
         return "";
       }
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, true /* isDatabaseThroughput */)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot.autopilotTier, true /* isDatabaseThroughput */);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, true /* isDatabaseThroughput */);
     });
     this.throughputRangeText = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
@@ -208,7 +198,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     this.throughputSpendAckVisible = ko.pureComputed<boolean>(() => {
       const autoscaleThroughput = this.maxAutoPilotThroughputSet() * 1;
-      if (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected()) {
+      if (this.isAutoPilotSelected()) {
         return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
       }
 
@@ -325,7 +315,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public resetData() {
     this.databaseId("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
-    this.selectedAutoPilotTier(undefined);
     this.isAutoPilotSelected(false);
     this.maxAutoPilotThroughputSet(AutoPilotUtils.minAutoPilotThroughput);
     this._updateThroughputLimitByDatabase();
@@ -413,17 +402,12 @@ export default class AddDatabasePane extends ContextualPaneBase {
     if (this.isAutoPilotSelected()) {
       const autoPilot = this._isAutoPilotSelectedAndWhatTier();
       if (
-        (!this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot ||
-            !autoPilot.maxThroughput ||
-            !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput))) ||
-        (this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot || !autoPilot.autopilotTier || !AutoPilotUtils.isValidAutoPilotTier(autoPilot.autopilotTier)))
+        !autoPilot ||
+        !autoPilot.maxThroughput ||
+        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
       ) {
         this.formErrors(
-          !this.hasAutoPilotV2FeatureFlag()
-            ? `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-            : "Please select an Autopilot tier from the list."
+          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
         );
         return false;
       }
@@ -438,7 +422,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const autoscaleThroughput = this.maxAutoPilotThroughputSet() * 1;
 
     if (
-      !this.hasAutoPilotV2FeatureFlag() &&
       this.isAutoPilotSelected() &&
       autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
       !this.throughputSpendAck()
@@ -451,15 +434,10 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   private _isAutoPilotSelectedAndWhatTier(): DataModels.AutoPilotCreationSettings {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.maxAutoPilotThroughputSet() * 1
-          }
-        : { autopilotTier: this.selectedAutoPilotTier() };
+    if (this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) {
+      return {
+        maxThroughput: this.maxAutoPilotThroughputSet() * 1
+      };
     }
     return undefined;
   }

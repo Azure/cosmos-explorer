@@ -148,7 +148,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public conflictResolutionPolicyMode: ViewModels.Editable<string>;
   public conflictResolutionPolicyPath: ViewModels.Editable<string>;
   public conflictResolutionPolicyProcedure: ViewModels.Editable<string>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
 
   public saveSettingsButton: ViewModels.Button;
   public discardSettingsChangesButton: ViewModels.Button;
@@ -206,8 +205,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public userCanChangeProvisioningTypes: ko.Observable<boolean>;
   public warningMessage: ko.Computed<string>;
   public shouldShowKeyspaceSharedThroughputMessage: ko.Computed<boolean>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
   public isAutoPilotSelected: ko.Observable<boolean>;
   public autoPilotThroughput: ko.Observable<number>;
   public autoPilotUsageCost: ko.Computed<string>;
@@ -233,7 +230,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     super(options);
     this.container = options.collection && options.collection.container;
     this.isIndexingPolicyEditorInitializing = ko.observable<boolean>(false);
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -289,31 +285,17 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.isAutoPilotSelected = ko.observable(false);
     this._wasAutopilotOriginallySet = ko.observable(false);
-    this.selectedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>();
     this.autoPilotThroughput = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     const offer = this.collection && this.collection.offer && this.collection.offer();
     const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
 
-    this.userCanChangeProvisioningTypes = ko.observable(!!offerAutopilotSettings || !this.hasAutoPilotV2FeatureFlag());
+    this.userCanChangeProvisioningTypes = ko.observable(true);
 
-    if (!this.hasAutoPilotV2FeatureFlag()) {
-      if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-        if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-          this.isAutoPilotSelected(true);
-          this._wasAutopilotOriginallySet(true);
-          this.autoPilotThroughput(offerAutopilotSettings.maxThroughput);
-        }
-      }
-    } else {
-      if (offerAutopilotSettings && offerAutopilotSettings.tier) {
-        if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
-          this.isAutoPilotSelected(true);
-          this._wasAutopilotOriginallySet(true);
-          this.selectedAutoPilotTier(offerAutopilotSettings.tier);
-          const availableAutoPilotTiers = AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier);
-          this.autoPilotTiersList(availableAutoPilotTiers);
-        }
+    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
+      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
+        this.isAutoPilotSelected(true);
+        this._wasAutopilotOriginallySet(true);
+        this.autoPilotThroughput(offerAutopilotSettings.maxThroughput);
       }
     }
 
@@ -328,16 +310,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.overrideWithAutoPilotSettings = ko.pureComputed(() => {
-      if (this.hasAutoPilotV2FeatureFlag()) {
-        return false;
-      }
       return this._hasProvisioningTypeChanged() && this._wasAutopilotOriginallySet();
     });
 
     this.overrideWithProvisionedThroughputSettings = ko.pureComputed(() => {
-      if (this.hasAutoPilotV2FeatureFlag()) {
-        return false;
-      }
       return this._hasProvisioningTypeChanged() && !this._wasAutopilotOriginallySet();
     });
 
@@ -349,25 +325,18 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       if (!originalAutoPilotSettings) {
         return false;
       }
-      const originalAutoPilotSetting = !this.hasAutoPilotV2FeatureFlag()
-        ? originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput
-        : originalAutoPilotSettings && originalAutoPilotSettings.tier;
-      if (
-        (!this.hasAutoPilotV2FeatureFlag() && this.autoPilotThroughput() != originalAutoPilotSetting) ||
-        (this.hasAutoPilotV2FeatureFlag() && this.selectedAutoPilotTier() !== originalAutoPilotSetting)
-      ) {
+      const originalAutoPilotSetting = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
+      if (this.autoPilotThroughput() !== originalAutoPilotSetting) {
         return true;
       }
       return false;
     });
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
-      const autoPilot = !this.hasAutoPilotV2FeatureFlag() ? this.autoPilotThroughput() : this.selectedAutoPilotTier();
+      const autoPilot = this.autoPilotThroughput();
       if (!autoPilot) {
         return "";
       }
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot, false /* isDatabaseThroughput */)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot, false /* isDatabaseThroughput */);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot, false /* isDatabaseThroughput */);
     });
 
     this.requestUnitsUsageCost = ko.pureComputed(() => {
@@ -610,7 +579,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.throughputTitle = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
 
       const minThroughput: string = this.minRUs().toLocaleString();
@@ -691,12 +660,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
             return true;
           } else if (this.isAutoPilotSelected()) {
             const validAutopilotChange =
-              (!this.hasAutoPilotV2FeatureFlag() &&
-                this._isAutoPilotDirty() &&
-                AutoPilotUtils.isValidAutoPilotThroughput(this.autoPilotThroughput())) ||
-              (this.hasAutoPilotV2FeatureFlag() &&
-                this._isAutoPilotDirty() &&
-                AutoPilotUtils.isValidAutoPilotTier(this.selectedAutoPilotTier()));
+              this._isAutoPilotDirty() && AutoPilotUtils.isValidAutoPilotThroughput(this.autoPilotThroughput());
             if (validAutopilotChange) {
               return true;
             }
@@ -902,14 +866,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         offer.hasOwnProperty("headers") &&
         !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
       ) {
-        if (AutoPilotUtils.isValidV2AutoPilotOffer(offer)) {
-          return "Tier upgrade will take some time to complete.";
-        }
-
         const throughput = offer.content.offerAutopilotSettings
-          ? !this.hasAutoPilotV2FeatureFlag()
-            ? offer.content.offerAutopilotSettings.maxThroughput
-            : offer.content.offerAutopilotSettings.maximumTierThroughput
+          ? offer.content.offerAutopilotSettings.maxThroughput
           : undefined;
 
         const targetThroughput =
@@ -928,7 +886,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         );
       }
 
-      if (!this.hasAutoPilotV2FeatureFlag() && this.overrideWithProvisionedThroughputSettings()) {
+      if (this.overrideWithProvisionedThroughputSettings()) {
         return AutoPilotUtils.manualToAutoscaleDisclaimer;
       }
 
@@ -1118,18 +1076,12 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         const headerOptions: RequestOptions = { initialHeaders: {} };
 
         if (this.isAutoPilotSelected()) {
-          if (!this.hasAutoPilotV2FeatureFlag()) {
-            newOffer.content.offerAutopilotSettings = {
-              maxThroughput: this.autoPilotThroughput()
-            };
-          } else {
-            newOffer.content.offerAutopilotSettings = {
-              tier: this.selectedAutoPilotTier()
-            };
-          }
+          newOffer.content.offerAutopilotSettings = {
+            maxThroughput: this.autoPilotThroughput()
+          };
 
           // user has changed from provisioned --> autoscale
-          if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
+          if (this._hasProvisioningTypeChanged()) {
             headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
             delete newOffer.content.offerAutopilotSettings;
           } else {
@@ -1137,10 +1089,10 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           }
         } else {
           this.isAutoPilotSelected(false);
-          this.userCanChangeProvisioningTypes(false || !this.hasAutoPilotV2FeatureFlag());
+          this.userCanChangeProvisioningTypes(true);
 
           // user has changed from autoscale --> provisioned
-          if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
+          if (this._hasProvisioningTypeChanged()) {
             headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
           } else {
             delete newOffer.content.offerAutopilotSettings;
@@ -1267,13 +1219,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     if (this.isAutoPilotSelected()) {
       const originalAutoPilotSettings = this.collection.offer().content.offerAutopilotSettings;
-      if (!this.hasAutoPilotV2FeatureFlag()) {
-        const originalAutoPilotMaxThroughput = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
-        this.autoPilotThroughput(originalAutoPilotMaxThroughput);
-      } else {
-        const originalAutoPilotTier = originalAutoPilotSettings && originalAutoPilotSettings.tier;
-        this.selectedAutoPilotTier(originalAutoPilotTier);
-      }
+      const originalAutoPilotMaxThroughput = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
+      this.autoPilotThroughput(originalAutoPilotMaxThroughput);
     }
 
     return Q();
@@ -1618,17 +1565,15 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       this.GEOMETRY;
     this.geospatialConfigType.setBaseline(geospatialConfigType);
 
-    if (!this.hasAutoPilotV2FeatureFlag()) {
-      const maxThroughput =
-        this.collection &&
-        this.collection.offer &&
-        this.collection.offer() &&
-        this.collection.offer().content &&
-        this.collection.offer().content.offerAutopilotSettings &&
-        this.collection.offer().content.offerAutopilotSettings.maxThroughput;
+    const maxThroughput =
+      this.collection &&
+      this.collection.offer &&
+      this.collection.offer() &&
+      this.collection.offer().content &&
+      this.collection.offer().content.offerAutopilotSettings &&
+      this.collection.offer().content.offerAutopilotSettings.maxThroughput;
 
-      this.autoPilotThroughput(maxThroughput || AutoPilotUtils.minAutoPilotThroughput);
-    }
+    this.autoPilotThroughput(maxThroughput || AutoPilotUtils.minAutoPilotThroughput);
   }
 
   private _createIndexingPolicyEditor() {
