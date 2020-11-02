@@ -2,6 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType } from "../../SettingsUtils";
 import { MongoIndexingPolicyComponent, MongoIndexingPolicyComponentProps } from "./MongoIndexingPolicyComponent";
+import { renderToString } from "react-dom/server";
 
 describe("MongoIndexingPolicyComponent", () => {
   const baseProps: MongoIndexingPolicyComponentProps = {
@@ -21,10 +22,7 @@ describe("MongoIndexingPolicyComponent", () => {
       return;
     },
     indexTransformationProgress: undefined,
-    refreshIndexTransformationProgress: () =>
-      new Promise(() => {
-        return;
-      }),
+    refreshIndexTransformationProgress: () => new Promise(jest.fn()),
     onMongoIndexingPolicySaveableChange: () => {
       return;
     },
@@ -38,16 +36,6 @@ describe("MongoIndexingPolicyComponent", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("isIndexingTransforming", () => {
-    const wrapper = shallow(<MongoIndexingPolicyComponent {...baseProps} />);
-    const mongoIndexingPolicyComponent = wrapper.instance() as MongoIndexingPolicyComponent;
-    expect(mongoIndexingPolicyComponent.isIndexingTransforming()).toEqual(false);
-    wrapper.setProps({ indexTransformationProgress: 50 });
-    expect(mongoIndexingPolicyComponent.isIndexingTransforming()).toEqual(true);
-    wrapper.setProps({ indexTransformationProgress: 100 });
-    expect(mongoIndexingPolicyComponent.isIndexingTransforming()).toEqual(false);
-  });
-
   describe("AddMongoIndexProps test", () => {
     const wrapper = shallow(<MongoIndexingPolicyComponent {...baseProps} />);
     const mongoIndexingPolicyComponent = wrapper.instance() as MongoIndexingPolicyComponent;
@@ -55,7 +43,7 @@ describe("MongoIndexingPolicyComponent", () => {
     it("defaults", () => {
       expect(mongoIndexingPolicyComponent.isMongoIndexingPolicySaveable()).toEqual(false);
       expect(mongoIndexingPolicyComponent.isMongoIndexingPolicyDiscardable()).toEqual(false);
-      expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toEqual(undefined);
+      expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined();
     });
 
     const sampleWarning = "sampleWarning";
@@ -113,9 +101,12 @@ describe("MongoIndexingPolicyComponent", () => {
         expect(mongoIndexingPolicyComponent.isMongoIndexingPolicyDiscardable()).toEqual(
           isMongoIndexingPolicyDiscardable
         );
-        expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toEqual(
-          mongoWarningNotificationMessage
-        );
+        if (mongoWarningNotificationMessage) {
+          const elementAsString = renderToString(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage());
+          expect(elementAsString).toContain(mongoWarningNotificationMessage);
+        } else {
+          expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined();
+        }
       }
     );
   });

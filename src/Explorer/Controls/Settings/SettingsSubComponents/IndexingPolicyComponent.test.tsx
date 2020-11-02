@@ -25,7 +25,9 @@ describe("IndexingPolicyComponent", () => {
     },
     onIndexingPolicyDirtyChange: () => {
       return;
-    }
+    },
+    indexTransformationProgress: undefined,
+    refreshIndexTransformationProgress: () => new Promise(jest.fn())
   };
 
   it("renders", () => {

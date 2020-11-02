@@ -25,8 +25,8 @@ import {
   createAndAddMongoIndexStackProps,
   separatorStyles,
   mongoIndexingPolicyAADError,
-  mongoIndexTransformationRefreshingMessage,
-  renderMongoIndexTransformationRefreshMessage
+  indexingPolicynUnsavedWarningMessage,
+  infoAndToolTipTextStyle
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -35,12 +35,13 @@ import {
   MongoIndexIdField,
   MongoNotificationType,
   getMongoIndexType,
-  getMongoIndexTypeText
+  getMongoIndexTypeText,
+  isIndexTransforming
 } from "../../SettingsUtils";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
-import { handleError } from "../../../../../Common/ErrorHandlingUtils";
 import { AuthType } from "../../../../../AuthType";
+import { IndexingPolicyRefreshComponent } from "../IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
@@ -56,20 +57,13 @@ export interface MongoIndexingPolicyComponentProps {
   onMongoIndexingPolicyDiscardableChange: (isMongoIndexingPolicyDiscardable: boolean) => void;
 }
 
-interface MongoIndexingPolicyComponentState {
-  isRefreshingIndexTransformationProgress: boolean;
-}
-
 interface MongoIndexDisplayProps {
   definition: JSX.Element;
   type: JSX.Element;
   actionButton: JSX.Element;
 }
 
-export class MongoIndexingPolicyComponent extends React.Component<
-  MongoIndexingPolicyComponentProps,
-  MongoIndexingPolicyComponentState
-> {
+export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingPolicyComponentProps> {
   private shouldCheckComponentIsDirty = true;
   private addMongoIndexComponentRefs: React.RefObject<AddMongoIndexComponent>[] = [];
   private initialIndexesColumns: IColumn[] = [
@@ -97,13 +91,6 @@ export class MongoIndexingPolicyComponent extends React.Component<
       isResizable: true
     }
   ];
-
-  constructor(props: MongoIndexingPolicyComponentProps) {
-    super(props);
-    this.state = {
-      isRefreshingIndexTransformationProgress: false
-    };
-  }
 
   componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
     if (this.props.indexesToAdd.length > prevProps.indexesToAdd.length) {
@@ -144,10 +131,15 @@ export class MongoIndexingPolicyComponent extends React.Component<
     return this.props.indexesToAdd.length > 0 || this.props.indexesToDrop.length > 0;
   };
 
-  public getMongoWarningNotificationMessage = (): string => {
-    return this.props.indexesToAdd.find(
+  public getMongoWarningNotificationMessage = (): JSX.Element => {
+    const warningMessage = this.props.indexesToAdd.find(
       addMongoIndexProps => addMongoIndexProps.notification?.type === MongoNotificationType.Warning
     )?.notification.message;
+
+    if (warningMessage) {
+      return <Text styles={infoAndToolTipTextStyle}>{warningMessage}</Text>;
+    }
+    return undefined;
   };
 
   private onRenderRow = (props: IDetailsRowProps): JSX.Element => {
@@ -159,7 +151,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
       <IconButton
         ariaLabel="Delete index Button"
         iconProps={{ iconName: "Delete" }}
-        disabled={this.isIndexingTransforming()}
+        disabled={isIndexTransforming(this.props.indexTransformationProgress)}
         onClick={() => {
           this.props.onIndexDrop(arrayPosition);
         }}
@@ -230,7 +222,7 @@ export class MongoIndexingPolicyComponent extends React.Component<
 
         <AddMongoIndexComponent
           ref={this.addMongoIndexComponentRefs[indexesToAddLength]}
-          disabled={this.isIndexingTransforming()}
+          disabled={isIndexTransforming(this.props.indexTransformationProgress)}
           position={indexesToAddLength}
           key={indexesToAddLength}
           description={undefined}
@@ -298,55 +290,21 @@ export class MongoIndexingPolicyComponent extends React.Component<
     );
   };
 
-  private refreshIndexTransformationProgress = async () => {
-    this.setState({ isRefreshingIndexTransformationProgress: true });
-    try {
-      await this.props.refreshIndexTransformationProgress();
-    } catch (error) {
-      handleError(error, "Refreshing index transformation progress failed.", "RefreshIndexTransformationProgress");
-    } finally {
-      this.setState({ isRefreshingIndexTransformationProgress: false });
-    }
-  };
-
-  public isIndexingTransforming = (): boolean =>
-    // index transformation progress can be 0
-    this.props.indexTransformationProgress !== undefined && this.props.indexTransformationProgress !== 100;
-
-  private onClickRefreshIndexingTransformationLink = async () => await this.refreshIndexTransformationProgress();
-
-  private renderIndexTransformationWarning = (): JSX.Element => {
-    if (this.state.isRefreshingIndexTransformationProgress) {
-      return mongoIndexTransformationRefreshingMessage;
-    } else if (this.isIndexingTransforming()) {
-      return renderMongoIndexTransformationRefreshMessage(
-        this.props.indexTransformationProgress,
-        this.onClickRefreshIndexingTransformationLink
-      );
-    }
-    return undefined;
-  };
-
   private renderWarningMessage = (): JSX.Element => {
-    let warningMessage: string;
+    let warningMessage: JSX.Element;
     if (this.getMongoWarningNotificationMessage()) {
       warningMessage = this.getMongoWarningNotificationMessage();
     } else if (this.isMongoIndexingPolicySaveable()) {
-      warningMessage =
-        "You have not saved the latest changes made to your indexing policy. Please click save to confirm the changes.";
+      warningMessage = indexingPolicynUnsavedWarningMessage;
     }
 
     return (
       <>
-        {this.renderIndexTransformationWarning() && (
-          <MessageBar messageBarType={MessageBarType.warning}>{this.renderIndexTransformationWarning()}</MessageBar>
-        )}
-
-        {warningMessage && (
-          <MessageBar messageBarType={MessageBarType.warning}>
-            <Text>{warningMessage}</Text>
-          </MessageBar>
-        )}
+        <IndexingPolicyRefreshComponent
+          indexTransformationProgress={this.props.indexTransformationProgress}
+          refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
+        />
+        {warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}
       </>
     );
   };
