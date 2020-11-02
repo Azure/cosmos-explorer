@@ -6,6 +6,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as ko from "knockout";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export class SetupNotebooksPane extends ContextualPaneBase {
   private description: ko.Observable<string>;
@@ -85,7 +86,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
         "Successfully created a default notebook workspace for the account"
       );
     } catch (error) {
-      const errorMessage = typeof error == "string" ? error : error.message;
+      const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
         Action.CreateNotebookWorkspace,
         {

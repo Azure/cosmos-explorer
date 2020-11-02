@@ -16,6 +16,7 @@ import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -88,6 +89,7 @@ export default class Database implements ViewModels.Database {
           this.container.tabsManager.activateNewTab(settingsTab);
         },
         (error: any) => {
+          const errorMessage = getErrorMessage(error);
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
@@ -97,13 +99,13 @@ export default class Database implements ViewModels.Database {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: "Scale",
-              error: error
+              error: errorMessage
             },
             startKey
           );
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Error while fetching database settings for database ${this.id()}: ${error.message}`
+            `Error while fetching database settings for database ${this.id()}: ${errorMessage}`
           );
           throw error;
         }
@@ -239,7 +241,7 @@ export default class Database implements ViewModels.Database {
       (error: any) => {
         Logger.logError(
           JSON.stringify({
-            error: error.message,
+            error: getErrorMessage(error),
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.id(),
             collectionName: this.id()

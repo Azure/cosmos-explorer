@@ -21,6 +21,7 @@ import {
 import { DialogComponentAdapter } from "./Explorer/Controls/DialogReactComponent/DialogComponentAdapter";
 import { DialogProps } from "./Explorer/Controls/DialogReactComponent/DialogComponent";
 import { DirectoryListProps } from "./Explorer/Controls/Directory/DirectoryListComponent";
+import { getErrorMessage } from "./Common/ErrorHandlingUtils";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { LocalStorageUtility, StorageKey, SessionStorageUtility } from "./Shared/StorageUtility";
 import * as Logger from "./Common/Logger";
@@ -509,12 +510,13 @@ class HostedExplorer {
         }
       });
     } catch (error) {
-      Logger.logError(error, "HostedExplorer/_getArcadiaToken");
+      const errorMessage = getErrorMessage(error);
+      Logger.logError(errorMessage, "HostedExplorer/_getArcadiaToken");
       this._sendMessageToExplorerFrame({
         actionType: ActionType.TransmitCachedData,
         message: {
           id: message && message.id,
-          error: error.message
+          error: errorMessage
         }
       });
     }
@@ -559,12 +561,9 @@ class HostedExplorer {
         });
       },
       error => {
-        if (typeof error !== "string") {
-          error = JSON.stringify(error, Object.getOwnPropertyNames(error));
-        }
         this._sendMessageToExplorerFrame({
           type: MessageTypes.GetAccessAadResponse,
-          error
+          error: getErrorMessage(error)
         });
       }
     );
@@ -1008,7 +1007,7 @@ class HostedExplorer {
 
       return accounts;
     } catch (error) {
-      this._logConsoleMessage(ConsoleDataType.Error, `Failed to fetch accounts: ${error.message}`);
+      this._logConsoleMessage(ConsoleDataType.Error, `Failed to fetch accounts: ${getErrorMessage(error)}`);
       this._clearInProgressMessageWithId(id);
 
       throw error;
@@ -1047,7 +1046,7 @@ class HostedExplorer {
         displayText: "Error loading account"
       });
       this._updateLoadingStatusText(`Failed to load selected account: ${newAccount.name}`);
-      this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${error.message}`);
+      this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${getErrorMessage(error)}`);
       this._clearInProgressMessageWithId(id);
       throw error;
     }

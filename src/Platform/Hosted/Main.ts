@@ -23,6 +23,7 @@ import "../../Explorer/Tables/DataTable/DataTableBindingManager";
 import Explorer from "../../Explorer/Explorer";
 import { updateUserContext } from "../../UserContext";
 import { configContext } from "../../ConfigContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class Main {
   private static _databaseAccountId: string;
@@ -245,7 +246,7 @@ export default class Main {
         );
       },
       (error: any) => {
-        deferred.reject(`Failed to generate encrypted token: ${error.message}`);
+        deferred.reject(`Failed to generate encrypted token: ${getErrorMessage(error)}`);
       }
     );
 
