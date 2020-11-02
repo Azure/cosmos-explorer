@@ -48,6 +48,7 @@ import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./Setting
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -123,7 +124,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
-  private autoPilotTiersList: ViewModels.DropdownOption<DataModels.AutopilotTier>[];
   private shouldShowIndexingPolicyEditor: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
@@ -438,7 +438,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.props.settingsTab.tabTitle(),
-              error: error.message
+              error: getErrorMessage(error)
             },
             startKey
           );
@@ -898,7 +898,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       collection: this.collection,
       container: this.container,
       isFixedContainer: this.isFixedContainer,
-      autoPilotTiersList: this.autoPilotTiersList,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,

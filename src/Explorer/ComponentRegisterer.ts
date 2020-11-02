@@ -11,7 +11,6 @@ import { InputTypeaheadComponent } from "./Controls/InputTypeahead/InputTypeahea
 import { JsonEditorComponent } from "./Controls/JsonEditor/JsonEditorComponent";
 import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
 import { TabsManagerKOComponent } from "./Tabs/TabsManager";
-import { ThroughputInputComponent } from "./Controls/ThroughputInput/ThroughputInputComponent";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
 
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
@@ -23,7 +22,6 @@ ko.components.register("editor", new EditorComponent());
 ko.components.register("json-editor", new JsonEditorComponent());
 ko.components.register("diff-editor", new DiffEditorComponent());
 ko.components.register("dynamic-list", DynamicListComponent);
-ko.components.register("throughput-input", ThroughputInputComponent);
 ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponentAutoPilotV3);
 ko.components.register("tabs-manager", TabsManagerKOComponent());
 

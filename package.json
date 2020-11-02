@@ -21,7 +21,7 @@
     "@nteract/jupyter-widgets": "2.0.0",
     "@nteract/logos": "1.0.0",
     "@nteract/markdown": "4.4.0",
-    "@nteract/monaco-editor": "3.2.0",
+    "@nteract/monaco-editor": "3.2.2",
     "@nteract/octicons": "2.0.0",
     "@nteract/outputs": "3.0.9",
     "@nteract/presentational-components": "3.0.7",

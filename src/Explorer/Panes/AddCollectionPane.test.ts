@@ -1,8 +1,7 @@
 import * as Constants from "../../Common/Constants";
 import AddCollectionPane from "./AddCollectionPane";
 import Explorer from "../Explorer";
-import ko from "knockout";
-import { AutopilotTier, DatabaseAccount } from "../../Contracts/DataModels";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {
@@ -41,25 +40,6 @@ describe("Add Collection Pane", () => {
 
     beforeEach(() => {
       explorer = new Explorer();
-      explorer.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
-    });
-
-    it("should be true if autopilot enabled and select valid tier", () => {
-      explorer.databaseAccount(mockDatabaseAccount);
-      const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
-      addCollectionPane.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
-      addCollectionPane.isAutoPilotSelected(true);
-      addCollectionPane.selectedAutoPilotTier(AutopilotTier.Tier2);
-      expect(addCollectionPane.isValid()).toBe(true);
-    });
-
-    it("should be false if autopilot enabled and select invalid tier", () => {
-      explorer.databaseAccount(mockDatabaseAccount);
-      const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
-      addCollectionPane.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
-      addCollectionPane.isAutoPilotSelected(true);
-      addCollectionPane.selectedAutoPilotTier(0);
-      expect(addCollectionPane.isValid()).toBe(false);
     });
 
     it("should be true if graph API and partition key is not /id nor /label", () => {

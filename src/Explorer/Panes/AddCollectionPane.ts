@@ -15,6 +15,7 @@ import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { createCollection } from "../../Common/dataAccess/createCollection";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -75,10 +76,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public debugstring: ko.Computed<string>;
   public displayCollectionThroughput: ko.Computed<boolean>;
   public isAutoPilotSelected: ko.Observable<boolean>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public selectedSharedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
-  public sharedAutoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
   public isSharedAutoPilotSelected: ko.Observable<boolean>;
   public autoPilotThroughput: ko.Observable<number>;
   public sharedAutoPilotThroughput: ko.Observable<number>;
@@ -92,7 +89,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public isAnalyticalStorageOn: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
@@ -102,8 +98,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
   constructor(options: AddCollectionPaneOptions) {
     super(options);
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
-    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.formWarnings = ko.observable<string>();
@@ -171,13 +166,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseHasSharedOffer = ko.observable<boolean>(true);
     this.throughputRangeText = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
     this.sharedThroughputRangeText = ko.pureComputed<string>(() => {
       if (this.isSharedAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
@@ -447,7 +442,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.throughputSpendAckVisible = ko.pureComputed<boolean>(() => {
       const autoscaleThroughput = this.autoPilotThroughput() * 1;
-      if (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected()) {
+      if (this.isAutoPilotSelected()) {
         return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
       }
       const selectedThroughput: number = this._getThroughput();
@@ -490,14 +485,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.isAutoPilotSelected = ko.observable<boolean>(false);
     this.isSharedAutoPilotSelected = ko.observable<boolean>(false);
-    this.selectedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.selectedSharedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
-    this.sharedAutoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
     this.autoPilotThroughput = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
@@ -506,9 +493,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
       const isDatabaseThroughput: boolean = this.databaseCreateNewShared();
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot.autopilotTier, isDatabaseThroughput);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput);
     });
 
     this.resetData();
@@ -897,10 +882,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.resetData();
         this.container.refreshAllDatabases();
       },
-      (reason: any) => {
+      (error: any) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        const errorMessage = ErrorParserUtility.replaceKnownError(message[0].message);
+        const errorMessage: string = getErrorMessage(error);
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);
         const addCollectionPaneFailedMessage = {
@@ -928,7 +912,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             flight: this.container.flight()
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
-          error: reason
+          error: errorMessage
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
@@ -942,13 +926,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.throughputSpendAck(false);
     this.isAutoPilotSelected(false);
     this.isSharedAutoPilotSelected(false);
-    if (!this.hasAutoPilotV2FeatureFlag()) {
-      this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-      this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    } else {
-      this.selectedAutoPilotTier(undefined);
-      this.selectedSharedAutoPilotTier(undefined);
-    }
+    this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
+    this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
+
     this.uniqueKeys([]);
     this.useIndexingForSharedThroughput(true);
 
@@ -1027,17 +1007,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
     if ((this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) || this.isAutoPilotSelected()) {
       const autoPilot = this._getAutoPilot();
       if (
-        (!this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot ||
-            !autoPilot.maxThroughput ||
-            !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput))) ||
-        (this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot || !autoPilot.autopilotTier || !AutoPilotUtils.isValidAutoPilotTier(autoPilot.autopilotTier)))
+        !autoPilot ||
+        !autoPilot.maxThroughput ||
+        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
       ) {
         this.formErrors(
-          !this.hasAutoPilotV2FeatureFlag()
-            ? `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-            : "Please select an Autopilot tier from the list."
+          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
         );
         return false;
       }
@@ -1067,7 +1042,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     const autoscaleThroughput = this.autoPilotThroughput() * 1;
 
     if (
-      !this.hasAutoPilotV2FeatureFlag() &&
       this.isAutoPilotSelected() &&
       autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
       !this.throughputSpendAck()
@@ -1114,31 +1088,15 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   private _getAutoPilot(): DataModels.AutoPilotCreationSettings {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() &&
-        this.databaseCreateNewShared() &&
-        this.isSharedAutoPilotSelected() &&
-        this.sharedAutoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() &&
-        this.databaseCreateNewShared() &&
-        this.isSharedAutoPilotSelected() &&
-        this.selectedSharedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.sharedAutoPilotThroughput() * 1
-          }
-        : { autopilotTier: this.selectedSharedAutoPilotTier() };
+    if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected() && this.sharedAutoPilotThroughput()) {
+      return {
+        maxThroughput: this.sharedAutoPilotThroughput() * 1
+      };
     }
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.autoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.autoPilotThroughput() * 1
-          }
-        : { autopilotTier: this.selectedAutoPilotTier() };
+    if (this.isAutoPilotSelected() && this.autoPilotThroughput()) {
+      return {
+        maxThroughput: this.autoPilotThroughput() * 1
+      };
     }
 
     return undefined;
