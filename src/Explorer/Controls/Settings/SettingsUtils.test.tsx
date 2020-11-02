@@ -15,7 +15,8 @@ import {
   MongoWildcardPlaceHolder,
   getMongoIndexTypeText,
   SingleFieldText,
-  WildcardText
+  WildcardText,
+  isIndexTransforming
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -138,4 +139,11 @@ describe("SettingsUtils", () => {
     );
     expect(notification.type).toEqual(MongoNotificationType.Error);
   });
+});
+
+it("isIndexingTransforming", () => {
+  expect(isIndexTransforming(undefined)).toBeFalsy();
+  expect(isIndexTransforming(0)).toBeTruthy();
+  expect(isIndexTransforming(90)).toBeTruthy();
+  expect(isIndexTransforming(100)).toBeFalsy();
 });

@@ -250,3 +250,7 @@ export const getMongoIndexTypeText = (index: MongoIndexTypes): string => {
   }
   return WildcardText;
 };
+
+export const isIndexTransforming = (indexTransformationProgress: number): boolean =>
+  // index transformation progress can be 0
+  indexTransformationProgress !== undefined && indexTransformationProgress !== 100;
