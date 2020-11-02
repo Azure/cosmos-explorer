@@ -3,7 +3,7 @@ import { Frame } from "puppeteer";
 
 export async function login(connectionString: string): Promise<Frame> {
   const prodUrl = "https://localhost:1234/hostedExplorer.html";
-  page.goto(prodUrl);
+  page.goto(prodUrl, { waitUntil: "networkidle2" });
 
   // log in with connection string
   const handle = await page.waitForSelector("iframe");
@@ -16,6 +16,6 @@ export async function login(connectionString: string): Promise<Frame> {
   return frame;
 }
 
-export function generateUniqueName(baseName: string, length = 8): string {
+export function generateUniqueName(baseName = "", length = 4): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
 }
