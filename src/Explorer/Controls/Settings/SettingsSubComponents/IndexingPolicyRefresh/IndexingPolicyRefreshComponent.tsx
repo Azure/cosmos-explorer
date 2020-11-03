@@ -46,7 +46,7 @@ export class IndexingPolicyRefreshComponent extends React.Component<
     try {
       await this.props.refreshIndexTransformationProgress();
     } catch (error) {
-      handleError(error, "Refreshing index transformation progress failed.", "RefreshIndexTransformationProgress");
+      handleError(error, "RefreshIndexTransformationProgress", "Refreshing index transformation progress failed");
     } finally {
       this.setState({ isRefreshing: false });
     }

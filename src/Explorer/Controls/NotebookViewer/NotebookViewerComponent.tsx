@@ -101,7 +101,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
       }
     } catch (error) {
       this.setState({ showProgressBar: false });
-      handleError(error, "Failed to load notebook content", "NotebookViewerComponent/loadNotebookContent");
+      handleError(error, "NotebookViewerComponent/loadNotebookContent", "Failed to load notebook content");
     }
   }
 

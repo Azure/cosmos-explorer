@@ -44,7 +44,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
 
       this.props.onAcceptCodeOfConduct(response.data);
     } catch (error) {
-      handleError(error, "Failed to accept code of conduct", "CodeOfConductComponent/acceptCodeOfConduct");
+      handleError(error, "CodeOfConductComponent/acceptCodeOfConduct", "Failed to accept code of conduct");
     }
   }
 

@@ -352,7 +352,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.sampleNotebooks = response.data;
       } catch (error) {
-        handleError(error, "Failed to load sample notebooks", "GalleryViewerComponent/loadSampleNotebooks");
+        handleError(error, "GalleryViewerComponent/loadSampleNotebooks", "Failed to load sample notebooks");
       }
     }
 
@@ -378,7 +378,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
       } catch (error) {
-        handleError(error, "Failed to load public notebooks", "GalleryViewerComponent/loadPublicNotebooks");
+        handleError(error, "GalleryViewerComponent/loadPublicNotebooks", "Failed to load public notebooks");
       }
     }
 
@@ -398,7 +398,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.favoriteNotebooks = response.data;
       } catch (error) {
-        handleError(error, "Failed to load favorite notebooks", "GalleryViewerComponent/loadFavoriteNotebooks");
+        handleError(error, "GalleryViewerComponent/loadFavoriteNotebooks", "Failed to load favorite notebooks");
       }
     }
 
@@ -424,7 +424,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.publishedNotebooks = response.data;
       } catch (error) {
-        handleError(error, "Failed to load published notebooks", "GalleryViewerComponent/loadPublishedNotebooks");
+        handleError(error, "GalleryViewerComponent/loadPublishedNotebooks", "Failed to load published notebooks");
       }
     }
 
