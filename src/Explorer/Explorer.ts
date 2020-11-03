@@ -1533,7 +1533,7 @@ export default class Explorer {
           resolve(token);
         },
         (error: any) => {
-          Logger.logError(error, "Explorer/getArcadiaToken");
+          Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
           resolve(undefined);
         }
       );
@@ -1551,7 +1551,7 @@ export default class Explorer {
             workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
           },
           error => {
-            Logger.logError(error, "Explorer/this._arcadiaManager.listSparkPoolsAsync");
+            Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
           }
         );
         sparkPromises.push(promise);
@@ -1559,7 +1559,7 @@ export default class Explorer {
 
       return Promise.all(sparkPromises).then(() => workspaceItems);
     } catch (error) {
-      handleError(error, "Get Arcadia workspaces failed", "Explorer/this._arcadiaManager.listWorkspacesAsync");
+      handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
       return Promise.resolve([]);
     }
   }
@@ -1596,8 +1596,8 @@ export default class Explorer {
       this._isInitializingNotebooks = false;
       handleError(
         error,
-        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`,
-        "initNotebooks/getNotebookConnectionInfoAsync"
+        "initNotebooks/getNotebookConnectionInfoAsync",
+        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`
       );
       throw error;
     } finally {
@@ -1620,9 +1620,10 @@ export default class Explorer {
 
   public resetNotebookWorkspace() {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookClient) {
-      const error = "Attempt to reset notebook workspace, but notebook is not enabled";
-      Logger.logError(error, "Explorer/resetNotebookWorkspace");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(
+        "Attempt to reset notebook workspace, but notebook is not enabled",
+        "Explorer/resetNotebookWorkspace"
+      );
       return;
     }
     const resetConfirmationDialogProps: DialogProps = {
@@ -1647,7 +1648,7 @@ export default class Explorer {
       const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
       return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
     } catch (error) {
-      Logger.logError(error, "Explorer/_containsDefaultNotebookWorkspace");
+      Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
     }
   }
@@ -1673,7 +1674,7 @@ export default class Explorer {
         await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
       }
     } catch (error) {
-      handleError(error, "Failed to initialize notebook workspace", "Explorer/ensureNotebookWorkspaceRunning");
+      handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
     } finally {
       clearMessage && clearMessage();
     }
@@ -2221,8 +2222,7 @@ export default class Explorer {
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/uploadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/uploadFile");
       throw new Error(error);
     }
 
@@ -2403,8 +2403,7 @@ export default class Explorer {
   public renameNotebook(notebookFile: NotebookContentItem): Q.Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/renameNotebook");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/renameNotebook");
       throw new Error(error);
     }
 
@@ -2452,8 +2451,7 @@ export default class Explorer {
   public onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
-      Logger.logError(error, "Explorer/onCreateDirectory");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/onCreateDirectory");
       throw new Error(error);
     }
 
@@ -2474,8 +2472,7 @@ export default class Explorer {
   public readFile(notebookFile: NotebookContentItem): Promise<string> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to read file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/downloadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/downloadFile");
       throw new Error(error);
     }
 
@@ -2485,8 +2482,7 @@ export default class Explorer {
   public downloadFile(notebookFile: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to download file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/downloadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/downloadFile");
       throw new Error(error);
     }
 
@@ -2567,7 +2563,7 @@ export default class Explorer {
       );
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
-      Logger.logError(error, "Explorer/isNotebooksEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
       this.isNotebooksEnabledForAccount(false);
     }
   }
@@ -2596,7 +2592,7 @@ export default class Explorer {
         false;
       this.isSparkEnabledForAccount(isEnabled);
     } catch (error) {
-      Logger.logError(error, "Explorer/isSparkEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
       this.isSparkEnabledForAccount(false);
     }
   };
@@ -2621,7 +2617,7 @@ export default class Explorer {
         (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
       return isEnabled;
     } catch (error) {
-      Logger.logError(error, "Explorer/isSparkEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
       return false;
     }
   };
@@ -2640,8 +2636,7 @@ export default class Explorer {
   public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/deleteNotebookFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/deleteNotebookFile");
       throw new Error(error);
     }
 
@@ -2690,8 +2685,7 @@ export default class Explorer {
   public onNewNotebookClicked(parent?: NotebookContentItem): void {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/onNewNotebookClicked");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
 
@@ -2776,8 +2770,7 @@ export default class Explorer {
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
-      Logger.logError(error, "Explorer/refreshContentItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/refreshContentItem");
       return Promise.reject(new Error(error));
     }
 
@@ -2963,7 +2956,7 @@ export default class Explorer {
       }
       return tokenRefreshInterval;
     } catch (error) {
-      Logger.logError(error, "Explorer/getTokenRefreshInterval");
+      Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
     }
   }

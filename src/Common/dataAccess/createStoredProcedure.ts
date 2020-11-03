@@ -70,7 +70,7 @@ export async function createStoredProcedure(
       .scripts.storedProcedures.create(storedProcedure);
     return response?.resource;
   } catch (error) {
-    handleError(error, `Error while creating stored procedure ${storedProcedure.id}`, "CreateStoredProcedure");
+    handleError(error, "CreateStoredProcedure", `Error while creating stored procedure ${storedProcedure.id}`);
     throw error;
   } finally {
     clearMessage();

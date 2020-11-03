@@ -56,7 +56,7 @@ export const readCollectionOffer = async (
       }
     );
   } catch (error) {
-    handleError(error, `Error while querying offer for collection ${params.collectionId}`, "ReadCollectionOffer");
+    handleError(error, "ReadCollectionOffer", `Error while querying offer for collection ${params.collectionId}`);
     throw error;
   } finally {
     clearMessage();

@@ -23,7 +23,7 @@ export async function deleteCollection(databaseId: string, collectionId: string)
     }
     logConsoleInfo(`Successfully deleted container ${collectionId}`);
   } catch (error) {
-    handleError(error, `Error while deleting container ${collectionId}`, "DeleteCollection");
+    handleError(error, "DeleteCollection", `Error while deleting container ${collectionId}`);
     throw error;
   } finally {
     clearMessage();

@@ -1,9 +1,8 @@
 import * as React from "react";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constants";
-import * as Logger from "../../../Common/Logger";
-import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface CodeOfConductComponentProps {
   junoClient: JunoClient;
@@ -45,9 +44,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
 
       this.props.onAcceptCodeOfConduct(response.data);
     } catch (error) {
-      const message = `Failed to accept code of conduct: ${error}`;
-      Logger.logError(message, "CodeOfConductComponent/acceptCodeOfConduct");
-      logConsoleError(message);
+      handleError(error, "Failed to accept code of conduct", "CodeOfConductComponent/acceptCodeOfConduct");
     }
   }
 

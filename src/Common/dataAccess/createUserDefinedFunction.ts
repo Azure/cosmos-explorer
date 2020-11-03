@@ -72,8 +72,8 @@ export async function createUserDefinedFunction(
   } catch (error) {
     handleError(
       error,
-      `Error while creating user defined function ${userDefinedFunction.id}`,
-      "CreateUserupdateUserDefinedFunction"
+      "CreateUserupdateUserDefinedFunction",
+      `Error while creating user defined function ${userDefinedFunction.id}`
     );
     throw error;
   } finally {

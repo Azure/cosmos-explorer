@@ -26,6 +26,7 @@ import { ImmutableNotebook } from "@nteract/commutable";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export interface NotebookManagerOptions {
   container: Explorer;
@@ -147,7 +148,7 @@ export default class NotebookManager {
   // Octokit's error handler uses any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private onGitHubClientError = (error: any): void => {
-    Logger.logError(error, "NotebookManager/onGitHubClientError");
+    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
 
     if (error.status === HttpStatusCodes.Unauthorized) {
       this.gitHubOAuthService.resetToken();

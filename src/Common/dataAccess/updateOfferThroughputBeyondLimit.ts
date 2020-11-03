@@ -49,8 +49,8 @@ export async function updateOfferThroughputBeyondLimit(request: UpdateOfferThrou
   const error = await response.json();
   handleError(
     error,
-    `Failed to request an increase in throughput for ${request.throughput}`,
-    "updateOfferThroughputBeyondLimit"
+    "updateOfferThroughputBeyondLimit",
+    `Failed to request an increase in throughput for ${request.throughput}`
   );
   clearMessage();
   throw error;

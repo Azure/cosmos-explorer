@@ -58,8 +58,8 @@ export function executeStoredProcedure(
       (error: any) => {
         handleError(
           error,
-          `Failed to execute stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`,
-          "ExecuteStoredProcedure"
+          "ExecuteStoredProcedure",
+          `Failed to execute stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`
         );
         deferred.reject(error);
       }
@@ -88,7 +88,7 @@ export function queryDocumentsPage(
         deferred.resolve(result);
       },
       (error: any) => {
-        handleError(error, `Failed to query ${entityName} for container ${resourceName}`, "QueryDocumentsPage");
+        handleError(error, "QueryDocumentsPage", `Failed to query ${entityName} for container ${resourceName}`);
         deferred.reject(error);
       }
     )
@@ -109,7 +109,7 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
         deferred.resolve(document);
       },
       (error: any) => {
-        handleError(error, `Failed to read ${entityName} ${documentId.id()}`, "ReadDocument");
+        handleError(error, "ReadDocument", `Failed to read ${entityName} ${documentId.id()}`);
         deferred.reject(error);
       }
     )
@@ -135,7 +135,7 @@ export function updateDocument(
         deferred.resolve(updatedDocument);
       },
       (error: any) => {
-        handleError(error, `Failed to update ${entityName} ${documentId.id()}`, "UpdateDocument");
+        handleError(error, "UpdateDocument", `Failed to update ${entityName} ${documentId.id()}`);
         deferred.reject(error);
       }
     )
@@ -157,7 +157,7 @@ export function createDocument(collection: ViewModels.CollectionBase, newDocumen
         deferred.resolve(savedDocument);
       },
       (error: any) => {
-        handleError(error, `Error while creating new ${entityName} for container ${collection.id()}`, "CreateDocument");
+        handleError(error, "CreateDocument", `Error while creating new ${entityName} for container ${collection.id()}`);
         deferred.reject(error);
       }
     )
@@ -179,7 +179,7 @@ export function deleteDocument(collection: ViewModels.CollectionBase, documentId
         deferred.resolve(response);
       },
       (error: any) => {
-        handleError(error, `Error while deleting ${entityName} ${documentId.id()}`, "DeleteDocument");
+        handleError(error, "DeleteDocument", `Error while deleting ${entityName} ${documentId.id()}`);
         deferred.reject(error);
       }
     )
@@ -205,7 +205,7 @@ export function deleteConflict(
         deferred.resolve(response);
       },
       (error: any) => {
-        handleError(error, `Error while deleting conflict ${conflictId.id()}`, "DeleteConflict");
+        handleError(error, "DeleteConflict", `Error while deleting conflict ${conflictId.id()}`);
         deferred.reject(error);
       }
     )

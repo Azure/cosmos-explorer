@@ -24,7 +24,7 @@ export async function readMongoDBCollectionThroughRP(
     const response = await getMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
     collection = response.properties.resource;
   } catch (error) {
-    handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
+    handleError(error, "ReadMongoDBCollection", `Error while reading container ${collectionId}`);
     throw error;
   }
   clearMessage();
@@ -50,7 +50,7 @@ export async function getMongoDBCollectionIndexTransformationProgress(
       response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
     );
   } catch (error) {
-    handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
+    handleError(error, "ReadMongoDBCollection", `Error while reading container ${collectionId}`);
     throw error;
   }
   clearMessage();

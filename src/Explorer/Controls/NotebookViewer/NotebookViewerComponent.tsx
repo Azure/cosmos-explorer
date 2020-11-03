@@ -21,6 +21,7 @@ import Explorer from "../../Explorer";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
 import { SessionStorageUtility } from "../../../Shared/StorageUtility";
 import { DialogHost } from "../../../Utils/GalleryUtils";
+import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -100,9 +101,7 @@ export class NotebookViewerComponent extends React.Component<NotebookViewerCompo
       }
     } catch (error) {
       this.setState({ showProgressBar: false });
-      const message = `Failed to load notebook content: ${error}`;
-      Logger.logError(message, "NotebookViewerComponent/loadNotebookContent");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "Failed to load notebook content", "NotebookViewerComponent/loadNotebookContent");
     }
   }
 
