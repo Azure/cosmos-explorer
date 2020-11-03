@@ -611,7 +611,7 @@ class HostedExplorer {
       return loadAccountResult;
     } catch (error) {
       LocalStorageUtility.removeEntry(StorageKey.DatabaseAccountId);
-      Logger.logError(error, "HostedExplorer/_getAccessCached");
+      Logger.logError(getErrorMessage(error), "HostedExplorer/_getAccessCached");
       throw error;
     }
   }
@@ -637,7 +637,7 @@ class HostedExplorer {
       const accountResponse = this._getAccessAfterTenantSelection(defaultTenant.tenantId);
       return accountResponse;
     } catch (error) {
-      Logger.logError(error, "HostedExplorer/_getAccessNew");
+      Logger.logError(getErrorMessage(error), "HostedExplorer/_getAccessNew");
       throw error;
     }
   }
@@ -658,7 +658,7 @@ class HostedExplorer {
       const keys = await this._getAccountKeysHelper(defaultAccount, true);
       return [defaultAccount, keys, authToken];
     } catch (error) {
-      Logger.logError(error, "HostedExplorer/_getAccessAfterTenantSelection");
+      Logger.logError(getErrorMessage(error), "HostedExplorer/_getAccessAfterTenantSelection");
       throw error;
     }
   }
@@ -1131,7 +1131,7 @@ class HostedExplorer {
         });
       },
       error => {
-        Logger.logError(error, "HostedExplorer/_onNewDirectorySelected");
+        Logger.logError(getErrorMessage(error), "HostedExplorer/_onNewDirectorySelected");
       }
     );
     TelemetryProcessor.trace(Action.TenantSwitch);

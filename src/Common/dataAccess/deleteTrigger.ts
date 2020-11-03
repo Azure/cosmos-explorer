@@ -30,7 +30,7 @@ export async function deleteTrigger(databaseId: string, collectionId: string, tr
         .delete();
     }
   } catch (error) {
-    handleError(error, `Error while deleting trigger ${triggerId}`, "DeleteTrigger");
+    handleError(error, "DeleteTrigger", `Error while deleting trigger ${triggerId}`);
     throw error;
   } finally {
     clearMessage();

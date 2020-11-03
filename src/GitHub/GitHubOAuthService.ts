@@ -1,6 +1,5 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
@@ -8,6 +7,7 @@ import { JunoClient } from "../Juno/JunoClient";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { GitHubConnectorMsgType, IGitHubConnectorParams } from "./GitHubConnector";
+import { handleError } from "../Common/ErrorHandlingUtils";
 
 window.addEventListener("message", (event: MessageEvent) => {
   if (isInvalidParentFrameOrigin(event)) {
@@ -99,9 +99,7 @@ export class GitHubOAuthService {
       this.resetToken();
       return true;
     } catch (error) {
-      const message = `Failed to delete app authorization: ${error}`;
-      Logger.logError(message, "GitHubOAuthService/logout");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GitHubOAuthService/logout", "Failed to delete app authorization");
       return false;
     }
   }

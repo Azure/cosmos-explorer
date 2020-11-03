@@ -66,8 +66,8 @@ export async function updateUserDefinedFunction(
   } catch (error) {
     handleError(
       error,
-      `Error while updating user defined function ${userDefinedFunction.id}`,
-      "UpdateUserupdateUserDefinedFunction"
+      "UpdateUserupdateUserDefinedFunction",
+      `Error while updating user defined function ${userDefinedFunction.id}`
     );
     throw error;
   } finally {

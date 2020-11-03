@@ -35,7 +35,7 @@ export async function readTriggers(
       .fetchAll();
     return response?.resources;
   } catch (error) {
-    handleError(error, `Failed to query triggers for container ${collectionId}`, "ReadTriggers");
+    handleError(error, "ReadTriggers", `Failed to query triggers for container ${collectionId}`);
     throw error;
   } finally {
     clearMessage();

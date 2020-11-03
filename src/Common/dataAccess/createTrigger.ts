@@ -65,7 +65,7 @@ export async function createTrigger(
       .scripts.triggers.create(trigger);
     return response.resource;
   } catch (error) {
-    handleError(error, `Error while creating trigger ${trigger.id}`, "CreateTrigger");
+    handleError(error, "CreateTrigger", `Error while creating trigger ${trigger.id}`);
     throw error;
   } finally {
     clearMessage();

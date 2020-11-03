@@ -37,7 +37,7 @@ export const readCollectionQuotaInfo = async (
 
     return quota;
   } catch (error) {
-    handleError(error, `Error while querying quota info for container ${collection.id}`, "ReadCollectionQuotaInfo");
+    handleError(error, "ReadCollectionQuotaInfo", `Error while querying quota info for container ${collection.id}`);
     throw error;
   } finally {
     clearMessage();

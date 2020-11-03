@@ -13,7 +13,7 @@ export async function readCollection(databaseId: string, collectionId: string): 
       .read();
     collection = response.resource as DataModels.Collection;
   } catch (error) {
-    handleError(error, `Error while querying container ${collectionId}`, "ReadCollection");
+    handleError(error, "ReadCollection", `Error while querying container ${collectionId}`);
     throw error;
   }
   clearMessage();

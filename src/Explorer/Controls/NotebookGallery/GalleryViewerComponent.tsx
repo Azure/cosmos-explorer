@@ -16,11 +16,8 @@ import {
   Text
 } from "office-ui-fabric-react";
 import * as React from "react";
-import * as Logger from "../../../Common/Logger";
 import { IGalleryItem, JunoClient, IJunoResponse, IPublicGalleryData } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
@@ -28,6 +25,7 @@ import { HttpStatusCodes } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -354,9 +352,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.sampleNotebooks = response.data;
       } catch (error) {
-        const message = `Failed to load sample notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadSampleNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadSampleNotebooks", "Failed to load sample notebooks");
       }
     }
 
@@ -382,9 +378,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
       } catch (error) {
-        const message = `Failed to load public notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadPublicNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadPublicNotebooks", "Failed to load public notebooks");
       }
     }
 
@@ -404,9 +398,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.favoriteNotebooks = response.data;
       } catch (error) {
-        const message = `Failed to load favorite notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadFavoriteNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadFavoriteNotebooks", "Failed to load favorite notebooks");
       }
     }
 
@@ -432,9 +424,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.publishedNotebooks = response.data;
       } catch (error) {
-        const message = `Failed to load published notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadPublishedNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadPublishedNotebooks", "Failed to load published notebooks");
       }
     }
 
