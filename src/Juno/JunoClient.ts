@@ -405,7 +405,7 @@ export class JunoClient {
   }
 
   public async reportAbuse(notebookId: string, abuseCategory: string, notes: string): Promise<IJunoResponse<boolean>> {
-    const response = await window.fetch(`${this.getNotebooksUrl()}/avert/reportAbuse`, {
+    const response = await window.fetch(`${this.getNotebooksUrl()}/gallery/reportAbuse`, {
       method: "POST",
       body: JSON.stringify({
         notebookId,

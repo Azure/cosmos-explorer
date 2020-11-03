@@ -568,7 +568,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private deleteItem = async (data: IGalleryItem): Promise<void> => {
     GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, item => {
-      this.publishedNotebooks = this.publishedNotebooks.filter(notebook => item.id !== notebook.id);
+      this.publishedNotebooks = this.publishedNotebooks?.filter(notebook => item.id !== notebook.id);
       this.refreshSelectedTab(item);
     });
   };
