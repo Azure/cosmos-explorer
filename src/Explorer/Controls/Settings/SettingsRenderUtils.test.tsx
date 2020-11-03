@@ -6,7 +6,7 @@ import {
   getEstimatedAutoscaleSpendElement,
   manualToAutoscaleDisclaimerElement,
   ttlWarning,
-  indexingPolicyTTLWarningMessage,
+  indexingPolicynUnsavedWarningMessage,
   updateThroughputBeyondLimitWarningMessage,
   updateThroughputDelayedApplyWarningMessage,
   getThroughputApplyDelayedMessage,
@@ -37,7 +37,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
 
         {manualToAutoscaleDisclaimerElement}
         {ttlWarning}
-        {indexingPolicyTTLWarningMessage}
+        {indexingPolicynUnsavedWarningMessage}
         {updateThroughputBeyondLimitWarningMessage}
         {updateThroughputDelayedApplyWarningMessage}
 
