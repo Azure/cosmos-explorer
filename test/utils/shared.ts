@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { Frame } from "puppeteer";
 
 export async function login(connectionString: string): Promise<Frame> {
-  const prodUrl = "https://localhost:1234/hostedExplorer.html";
+  const prodUrl = process.env.DATA_EXPLORER_ENDPOINT;
   page.goto(prodUrl, { waitUntil: "networkidle2" });
 
   // log in with connection string
