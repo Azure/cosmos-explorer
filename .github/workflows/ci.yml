@@ -151,6 +151,7 @@ jobs:
           MONGO_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
           CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
           TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
+          DATA_EXPLORER_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
       - uses: actions/upload-artifact@v2
         with:
           name: screenshots
