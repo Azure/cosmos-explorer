@@ -47,7 +47,7 @@ export const readDatabaseOffer = async (
       }
     );
   } catch (error) {
-    handleError(error, `Error while querying offer for database ${params.databaseId}`, "ReadDatabaseOffer");
+    handleError(error, "ReadDatabaseOffer", `Error while querying offer for database ${params.databaseId}`);
     throw error;
   } finally {
     clearMessage();

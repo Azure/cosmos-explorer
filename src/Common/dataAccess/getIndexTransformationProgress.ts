@@ -20,7 +20,7 @@ export async function getIndexTransformationProgress(databaseId: string, collect
       response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
     );
   } catch (error) {
-    handleError(error, `Error while reading container ${collectionId}`, "ReadMongoDBCollection");
+    handleError(error, "ReadMongoDBCollection", `Error while reading container ${collectionId}`);
     throw error;
   }
   clearMessage();

@@ -14,7 +14,6 @@ import { createDocument, deleteDocument, queryDocuments, queryDocumentsPage } fr
 import { createCollection } from "./dataAccess/createCollection";
 import { handleError } from "./ErrorHandlingUtils";
 import * as ErrorParserUtility from "./ErrorParserUtility";
-import * as Logger from "./Logger";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -54,7 +53,7 @@ export class QueriesClient {
           return Promise.resolve(collection);
         },
         (error: any) => {
-          handleError(error, "Failed to set up account for saving queries", "setupQueriesCollection");
+          handleError(error, "setupQueriesCollection", "Failed to set up account for saving queries");
           return Promise.reject(error);
         }
       )
@@ -105,11 +104,7 @@ export class QueriesClient {
           } else {
             errorMessage = parsedError.message;
           }
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to save query ${query.queryName}: ${errorMessage}`
-          );
-          Logger.logError(JSON.stringify(parsedError), "saveQuery");
+          handleError(errorMessage, "saveQuery", `Failed to save query ${query.queryName}`);
           return Promise.reject(errorMessage);
         }
       )
@@ -159,14 +154,14 @@ export class QueriesClient {
               return Promise.resolve(queries);
             },
             (error: any) => {
-              handleError(error, "Failed to fetch saved queries", "getSavedQueries");
+              handleError(error, "getSavedQueries", "Failed to fetch saved queries");
               return Promise.reject(error);
             }
           );
         },
         (error: any) => {
           // should never get into this state but we handle this regardless
-          handleError(error, "Failed to fetch saved queries", "getSavedQueries");
+          handleError(error, "getSavedQueries", "Failed to fetch saved queries");
           return Promise.reject(error);
         }
       )
@@ -218,7 +213,7 @@ export class QueriesClient {
           return Promise.resolve();
         },
         (error: any) => {
-          handleError(error, `Failed to delete query ${query.queryName}`, "deleteQuery");
+          handleError(error, "deleteQuery", `Failed to delete query ${query.queryName}`);
           return Promise.reject(error);
         }
       )

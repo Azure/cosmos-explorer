@@ -1,17 +1,16 @@
 import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { JunoClient } from "../../Juno/JunoClient";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 import { ImmutableNotebook } from "@nteract/commutable/src";
 import { toJS } from "@nteract/commutable";
 import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
 import { HttpStatusCodes } from "../../Common/Constants";
+import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -111,9 +110,11 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
         this.isCodeOfConductAccepted = response.data;
       } catch (error) {
-        const message = `Failed to check if code of conduct was accepted: ${error}`;
-        Logger.logError(message, "PublishNotebookPaneAdapter/isCodeOfConductAccepted");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(
+          error,
+          "PublishNotebookPaneAdapter/isCodeOfConductAccepted",
+          "Failed to check if code of conduct was accepted"
+        );
       }
     } else {
       this.isCodeOfConductAccepted = true;
@@ -170,12 +171,10 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         }
       }
     } catch (error) {
+      const errorMessage = getErrorMessage(error);
       this.formError = `Failed to publish ${this.name} to gallery`;
-      this.formErrorDetail = `${error}`;
-
-      const message = `${this.formError}: ${this.formErrorDetail}`;
-      Logger.logError(message, "PublishNotebookPaneAdapter/submit");
-      NotificationConsoleUtils.logConsoleError(message);
+      this.formErrorDetail = `${errorMessage}`;
+      handleError(errorMessage, "PublishNotebookPaneAdapter/submit", this.formError);
       return;
     } finally {
       clearPublishingMessage();
@@ -189,10 +188,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private createFormErrorForLargeImageSelection = (formError: string, formErrorDetail: string, area: string): void => {
     this.formError = formError;
     this.formErrorDetail = formErrorDetail;
-
-    const message = `${this.formError}: ${this.formErrorDetail}`;
-    Logger.logError(message, area);
-    NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+    handleError(formErrorDetail, area, formError);
     this.triggerRender();
   };
 
