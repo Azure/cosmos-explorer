@@ -1040,11 +1040,11 @@ export default class Explorer {
           );
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, startTime);
           this.databaseAccount(databaseAccount);
-        } catch (e) {
+        } catch (error) {
           NotificationConsoleUtils.clearInProgressMessageWithId(logId);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Enabling Azure Synapse Link for this account failed. ${e.message || JSON.stringify(e)}`
+            `Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`
           );
           TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, startTime);
         } finally {
@@ -1476,7 +1476,7 @@ export default class Explorer {
           );
         }
       },
-      reason => {
+      error => {
         if (resourceTreeStartKey != null) {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
@@ -1484,7 +1484,7 @@ export default class Explorer {
               databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
               defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
-              error: reason
+              error: getErrorMessage(error)
             },
             resourceTreeStartKey
           );
@@ -1689,7 +1689,7 @@ export default class Explorer {
       TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
     } catch (error) {
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, error);
+      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, { error: getErrorMessage(error) });
       throw error;
     } finally {
       NotificationConsoleUtils.clearInProgressMessageWithId(id);
@@ -2056,7 +2056,7 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            trace: getErrorMessage(error)
+            error: getErrorMessage(error)
           },
           startKey
         );
@@ -2718,16 +2718,16 @@ export default class Explorer {
         return this.openNotebook(newFile);
       })
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason: any) => {
-        const error = `Failed to create a new notebook: ${reason}`;
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      .catch((error: any) => {
+        const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
-            error
+            error: errorMessage
           },
           startKey
         );

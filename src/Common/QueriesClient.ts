@@ -13,7 +13,6 @@ import { userContext } from "../UserContext";
 import { createDocument, deleteDocument, queryDocuments, queryDocumentsPage } from "./DocumentClientUtilityBase";
 import { createCollection } from "./dataAccess/createCollection";
 import { handleError } from "./ErrorHandlingUtils";
-import * as ErrorParserUtility from "./ErrorParserUtility";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -97,15 +96,11 @@ export class QueriesClient {
           return Promise.resolve();
         },
         (error: any) => {
-          let errorMessage: string;
-          const parsedError: DataModels.ErrorDataModel = ErrorParserUtility.parse(error)[0];
-          if (parsedError.code === HttpStatusCodes.Conflict.toString()) {
-            errorMessage = `Query ${query.queryName} already exists`;
-          } else {
-            errorMessage = parsedError.message;
+          if (error.code === HttpStatusCodes.Conflict.toString()) {
+            error = `Query ${query.queryName} already exists`;
           }
-          handleError(errorMessage, "saveQuery", `Failed to save query ${query.queryName}`);
-          return Promise.reject(errorMessage);
+          handleError(error, "saveQuery", `Failed to save query ${query.queryName}`);
+          return Promise.reject(error);
         }
       )
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));

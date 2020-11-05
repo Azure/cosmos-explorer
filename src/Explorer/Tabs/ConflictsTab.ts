@@ -6,7 +6,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import { KeyCodes } from "../../Common/Constants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import ConflictId from "../Tree/ConflictId";
 import editable from "../../Common/EditableUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
@@ -28,6 +27,7 @@ import {
   updateDocument
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ConflictId>;
@@ -241,9 +241,8 @@ export default class ConflictsTab extends TabsBase {
           return this.loadNextPage();
         }
       )
-      .catch(reason => {
-        const message = ErrorParserUtility.parse(reason)[0].message;
-        window.alert(message);
+      .catch(error => {
+        window.alert(getErrorMessage(error));
       });
   }
 
@@ -336,10 +335,10 @@ export default class ConflictsTab extends TabsBase {
             );
           });
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.ResolveConflict,
             {
@@ -349,7 +348,8 @@ export default class ConflictsTab extends TabsBase {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
+              error: errorMessage
             },
             startKey
           );
@@ -396,10 +396,10 @@ export default class ConflictsTab extends TabsBase {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.DeleteConflict,
             {
@@ -409,7 +409,8 @@ export default class ConflictsTab extends TabsBase {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
+              error: errorMessage
             },
             startKey
           );
@@ -470,7 +471,7 @@ export default class ConflictsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: getErrorMessage(error)
               },
               this.onLoadStartKey
             );
@@ -545,7 +546,7 @@ export default class ConflictsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: getErrorMessage(error)
               },
               this.onLoadStartKey
             );

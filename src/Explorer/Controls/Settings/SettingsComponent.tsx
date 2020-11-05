@@ -438,7 +438,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.props.settingsTab.tabTitle(),
-              error: getErrorMessage(error)
+              error: getErrorMessage(error, true)
             },
             startKey
           );
@@ -560,10 +560,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         },
         startKey
       );
-    } catch (reason) {
+    } catch (error) {
       this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
-      console.error(reason);
+      console.error(error);
       traceFailure(
         Action.SettingsV2Updated,
         {
@@ -573,7 +573,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
-          error: reason.message
+          error: getErrorMessage(error, true)
         },
         startKey
       );

@@ -3,7 +3,6 @@ import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -12,6 +11,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
@@ -99,11 +99,11 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
           this.containerDeleteFeedback("");
         }
       },
-      (reason: any) => {
+      (error: any) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        this.formErrors(message[0].message);
-        this.formErrorsDetails(message[0].message);
+        const errorMessage = getErrorMessage(error);
+        this.formErrors(errorMessage);
+        this.formErrorsDetails(errorMessage);
         TelemetryProcessor.traceFailure(
           Action.DeleteCollection,
           {
@@ -111,7 +111,8 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
+            error: errorMessage
           },
           startKey
         );

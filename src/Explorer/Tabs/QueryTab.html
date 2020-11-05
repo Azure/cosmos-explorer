@@ -47,7 +47,7 @@
     </script>
 
     <!-- Query Errors Tab - Start-->
-    <div class="active queryErrorsHeaderContainer" data-bind="visible: errors().length > 0">
+    <div class="active queryErrorsHeaderContainer" data-bind="visible: !!error()">
       <span class="queryErrors" data-toggle="tab" data-bind="attr: { href: '#queryerrors' + tabId }">Errors</span>
     </div>
     <!-- Query Errors Tab - End -->
@@ -56,16 +56,16 @@
     <div class="queryResultErrorContentContainer">
       <div
         class="queryEditorWatermark"
-        data-bind="visible: allResultsMetadata().length === 0 && errors().length === 0 && !queryResults() && !isExecuting()"
+        data-bind="visible: allResultsMetadata().length === 0 && !error() && !queryResults() && !isExecuting()"
       >
         <p><img src="/RunQuery.png" alt="Execute Query Watermark" /></p>
         <p class="queryEditorWatermarkText">Execute a query to see the results</p>
       </div>
       <div
         class="queryResultsErrorsContent"
-        data-bind="visible: allResultsMetadata().length > 0 || errors().length > 0 || queryResults()"
+        data-bind="visible: allResultsMetadata().length > 0 || !!error() || queryResults()"
       >
-        <div class="togglesWithMetadata" data-bind="visible: errors().length === 0">
+        <div class="togglesWithMetadata" data-bind="visible: !error()">
           <div
             class="toggles"
             aria-label="Successful execution"
@@ -103,12 +103,12 @@
         </div>
         <json-editor
           params="{ content: queryResults, isReadOnly: true, ariaLabel: 'Query results' }"
-          data-bind="visible: queryResults().length > 0 && isResultToggled() && allResultsMetadata().length > 0 && errors().length === 0"
+          data-bind="visible: queryResults().length > 0 && isResultToggled() && allResultsMetadata().length > 0 && !error()"
         >
         </json-editor>
         <div
           class="queryMetricsSummaryContainer"
-          data-bind="visible: isMetricsToggled() && allResultsMetadata().length > 0 && errors().length === 0"
+          data-bind="visible: isMetricsToggled() && allResultsMetadata().length > 0 && !error()"
         >
           <table class="queryMetricsSummary">
             <caption>
@@ -308,11 +308,10 @@
                             id: {
                                 href: 'queryerrors' + tabId
                             },
-                            visible: errors().length > 0"
+                            visible: !!error()"
         >
-          <!-- ko foreach: errors -->
           <div class="errorContent">
-            <span class="errorMessage" data-bind="text: $data.message"></span>
+            <span class="errorMessage" data-bind="text: error"></span>
             <span class="errorDetailsLink">
               <a
                 data-bind="click: $parent.onErrorDetailsClick, event: { keypress: $parent.onErrorDetailsKeyPress }"
@@ -323,7 +322,6 @@
               >
             </span>
           </div>
-          <!-- /ko -->
         </div>
         <!-- Query Errors Content - End-->
       </div>

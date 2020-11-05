@@ -13,6 +13,7 @@ import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -429,8 +430,9 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
       },
-      reason => {
-        this.formErrors(reason.exceptionMessage);
+      error => {
+        const errorMessage = getErrorMessage(error);
+        this.formErrors(errorMessage);
         this.isExecuting(false);
         const addCollectionPaneFailedMessage = {
           databaseAccountName: this.container.databaseAccount().name,
@@ -456,7 +458,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           toCreateKeyspace: toCreateKeyspace,
           createKeyspaceQuery: createKeyspaceQuery,
           createTableQuery: createTableQuery,
-          error: reason
+          error: errorMessage
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }

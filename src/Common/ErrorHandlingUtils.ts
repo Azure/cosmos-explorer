@@ -21,9 +21,15 @@ export const handleError = (error: string | ARMError | Error, area: string, cons
   sendNotificationForError(errorMessage, errorCode);
 };
 
-export const getErrorMessage = (error: string | Error): string => {
-  const errorMessage = typeof error === "string" ? error : error.message;
-  return replaceKnownError(errorMessage);
+export const getErrorMessage = (error: string | Error, includeStackTrace?: boolean): string => {
+  if (typeof error === "string") {
+    return replaceKnownError(error);
+  }
+
+  const errorMessage = replaceKnownError(error.message);
+  return includeStackTrace && error.stack
+    ? `Error message: ${errorMessage}\n Stack trace: ${error.stack}`
+    : errorMessage;
 };
 
 const sendNotificationForError = (errorMessage: string, errorCode: number | string): void => {

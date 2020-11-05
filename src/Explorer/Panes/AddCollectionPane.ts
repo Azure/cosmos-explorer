@@ -3,7 +3,6 @@ import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";

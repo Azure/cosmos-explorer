@@ -28,6 +28,7 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
 import { QueriesClient } from "../../../Common/QueriesClient";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;
@@ -244,7 +245,8 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                             databaseAccountName: container && container.databaseAccount().name,
                             defaultExperience: container && container.defaultExperience(),
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title()
+                            paneTitle: container && container.browseQueriesPane.title(),
+                            error: getErrorMessage(error)
                           },
                           startKey
                         );

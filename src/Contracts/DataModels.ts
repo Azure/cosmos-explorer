@@ -216,18 +216,6 @@ export interface UniqueKey {
   paths: string[];
 }
 
-// Returned by DocumentDb client proxy
-// Inner errors in BackendErrorDataModel when error is in SQL syntax
-export interface ErrorDataModel {
-  message: string;
-  severity?: string;
-  location?: {
-    start: string;
-    end: string;
-  };
-  code?: string;
-}
-
 export interface CreateDatabaseAndCollectionRequest {
   databaseId: string;
   collectionId: string;

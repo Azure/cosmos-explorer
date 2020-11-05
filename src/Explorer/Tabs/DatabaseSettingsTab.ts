@@ -1,7 +1,6 @@
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
@@ -20,6 +19,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -490,7 +490,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       this.container.isRefreshingExplorer(false);
       this.isExecutionError(true);
       console.error(error);
-      this.displayedError(ErrorParserUtility.parse(error)[0].message);
+      const errorMessage = getErrorMessage(error);
+      this.displayedError(errorMessage);
       TelemetryProcessor.traceFailure(
         Action.UpdateSettings,
         {
@@ -499,7 +500,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
-          error: error
+          error: errorMessage
         },
         startKey
       );
