@@ -280,12 +280,14 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection)
     });
 
-    children.push({
-      label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
-      onClick: collection.onSettingsClick.bind(collection),
-      isSelected: () =>
-        this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings])
-    });
+    if (!this.container.isPreferredApiCassandra() || !this.container.isServerlessEnabled()) {
+      children.push({
+        label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
+        onClick: collection.onSettingsClick.bind(collection),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings])
+      });
+    }
 
     if (ResourceTreeAdapter.showScriptNodes(this.container)) {
       children.push(this.buildStoredProcedureNode(collection));
