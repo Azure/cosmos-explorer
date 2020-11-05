@@ -13,7 +13,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 import { ARMError } from "../../Utils/arm/request";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
@@ -121,7 +121,8 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             databaseId: selectedDatabase.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
-            error: errorMessage
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );

@@ -17,7 +17,7 @@ import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { queryDocuments, queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 enum ToggleState {
   Result,
@@ -361,7 +361,8 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );

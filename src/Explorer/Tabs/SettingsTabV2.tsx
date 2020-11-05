@@ -9,7 +9,7 @@ import ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class SettingsTabV2 extends TabsBase {
   public settingsComponentAdapter: SettingsComponentAdapter;
@@ -69,7 +69,8 @@ export default class SettingsTabV2 extends TabsBase {
                 defaultExperience: this.options.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle,
-                error: errorMessage
+                error: errorMessage,
+                errorStack: getErrorStack(error)
               },
               this.options.onLoadStartKey
             );

@@ -8,7 +8,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
 import ScriptTabBase from "./ScriptTabBase";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class TriggerTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
@@ -88,7 +88,8 @@ export default class TriggerTab extends ScriptTabBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: getErrorMessage(createError)
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -171,7 +172,8 @@ export default class TriggerTab extends ScriptTabBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: getErrorMessage(createError)
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );

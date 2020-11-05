@@ -48,7 +48,7 @@ import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./Setting
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
-import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -438,7 +438,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.props.settingsTab.tabTitle(),
-              error: getErrorMessage(error, true)
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -573,7 +574,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
-          error: getErrorMessage(error, true)
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error)
         },
         startKey
       );

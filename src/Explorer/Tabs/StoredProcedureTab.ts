@@ -13,7 +13,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import StoredProcedure from "../Tree/StoredProcedure";
 import ScriptTabBase from "./ScriptTabBase";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 enum ToggleState {
   Result = "result",
@@ -114,7 +114,8 @@ export default class StoredProcedureTab extends ScriptTabBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: getErrorMessage(error)
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -277,7 +278,8 @@ export default class StoredProcedureTab extends ScriptTabBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: getErrorMessage(createError)
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );

@@ -31,7 +31,7 @@ import {
   createDocument
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DocumentsTab extends TabsBase {
   public selectedDocumentId: ko.Observable<DocumentId>;
@@ -484,7 +484,8 @@ export default class DocumentsTab extends TabsBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -552,7 +553,8 @@ export default class DocumentsTab extends TabsBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -643,7 +645,8 @@ export default class DocumentsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: getErrorMessage(error)
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );
@@ -707,7 +710,8 @@ export default class DocumentsTab extends TabsBase {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: getErrorMessage(error)
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -788,7 +792,8 @@ export default class DocumentsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: errorMessage
+                error: errorMessage,
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );

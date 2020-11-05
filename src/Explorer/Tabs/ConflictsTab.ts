@@ -27,7 +27,7 @@ import {
   updateDocument
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ConflictId>;
@@ -349,7 +349,8 @@ export default class ConflictsTab extends TabsBase {
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
               conflictResourceId: selectedConflict.resourceId,
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -410,7 +411,8 @@ export default class ConflictsTab extends TabsBase {
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
               conflictResourceId: selectedConflict.resourceId,
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -471,7 +473,8 @@ export default class ConflictsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: getErrorMessage(error)
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );
@@ -546,7 +549,8 @@ export default class ConflictsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: getErrorMessage(error)
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );

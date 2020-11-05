@@ -7,7 +7,7 @@ import * as Logger from "../../Common/Logger";
 import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import QueryTab from "../Tabs/QueryTab";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class BrowseQueriesPane extends ContextualPaneBase {
   public queriesGridComponentAdapter: QueriesGridComponentAdapter;
@@ -69,7 +69,8 @@ export class BrowseQueriesPane extends ContextualPaneBase {
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
-          error: errorMessage
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
         startKey
       );

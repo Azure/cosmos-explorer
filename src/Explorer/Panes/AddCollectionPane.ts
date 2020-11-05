@@ -14,7 +14,7 @@ import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { createCollection } from "../../Common/dataAccess/createCollection";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -911,7 +911,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
             flight: this.container.flight()
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
-          error: errorMessage
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }

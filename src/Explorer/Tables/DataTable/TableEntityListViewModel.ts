@@ -18,7 +18,7 @@ import * as TableEntityProcessor from "../TableEntityProcessor";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 
 interface IListTableEntitiesSegmentedResult extends Entities.IListTableEntitiesResult {
   ExceedMaximumRetries?: boolean;
@@ -399,7 +399,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
               dataExplorerArea: Areas.Tab,
               tabTitle: this.queryTablesTab.tabTitle(),
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             this.queryTablesTab.onLoadStartKey
           );

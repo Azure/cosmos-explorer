@@ -11,7 +11,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { configContext, Platform } from "../../ConfigContext";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -375,7 +375,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
         flight: this.container.flight()
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
-      error: errorMessage
+      error: errorMessage,
+      errorStack: getErrorStack(error)
     };
     TelemetryProcessor.traceFailure(Action.CreateDatabase, addDatabasePaneFailedMessage, startKey);
   }

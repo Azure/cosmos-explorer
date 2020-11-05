@@ -86,7 +86,7 @@ import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandBut
 import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
-import { getErrorMessage, handleError } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -1451,7 +1451,8 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            error: errorMessage
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -1484,7 +1485,8 @@ export default class Explorer {
               databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
               defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
-              error: getErrorMessage(error)
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             resourceTreeStartKey
           );
@@ -1689,7 +1691,10 @@ export default class Explorer {
       TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
     } catch (error) {
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, { error: getErrorMessage(error) });
+      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error)
+      });
       throw error;
     } finally {
       NotificationConsoleUtils.clearInProgressMessageWithId(id);
@@ -2056,7 +2061,8 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            error: getErrorMessage(error)
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -2727,7 +2733,8 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
-            error: errorMessage
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );

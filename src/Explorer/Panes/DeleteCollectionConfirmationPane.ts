@@ -11,7 +11,7 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
@@ -112,7 +112,8 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
-            error: errorMessage
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );

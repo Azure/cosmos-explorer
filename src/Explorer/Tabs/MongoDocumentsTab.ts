@@ -19,7 +19,7 @@ import {
 import { extractPartitionKey } from "@azure/cosmos";
 import * as Logger from "../../Common/Logger";
 import { PartitionKeyDefinition } from "@azure/cosmos";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class MongoDocumentsTab extends DocumentsTab {
   public collection: ViewModels.Collection;
@@ -126,7 +126,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -189,7 +190,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -270,7 +272,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: getErrorMessage(error)
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );

@@ -40,7 +40,7 @@ import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -621,7 +621,8 @@ export default class Collection implements ViewModels.Collection {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: settingsTabOptions.title,
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -1369,7 +1370,8 @@ export default class Collection implements ViewModels.Collection {
             databaseName: this.databaseId,
             collectionName: this.id(),
             defaultExperience: this.container.defaultExperience(),
-            error: getErrorMessage(error)
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error)
           },
           startKey
         );

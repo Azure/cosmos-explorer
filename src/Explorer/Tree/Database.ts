@@ -16,7 +16,7 @@ import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -99,7 +99,8 @@ export default class Database implements ViewModels.Database {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: "Scale",
-              error: errorMessage
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
