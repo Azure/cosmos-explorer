@@ -15,8 +15,6 @@ src/Common/DeleteFeedback.ts
 src/Common/DocumentClientUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/EnvironmentUtility.ts
-src/Common/ErrorParserUtility.test.ts
-src/Common/ErrorParserUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
 src/Common/HeadersUtility.test.ts

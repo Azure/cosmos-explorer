@@ -6,7 +6,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as ko from "knockout";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class SetupNotebooksPane extends ContextualPaneBase {
   private description: ko.Observable<string>;
@@ -94,7 +94,8 @@ export class SetupNotebooksPane extends ContextualPaneBase {
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
-          error: errorMessage
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
         startKey
       );

@@ -9,6 +9,7 @@ import ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class SettingsTabV2 extends TabsBase {
   public settingsComponentAdapter: SettingsComponentAdapter;
@@ -55,6 +56,7 @@ export default class SettingsTabV2 extends TabsBase {
             this.isExecuting(false);
           },
           error => {
+            const errorMessage = getErrorMessage(error);
             this.notification = undefined;
             this.notificationRead(true);
             this.isExecuting(false);
@@ -67,14 +69,13 @@ export default class SettingsTabV2 extends TabsBase {
                 defaultExperience: this.options.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle,
-                error: error
+                error: errorMessage,
+                errorStack: getErrorStack(error)
               },
               this.options.onLoadStartKey
             );
             logConsoleError(
-              `Error while fetching container settings for container ${this.options.collection.id()}: ${JSON.stringify(
-                error
-              )}`
+              `Error while fetching container settings for container ${this.options.collection.id()}: ${errorMessage}`
             );
             throw error;
           }
