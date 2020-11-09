@@ -93,6 +93,10 @@ async function getOperationStatus(operationStatusUrl: string) {
     throw new AbortError(error);
   }
 
+  if (response.status === 204) {
+    return;
+  }
+
   const body = await response.json();
   const status = body.status;
   if (!status && response.status === 200) {

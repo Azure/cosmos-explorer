@@ -296,11 +296,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.isExecuting(true);
 
     const createDatabaseParams: DataModels.CreateDatabaseParams = {
-      autoPilotMaxThroughput: this.maxAutoPilotThroughputSet(),
       databaseId: addDatabasePaneStartMessage.database.id,
-      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
-      offerThroughput: addDatabasePaneStartMessage.offerThroughput
+      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared
     };
+
+    if (this.isAutoPilotSelected()) {
+      createDatabaseParams.autoPilotMaxThroughput = this.maxAutoPilotThroughputSet();
+    } else {
+      createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
+    }
 
     createDatabase(createDatabaseParams).then(
       (database: DataModels.Database) => {
