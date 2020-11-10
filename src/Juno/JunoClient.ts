@@ -403,7 +403,7 @@ export class JunoClient {
   public getNotebookInfoUrl(id: string): string {
     return `${this.getNotebooksUrl()}/gallery/${id}`;
   }
-  
+
   public async reportAbuse(notebookId: string, abuseCategory: string, notes: string): Promise<IJunoResponse<boolean>> {
     const response = await window.fetch(`${this.getNotebooksUrl()}/avert/reportAbuse`, {
       method: "POST",
@@ -428,7 +428,6 @@ export class JunoClient {
     };
   }
 
-<<<<<<< HEAD
   public async requestSchema(
     schemaRequest: DataModels.ISchemaRequest
   ): Promise<IJunoResponse<DataModels.ISchemaRequest>> {

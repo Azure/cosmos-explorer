@@ -188,9 +188,9 @@ export default class Database implements ViewModels.Database {
     const collections: DataModels.Collection[] = await readCollections(this.id());
     const deltaCollections = this.getDeltaCollections(collections);
 
-        collections.forEach((collection: DataModels.Collection) => {
-          this.addSchema(collection);
-        });
+    collections.forEach((collection: DataModels.Collection) => {
+      this.addSchema(collection);
+    });
 
     deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
       const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
@@ -316,7 +316,6 @@ export default class Database implements ViewModels.Database {
 
     this.collections(collectionsToKeep);
   }
-  }
 
   public addSchema(collection: DataModels.Collection, interval?: number): NodeJS.Timeout {
     let checkForSchema: NodeJS.Timeout = null;
@@ -354,4 +353,5 @@ export default class Database implements ViewModels.Database {
     }
 
     return checkForSchema;
+  }
 }

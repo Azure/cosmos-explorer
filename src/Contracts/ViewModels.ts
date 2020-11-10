@@ -360,7 +360,7 @@ export enum CollectionTabKind {
   SparkMasterTab = 16,
   Gallery = 17,
   NotebookViewer = 18,
-  Schema = 19
+  Schema = 19,
   SettingsV2 = 19
 }
 

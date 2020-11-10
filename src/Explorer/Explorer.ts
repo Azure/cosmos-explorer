@@ -423,7 +423,6 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
 
-
     this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
