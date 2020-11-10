@@ -1,5 +1,3 @@
-import { AutopilotTier } from "../Contracts/DataModels";
-import { configContext } from "../ConfigContext";
 import { HashMap } from "./HashMap";
 
 export class AuthorizationEndpoints {
@@ -11,12 +9,6 @@ export class CodeOfConductEndpoints {
   public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
   public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
   public static termsOfUse: string = "https://aka.ms/ms-terms-of-use";
-}
-
-export class BackendEndpoints {
-  public static localhost: string = "https://localhost:12900";
-  public static dev: string = "https://ext.documents-dev.windows-int.net";
-  public static productionPortal: string = configContext.BACKEND_ENDPOINT || "https://main.documentdb.ext.azure.com";
 }
 
 export class EndpointsRegex {
@@ -131,10 +123,16 @@ export class Features {
   public static readonly notebookBasePath = "notebookbasepath";
   public static readonly canExceedMaximumValue = "canexceedmaximumvalue";
   public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
-  public static readonly enableAutoPilotV2 = "enableautopilotv2";
   public static readonly ttl90Days = "ttl90days";
   public static readonly enableRightPanelV2 = "enablerightpanelv2";
   public static readonly enableSchema = "enableschema";
+  public static readonly enableSDKoperations = "enablesdkoperations";
+}
+
+// flight names returned from the portal are always lowercase
+export class Flights {
+  public static readonly SettingsV2 = "settingsv2";
+  public static readonly MongoIndexEditor = "mongoindexeditor";
 }
 
 export class AfecFeatures {
@@ -170,89 +168,8 @@ export enum MongoBackendEndpointType {
   remote
 }
 
-export class MongoBackend {
-  public static localhostEndpoint: string = "/api/mongo/explorer";
-  public static centralUsEndpoint: string = "https://main.documentdb.ext.azure.com/api/mongo/explorer";
-  public static northEuropeEndpoint: string = "https://main.documentdb.ext.azure.com/api/mongo/explorer";
-  public static southEastAsiaEndpoint: string = "https://main.documentdb.ext.azure.com/api/mongo/explorer";
-
-  public static endpointsByRegion: any = {
-    default: MongoBackend.centralUsEndpoint,
-    northeurope: MongoBackend.northEuropeEndpoint,
-    ukwest: MongoBackend.northEuropeEndpoint,
-    uksouth: MongoBackend.northEuropeEndpoint,
-    westeurope: MongoBackend.northEuropeEndpoint,
-    australiaeast: MongoBackend.southEastAsiaEndpoint,
-    australiasoutheast: MongoBackend.southEastAsiaEndpoint,
-    centralindia: MongoBackend.southEastAsiaEndpoint,
-    eastasia: MongoBackend.southEastAsiaEndpoint,
-    japaneast: MongoBackend.southEastAsiaEndpoint,
-    japanwest: MongoBackend.southEastAsiaEndpoint,
-    koreacentral: MongoBackend.southEastAsiaEndpoint,
-    koreasouth: MongoBackend.southEastAsiaEndpoint,
-    southeastasia: MongoBackend.southEastAsiaEndpoint,
-    southindia: MongoBackend.southEastAsiaEndpoint,
-    westindia: MongoBackend.southEastAsiaEndpoint
-  };
-
-  public static endpointsByEnvironment: any = {
-    default: MongoBackendEndpointType.local,
-    localhost: MongoBackendEndpointType.local,
-    prod1: MongoBackendEndpointType.remote,
-    prod2: MongoBackendEndpointType.remote
-  };
-}
-
 // TODO: 435619 Add default endpoints per cloud and use regional only when available
 export class CassandraBackend {
-  public static readonly localhostEndpoint: string = "https://localhost:12901/";
-  public static readonly devEndpoint: string = "https://platformproxycassandradev.azurewebsites.net/";
-
-  public static readonly centralUsEndpoint: string = "https://main.documentdb.ext.azure.com/";
-  public static readonly northEuropeEndpoint: string = "https://main.documentdb.ext.azure.com/";
-  public static readonly southEastAsiaEndpoint: string = "https://main.documentdb.ext.azure.com/";
-
-  public static readonly bf_default: string = "https://main.documentdb.ext.microsoftazure.de/";
-  public static readonly mc_default: string = "https://main.documentdb.ext.azure.cn/";
-  public static readonly ff_default: string = "https://main.documentdb.ext.azure.us/";
-
-  public static readonly endpointsByRegion: any = {
-    default: CassandraBackend.centralUsEndpoint,
-    northeurope: CassandraBackend.northEuropeEndpoint,
-    ukwest: CassandraBackend.northEuropeEndpoint,
-    uksouth: CassandraBackend.northEuropeEndpoint,
-    westeurope: CassandraBackend.northEuropeEndpoint,
-    australiaeast: CassandraBackend.southEastAsiaEndpoint,
-    australiasoutheast: CassandraBackend.southEastAsiaEndpoint,
-    centralindia: CassandraBackend.southEastAsiaEndpoint,
-    eastasia: CassandraBackend.southEastAsiaEndpoint,
-    japaneast: CassandraBackend.southEastAsiaEndpoint,
-    japanwest: CassandraBackend.southEastAsiaEndpoint,
-    koreacentral: CassandraBackend.southEastAsiaEndpoint,
-    koreasouth: CassandraBackend.southEastAsiaEndpoint,
-    southeastasia: CassandraBackend.southEastAsiaEndpoint,
-    southindia: CassandraBackend.southEastAsiaEndpoint,
-    westindia: CassandraBackend.southEastAsiaEndpoint,
-
-    // Black Forest
-    germanycentral: CassandraBackend.bf_default,
-    germanynortheast: CassandraBackend.bf_default,
-
-    // Fairfax
-    usdodeast: CassandraBackend.ff_default,
-    usdodcentral: CassandraBackend.ff_default,
-    usgovarizona: CassandraBackend.ff_default,
-    usgoviowa: CassandraBackend.ff_default,
-    usgovtexas: CassandraBackend.ff_default,
-    usgovvirginia: CassandraBackend.ff_default,
-
-    // Mooncake
-    chinaeast: CassandraBackend.mc_default,
-    chinaeast2: CassandraBackend.mc_default,
-    chinanorth: CassandraBackend.mc_default,
-    chinanorth2: CassandraBackend.mc_default
-  };
-
   public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
   public static readonly guestCreateOrDeleteApi: string = "api/guest/cassandra/createordelete";
   public static readonly queryApi: string = "api/cassandra";
@@ -344,7 +261,6 @@ export class HttpHeaders {
   public static usePolygonsSmallerThanAHemisphere = "x-ms-documentdb-usepolygonssmallerthanahemisphere";
   public static autoPilotThroughput = "autoscaleSettings";
   public static autoPilotThroughputSDK = "x-ms-cosmos-offer-autopilot-settings";
-  public static autoPilotTier = "x-ms-cosmos-offer-autopilot-tier";
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
@@ -489,54 +405,6 @@ export enum ConflictOperationType {
   Delete = "delete"
 }
 
-export class AutoPilot {
-  public static tier1Text: string = "4,000 RU/s";
-  public static tier2Text: string = "20,000 RU/s";
-  public static tier3Text: string = "100,000 RU/s";
-  public static tier4Text: string = "500,000 RU/s";
-
-  public static tierText = {
-    [AutopilotTier.Tier1]: "Tier 1",
-    [AutopilotTier.Tier2]: "Tier 2",
-    [AutopilotTier.Tier3]: "Tier 3",
-    [AutopilotTier.Tier4]: "Tier 4"
-  };
-
-  public static tierMaxRus = {
-    [AutopilotTier.Tier1]: 2000,
-    [AutopilotTier.Tier2]: 20000,
-    [AutopilotTier.Tier3]: 100000,
-    [AutopilotTier.Tier4]: 500000
-  };
-
-  public static tierMinRus = {
-    [AutopilotTier.Tier1]: 0,
-    [AutopilotTier.Tier2]: 0,
-    [AutopilotTier.Tier3]: 0,
-    [AutopilotTier.Tier4]: 0
-  };
-
-  public static tierStorageInGB = {
-    [AutopilotTier.Tier1]: 50,
-    [AutopilotTier.Tier2]: 200,
-    [AutopilotTier.Tier3]: 1000,
-    [AutopilotTier.Tier4]: 5000
-  };
-}
-
-export class DataExplorerVersions {
-  public static readonly v_1_0_0: string = "1.0.0";
-  public static readonly v_1_0_1: string = "1.0.1";
-}
-
-export class DataExplorerFeatures {
-  public static offerCache: string = "OfferCache";
-}
-
-export const DataExplorerFeaturesVersions: any = {
-  OfferCache: DataExplorerVersions.v_1_0_1
-};
-
 export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]
   "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
@@ -561,4 +429,12 @@ export class AnalyticalStorageTtl {
   public static readonly Days90: number = 7776000;
   public static readonly Infinite: number = -1;
   public static readonly Disabled: number = 0;
+}
+
+export class TerminalQueryParams {
+  public static readonly Terminal = "terminal";
+  public static readonly Server = "server";
+  public static readonly Token = "token";
+  public static readonly SubscriptionId = "subscriptionId";
+  public static readonly TerminalEndpoint = "terminalEndpoint";
 }

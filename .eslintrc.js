@@ -27,7 +27,7 @@ module.exports = {
       plugins: ["react"]
     },
     {
-      files: ["**/*.test.{ts,tsx}"],
+      files: ["**/*.{test,spec}.{ts,tsx}"],
       env: {
         jest: true
       },
@@ -41,6 +41,14 @@ module.exports = {
     "@typescript-eslint/no-extraneous-class": "error",
     "no-null/no-null": "error",
     "@typescript-eslint/no-explicit-any": "error",
-    "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }]
+    "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
+    eqeqeq: "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector: "CallExpression[callee.object.name='JSON'][callee.property.name='stringify'] Identifier[name=/$err/]",
+        message: "Do not use JSON.stringify(error). It will print '{}'"
+      }
+    ]
   }
 };

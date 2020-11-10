@@ -3,6 +3,7 @@ import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import UrlUtility from "../Common/UrlUtility";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export interface IGitHubPageInfo {
   endCursor: string;
@@ -244,7 +245,7 @@ export class GitHubClient {
         data: GitHubClient.toGitHubRepo(response.repository)
       };
     } catch (error) {
-      GitHubClient.log(Logger.logError, `GitHubClient.getRepoAsync failed: ${error}`);
+      Logger.logError(getErrorMessage(error), "GitHubClient.Octokit", "GitHubClient.getRepoAsync failed");
       return {
         status: GitHubClient.SelfErrorCode,
         data: undefined
@@ -265,7 +266,7 @@ export class GitHubClient {
         pageInfo: GitHubClient.toGitHubPageInfo(response.viewer.repositories.pageInfo)
       };
     } catch (error) {
-      GitHubClient.log(Logger.logError, `GitHubClient.getReposAsync failed: ${error}`);
+      Logger.logError(getErrorMessage(error), "GitHubClient.Octokit", "GitHubClient.getRepoAsync failed");
       return {
         status: GitHubClient.SelfErrorCode,
         data: undefined
@@ -294,7 +295,7 @@ export class GitHubClient {
         pageInfo: GitHubClient.toGitHubPageInfo(response.repository.refs.pageInfo)
       };
     } catch (error) {
-      GitHubClient.log(Logger.logError, `GitHubClient.getBranchesAsync failed: ${error}`);
+      Logger.logError(getErrorMessage(error), "GitHubClient.Octokit", "GitHubClient.getBranchesAsync failed");
       return {
         status: GitHubClient.SelfErrorCode,
         data: undefined
@@ -359,7 +360,7 @@ export class GitHubClient {
         data
       };
     } catch (error) {
-      GitHubClient.log(Logger.logError, `GitHubClient.getContentsAsync failed: ${error}`);
+      Logger.logError(getErrorMessage(error), "GitHubClient.Octokit", "GitHubClient.getContentsAsync failed");
       return {
         status: GitHubClient.SelfErrorCode,
         data: undefined
@@ -503,7 +504,7 @@ export class GitHubClient {
         debug: () => {},
         info: (message?: any) => GitHubClient.log(Logger.logInfo, message),
         warn: (message?: any) => GitHubClient.log(Logger.logWarning, message),
-        error: (message?: any) => GitHubClient.log(Logger.logError, message)
+        error: (error?: any) => Logger.logError(getErrorMessage(error), "GitHubClient.Octokit")
       }
     });
 

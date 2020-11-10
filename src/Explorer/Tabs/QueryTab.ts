@@ -4,13 +4,12 @@ import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import TabsBase from "./TabsBase";
 import { HashMap } from "../../Common/HashMap";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import * as Logger from "../../Common/Logger";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import { QueryUtils } from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
@@ -18,6 +17,7 @@ import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { queryDocuments, queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 enum ToggleState {
   Result,
@@ -34,7 +34,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   public selectedContent: ko.Observable<string>;
   public sqlStatementToExecute: ko.Observable<string>;
   public queryResults: ko.Observable<string>;
-  public errors: ko.ObservableArray<ViewModels.QueryError>;
+  public error: ko.Observable<string>;
   public statusMessge: ko.Observable<string>;
   public statusIcon: ko.Observable<string>;
   public allResultsMetadata: ko.ObservableArray<ViewModels.QueryResultsMetadata>;
@@ -55,7 +55,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   protected monacoSettings: ViewModels.MonacoEditorSettings;
   private _executeQueryButtonTitle: ko.Observable<string>;
   protected _iterator: MinimalQueryIterator;
-  private _selfLink: string;
   private _isSaveQueriesEnabled: ko.Computed<boolean>;
   private _resourceTokenPartitionKey: string;
 
@@ -83,10 +82,9 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.statusMessge = ko.observable<string>();
     this.statusIcon = ko.observable<string>();
     this.allResultsMetadata = ko.observableArray<ViewModels.QueryResultsMetadata>([]);
-    this.errors = ko.observableArray<ViewModels.QueryError>([]);
+    this.error = ko.observable<string>();
     this._partitionKey = options.partitionKey;
     this._resourceTokenPartitionKey = options.resourceTokenPartitionKey;
-    this._selfLink = options.selfLink;
     this.splitterId = this.tabId + "_splitter";
     this.isPreferredApiMongoDB = false;
     this.aggregatedQueryMetrics = ko.observable<DataModels.QueryMetrics>();
@@ -268,7 +266,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   };
 
   private _executeQueryDocumentsPage(firstItemIndex: number): Q.Promise<any> {
-    this.errors([]);
+    this.error("");
     this.roundTrips(undefined);
     if (this._iterator == null) {
       const queryIteratorPromise = this._initIterator();
@@ -352,27 +350,19 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
             startKey
           );
         },
-        (reason: any) => {
+        (error: any) => {
           this.isExecutionError(true);
-          const parsedErrors = ErrorParserUtility.parse(reason);
-          var errors = parsedErrors.map((error: DataModels.ErrorDataModel) => {
-            return <ViewModels.QueryError>{
-              message: error.message,
-              start: error.location ? error.location.start : undefined,
-              end: error.location ? error.location.end : undefined,
-              code: error.code,
-              severity: error.severity
-            };
-          });
-
-          this.errors(errors);
+          const errorMessage = getErrorMessage(error);
+          this.error(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.ExecuteQuery,
             {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );

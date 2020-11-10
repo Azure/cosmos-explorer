@@ -1,8 +1,7 @@
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { PlatformType } from "../../../PlatformType";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../../Common/Constants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
@@ -159,7 +158,7 @@ export class CommandBarComponentButtonFactory {
 
   public static createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    if (window.dataExplorerPlatform === PlatformType.Hosted) {
+    if (configContext.platform === Platform.Hosted) {
       return buttons;
     }
 
@@ -194,7 +193,7 @@ export class CommandBarComponentButtonFactory {
       buttons.push(fullScreenButton);
     }
 
-    if (!container.hasOwnProperty("isEmulator") || !container.isEmulator) {
+    if (configContext.platform !== Platform.Emulator) {
       const label = "Feedback";
       const feedbackButtonOptions: CommandButtonComponentProps = {
         iconSrc: FeedbackIcon,
@@ -389,31 +388,6 @@ export class CommandBarComponentButtonFactory {
     }
 
     return buttons;
-  }
-
-  private static createScaleAndSettingsButton(container: Explorer): CommandButtonComponentProps {
-    let isShared = false;
-    if (container.isDatabaseNodeSelected()) {
-      isShared = container.findSelectedDatabase().isDatabaseShared();
-    } else if (container.isNodeKindSelected("Collection")) {
-      const database: ViewModels.Database = container.findSelectedCollection().getDatabase();
-      isShared = database && database.isDatabaseShared();
-    }
-
-    const label = isShared ? "Settings" : "Scale & Settings";
-
-    return {
-      iconSrc: ScaleIcon,
-      iconAlt: label,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && (<any>selectedCollection).onSettingsClick();
-      },
-      commandButtonLabel: label,
-      ariaLabel: label,
-      hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected()
-    };
   }
 
   private static createNewNotebookButton(container: Explorer): CommandButtonComponentProps {

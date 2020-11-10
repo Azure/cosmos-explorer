@@ -4,33 +4,32 @@ import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/s
 import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 import { client } from "../CosmosClient";
-import { refreshCachedResources } from "../DataAccessUtilityBase";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
 
 export async function deleteDatabase(databaseId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting database ${databaseId}`);
 
   try {
-    if (window.authType === AuthType.AAD) {
+    if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+      throw new Error("Deleting database resources is not allowed for tables accounts");
+    }
+    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       await deleteDatabaseWithARM(databaseId);
     } else {
       await client()
         .database(databaseId)
         .delete();
     }
+    logConsoleInfo(`Successfully deleted database ${databaseId}`);
   } catch (error) {
-    logConsoleError(`Error while deleting database ${databaseId}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "DeleteDatabase", error.code);
-    sendNotificationForError(error);
+    handleError(error, "DeleteDatabase", `Error while deleting database ${databaseId}`);
     throw error;
+  } finally {
+    clearMessage();
   }
-  logConsoleInfo(`Successfully deleted database ${databaseId}`);
-  clearMessage();
-  await refreshCachedResources();
 }
 
 function deleteDatabaseWithARM(databaseId: string): Promise<void> {

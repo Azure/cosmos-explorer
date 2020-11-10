@@ -15,8 +15,6 @@ src/Common/DeleteFeedback.ts
 src/Common/DocumentClientUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/EnvironmentUtility.ts
-src/Common/ErrorParserUtility.test.ts
-src/Common/ErrorParserUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
 src/Common/HeadersUtility.test.ts
@@ -266,10 +264,6 @@ src/ResourceProvider/ResourceProviderClientFactory.ts
 src/RouteHandlers/RouteHandler.ts
 src/RouteHandlers/TabRouteHandler.test.ts
 src/RouteHandlers/TabRouteHandler.ts
-src/Shared/AddCollectionUtility.test.ts
-src/Shared/AddCollectionUtility.ts
-src/Shared/AddDatabaseUtility.test.ts
-src/Shared/AddDatabaseUtility.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
@@ -279,8 +273,6 @@ src/Shared/StorageUtility.test.ts
 src/Shared/StorageUtility.ts
 src/Shared/StringUtility.test.ts
 src/Shared/StringUtility.ts
-src/Shared/Telemetry/TelemetryConstants.ts
-src/Shared/Telemetry/TelemetryProcessor.ts
 src/Shared/appInsights.ts
 src/SparkClusterManager/ArcadiaResourceManager.ts
 src/SparkClusterManager/SparkClusterManager.ts
@@ -418,6 +410,5 @@ cypress/integration/dataexplorer/SQL/addCollection.spec.ts
 cypress/integration/dataexplorer/TABLE/addCollection.spec.ts
 cypress/integration/notebook/newNotebook.spec.ts
 cypress/integration/notebook/resourceTree.spec.ts
-__mocks__/AddDatabaseUtility.ts
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.test.tsx

@@ -16,6 +16,8 @@ import Explorer from "./Explorer";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
+import { userContext } from "../UserContext";
+import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -29,22 +31,24 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export class ResourceTreeContextMenuButtonFactory {
-  public static createDatabaseContextMenu(
-    container: Explorer,
-    selectedDatabase: ViewModels.Database
-  ): TreeNodeMenuItem[] {
-    const newCollectionMenuItem: TreeNodeMenuItem = {
-      iconSrc: AddCollectionIcon,
-      onClick: () => container.onNewCollectionClicked(),
-      label: container.addCollectionText()
-    };
+  public static createDatabaseContextMenu(container: Explorer): TreeNodeMenuItem[] {
+    const items: TreeNodeMenuItem[] = [
+      {
+        iconSrc: AddCollectionIcon,
+        onClick: () => container.onNewCollectionClicked(),
+        label: container.addCollectionText()
+      }
+    ];
 
-    const deleteDatabaseMenuItem = {
-      iconSrc: DeleteDatabaseIcon,
-      onClick: () => container.deleteDatabaseConfirmationPane.open(),
-      label: container.deleteDatabaseText()
-    };
-    return [newCollectionMenuItem, deleteDatabaseMenuItem];
+    if (userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
+      items.push({
+        iconSrc: DeleteDatabaseIcon,
+        onClick: () => container.deleteDatabaseConfirmationPane.open(),
+        label: container.deleteDatabaseText(),
+        styleClass: "deleteDatabaseMenuItem"
+      });
+    }
+    return items;
   }
 
   public static createCollectionContextMenuButton(
@@ -112,7 +116,8 @@ export class ResourceTreeContextMenuButtonFactory {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
         selectedCollection && selectedCollection.onDeleteCollectionContextMenuClick(selectedCollection, null);
       },
-      label: container.deleteCollectionText()
+      label: container.deleteCollectionText(),
+      styleClass: "deleteCollectionMenuItem"
     });
 
     return items;

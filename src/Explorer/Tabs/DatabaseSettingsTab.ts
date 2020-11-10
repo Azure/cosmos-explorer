@@ -1,7 +1,6 @@
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
@@ -11,15 +10,16 @@ import editable from "../../Common/EditableUtility";
 import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { PlatformType } from "../../PlatformType";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
-import { updateOffer } from "../../Common/DocumentClientUtilityBase";
+import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
+import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -54,7 +54,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   // editables
   public isAutoPilotSelected: ViewModels.Editable<boolean>;
   public throughput: ViewModels.Editable<number>;
-  public selectedAutoPilotTier: ViewModels.Editable<DataModels.AutopilotTier>;
   public autoPilotThroughput: ViewModels.Editable<number>;
   public throughputIncreaseFactor: number = Constants.ClientDefaults.databaseThroughputIncreaseFactor;
 
@@ -81,11 +80,9 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public throughputTitle: ko.PureComputed<string>;
   public throughputAriaLabel: ko.PureComputed<string>;
   public userCanChangeProvisioningTypes: ko.Observable<boolean>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
   public autoPilotUsageCost: ko.PureComputed<string>;
   public warningMessage: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public overrideWithAutoPilotSettings: ko.Computed<boolean>;
   public overrideWithProvisionedThroughputSettings: ko.Computed<boolean>;
   public testId: string;
@@ -102,9 +99,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     super(options);
 
     this.container = options.node && (options.node as ViewModels.Database).container;
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
-    this.selectedAutoPilotTier = editable.observable<DataModels.AutopilotTier>();
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>();
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
     // html element ids
@@ -119,23 +113,13 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.autoPilotThroughput = editable.observable<number>();
     const offer = this.database && this.database.offer && this.database.offer();
     const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
-    this.userCanChangeProvisioningTypes = ko.observable(!!offerAutopilotSettings || !this.hasAutoPilotV2FeatureFlag());
-    if (!this.hasAutoPilotV2FeatureFlag()) {
-      if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-        if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-          this._wasAutopilotOriginallySet(true);
-          this.isAutoPilotSelected(true);
-          this.autoPilotThroughput(offerAutopilotSettings.maxThroughput);
-        }
-      }
-    } else {
-      if (offerAutopilotSettings && offerAutopilotSettings.tier) {
-        if (AutoPilotUtils.isValidAutoPilotTier(offerAutopilotSettings.tier)) {
-          this._wasAutopilotOriginallySet(true);
-          this.isAutoPilotSelected(true);
-          this.selectedAutoPilotTier(offerAutopilotSettings.tier);
-          this.autoPilotTiersList(AutoPilotUtils.getAvailableAutoPilotTiersOptions(offerAutopilotSettings.tier));
-        }
+    this.userCanChangeProvisioningTypes = ko.observable(true);
+
+    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
+      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
+        this._wasAutopilotOriginallySet(true);
+        this.isAutoPilotSelected(true);
+        this.autoPilotThroughput(offerAutopilotSettings.maxThroughput);
       }
     }
 
@@ -150,13 +134,11 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
-      const autoPilot = !this.hasAutoPilotV2FeatureFlag() ? this.autoPilotThroughput() : this.selectedAutoPilotTier();
+      const autoPilot = this.autoPilotThroughput();
       if (!autoPilot) {
         return "";
       }
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot, true /* isDatabaseThroughput */)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot, true /* isDatabaseThroughput */);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot, true /* isDatabaseThroughput */);
     });
 
     this.requestUnitsUsageCost = ko.pureComputed(() => {
@@ -196,19 +178,17 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.costsVisible = ko.computed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
-    this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(
-      () => this.container.getPlatformType() === PlatformType.Hosted
-    );
+    this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(() => configContext.platform === Platform.Hosted);
     this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(
-      () => this.container.getPlatformType() === PlatformType.Portal && !this.container.isRunningOnNationalCloud()
+      () => configContext.platform === Platform.Portal && !this.container.isRunningOnNationalCloud()
     );
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !!this.container.isEmulator ||
-        this.container.getPlatformType() === PlatformType.Hosted ||
+        configContext.platform === Platform.Emulator ||
+        configContext.platform === Platform.Hosted ||
         this.canThroughputExceedMaximumValue()
       ) {
         return false;
@@ -218,16 +198,10 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.overrideWithAutoPilotSettings = ko.pureComputed(() => {
-      if (this.hasAutoPilotV2FeatureFlag()) {
-        return false;
-      }
       return this._hasProvisioningTypeChanged() && this._wasAutopilotOriginallySet();
     });
 
     this.overrideWithProvisionedThroughputSettings = ko.pureComputed(() => {
-      if (this.hasAutoPilotV2FeatureFlag()) {
-        return false;
-      }
       return this._hasProvisioningTypeChanged() && !this._wasAutopilotOriginallySet();
     });
 
@@ -272,7 +246,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
-      if (this.container && this.container.getPlatformType() === PlatformType.Hosted) {
+      if (configContext.platform === Platform.Hosted) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
       }
 
@@ -285,7 +259,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
     this.throughputTitle = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
 
       return `Throughput (${this.minRUs().toLocaleString()} - unlimited RU/s)`;
@@ -308,7 +282,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.warningMessage = ko.computed<string>(() => {
       const offer = this.database && this.database.offer && this.database.offer();
 
-      if (!this.hasAutoPilotV2FeatureFlag() && this.overrideWithProvisionedThroughputSettings()) {
+      if (this.overrideWithProvisionedThroughputSettings()) {
         return AutoPilotUtils.manualToAutoscaleDisclaimer;
       }
 
@@ -318,9 +292,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
       ) {
         const throughput = offer.content.offerAutopilotSettings
-          ? !this.hasAutoPilotV2FeatureFlag()
-            ? offer.content.offerAutopilotSettings.maxThroughput
-            : offer.content.offerAutopilotSettings.maximumTierThroughput
+          ? offer.content.offerAutopilotSettings.maxThroughput
           : offer.content.offerThroughput;
 
         return throughputApplyShortDelayMessage(this.isAutoPilotSelected(), throughput, this.database.id());
@@ -377,20 +349,13 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         const isAutoPilot = this.isAutoPilotSelected();
         const isManual = !this.isAutoPilotSelected();
         if (isAutoPilot) {
-          if (
-            (!this.hasAutoPilotV2FeatureFlag() &&
-              !AutoPilotUtils.isValidAutoPilotThroughput(this.autoPilotThroughput())) ||
-            (this.hasAutoPilotV2FeatureFlag() && !AutoPilotUtils.isValidAutoPilotTier(this.selectedAutoPilotTier()))
-          ) {
+          if (!AutoPilotUtils.isValidAutoPilotThroughput(this.autoPilotThroughput())) {
             return false;
           }
           if (this.isAutoPilotSelected.editableIsDirty()) {
             return true;
           }
-          if (
-            (!this.hasAutoPilotV2FeatureFlag() && this.autoPilotThroughput.editableIsDirty()) ||
-            (this.hasAutoPilotV2FeatureFlag() && this.selectedAutoPilotTier.editableIsDirty())
-          ) {
+          if (this.autoPilotThroughput.editableIsDirty()) {
             return true;
           }
         }
@@ -414,10 +379,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
             return true;
           }
 
-          if (
-            (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected.editableIsDirty()) ||
-            (this.hasAutoPilotV2FeatureFlag() && this.selectedAutoPilotTier.editableIsDirty())
-          ) {
+          if (this.isAutoPilotSelected.editableIsDirty()) {
             return true;
           }
         }
@@ -455,8 +417,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this._buildCommandBarOptions();
   }
 
-  public onSaveClick = (): Q.Promise<any> => {
-    let promises: Q.Promise<void>[] = [];
+  public onSaveClick = async (): Promise<any> => {
     this.isExecutionError(false);
 
     this.isExecuting(true);
@@ -470,181 +431,97 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
     const headerOptions: RequestOptions = { initialHeaders: {} };
 
-    if (this.isAutoPilotSelected()) {
-      const offer = this.database.offer();
-      let offerAutopilotSettings: any = {};
-      if (!this.hasAutoPilotV2FeatureFlag()) {
-        offerAutopilotSettings.maxThroughput = this.autoPilotThroughput();
+    try {
+      if (this.isAutoPilotSelected()) {
+        const updateOfferParams: DataModels.UpdateOfferParams = {
+          databaseId: this.database.id(),
+          currentOffer: this.database.offer(),
+          autopilotThroughput: this.autoPilotThroughput(),
+          manualThroughput: undefined,
+          migrateToAutoPilot: this._hasProvisioningTypeChanged()
+        };
+
+        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+        this.database.offer(updatedOffer);
+        this.database.offer.valueHasMutated();
+        this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
       } else {
-        offerAutopilotSettings.tier = this.selectedAutoPilotTier();
-      }
-      const newOffer: DataModels.Offer = {
-        content: {
-          offerThroughput: undefined,
-          offerIsRUPerMinuteThroughputEnabled: false,
-          offerAutopilotSettings
-        },
-        _etag: undefined,
-        _ts: undefined,
-        _rid: offer._rid,
-        _self: offer._self,
-        id: offer.id,
-        offerResourceId: offer.offerResourceId,
-        offerVersion: offer.offerVersion,
-        offerType: offer.offerType,
-        resource: offer.resource
-      };
+        if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
+          const originalThroughputValue = this.throughput.getEditableOriginalValue();
+          const newThroughput = this.throughput();
 
-      // user has changed from provisioned --> autoscale
-      if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
-        headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
-        delete newOffer.content.offerAutopilotSettings;
-      }
-
-      const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
-        (updatedOffer: DataModels.Offer) => {
-          this.database.offer(updatedOffer);
-          this.database.offer.valueHasMutated();
-          this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-        }
-      );
-      promises.push(updateOfferPromise);
-    } else {
-      if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
-        const offer = this.database.offer();
-        const originalThroughputValue = this.throughput.getEditableOriginalValue();
-        const newThroughput = this.throughput();
-
-        if (
-          this.canThroughputExceedMaximumValue() &&
-          this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
-        ) {
-          const requestPayload = {
-            subscriptionId: userContext.subscriptionId,
-            databaseAccountName: userContext.databaseAccount.name,
-            resourceGroup: userContext.resourceGroup,
-            databaseName: this.database.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
-          };
-          const updateOfferBeyondLimitPromise = updateOfferThroughputBeyondLimit(requestPayload).then(
-            () => {
-              this.database.offer().content.offerThroughput = originalThroughputValue;
-              this.throughput(originalThroughputValue);
-              this.notificationStatusInfo(
-                throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
-              );
-              this.throughput.valueHasMutated(); // force component re-render
-            },
-            (error: any) => {
-              TelemetryProcessor.traceFailure(
-                Action.UpdateSettings,
-                {
-                  databaseAccountName: this.container.databaseAccount().name,
-                  databaseName: this.database && this.database.id(),
-                  defaultExperience: this.container.defaultExperience(),
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle: this.tabTitle(),
-                  error: error
-                },
-                startKey
-              );
-            }
-          );
-          promises.push(Q(updateOfferBeyondLimitPromise));
-        } else {
-          const newOffer: DataModels.Offer = {
-            content: {
-              offerThroughput: newThroughput,
+          if (
+            this.canThroughputExceedMaximumValue() &&
+            this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
+            this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
+          ) {
+            const requestPayload = {
+              subscriptionId: userContext.subscriptionId,
+              databaseAccountName: userContext.databaseAccount.name,
+              resourceGroup: userContext.resourceGroup,
+              databaseName: this.database.id(),
+              throughput: newThroughput,
               offerIsRUPerMinuteThroughputEnabled: false
-            },
-            _etag: undefined,
-            _ts: undefined,
-            _rid: offer._rid,
-            _self: offer._self,
-            id: offer.id,
-            offerResourceId: offer.offerResourceId,
-            offerVersion: offer.offerVersion,
-            offerType: offer.offerType,
-            resource: offer.resource
-          };
+            };
+            await updateOfferThroughputBeyondLimit(requestPayload);
+            this.database.offer().content.offerThroughput = originalThroughputValue;
+            this.throughput(originalThroughputValue);
+            this.notificationStatusInfo(
+              throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
+            );
+            this.throughput.valueHasMutated(); // force component re-render
+          } else {
+            const updateOfferParams: DataModels.UpdateOfferParams = {
+              databaseId: this.database.id(),
+              currentOffer: this.database.offer(),
+              autopilotThroughput: undefined,
+              manualThroughput: newThroughput,
+              migrateToManual: this._hasProvisioningTypeChanged()
+            };
 
-          // user has changed from autoscale --> provisioned
-          if (!this.hasAutoPilotV2FeatureFlag() && this._hasProvisioningTypeChanged()) {
-            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
-            newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
+            const updatedOffer = await updateOffer(updateOfferParams);
+            this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
+            this.database.offer(updatedOffer);
+            this.database.offer.valueHasMutated();
           }
-
-          const updateOfferPromise = updateOffer(this.database.offer(), newOffer, headerOptions).then(
-            (updatedOffer: DataModels.Offer) => {
-              this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-              this.database.offer(updatedOffer);
-              this.database.offer.valueHasMutated();
-            }
-          );
-
-          promises.push(updateOfferPromise);
         }
       }
-    }
-
-    if (promises.length === 0) {
+    } catch (error) {
+      this.container.isRefreshingExplorer(false);
+      this.isExecutionError(true);
+      console.error(error);
+      const errorMessage = getErrorMessage(error);
+      this.displayedError(errorMessage);
+      TelemetryProcessor.traceFailure(
+        Action.UpdateSettings,
+        {
+          databaseAccountName: this.container.databaseAccount().name,
+          databaseName: this.database && this.database.id(),
+          defaultExperience: this.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          error: errorMessage,
+          errorStack: getErrorStack(error)
+        },
+        startKey
+      );
+    } finally {
       this.isExecuting(false);
     }
-
-    return Q.all(promises)
-      .then(
-        () => {
-          this.container.isRefreshingExplorer(false);
-          this._setBaseline();
-          this.database.readSettings();
-          TelemetryProcessor.traceSuccess(
-            Action.UpdateSettings,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
-        },
-        (reason: any) => {
-          this.container.isRefreshingExplorer(false);
-          this.isExecutionError(true);
-          console.error(reason);
-          this.displayedError(ErrorParserUtility.parse(reason)[0].message);
-          TelemetryProcessor.traceFailure(
-            Action.UpdateSettings,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
-        }
-      )
-      .finally(() => this.isExecuting(false));
   };
 
   public onRevertClick = (): Q.Promise<any> => {
     this.throughput.setBaseline(this.throughput.getEditableOriginalValue());
     this.isAutoPilotSelected.setBaseline(this.isAutoPilotSelected.getEditableOriginalValue());
-    if (!this.hasAutoPilotV2FeatureFlag()) {
-      this.autoPilotThroughput.setBaseline(this.autoPilotThroughput.getEditableOriginalValue());
-    } else {
-      this.selectedAutoPilotTier.setBaseline(this.selectedAutoPilotTier.getEditableOriginalValue());
-    }
+    this.autoPilotThroughput.setBaseline(this.autoPilotThroughput.getEditableOriginalValue());
 
     return Q();
   };
 
   public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
+    return super.onActivate().then(async () => {
       this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
+      await this.database.loadOffer();
     });
   }
 
@@ -654,17 +531,11 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
 
     this.throughput.setBaseline(offerThroughput);
-    this.userCanChangeProvisioningTypes(!!offerAutopilotSettings || !this.hasAutoPilotV2FeatureFlag());
+    this.userCanChangeProvisioningTypes(true);
 
-    if (this.hasAutoPilotV2FeatureFlag()) {
-      const selectedAutoPilotTier = offerAutopilotSettings && offerAutopilotSettings.tier;
-      this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotTier(selectedAutoPilotTier));
-      this.selectedAutoPilotTier.setBaseline(selectedAutoPilotTier);
-    } else {
-      const maxThroughputForAutoPilot = offerAutopilotSettings && offerAutopilotSettings.maxThroughput;
-      this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotThroughput(maxThroughputForAutoPilot));
-      this.autoPilotThroughput.setBaseline(maxThroughputForAutoPilot || AutoPilotUtils.minAutoPilotThroughput);
-    }
+    const maxThroughputForAutoPilot = offerAutopilotSettings && offerAutopilotSettings.maxThroughput;
+    this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotThroughput(maxThroughputForAutoPilot));
+    this.autoPilotThroughput.setBaseline(maxThroughputForAutoPilot || AutoPilotUtils.minAutoPilotThroughput);
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {

@@ -24,7 +24,6 @@ describe("Query Tab", () => {
       database: database,
       title: "",
       tabPath: "",
-      selfLink: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
       onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
@@ -49,7 +48,7 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
+      explorer = new Explorer();
     });
 
     it("should be true for accounts using SQL API", () => {
@@ -69,7 +68,7 @@ describe("Query Tab", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
+      explorer = new Explorer();
     });
 
     it("should be visible when using a supported API", () => {

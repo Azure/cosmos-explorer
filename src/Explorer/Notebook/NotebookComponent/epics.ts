@@ -1,6 +1,6 @@
-import { empty, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
+import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
-import { ActionsObservable, StateObservable } from "redux-observable";
+import { StateObservable } from "redux-observable";
 import { ofType } from "redux-observable";
 import {
   mergeMap,
@@ -32,24 +32,27 @@ import {
 import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
 import { sessions, kernels } from "rx-jupyter";
 import { RecordOf } from "immutable";
+import { AnyAction } from "redux";
 
 import * as Constants from "../../../Common/Constants";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as CdbActions from "./actions";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action as TelemetryAction } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as TextFile from "./contents/file/text-file";
 import { NotebookUtil } from "../NotebookUtil";
 import { FileSystemUtil } from "../FileSystemUtil";
+import * as cdbActions from "../NotebookComponent/actions";
+import { Areas } from "../../../Common/Constants";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
 }
 
-const logToTelemetry = (state: CdbAppState, title: string, error?: string) => {
+const logFailureToTelemetry = (state: CdbAppState, title: string, error?: string) => {
   TelemetryProcessor.traceFailure(TelemetryAction.NotebookErrorNotification, {
     databaseAccountName: state.cdb.databaseAccountName,
     defaultExperience: state.cdb.defaultExperience,
@@ -65,7 +68,7 @@ const logToTelemetry = (state: CdbAppState, title: string, error?: string) => {
  * @param state$
  */
 const addInitialCodeCellEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
@@ -77,7 +80,7 @@ const addInitialCodeCellEpic = (
 
       // If it's not a notebook, we shouldn't be here
       if (!model || model.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       const cellOrder = selectors.notebook.cellOrder(model);
@@ -90,7 +93,7 @@ const addInitialCodeCellEpic = (
         );
       }
 
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -124,7 +127,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
  * Override from kernel-lifecycle to improve code mirror language intellisense
  * @param action$
  */
-export const acquireKernelInfoEpic = (action$: ActionsObservable<actions.NewKernelAction>) => {
+export const acquireKernelInfoEpic = (action$: Observable<actions.NewKernelAction>) => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
     switchMap((action: actions.NewKernelAction) => {
@@ -277,7 +280,7 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
  * @param state$
  */
 export const launchWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.LaunchKernelByNameAction>,
+  action$: Observable<actions.LaunchKernelByNameAction>,
   state$: StateObservable<CdbAppState>
 ) => {
   return action$.pipe(
@@ -288,7 +291,7 @@ export const launchWebSocketKernelEpic = (
       const state = state$.value;
       const host = selectors.currentHost(state);
       if (host.type !== "jupyter") {
-        return empty();
+        return EMPTY;
       }
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
       serverConfig.userPuid = getUserPuid();
@@ -299,7 +302,7 @@ export const launchWebSocketKernelEpic = (
 
       const content = selectors.content(state, { contentRef });
       if (!content || content.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       let kernelSpecToLaunch = kernelSpecName;
@@ -311,7 +314,7 @@ export const launchWebSocketKernelEpic = (
           kernelSpecToLaunch = currentKernelspecs.defaultKernelName;
           const msg = `No kernelspec name specified to launch, using default kernel: ${kernelSpecToLaunch}`;
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-          logToTelemetry(state$.value, "Launching alternate kernel", msg);
+          logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
         } else {
           return of(
             actions.launchKernelFailed({
@@ -337,7 +340,7 @@ export const launchWebSocketKernelEpic = (
           msg += ` Using default kernel: ${kernelSpecToLaunch}`;
         }
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-        logToTelemetry(state$.value, "Launching alternate kernel", msg);
+        logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
       }
 
       const sessionPayload = {
@@ -389,7 +392,7 @@ export const launchWebSocketKernelEpic = (
  * TODO: Remove this epic once the /restart endpoint is implemented.
  */
 export const restartWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.RestartKernel | actions.NewKernelAction>,
+  action$: Observable<actions.RestartKernel | actions.NewKernelAction>,
   state$: StateObservable<AppState>
 ) =>
   action$.pipe(
@@ -499,7 +502,7 @@ export const restartWebSocketKernelEpic = (
  * @param state$
  */
 const changeWebSocketKernelEpic = (
-  action$: ActionsObservable<actions.ChangeKernelByName>,
+  action$: Observable<actions.ChangeKernelByName>,
   state$: StateObservable<AppState>
 ) => {
   return action$.pipe(
@@ -513,26 +516,26 @@ const changeWebSocketKernelEpic = (
       const state = state$.value;
       const host = selectors.currentHost(state);
       if (host.type !== "jupyter") {
-        return empty();
+        return EMPTY;
       }
 
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
       if (!oldKernelRef) {
-        return empty();
+        return EMPTY;
       }
 
       const oldKernel = selectors.kernel(state, { kernelRef: oldKernelRef });
       if (!oldKernel || oldKernel.type !== "websocket") {
-        return empty();
+        return EMPTY;
       }
       const { sessionId } = oldKernel;
       if (!sessionId) {
-        return empty();
+        return EMPTY;
       }
 
       const content = selectors.content(state, { contentRef });
       if (!content || content.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
       const {
         filepath,
@@ -581,7 +584,7 @@ const changeWebSocketKernelEpic = (
  * @param state$
  */
 const focusInitialCodeCellEpic = (
-  action$: ActionsObservable<actions.CreateCellAppend>,
+  action$: Observable<actions.CreateCellAppend>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.FocusCell> => {
   return action$.pipe(
@@ -593,7 +596,7 @@ const focusInitialCodeCellEpic = (
 
       // If it's not a notebook, we shouldn't be here
       if (!model || model.type !== "notebook") {
-        return empty();
+        return EMPTY;
       }
 
       const cellOrder = selectors.notebook.cellOrder(model);
@@ -608,7 +611,7 @@ const focusInitialCodeCellEpic = (
         );
       }
 
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -619,10 +622,7 @@ const focusInitialCodeCellEpic = (
  * @param action$
  * @param state$
  */
-const notificationsToUserEpic = (
-  action$: ActionsObservable<any>,
-  state$: StateObservable<CdbAppState>
-): Observable<{}> => {
+const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservable<CdbAppState>): Observable<{}> => {
   return action$.pipe(
     ofType(
       actions.RESTART_KERNEL_SUCCESSFUL,
@@ -637,7 +637,7 @@ const notificationsToUserEpic = (
           const title = "Kernel restart";
           const msg = "Kernel successfully restarted";
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-          logToTelemetry(state$.value, title, msg);
+          logFailureToTelemetry(state$.value, title, msg);
           break;
         }
         case actions.RESTART_KERNEL_FAILED:
@@ -648,7 +648,7 @@ const notificationsToUserEpic = (
           const title = "Save failure";
           const msg = `Failed to save notebook: ${(action as actions.SaveFailed).payload.error}`;
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-          logToTelemetry(state$.value, title, msg);
+          logFailureToTelemetry(state$.value, title, msg);
           break;
         }
         case actions.FETCH_CONTENT_FAILED: {
@@ -657,11 +657,11 @@ const notificationsToUserEpic = (
           const title = "Fetching content failure";
           const msg = `Failed to fetch notebook content: ${filepath}, error: ${typedAction.payload.error}`;
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-          logToTelemetry(state$.value, title, msg);
+          logFailureToTelemetry(state$.value, title, msg);
           break;
         }
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -672,7 +672,7 @@ const notificationsToUserEpic = (
  * @param state$
  */
 const handleKernelConnectionLostEpic = (
-  action$: ActionsObservable<actions.UpdateDisplayFailed>,
+  action$: Observable<actions.UpdateDisplayFailed>,
   state$: StateObservable<CdbAppState>
 ): Observable<CdbActions.UpdateKernelRestartDelayAction | actions.RestartKernel | {}> => {
   return action$.pipe(
@@ -682,7 +682,7 @@ const handleKernelConnectionLostEpic = (
 
       const msg = "Notebook was disconnected from kernel";
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-      logToTelemetry(state, "Error", "Kernel connection error");
+      logFailureToTelemetry(state, "Error", "Kernel connection error");
 
       const host = selectors.currentHost(state);
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host as RecordOf<JupyterHostRecordProps>);
@@ -695,13 +695,13 @@ const handleKernelConnectionLostEpic = (
         const msg =
           "Restarted kernel too many times. Please reload the page to enable Data Explorer to restart the kernel automatically.";
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-        logToTelemetry(state, "Kernel restart error", msg);
+        logFailureToTelemetry(state, "Kernel restart error", msg);
 
         const explorer = window.dataExplorer;
         if (explorer) {
           explorer.showOkModalDialog("kernel restarts", msg);
         }
-        return of(empty());
+        return of(EMPTY);
       }
 
       return concat(
@@ -733,7 +733,7 @@ const handleKernelConnectionLostEpic = (
  * @param state$
  */
 export const cleanKernelOnConnectionLostEpic = (
-  action$: ActionsObservable<actions.UpdateDisplayFailed>,
+  action$: Observable<actions.UpdateDisplayFailed>,
   state$: StateObservable<AppState>
 ): Observable<actions.KillKernelSuccessful> => {
   return action$.pipe(
@@ -756,7 +756,7 @@ export const cleanKernelOnConnectionLostEpic = (
  * @param state$
  */
 const executeFocusedCellAndFocusNextEpic = (
-  action$: ActionsObservable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
+  action$: Observable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
   state$: StateObservable<AppState>
 ): Observable<{} | actions.FocusNextCellEditor> => {
   return action$.pipe(
@@ -796,7 +796,7 @@ function getUserPuid(): string {
  * @param state$
  */
 const closeUnsupportedMimetypesEpic = (
-  action$: ActionsObservable<actions.FetchContentFulfilled>,
+  action$: Observable<actions.FetchContentFulfilled>,
   state$: StateObservable<AppState>
 ): Observable<{}> => {
   return action$.pipe(
@@ -814,7 +814,7 @@ const closeUnsupportedMimetypesEpic = (
         explorer.showOkModalDialog("File cannot be rendered", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
       }
-      return empty();
+      return EMPTY;
     })
   );
 };
@@ -825,7 +825,7 @@ const closeUnsupportedMimetypesEpic = (
  * @param state$
  */
 const closeContentFailedToFetchEpic = (
-  action$: ActionsObservable<actions.FetchContentFailed>,
+  action$: Observable<actions.FetchContentFailed>,
   state$: StateObservable<AppState>
 ): Observable<{}> => {
   return action$.pipe(
@@ -842,7 +842,106 @@ const closeContentFailedToFetchEpic = (
         explorer.showOkModalDialog("Failure to load", msg);
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
       }
-      return empty();
+      return EMPTY;
+    })
+  );
+};
+
+const traceNotebookTelemetryEpic = (
+  action$: Observable<cdbActions.TraceNotebookTelemetryAction>,
+  state$: StateObservable<CdbAppState>
+): Observable<{}> => {
+  return action$.pipe(
+    ofType(cdbActions.TRACE_NOTEBOOK_TELEMETRY),
+    mergeMap((action: cdbActions.TraceNotebookTelemetryAction) => {
+      const state = state$.value;
+
+      TelemetryProcessor.trace(action.payload.action, action.payload.actionModifier, {
+        ...action.payload.data,
+        databaseAccountName: state.cdb.databaseAccountName,
+        defaultExperience: state.cdb.defaultExperience,
+        dataExplorerArea: Areas.Notebook
+      });
+      return EMPTY;
+    })
+  );
+};
+
+/**
+ * Log notebook information to telemetry
+ * # raw cells, # markdown cells, # code cells, total
+ * @param action$
+ * @param state$
+ */
+const traceNotebookInfoEpic = (
+  action$: Observable<actions.FetchContentFulfilled>,
+  state$: StateObservable<AppState>
+): Observable<{} | cdbActions.TraceNotebookTelemetryAction> => {
+  return action$.pipe(
+    ofType(actions.FETCH_CONTENT_FULFILLED),
+    mergeMap((action: { payload: any }) => {
+      const state = state$.value;
+      const contentRef = action.payload.contentRef;
+      const model = selectors.model(state, { contentRef });
+
+      // If it's not a notebook, we shouldn't be here
+      if (!model || model.type !== "notebook") {
+        return EMPTY;
+      }
+
+      const dataToLog = {
+        nbCodeCells: 0,
+        nbRawCells: 0,
+        nbMarkdownCells: 0,
+        nbCells: 0
+      };
+      for (let [id, cell] of selectors.notebook.cellMap(model)) {
+        switch (cell.cell_type) {
+          case "code":
+            dataToLog.nbCodeCells++;
+            break;
+          case "markdown":
+            dataToLog.nbMarkdownCells++;
+            break;
+          case "raw":
+            dataToLog.nbRawCells++;
+            break;
+        }
+        dataToLog.nbCells++;
+      }
+
+      return of(
+        cdbActions.traceNotebookTelemetry({
+          action: TelemetryAction.NotebooksFetched,
+          actionModifier: ActionModifiers.Mark,
+          data: dataToLog
+        })
+      );
+    })
+  );
+};
+
+/**
+ * Log Kernel spec to start
+ * @param action$
+ * @param state$
+ */
+const traceNotebookKernelEpic = (
+  action$: Observable<AnyAction>,
+  state$: StateObservable<AppState>
+): Observable<cdbActions.TraceNotebookTelemetryAction> => {
+  return action$.pipe(
+    ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
+    mergeMap((action: { payload: any; type: string }) => {
+      return of(
+        cdbActions.traceNotebookTelemetry({
+          action: TelemetryAction.NotebooksKernelSpecName,
+          actionModifier: ActionModifiers.Mark,
+          data: {
+            kernelSpecName: action.payload.kernel.name
+          }
+        })
+      );
     })
   );
 };
@@ -859,5 +958,8 @@ export const allEpics = [
   executeFocusedCellAndFocusNextEpic,
   closeUnsupportedMimetypesEpic,
   closeContentFailedToFetchEpic,
-  restartWebSocketKernelEpic
+  restartWebSocketKernelEpic,
+  traceNotebookTelemetryEpic,
+  traceNotebookInfoEpic,
+  traceNotebookKernelEpic
 ];

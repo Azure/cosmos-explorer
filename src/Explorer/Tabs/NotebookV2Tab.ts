@@ -17,7 +17,7 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import InterruptKernelIcon from "../../../images/notebook/Notebook-stop.svg";
 import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas, ArmApiVersions } from "../../Common/Constants";
 import { CommandBarComponentButtonFactory } from "../Menus/CommandBar/CommandBarComponentButtonFactory";
@@ -147,6 +147,30 @@ export default class NotebookTabV2 extends TabsBase {
     const cellCodeType = "code";
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
+
+    const saveButtonChildren = [];
+    if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+      saveButtonChildren.push({
+        iconName: "Copy",
+        onCommandClick: () => this.copyNotebook(),
+        commandButtonLabel: copyToLabel,
+        hasPopup: false,
+        disabled: false,
+        ariaLabel: copyToLabel
+      });
+    }
+
+    if (this.container.isGalleryPublishEnabled()) {
+      saveButtonChildren.push({
+        iconName: "PublishContent",
+        onCommandClick: async () => await this.publishToGallery(),
+        commandButtonLabel: publishLabel,
+        hasPopup: false,
+        disabled: false,
+        ariaLabel: publishLabel
+      });
+    }
+
     let buttons: CommandButtonComponentProps[] = [
       {
         iconSrc: SaveIcon,
@@ -156,34 +180,17 @@ export default class NotebookTabV2 extends TabsBase {
         hasPopup: false,
         disabled: false,
         ariaLabel: saveLabel,
-        children: this.container.isGalleryPublishEnabled()
-          ? [
-              {
-                iconName: "Save",
-                onCommandClick: () => this.notebookComponentAdapter.notebookSave(),
-                commandButtonLabel: saveLabel,
-                hasPopup: false,
-                disabled: false,
-                ariaLabel: saveLabel
-              },
-              {
-                iconName: "Copy",
-                onCommandClick: () => this.copyNotebook(),
-                commandButtonLabel: copyToLabel,
-                hasPopup: false,
-                disabled: false,
-                ariaLabel: copyToLabel
-              },
-              {
-                iconName: "PublishContent",
-                onCommandClick: async () => await this.publishToGallery(),
-                commandButtonLabel: publishLabel,
-                hasPopup: false,
-                disabled: false,
-                ariaLabel: publishLabel
-              }
-            ]
-          : undefined
+        children: saveButtonChildren.length && [
+          {
+            iconName: "Save",
+            onCommandClick: () => this.notebookComponentAdapter.notebookSave(),
+            commandButtonLabel: saveLabel,
+            hasPopup: false,
+            disabled: false,
+            ariaLabel: saveLabel
+          },
+          ...saveButtonChildren
+        ]
       },
       {
         iconSrc: null,

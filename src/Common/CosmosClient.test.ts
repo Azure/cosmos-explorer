@@ -14,7 +14,9 @@ describe("tokenProvider", () => {
   };
 
   beforeEach(() => {
-    window.dataExplorer = { extensionEndpoint: () => "https://main.documentdb.ext.azure.com" } as any;
+    updateConfigContext({
+      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+    });
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         json: () => "{}",
@@ -58,7 +60,9 @@ describe("getTokenFromAuthService", () => {
   });
 
   it("builds the correct URL in production", () => {
-    window.dataExplorer = { extensionEndpoint: () => "https://main.documentdb.ext.azure.com" } as any;
+    updateConfigContext({
+      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+    });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
       "https://main.documentdb.ext.azure.com/api/guest/runtimeproxy/authorizationTokens",
@@ -108,7 +112,6 @@ describe("endpoint", () => {
 
 describe("requestPlugin", () => {
   beforeEach(() => {
-    delete window.dataExplorerPlatform;
     resetConfigContext();
   });
 

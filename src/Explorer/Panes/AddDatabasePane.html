@@ -24,7 +24,7 @@
 <script type="text/html" id="add-database-inputs">
                                 <!-- Add database header - Start -->
   <div class="firstdivbg headerline">
-      <span id="databaseTitle" data-bind="text: title"></span>
+      <span id="databaseTitle" role="heading" aria-level="2" data-bind="text: title"></span>
       <div class="closeImg" role="button" aria-label="Close pane"
           data-bind="click: cancel, event: { keypress: onCloseKeyPress }" tabindex="0">
           <img src="../../../images/close-black.svg" title="Close" alt="Close" />
@@ -73,9 +73,9 @@
           </p>
 
           <input id="database-id" type="text" aria-required="true" autocomplete="off" pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'" placeholder="Type a new database id"
-              size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus"
-              aria-label="Database id" autofocus>
+              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              size="40" class="collid" data-bind="textInput: databaseId, hasFocus: firstFieldHasFocus, attr: { 'aria-label': databaseIdLabel, 'placeholder': databaseIdPlaceHolder }"
+              autofocus>
 
           <!-- Database provisioned throughput - Start -->
           <!-- ko if: canConfigureThroughput -->
@@ -89,7 +89,6 @@
                       data-bind="text: databaseLevelThroughputTooltipText"></span>
               </span>
           </div>
-          <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
           <div data-bind="visible: databaseCreateNewShared">
               <throughput-input-autopilot-v3 params="{
                                               step: 100,
@@ -123,42 +122,6 @@
                       href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">Contact
                       support</a> for more than <span data-bind="text: maxThroughputRUText"></span> RU/s.</p>
           </div>
-          <!-- /ko -->
-          <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
-          <div data-bind="visible: databaseCreateNewShared">
-              <throughput-input params="{
-                                                  step: 100,
-                                                  value: throughput,
-                                                  testId: 'sharedThroughputValue',
-                                                  minimum: minThroughputRU,
-                                                  maximum: maxThroughputRU,
-                                                  isEnabled: databaseCreateNewShared,
-                                                  label: throughputRangeText,
-                                                  ariaLabel: throughputRangeText,
-                                                  costsVisible: costsVisible,
-                                                  requestUnitsUsageCost: requestUnitsUsageCost,
-                                                  spendAckChecked: throughputSpendAck,
-                                                  spendAckId: 'throughputSpendAckDatabase',
-                                                  spendAckText: throughputSpendAckText,
-                                                  spendAckVisible: throughputSpendAckVisible,
-                                                  showAsMandatory: true,
-                                                  infoBubbleText: ruToolTipText,
-                                                  throughputAutoPilotRadioId: 'newDatabase-databaseThroughput-autoPilotRadio',
-                                                  throughputProvisionedRadioId: 'newDatabase-databaseThroughput-manualRadio',
-                                                  throughputModeRadioName: 'throughputModeRadioName',
-                                                  isAutoPilotSelected: isAutoPilotSelected,
-                                                  autoPilotTiersList: autoPilotTiersList,
-                                        selectedAutoPilotTier: selectedAutoPilotTier,
-                                                  autoPilotUsageCost: autoPilotUsageCost,
-                                                  canExceedMaximumValue: canExceedMaximumValue
-                                              }">
-              </throughput-input>
-              <p data-bind="visible: canRequestSupport">
-                  <!-- TODO: Replace link with call to the Azure Support blade --><a
-                      href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">Contact
-                      support</a> for more than <span data-bind="text: maxThroughputRUText"></span> RU/s.</p>
-          </div>
-          <!-- /ko -->
           <!-- /ko -->
           <!-- Database provisioned throughput - End -->
       </div>

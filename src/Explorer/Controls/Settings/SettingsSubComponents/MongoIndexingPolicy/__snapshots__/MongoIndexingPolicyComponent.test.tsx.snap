@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MongoIndexingPolicyComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <IndexingPolicyRefreshComponent
+    refreshIndexTransformationProgress={[Function]}
+  />
+  <Text>
+    For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
+    <StyledLinkBase
+      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
+      target="_blank"
+    >
+       Compound indexes 
+    </StyledLinkBase>
+    are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.
+  </Text>
+  <Stack
+    styles={
+      Object {
+        "root": Object {
+          "width": 600,
+        },
+      }
+    }
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <CollapsibleSectionComponent
+      title="Current index(es)"
+    >
+      <StyledWithViewportComponent
+        columns={
+          Array [
+            Object {
+              "fieldName": "definition",
+              "isResizable": true,
+              "key": "definition",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Definition",
+            },
+            Object {
+              "fieldName": "type",
+              "isResizable": true,
+              "key": "type",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Type",
+            },
+            Object {
+              "fieldName": "actionButton",
+              "isResizable": true,
+              "key": "actionButton",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Drop Index",
+            },
+          ]
+        }
+        disableSelectionZone={true}
+        items={Array []}
+        layoutMode={1}
+        onRenderRow={[Function]}
+        selectionMode={0}
+        styles={
+          Object {
+            "root": Object {
+              "selectors": Object {
+                ".ms-FocusZone": Object {
+                  "paddingTop": 0,
+                },
+              },
+            },
+          }
+        }
+      />
+      <Stack
+        styles={
+          Object {
+            "root": Object {
+              "width": 600,
+            },
+          }
+        }
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <AddMongoIndexComponent
+          disabled={false}
+          key="0"
+          onDiscard={[Function]}
+          onIndexAddOrChange={[Function]}
+          position={0}
+        />
+      </Stack>
+    </CollapsibleSectionComponent>
+  </Stack>
+  <Styled
+    styles={
+      Object {
+        "root": Array [
+          Object {
+            "selectors": Object {
+              "::before": Object {
+                "background": undefined,
+              },
+            },
+          },
+        ],
+      }
+    }
+  />
+  <Stack
+    styles={
+      Object {
+        "root": Object {
+          "width": 600,
+        },
+      }
+    }
+  >
+    <CollapsibleSectionComponent
+      title="Index(es) to be dropped"
+    />
+  </Stack>
+</Stack>
+`;

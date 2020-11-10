@@ -1,9 +1,9 @@
 import * as Immutable from "immutable";
-import { ActionsObservable, StateObservable } from "redux-observable";
-import { Subject } from "rxjs";
+import { StateObservable } from "redux-observable";
+import { Subject, of } from "rxjs";
 import { toArray } from "rxjs/operators";
 import { makeNotebookRecord } from "@nteract/commutable";
-import { actions, state } from "@nteract/core";
+import { actions, state, epics } from "@nteract/core";
 import * as sinon from "sinon";
 
 import { CdbAppState, makeCdbRecord } from "./types";
@@ -74,46 +74,47 @@ describe("Extract kernel from notebook", () => {
   });
 });
 
+const initialState = {
+  app: state.makeAppRecord({
+    host: state.makeJupyterHostRecord({
+      type: "jupyter",
+      token: "eh",
+      basePath: "/"
+    })
+  }),
+  comms: state.makeCommsRecord(),
+  config: Immutable.Map({}),
+  core: state.makeStateRecord({
+    kernelRef: "fake",
+    entities: state.makeEntitiesRecord({
+      contents: state.makeContentsRecord({
+        byRef: Immutable.Map({
+          fakeContentRef: state.makeNotebookContentRecord()
+        })
+      }),
+      kernels: state.makeKernelsRecord({
+        byRef: Immutable.Map({
+          fake: state.makeRemoteKernelRecord({
+            type: "websocket",
+            channels: new Subject<any>(),
+            kernelSpecName: "fancy",
+            id: "0"
+          })
+        })
+      })
+    })
+  }),
+  cdb: makeCdbRecord({
+    databaseAccountName: "dbAccountName",
+    defaultExperience: "defaultExperience"
+  })
+};
+
 describe("launchWebSocketKernelEpic", () => {
   const createSpy = sinon.spy(sessions, "create");
 
   const contentRef = "fakeContentRef";
   const kernelRef = "fake";
-  const initialState = {
-    app: state.makeAppRecord({
-      host: state.makeJupyterHostRecord({
-        type: "jupyter",
-        token: "eh",
-        basePath: "/"
-      })
-    }),
-    comms: state.makeCommsRecord(),
-    config: Immutable.Map({}),
-    core: state.makeStateRecord({
-      kernelRef: "fake",
-      entities: state.makeEntitiesRecord({
-        contents: state.makeContentsRecord({
-          byRef: Immutable.Map({
-            fakeContentRef: state.makeNotebookContentRecord()
-          })
-        }),
-        kernels: state.makeKernelsRecord({
-          byRef: Immutable.Map({
-            fake: state.makeRemoteKernelRecord({
-              type: "websocket",
-              channels: new Subject<any>(),
-              kernelSpecName: "fancy",
-              id: "0"
-            })
-          })
-        })
-      })
-    }),
-    cdb: makeCdbRecord({
-      databaseAccountName: "dbAccountName",
-      defaultExperience: "defaultExperience"
-    })
-  };
 
   it("launches remote kernels", async () => {
     const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
@@ -123,7 +124,7 @@ describe("launchWebSocketKernelEpic", () => {
     const kernelSpecName = "kernelspecname";
     const sessionId = "sessionId";
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -191,7 +192,7 @@ describe("launchWebSocketKernelEpic", () => {
     const kernelSpecName = "kernelspecname";
     const sessionId = "sessionId";
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -246,7 +247,7 @@ describe("launchWebSocketKernelEpic", () => {
     const kernelSpecName = "kernelspecname";
     const sessionId = "sessionId";
 
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -297,7 +298,7 @@ describe("launchWebSocketKernelEpic", () => {
     const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
     const cwd = "/";
-    const action$ = ActionsObservable.of(
+    const action$ = of(
       actions.launchKernelByName({
         contentRef,
         kernelRef,
@@ -397,7 +398,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches supported kernel in kernelspecs", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -420,7 +421,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches undefined kernel uses default kernel from kernelspecs", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -444,7 +445,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches unsupported kernel uses default kernel from kernelspecs", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,
@@ -468,7 +469,7 @@ describe("launchWebSocketKernelEpic", () => {
     it("launches unsupported kernel uses kernelspecs with similar name", async () => {
       const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
 
-      const action$ = ActionsObservable.of(
+      const action$ = of(
         actions.launchKernelByName({
           contentRef,
           kernelRef,

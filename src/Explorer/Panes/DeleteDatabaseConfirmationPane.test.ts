@@ -8,7 +8,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { TabsManager } from "../Tabs/TabsManager";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
@@ -22,7 +22,7 @@ describe("Delete Database Confirmation Pane", () => {
     });
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
+      explorer = new Explorer();
     });
 
     it("should be true if only 1 database", () => {
@@ -120,11 +120,9 @@ describe("Delete Database Confirmation Pane", () => {
 
       return pane.submit().then(() => {
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
-        expect(TelemetryProcessor.trace).toHaveBeenCalledWith(
-          Action.DeleteDatabase,
-          ActionModifiers.Mark,
-          JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-        );
+        expect(TelemetryProcessor.trace).toHaveBeenCalledWith(Action.DeleteDatabase, ActionModifiers.Mark, {
+          message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+        });
       });
     });
   });

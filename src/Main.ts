@@ -17,7 +17,6 @@ import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../externals/jquery.dataTables.min.css";
 import "../less/TableStyles/fulldatatables.less";
-import "../externals/jquery.contextMenu.css";
 import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/CustomizeColumns.less";
 import "../less/resourceTree.less";
@@ -43,7 +42,6 @@ import "es6-symbol/implement";
 import "webcrypto-liner/build/webcrypto-liner.shim.min";
 import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
-import "../externals/jquery.contextMenu.js";
 import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
 import "../externals/adal.js";
@@ -60,15 +58,13 @@ import "url-polyfill/url-polyfill.min";
 // import "./ReactDevTools"
 
 import * as ko from "knockout";
-import TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
-import * as ViewModels from "./Contracts/ViewModels";
+import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "./Shared/Telemetry/TelemetryConstants";
 
 import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
 import * as Emulator from "./Platform/Emulator/Main";
 import Hosted from "./Platform/Hosted/Main";
 import * as Portal from "./Platform/Portal/Main";
-import { PlatformType } from "./PlatformType";
 import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
@@ -84,8 +80,6 @@ window.authType = AuthType.AAD;
 initializeConfiguration().then(config => {
   if (config.platform === Platform.Hosted) {
     try {
-      // TODO Remove. All window variables should move to src/Config file
-      window.dataExplorerPlatform = PlatformType.Hosted;
       Hosted.initializeExplorer().then(
         (explorer: Explorer) => {
           applyExplorerBindings(explorer);
@@ -111,14 +105,10 @@ initializeConfiguration().then(config => {
       console.log(e);
     }
   } else if (config.platform === Platform.Emulator) {
-    // TODO Remove. All window variables should move to src/Config file
-    window.dataExplorerPlatform = PlatformType.Emulator;
     window.authType = AuthType.MasterKey;
     const explorer = Emulator.initializeExplorer();
     applyExplorerBindings(explorer);
   } else if (config.platform === Platform.Portal) {
-    // TODO Remove. All window variables should move to src/Config file
-    window.dataExplorerPlatform = PlatformType.Portal;
     TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.Open, {});
     const explorer = Portal.initializeExplorer();
     TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.IFrameReady, {});

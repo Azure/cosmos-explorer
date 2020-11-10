@@ -7,15 +7,18 @@ import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
 import Collection from "./Collection";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
-import { readOffers, readOffer } from "../../Common/DocumentClientUtilityBase";
 import { readCollections } from "../../Common/dataAccess/readCollections";
 import { JunoClient, IJunoResponse } from "../../Juno/JunoClient";
 import { userContext } from "../../UserContext";
+import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -30,13 +33,13 @@ export default class Database implements ViewModels.Database {
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public junoClient: JunoClient;
 
-  constructor(container: Explorer, data: any, offer: DataModels.Offer) {
+  constructor(container: Explorer, data: any) {
     this.nodeKind = "Database";
     this.container = container;
     this.self = data._self;
     this.rid = data._rid;
     this.id = ko.observable(data.id);
-    this.offer = ko.observable(offer);
+    this.offer = ko.observable();
     this.collections = ko.observableArray<Collection>();
     this.isDatabaseExpanded = ko.observable<boolean>(false);
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
@@ -59,7 +62,7 @@ export default class Database implements ViewModels.Database {
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.DatabaseSettings,
-      tab => tab.rid === this.rid
+      tab => tab.node?.id() === this.id()
     );
     let settingsTab: DatabaseSettingsTab = matchingTabs && (matchingTabs[0] as DatabaseSettingsTab);
     if (!settingsTab) {
@@ -70,7 +73,7 @@ export default class Database implements ViewModels.Database {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Scale"
       });
-      Q.all([pendingNotificationsPromise, this.readSettings()]).then(
+      pendingNotificationsPromise.then(
         (data: any) => {
           const pendingNotification: DataModels.Notification = data && data[0];
           settingsTab = new DatabaseSettingsTab({
@@ -81,7 +84,6 @@ export default class Database implements ViewModels.Database {
             rid: this.rid,
             database: this,
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
-            selfLink: this.self,
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons
@@ -91,6 +93,7 @@ export default class Database implements ViewModels.Database {
           this.container.tabsManager.activateNewTab(settingsTab);
         },
         (error: any) => {
+          const errorMessage = getErrorMessage(error);
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
@@ -100,13 +103,14 @@ export default class Database implements ViewModels.Database {
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: "Scale",
-              error: error
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Error while fetching database settings for database ${this.id()}: ${JSON.stringify(error)}`
+            `Error while fetching database settings for database ${this.id()}: ${errorMessage}`
           );
           throw error;
         }
@@ -125,84 +129,13 @@ export default class Database implements ViewModels.Database {
     }
   };
 
-  public readSettings(): Q.Promise<void> {
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    if (this.container.isServerlessEnabled()) {
-      deferred.resolve();
-    }
-
-    this.container.isRefreshingExplorer(true);
-    const databaseDataModel: DataModels.Database = <DataModels.Database>{
-      id: this.id(),
-      _rid: this.rid,
-      _self: this.self
-    };
-    const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience()
-    });
-
-    const offerInfoPromise: Q.Promise<DataModels.Offer[]> = readOffers();
-    Q.all([offerInfoPromise]).then(
-      () => {
-        this.container.isRefreshingExplorer(false);
-
-        const databaseOffer: DataModels.Offer = this._getOfferForDatabase(
-          offerInfoPromise.valueOf(),
-          databaseDataModel
-        );
-        readOffer(databaseOffer).then((offerDetail: DataModels.OfferWithHeaders) => {
-          const offerThroughputInfo: DataModels.OfferThroughputInfo = {
-            minimumRUForCollection:
-              offerDetail.content &&
-              offerDetail.content.collectionThroughputInfo &&
-              offerDetail.content.collectionThroughputInfo.minimumRUForCollection,
-            numPhysicalPartitions:
-              offerDetail.content &&
-              offerDetail.content.collectionThroughputInfo &&
-              offerDetail.content.collectionThroughputInfo.numPhysicalPartitions
-          };
-
-          databaseOffer.content.collectionThroughputInfo = offerThroughputInfo;
-          (databaseOffer as DataModels.OfferWithHeaders).headers = offerDetail.headers;
-          this.offer(databaseOffer);
-          this.offer.valueHasMutated();
-
-          TelemetryProcessor.traceSuccess(
-            Action.LoadOffers,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience()
-            },
-            startKey
-          );
-          deferred.resolve();
-        });
-      },
-      (error: any) => {
-        this.container.isRefreshingExplorer(false);
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadOffers,
-          {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience()
-          },
-          startKey
-        );
-      }
-    );
-
-    return deferred.promise;
-  }
-
   public isDatabaseNodeSelected(): boolean {
     return (
       !this.isDatabaseExpanded() &&
       this.container.selectedNode &&
       this.container.selectedNode() &&
-      this.container.selectedNode().rid === this.rid &&
-      this.container.selectedNode().nodeKind === "Database"
+      this.container.selectedNode().nodeKind === "Database" &&
+      this.container.selectedNode().id() === this.id()
     );
   }
 
@@ -220,23 +153,13 @@ export default class Database implements ViewModels.Database {
     });
   }
 
-  public expandCollapseDatabase() {
-    this.selectDatabase();
-    if (this.isDatabaseExpanded()) {
-      this.collapseDatabase();
-    } else {
-      this.expandDatabase();
-    }
-    this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === this.rid);
-  }
-
-  public expandDatabase() {
+  public async expandDatabase() {
     if (this.isDatabaseExpanded()) {
       return;
     }
 
-    this.loadCollections();
+    await this.loadOffer();
+    await this.loadCollections();
     this.isDatabaseExpanded(true);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Database node",
@@ -260,36 +183,23 @@ export default class Database implements ViewModels.Database {
     });
   }
 
-  public loadCollections(): Q.Promise<void> {
-    let collectionVMs: Collection[] = [];
-    let deferred: Q.Deferred<void> = Q.defer<void>();
-
-    readCollections(this.id()).then(
-      (collections: DataModels.Collection[]) => {
-        let collectionsToAddVMPromises: Q.Promise<any>[] = [];
-        let deltaCollections = this.getDeltaCollections(collections);
+  public async loadCollections(): Promise<void> {
+    const collectionVMs: Collection[] = [];
+    const collections: DataModels.Collection[] = await readCollections(this.id());
+    const deltaCollections = this.getDeltaCollections(collections);
 
         collections.forEach((collection: DataModels.Collection) => {
           this.addSchema(collection);
         });
 
-        deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
-          const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
-          collectionVMs.push(collectionVM);
-        });
+    deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
+      const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
+      collectionVMs.push(collectionVM);
+    });
 
-        //merge collections
-        this.addCollectionsToList(collectionVMs);
-        this.deleteCollectionsFromList(deltaCollections.toDelete);
-
-        deferred.resolve();
-      },
-      (error: any) => {
-        deferred.reject(error);
-      }
-    );
-
-    return deferred.promise;
+    //merge collections
+    this.addCollectionsToList(collectionVMs);
+    this.deleteCollectionsFromList(deltaCollections.toDelete);
   }
 
   public openAddCollection(database: Database, event: MouseEvent) {
@@ -301,14 +211,24 @@ export default class Database implements ViewModels.Database {
     return _.find(this.collections(), (collection: ViewModels.Collection) => collection.id() === collectionId);
   }
 
+  public async loadOffer(): Promise<void> {
+    if (!this.container.isServerlessEnabled() && !this.offer()) {
+      const params: DataModels.ReadDatabaseOfferParams = {
+        databaseId: this.id(),
+        databaseResourceId: this.self
+      };
+      this.offer(await readDatabaseOffer(params));
+    }
+  }
+
   private _getPendingThroughputSplitNotification(): Q.Promise<DataModels.Notification> {
     if (!this.container) {
       return Q.resolve(undefined);
     }
 
     const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    this.container.notificationsClient.fetchNotifications().then(
-      (notifications: DataModels.Notification[]) => {
+    fetchPortalNotifications().then(
+      notifications => {
         if (!notifications || notifications.length === 0) {
           deferred.resolve(undefined);
           return;
@@ -330,7 +250,7 @@ export default class Database implements ViewModels.Database {
       (error: any) => {
         Logger.logError(
           JSON.stringify({
-            error: JSON.stringify(error),
+            error: getErrorMessage(error),
             accountName: this.container && this.container.databaseAccount(),
             databaseName: this.id(),
             collectionName: this.id()
@@ -352,7 +272,7 @@ export default class Database implements ViewModels.Database {
       (collection: DataModels.Collection) => {
         const collectionExists = _.some(
           this.collections(),
-          (existingCollection: Collection) => existingCollection.rid === collection._rid
+          (existingCollection: Collection) => existingCollection.id() === collection.id
         );
         return !collectionExists;
       }
@@ -362,7 +282,7 @@ export default class Database implements ViewModels.Database {
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {
       const collectionPresentInUpdatedList = _.some(
         updatedCollectionsList,
-        (coll: DataModels.Collection) => coll._rid === collection.rid
+        (coll: DataModels.Collection) => coll.id === collection.id()
       );
       if (!collectionPresentInUpdatedList) {
         collectionsToDelete.push(collection);
@@ -381,10 +301,14 @@ export default class Database implements ViewModels.Database {
   }
 
   private deleteCollectionsFromList(collectionsToRemove: Collection[]): void {
+    if (collectionsToRemove.length === 0) {
+      return;
+    }
+
     const collectionsToKeep: Collection[] = [];
 
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {
-      const shouldRemoveCollection = _.some(collectionsToRemove, (coll: Collection) => coll.rid === collection.rid);
+      const shouldRemoveCollection = _.some(collectionsToRemove, (coll: Collection) => coll.id() === collection.id());
       if (!shouldRemoveCollection) {
         collectionsToKeep.push(collection);
       }
@@ -392,9 +316,6 @@ export default class Database implements ViewModels.Database {
 
     this.collections(collectionsToKeep);
   }
-
-  private _getOfferForDatabase(offers: DataModels.Offer[], database: DataModels.Database): DataModels.Offer {
-    return _.find(offers, (offer: DataModels.Offer) => offer.resource === database._self);
   }
 
   public addSchema(collection: DataModels.Collection, interval?: number): NodeJS.Timeout {
@@ -433,5 +354,4 @@ export default class Database implements ViewModels.Database {
     }
 
     return checkForSchema;
-  }
 }

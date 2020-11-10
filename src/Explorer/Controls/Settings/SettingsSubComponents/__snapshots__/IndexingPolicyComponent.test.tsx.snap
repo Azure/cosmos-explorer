@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IndexingPolicyComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 5,
+    }
+  }
+>
+  <IndexingPolicyRefreshComponent
+    refreshIndexTransformationProgress={[Function]}
+  />
+  <div
+    className="settingsV2IndexingPolicyEditor"
+    tabIndex={0}
+  />
+</Stack>
+`;

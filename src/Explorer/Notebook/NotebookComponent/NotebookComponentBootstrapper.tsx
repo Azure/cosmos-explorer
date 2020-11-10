@@ -98,7 +98,7 @@ export class NotebookComponentBootstrapper {
       actions.fetchContentFulfilled({
         filepath: undefined,
         model: NotebookComponentBootstrapper.wrapModelIntoContent(name, undefined, content),
-        kernelRef: createKernelRef(),
+        kernelRef: undefined,
         contentRef: this.contentRef
       })
     );
@@ -196,7 +196,6 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.createCellBelow({
         cellType: "code",
-        source: "",
         contentRef: this.contentRef
       })
     );

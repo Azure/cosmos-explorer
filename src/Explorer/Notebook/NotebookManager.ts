@@ -9,7 +9,7 @@ import * as Logger from "../../Common/Logger";
 import { HttpStatusCodes, Areas } from "../../Common/Constants";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
 import ko from "knockout";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { IContentProvider } from "@nteract/core";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
@@ -26,6 +26,7 @@ import { ImmutableNotebook } from "@nteract/commutable";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export interface NotebookManagerOptions {
   container: Explorer;
@@ -113,11 +114,14 @@ export default class NotebookManager {
       this.params.resourceTree.initializeGitHubRepos(pinnedRepos);
       this.params.resourceTree.triggerRender();
     });
-    this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
+    this.refreshPinnedRepos();
   }
 
   public refreshPinnedRepos(): void {
-    this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
+    const token = this.gitHubOAuthService.getTokenObservable()();
+    if (token) {
+      this.junoClient.getPinnedRepos(token.scope);
+    }
   }
 
   public async openPublishNotebookPane(
@@ -144,7 +148,7 @@ export default class NotebookManager {
   // Octokit's error handler uses any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private onGitHubClientError = (error: any): void => {
-    Logger.logError(error, "NotebookManager/onGitHubClientError");
+    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
 
     if (error.status === HttpStatusCodes.Unauthorized) {
       this.gitHubOAuthService.resetToken();
@@ -163,7 +167,7 @@ export default class NotebookManager {
   private promptForCommitMsg = (title: string, primaryButtonLabel: string) => {
     return new Promise<string>((resolve, reject) => {
       let commitMsg = "Committed from Azure Cosmos DB Notebooks";
-      this.params.container.showOkCancelTextFieldModalDialog(
+      this.params.container.showOkCancelModalDialog(
         title || "Commit",
         undefined,
         primaryButtonLabel || "Commit",
@@ -178,6 +182,7 @@ export default class NotebookManager {
         },
         "Cancel",
         () => reject(new Error("Commit dialog canceled")),
+        undefined,
         {
           label: "Commit message",
           autoAdjustHeight: true,

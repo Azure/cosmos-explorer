@@ -1,12 +1,13 @@
-import Q from "q";
+import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
+import { createUserDefinedFunction } from "../../Common/dataAccess/createUserDefinedFunction";
+import { updateUserDefinedFunction } from "../../Common/dataAccess/updateUserDefinedFunction";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import ScriptTabBase from "./ScriptTabBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import UserDefinedFunction from "../Tree/UserDefinedFunction";
-import { createUserDefinedFunction, updateUserDefinedFunction } from "../../Common/DocumentClientUtilityBase";
+import ScriptTabBase from "./ScriptTabBase";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class UserDefinedFunctionTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
@@ -19,13 +20,13 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
     super.buildCommandBarOptions();
   }
 
-  public onSaveClick = (): Q.Promise<DataModels.UserDefinedFunction> => {
-    const data: DataModels.UserDefinedFunction = this._getResource();
+  public onSaveClick = (): Promise<UserDefinedFunctionDefinition & Resource> => {
+    const data = this._getResource();
     return this._createUserDefinedFunction(data);
   };
 
-  public onUpdateClick = (): Q.Promise<any> => {
-    const data: DataModels.UserDefinedFunction = this._getResource();
+  public onUpdateClick = (): Promise<any> => {
+    const data = this._getResource();
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateUDF, {
@@ -35,14 +36,14 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       tabTitle: this.tabTitle()
     });
 
-    return updateUserDefinedFunction(this.collection, data)
+    return updateUserDefinedFunction(this.collection.databaseId, this.collection.id(), data)
       .then(
-        (createdResource: DataModels.UserDefinedFunction) => {
+        createdResource => {
           this.resource(createdResource);
           this.tabTitle(createdResource.id);
 
           this.node.id(createdResource.id);
-          this.node.body(createdResource.body);
+          this.node.body(createdResource.body as string);
           TelemetryProcessor.traceSuccess(
             Action.UpdateUDF,
             {
@@ -57,8 +58,8 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
           this.setBaselines();
 
           const editorModel = this.editor().getModel();
-          editorModel.setValue(createdResource.body);
-          this.editorContent.setBaseline(createdResource.body);
+          editorModel.setValue(createdResource.body as string);
+          this.editorContent.setBaseline(createdResource.body as string);
         },
         (createError: any) => {
           this.isExecutionError(true);
@@ -68,7 +69,9 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -93,8 +96,8 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
   }
 
   private _createUserDefinedFunction(
-    resource: DataModels.UserDefinedFunction
-  ): Q.Promise<DataModels.UserDefinedFunction> {
+    resource: UserDefinedFunctionDefinition
+  ): Promise<UserDefinedFunctionDefinition & Resource> {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateUDF, {
@@ -104,9 +107,9 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       tabTitle: this.tabTitle()
     });
 
-    return createUserDefinedFunction(this.collection, resource)
+    return createUserDefinedFunction(this.collection.databaseId, this.collection.id(), resource)
       .then(
-        (createdResource: DataModels.UserDefinedFunction) => {
+        createdResource => {
           this.tabTitle(createdResource.id);
           this.isNew(false);
           this.resource(createdResource);
@@ -118,8 +121,8 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
           this.setBaselines();
 
           const editorModel = this.editor().getModel();
-          editorModel.setValue(createdResource.body);
-          this.editorContent.setBaseline(createdResource.body);
+          editorModel.setValue(createdResource.body as string);
+          this.editorContent.setBaseline(createdResource.body as string);
 
           this.node = this.collection.createUserDefinedFunctionNode(createdResource);
           TelemetryProcessor.traceSuccess(
@@ -143,18 +146,20 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
-          return Q.reject(createError);
+          return Promise.reject(createError);
         }
       )
       .finally(() => this.isExecuting(false));
   }
 
   private _getResource() {
-    const resource: DataModels.UserDefinedFunction = <DataModels.UserDefinedFunction>{
+    const resource = {
       _rid: this.resource()._rid,
       _self: this.resource()._self,
       id: this.id(),

@@ -5,8 +5,9 @@ import { Areas } from "../../Common/Constants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import * as Logger from "../../Common/Logger";
 import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import QueryTab from "../Tabs/QueryTab";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class BrowseQueriesPane extends ContextualPaneBase {
   public queriesGridComponentAdapter: QueriesGridComponentAdapter;
@@ -60,18 +61,20 @@ export class BrowseQueriesPane extends ContextualPaneBase {
         startKey
       );
     } catch (error) {
+      const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
         Action.SetupSavedQueries,
         {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
         startKey
       );
-      this.formErrors("Failed to setup a collection for saved queries");
-      this.formErrors(`Failed to setup a collection for saved queries: ${JSON.stringify(error)}`);
+      this.formErrors(`Failed to setup a collection for saved queries: ${errorMessage}`);
     } finally {
       this.isExecuting(false);
     }

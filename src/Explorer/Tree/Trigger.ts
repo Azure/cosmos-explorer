@@ -1,12 +1,12 @@
+import { StoredProcedureDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
+import { deleteTrigger } from "../../Common/dataAccess/deleteTrigger";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import TriggerTab from "../Tabs/TriggerTab";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
-import { deleteTrigger } from "../../Common/DocumentClientUtilityBase";
+import TriggerTab from "../Tabs/TriggerTab";
 
 export default class Trigger {
   public nodeKind: string;
@@ -43,7 +43,7 @@ export default class Trigger {
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
-    const trigger = <DataModels.Trigger>{
+    const trigger = <StoredProcedureDefinition>{
       id: "",
       body: "function trigger(){}",
       triggerOperation: "All",
@@ -59,7 +59,6 @@ export default class Trigger {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
-      selfLink: "",
       isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
@@ -79,7 +78,7 @@ export default class Trigger {
     if (triggerTab) {
       this.container.tabsManager.activateTab(triggerTab);
     } else {
-      const triggerData = <DataModels.Trigger>{
+      const triggerData = <StoredProcedureDefinition>{
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
@@ -100,7 +99,6 @@ export default class Trigger {
           this.collection.databaseId,
           this.collection.id()
         )}/triggers/${this.id()}`,
-        selfLink: "",
         isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
@@ -114,16 +112,7 @@ export default class Trigger {
       return;
     }
 
-    const triggerData = <DataModels.Trigger>{
-      _rid: this.rid,
-      _self: this.self,
-      id: this.id(),
-      body: this.body(),
-      triggerOperation: this.triggerOperation(),
-      triggerType: this.triggerType()
-    };
-
-    deleteTrigger(this.collection, triggerData).then(
+    deleteTrigger(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
         this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);

@@ -3,31 +3,21 @@ import "./base.css";
 import "./default.css";
 
 import { CodeCell, RawCell, Cells, MarkdownCell } from "@nteract/stateful-components";
+import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
 import { AzureTheme } from "./AzureTheme";
 
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { actions, ContentRef } from "@nteract/core";
 import loadTransform from "../NotebookComponent/loadTransform";
-import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
+import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
+import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import "./NotebookReadOnlyRenderer.less";
 
 export interface NotebookRendererProps {
   contentRef: any;
   hideInputs?: boolean;
-}
-
-interface PassedEditorProps {
-  id: string;
-  contentRef: ContentRef;
-  editorFocused: boolean;
-  value: string;
-  channels: any;
-  kernelStatus: string;
-  theme: string;
-  onChange: (text: string) => void;
-  onFocusChange: (focused: boolean) => void;
-  className: string;
+  hidePrompts?: boolean;
 }
 
 /**
@@ -38,6 +28,29 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
     loadTransform(this.props as any);
   }
 
+  private renderPrompt(id: string, contentRef: string): JSX.Element {
+    if (this.props.hidePrompts) {
+      return <></>;
+    }
+
+    return (
+      <Prompt id={id} contentRef={contentRef}>
+        {(props: PassedPromptProps) => {
+          if (props.status === "busy") {
+            return <React.Fragment>{"[*]"}</React.Fragment>;
+          }
+          if (props.status === "queued") {
+            return <React.Fragment>{"[…]"}</React.Fragment>;
+          }
+          if (typeof props.executionCount === "number") {
+            return <React.Fragment>{`[${props.executionCount}]`}</React.Fragment>;
+          }
+          return <React.Fragment>{"[ ]"}</React.Fragment>;
+        }}
+      </Prompt>
+    );
+  }
+
   render(): JSX.Element {
     return (
       <div className="NotebookReadOnlyRender">
@@ -46,9 +59,10 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
             code: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
               <CodeCell id={id} contentRef={contentRef}>
                 {{
+                  prompt: (props: { id: string; contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
                   editor: {
-                    codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                    monaco: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <MonacoEditor readOnly={true} {...props} editorType={"monaco"} />
                   }
                 }}
               </CodeCell>
@@ -64,8 +78,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <RawCell id={id} contentRef={contentRef} cell_type="raw">
                 {{
                   editor: {
-                    codemirror: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} readOnly={"nocursor"} />
+                    monaco: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <MonacoEditor {...props} readOnly={true} editorType={"monaco"} />
                   }
                 }}
               </RawCell>

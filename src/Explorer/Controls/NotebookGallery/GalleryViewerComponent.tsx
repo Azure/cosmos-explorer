@@ -1,6 +1,7 @@
 import {
   Dropdown,
   FocusZone,
+  FontWeights,
   IDropdownOption,
   IPageSpecification,
   IPivotItemProps,
@@ -11,14 +12,12 @@ import {
   Pivot,
   PivotItem,
   SearchBox,
-  Stack
+  Stack,
+  Text
 } from "office-ui-fabric-react";
 import * as React from "react";
-import * as Logger from "../../../Common/Logger";
 import { IGalleryItem, JunoClient, IJunoResponse, IPublicGalleryData } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
@@ -26,6 +25,7 @@ import { HttpStatusCodes } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -151,7 +151,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
       // Displaying code of conduct component on gallery load should not be the default behavior.
       if (this.state.isCodeOfConductAccepted !== false) {
-        tabs.push(this.createTab(GalleryTab.Published, this.state.publishedNotebooks));
+        tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
       }
     }
 
@@ -197,9 +197,58 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
     return {
       tab,
-      content: this.createTabContent(data)
+      content: this.createSearchBarHeader(this.createCardsTabContent(data))
     };
   }
+
+  private createPublishedNotebooksTab = (tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo => {
+    return {
+      tab,
+      content: this.createPublishedNotebooksTabContent(data)
+    };
+  };
+
+  private createPublishedNotebooksTabContent = (data: IGalleryItem[]): JSX.Element => {
+    const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
+    const content = (
+      <Stack tokens={{ childrenGap: 10 }}>
+        {published?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            undefined,
+            "You have successfully published the following notebook(s) to public gallery and shared with other Azure Cosmos DB users.",
+            this.createCardsTabContent(published)
+          )}
+        {underReview?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            "Under Review",
+            "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
+            this.createCardsTabContent(underReview)
+          )}
+        {removed?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            "Removed",
+            "These notebooks were found to contain illegal content and has been taken down.",
+            this.createPolicyViolationsListContent(removed)
+          )}
+      </Stack>
+    );
+
+    return this.createSearchBarHeader(content);
+  };
+
+  private createPublishedNotebooksSectionContent = (
+    title: string,
+    description: string,
+    content: JSX.Element
+  ): JSX.Element => {
+    return (
+      <Stack tokens={{ childrenGap: 5 }}>
+        {title && <Text styles={{ root: { fontWeight: FontWeights.semibold } }}>{title}</Text>}
+        {description && <Text>{description}</Text>}
+        {content}
+      </Stack>
+    );
+  };
 
   private createPublicGalleryTabContent(data: IGalleryItem[], acceptedCodeOfConduct: boolean): JSX.Element {
     return acceptedCodeOfConduct === false ? (
@@ -210,11 +259,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         }}
       />
     ) : (
-      this.createTabContent(data)
+      this.createSearchBarHeader(this.createCardsTabContent(data))
     );
   }
 
-  private createTabContent(data: IGalleryItem[]): JSX.Element {
+  private createSearchBarHeader(content: JSX.Element): JSX.Element {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
         <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
@@ -227,13 +276,13 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
-          {this.props.container?.isGalleryPublishEnabled() && (
+          {(!this.props.container || this.props.container.isGalleryPublishEnabled()) && (
             <Stack.Item>
               <InfoComponent />
             </Stack.Item>
           )}
         </Stack>
-        {data && this.createCardsTabContent(data)}
+        <Stack.Item>{content}</Stack.Item>
       </Stack>
     );
   }
@@ -248,6 +297,25 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           onRenderCell={this.onRenderCell}
         />
       </FocusZone>
+    );
+  }
+
+  private createPolicyViolationsListContent(data: IGalleryItem[]): JSX.Element {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <th>Policy violations</th>
+          </tr>
+          {data.map(item => (
+            <tr key={`policy-violations-tr-${item.id}`}>
+              <td>{item.name}</td>
+              <td>{item.policyViolations.join(", ")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
   }
 
@@ -284,9 +352,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.sampleNotebooks = response.data;
       } catch (error) {
-        const message = `Failed to load sample notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadSampleNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadSampleNotebooks", "Failed to load sample notebooks");
       }
     }
 
@@ -312,9 +378,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
       } catch (error) {
-        const message = `Failed to load public notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadPublicNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadPublicNotebooks", "Failed to load public notebooks");
       }
     }
 
@@ -334,9 +398,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.favoriteNotebooks = response.data;
       } catch (error) {
-        const message = `Failed to load favorite notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadFavoriteNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadFavoriteNotebooks", "Failed to load favorite notebooks");
       }
     }
 
@@ -362,9 +424,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
         this.publishedNotebooks = response.data;
       } catch (error) {
-        const message = `Failed to load published notebooks: ${error}`;
-        Logger.logError(message, "GalleryViewerComponent/loadPublishedNotebooks");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryViewerComponent/loadPublishedNotebooks", "Failed to load published notebooks");
       }
     }
 

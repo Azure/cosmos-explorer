@@ -1,13 +1,14 @@
-import Q from "q";
+import { Resource, TriggerDefinition, TriggerOperation, TriggerType } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
+import { createTrigger } from "../../Common/dataAccess/createTrigger";
+import { updateTrigger } from "../../Common/dataAccess/updateTrigger";
+import editable from "../../Common/EditableUtility";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import ScriptTabBase from "./ScriptTabBase";
-import editable from "../../Common/EditableUtility";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
-import { createTrigger, updateTrigger } from "../../Common/DocumentClientUtilityBase";
+import ScriptTabBase from "./ScriptTabBase";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class TriggerTab extends ScriptTabBase {
   public collection: ViewModels.Collection;
@@ -27,13 +28,17 @@ export default class TriggerTab extends ScriptTabBase {
     super.buildCommandBarOptions();
   }
 
-  public onSaveClick = (): Q.Promise<DataModels.Trigger> => {
-    const data: DataModels.Trigger = this._getResource();
-    return this._createTrigger(data);
+  public onSaveClick = (): Promise<TriggerDefinition & Resource> => {
+    return this._createTrigger({
+      id: this.id(),
+      body: this.editorContent(),
+      triggerOperation: this.triggerOperation() as TriggerOperation,
+      triggerType: this.triggerType() as TriggerType
+    });
   };
 
-  public onUpdateClick = (): Q.Promise<any> => {
-    const data: DataModels.Trigger = this._getResource();
+  public onUpdateClick = (): Promise<any> => {
+    const data = this._getResource();
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateTrigger, {
@@ -42,14 +47,19 @@ export default class TriggerTab extends ScriptTabBase {
       tabTitle: this.tabTitle()
     });
 
-    return updateTrigger(this.collection, data)
+    return updateTrigger(this.collection.databaseId, this.collection.id(), {
+      id: this.id(),
+      body: this.editorContent(),
+      triggerOperation: this.triggerOperation() as TriggerOperation,
+      triggerType: this.triggerType() as TriggerType
+    })
       .then(
-        (createdResource: DataModels.Trigger) => {
+        createdResource => {
           this.resource(createdResource);
           this.tabTitle(createdResource.id);
 
           this.node.id(createdResource.id);
-          this.node.body(createdResource.body);
+          this.node.body(createdResource.body as string);
           this.node.triggerType(createdResource.triggerOperation);
           this.node.triggerOperation(createdResource.triggerOperation);
           TelemetryProcessor.traceSuccess(
@@ -66,8 +76,8 @@ export default class TriggerTab extends ScriptTabBase {
           this.setBaselines();
 
           const editorModel = this.editor().getModel();
-          editorModel.setValue(createdResource.body);
-          this.editorContent.setBaseline(createdResource.body);
+          editorModel.setValue(createdResource.body as string);
+          this.editorContent.setBaseline(createdResource.body as string);
         },
         (createError: any) => {
           this.isExecutionError(true);
@@ -77,7 +87,9 @@ export default class TriggerTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -89,7 +101,7 @@ export default class TriggerTab extends ScriptTabBase {
   public setBaselines() {
     super.setBaselines();
 
-    const resource = <DataModels.Trigger>this.resource();
+    const resource = this.resource();
     this.triggerOperation.setBaseline(resource.triggerOperation);
     this.triggerType.setBaseline(resource.triggerType);
   }
@@ -109,7 +121,7 @@ export default class TriggerTab extends ScriptTabBase {
     }
   }
 
-  private _createTrigger(resource: DataModels.Trigger): Q.Promise<DataModels.Trigger> {
+  private _createTrigger(resource: TriggerDefinition): Promise<TriggerDefinition & Resource> {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateTrigger, {
@@ -119,9 +131,9 @@ export default class TriggerTab extends ScriptTabBase {
       tabTitle: this.tabTitle()
     });
 
-    return createTrigger(this.collection, resource)
+    return createTrigger(this.collection.databaseId, this.collection.id(), resource)
       .then(
-        (createdResource: DataModels.Trigger) => {
+        createdResource => {
           this.tabTitle(createdResource.id);
           this.isNew(false);
           this.resource(createdResource);
@@ -134,8 +146,8 @@ export default class TriggerTab extends ScriptTabBase {
           this.setBaselines();
 
           const editorModel = this.editor().getModel();
-          editorModel.setValue(createdResource.body);
-          this.editorContent.setBaseline(createdResource.body);
+          editorModel.setValue(createdResource.body as string);
+          this.editorContent.setBaseline(createdResource.body as string);
 
           this.node = this.collection.createTriggerNode(createdResource);
           TelemetryProcessor.traceSuccess(
@@ -159,26 +171,24 @@ export default class TriggerTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
-          return Q.reject(createError);
+          return Promise.reject(createError);
         }
       )
       .finally(() => this.isExecuting(false));
   }
 
-  private _getResource(): DataModels.Trigger {
-    const resource: DataModels.Trigger = <DataModels.Trigger>{
-      _rid: this.resource()._rid,
-      _self: this.resource()._self,
+  private _getResource() {
+    return {
       id: this.id(),
       body: this.editorContent(),
       triggerOperation: this.triggerOperation(),
       triggerType: this.triggerType()
     };
-
-    return resource;
   }
 }

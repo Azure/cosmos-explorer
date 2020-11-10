@@ -1,13 +1,3 @@
-/**
- * Defines constants related to logging telemetry. Everything except Action should be kept in sync with the one in the Portal code as much as possible.
- *
- * TODO: Move this to ExplorerContracts (265329)
- */
-export class General {
-  public static ExtensionName: string = "Microsoft_Azure_DocumentDB";
-  public static BladeNamePrefix: string = "Extension/Microsoft_Azure_DocumentDB/Blade/";
-}
-
 // Data Explorer specific actions. No need to keep this in sync with the one in Portal.
 export enum Action {
   CollapseTreeNode,
@@ -80,27 +70,42 @@ export enum Action {
   NotebooksGitHubManualRepoAdd,
   NotebooksGitHubManageRepo,
   NotebooksGitHubCommit,
-  NotebooksGitHubDisconnect
+  NotebooksGitHubDisconnect,
+  NotebooksFetched,
+  NotebooksKernelSpecName,
+  NotebooksExecuteCellFromMenu,
+  NotebooksClearOutputsFromMenu,
+  NotebooksInsertCodeCellAboveFromMenu,
+  NotebooksInsertCodeCellBelowFromMenu,
+  NotebooksInsertTextCellAboveFromMenu,
+  NotebooksInsertTextCellBelowFromMenu,
+  NotebooksMoveCellUpFromMenu,
+  NotebooksMoveCellDownFromMenu,
+  DeleteCellFromMenu,
+  OpenTerminal,
+  CreateMongoCollectionWithWildcardIndex,
+  ClickCommandBarButton,
+  RefreshResourceTreeMyNotebooks,
+  ClickResourceTreeNodeContextMenuItem,
+  DiscardSettings,
+  SettingsV2Updated,
+  SettingsV2Discarded,
+  MongoIndexUpdated
 }
 
-export class ActionModifiers {
-  public static Start: string = "start";
-  public static Success: string = "success";
-  public static Failed: string = "failed";
-  public static Mark: string = "mark";
-  public static Open: string = "open";
-  public static IFrameReady: string = "iframeready";
-  public static Close: string = "close";
-  public static Submit: string = "submit";
-  public static IndexAll: string = "index all properties";
-  public static NoIndex: string = "no indexing";
-  public static Cancel: string = "cancel";
-}
-
-export class CosmosDBEndpointNames {
-  public static Gateway: string = "CosmosDBGateway";
-  public static ResourceProvider: string = "DocumentDBResourceProvider";
-}
+export const ActionModifiers = {
+  Start: "start",
+  Success: "success",
+  Failed: "failed",
+  Mark: "mark",
+  Open: "open",
+  IFrameReady: "iframeready",
+  Close: "close",
+  Submit: "submit",
+  IndexAll: "index all properties",
+  NoIndex: "no indexing",
+  Cancel: "cancel"
+} as const;
 
 export enum SourceBlade {
   AddCollection,
@@ -125,18 +130,4 @@ export enum SourceBlade {
   ScaleCollection,
   ScriptExplorer,
   Keys
-}
-
-export class BladeLoadRequirements {
-  public static collections: string = "Collections";
-  public static collectionsWithOffers: string = "CollectionsWithOffers";
-  public static databaseAccount: string = "DatabaseAccount";
-  public static keys: string = "Keys";
-  public static metrics: string = "Metrics";
-  public static notifications: string = "Notifications";
-  public static singleCollection: string = "SingleCollection";
-
-  public static keysBlade: string[] = [BladeLoadRequirements.databaseAccount, BladeLoadRequirements.keys];
-  public static metricsBlade: string[] = [BladeLoadRequirements.databaseAccount];
-  public static overview: string[] = [BladeLoadRequirements.databaseAccount, BladeLoadRequirements.notifications];
 }

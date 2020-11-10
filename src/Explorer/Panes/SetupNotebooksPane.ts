@@ -4,8 +4,9 @@ import { Areas, KeyCodes } from "../../Common/Constants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as ko from "knockout";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class SetupNotebooksPane extends ContextualPaneBase {
   private description: ko.Observable<string>;
@@ -85,7 +86,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
         "Successfully created a default notebook workspace for the account"
       );
     } catch (error) {
-      const errorMessage = typeof error == "string" ? error : JSON.stringify(error);
+      const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
         Action.CreateNotebookWorkspace,
         {
@@ -93,7 +94,8 @@ export class SetupNotebooksPane extends ContextualPaneBase {
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
-          error: errorMessage
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
         startKey
       );

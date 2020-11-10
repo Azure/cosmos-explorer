@@ -17,26 +17,38 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
     }
     verticalAlign="center"
   >
-    <Text
-      nowrap={true}
-      variant="xxLarge"
-    >
-      name
-    </Text>
-    <Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "HeartFill",
+    <StackItem>
+      <Text
+        nowrap={true}
+        variant="xxLarge"
+      >
+        name
+      </Text>
+    </StackItem>
+    <StackItem>
+      <Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "HeartFill",
+            }
           }
-        }
+        />
+        0
+         likes
+      </Text>
+    </StackItem>
+    <StackItem>
+      <CustomizedPrimaryButton
+        text="Download"
       />
-      0
-       likes
-    </Text>
-    <CustomizedPrimaryButton
-      text="Download"
+    </StackItem>
+    <StackItem
+      grow={true}
     />
+    <StackItem>
+      <InfoComponent />
+    </StackItem>
   </Stack>
   <Stack
     horizontal={true}
@@ -56,14 +68,14 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
       Invalid Date
     </Text>
     <Text>
-      <Memo(StyledIconBase)
+      <StyledIconBase
         iconName="RedEye"
       />
        
       0
     </Text>
     <Text>
-      <Memo(StyledIconBase)
+      <StyledIconBase
         iconName="Download"
       />
       0
@@ -117,26 +129,38 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
     }
     verticalAlign="center"
   >
-    <Text
-      nowrap={true}
-      variant="xxLarge"
-    >
-      name
-    </Text>
-    <Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Heart",
+    <StackItem>
+      <Text
+        nowrap={true}
+        variant="xxLarge"
+      >
+        name
+      </Text>
+    </StackItem>
+    <StackItem>
+      <Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Heart",
+            }
           }
-        }
+        />
+        0
+         likes
+      </Text>
+    </StackItem>
+    <StackItem>
+      <CustomizedPrimaryButton
+        text="Download"
       />
-      0
-       likes
-    </Text>
-    <CustomizedPrimaryButton
-      text="Download"
+    </StackItem>
+    <StackItem
+      grow={true}
     />
+    <StackItem>
+      <InfoComponent />
+    </StackItem>
   </Stack>
   <Stack
     horizontal={true}
@@ -156,14 +180,14 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
       Invalid Date
     </Text>
     <Text>
-      <Memo(StyledIconBase)
+      <StyledIconBase
         iconName="RedEye"
       />
        
       0
     </Text>
     <Text>
-      <Memo(StyledIconBase)
+      <StyledIconBase
         iconName="Download"
       />
       0

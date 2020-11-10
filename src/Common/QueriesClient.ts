@@ -10,15 +10,9 @@ import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
 import { userContext } from "../UserContext";
-import {
-  createDocument,
-  deleteDocument,
-  getOrCreateDatabaseAndCollection,
-  queryDocuments,
-  queryDocumentsPage
-} from "./DocumentClientUtilityBase";
-import * as ErrorParserUtility from "./ErrorParserUtility";
-import * as Logger from "./Logger";
+import { createDocument, deleteDocument, queryDocuments, queryDocumentsPage } from "./DocumentClientUtilityBase";
+import { createCollection } from "./dataAccess/createCollection";
+import { handleError } from "./ErrorHandlingUtils";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -41,12 +35,13 @@ export class QueriesClient {
       ConsoleDataType.InProgress,
       "Setting up account for saving queries"
     );
-    return getOrCreateDatabaseAndCollection({
+    return createCollection({
       collectionId: SavedQueries.CollectionName,
+      createNewDatabase: true,
       databaseId: SavedQueries.DatabaseName,
       partitionKey: QueriesClient.PartitionKey,
       offerThroughput: SavedQueries.OfferThroughput,
-      databaseLevelThroughput: undefined
+      databaseLevelThroughput: false
     })
       .then(
         (collection: DataModels.Collection) => {
@@ -57,13 +52,8 @@ export class QueriesClient {
           return Promise.resolve(collection);
         },
         (error: any) => {
-          const stringifiedError: string = JSON.stringify(error);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to set up account for saving queries: ${stringifiedError}`
-          );
-          Logger.logError(stringifiedError, "setupQueriesCollection");
-          return Promise.reject(stringifiedError);
+          handleError(error, "setupQueriesCollection", "Failed to set up account for saving queries");
+          return Promise.reject(error);
         }
       )
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
@@ -106,19 +96,11 @@ export class QueriesClient {
           return Promise.resolve();
         },
         (error: any) => {
-          let errorMessage: string;
-          const parsedError: DataModels.ErrorDataModel = ErrorParserUtility.parse(error)[0];
-          if (parsedError.code === HttpStatusCodes.Conflict.toString()) {
-            errorMessage = `Query ${query.queryName} already exists`;
-          } else {
-            errorMessage = parsedError.message;
+          if (error.code === HttpStatusCodes.Conflict.toString()) {
+            error = `Query ${query.queryName} already exists`;
           }
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to save query ${query.queryName}: ${errorMessage}`
-          );
-          Logger.logError(JSON.stringify(parsedError), "saveQuery");
-          return Promise.reject(errorMessage);
+          handleError(error, "saveQuery", `Failed to save query ${query.queryName}`);
+          return Promise.reject(error);
         }
       )
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
@@ -167,25 +149,15 @@ export class QueriesClient {
               return Promise.resolve(queries);
             },
             (error: any) => {
-              const stringifiedError: string = JSON.stringify(error);
-              NotificationConsoleUtils.logConsoleMessage(
-                ConsoleDataType.Error,
-                `Failed to fetch saved queries: ${stringifiedError}`
-              );
-              Logger.logError(stringifiedError, "getSavedQueries");
-              return Promise.reject(stringifiedError);
+              handleError(error, "getSavedQueries", "Failed to fetch saved queries");
+              return Promise.reject(error);
             }
           );
         },
         (error: any) => {
           // should never get into this state but we handle this regardless
-          const stringifiedError: string = JSON.stringify(error);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to fetch saved queries: ${stringifiedError}`
-          );
-          Logger.logError(stringifiedError, "getSavedQueries");
-          return Promise.reject(stringifiedError);
+          handleError(error, "getSavedQueries", "Failed to fetch saved queries");
+          return Promise.reject(error);
         }
       )
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
@@ -236,13 +208,8 @@ export class QueriesClient {
           return Promise.resolve();
         },
         (error: any) => {
-          const stringifiedError: string = JSON.stringify(error);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to delete query ${query.queryName}: ${stringifiedError}`
-          );
-          Logger.logError(stringifiedError, "deleteQuery");
-          return Promise.reject(stringifiedError);
+          handleError(error, "deleteQuery", `Failed to delete query ${query.queryName}`);
+          return Promise.reject(error);
         }
       )
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));

@@ -1,13 +1,13 @@
 ﻿import * as ko from "knockout";
 import Q from "q";
-import { schemeCategory20 } from "d3";
-import { event as d3Event, selectAll, select } from "d3-selection";
+import { schemeCategory10 } from "d3-scale-chromatic";
+import { selectAll, select } from "d3-selection";
 import { zoom, zoomIdentity } from "d3-zoom";
 import { scaleOrdinal } from "d3-scale";
 import { forceSimulation, forceLink, forceCollide, forceManyBody } from "d3-force";
 import { interpolateNumber, interpolate } from "d3-interpolate";
 import { map as d3Map } from "d3-collection";
-import { drag } from "d3-drag";
+import { drag, D3DragEvent } from "d3-drag";
 
 import _ from "underscore";
 import { NeighborType } from "../../../Contracts/ViewModels";
@@ -89,7 +89,7 @@ export class D3ForceGraph implements GraphRenderer {
   private static readonly PAGINATION_LINE2_Y_OFFSET_PX = 14;
 
   // We limit the number of different colors to 20
-  private static readonly COLOR_SCHEME_20 = scaleOrdinal(schemeCategory20);
+  private static readonly COLOR_SCHEME = scaleOrdinal(schemeCategory10);
   private static readonly MAX_COLOR_NB = 20;
 
   // Some state variables
@@ -344,13 +344,13 @@ export class D3ForceGraph implements GraphRenderer {
     } while ((el = el && el.parentNode));
   }
 
-  private zoomed() {
+  private zoomed(event: any) {
     this.zoomTransform = {
-      x: d3Event.transform.x,
-      y: d3Event.transform.y,
-      k: d3Event.transform.k
+      x: event.transform.x,
+      y: event.transform.y,
+      k: event.transform.k
     };
-    this.g.attr("transform", d3Event.transform);
+    this.g.attr("transform", event.transform);
   }
 
   private instantiateSimulation() {
@@ -719,17 +719,17 @@ export class D3ForceGraph implements GraphRenderer {
       })
       .call(
         drag()
-          .on("start", (d: D3Node) => {
-            return this.dragstarted(d);
-          })
-          .on("drag", (d: D3Node) => {
-            return this.dragged(d);
-          })
-          .on("end", (d: D3Node) => {
-            return this.dragended(d);
-          })
+          .on("start", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
+            return this.dragstarted(d, e);
+          }) as any)
+          .on("drag", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
+            return this.dragged(d, e);
+          }) as any)
+          .on("end", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
+            return this.dragended(d, e);
+          }) as any)
       )
-      .on("mouseover", (d: D3Node) => {
+      .on("mouseover", (_: MouseEvent, d: D3Node) => {
         if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
           return;
         }
@@ -737,7 +737,7 @@ export class D3ForceGraph implements GraphRenderer {
         this.highlightNode(this, d);
         this.simulation.stop();
       })
-      .on("mouseout", (d: D3Node) => {
+      .on("mouseout", (_: MouseEvent, d: D3Node) => {
         if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
           return;
         }
@@ -765,17 +765,17 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("aria-label", (d: D3Node) => {
         return this.retrieveNodeCaption(d);
       })
-      .on("dblclick", function(d: D3Node) {
+      .on("dblclick", function(_: MouseEvent, d: D3Node) {
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("click", function(d: D3Node) {
+      .on("click", function(_: MouseEvent, d: D3Node) {
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("keypress", function(d: D3Node) {
-        if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
-          d3Event.stopPropagation();
+      .on("keypress", function(event: KeyboardEvent, d: D3Node) {
+        if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+          event.stopPropagation();
           // this is the <g> element
           self.onNodeClicked(this.parentNode, d);
         }
@@ -850,24 +850,24 @@ export class D3ForceGraph implements GraphRenderer {
         return `Next page of nodes for ${this.retrieveNodeCaption(d)}`;
       })
       .attr("tabindex", 0)
-      .on("click", function(d: D3Node) {
+      .on("click", ((_: MouseEvent, d: D3Node) => {
         self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
-      })
-      .on("dblclick", function(d: D3Node) {
+      }) as any)
+      .on("dblclick", ((_: MouseEvent, d: D3Node) => {
         self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
-      })
-      .on("keypress", function(d: D3Node) {
-        if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
-          d3Event.stopPropagation();
+      }) as any)
+      .on("keypress", ((event: KeyboardEvent, d: D3Node) => {
+        if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+          event.stopPropagation();
           self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
         }
-      })
-      .on("mouseover", function(d: D3Node) {
-        select(this).classed("active", true);
-      })
-      .on("mouseout", function(d: D3Node) {
-        select(this).classed("active", false);
-      })
+      }) as any)
+      .on("mouseover", ((e: MouseEvent, d: D3Node) => {
+        select(e.target as any).classed("active", true);
+      }) as any)
+      .on("mouseout", ((e: MouseEvent, d: D3Node) => {
+        select(e.target as any).classed("active", false);
+      }) as any)
       .attr("visibility", (d: D3Node) => (!d._outEAllLoaded || !d._inEAllLoaded ? "visible" : "hidden"));
     parent
       .append("use")
@@ -879,24 +879,24 @@ export class D3ForceGraph implements GraphRenderer {
         return `Previous page of nodes for ${this.retrieveNodeCaption(d)}`;
       })
       .attr("tabindex", 0)
-      .on("click", function(d: D3Node) {
+      .on("click", ((_: MouseEvent, d: D3Node) => {
         self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
-      })
-      .on("dblclick", function(d: D3Node) {
+      }) as any)
+      .on("dblclick", ((_: MouseEvent, d: D3Node) => {
         self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
-      })
-      .on("keypress", function(d: D3Node) {
-        if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
-          d3Event.stopPropagation();
+      }) as any)
+      .on("keypress", ((event: KeyboardEvent, d: D3Node) => {
+        if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+          event.stopPropagation();
           self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
         }
-      })
-      .on("mouseover", function(d: D3Node) {
-        select(this).classed("active", true);
-      })
-      .on("mouseout", function(d: D3Node) {
-        select(this).classed("active", false);
-      })
+      }) as any)
+      .on("mouseover", ((e: MouseEvent, d: D3Node) => {
+        select(e.target as any).classed("active", true);
+      }) as any)
+      .on("mouseout", ((e: MouseEvent, d: D3Node) => {
+        select(e.target as any).classed("active", false);
+      }) as any)
       .attr("visibility", (d: D3Node) =>
         !d._pagination || d._pagination.currentPage.start !== 0 ? "visible" : "hidden"
       );
@@ -975,24 +975,24 @@ export class D3ForceGraph implements GraphRenderer {
         return `Load adjacent nodes for ${this.retrieveNodeCaption(d)}`;
       })
       .attr("tabindex", 0)
-      .on("click", function(d: D3Node) {
+      .on("click", ((_: MouseEvent, d: D3Node) => {
         self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
-      })
-      .on("dblclick", function(d: D3Node) {
+      }) as any)
+      .on("dblclick", ((_: MouseEvent, d: D3Node) => {
         self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
-      })
-      .on("keypress", function(d: D3Node) {
-        if (d3Event.charCode === Constants.KeyCodes.Space || d3Event.charCode === Constants.KeyCodes.Enter) {
-          d3Event.stopPropagation();
+      }) as any)
+      .on("keypress", ((event: KeyboardEvent, d: D3Node) => {
+        if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+          event.stopPropagation();
           self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
         }
-      })
-      .on("mouseover", function(d: D3Node) {
-        select(this).classed("active", true);
-      })
-      .on("mouseout", function(d: D3Node) {
-        select(this).classed("active", false);
-      });
+      }) as any)
+      .on("mouseover", ((e: MouseEvent, d: D3Node) => {
+        select(e.target as any).classed("active", true);
+      }) as any)
+      .on("mouseout", ((e: MouseEvent, d: D3Node) => {
+        select(e.target as any).classed("active", false);
+      }) as any);
   }
 
   /**
@@ -1053,7 +1053,7 @@ export class D3ForceGraph implements GraphRenderer {
     if (index < 0 || index >= D3ForceGraph.MAX_COLOR_NB) {
       index = D3ForceGraph.MAX_COLOR_NB - 1;
     }
-    return D3ForceGraph.COLOR_SCHEME_20(index.toString());
+    return D3ForceGraph.COLOR_SCHEME(index.toString());
   }
 
   /**
@@ -1071,23 +1071,23 @@ export class D3ForceGraph implements GraphRenderer {
     }
   }
 
-  private dragstarted(d: D3Node) {
+  private dragstarted(d: D3Node, event: D3DragEvent<SVGGElement, D3Node, unknown>) {
     this.isDragging = true;
-    if (!d3Event.active) {
+    if (!event.active) {
       this.simulation.alphaTarget(0.3).restart();
     }
     d.fx = d.x;
     d.fy = d.y;
   }
 
-  private dragged(d: D3Node) {
-    d.fx = d3Event.x;
-    d.fy = d3Event.y;
+  private dragged(d: D3Node, event: D3DragEvent<SVGGElement, D3Node, unknown>) {
+    d.fx = event.x;
+    d.fy = event.y;
   }
 
-  private dragended(d: D3Node) {
+  private dragended(d: D3Node, event: D3DragEvent<SVGGElement, D3Node, unknown>) {
     this.isDragging = false;
-    if (!d3Event.active) {
+    if (!event.active) {
       this.simulation.alphaTarget(0);
     }
 

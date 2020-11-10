@@ -48,6 +48,10 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("settings-tab")).toBe(true);
   });
 
+  it("should register settings-tab-v2 component", () => {
+    expect(ko.components.isRegistered("settings-tab-v2")).toBe(true);
+  });
+
   it("should register query-tab component", () => {
     expect(ko.components.isRegistered("query-tab")).toBe(true);
   });
@@ -118,9 +122,5 @@ describe("Component Registerer", () => {
 
   it("should register dynamic-list component", () => {
     expect(ko.components.isRegistered("dynamic-list")).toBe(true);
-  });
-
-  it("should register throughput-input component", () => {
-    expect(ko.components.isRegistered("throughput-input")).toBe(true);
   });
 });

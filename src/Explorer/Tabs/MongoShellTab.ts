@@ -2,18 +2,17 @@ import * as Constants from "../../Common/Constants";
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import AuthHeadersUtil from "../../Platform/Hosted/Authorization";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import Q from "q";
 import TabsBase from "./TabsBase";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../Common/HashMap";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { PlatformType } from "../../PlatformType";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
+import { configContext, Platform } from "../../ConfigContext";
 
 export default class MongoShellTab extends TabsBase {
   public url: ko.Computed<string>;
@@ -31,9 +30,8 @@ export default class MongoShellTab extends TabsBase {
       const accountName = account && account.name;
       const mongoEndpoint = account && (account.properties.mongoEndpoint || account.properties.documentEndpoint);
 
-      this._runtimeEndpoint =
-        window.dataExplorerPlatform == PlatformType.Hosted ? AuthHeadersUtil.extensionEndpoint : "";
-      const extensionEndpoint: string = this._container.extensionEndpoint() || this._runtimeEndpoint || "";
+      this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
+      const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
       let baseUrl = "/content/mongoshell/dist/";
       if (this._container.serverId() === "localhost") {
         baseUrl = "/content/mongoshell/";
@@ -109,11 +107,7 @@ export default class MongoShellTab extends TabsBase {
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.collection.databaseId;
     const collectionId = this.collection.id();
-    const apiEndpoint = EnvironmentUtility.getMongoBackendEndpoint(
-      this._container.serverId(),
-      userContext.databaseAccount.location,
-      this._container.extensionEndpoint()
-    ).replace("/api/mongo/explorer", "");
+    const apiEndpoint = configContext.BACKEND_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(
@@ -130,7 +124,7 @@ export default class MongoShellTab extends TabsBase {
           apiEndpoint: apiEndpoint
         }
       },
-      this._container.extensionEndpoint()
+      configContext.BACKEND_ENDPOINT
     );
   }
 
@@ -142,7 +136,7 @@ export default class MongoShellTab extends TabsBase {
       return;
     }
 
-    const dataToLog: string = event.data.data.logData;
+    const dataToLog = { message: event.data.data.logData };
     const logType: string = event.data.data.logType;
     const shellTraceId: string = event.data.data.traceId || "none";
 

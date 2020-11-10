@@ -13,6 +13,7 @@ import {
   makeAppRecord,
   makeCommsRecord,
   makeContentsRecord,
+  makeEditorsRecord,
   makeEntitiesRecord,
   makeHostsRecord,
   makeJupyterHostRecord,
@@ -32,8 +33,9 @@ import { Store, AnyAction, MiddlewareAPI, Middleware, Dispatch } from "redux";
 import configureStore from "./NotebookComponent/store";
 
 import { Notification } from "react-notification-system";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
 
@@ -112,20 +114,15 @@ export class NotebookClientV2 {
         host: jupyterHostRecord
         // TODO: tamitta: notificationSystem.addNotification was removed, do we need a substitute?
       }),
-      comms: makeCommsRecord(),
-      config: Immutable.Map({
-        theme: "light",
-        editorType: params.cellEditorType || "codemirror",
-        autoSaveInterval: params.autoSaveInterval || Constants.Notebook.autoSaveIntervalMs
-      }),
       core: makeStateRecord({
         currentKernelspecsRef: kernelspecsRef,
         entities: makeEntitiesRecord({
+          editors: makeEditorsRecord({}),
           hosts: makeHostsRecord({
             byRef: Immutable.Map<string, HostRecord>().set(this.contentHostRef, jupyterHostRecord)
           }),
+          comms: makeCommsRecord(),
           contents: makeContentsRecord({
-            // byRef: Immutable.Map<string, ContentRecord>().set(this.contentRef, record)
             byRef: Immutable.Map<string, ContentRecord>()
           }),
           transforms: makeTransformsRecord({
@@ -237,7 +234,31 @@ export class NotebookClientV2 {
       console.error(`${title}: ${message}`);
     };
 
-    this.store = configureStore(initialState, params.contentProvider, traceErrorFct, [cacheKernelSpecsMiddleware]);
+    this.store = configureStore(
+      initialState,
+      params.contentProvider,
+      traceErrorFct,
+      [cacheKernelSpecsMiddleware],
+      !params.isReadOnly
+    );
+
+    // Additional configuration
+    this.store.dispatch(configOption("editorType").action(params.cellEditorType ?? "monaco"));
+    this.store.dispatch(
+      configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
+    );
+    createConfigCollection({
+      key: "monaco"
+    });
+    defineConfigOption({
+      label: "Show Line numbers",
+      key: "monaco.lineNumbers",
+      values: [
+        { label: "Yes", value: true },
+        { label: "No", value: false }
+      ],
+      defaultValue: true
+    });
   }
 
   /**

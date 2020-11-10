@@ -2,20 +2,23 @@ import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 import { listSqlDatabases } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
-    if (window.authType === AuthType.AAD) {
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
       databases = await readDatabasesWithARM();
     } else {
       const sdkResponse = await client()
@@ -24,9 +27,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
       databases = sdkResponse.resources as DataModels.Database[];
     }
   } catch (error) {
-    logConsoleError(`Error while querying databases:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadDatabases", error.code);
-    sendNotificationForError(error);
+    handleError(error, "ReadDatabases", `Error while querying databases`);
     throw error;
   }
   clearMessage();

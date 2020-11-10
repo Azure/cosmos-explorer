@@ -92,6 +92,11 @@ describe("getPkIdFromDocumentId", () => {
     expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("[234, 'id']");
   });
 
+  it("should create pkid pair from partitioned graph (pk as boolean)", () => {
+    const doc = createFakeDoc({ id: "id", mypk: true });
+    expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("[true, 'id']");
+  });
+
   it("should create pkid pair from partitioned graph (pk as valid array value)", () => {
     const doc = createFakeDoc({ id: "id", mypk: [{ id: "someid", _value: "pkvalue" }] });
     expect(GraphExplorer.getPkIdFromDocumentId(doc, "mypk")).toEqual("['pkvalue', 'id']");
@@ -136,8 +141,6 @@ describe("getPkIdFromDocumentId", () => {
 });
 
 describe("GraphExplorer", () => {
-  const COLLECTION_RID = "collectionRid";
-  const COLLECTION_SELF_LINK = "collectionSelfLink";
   const gremlinRU = 789.12;
 
   const createMockProps = (): GraphExplorerProps => {
@@ -155,8 +158,6 @@ describe("GraphExplorer", () => {
       onIsValidQueryChange: (isValidQuery: boolean): void => {},
 
       collectionPartitionKeyProperty: "collectionPartitionKeyProperty",
-      collectionRid: COLLECTION_RID,
-      collectionSelfLink: COLLECTION_SELF_LINK,
       graphBackendEndpoint: "graphBackendEndpoint",
       databaseId: "databaseId",
       collectionId: "collectionId",

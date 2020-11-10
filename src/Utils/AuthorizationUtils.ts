@@ -3,9 +3,9 @@ import * as ViewModels from "../Contracts/ViewModels";
 import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
 import * as Logger from "../Common/Logger";
-import { PlatformType } from "../PlatformType";
-import { configContext } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
   if (window.authType === AuthType.EncryptedToken) {
@@ -29,7 +29,7 @@ export async function getArcadiaAuthToken(
     const token = await AuthHeadersUtil.getAccessToken(arcadiaEndpoint, tenantId);
     return token;
   } catch (error) {
-    Logger.logError(error, "AuthorizationUtils/getArcadiaAuthToken");
+    Logger.logError(getErrorMessage(error), "AuthorizationUtils/getArcadiaAuthToken");
     throw error;
   }
 }
@@ -57,13 +57,12 @@ export function decryptJWTToken(token: string) {
 }
 
 export function displayTokenRenewalPromptForStatus(httpStatusCode: number): void {
-  const platformType = window.dataExplorerPlatform;
   const explorer = window.dataExplorer;
 
   if (
     httpStatusCode == null ||
     httpStatusCode != Constants.HttpStatusCodes.Unauthorized ||
-    platformType !== PlatformType.Hosted
+    configContext.platform !== Platform.Hosted
   ) {
     return;
   }

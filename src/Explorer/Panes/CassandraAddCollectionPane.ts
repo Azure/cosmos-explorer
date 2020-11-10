@@ -7,11 +7,13 @@ import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { HashMap } from "../../Common/HashMap";
+import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -37,10 +39,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public sharedThroughputSpendAck: ko.Observable<boolean>;
   public sharedThroughputSpendAckText: ko.Observable<string>;
   public isAutoPilotSelected: ko.Observable<boolean>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public selectedSharedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
-  public sharedAutoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
   public isSharedAutoPilotSelected: ko.Observable<boolean>;
   public selectedAutoPilotThroughput: ko.Observable<number>;
   public sharedAutoPilotThroughput: ko.Observable<number>;
@@ -48,7 +46,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public sharedThroughputSpendAckVisible: ko.Computed<boolean>;
   public throughputSpendAckVisible: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public isFreeTierAccount: ko.Computed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
@@ -60,8 +57,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.title("Add Table");
     this.createTableQuery = ko.observable<string>("CREATE TABLE ");
     this.keyspaceCreateNew = ko.observable<boolean>(true);
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
-    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.keyspaceOffers = new HashMap<DataModels.Offer>();
     this.keyspaceIds = ko.observableArray<string>();
@@ -89,8 +85,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.tableId = ko.observable<string>("");
-    this.selectedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.selectedSharedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
     this.isAutoPilotSelected = ko.observable<boolean>(false);
     this.isSharedAutoPilotSelected = ko.observable<boolean>(false);
     this.selectedAutoPilotThroughput = ko.observable<number>();
@@ -101,11 +95,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       if (!enableAutoPilot) {
         return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
       }
-      return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+      return AutoPilotUtils.getAutoPilotHeaderText();
     });
     this.sharedThroughputRangeText = ko.pureComputed<string>(() => {
       if (this.isSharedAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
@@ -231,11 +225,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.canRequestSupport = ko.pureComputed(() => {
-      if (!this.container.isEmulator && !this.container.isTryCosmosDBSubscription()) {
+      if (configContext.platform !== Platform.Emulator && !this.container.isTryCosmosDBSubscription()) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
       }
@@ -245,7 +239,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
     this.sharedThroughputSpendAckVisible = ko.computed<boolean>(() => {
       const autoscaleThroughput = this.sharedAutoPilotThroughput() * 1;
-      if (!this.hasAutoPilotV2FeatureFlag() && this.isSharedAutoPilotSelected()) {
+      if (this.isSharedAutoPilotSelected()) {
         return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
       }
 
@@ -254,7 +248,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
     this.throughputSpendAckVisible = ko.pureComputed<boolean>(() => {
       const autoscaleThroughput = this.selectedAutoPilotThroughput() * 1;
-      if (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected()) {
+      if (this.isAutoPilotSelected()) {
         return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
       }
 
@@ -268,8 +262,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
           if (keyspace && keyspace.offer && !!keyspace.offer()) {
             this.keyspaceOffers.set(keyspace.id(), keyspace.offer());
-          } else if (keyspace && keyspace.isDatabaseShared && keyspace.isDatabaseShared()) {
-            keyspace.readSettings();
           }
           return keyspace.id();
         });
@@ -281,22 +273,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       updateKeyspaceIds(this.container.nonSystemDatabases());
     }
 
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
-    this.sharedAutoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
-
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
       const autoPilot = this._getAutoPilot();
       if (!autoPilot) {
         return "";
       }
       const isDatabaseThroughput: boolean = this.keyspaceCreateNew();
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot.autopilotTier, isDatabaseThroughput);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput);
     });
   }
 
@@ -353,15 +336,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     const autoPilotCommand = `cosmosdb_autoscale_max_throughput`;
     let createTableAndKeyspacePromise: Q.Promise<any>;
     const toCreateKeyspace: boolean = this.keyspaceCreateNew();
-    const useAutoPilotForKeyspace: boolean =
-      (!this.hasAutoPilotV2FeatureFlag() && this.isSharedAutoPilotSelected() && !!this.sharedAutoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isSharedAutoPilotSelected() && !!this.selectedSharedAutoPilotTier());
+    const useAutoPilotForKeyspace: boolean = this.isSharedAutoPilotSelected() && !!this.sharedAutoPilotThroughput();
     const createKeyspaceQueryPrefix: string = `CREATE KEYSPACE ${this.keyspaceId().trim()} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 }`;
     const createKeyspaceQuery: string = this.keyspaceHasSharedOffer()
       ? useAutoPilotForKeyspace
-        ? !this.hasAutoPilotV2FeatureFlag()
-          ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${this.sharedAutoPilotThroughput()};`
-          : `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${this.selectedSharedAutoPilotTier()};`
+        ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${this.sharedAutoPilotThroughput()};`
         : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${this.keyspaceThroughput()};`
       : `${createKeyspaceQueryPrefix};`;
     const createTableQueryPrefix: string = `${this.createTableQuery()}${this.tableId().trim()} ${this.userTableQuery()}`;
@@ -451,8 +430,9 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
       },
-      reason => {
-        this.formErrors(reason.exceptionMessage);
+      error => {
+        const errorMessage = getErrorMessage(error);
+        this.formErrors(errorMessage);
         this.isExecuting(false);
         const addCollectionPaneFailedMessage = {
           databaseAccountName: this.container.databaseAccount().name,
@@ -478,7 +458,8 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           toCreateKeyspace: toCreateKeyspace,
           createKeyspaceQuery: createKeyspaceQuery,
           createTableQuery: createTableQuery,
-          error: reason
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
@@ -490,13 +471,9 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     const throughputDefaults = this.container.collectionCreationDefaults.throughput;
     this.isAutoPilotSelected(false);
     this.isSharedAutoPilotSelected(false);
-    this.selectedAutoPilotTier(null);
-    this.selectedSharedAutoPilotTier(null);
     this.selectedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    this.throughput(
-      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
-    );
+    this.throughput(AddCollectionUtility.getMaxThroughput(this.container.collectionCreationDefaults, this.container));
     this.keyspaceThroughput(throughputDefaults.shared);
     this.maxThroughputRU(throughputDefaults.unlimitedmax);
     this.minThroughputRU(throughputDefaults.unlimitedmin);
@@ -515,7 +492,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
     const sharedAutoscaleThroughput = this.sharedAutoPilotThroughput() * 1;
     if (
-      !this.hasAutoPilotV2FeatureFlag() &&
       this.isSharedAutoPilotSelected() &&
       sharedAutoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
       !this.sharedThroughputSpendAck()
@@ -526,7 +502,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
     const dedicatedAutoscaleThroughput = this.selectedAutoPilotThroughput() * 1;
     if (
-      !this.hasAutoPilotV2FeatureFlag() &&
       this.isAutoPilotSelected() &&
       dedicatedAutoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
       !this.throughputSpendAck()
@@ -541,17 +516,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     ) {
       const autoPilot = this._getAutoPilot();
       if (
-        (!this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot ||
-            !autoPilot.maxThroughput ||
-            !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput))) ||
-        (this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot || !autoPilot.autopilotTier || !AutoPilotUtils.isValidAutoPilotTier(autoPilot.autopilotTier)))
+        !autoPilot ||
+        !autoPilot.maxThroughput ||
+        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
       ) {
         this.formErrors(
-          !this.hasAutoPilotV2FeatureFlag()
-            ? `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-            : "Please select an Autopilot tier from the list."
+          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
         );
         return false;
       }
@@ -578,33 +548,20 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
   private _getAutoPilot(): DataModels.AutoPilotCreationSettings {
     if (
-      (!this.hasAutoPilotV2FeatureFlag() &&
-        this.keyspaceCreateNew() &&
-        this.keyspaceHasSharedOffer() &&
-        this.isSharedAutoPilotSelected() &&
-        this.sharedAutoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() &&
-        this.keyspaceCreateNew() &&
-        this.keyspaceHasSharedOffer() &&
-        this.isSharedAutoPilotSelected() &&
-        this.selectedSharedAutoPilotTier())
+      this.keyspaceCreateNew() &&
+      this.keyspaceHasSharedOffer() &&
+      this.isSharedAutoPilotSelected() &&
+      this.sharedAutoPilotThroughput()
     ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.sharedAutoPilotThroughput() * 1
-          }
-        : { autopilotTier: this.selectedSharedAutoPilotTier() };
+      return {
+        maxThroughput: this.sharedAutoPilotThroughput() * 1
+      };
     }
 
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.selectedAutoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.selectedAutoPilotThroughput() * 1
-          }
-        : { autopilotTier: this.selectedAutoPilotTier() };
+    if (this.selectedAutoPilotThroughput()) {
+      return {
+        maxThroughput: this.selectedAutoPilotThroughput() * 1
+      };
     }
 
     return undefined;

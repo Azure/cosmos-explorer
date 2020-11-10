@@ -6,8 +6,9 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import QueryTab from "../Tabs/QueryTab";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class SaveQueryPane extends ContextualPaneBase {
   public queryName: ko.Observable<string>;
@@ -87,18 +88,18 @@ export class SaveQueryPane extends ContextualPaneBase {
       },
       (error: any) => {
         this.isExecuting(false);
-        if (typeof error != "string") {
-          error = JSON.stringify(error);
-        }
+        const errorMessage = getErrorMessage(error);
         this.formErrors("Failed to save query");
-        this.formErrorsDetails(`Failed to save query: ${error}`);
+        this.formErrorsDetails(`Failed to save query: ${errorMessage}`);
         TelemetryProcessor.traceFailure(
           Action.SaveQuery,
           {
             databaseAccountName: this.container.databaseAccount().name,
             defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -132,18 +133,21 @@ export class SaveQueryPane extends ContextualPaneBase {
         startKey
       );
     } catch (error) {
+      const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
         Action.SetupSavedQueries,
         {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
         startKey
       );
       this.formErrors("Failed to setup a container for saved queries");
-      this.formErrors(`Failed to setup a container for saved queries: ${JSON.stringify(error)}`);
+      this.formErrorsDetails(`Failed to setup a container for saved queries: ${errorMessage}`);
     } finally {
       this.isExecuting(false);
     }

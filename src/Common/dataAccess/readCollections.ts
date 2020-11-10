@@ -2,37 +2,38 @@ import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { listTables } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
-  let collections: DataModels.Collection[];
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
-    if (window.authType === AuthType.AAD) {
-      collections = await readCollectionsWithARM(databaseId);
-    } else {
-      const sdkResponse = await client()
-        .database(databaseId)
-        .containers.readAll()
-        .fetchAll();
-      collections = sdkResponse.resources as DataModels.Collection[];
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
+      return await readCollectionsWithARM(databaseId);
     }
+
+    const sdkResponse = await client()
+      .database(databaseId)
+      .containers.readAll()
+      .fetchAll();
+    return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
-    logConsoleError(`Error while querying containers for database ${databaseId}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadCollections", error.code);
-    sendNotificationForError(error);
+    handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
     throw error;
+  } finally {
+    clearMessage();
   }
-  clearMessage();
-  return collections;
 }
 
 async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Collection[]> {

@@ -23,12 +23,13 @@ import { GraphConfig } from "../../Tabs/GraphTab";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as Constants from "../../../Common/Constants";
 import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
 import { queryDocuments, queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 export interface GraphAccessor {
   applyFilter: () => void;
@@ -47,8 +48,6 @@ export interface GraphExplorerProps {
   onIsValidQueryChange: (isValidQuery: boolean) => void;
 
   collectionPartitionKeyProperty: string;
-  collectionRid: string;
-  collectionSelfLink: string;
   graphBackendEndpoint: string;
   databaseId: string;
   collectionId: string;
@@ -894,7 +893,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     backendPromise.then(
       (result: UserQueryResult) => (this.queryTotalRequestCharge = result.requestCharge),
       (error: any) => {
-        const errorMsg = `Failure in submitting query: ${query}: ${JSON.stringify(error)}`;
+        const errorMsg = `Failure in submitting query: ${query}: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
           filterQueryError: errorMsg
@@ -1371,7 +1370,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     if (collectionPartitionKeyProperty && d.hasOwnProperty(collectionPartitionKeyProperty)) {
       let pk = (d as any)[collectionPartitionKeyProperty];
-      if (typeof pk !== "string" && typeof pk !== "number") {
+      if (typeof pk !== "string" && typeof pk !== "number" && typeof pk !== "boolean") {
         if (Array.isArray(pk) && pk.length > 0) {
           // pk is [{ id: 'id', _value: 'value' }]
           pk = pk[0]["_value"];
@@ -1761,7 +1760,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${queryInfoStr}`);
 
     return queryDocumentsPage(
-      this.props.collectionRid,
+      this.props.collectionId,
       this.currentDocDBQueryInfo.iterator,
       this.currentDocDBQueryInfo.index,
       {
@@ -1828,7 +1827,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     promise
       .then((result: GremlinClient.GremlinRequestResult) => this.processGremlinQueryResults(result))
       .catch((error: any) => {
-        const errorMsg = `Failed to process query result: ${JSON.stringify(error)}`;
+        const errorMsg = `Failed to process query result: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
           filterQueryError: errorMsg

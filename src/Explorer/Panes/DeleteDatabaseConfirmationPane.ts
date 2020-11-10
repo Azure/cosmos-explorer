@@ -3,7 +3,6 @@ import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -11,8 +10,10 @@ import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility"
 import DeleteFeedback from "../../Common/DeleteFeedback";
 
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
+import { ARMError } from "../../Utils/arm/request";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;
@@ -68,12 +69,16 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.isExecuting(false);
         this.close();
         this.container.refreshAllDatabases();
-        this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === selectedDatabase.rid);
+        this.container.tabsManager.closeTabsByComparator(tab => tab.node?.id() === selectedDatabase.id());
         this.container.selectedNode(null);
         selectedDatabase
           .collections()
           .forEach((collection: ViewModels.Collection) =>
-            this.container.tabsManager.closeTabsByComparator(tab => tab.node && tab.node.rid === collection.rid)
+            this.container.tabsManager.closeTabsByComparator(
+              tab =>
+                tab.node?.id() === collection.id() &&
+                (tab.node as ViewModels.Collection).databaseId === collection.databaseId
+            )
           );
         this.resetData();
         TelemetryProcessor.traceSuccess(
@@ -96,20 +101,18 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             this.databaseDeleteFeedback()
           );
 
-          TelemetryProcessor.trace(
-            Action.DeleteDatabase,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          );
+          TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          });
 
           this.databaseDeleteFeedback("");
         }
       },
-      (reason: any) => {
+      (error: any) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        this.formErrors(message[0].message);
-        this.formErrorsDetails(message[0].message);
+        const errorMessage = getErrorMessage(error);
+        this.formErrors(errorMessage);
+        this.formErrorsDetails(errorMessage);
         TelemetryProcessor.traceFailure(
           Action.DeleteDatabase,
           {
@@ -117,7 +120,9 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             defaultExperience: this.container.defaultExperience(),
             databaseId: selectedDatabase.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -130,7 +135,8 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
     super.resetData();
   }
 
-  public open() {
+  public async open() {
+    await this.container.loadSelectedDatabaseOffer();
     this.recordDeleteFeedback(this.shouldRecordFeedback());
     super.open();
   }

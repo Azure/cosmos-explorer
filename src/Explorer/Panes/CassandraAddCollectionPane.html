@@ -17,7 +17,7 @@
       >
         <!-- Add Cassandra collection header - Start -->
         <div class="firstdivbg headerline">
-          <span data-bind="text: title"></span>
+          <span role="heading" aria-level="2" data-bind="text: title"></span>
           <div
             class="closeImg"
             role="button"
@@ -142,7 +142,6 @@
               </span>
             </div>
             <!-- 1 -->
-            <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
             <div data-bind="visible: keyspaceCreateNew() && keyspaceHasSharedOffer()">
               <throughput-input-autopilot-v3
                 params="{ 
@@ -172,38 +171,6 @@
               >
               </throughput-input-autopilot-v3>
             </div>
-            <!-- /ko -->
-            <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
-            <div data-bind="visible: keyspaceCreateNew() && keyspaceHasSharedOffer()">
-              <throughput-input
-                params="{ 
-                                    testId: 'cassandraThroughputValue-v2-shared',
-                                    value: keyspaceThroughput, 
-                                    minimum: minThroughputRU, 
-                                    maximum: maxThroughputRU, 
-                                    isEnabled: keyspaceCreateNew() && keyspaceHasSharedOffer(), 
-                                    label: sharedThroughputRangeText,
-                                    ariaLabel: sharedThroughputRangeText,
-                                    requestUnitsUsageCost: requestUnitsUsageCostShared,
-                                    spendAckChecked: sharedThroughputSpendAck,
-                                    spendAckId: 'sharedThroughputSpendAck-v2-shared',
-                                    spendAckText: sharedThroughputSpendAckText,
-                                    spendAckVisible: sharedThroughputSpendAckVisible,
-                                    showAsMandatory: true,
-                                    infoBubbleText: ruToolTipText,
-                                    throughputAutoPilotRadioId: 'newKeyspace-databaseThroughput-autoPilotRadio-v2-shared',
-                                    throughputProvisionedRadioId: 'newKeyspace-databaseThroughput-manualRadio-v2-shared',
-                                    isAutoPilotSelected: isSharedAutoPilotSelected,
-                                    autoPilotTiersList: sharedAutoPilotTiersList,
-                            costsVisible: costsVisible,
-                                    selectedAutoPilotTier: selectedSharedAutoPilotTier,
-                                    autoPilotUsageCost: autoPilotUsageCost,
-                                    canExceedMaximumValue: canExceedMaximumValue
-                                    }"
-              >
-              </throughput-input>
-            </div>
-            <!-- /ko -->
             <!-- /ko -->
             <!-- Database provisioned throughput - End -->
           </div>
@@ -257,7 +224,6 @@
             </span>
           </div>
           <!-- 2 -->
-          <!-- ko if: hasAutoPilotV2FeatureFlag && !hasAutoPilotV2FeatureFlag() -->
           <div data-bind="visible: !keyspaceHasSharedOffer() || dedicateTableThroughput()">
             <throughput-input-autopilot-v3
               params="{ 
@@ -288,40 +254,6 @@
             >
             </throughput-input-autopilot-v3>
           </div>
-          <!-- /ko -->
-
-          <!-- ko if: hasAutoPilotV2FeatureFlag && hasAutoPilotV2FeatureFlag() -->
-          <div data-bind="visible: !keyspaceHasSharedOffer() || dedicateTableThroughput()">
-            <throughput-input
-              params="{ 
-                            testId: 'cassandraSharedThroughputValue-v2-dedicated',
-                            value: throughput, 
-                            minimum: minThroughputRU, 
-                            maximum: maxThroughputRU, 
-                            isEnabled: !keyspaceHasSharedOffer() || dedicateTableThroughput(), 
-                            label: throughputRangeText,
-                            ariaLabel: throughputRangeText,
-                            costsVisible: costsVisible,
-                            requestUnitsUsageCost: requestUnitsUsageCostDedicated,
-                            spendAckChecked: throughputSpendAck,
-                            spendAckId: 'throughputSpendAckCassandra-v2-dedicated',
-                            spendAckText: throughputSpendAckText,
-                            spendAckVisible: throughputSpendAckVisible,
-                            showAsMandatory: true,
-                            infoBubbleText: ruToolTipText,
-                            throughputAutoPilotRadioId: 'newKeyspace-containerThroughput-autoPilotRadio-v2-dedicated',
-                            throughputProvisionedRadioId: 'newKeyspace-containerThroughput-manualRadio-v2-dedicated',
-                            isAutoPilotSelected: isAutoPilotSelected,
-                            autoPilotTiersList: autoPilotTiersList,
-                            selectedAutoPilotTier: selectedAutoPilotTier,
-                            autoPilotUsageCost: autoPilotUsageCost,
-                            showAutoPilot: false,
-                            canExceedMaximumValue: canExceedMaximumValue
-                        }"
-            >
-            </throughput-input>
-          </div>
-          <!-- /ko -->
           <!-- /ko -->
           <!-- Provision table throughput - end -->
         </div>

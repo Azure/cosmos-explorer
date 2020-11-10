@@ -1,13 +1,59 @@
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as NotificationConsoleUtils from "./NotificationConsoleUtils";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import * as Logger from "../Common/Logger";
 import {
   GalleryTab,
   SortBy,
   GalleryViewerComponent
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
+import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
+import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
+import { handleError } from "../Common/ErrorHandlingUtils";
+
+const defaultSelectedAbuseCategory = "Other";
+const abuseCategories: IChoiceGroupOption[] = [
+  {
+    key: "ChildEndangermentExploitation",
+    text: "Child endangerment or exploitation"
+  },
+  {
+    key: "ContentInfringement",
+    text: "Content infringement"
+  },
+  {
+    key: "OffensiveContent",
+    text: "Offensive content"
+  },
+  {
+    key: "Terrorism",
+    text: "Terrorism"
+  },
+  {
+    key: "ThreatsCyberbullyingHarassment",
+    text: "Threats, cyber bullying or harassment"
+  },
+  {
+    key: "VirusSpywareMalware",
+    text: "Virus, spyware or malware"
+  },
+  {
+    key: "Fraud",
+    text: "Fraud"
+  },
+  {
+    key: "HateSpeech",
+    text: "Hate speech"
+  },
+  {
+    key: "ImminentHarmToPersonsOrProperty",
+    text: "Imminent harm to persons or property"
+  },
+  {
+    key: "Other",
+    text: "Other"
+  }
+];
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
@@ -31,6 +77,80 @@ export interface GalleryViewerProps {
   selectedTab: GalleryTab;
   sortBy: SortBy;
   searchText: string;
+}
+
+export interface DialogHost {
+  showOkCancelModalDialog(
+    title: string,
+    msg: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps
+  ): void;
+}
+
+export function reportAbuse(
+  junoClient: JunoClient,
+  data: IGalleryItem,
+  dialogHost: DialogHost,
+  onComplete: (success: boolean) => void
+): void {
+  const notebookId = data.id;
+  let abuseCategory = defaultSelectedAbuseCategory;
+  let additionalDetails: string;
+
+  dialogHost.showOkCancelModalDialog(
+    "Report Abuse",
+    undefined,
+    "Report Abuse",
+    async () => {
+      const clearSubmitReportNotification = NotificationConsoleUtils.logConsoleProgress(
+        `Submitting your report on ${data.name} violating code of conduct`
+      );
+
+      try {
+        const response = await junoClient.reportAbuse(notebookId, abuseCategory, additionalDetails);
+        if (!response.data) {
+          throw new Error(`Received HTTP ${response.status} when submitting report for ${data.name}`);
+        }
+
+        NotificationConsoleUtils.logConsoleInfo(
+          `Your report on ${data.name} has been submitted. Thank you for reporting the violation.`
+        );
+        onComplete(response.data);
+      } catch (error) {
+        handleError(
+          error,
+          "GalleryUtils/reportAbuse",
+          `Failed to submit report on ${data.name} violating code of conduct`
+        );
+      }
+
+      clearSubmitReportNotification();
+    },
+    "Cancel",
+    undefined,
+    {
+      label: "How does this content violate the code of conduct?",
+      options: abuseCategories,
+      defaultSelectedKey: defaultSelectedAbuseCategory,
+      onChange: (_event?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => {
+        abuseCategory = option?.key;
+      }
+    },
+    {
+      label: "You can also include additional relevant details on the offensive content",
+      multiline: true,
+      rows: 3,
+      autoAdjustHeight: false,
+      onChange: (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+        additionalDetails = newValue;
+      }
+    }
+  );
 }
 
 export function downloadItem(
@@ -67,9 +187,7 @@ export function downloadItem(
           onComplete(increaseDownloadResponse.data);
         }
       } catch (error) {
-        const message = `Failed to download ${data.name}: ${error}`;
-        Logger.logError(message, "GalleryUtils/downloadItem");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
       }
 
       NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
@@ -94,9 +212,7 @@ export async function favoriteItem(
 
       onComplete(response.data);
     } catch (error) {
-      const message = `Failed to favorite ${data.name}: ${error}`;
-      Logger.logError(message, "GalleryUtils/favoriteItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GalleryUtils/favoriteItem", `Failed to favorite ${data.name}`);
     }
   }
 }
@@ -116,9 +232,7 @@ export async function unfavoriteItem(
 
       onComplete(response.data);
     } catch (error) {
-      const message = `Failed to unfavorite ${data.name}: ${error}`;
-      Logger.logError(message, "GalleryUtils/unfavoriteItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GalleryUtils/unfavoriteItem", `Failed to unfavorite ${data.name}`);
     }
   }
 }
@@ -150,9 +264,7 @@ export function deleteItem(
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
           onComplete(response.data);
         } catch (error) {
-          const message = `Failed to remove ${name} from gallery: ${error}`;
-          Logger.logError(message, "GalleryUtils/deleteItem");
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+          handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
         }
 
         NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
@@ -204,4 +316,28 @@ export function getTabTitle(tab: GalleryTab): string {
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
+}
+
+export function filterPublishedNotebooks(
+  items: IGalleryItem[]
+): {
+  published: IGalleryItem[];
+  underReview: IGalleryItem[];
+  removed: IGalleryItem[];
+} {
+  const underReview: IGalleryItem[] = [];
+  const removed: IGalleryItem[] = [];
+  const published: IGalleryItem[] = [];
+
+  items?.forEach(item => {
+    if (item.policyViolations?.length > 0) {
+      removed.push(item);
+    } else if (item.pendingScanJobIds?.length > 0) {
+      underReview.push(item);
+    } else {
+      published.push(item);
+    }
+  });
+
+  return { published, underReview, removed };
 }

@@ -1,4 +1,3 @@
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as React from "react";
@@ -9,6 +8,7 @@ import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
 import { UploadItemsPaneComponent, UploadItemsPaneProps } from "./UploadItemsPaneComponent";
 import Explorer from "../Explorer";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
 
@@ -39,7 +39,6 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       formErrorDetail: this.formErrorDetail,
       id: "uploaditemspane",
       isExecuting: this.isExecuting,
-      isSubmitButtonVisible: true,
       title: "Upload Items",
       submitButtonText: "Upload",
       onClose: () => this.close(),
@@ -108,9 +107,9 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
             this.selectedFilesTitle = "";
           },
           error => {
-            const message = ErrorParserUtility.parse(error);
-            this.formError = message[0].message;
-            this.formErrorDetail = message[0].message;
+            const errorMessage = getErrorMessage(error);
+            this.formError = errorMessage;
+            this.formErrorDetail = errorMessage;
           }
         )
         .finally(() => {

@@ -24,10 +24,11 @@ import {
 } from "office-ui-fabric-react/lib/utilities/selection/index";
 import { StyleConstants } from "../../../Common/Constants";
 import { TextField, ITextFieldProps, ITextField } from "office-ui-fabric-react/lib/TextField";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
 import { QueriesClient } from "../../../Common/QueriesClient";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;
@@ -244,7 +245,9 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                             databaseAccountName: container && container.databaseAccount().name,
                             defaultExperience: container && container.defaultExperience(),
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title()
+                            paneTitle: container && container.browseQueriesPane.title(),
+                            error: getErrorMessage(error),
+                            errorStack: getErrorStack(error)
                           },
                           startKey
                         );

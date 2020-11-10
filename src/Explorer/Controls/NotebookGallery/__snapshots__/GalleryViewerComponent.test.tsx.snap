@@ -77,7 +77,25 @@ exports[`GalleryViewerComponent renders 1`] = `
               selectedKey={0}
             />
           </StackItem>
+          <StackItem>
+            <InfoComponent />
+          </StackItem>
         </Stack>
+        <StackItem>
+          <FocusZone
+            direction={2}
+            isCircularNavigation={false}
+            shouldRaiseClicks={true}
+          >
+            <List
+              getPageSpecification={[Function]}
+              onRenderCell={[Function]}
+              renderedWindowsAhead={3}
+              renderedWindowsBehind={2}
+              startIndex={0}
+            />
+          </FocusZone>
+        </StackItem>
       </Stack>
     </PivotItem>
   </StyledPivotBase>

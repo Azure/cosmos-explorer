@@ -4,11 +4,10 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import DocumentId from "../Tree/DocumentId";
 import DocumentsTab from "./DocumentsTab";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import MongoUtility from "../../Common/MongoUtility";
 import ObjectId from "../Tree/ObjectId";
 import Q from "q";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import {
   createDocument,
@@ -20,6 +19,7 @@ import {
 import { extractPartitionKey } from "@azure/cosmos";
 import * as Logger from "../../Common/Logger";
 import { PartitionKeyDefinition } from "@azure/cosmos";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class MongoDocumentsTab extends DocumentsTab {
   public collection: ViewModels.Collection;
@@ -72,7 +72,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
           databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
           defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
-          tabTitle: this.tabTitle()
+          tabTitle: this.tabTitle(),
+          error: message
         },
         startKey
       );
@@ -114,17 +115,19 @@ export default class MongoDocumentsTab extends DocumentsTab {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -176,17 +179,19 @@ export default class MongoDocumentsTab extends DocumentsTab {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -267,7 +272,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );

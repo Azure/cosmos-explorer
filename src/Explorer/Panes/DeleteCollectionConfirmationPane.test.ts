@@ -8,7 +8,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import DeleteCollectionConfirmationPane from "./DeleteCollectionConfirmationPane";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 
@@ -17,7 +17,7 @@ describe("Delete Collection Confirmation Pane", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({ notificationsClient: null, isEmulator: false });
+      explorer = new Explorer();
     });
 
     it("should be true if 1 database and 1 collection", () => {
@@ -56,7 +56,7 @@ describe("Delete Collection Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
-      let fakeExplorer = new Explorer({ notificationsClient: null, isEmulator: false });
+      let fakeExplorer = new Explorer();
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
 
@@ -134,11 +134,9 @@ describe("Delete Collection Confirmation Pane", () => {
         expect(telemetryProcessorSpy.called).toBe(true);
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
         expect(
-          telemetryProcessorSpy.calledWith(
-            Action.DeleteCollection,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          )
+          telemetryProcessorSpy.calledWith(Action.DeleteCollection, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          })
         ).toBe(true);
       });
     });

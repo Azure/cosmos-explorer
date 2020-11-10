@@ -1,26 +1,22 @@
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import editable from "../../Common/EditableUtility";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { AddDbUtilities } from "../../Shared/AddDatabaseUtility";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { PlatformType } from "../../PlatformType";
-import { refreshCachedOffers, refreshCachedResources, createDatabase } from "../../Common/DocumentClientUtilityBase";
-import { userContext } from "../../UserContext";
+import { createDatabase } from "../../Common/dataAccess/createDatabase";
+import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
   public databaseIdLabel: ko.Computed<string>;
+  public databaseIdPlaceHolder: ko.Computed<string>;
   public databaseId: ko.Observable<string>;
   public databaseIdTooltipText: ko.Computed<string>;
   public databaseLevelThroughputTooltipText: ko.Computed<string>;
@@ -42,12 +38,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public upsellAnchorUrl: ko.PureComputed<string>;
   public upsellAnchorText: ko.PureComputed<string>;
   public isAutoPilotSelected: ko.Observable<boolean>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
   public maxAutoPilotThroughputSet: ko.Observable<number>;
   public autoPilotUsageCost: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
@@ -57,8 +50,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     super(options);
     this.title((this.container && this.container.addDatabaseText()) || "New Database");
     this.databaseId = ko.observable<string>();
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
-    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
@@ -75,6 +67,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseIdLabel = ko.computed<string>(() =>
       this.container.isPreferredApiCassandra() ? "Keyspace id" : "Database id"
     );
+
+    this.databaseIdPlaceHolder = ko.computed<string>(() =>
+      this.container.isPreferredApiCassandra() ? "Type a new keyspace id" : "Type a new database id"
+    );
+
     this.databaseIdTooltipText = ko.computed<string>(() => {
       const isCassandraAccount: boolean = this.container.isPreferredApiCassandra();
       return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${
@@ -93,10 +90,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.minThroughputRU = ko.observable<number>();
     this.throughputSpendAckText = ko.observable<string>();
     this.throughputSpendAck = ko.observable<boolean>(false);
-    this.selectedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
     this.isAutoPilotSelected = ko.observable<boolean>(false);
     this.maxAutoPilotThroughputSet = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
@@ -104,13 +97,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
       if (!autoPilot) {
         return "";
       }
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, true /* isDatabaseThroughput */)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot.autopilotTier, true /* isDatabaseThroughput */);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, true /* isDatabaseThroughput */);
     });
     this.throughputRangeText = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
@@ -179,9 +170,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !this.container.isEmulator &&
+        configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
-        this.container.getPlatformType() !== PlatformType.Portal
+        configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
@@ -202,12 +193,12 @@ export default class AddDatabasePane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.throughputSpendAckVisible = ko.pureComputed<boolean>(() => {
       const autoscaleThroughput = this.maxAutoPilotThroughputSet() * 1;
-      if (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected()) {
+      if (this.isAutoPilotSelected()) {
         return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
       }
 
@@ -304,80 +295,30 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.formErrors("");
     this.isExecuting(true);
 
-    const createDatabaseParameters: DataModels.RpParameters = {
-      db: addDatabasePaneStartMessage.database.id,
-      st: addDatabasePaneStartMessage.database.shared,
-      offerThroughput: addDatabasePaneStartMessage.offerThroughput,
-      sid: userContext.subscriptionId,
-      rg: userContext.resourceGroup,
-      dba: addDatabasePaneStartMessage.databaseAccountName
+    const createDatabaseParams: DataModels.CreateDatabaseParams = {
+      databaseId: addDatabasePaneStartMessage.database.id,
+      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared
     };
 
-    const autopilotSettings = this._getAutopilotSettings();
-
-    if (this.container.isPreferredApiCassandra()) {
-      this._createKeyspace(createDatabaseParameters, autopilotSettings, startKey);
-    } else if (this.container.isPreferredApiMongoDB() && EnvironmentUtility.isAadUser()) {
-      this._createMongoDatabase(createDatabaseParameters, autopilotSettings, startKey);
-    } else if (this.container.isPreferredApiGraph() && EnvironmentUtility.isAadUser()) {
-      this._createGremlinDatabase(createDatabaseParameters, autopilotSettings, startKey);
-    } else if (this.container.isPreferredApiDocumentDB() && EnvironmentUtility.isAadUser()) {
-      this._createSqlDatabase(createDatabaseParameters, autopilotSettings, startKey);
+    if (this.isAutoPilotSelected()) {
+      createDatabaseParams.autoPilotMaxThroughput = this.maxAutoPilotThroughputSet();
     } else {
-      this._createDatabase(offerThroughput, startKey);
+      createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
     }
-  }
 
-  private _createSqlDatabase(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ) {
-    AddDbUtilities.createSqlDatabase(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings).then(
-      () => {
-        Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-          this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
-        });
+    createDatabase(createDatabaseParams).then(
+      (database: DataModels.Database) => {
+        this._onCreateDatabaseSuccess(offerThroughput, startKey);
+      },
+      (error: any) => {
+        this._onCreateDatabaseFailure(error, offerThroughput, startKey);
       }
     );
-  }
-
-  private _createMongoDatabase(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ) {
-    AddDbUtilities.createMongoDatabaseWithARM(
-      this.container.armEndpoint(),
-      createDatabaseParameters,
-      autoPilotSettings
-    ).then(() => {
-      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-        this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
-      });
-    });
-  }
-
-  private _createGremlinDatabase(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ) {
-    AddDbUtilities.createGremlinDatabase(
-      this.container.armEndpoint(),
-      createDatabaseParameters,
-      autoPilotSettings
-    ).then(() => {
-      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-        this._onCreateDatabaseSuccess(createDatabaseParameters.offerThroughput, startKey);
-      });
-    });
   }
 
   public resetData() {
     this.databaseId("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
-    this.selectedAutoPilotTier(undefined);
     this.isAutoPilotSelected(false);
     this.maxAutoPilotThroughputSet(AutoPilotUtils.minAutoPilotThroughput);
     this._updateThroughputLimitByDatabase();
@@ -389,77 +330,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const subscriptionType: ViewModels.SubscriptionType =
       this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA) {
+    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
     return true;
-  }
-
-  private _createDatabase(offerThroughput: number, telemetryStartKey: number): void {
-    const autoPilot: DataModels.AutoPilotCreationSettings = this._isAutoPilotSelectedAndWhatTier();
-    const createRequest: DataModels.CreateDatabaseRequest = {
-      databaseId: this.databaseId().trim(),
-      offerThroughput,
-      databaseLevelThroughput: this.databaseCreateNewShared(),
-      autoPilot,
-      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
-    };
-    createDatabase(createRequest).then(
-      (database: DataModels.Database) => {
-        this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
-      },
-      (reason: any) => {
-        this._onCreateDatabaseFailure(reason, offerThroughput, reason);
-      }
-    );
-  }
-
-  private _createKeyspace(
-    createDatabaseParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ): void {
-    if (EnvironmentUtility.isAadUser()) {
-      this._createKeyspaceUsingRP(this.container.armEndpoint(), createDatabaseParameters, autoPilotSettings, startKey);
-    } else {
-      this._createKeyspaceUsingProxy(createDatabaseParameters.offerThroughput, startKey);
-    }
-  }
-
-  private _createKeyspaceUsingProxy(offerThroughput: number, telemetryStartKey: number): void {
-    const provisionThroughputQueryPart: string = this.databaseCreateNewShared()
-      ? `AND cosmosdb_provisioned_throughput=${offerThroughput}`
-      : "";
-    const createKeyspaceQuery: string = `CREATE KEYSPACE ${this.databaseId().trim()} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 } ${provisionThroughputQueryPart};`;
-    (this.container.tableDataClient as CassandraAPIDataClient)
-      .createKeyspace(
-        this.container.databaseAccount().properties.cassandraEndpoint,
-        this.container.databaseAccount().id,
-        this.container,
-        createKeyspaceQuery
-      )
-      .then(
-        () => {
-          this._onCreateDatabaseSuccess(offerThroughput, telemetryStartKey);
-        },
-        (reason: any) => {
-          this._onCreateDatabaseFailure(reason, offerThroughput, telemetryStartKey);
-        }
-      );
-  }
-
-  private _createKeyspaceUsingRP(
-    armEndpoint: string,
-    createKeyspaceParameters: DataModels.RpParameters,
-    autoPilotSettings: DataModels.RpOptions,
-    startKey: number
-  ): void {
-    AddDbUtilities.createCassandraKeyspace(armEndpoint, createKeyspaceParameters, autoPilotSettings).then(() => {
-      Promise.all([refreshCachedOffers(), refreshCachedResources()]).then(() => {
-        this._onCreateDatabaseSuccess(createKeyspaceParameters.offerThroughput, startKey);
-      });
-    });
   }
 
   private _onCreateDatabaseSuccess(offerThroughput: number, startKey: number): void {
@@ -485,11 +360,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.resetData();
   }
 
-  private _onCreateDatabaseFailure(reason: any, offerThroughput: number, startKey: number): void {
+  private _onCreateDatabaseFailure(error: any, offerThroughput: number, startKey: number): void {
     this.isExecuting(false);
-    const message = ErrorParserUtility.parse(reason);
-    this.formErrors(message[0].message);
-    this.formErrorsDetails(message[0].message);
+    const errorMessage = getErrorMessage(error);
+    this.formErrors(errorMessage);
+    this.formErrorsDetails(errorMessage);
     const addDatabasePaneFailedMessage = {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
@@ -504,7 +379,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
         flight: this.container.flight()
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
-      error: reason
+      error: errorMessage,
+      errorStack: getErrorStack(error)
     };
     TelemetryProcessor.traceFailure(Action.CreateDatabase, addDatabasePaneFailedMessage, startKey);
   }
@@ -531,17 +407,12 @@ export default class AddDatabasePane extends ContextualPaneBase {
     if (this.isAutoPilotSelected()) {
       const autoPilot = this._isAutoPilotSelectedAndWhatTier();
       if (
-        (!this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot ||
-            !autoPilot.maxThroughput ||
-            !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput))) ||
-        (this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot || !autoPilot.autopilotTier || !AutoPilotUtils.isValidAutoPilotTier(autoPilot.autopilotTier)))
+        !autoPilot ||
+        !autoPilot.maxThroughput ||
+        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
       ) {
         this.formErrors(
-          !this.hasAutoPilotV2FeatureFlag()
-            ? `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-            : "Please select an Autopilot tier from the list."
+          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
         );
         return false;
       }
@@ -556,7 +427,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const autoscaleThroughput = this.maxAutoPilotThroughputSet() * 1;
 
     if (
-      !this.hasAutoPilotV2FeatureFlag() &&
       this.isAutoPilotSelected() &&
       autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
       !this.throughputSpendAck()
@@ -569,29 +439,10 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   private _isAutoPilotSelectedAndWhatTier(): DataModels.AutoPilotCreationSettings {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.maxAutoPilotThroughputSet() * 1
-          }
-        : { autopilotTier: this.selectedAutoPilotTier() };
-    }
-    return undefined;
-  }
-
-  private _getAutopilotSettings(): DataModels.RpOptions {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.maxAutoPilotThroughputSet() * 1 }
-          }
-        : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
+    if (this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) {
+      return {
+        maxThroughput: this.maxAutoPilotThroughputSet() * 1
+      };
     }
     return undefined;
   }

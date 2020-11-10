@@ -153,7 +153,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: ContentsProps): object
       },
       COPY_CELL: () => dispatch(actions.copyCell({ contentRef })),
       CREATE_CELL_ABOVE: () => dispatch(actions.createCellAbove({ cellType: "code", contentRef })),
-      CREATE_CELL_BELOW: () => dispatch(actions.createCellBelow({ cellType: "code", source: "", contentRef })),
+      CREATE_CELL_BELOW: () => dispatch(actions.createCellBelow({ cellType: "code", contentRef })),
       CUT_CELL: () => dispatch(actions.cutCell({ contentRef })),
       DELETE_CELL: () => dispatch(actions.deleteCell({ contentRef })),
       EXECUTE_ALL_CELLS: () => dispatch(actions.executeAllCells({ contentRef })),

@@ -47,7 +47,7 @@
     </script>
 
     <!-- Query Errors Tab - Start-->
-    <div class="active queryErrorsHeaderContainer" data-bind="visible: errors().length > 0">
+    <div class="active queryErrorsHeaderContainer" data-bind="visible: !!error()">
       <span class="queryErrors" data-toggle="tab" data-bind="attr: { href: '#queryerrors' + tabId }">Errors</span>
     </div>
     <!-- Query Errors Tab - End -->
@@ -56,16 +56,16 @@
     <div class="queryResultErrorContentContainer">
       <div
         class="queryEditorWatermark"
-        data-bind="visible: allResultsMetadata().length === 0 && errors().length === 0 && !queryResults() && !isExecuting()"
+        data-bind="visible: allResultsMetadata().length === 0 && !error() && !queryResults() && !isExecuting()"
       >
         <p><img src="/RunQuery.png" alt="Execute Query Watermark" /></p>
         <p class="queryEditorWatermarkText">Execute a query to see the results</p>
       </div>
       <div
         class="queryResultsErrorsContent"
-        data-bind="visible: allResultsMetadata().length > 0 || errors().length > 0 || queryResults()"
+        data-bind="visible: allResultsMetadata().length > 0 || !!error() || queryResults()"
       >
-        <div class="togglesWithMetadata" data-bind="visible: errors().length === 0">
+        <div class="togglesWithMetadata" data-bind="visible: !error()">
           <div
             class="toggles"
             aria-label="Successful execution"
@@ -103,25 +103,26 @@
         </div>
         <json-editor
           params="{ content: queryResults, isReadOnly: true, ariaLabel: 'Query results' }"
-          data-bind="visible: queryResults().length > 0 && isResultToggled() && allResultsMetadata().length > 0 && errors().length === 0"
+          data-bind="visible: queryResults().length > 0 && isResultToggled() && allResultsMetadata().length > 0 && !error()"
         >
         </json-editor>
         <div
           class="queryMetricsSummaryContainer"
-          data-bind="visible: isMetricsToggled() && allResultsMetadata().length > 0 && errors().length === 0"
+          data-bind="visible: isMetricsToggled() && allResultsMetadata().length > 0 && !error()"
         >
           <table class="queryMetricsSummary">
+            <caption>
+              Query Statistics
+            </caption>
             <thead class="queryMetricsSummaryHead">
               <tr class="queryMetricsSummaryHeader queryMetricsSummaryTuple">
-                <th title="METRIC">METRIC</th>
-                <th></th>
-                <th title="VALUE">VALUE</th>
+                <th title="METRIC" scope="col">METRIC</th>
+                <th title="VALUE" scope="col">VALUE</th>
               </tr>
             </thead>
             <tbody class="queryMetricsSummaryBody" data-bind="with: aggregatedQueryMetrics">
               <tr class="queryMetricsSummaryTuple">
                 <td title="Request Charge">Request Charge</td>
-                <td></td>
                 <td>
                   <span
                     data-bind="text: $parent.requestChargeDisplayText, attr: { title: $parent.requestChargeDisplayText }"
@@ -130,7 +131,6 @@
               </tr>
               <tr class="queryMetricsSummaryTuple">
                 <td title="Showing Results">Showing Results</td>
-                <td></td>
                 <td>
                   <span
                     data-bind="text: $parent.showingDocumentsDisplayText, attr: { title: $parent.showingDocumentsDisplayText }"
@@ -138,8 +138,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Retrieved document count">Retrieved document count</span></td>
                 <td>
+                  <span title="Retrieved document count">Retrieved document count</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total number of retrieved documents</span>
@@ -148,8 +148,8 @@
                 <td><span data-bind="text: retrievedDocumentCount, attr: { title: retrievedDocumentCount }"></span></td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Retrieved document size">Retrieved document size</span></td>
                 <td>
+                  <span title="Retrieved document size">Retrieved document size</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total size of retrieved documents in bytes</span>
@@ -161,8 +161,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Output document count">Output document count</span></td>
                 <td>
+                  <span title="Output document count">Output document count</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Number of output documents</span>
@@ -171,8 +171,8 @@
                 <td><span data-bind="text: outputDocumentCount, attr: { title: outputDocumentCount }"></span></td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Output document size">Output document size</span></td>
                 <td>
+                  <span title="Output document size">Output document size</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total size of output documents in bytes</span>
@@ -184,8 +184,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Index hit document count">Index hit document count</span></td>
                 <td>
+                  <span title="Index hit document count">Index hit document count</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total number of documents matched by the filter</span>
@@ -194,8 +194,8 @@
                 <td><span data-bind="text: indexHitDocumentCount, attr: { title: indexHitDocumentCount }"></span></td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Index lookup time">Index lookup time</span></td>
                 <td>
+                  <span title="Index lookup time">Index lookup time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Time spent in physical index layer</span>
@@ -206,8 +206,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Document load time">Document load time</span></td>
                 <td>
+                  <span title="Document load time">Document load time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Time spent in loading documents</span>
@@ -218,8 +218,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Query engine execution time">Query engine execution time</span></td>
                 <td>
+                  <span title="Query engine execution time">Query engine execution time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText queryEngineExeTimeInfo"
@@ -236,8 +236,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="System function execution time">System function execution time</span></td>
                 <td>
+                  <span title="System function execution time">System function execution time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total time spent executing system (built-in) functions</span>
@@ -251,8 +251,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="User defined function execution time">User defined function execution time</span></td>
                 <td>
+                  <span title="User defined function execution time">User defined function execution time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total time spent executing user-defined functions</span>
@@ -266,8 +266,8 @@
                 </td>
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.isQueryMetricsEnabled">
-                <td><span title="Document write time">Document write time</span></td>
                 <td>
+                  <span title="Document write time">Document write time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
                     <img class="infoImg" src="/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Time spent to write query result set to response buffer</span>
@@ -279,7 +279,6 @@
               </tr>
               <tr class="queryMetricsSummaryTuple" data-bind="visible: $parent.roundTrips() != null">
                 <td title="Round Trips">Round Trips</td>
-                <td></td>
                 <td><span data-bind="text: $parent.roundTrips, attr: { title: $parent.roundTrips }"></span></td>
               </tr>
               <!-- TODO: Report activity id for mongo queries -->
@@ -309,11 +308,10 @@
                             id: {
                                 href: 'queryerrors' + tabId
                             },
-                            visible: errors().length > 0"
+                            visible: !!error()"
         >
-          <!-- ko foreach: errors -->
           <div class="errorContent">
-            <span class="errorMessage" data-bind="text: $data.message"></span>
+            <span class="errorMessage" data-bind="text: error"></span>
             <span class="errorDetailsLink">
               <a
                 data-bind="click: $parent.onErrorDetailsClick, event: { keypress: $parent.onErrorDetailsKeyPress }"
@@ -324,7 +322,6 @@
               >
             </span>
           </div>
-          <!-- /ko -->
         </div>
         <!-- Query Errors Content - End-->
       </div>

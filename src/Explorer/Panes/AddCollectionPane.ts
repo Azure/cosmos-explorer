@@ -3,24 +3,18 @@ import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import editable from "../../Common/EditableUtility";
-import EnvironmentUtility from "../../Common/EnvironmentUtility";
-import Q from "q";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { createMongoCollectionWithARM, createMongoCollectionWithProxy } from "../../Common/MongoProxyClient";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
-import { HashMap } from "../../Common/HashMap";
-import { PlatformType } from "../../PlatformType";
-import { refreshCachedResources, getOrCreateDatabaseAndCollection } from "../../Common/DocumentClientUtilityBase";
-import { userContext } from "../../UserContext";
+import { createCollection } from "../../Common/dataAccess/createCollection";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -81,10 +75,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public debugstring: ko.Computed<string>;
   public displayCollectionThroughput: ko.Computed<boolean>;
   public isAutoPilotSelected: ko.Observable<boolean>;
-  public selectedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public selectedSharedAutoPilotTier: ko.Observable<DataModels.AutopilotTier>;
-  public autoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
-  public sharedAutoPilotTiersList: ko.ObservableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>;
   public isSharedAutoPilotSelected: ko.Observable<boolean>;
   public autoPilotThroughput: ko.Observable<number>;
   public sharedAutoPilotThroughput: ko.Observable<number>;
@@ -98,19 +88,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public isAnalyticalStorageOn: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
+  public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
-  private _databaseOffers: HashMap<DataModels.Offer>;
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
 
   constructor(options: AddCollectionPaneOptions) {
     super(options);
-    this._databaseOffers = new HashMap<DataModels.Offer>();
-    this.hasAutoPilotV2FeatureFlag = ko.pureComputed(() => this.container.hasAutoPilotV2FeatureFlag());
-    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText(this.hasAutoPilotV2FeatureFlag()));
+    this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.formWarnings = ko.observable<string>();
@@ -178,13 +165,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseHasSharedOffer = ko.observable<boolean>(true);
     this.throughputRangeText = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
     this.sharedThroughputRangeText = ko.pureComputed<string>(() => {
       if (this.isSharedAutoPilotSelected()) {
-        return AutoPilotUtils.getAutoPilotHeaderText(this.hasAutoPilotV2FeatureFlag());
+        return AutoPilotUtils.getAutoPilotHeaderText();
       }
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
@@ -329,9 +316,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.canRequestSupport = ko.pureComputed(() => {
       if (
-        !this.container.isEmulator &&
+        configContext.platform !== Platform.Emulator &&
         !this.container.isTryCosmosDBSubscription() &&
-        this.container.getPlatformType() !== PlatformType.Portal
+        configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this._getThroughput();
         return offerThroughput <= 100000;
@@ -341,7 +328,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.costsVisible = ko.pureComputed(() => {
-      return !this.container.isEmulator;
+      return configContext.platform !== Platform.Emulator;
     });
 
     this.maxCollectionsReached = ko.computed<boolean>(() => {
@@ -454,7 +441,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.throughputSpendAckVisible = ko.pureComputed<boolean>(() => {
       const autoscaleThroughput = this.autoPilotThroughput() * 1;
-      if (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected()) {
+      if (this.isAutoPilotSelected()) {
         return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
       }
       const selectedThroughput: number = this._getThroughput();
@@ -483,7 +470,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
       }
 
       if (!this.databaseCreateNew()) {
-        this.databaseHasSharedOffer(this._databaseOffers.has(selectedDatabaseId));
+        const selectedDatabase: ViewModels.Database = this.container
+          .databases()
+          .find((database: ViewModels.Database) => database.id() === selectedDatabaseId);
+        this.databaseHasSharedOffer(!!selectedDatabase?.offer());
       }
     });
 
@@ -494,14 +484,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.isAutoPilotSelected = ko.observable<boolean>(false);
     this.isSharedAutoPilotSelected = ko.observable<boolean>(false);
-    this.selectedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.selectedSharedAutoPilotTier = ko.observable<DataModels.AutopilotTier>();
-    this.autoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
-    this.sharedAutoPilotTiersList = ko.observableArray<ViewModels.DropdownOption<DataModels.AutopilotTier>>(
-      AutoPilotUtils.getAvailableAutoPilotTiersOptions()
-    );
     this.autoPilotThroughput = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
@@ -510,9 +492,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
       const isDatabaseThroughput: boolean = this.databaseCreateNewShared();
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput)
-        : PricingUtils.getAutoPilotV2SpendHtml(autoPilot.autopilotTier, isDatabaseThroughput);
+      return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput);
     });
 
     this.resetData();
@@ -611,7 +591,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiMongoDB() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (this.container.isPreferredApiMongoDB()) {
         return true;
       }
 
@@ -663,13 +643,15 @@ export default class AddCollectionPane extends ContextualPaneBase {
         changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex
       });
     });
+
+    this.shouldCreateMongoWildcardIndex = ko.observable(false);
   }
 
   public getSharedThroughputDefault(): boolean {
     const subscriptionType: ViewModels.SubscriptionType =
       this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA) {
+    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
@@ -684,7 +666,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     return true;
   };
 
-  public open(databaseId?: string) {
+  public async open(databaseId?: string) {
     super.open();
     // TODO: Figure out if a database level partition split is about to happen once shared throughput read is available
     this.formWarnings("");
@@ -718,24 +700,38 @@ export default class AddCollectionPane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane
     };
 
+    await this.container.loadDatabaseOffers();
     this._onDatabasesChange(this.container.databases());
     this._setFocus();
 
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }
 
+  private transferFocus(elementIdToKeepVisible: string, elementIdToFocus: string): void {
+    document.getElementById(elementIdToKeepVisible).style.visibility = "visible";
+    document.getElementById(elementIdToFocus).focus();
+  }
+
+  private onFocusOut(_: any, event: any): void {
+    event.target.parentElement.style.visibility = "";
+  }
+
+  private onMouseOut(_: any, event: any): void {
+    event.target.style.visibility = "";
+  }
+
+  private onKeyDown(previousActiveElementId: string, _: any, event: KeyboardEvent): boolean {
+    if (event.shiftKey && event.keyCode == Constants.KeyCodes.Tab) {
+      document.getElementById(previousActiveElementId).focus();
+      return false;
+    } else {
+      // Execute default action
+      return true;
+    }
+  }
+
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
-    const cachedDatabaseIdsList = _.map(newDatabaseIds, (database: ViewModels.Database) => {
-      if (database && database.offer && database.offer()) {
-        this._databaseOffers.set(database.id(), database.offer());
-      } else if (database && database.isDatabaseShared && database.isDatabaseShared()) {
-        database.readSettings();
-      }
-
-      return database.id();
-    });
-
-    this.databaseIds(cachedDatabaseIdsList);
+    this.databaseIds(newDatabaseIds?.map((database: ViewModels.Database) => database.id()));
   }
 
   private _computeOfferThroughput(): number {
@@ -811,12 +807,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     let databaseId: string = this.databaseCreateNew() ? this.databaseId().trim() : this.databaseId();
     let collectionId: string = this.collectionId().trim();
-    let rupm: boolean = this.rupm() === Constants.RUPMStates.on;
 
     let indexingPolicy: DataModels.IndexingPolicy;
+    let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
     if (this.container.isPreferredApiMongoDB()) {
-      indexingPolicy = SharedConstants.IndexingPolicies.Mongo;
+      createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {
         indexingPolicy = SharedConstants.IndexingPolicies.AllPropertiesIndexed;
@@ -828,130 +824,29 @@ export default class AddCollectionPane extends ContextualPaneBase {
     }
 
     this.formErrors("");
-
     this.isExecuting(true);
 
-    const createRequest: DataModels.CreateDatabaseAndCollectionRequest = {
+    const databaseLevelThroughput: boolean = this.databaseCreateNew()
+      ? this.databaseCreateNewShared()
+      : this.databaseHasSharedOffer() && !this.collectionWithThroughputInShared();
+    const autoPilotMaxThroughput: number = databaseLevelThroughput
+      ? this.isSharedAutoPilotSelected() && this.sharedAutoPilotThroughput()
+      : this.isAutoPilotSelected() && this.autoPilotThroughput();
+    const createCollectionParams: DataModels.CreateCollectionParams = {
+      createNewDatabase: this.databaseCreateNew(),
       collectionId,
       databaseId,
+      databaseLevelThroughput,
       offerThroughput,
-      databaseLevelThroughput: this.databaseHasSharedOffer() && !this.collectionWithThroughputInShared(),
-      rupmEnabled: rupm,
-      partitionKey,
-      indexingPolicy,
-      uniqueKeyPolicy,
-      autoPilot,
       analyticalStorageTtl: this._getAnalyticalStorageTtl(),
-      hasAutoPilotV2FeatureFlag: this.hasAutoPilotV2FeatureFlag()
+      autoPilotMaxThroughput,
+      indexingPolicy,
+      partitionKey,
+      uniqueKeyPolicy,
+      createMongoWildcardIndex
     };
 
-    const options: any = {};
-    if (this.container.isPreferredApiMongoDB()) {
-      options.initialHeaders = options.initialHeaders || {};
-      options.initialHeaders[Constants.HttpHeaders.supportSpatialLegacyCoordinates] = true;
-      options.initialHeaders[Constants.HttpHeaders.usePolygonsSmallerThanAHemisphere] = true;
-    }
-
-    const databaseCreateNew = this.databaseCreateNew();
-    const useDatabaseSharedOffer = this.shouldUseDatabaseThroughput();
-    const isSharded: boolean = !!partitionKeyPath;
-    const autopilotSettings: DataModels.RpOptions = this._getAutopilotSettings();
-
-    let createCollectionFunc: () => Q.Promise<DataModels.Collection | DataModels.CreateCollectionWithRpResponse>;
-
-    if (this.container.isPreferredApiMongoDB()) {
-      const isFixedCollectionWithSharedThroughputBeingCreated =
-        this.container.isFixedCollectionWithSharedThroughputSupported() &&
-        !this.isUnlimitedStorageSelected() &&
-        this.databaseHasSharedOffer();
-      const isAadUser = EnvironmentUtility.isAadUser();
-
-      // note: v3 autopilot not supported yet for Mongo fixed collections (only tier supported)
-      if (!isAadUser || isFixedCollectionWithSharedThroughputBeingCreated) {
-        createCollectionFunc = () =>
-          Q(
-            createMongoCollectionWithProxy(
-              databaseId,
-              collectionId,
-              offerThroughput,
-              partitionKeyPath,
-              databaseCreateNew,
-              useDatabaseSharedOffer,
-              isSharded,
-              autopilotSettings
-            )
-          );
-      } else {
-        createCollectionFunc = () =>
-          Q(
-            createMongoCollectionWithARM(
-              this.container.armEndpoint(),
-              databaseId,
-              this._getAnalyticalStorageTtl(),
-              collectionId,
-              offerThroughput,
-              partitionKeyPath,
-              databaseCreateNew,
-              useDatabaseSharedOffer,
-              isSharded,
-              autopilotSettings
-            )
-          );
-      }
-    } else if (this.container.isPreferredApiTable() && EnvironmentUtility.isAadUser()) {
-      createCollectionFunc = () =>
-        Q(
-          AddCollectionUtility.Utilities.createAzureTableWithARM(
-            this.container.armEndpoint(),
-            createRequest,
-            autopilotSettings
-          )
-        );
-    } else if (this.container.isPreferredApiGraph() && EnvironmentUtility.isAadUser()) {
-      createCollectionFunc = () =>
-        Q(
-          AddCollectionUtility.CreateCollectionUtilities.createGremlinGraph(
-            this.container.armEndpoint(),
-            databaseId,
-            collectionId,
-            indexingPolicy,
-            offerThroughput,
-            partitionKeyPath,
-            partitionKey.version,
-            databaseCreateNew,
-            useDatabaseSharedOffer,
-            userContext.subscriptionId,
-            userContext.resourceGroup,
-            userContext.databaseAccount.name,
-            autopilotSettings
-          )
-        );
-    } else if (this.container.isPreferredApiDocumentDB() && EnvironmentUtility.isAadUser()) {
-      createCollectionFunc = () =>
-        Q(
-          AddCollectionUtility.CreateSqlCollectionUtilities.createSqlCollection(
-            this.container.armEndpoint(),
-            databaseId,
-            this._getAnalyticalStorageTtl(),
-            collectionId,
-            indexingPolicy,
-            offerThroughput,
-            partitionKeyPath,
-            partitionKey.version,
-            databaseCreateNew,
-            useDatabaseSharedOffer,
-            userContext.subscriptionId,
-            userContext.resourceGroup,
-            userContext.databaseAccount.name,
-            uniqueKeyPolicy,
-            autopilotSettings
-          )
-        );
-    } else {
-      createCollectionFunc = () => getOrCreateDatabaseAndCollection(createRequest, options);
-    }
-
-    createCollectionFunc().then(
+    createCollection(createCollectionParams).then(
       () => {
         this.isExecuting(false);
         this.close();
@@ -984,14 +879,11 @@ export default class AddCollectionPane extends ContextualPaneBase {
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
         this.resetData();
-        return refreshCachedResources().then(() => {
-          this.container.refreshAllDatabases();
-        });
+        this.container.refreshAllDatabases();
       },
-      (reason: any) => {
+      (error: any) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        const errorMessage = ErrorParserUtility.replaceKnownError(message[0].message);
+        const errorMessage: string = getErrorMessage(error);
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);
         const addCollectionPaneFailedMessage = {
@@ -1019,7 +911,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
             flight: this.container.flight()
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
-          error: reason
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
@@ -1033,13 +926,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.throughputSpendAck(false);
     this.isAutoPilotSelected(false);
     this.isSharedAutoPilotSelected(false);
-    if (!this.hasAutoPilotV2FeatureFlag()) {
-      this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-      this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    } else {
-      this.selectedAutoPilotTier(undefined);
-      this.selectedSharedAutoPilotTier(undefined);
-    }
+    this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
+    this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
+
     this.uniqueKeys([]);
     this.useIndexingForSharedThroughput(true);
 
@@ -1049,7 +938,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     const defaultThroughput = this.container.collectionCreationDefaults.throughput;
     this.throughputSinglePartition(defaultThroughput.fixed);
     this.throughputMultiPartition(
-      AddCollectionUtility.Utilities.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
+      AddCollectionUtility.getMaxThroughput(this.container.collectionCreationDefaults, this.container)
     );
 
     this.throughputDatabase(defaultThroughput.shared);
@@ -1118,17 +1007,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
     if ((this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) || this.isAutoPilotSelected()) {
       const autoPilot = this._getAutoPilot();
       if (
-        (!this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot ||
-            !autoPilot.maxThroughput ||
-            !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput))) ||
-        (this.hasAutoPilotV2FeatureFlag() &&
-          (!autoPilot || !autoPilot.autopilotTier || !AutoPilotUtils.isValidAutoPilotTier(autoPilot.autopilotTier)))
+        !autoPilot ||
+        !autoPilot.maxThroughput ||
+        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
       ) {
         this.formErrors(
-          !this.hasAutoPilotV2FeatureFlag()
-            ? `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-            : "Please select an Autopilot tier from the list."
+          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
         );
         return false;
       }
@@ -1158,7 +1042,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     const autoscaleThroughput = this.autoPilotThroughput() * 1;
 
     if (
-      !this.hasAutoPilotV2FeatureFlag() &&
       this.isAutoPilotSelected() &&
       autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
       !this.throughputSpendAck()
@@ -1205,62 +1088,17 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   private _getAutoPilot(): DataModels.AutoPilotCreationSettings {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() &&
-        this.databaseCreateNewShared() &&
-        this.isSharedAutoPilotSelected() &&
-        this.sharedAutoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() &&
-        this.databaseCreateNewShared() &&
-        this.isSharedAutoPilotSelected() &&
-        this.selectedSharedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.sharedAutoPilotThroughput() * 1
-          }
-        : { autopilotTier: this.selectedSharedAutoPilotTier() };
+    if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected() && this.sharedAutoPilotThroughput()) {
+      return {
+        maxThroughput: this.sharedAutoPilotThroughput() * 1
+      };
     }
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.autoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            maxThroughput: this.autoPilotThroughput() * 1
-          }
-        : { autopilotTier: this.selectedAutoPilotTier() };
+    if (this.isAutoPilotSelected() && this.autoPilotThroughput()) {
+      return {
+        maxThroughput: this.autoPilotThroughput() * 1
+      };
     }
 
-    return undefined;
-  }
-  private _getAutopilotSettings(): DataModels.RpOptions {
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() &&
-        this.databaseCreateNewShared() &&
-        this.isSharedAutoPilotSelected() &&
-        this.sharedAutoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() &&
-        this.databaseCreateNewShared() &&
-        this.isSharedAutoPilotSelected() &&
-        this.selectedSharedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.sharedAutoPilotThroughput() * 1 }
-          }
-        : { [Constants.HttpHeaders.autoPilotTier]: this.selectedSharedAutoPilotTier().toString() };
-    }
-    if (
-      (!this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.autoPilotThroughput()) ||
-      (this.hasAutoPilotV2FeatureFlag() && this.isAutoPilotSelected() && this.selectedAutoPilotTier())
-    ) {
-      return !this.hasAutoPilotV2FeatureFlag()
-        ? {
-            [Constants.HttpHeaders.autoPilotThroughput]: { maxThroughput: this.autoPilotThroughput() * 1 }
-          }
-        : { [Constants.HttpHeaders.autoPilotTier]: this.selectedAutoPilotTier().toString() };
-    }
     return undefined;
   }
 
@@ -1302,17 +1140,19 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
   private _updateThroughputLimitByCollectionStorage() {
     const storage = this.storage();
-    const minThroughputRU = AddCollectionUtility.Utilities.getMinRUForStorageOption(
-      this.container.collectionCreationDefaults,
-      storage
-    );
+    const minThroughputRU =
+      storage === SharedConstants.CollectionCreation.storage10Gb
+        ? SharedConstants.CollectionCreation.DefaultCollectionRUs400
+        : this.container.collectionCreationDefaults.throughput.unlimitedmin;
 
-    let maxThroughputRU = AddCollectionUtility.Utilities.getMaxRUForStorageOption(
-      this.container.collectionCreationDefaults,
-      storage
-    );
+    let maxThroughputRU;
     if (this.isTryCosmosDBSubscription()) {
       maxThroughputRU = Constants.TryCosmosExperience.maxRU;
+    } else {
+      maxThroughputRU =
+        storage === SharedConstants.CollectionCreation.storage10Gb
+          ? SharedConstants.CollectionCreation.DefaultCollectionRUs10K
+          : this.container.collectionCreationDefaults.throughput.unlimitedmax;
     }
 
     this.minThroughputRU(minThroughputRU);

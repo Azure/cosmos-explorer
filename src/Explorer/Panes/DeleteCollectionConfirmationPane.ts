@@ -3,15 +3,15 @@ import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
@@ -66,7 +66,11 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         this.isExecuting(false);
         this.close();
         this.container.selectedNode(selectedCollection.database);
-        this.container.tabsManager?.closeTabsByComparator(tab => tab.node && tab.node.rid === selectedCollection.rid);
+        this.container.tabsManager?.closeTabsByComparator(
+          tab =>
+            tab.node?.id() === selectedCollection.id() &&
+            (tab.node as ViewModels.Collection).databaseId === selectedCollection.databaseId
+        );
         this.container.refreshAllDatabases();
         this.resetData();
         TelemetryProcessor.traceSuccess(
@@ -88,20 +92,18 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             this.containerDeleteFeedback()
           );
 
-          TelemetryProcessor.trace(
-            Action.DeleteCollection,
-            ActionModifiers.Mark,
-            JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
-          );
+          TelemetryProcessor.trace(Action.DeleteCollection, ActionModifiers.Mark, {
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+          });
 
           this.containerDeleteFeedback("");
         }
       },
-      (reason: any) => {
+      (error: any) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        this.formErrors(message[0].message);
-        this.formErrorsDetails(message[0].message);
+        const errorMessage = getErrorMessage(error);
+        this.formErrors(errorMessage);
+        this.formErrorsDetails(errorMessage);
         TelemetryProcessor.traceFailure(
           Action.DeleteCollection,
           {
@@ -109,7 +111,9 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );

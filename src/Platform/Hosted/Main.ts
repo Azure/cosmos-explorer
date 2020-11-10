@@ -1,7 +1,5 @@
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
 import AuthHeadersUtil from "./Authorization";
-import HostedExplorerFactory from "./ExplorerFactory";
 import Q from "q";
 import {
   AccessInputMetadata,
@@ -24,12 +22,13 @@ import { SubscriptionUtilMappings } from "../../Shared/Constants";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
 import Explorer from "../../Explorer/Explorer";
 import { updateUserContext } from "../../UserContext";
+import { configContext } from "../../ConfigContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class Main {
   private static _databaseAccountId: string;
   private static _encryptedToken: string;
   private static _accessInputMetadata: AccessInputMetadata;
-  private static _defaultSubscriptionType: ViewModels.SubscriptionType = ViewModels.SubscriptionType.Free;
   private static _features: { [key: string]: string };
   // For AAD, Need to post message to hosted frame to do the auth
   // Use local deferred variable as work around until we find better solution
@@ -211,7 +210,7 @@ export default class Main {
         Main._getAccessInputMetadata(Main._encryptedToken).then(
           () => {
             if (explorer.isConnectExplorerVisible()) {
-              HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(explorer);
+              explorer.notificationConsoleData([]);
               explorer.hideConnectExplorerForm();
             }
 
@@ -247,7 +246,7 @@ export default class Main {
         );
       },
       (error: any) => {
-        deferred.reject(`Failed to generate encrypted token: ${JSON.stringify(error)}`);
+        deferred.reject(`Failed to generate encrypted token: ${getErrorMessage(error)}`);
       }
     );
 
@@ -315,7 +314,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -335,7 +334,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -365,7 +364,7 @@ export default class Main {
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
-        extensionEndpoint: AuthHeadersUtil.extensionEndpoint,
+        extensionEndpoint: configContext.BACKEND_ENDPOINT,
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
@@ -378,8 +377,7 @@ export default class Main {
   }
 
   private static _instantiateExplorer(): Explorer {
-    const hostedExplorerFactory = new HostedExplorerFactory();
-    const explorer = hostedExplorerFactory.createExplorer();
+    const explorer = new Explorer();
     // workaround to resolve cyclic refs with view
     explorer.renewExplorerShareAccess = Main.renewExplorerAccess;
     window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
@@ -453,11 +451,6 @@ export default class Main {
     return connectionString && connectionString.includes("type=resource");
   }
 
-  private static _getSubscriptionTypeFromQuotaId(quotaId: string): ViewModels.SubscriptionType {
-    const subscriptionType: ViewModels.SubscriptionType = SubscriptionUtilMappings.SubscriptionTypeMap[quotaId];
-    return subscriptionType || Main._defaultSubscriptionType;
-  }
-
   private static _renewExplorerAccessWithResourceToken = (
     explorer: Explorer,
     connectionString: string
@@ -488,7 +481,7 @@ export default class Main {
     Main._accessInputMetadata = Main._getAccessInputMetadataFromAccountEndpoint(properties.accountEndpoint);
 
     if (explorer.isConnectExplorerVisible()) {
-      HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(explorer);
+      explorer.notificationConsoleData([]);
       explorer.hideConnectExplorerForm();
     }
 
@@ -575,7 +568,7 @@ export default class Main {
     this._explorer.hideConnectExplorerForm();
 
     const masterKey = Main._getMasterKey(keys);
-    HostedExplorerFactory.reInitializeDocumentClientUtilityForExplorer(this._explorer);
+    this._explorer.notificationConsoleData([]);
     Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
   }
 

@@ -15,7 +15,6 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import Database from "./Tree/Database";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readOffers, refreshCachedResources } from "../Common/DocumentClientUtilityBase";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -26,7 +25,7 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import TerminalTab from "./Tabs/TerminalTab";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { ActionContracts, MessageTypes } from "../Contracts/ExplorerContracts";
@@ -37,7 +36,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext } from "../ConfigContext";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -58,7 +57,6 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { PlatformType } from "../PlatformType";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { RenewAdHocAccessPane } from "./Panes/RenewAdHocAccessPane";
@@ -82,11 +80,13 @@ import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
-import { NotificationsClientBase } from "../Common/NotificationsClientBase";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import TabsBase from "./Tabs/TabsBase";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { updateUserContext, userContext } from "../UserContext";
+import { stringToBlob } from "../Utils/BlobUtils";
+import { IChoiceGroupProps } from "office-ui-fabric-react";
+import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -97,10 +97,6 @@ enum ShareAccessToggleState {
   Read
 }
 
-interface ExplorerOptions {
-  notificationsClient: NotificationsClientBase;
-  isEmulator: boolean;
-}
 interface AdHocAccessData {
   readWriteUrl: string;
   readUrl: string;
@@ -132,16 +128,14 @@ export default class Explorer {
   public isPreferredApiGraph: ko.Computed<boolean>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
-  public isEmulator: boolean;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
-  public extensionEndpoint: ko.Observable<string>;
   public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
-  public notificationsClient: NotificationsClientBase;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -211,13 +205,14 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
+  public isSettingsV2Enabled: ko.Observable<boolean>;
+  public isMongoIndexEditorEnabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
-  public hasAutoPilotV2FeatureFlag: ko.Computed<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
@@ -270,7 +265,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(options: ExplorerOptions) {
+  constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
@@ -376,12 +371,9 @@ export default class Explorer {
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
-    this.notificationsClient = options.notificationsClient;
-    this.isEmulator = options.isEmulator;
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
-    this.extensionEndpoint = ko.observable<string>(undefined);
     this.armEndpoint = ko.observable<string>(undefined);
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
@@ -421,6 +413,8 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
+    this.isSettingsV2Enabled = ko.observable(false);
+    this.isMongoIndexEditorEnabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -429,15 +423,8 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
 
-    this.hasAutoPilotV2FeatureFlag = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableAutoPilotV2)) {
-        return true;
-      }
-      return false;
-    });
 
     this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
-
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -524,22 +511,7 @@ export default class Explorer {
         return false;
       }
 
-      const capabilities = this.databaseAccount().properties && this.databaseAccount().properties.capabilities;
-
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object") {
-          if (capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-            // version 3.6
-            return true;
-          }
-        }
-      }
-
-      return false;
+      return this.isEnableMongoCapabilityPresent();
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -571,11 +543,24 @@ export default class Explorer {
       return false;
     });
 
+    this.isEnableMongoCapabilityPresent = ko.computed(() => {
+      const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
+      if (!capabilities) {
+        return false;
+      }
+
+      for (let i = 0; i < capabilities.length; i++) {
+        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        this.getPlatformType() === PlatformType.Portal &&
-        !this.isRunningOnNationalCloud() &&
-        !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
@@ -978,6 +963,10 @@ export default class Explorer {
         this.sparkClusterConnectionInfo.valueHasMutated();
       }
 
+      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
+        updateUserContext({ useSDKOperations: true });
+      }
+
       featureSubcription.dispose();
     });
 
@@ -1054,11 +1043,11 @@ export default class Explorer {
           );
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, startTime);
           this.databaseAccount(databaseAccount);
-        } catch (e) {
+        } catch (error) {
           NotificationConsoleUtils.clearInProgressMessageWithId(logId);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Enabling Azure Synapse Link for this account failed. ${e.message || JSON.stringify(e)}`
+            `Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`
           );
           TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, startTime);
         } finally {
@@ -1127,7 +1116,7 @@ export default class Explorer {
     );
     this.renewExplorerShareAccess(this, this.tokenForRenewal())
       .fail((error: any) => {
-        const stringifiedError: string = JSON.stringify(error);
+        const stringifiedError: string = getErrorMessage(error);
         this.renewTokenError("Invalid connection string specified");
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
@@ -1156,7 +1145,7 @@ export default class Explorer {
         NotificationConsoleUtils.clearInProgressMessageWithId(id);
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Failed to generate share url: ${JSON.stringify(error)}`
+          `Failed to generate share url: ${getErrorMessage(error)}`
         );
         console.error(error);
       }
@@ -1183,7 +1172,7 @@ export default class Explorer {
         (error: any) => {
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Failed to connect: ${JSON.stringify(error)}`
+            `Failed to connect: ${getErrorMessage(error)}`
           );
           deferred.reject(error);
         }
@@ -1422,94 +1411,60 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-
-    const refreshDatabases = (offers?: DataModels.Offer[]) => {
-      this._setLoadingStatusText("Fetching databases...");
-      readDatabases().then(
-        (databases: DataModels.Database[]) => {
-          this._setLoadingStatusText("Successfully fetched databases.");
-          TelemetryProcessor.traceSuccess(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree
+    this._setLoadingStatusText("Fetching databases...");
+    readDatabases().then(
+      (databases: DataModels.Database[]) => {
+        this._setLoadingStatusText("Successfully fetched databases.");
+        TelemetryProcessor.traceSuccess(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree
+          },
+          startKey
+        );
+        const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+        const deltaDatabases = this.getDeltaDatabases(databases);
+        this.addDatabasesToList(deltaDatabases.toAdd);
+        this.deleteDatabasesFromList(deltaDatabases.toDelete);
+        this.selectedNode(currentlySelectedNode);
+        this._setLoadingStatusText("Fetching containers...");
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+          .then(
+            () => {
+              this._setLoadingStatusText("Successfully fetched containers.");
+              deferred.resolve();
             },
-            startKey
-          );
-          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-          const deltaDatabases = this.getDeltaDatabases(databases, offers);
-          this.addDatabasesToList(deltaDatabases.toAdd);
-          this.deleteDatabasesFromList(deltaDatabases.toDelete);
-          this.selectedNode(currentlySelectedNode);
-          this._setLoadingStatusText("Fetching containers...");
-          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-            .then(
-              () => {
-                this._setLoadingStatusText("Successfully fetched containers.");
-                deferred.resolve();
-              },
-              reason => {
-                this._setLoadingStatusText("Failed to fetch containers.");
-                deferred.reject(reason);
-              }
-            )
-            .finally(() => this.isRefreshingExplorer(false));
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch databases.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    };
-
-    if (this.isServerlessEnabled()) {
-      // Serverless accounts don't support offers call
-      refreshDatabases();
-    } else {
-      const offerPromise: Q.Promise<DataModels.Offer[]> = readOffers();
-      this._setLoadingStatusText("Fetching offers...");
-      offerPromise.then(
-        (offers: DataModels.Offer[]) => {
-          this._setLoadingStatusText("Successfully fetched offers.");
-          refreshDatabases(offers);
-        },
-        error => {
-          this._setLoadingStatusText("Failed to fetch offers.");
-          this.isRefreshingExplorer(false);
-          deferred.reject(error);
-          TelemetryProcessor.traceFailure(
-            Action.LoadDatabases,
-            {
-              databaseAccountName: this.databaseAccount().name,
-              defaultExperience: this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: JSON.stringify(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while refreshing databases: ${JSON.stringify(error)}`
-          );
-        }
-      );
-    }
+            reason => {
+              this._setLoadingStatusText("Failed to fetch containers.");
+              deferred.reject(reason);
+            }
+          )
+          .finally(() => this.isRefreshingExplorer(false));
+      },
+      error => {
+        this._setLoadingStatusText("Failed to fetch databases.");
+        this.isRefreshingExplorer(false);
+        deferred.reject(error);
+        const errorMessage = getErrorMessage(error);
+        TelemetryProcessor.traceFailure(
+          Action.LoadDatabases,
+          {
+            databaseAccountName: this.databaseAccount().name,
+            defaultExperience: this.defaultExperience(),
+            dataExplorerArea: Constants.Areas.ResourceTree,
+            error: errorMessage,
+            errorStack: getErrorStack(error)
+          },
+          startKey
+        );
+        NotificationConsoleUtils.logConsoleMessage(
+          ConsoleDataType.Error,
+          `Error while refreshing databases: ${errorMessage}`
+        );
+      }
+    );
 
     return deferred.promise.then(
       () => {
@@ -1525,7 +1480,7 @@ export default class Explorer {
           );
         }
       },
-      reason => {
+      error => {
         if (resourceTreeStartKey != null) {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
@@ -1533,7 +1488,8 @@ export default class Explorer {
               databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
               defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
-              error: reason
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             resourceTreeStartKey
           );
@@ -1558,41 +1514,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
     this.isRefreshingExplorer(true);
-    refreshCachedResources().then(
-      () => {
-        TelemetryProcessor.traceSuccess(
-          Action.LoadDatabases,
-          {
-            description: "Refresh successful",
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree
-          },
-          startKey
-        );
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
-      },
-      (error: any) => {
-        this.isRefreshingExplorer(false);
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing data: ${JSON.stringify(error)}`
-        );
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            description: "Unable to refresh cached resources",
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: error
-          },
-          startKey
-        );
-        throw error;
-      }
-    );
-
+    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -1616,7 +1538,7 @@ export default class Explorer {
           resolve(token);
         },
         (error: any) => {
-          Logger.logError(error, "Explorer/getArcadiaToken");
+          Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
           resolve(undefined);
         }
       );
@@ -1634,7 +1556,7 @@ export default class Explorer {
             workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
           },
           error => {
-            Logger.logError(error, "Explorer/this._arcadiaManager.listSparkPoolsAsync");
+            Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
           }
         );
         sparkPromises.push(promise);
@@ -1642,8 +1564,7 @@ export default class Explorer {
 
       return Promise.all(sparkPromises).then(() => workspaceItems);
     } catch (error) {
-      Logger.logError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, JSON.stringify(error));
+      handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
       return Promise.resolve([]);
     }
   }
@@ -1678,10 +1599,10 @@ export default class Explorer {
       );
     } catch (error) {
       this._isInitializingNotebooks = false;
-      Logger.logError(error, "initNotebooks/getNotebookConnectionInfoAsync");
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to get notebook workspace connection info: ${JSON.stringify(error)}`
+      handleError(
+        error,
+        "initNotebooks/getNotebookConnectionInfoAsync",
+        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`
       );
       throw error;
     } finally {
@@ -1704,9 +1625,10 @@ export default class Explorer {
 
   public resetNotebookWorkspace() {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookClient) {
-      const error = "Attempt to reset notebook workspace, but notebook is not enabled";
-      Logger.logError(error, "Explorer/resetNotebookWorkspace");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(
+        "Attempt to reset notebook workspace, but notebook is not enabled",
+        "Explorer/resetNotebookWorkspace"
+      );
       return;
     }
     const resetConfirmationDialogProps: DialogProps = {
@@ -1731,7 +1653,7 @@ export default class Explorer {
       const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
       return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
     } catch (error) {
-      Logger.logError(error, "Explorer/_containsDefaultNotebookWorkspace");
+      Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
     }
   }
@@ -1757,8 +1679,7 @@ export default class Explorer {
         await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
       }
     } catch (error) {
-      Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
-      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${JSON.stringify(error)}`);
+      handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
     } finally {
       clearMessage && clearMessage();
     }
@@ -1773,7 +1694,10 @@ export default class Explorer {
       TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
     } catch (error) {
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, error);
+      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error)
+      });
       throw error;
     } finally {
       NotificationConsoleUtils.clearInProgressMessageWithId(id);
@@ -1833,7 +1757,7 @@ export default class Explorer {
     const message: any = event.data.data;
     const inputs: ViewModels.DataExplorerInputsFrame = message.inputs;
 
-    const isRunningInPortal = window.dataExplorerPlatform == PlatformType.Portal;
+    const isRunningInPortal = configContext.platform === Platform.Portal;
     const isRunningInDevMode = process.env.NODE_ENV === "development";
     if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
       inputs.extensionEndpoint = configContext.PROXY_PATH;
@@ -1897,8 +1821,11 @@ export default class Explorer {
   }
 
   public findSelectedDatabase(): ViewModels.Database {
+    if (!this.selectedNode()) {
+      return null;
+    }
     if (this.selectedNode().nodeKind === "Database") {
-      return _.find(this.databases(), (database: ViewModels.Database) => database.rid === this.selectedNode().rid);
+      return _.find(this.databases(), (database: ViewModels.Database) => database.id() === this.selectedNode().id());
     }
     return this.findSelectedCollection().database;
   }
@@ -1940,9 +1867,7 @@ export default class Explorer {
       }
       this.features(inputs.features);
       this.serverId(inputs.serverId);
-      this.extensionEndpoint(inputs.extensionEndpoint || "");
       this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
-      this.notificationsClient.setExtensionEndpoint(this.extensionEndpoint());
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
       this.quotaId(inputs.quotaId);
@@ -1950,6 +1875,7 @@ export default class Explorer {
       this.flight(inputs.addCollectionDefaultFlight);
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
+      this.setFeatureFlagsFromFlights(inputs.flights);
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
@@ -1957,12 +1883,18 @@ export default class Explorer {
 
       this._importExplorerConfigComplete = true;
 
+      updateConfigContext({
+        BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
+        ARM_ENDPOINT: this.armEndpoint()
+      });
+
       updateUserContext({
         authorizationToken,
         masterKey,
-        databaseAccount
+        databaseAccount,
+        resourceGroup: inputs.resourceGroup,
+        subscriptionId: inputs.subscriptionId
       });
-      updateUserContext({ resourceGroup: inputs.resourceGroup, subscriptionId: inputs.subscriptionId });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
@@ -1978,12 +1910,24 @@ export default class Explorer {
     return Q();
   }
 
-  public findSelectedCollection(): ViewModels.Collection {
-    if (this.selectedNode().nodeKind === "Collection") {
-      return this.findSelectedCollectionForSelectedNode();
-    } else {
-      return this.findSelectedCollectionForSubNode();
+  public setFeatureFlagsFromFlights(flights: readonly string[]): void {
+    if (!flights) {
+      return;
     }
+
+    if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
+      this.isSettingsV2Enabled(true);
+    }
+
+    if (flights.indexOf(Constants.Flights.MongoIndexEditor) !== -1) {
+      this.isMongoIndexEditorEnabled(true);
+    }
+  }
+
+  public findSelectedCollection(): ViewModels.Collection {
+    return (this.selectedNode().nodeKind === "Collection"
+      ? this.selectedNode()
+      : this.selectedNode().collection) as ViewModels.Collection;
   }
 
   // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
@@ -2031,10 +1975,6 @@ export default class Explorer {
 
   public closeAllPanes(): void {
     this._panes.forEach((pane: ContextualPaneBase) => pane.close());
-  }
-
-  public getPlatformType(): PlatformType {
-    return window.dataExplorerPlatform;
   }
 
   public isRunningOnNationalCloud(): boolean {
@@ -2098,16 +2038,13 @@ export default class Explorer {
       defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree
     });
-    databasesToLoad.forEach((database: ViewModels.Database) => {
-      loadCollectionPromises.push(
-        database.loadCollections().finally(() => {
-          const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.rid === database.rid);
-          if (isNewDatabase) {
-            database.expandDatabase();
-          }
-          this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().rid === database.rid);
-        })
-      );
+    databasesToLoad.forEach(async (database: ViewModels.Database) => {
+      await database.loadCollections();
+      const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
+      if (isNewDatabase) {
+        database.expandDatabase();
+      }
+      this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().id() === database.id());
     });
 
     Q.all(loadCollectionPromises).done(
@@ -2127,7 +2064,8 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            trace: JSON.stringify(error)
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -2219,21 +2157,11 @@ export default class Explorer {
     }
   }
 
-  private findSelectedCollectionForSelectedNode(): ViewModels.Collection {
-    return this.findCollection(this.selectedNode().rid);
-  }
-
-  public findCollection(rid: string): ViewModels.Collection {
-    for (let i = 0; i < this.databases().length; i++) {
-      const database = this.databases()[i];
-      for (let j = 0; j < database.collections().length; j++) {
-        const collection = database.collections()[j];
-        if (collection.rid === rid) {
-          return collection;
-        }
-      }
-    }
-    return null;
+  public findCollection(databaseId: string, collectionId: string): ViewModels.Collection {
+    const database: ViewModels.Database = this.databases().find(
+      (database: ViewModels.Database) => database.id() === databaseId
+    );
+    return database?.collections().find((collection: ViewModels.Collection) => collection.id() === collectionId);
   }
 
   public isLastCollection(): boolean {
@@ -2252,26 +2180,24 @@ export default class Explorer {
   }
 
   private getDeltaDatabases(
-    updatedDatabaseList: DataModels.Database[],
-    updatedOffersList: DataModels.Offer[]
+    updatedDatabaseList: DataModels.Database[]
   ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         this.databases(),
-        (existingDatabase: ViewModels.Database) => existingDatabase.rid === database._rid
+        (existingDatabase: ViewModels.Database) => existingDatabase.id() === database.id
       );
       return !databaseExists;
     });
-    const databasesToAdd: ViewModels.Database[] = _.map(newDatabases, (newDatabase: DataModels.Database) => {
-      const databaseOffer: DataModels.Offer = this.getOfferForResource(updatedOffersList, newDatabase._self);
-      return new Database(this, newDatabase, databaseOffer);
-    });
+    const databasesToAdd: ViewModels.Database[] = newDatabases.map(
+      (newDatabase: DataModels.Database) => new Database(this, newDatabase)
+    );
 
     let databasesToDelete: ViewModels.Database[] = [];
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
       const databasePresentInUpdatedList = _.some(
         updatedDatabaseList,
-        (db: DataModels.Database) => db._rid === database.rid
+        (db: DataModels.Database) => db.id === database.id()
       );
       if (!databasePresentInUpdatedList) {
         databasesToDelete.push(database);
@@ -2293,7 +2219,7 @@ export default class Explorer {
     const databasesToKeep: ViewModels.Database[] = [];
 
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
-      const shouldRemoveDatabase = _.some(databasesToRemove, (db: ViewModels.Database) => db.rid === database.rid);
+      const shouldRemoveDatabase = _.some(databasesToRemove, (db: ViewModels.Database) => db.id === database.id);
       if (!shouldRemoveDatabase) {
         databasesToKeep.push(database);
       }
@@ -2302,28 +2228,10 @@ export default class Explorer {
     this.databases(databasesToKeep);
   }
 
-  private findSelectedCollectionForSubNode(): ViewModels.Collection {
-    for (let i = 0; i < this.databases().length; i++) {
-      const database = this.databases()[i];
-      for (let j = 0; j < database.collections().length; j++) {
-        const collection = database.collections()[j];
-        if (this.selectedNode().collection && collection.rid === this.selectedNode().collection.rid) {
-          return collection;
-        }
-      }
-    }
-    return null;
-  }
-
-  private getOfferForResource(offers: DataModels.Offer[], resourceId: string): DataModels.Offer {
-    return _.find(offers, (offer: DataModels.Offer) => offer.resource === resourceId);
-  }
-
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/uploadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/uploadFile");
       throw new Error(error);
     }
 
@@ -2415,37 +2323,11 @@ export default class Explorer {
     okLabel: string,
     onOk: () => void,
     cancelLabel: string,
-    onCancel: () => void
-  ): void {
-    this._dialogProps({
-      isModal: true,
-      visible: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        this._closeModalDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        this._closeModalDialog();
-        onCancel && onCancel();
-      }
-    });
-  }
-
-  public showOkCancelTextFieldModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
     onCancel: () => void,
-    textFieldProps: TextFieldProps,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    let textFieldValue: string = null;
     this._dialogProps({
       isModal: true,
       visible: true,
@@ -2461,8 +2343,9 @@ export default class Explorer {
         this._closeModalDialog();
         onCancel && onCancel();
       },
-      primaryButtonDisabled: isPrimaryButtonDisabled,
-      textFieldProps
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled: isPrimaryButtonDisabled
     });
   }
 
@@ -2503,7 +2386,6 @@ export default class Explorer {
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
         collection: null,
-        selfLink: null,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
         isActive: ko.observable(false),
@@ -2530,8 +2412,7 @@ export default class Explorer {
   public renameNotebook(notebookFile: NotebookContentItem): Q.Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/renameNotebook");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/renameNotebook");
       throw new Error(error);
     }
 
@@ -2579,8 +2460,7 @@ export default class Explorer {
   public onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
-      Logger.logError(error, "Explorer/onCreateDirectory");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/onCreateDirectory");
       throw new Error(error);
     }
 
@@ -2601,8 +2481,7 @@ export default class Explorer {
   public readFile(notebookFile: NotebookContentItem): Promise<string> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to read file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/downloadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/downloadFile");
       throw new Error(error);
     }
 
@@ -2612,14 +2491,15 @@ export default class Explorer {
   public downloadFile(notebookFile: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to download file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/downloadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/downloadFile");
       throw new Error(error);
     }
 
+    const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Downloading ${notebookFile.path}`);
+
     return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
       (content: string) => {
-        const blob = new Blob([content], { type: "octet/stream" });
+        const blob = stringToBlob(content, "text/plain");
         if (navigator.msSaveBlob) {
           // for IE and Edge
           navigator.msSaveBlob(blob, notebookFile.name);
@@ -2636,12 +2516,16 @@ export default class Explorer {
           downloadLink.click();
           downloadLink.remove();
         }
+
+        clearMessage();
       },
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Could not download notebook ${JSON.stringify(error)}`
+          `Could not download notebook ${getErrorMessage(error)}`
         );
+
+        clearMessage();
       }
     );
   }
@@ -2659,7 +2543,7 @@ export default class Explorer {
 
     const databaseAccount = this.databaseAccount();
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
-    const disallowedLocationsUri = `${this.extensionEndpoint()}/api/disallowedLocations`;
+    const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
       const response = await fetch(disallowedLocationsUri, {
@@ -2688,7 +2572,7 @@ export default class Explorer {
       );
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
-      Logger.logError(error, "Explorer/isNotebooksEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
       this.isNotebooksEnabledForAccount(false);
     }
   }
@@ -2717,7 +2601,7 @@ export default class Explorer {
         false;
       this.isSparkEnabledForAccount(isEnabled);
     } catch (error) {
-      Logger.logError(error, "Explorer/isSparkEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
       this.isSparkEnabledForAccount(false);
     }
   };
@@ -2742,7 +2626,7 @@ export default class Explorer {
         (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
       return isEnabled;
     } catch (error) {
-      Logger.logError(error, "Explorer/isSparkEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
       return false;
     }
   };
@@ -2761,8 +2645,7 @@ export default class Explorer {
   public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/deleteNotebookFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/deleteNotebookFile");
       throw new Error(error);
     }
 
@@ -2811,8 +2694,7 @@ export default class Explorer {
   public onNewNotebookClicked(parent?: NotebookContentItem): void {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/onNewNotebookClicked");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
 
@@ -2845,16 +2727,17 @@ export default class Explorer {
         return this.openNotebook(newFile);
       })
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason: any) => {
-        const error = `Failed to create a new notebook: ${reason}`;
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      .catch((error: any) => {
+        const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
-            error
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -2897,8 +2780,7 @@ export default class Explorer {
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
-      Logger.logError(error, "Explorer/refreshContentItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/refreshContentItem");
       return Promise.reject(new Error(error));
     }
 
@@ -2949,7 +2831,6 @@ export default class Explorer {
         title: title,
         tabPath: title,
         collection: null,
-        selfLink: null,
         hashLocation: hashLocation,
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
@@ -2993,7 +2874,6 @@ export default class Explorer {
         title: title,
         tabPath: title,
         documentClientUtility: null,
-        selfLink: null,
         isActive: ko.observable(false),
         hashLocation: hashLocation,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -3036,7 +2916,6 @@ export default class Explorer {
         tabPath: title,
         documentClientUtility: null,
         collection: null,
-        selfLink: null,
         hashLocation: hashLocation,
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
@@ -3087,7 +2966,7 @@ export default class Explorer {
       }
       return tokenRefreshInterval;
     } catch (error) {
-      Logger.logError(error, "Explorer/getTokenRefreshInterval");
+      Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
     }
   }
@@ -3116,12 +2995,6 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
-
-    TelemetryProcessor.trace(
-      Action.LoadingStatus,
-      ActionModifiers.Mark,
-      title !== "Welcome to Azure Cosmos DB" ? `Title: ${title}, Text: ${text}` : text
-    );
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {
@@ -3154,5 +3027,18 @@ export default class Explorer {
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
       }
     }
+  }
+
+  public async loadSelectedDatabaseOffer(): Promise<void> {
+    const database = this.findSelectedDatabase();
+    await database?.loadOffer();
+  }
+
+  public async loadDatabaseOffers(): Promise<void> {
+    await Promise.all(
+      this.databases()?.map(async (database: ViewModels.Database) => {
+        await database.loadOffer();
+      })
+    );
   }
 }

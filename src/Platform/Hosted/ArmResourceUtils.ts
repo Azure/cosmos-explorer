@@ -3,6 +3,7 @@ import * as Constants from "../../Common/Constants";
 import * as Logger from "../../Common/Logger";
 import { Tenant, Subscription, DatabaseAccount, AccountKeys } from "../../Contracts/DataModels";
 import { configContext } from "../../ConfigContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 // TODO: 421864 - add a fetch wrapper
 export abstract class ArmResourceUtils {
@@ -30,7 +31,7 @@ export abstract class ArmResourceUtils {
       }
       return tenants;
     } catch (error) {
-      Logger.logError(error, "ArmResourceUtils/listTenants");
+      Logger.logError(getErrorMessage(error), "ArmResourceUtils/listTenants");
       throw error;
     }
   }
@@ -58,7 +59,7 @@ export abstract class ArmResourceUtils {
       }
       return subscriptions;
     } catch (error) {
-      Logger.logError(error, "ArmResourceUtils/listSubscriptions");
+      Logger.logError(getErrorMessage(error), "ArmResourceUtils/listSubscriptions");
       throw error;
     }
   }
@@ -92,7 +93,7 @@ export abstract class ArmResourceUtils {
       }
       return accounts;
     } catch (error) {
-      Logger.logError(error, "ArmResourceUtils/listAccounts");
+      Logger.logError(getErrorMessage(error), "ArmResourceUtils/listAccounts");
       throw error;
     }
   }
@@ -140,7 +141,7 @@ export abstract class ArmResourceUtils {
       }
       return result;
     } catch (error) {
-      Logger.logError(error, "ArmResourceUtils/getAccountKeys");
+      Logger.logError(getErrorMessage(error), "ArmResourceUtils/getAccountKeys");
       throw error;
     }
   }
@@ -150,7 +151,7 @@ export abstract class ArmResourceUtils {
       const token = await AuthHeadersUtil.getAccessToken(ArmResourceUtils._armAuthArea, tenantId);
       return token;
     } catch (error) {
-      Logger.logError(error, "ArmResourceUtils/getAuthToken");
+      Logger.logError(getErrorMessage(error), "ArmResourceUtils/getAuthToken");
       throw error;
     }
   }

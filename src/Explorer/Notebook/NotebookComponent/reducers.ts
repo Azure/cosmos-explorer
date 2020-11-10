@@ -1,7 +1,5 @@
 import { actions, CoreRecord, reducers as nteractReducers } from "@nteract/core";
 import { Action } from "redux";
-import { Areas } from "../../../Common/Constants";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as cdbActions from "./actions";
 import { CdbRecord } from "./types";
 
@@ -70,17 +68,6 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
     case cdbActions.SET_HOVERED_CELL: {
       const typedAction = action as cdbActions.SetHoveredCellAction;
       return state.set("hoveredCellId", typedAction.payload.cellId);
-    }
-
-    case cdbActions.TRACE_NOTEBOOK_TELEMETRY: {
-      const typedAction = action as cdbActions.TraceNotebookTelemetryAction;
-      TelemetryProcessor.trace(typedAction.payload.action, typedAction.payload.actionModifier, {
-        ...typedAction.payload.data,
-        databaseAccountName: state.databaseAccountName,
-        defaultExperience: state.defaultExperience,
-        dataExplorerArea: Areas.Notebook
-      });
-      return state;
     }
 
     case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELTS: {

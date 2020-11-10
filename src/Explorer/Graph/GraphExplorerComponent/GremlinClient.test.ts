@@ -94,7 +94,7 @@ describe("Gremlin Client", () => {
 
   it("should log and display error out on unknown requestId", () => {
     const gremlinClient = new GremlinClient();
-    const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleMessage");
+    const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleError");
     const logErrorSpy = sinon.spy(Logger, "logError");
 
     gremlinClient.initialize(emptyParams);
@@ -122,7 +122,7 @@ describe("Gremlin Client", () => {
   });
 
   it("should not aggregate RU if not a number and reset totalRequestCharge to undefined", done => {
-    const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleMessage");
+    const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleError");
     const logErrorSpy = sinon.spy(Logger, "logError");
 
     const gremlinClient = new GremlinClient();
@@ -165,7 +165,7 @@ describe("Gremlin Client", () => {
   });
 
   it("should not aggregate RU if undefined and reset totalRequestCharge to undefined", done => {
-    const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleMessage");
+    const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleError");
     const logErrorSpy = sinon.spy(Logger, "logError");
 
     const gremlinClient = new GremlinClient();

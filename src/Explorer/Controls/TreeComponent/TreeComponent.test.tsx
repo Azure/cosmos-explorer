@@ -159,4 +159,20 @@ describe("TreeNodeComponent", () => {
     const wrapper = shallow(<TreeNodeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
+
+  it("renders loading icon", () => {
+    const node: TreeNode = {
+      label: "label",
+      children: [],
+      isExpanded: true
+    };
+
+    const props = {
+      node,
+      generation: 2,
+      paddingLeft: 9
+    };
+    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
+  });
 });

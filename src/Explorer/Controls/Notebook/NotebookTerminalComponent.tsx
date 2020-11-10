@@ -4,10 +4,10 @@
 
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import * as Logger from "../../../Common/Logger";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { StringUtils } from "../../../Utils/StringUtils";
+import { userContext } from "../../../UserContext";
+import { TerminalQueryParams } from "../../../Common/Constants";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
@@ -32,11 +32,11 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
 
   public getTerminalParams(): Map<string, string> {
     let params: Map<string, string> = new Map<string, string>();
-    params.set("terminal", "true");
+    params.set(TerminalQueryParams.Terminal, "true");
 
     const terminalEndpoint: string = this.tryGetTerminalEndpoint();
     if (terminalEndpoint) {
-      params.set("terminalEndpoint", terminalEndpoint);
+      params.set(TerminalQueryParams.TerminalEndpoint, terminalEndpoint);
     }
 
     return params;
@@ -69,16 +69,19 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     params: Map<string, string>
   ): string {
     if (!serverInfo.notebookServerEndpoint) {
-      const error = "Notebook server endpoint not defined. Terminal will fail to connect to jupyter server.";
-      Logger.logError(error, "NotebookTerminalComponent/createNotebookAppSrc");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(
+        "Notebook server endpoint not defined. Terminal will fail to connect to jupyter server.",
+        "NotebookTerminalComponent/createNotebookAppSrc"
+      );
       return "";
     }
 
-    params.set("server", serverInfo.notebookServerEndpoint);
+    params.set(TerminalQueryParams.Server, serverInfo.notebookServerEndpoint);
     if (serverInfo.authToken && serverInfo.authToken.length > 0) {
-      params.set("token", serverInfo.authToken);
+      params.set(TerminalQueryParams.Token, serverInfo.authToken);
     }
+
+    params.set(TerminalQueryParams.SubscriptionId, userContext.subscriptionId);
 
     let result: string = "terminal.html?";
     for (let key of params.keys()) {

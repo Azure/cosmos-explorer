@@ -15,7 +15,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -27,15 +26,9 @@ describe("Documents tab", () => {
   });
 
   describe("showPartitionKey", () => {
-    const explorer = new Explorer({
-      notificationsClient: null,
-      isEmulator: false
-    });
+    const explorer = new Explorer();
 
-    const mongoExplorer = new Explorer({
-      notificationsClient: null,
-      isEmulator: false
-    });
+    const mongoExplorer = new Explorer();
     mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
@@ -95,7 +88,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -113,7 +105,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -131,7 +122,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -149,7 +139,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
@@ -167,7 +156,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        selfLink: "",
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 

@@ -21,6 +21,7 @@ import {
 import { DialogComponentAdapter } from "./Explorer/Controls/DialogReactComponent/DialogComponentAdapter";
 import { DialogProps } from "./Explorer/Controls/DialogReactComponent/DialogComponent";
 import { DirectoryListProps } from "./Explorer/Controls/Directory/DirectoryListComponent";
+import { getErrorMessage } from "./Common/ErrorHandlingUtils";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { LocalStorageUtility, StorageKey, SessionStorageUtility } from "./Shared/StorageUtility";
 import * as Logger from "./Common/Logger";
@@ -29,7 +30,7 @@ import { MeControlComponentAdapter } from "./Explorer/Menus/NavBar/MeControlComp
 import { MessageTypes } from "./Contracts/ExplorerContracts";
 import * as ReactBindingHandler from "./Bindings/ReactBindingHandler";
 import { SwitchDirectoryPane, SwitchDirectoryPaneComponent } from "./Explorer/Panes/SwitchDirectoryPane";
-import TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
 import { isInvalidParentFrameOrigin } from "./Utils/MessageValidation";
 import "../less/hostedexplorer.less";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
@@ -509,12 +510,13 @@ class HostedExplorer {
         }
       });
     } catch (error) {
-      Logger.logError(error, "HostedExplorer/_getArcadiaToken");
+      const errorMessage = getErrorMessage(error);
+      Logger.logError(errorMessage, "HostedExplorer/_getArcadiaToken");
       this._sendMessageToExplorerFrame({
         actionType: ActionType.TransmitCachedData,
         message: {
           id: message && message.id,
-          error: JSON.stringify(error)
+          error: errorMessage
         }
       });
     }
@@ -559,12 +561,9 @@ class HostedExplorer {
         });
       },
       error => {
-        if (typeof error !== "string") {
-          error = JSON.stringify(error, Object.getOwnPropertyNames(error));
-        }
         this._sendMessageToExplorerFrame({
           type: MessageTypes.GetAccessAadResponse,
-          error
+          error: getErrorMessage(error)
         });
       }
     );
@@ -612,7 +611,7 @@ class HostedExplorer {
       return loadAccountResult;
     } catch (error) {
       LocalStorageUtility.removeEntry(StorageKey.DatabaseAccountId);
-      Logger.logError(error, "HostedExplorer/_getAccessCached");
+      Logger.logError(getErrorMessage(error), "HostedExplorer/_getAccessCached");
       throw error;
     }
   }
@@ -638,7 +637,7 @@ class HostedExplorer {
       const accountResponse = this._getAccessAfterTenantSelection(defaultTenant.tenantId);
       return accountResponse;
     } catch (error) {
-      Logger.logError(error, "HostedExplorer/_getAccessNew");
+      Logger.logError(getErrorMessage(error), "HostedExplorer/_getAccessNew");
       throw error;
     }
   }
@@ -659,7 +658,7 @@ class HostedExplorer {
       const keys = await this._getAccountKeysHelper(defaultAccount, true);
       return [defaultAccount, keys, authToken];
     } catch (error) {
-      Logger.logError(error, "HostedExplorer/_getAccessAfterTenantSelection");
+      Logger.logError(getErrorMessage(error), "HostedExplorer/_getAccessAfterTenantSelection");
       throw error;
     }
   }
@@ -1008,7 +1007,7 @@ class HostedExplorer {
 
       return accounts;
     } catch (error) {
-      this._logConsoleMessage(ConsoleDataType.Error, `Failed to fetch accounts: ${JSON.stringify(error)}`);
+      this._logConsoleMessage(ConsoleDataType.Error, `Failed to fetch accounts: ${getErrorMessage(error)}`);
       this._clearInProgressMessageWithId(id);
 
       throw error;
@@ -1047,7 +1046,7 @@ class HostedExplorer {
         displayText: "Error loading account"
       });
       this._updateLoadingStatusText(`Failed to load selected account: ${newAccount.name}`);
-      this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${JSON.stringify(error)}`);
+      this._logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${getErrorMessage(error)}`);
       this._clearInProgressMessageWithId(id);
       throw error;
     }
@@ -1132,7 +1131,7 @@ class HostedExplorer {
         });
       },
       error => {
-        Logger.logError(error, "HostedExplorer/_onNewDirectorySelected");
+        Logger.logError(getErrorMessage(error), "HostedExplorer/_onNewDirectorySelected");
       }
     );
     TelemetryProcessor.trace(Action.TenantSwitch);

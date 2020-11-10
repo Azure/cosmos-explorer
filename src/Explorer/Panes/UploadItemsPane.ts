@@ -4,8 +4,8 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
 
@@ -61,9 +61,9 @@ export class UploadItemsPane extends ContextualPaneBase {
             this._resetFileInput();
           },
           (error: any) => {
-            const message = ErrorParserUtility.parse(error);
-            this.formErrors(message[0].message);
-            this.formErrorsDetails(message[0].message);
+            const errorMessage = getErrorMessage(error);
+            this.formErrors(errorMessage);
+            this.formErrorsDetails(errorMessage);
           }
         )
         .finally(() => {

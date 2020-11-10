@@ -5,8 +5,8 @@ import Q from "q";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
 import DataTableViewModel from "./DataTableViewModel";
-import DataTableContextMenu from "./DataTableContextMenu";
 import * as DataTableUtilities from "./DataTableUtilities";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
 import * as Constants from "../Constants";
@@ -15,10 +15,10 @@ import * as Utilities from "../Utilities";
 import * as Entities from "../Entities";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as TableEntityProcessor from "../TableEntityProcessor";
-import TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as ErrorParserUtility from "../../../Common/ErrorParserUtility";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 
 interface IListTableEntitiesSegmentedResult extends Entities.IListTableEntitiesResult {
   ExceedMaximumRetries?: boolean;
@@ -56,11 +56,11 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.cache = new TableEntityCache();
     this.queryErrorMessage = ko.observable<string>();
     this.queryTablesTab = queryTablesTab;
-    // Enable Context menu for the data table.
-    DataTableContextMenu.contextMenuFactory(this, tableCommands);
     this.id = `tableEntityListViewModel${this.queryTablesTab.tabId}`;
     this.cqlQuery = ko.observable<string>(
-      `SELECT * FROM ${this.queryTablesTab.collection.databaseId}.${this.queryTablesTab.collection.id()}`
+      `SELECT * FROM ${getQuotedCqlIdentifier(this.queryTablesTab.collection.databaseId)}.${getQuotedCqlIdentifier(
+        this.queryTablesTab.collection.id()
+      )}`
     );
     this.oDataQuery = ko.observable<string>();
     this.sqlQuery = ko.observable<string>("SELECT * FROM c");
@@ -387,17 +387,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
       })
       .catch((error: any) => {
-        const parsedErrors = ErrorParserUtility.parse(error);
-        var errors = parsedErrors.map((error: DataModels.ErrorDataModel) => {
-          return <ViewModels.QueryError>{
-            message: error.message,
-            start: error.location ? error.location.start : undefined,
-            end: error.location ? error.location.end : undefined,
-            code: error.code,
-            severity: error.severity
-          };
-        });
-        this.queryErrorMessage(errors[0].message);
+        const errorMessage = getErrorMessage(error);
+        this.queryErrorMessage(errorMessage);
         if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
           TelemetryProcessor.traceFailure(
             Action.Tab,
@@ -408,7 +399,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
               dataExplorerArea: Areas.Tab,
               tabTitle: this.queryTablesTab.tabTitle(),
-              error: error
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             this.queryTablesTab.onLoadStartKey
           );

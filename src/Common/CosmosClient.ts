@@ -1,6 +1,7 @@
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
 import { configContext, Platform } from "../ConfigContext";
+import { getErrorMessage } from "./ErrorHandlingUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { userContext } from "../UserContext";
@@ -52,7 +53,7 @@ export const endpoint = () => {
 
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
   try {
-    const host = configContext.BACKEND_ENDPOINT || _global.dataExplorer.extensionEndpoint();
+    const host = configContext.BACKEND_ENDPOINT;
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
       method: "POST",
       headers: {
@@ -69,7 +70,7 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
     const result = JSON.parse(await response.json());
     return result;
   } catch (error) {
-    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${JSON.stringify(error)}`);
+    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${getErrorMessage(error)}`);
     return Promise.reject(error);
   }
 }
@@ -85,8 +86,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal"
   };
 
-  // In development we proxy requests to the backend via webpack. This is removed in production bundles.
-  if (process.env.NODE_ENV === "development") {
+  if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
   return new Cosmos.CosmosClient(options);

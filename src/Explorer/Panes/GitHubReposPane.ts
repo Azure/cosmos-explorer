@@ -1,20 +1,18 @@
 import _ from "underscore";
 import { Areas, HttpStatusCodes } from "../../Common/Constants";
-import * as Logger from "../../Common/Logger";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../GitHub/GitHubClient";
 import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { JunoUtils } from "../../Utils/JunoUtils";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { AuthorizeAccessComponent } from "../Controls/GitHub/AuthorizeAccessComponent";
 import { GitHubReposComponent, GitHubReposComponentProps, RepoListItem } from "../Controls/GitHub/GitHubReposComponent";
 import { GitHubReposComponentAdapter } from "../Controls/GitHub/GitHubReposComponentAdapter";
 import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../Controls/GitHub/ReposListComponent";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
+import { handleError } from "../../Common/ErrorHandlingUtils";
 
 interface GitHubReposPaneOptions extends ViewModels.PaneOptions {
   gitHubClient: GitHubClient;
@@ -105,9 +103,7 @@ export class GitHubReposPane extends ContextualPaneBase {
           throw new Error(`Received HTTP ${response.status} when saving pinned repos`);
         }
       } catch (error) {
-        const message = `Failed to save pinned repos: ${error}`;
-        Logger.logError(message, "GitHubReposPane/submit");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GitHubReposPane/submit", "Failed to save pinned repos");
       }
     }
   }
@@ -206,9 +202,7 @@ export class GitHubReposPane extends ContextualPaneBase {
         branchesProps.lastPageInfo = response.pageInfo;
       }
     } catch (error) {
-      const message = `Failed to fetch branches: ${error}`;
-      Logger.logError(message, "GitHubReposPane/loadMoreBranches");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GitHubReposPane/loadMoreBranches", "Failed to fetch branches");
     }
 
     branchesProps.isLoading = false;
@@ -236,9 +230,7 @@ export class GitHubReposPane extends ContextualPaneBase {
         this.unpinnedReposProps.repos = this.calculateUnpinnedRepos();
       }
     } catch (error) {
-      const message = `Failed to fetch unpinned repos: ${error}`;
-      Logger.logError(message, "GitHubReposPane/loadMoreUnpinnedRepos");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GitHubReposPane/loadMoreUnpinnedRepos", "Failed to fetch unpinned repos");
     }
 
     this.unpinnedReposProps.isLoading = false;
@@ -255,9 +247,7 @@ export class GitHubReposPane extends ContextualPaneBase {
 
       return response.data;
     } catch (error) {
-      const message = `Failed to fetch repo: ${error}`;
-      Logger.logError(message, "GitHubReposPane/getRepo");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GitHubReposPane/getRepo", "Failed to fetch repo");
       return Promise.resolve(undefined);
     }
   }
@@ -320,9 +310,7 @@ export class GitHubReposPane extends ContextualPaneBase {
         this.triggerRender();
       }
     } catch (error) {
-      const message = `Failed to fetch pinned repos: ${error}`;
-      Logger.logError(message, "GitHubReposPane/refreshPinnedReposListItems");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GitHubReposPane/refreshPinnedReposListItems", "Failed to fetch pinned repos");
     }
   }
 

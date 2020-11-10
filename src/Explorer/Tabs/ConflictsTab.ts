@@ -6,14 +6,13 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import { KeyCodes } from "../../Common/Constants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import ConflictId from "../Tree/ConflictId";
 import editable from "../../Common/EditableUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import TabsBase from "./TabsBase";
 import { DocumentsGridMetrics } from "../../Common/Constants";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
-import TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -28,6 +27,7 @@ import {
   updateDocument
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ConflictId>;
@@ -58,7 +58,6 @@ export default class ConflictsTab extends TabsBase {
   private _documentsIterator: MinimalQueryIterator;
   private _container: Explorer;
   private _acceptButtonLabel: ko.Observable<string> = ko.observable("Save");
-  protected _selfLink: string;
 
   constructor(options: ViewModels.ConflictsTabOptions) {
     super(options);
@@ -74,7 +73,6 @@ export default class ConflictsTab extends TabsBase {
     this.selectedConflictCurrent = editable.observable<any>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
     this.conflictIds = options.conflictIds;
-    this._selfLink = options.selfLink || (this.collection && this.collection.self);
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
     this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
@@ -243,9 +241,8 @@ export default class ConflictsTab extends TabsBase {
           return this.loadNextPage();
         }
       )
-      .catch(reason => {
-        const message = ErrorParserUtility.parse(reason)[0].message;
-        window.alert(message);
+      .catch(error => {
+        window.alert(getErrorMessage(error));
       });
   }
 
@@ -338,10 +335,10 @@ export default class ConflictsTab extends TabsBase {
             );
           });
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.ResolveConflict,
             {
@@ -351,7 +348,9 @@ export default class ConflictsTab extends TabsBase {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -398,10 +397,10 @@ export default class ConflictsTab extends TabsBase {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.DeleteConflict,
             {
@@ -411,7 +410,9 @@ export default class ConflictsTab extends TabsBase {
               tabTitle: this.tabTitle(),
               conflictResourceType: selectedConflict.resourceType,
               conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
+              conflictResourceId: selectedConflict.resourceId,
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -472,7 +473,8 @@ export default class ConflictsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );
@@ -547,7 +549,8 @@ export default class ConflictsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );

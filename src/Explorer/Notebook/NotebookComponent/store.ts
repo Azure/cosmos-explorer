@@ -1,36 +1,23 @@
 import { AppState, epics as coreEpics, reducers, IContentProvider } from "@nteract/core";
-import {
-  applyMiddleware,
-  combineReducers,
-  compose,
-  createStore,
-  Store,
-  AnyAction,
-  Middleware,
-  Dispatch,
-  MiddlewareAPI
-} from "redux";
-import { combineEpics, createEpicMiddleware, Epic, ActionsObservable } from "redux-observable";
+import { compose, Store, AnyAction, Middleware, Dispatch, MiddlewareAPI } from "redux";
+import { Epic } from "redux-observable";
 import { allEpics } from "./epics";
 import { coreReducer, cdbReducer } from "./reducers";
 import { catchError } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { configuration } from "@nteract/mythic-configuration";
+import { makeConfigureStore } from "@nteract/myths";
+import { CdbAppState } from "./types";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default function configureStore(
-  initialState: Partial<AppState>,
+  initialState: Partial<CdbAppState>,
   contentProvider: IContentProvider,
   onTraceFailure: (title: string, message: string) => void,
-  customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[]
-): Store<AppState, AnyAction> {
-  const rootReducer = combineReducers({
-    app: reducers.app,
-    comms: reducers.comms,
-    config: reducers.config,
-    core: coreReducer,
-    cdb: cdbReducer
-  });
-
+  customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[],
+  autoStartKernelOnNotebookOpen?: boolean
+): Store<CdbAppState, AnyAction> {
   /**
    * Catches errors in reducers
    */
@@ -46,7 +33,7 @@ export default function configureStore(
   };
 
   const protect = (epic: Epic) => {
-    return (action$: ActionsObservable<any>, state$: any, dependencies: any) =>
+    return (action$: Observable<any>, state$: any, dependencies: any) =>
       epic(action$, state$, dependencies).pipe(
         catchError((error, caught) => {
           traceFailure("Epic failure", error);
@@ -60,15 +47,37 @@ export default function configureStore(
       onTraceFailure(title, `${error.message} ${JSON.stringify(error.stack)}`);
       console.error(error);
     } else {
-      onTraceFailure(title, JSON.stringify(error));
+      onTraceFailure(title, error.message);
     }
   };
 
-  const combineAndProtectEpics = (epics: Epic[]): Epic => {
-    const protectedEpics = epics.map(epic => protect(epic));
-    return combineEpics<Epic>(...protectedEpics);
+  const protectEpics = (epics: Epic[]): Epic[] => {
+    return epics.map(epic => protect(epic));
   };
 
+  const filteredCoreEpics = getCoreEpics(autoStartKernelOnNotebookOpen);
+
+  const mythConfigureStore = makeConfigureStore<CdbAppState>()({
+    packages: [configuration],
+    reducers: {
+      app: reducers.app,
+      core: coreReducer as any,
+      cdb: cdbReducer
+    },
+    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
+    epicDependencies: { contentProvider },
+    epicMiddleware: customMiddlewares.concat(catchErrorMiddleware),
+    enhancer: composeEnhancers
+  });
+
+  const store = mythConfigureStore(initialState as any);
+
+  // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
+  // return store as Store<AppState, AnyAction>;
+  return store as any;
+}
+
+export const getCoreEpics = (autoStartKernelOnNotebookOpen: boolean): Epic[] => {
   // This list needs to be consistent and in sync with core.allEpics until we figure
   // out how to safely filter out the ones we are overriding here.
   const filteredCoreEpics = [
@@ -93,20 +102,10 @@ export default function configureStore(
     coreEpics.publishToBookstoreAfterSave,
     coreEpics.sendInputReplyEpic
   ];
-  const rootEpic = combineAndProtectEpics([...filteredCoreEpics, ...allEpics]);
-  const epicMiddleware = createEpicMiddleware({ dependencies: { contentProvider } });
-  let middlewares: Middleware[] = [epicMiddleware];
-  // TODO: tamitta: errorMiddleware was removed, do we need a substitute?
 
-  if (customMiddlewares) {
-    middlewares = middlewares.concat(customMiddlewares);
+  if (autoStartKernelOnNotebookOpen) {
+    filteredCoreEpics.push(coreEpics.launchKernelWhenNotebookSetEpic);
   }
-  middlewares.push(catchErrorMiddleware);
 
-  const store = createStore(rootReducer, initialState, composeEnhancers(applyMiddleware(...middlewares)));
-
-  epicMiddleware.run(rootEpic);
-
-  // TODO Fix typing issue here: createStore() output type doesn't quite match AppState
-  return store as Store<AppState, AnyAction>;
-}
+  return filteredCoreEpics;
+};

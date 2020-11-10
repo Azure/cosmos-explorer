@@ -11,6 +11,7 @@ interface UserContext {
   authorizationToken?: string;
   resourceToken?: string;
   defaultExperience?: DefaultAccountExperienceType;
+  useSDKOperations?: boolean;
 }
 
 const userContext: Readonly<UserContext> = {} as const;

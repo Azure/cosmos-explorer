@@ -1,10 +1,12 @@
 import ko from "knockout";
-import { HttpStatusCodes } from "../Common/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
-import { IPinnedRepo, JunoClient, IGalleryItem } from "./JunoClient";
+import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
+import { IPinnedRepo, JunoClient, IPublishNotebookRequest } from "./JunoClient";
 import { configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DatabaseAccount } from "../Contracts/DataModels";
+import { updateUserContext, userContext } from "../UserContext";
+
+const sampleSubscriptionId = "subscriptionId";
 
 const sampleDatabaseAccount: DatabaseAccount = {
   id: "id",
@@ -31,24 +33,6 @@ const samplePinnedRepos: IPinnedRepo[] = [
         name: "name"
       }
     ]
-  }
-];
-
-const sampleGalleryItems: IGalleryItem[] = [
-  {
-    id: "id",
-    name: "name",
-    description: "description",
-    gitSha: "gitSha",
-    tags: ["tag1"],
-    author: "author",
-    thumbnailUrl: "thumbnailUrl",
-    created: "created",
-    isSample: false,
-    downloads: 0,
-    favorites: 0,
-    views: 0,
-    newCellId: undefined
   }
 ];
 
@@ -150,9 +134,18 @@ describe("GitHub", () => {
 
 describe("Gallery", () => {
   const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const originalSubscriptionId = userContext.subscriptionId;
+
+  beforeAll(() => {
+    updateUserContext({ subscriptionId: sampleSubscriptionId });
+  });
 
   afterEach(() => {
     jest.resetAllMocks();
+  });
+
+  afterAll(() => {
+    updateUserContext({ subscriptionId: originalSubscriptionId });
   });
 
   it("getSampleNotebooks", async () => {
@@ -237,7 +230,7 @@ describe("Gallery", () => {
         method: "PATCH",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          "content-type": "application/json"
+          [HttpHeaders.contentType]: "application/json"
         }
       }
     );
@@ -260,7 +253,7 @@ describe("Gallery", () => {
         method: "PATCH",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          "content-type": "application/json"
+          [HttpHeaders.contentType]: "application/json"
         }
       }
     );
@@ -281,7 +274,7 @@ describe("Gallery", () => {
       method: "PATCH",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -299,7 +292,7 @@ describe("Gallery", () => {
     expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/favorites`, {
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -314,12 +307,15 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/published`, {
-      headers: {
-        [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+    expect(window.fetch).toBeCalledWith(
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/gallery/published`,
+      {
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [HttpHeaders.contentType]: "application/json"
+        }
       }
-    });
+    );
   });
 
   it("deleteNotebook", async () => {
@@ -337,7 +333,7 @@ describe("Gallery", () => {
       method: "DELETE",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        "content-type": "application/json"
+        [HttpHeaders.contentType]: "application/json"
       }
     });
   });
@@ -349,22 +345,31 @@ describe("Gallery", () => {
     const author = "author";
     const thumbnailUrl = "thumbnailUrl";
     const content = `{ "key": "value" }`;
+    const addLinkToNotebookViewer = false;
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
       json: () => undefined as any
     });
 
-    const response = await junoClient.publishNotebook(name, description, tags, author, thumbnailUrl, content, false);
+    const response = await junoClient.publishNotebook(
+      name,
+      description,
+      tags,
+      author,
+      thumbnailUrl,
+      content,
+      addLinkToNotebookViewer
+    );
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/${sampleDatabaseAccount.name}/gallery`,
       {
         method: "PUT",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          "content-type": "application/json"
+          [HttpHeaders.contentType]: "application/json"
         },
         body: JSON.stringify({
           name,
@@ -372,8 +377,9 @@ describe("Gallery", () => {
           tags,
           author,
           thumbnailUrl,
-          content: JSON.parse(content)
-        })
+          content: JSON.parse(content),
+          addLinkToNotebookViewer
+        } as IPublishNotebookRequest)
       }
     );
   });

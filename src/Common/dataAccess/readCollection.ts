@@ -1,8 +1,7 @@
 import * as DataModels from "../../Contracts/DataModels";
 import { client } from "../CosmosClient";
-import { logConsoleProgress, logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export async function readCollection(databaseId: string, collectionId: string): Promise<DataModels.Collection> {
   let collection: DataModels.Collection;
@@ -14,9 +13,7 @@ export async function readCollection(databaseId: string, collectionId: string): 
       .read();
     collection = response.resource as DataModels.Collection;
   } catch (error) {
-    logConsoleError(`Error while querying container ${collectionId}:\n ${JSON.stringify(error)}`);
-    logError(JSON.stringify(error), "ReadCollection", error.code);
-    sendNotificationForError(error);
+    handleError(error, "ReadCollection", `Error while querying container ${collectionId}`);
     throw error;
   }
   clearMessage();
