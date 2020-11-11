@@ -1,4 +1,5 @@
 import { DatabaseAccount } from "./Contracts/DataModels";
+import { SubscriptionType } from "./Contracts/ViewModels";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 
 interface UserContext {
@@ -12,6 +13,7 @@ interface UserContext {
   resourceToken?: string;
   defaultExperience?: DefaultAccountExperienceType;
   useSDKOperations?: boolean;
+  subscriptionType?: SubscriptionType;
 }
 
 const userContext: Readonly<UserContext> = {} as const;

@@ -1890,7 +1890,8 @@ export default class Explorer {
         masterKey,
         databaseAccount,
         resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId
+        subscriptionId: inputs.subscriptionId,
+        subscriptionType: inputs.subscriptionType
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
