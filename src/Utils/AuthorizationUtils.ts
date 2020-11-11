@@ -5,6 +5,7 @@ import { AuthType } from "../AuthType";
 import * as Logger from "../Common/Logger";
 import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
   if (window.authType === AuthType.EncryptedToken) {
@@ -28,7 +29,7 @@ export async function getArcadiaAuthToken(
     const token = await AuthHeadersUtil.getAccessToken(arcadiaEndpoint, tenantId);
     return token;
   } catch (error) {
-    Logger.logError(error, "AuthorizationUtils/getArcadiaAuthToken");
+    Logger.logError(getErrorMessage(error), "AuthorizationUtils/getArcadiaAuthToken");
     throw error;
   }
 }

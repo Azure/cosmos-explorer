@@ -1,7 +1,6 @@
 import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import * as Logger from "../../Common/Logger";
 import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
@@ -13,6 +12,7 @@ import { HttpStatusCodes } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItemType, NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
+import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";
@@ -90,9 +90,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     if (this.gitHubOAuthService.isLoggedIn()) {
       const response = await this.junoClient.getPinnedRepos(this.gitHubOAuthService.getTokenObservable()()?.scope);
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
-        const message = `Received HTTP ${response.status} when fetching pinned repos`;
-        Logger.logError(message, "CopyNotebookPaneAdapter/submit");
-        NotificationConsoleUtils.logConsoleError(message);
+        handleError(`Received HTTP ${response.status} when fetching pinned repos`, "CopyNotebookPaneAdapter/submit");
       }
 
       if (response.data?.length > 0) {
@@ -134,12 +132,10 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
 
       NotificationConsoleUtils.logConsoleInfo(`Successfully copied ${this.name} to ${destination}`);
     } catch (error) {
+      const errorMessage = getErrorMessage(error);
       this.formError = `Failed to copy ${this.name} to ${destination}`;
-      this.formErrorDetail = `${error}`;
-
-      const message = `${this.formError}: ${this.formErrorDetail}`;
-      Logger.logError(message, "CopyNotebookPaneAdapter/submit");
-      NotificationConsoleUtils.logConsoleError(message);
+      this.formErrorDetail = `${errorMessage}`;
+      handleError(errorMessage, "CopyNotebookPaneAdapter/submit", this.formError);
       return;
     } finally {
       clearMessage && clearMessage();

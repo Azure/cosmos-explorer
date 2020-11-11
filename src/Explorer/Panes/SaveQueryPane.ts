@@ -8,7 +8,7 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import QueryTab from "../Tabs/QueryTab";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class SaveQueryPane extends ContextualPaneBase {
   public queryName: ko.Observable<string>;
@@ -98,7 +98,8 @@ export class SaveQueryPane extends ContextualPaneBase {
             defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
-            error: errorMessage
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -140,7 +141,8 @@ export class SaveQueryPane extends ContextualPaneBase {
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ContextualPane,
           paneTitle: this.title(),
-          error: errorMessage
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
         startKey
       );

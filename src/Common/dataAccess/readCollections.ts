@@ -29,7 +29,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       .fetchAll();
     return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
-    handleError(error, `Error while querying containers for database ${databaseId}`, "ReadCollections");
+    handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
     throw error;
   } finally {
     clearMessage();

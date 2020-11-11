@@ -4,12 +4,10 @@
 
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import * as Logger from "../../../Common/Logger";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { StringUtils } from "../../../Utils/StringUtils";
 import { userContext } from "../../../UserContext";
 import { TerminalQueryParams } from "../../../Common/Constants";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
@@ -71,9 +69,10 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     params: Map<string, string>
   ): string {
     if (!serverInfo.notebookServerEndpoint) {
-      const error = "Notebook server endpoint not defined. Terminal will fail to connect to jupyter server.";
-      Logger.logError(error, "NotebookTerminalComponent/createNotebookAppSrc");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(
+        "Notebook server endpoint not defined. Terminal will fail to connect to jupyter server.",
+        "NotebookTerminalComponent/createNotebookAppSrc"
+      );
       return "";
     }
 

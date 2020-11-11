@@ -61,7 +61,7 @@ export async function updateTrigger(
       .replace(trigger);
     return response?.resource;
   } catch (error) {
-    handleError(error, `Error while updating trigger ${trigger.id}`, "UpdateTrigger");
+    handleError(error, "UpdateTrigger", `Error while updating trigger ${trigger.id}`);
     throw error;
   } finally {
     clearMessage();

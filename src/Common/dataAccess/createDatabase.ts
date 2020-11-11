@@ -41,7 +41,7 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
     logConsoleInfo(`Successfully created database ${params.databaseId}`);
     return database;
   } catch (error) {
-    handleError(error, `Error while creating database ${params.databaseId}`, "CreateDatabase");
+    handleError(error, "CreateDatabase", `Error while creating database ${params.databaseId}`);
     throw error;
   } finally {
     clearMessage();

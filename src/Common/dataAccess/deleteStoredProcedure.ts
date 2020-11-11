@@ -34,7 +34,7 @@ export async function deleteStoredProcedure(
         .delete();
     }
   } catch (error) {
-    handleError(error, `Error while deleting stored procedure ${storedProcedureId}`, "DeleteStoredProcedure");
+    handleError(error, "DeleteStoredProcedure", `Error while deleting stored procedure ${storedProcedureId}`);
     throw error;
   } finally {
     clearMessage();

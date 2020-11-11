@@ -6,6 +6,7 @@ import * as Constants from "../../Common/Constants";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../Common/Logger";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export class NotebookContainerClient {
   private reconnectingNotificationId: string;
@@ -74,7 +75,7 @@ export class NotebookContainerClient {
       }
       return undefined;
     } catch (error) {
-      Logger.logError(error, "NotebookContainerClient/getMemoryUsage");
+      Logger.logError(getErrorMessage(error), "NotebookContainerClient/getMemoryUsage");
       if (!this.reconnectingNotificationId) {
         this.reconnectingNotificationId = NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.InProgress,
@@ -110,7 +111,7 @@ export class NotebookContainerClient {
         headers: { Authorization: authToken }
       });
     } catch (error) {
-      Logger.logError(error, "NotebookContainerClient/resetWorkspace");
+      Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
       await this.recreateNotebookWorkspaceAsync();
     }
   }
@@ -140,7 +141,7 @@ export class NotebookContainerClient {
       await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
       await notebookWorkspaceManager.createNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
     } catch (error) {
-      Logger.logError(error, "NotebookContainerClient/recreateNotebookWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);
     }
   }

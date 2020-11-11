@@ -1,7 +1,6 @@
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as NotificationConsoleUtils from "./NotificationConsoleUtils";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import * as Logger from "../Common/Logger";
 import {
   GalleryTab,
   SortBy,
@@ -10,6 +9,7 @@ import {
 import Explorer from "../Explorer/Explorer";
 import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
+import { handleError } from "../Common/ErrorHandlingUtils";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -122,9 +122,11 @@ export function reportAbuse(
         );
         onComplete(response.data);
       } catch (error) {
-        const message = `Failed to submit report on ${data.name} violating code of conduct: ${error}`;
-        Logger.logError(message, "GalleryUtils/reportAbuse");
-        NotificationConsoleUtils.logConsoleInfo(message);
+        handleError(
+          error,
+          "GalleryUtils/reportAbuse",
+          `Failed to submit report on ${data.name} violating code of conduct`
+        );
       }
 
       clearSubmitReportNotification();
@@ -185,9 +187,7 @@ export function downloadItem(
           onComplete(increaseDownloadResponse.data);
         }
       } catch (error) {
-        const message = `Failed to download ${data.name}: ${error}`;
-        Logger.logError(message, "GalleryUtils/downloadItem");
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+        handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
       }
 
       NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
@@ -212,9 +212,7 @@ export async function favoriteItem(
 
       onComplete(response.data);
     } catch (error) {
-      const message = `Failed to favorite ${data.name}: ${error}`;
-      Logger.logError(message, "GalleryUtils/favoriteItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GalleryUtils/favoriteItem", `Failed to favorite ${data.name}`);
     }
   }
 }
@@ -234,9 +232,7 @@ export async function unfavoriteItem(
 
       onComplete(response.data);
     } catch (error) {
-      const message = `Failed to unfavorite ${data.name}: ${error}`;
-      Logger.logError(message, "GalleryUtils/unfavoriteItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+      handleError(error, "GalleryUtils/unfavoriteItem", `Failed to unfavorite ${data.name}`);
     }
   }
 }
@@ -268,9 +264,7 @@ export function deleteItem(
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
           onComplete(response.data);
         } catch (error) {
-          const message = `Failed to remove ${name} from gallery: ${error}`;
-          Logger.logError(message, "GalleryUtils/deleteItem");
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, message);
+          handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
         }
 
         NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);

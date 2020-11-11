@@ -72,7 +72,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
     logConsoleInfo(`Successfully updated offer for ${offerResourceText}`);
     return updatedOffer;
   } catch (error) {
-    handleError(error, `Error updating offer for ${offerResourceText}`, "UpdateCollection");
+    handleError(error, "UpdateCollection", `Error updating offer for ${offerResourceText}`);
     throw error;
   } finally {
     clearMessage();

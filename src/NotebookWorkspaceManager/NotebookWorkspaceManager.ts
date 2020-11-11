@@ -7,6 +7,7 @@ import {
   NotebookWorkspaceFeedResponse
 } from "../Contracts/DataModels";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export class NotebookWorkspaceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
@@ -24,7 +25,7 @@ export class NotebookWorkspaceManager {
       )) as NotebookWorkspaceFeedResponse;
       return response && response.value;
     } catch (error) {
-      Logger.logError(error, "NotebookWorkspaceManager/getNotebookWorkspacesAsync");
+      Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/getNotebookWorkspacesAsync");
       throw error;
     }
   }
@@ -37,7 +38,7 @@ export class NotebookWorkspaceManager {
     try {
       return (await this.rpClient(uri).getAsync(uri, ArmApiVersions.documentDB)) as NotebookWorkspace;
     } catch (error) {
-      Logger.logError(error, "NotebookWorkspaceManager/getNotebookWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/getNotebookWorkspaceAsync");
       throw error;
     }
   }
@@ -47,7 +48,7 @@ export class NotebookWorkspaceManager {
     try {
       await this.rpClient(uri).putAsync(uri, ArmApiVersions.documentDB, { name: notebookWorkspaceId });
     } catch (error) {
-      Logger.logError(error, "NotebookWorkspaceManager/createNotebookWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/createNotebookWorkspaceAsync");
       throw error;
     }
   }
@@ -57,7 +58,7 @@ export class NotebookWorkspaceManager {
     try {
       await this.rpClient(uri).deleteAsync(uri, ArmApiVersions.documentDB);
     } catch (error) {
-      Logger.logError(error, "NotebookWorkspaceManager/deleteNotebookWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/deleteNotebookWorkspaceAsync");
       throw error;
     }
   }
@@ -74,7 +75,7 @@ export class NotebookWorkspaceManager {
         undefined
       );
     } catch (error) {
-      Logger.logError(error, "NotebookWorkspaceManager/getNotebookConnectionInfoAsync");
+      Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/getNotebookConnectionInfoAsync");
       throw error;
     }
   }
@@ -86,7 +87,7 @@ export class NotebookWorkspaceManager {
         skipResourceValidation: true
       });
     } catch (error) {
-      Logger.logError(error, "NotebookWorkspaceManager/startNotebookWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/startNotebookWorkspaceAsync");
       throw error;
     }
   }

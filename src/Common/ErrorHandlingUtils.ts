@@ -1,3 +1,4 @@
+import { ARMError } from "../Utils/arm/request";
 import { HttpStatusCodes } from "./Constants";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/ViewModels";
@@ -5,28 +6,31 @@ import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { logError } from "./Logger";
 import { sendMessage } from "./MessageHandler";
 
-export interface CosmosError {
-  code: number;
-  message?: string;
-}
-
-export const handleError = (error: string | CosmosError, consoleErrorPrefix: string, area: string): void => {
+export const handleError = (error: string | ARMError | Error, area: string, consoleErrorPrefix?: string): void => {
   const errorMessage = getErrorMessage(error);
-  const errorCode = typeof error === "string" ? undefined : error.code;
+  const errorCode = error instanceof ARMError ? error.code : undefined;
+
   // logs error to data explorer console
-  logConsoleError(`${consoleErrorPrefix}:\n ${errorMessage}`);
+  const consoleErrorMessage = consoleErrorPrefix ? `${consoleErrorPrefix}:\n ${errorMessage}` : errorMessage;
+  logConsoleError(consoleErrorMessage);
+
   // logs error to both app insight and kusto
   logError(errorMessage, area, errorCode);
+
   // checks for errors caused by firewall and sends them to portal to handle
   sendNotificationForError(errorMessage, errorCode);
 };
 
-export const getErrorMessage = (error: string | CosmosError | Error): string => {
+export const getErrorMessage = (error: string | Error): string => {
   const errorMessage = typeof error === "string" ? error : error.message;
   return replaceKnownError(errorMessage);
 };
 
-const sendNotificationForError = (errorMessage: string, errorCode: number): void => {
+export const getErrorStack = (error: string | Error): string => {
+  return typeof error === "string" ? undefined : error.stack;
+};
+
+const sendNotificationForError = (errorMessage: string, errorCode: number | string): void => {
   if (errorCode === HttpStatusCodes.Forbidden) {
     if (errorMessage?.toLowerCase().indexOf("sharedoffer is disabled for your account") > 0) {
       return;

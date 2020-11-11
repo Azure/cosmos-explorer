@@ -17,7 +17,7 @@ export const readOffers = async (): Promise<Offer[]> => {
       return [];
     }
 
-    handleError(error, `Error while querying offers`, "ReadOffers");
+    handleError(error, "ReadOffers", `Error while querying offers`);
     throw error;
   } finally {
     clearMessage();

@@ -1,4 +1,3 @@
-import * as ViewModels from "../Contracts/ViewModels";
 import {
   ArcadiaWorkspace,
   ArcadiaWorkspaceFeedResponse,
@@ -10,6 +9,7 @@ import { IResourceProviderClient, IResourceProviderClientFactory } from "../Reso
 import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { configContext } from "../ConfigContext";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export class ArcadiaResourceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
@@ -27,7 +27,7 @@ export class ArcadiaResourceManager {
       )) as ArcadiaWorkspaceFeedResponse;
       return response && response.value;
     } catch (error) {
-      Logger.logError(error, "ArcadiaResourceManager/getWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "ArcadiaResourceManager/getWorkspaceAsync");
       throw error;
     }
   }
@@ -37,7 +37,7 @@ export class ArcadiaResourceManager {
     try {
       return (await this._rpClient(uri).getAsync(uri, ArmApiVersions.arcadia)) as ArcadiaWorkspace;
     } catch (error) {
-      Logger.logError(error, "ArcadiaResourceManager/getWorkspaceAsync");
+      Logger.logError(getErrorMessage(error), "ArcadiaResourceManager/getWorkspaceAsync");
       throw error;
     }
   }
@@ -56,7 +56,7 @@ export class ArcadiaResourceManager {
       )) as ArcadiaWorkspaceFeedResponse;
       return response && response.value;
     } catch (error) {
-      Logger.logError(error, "ArcadiaManager/listWorkspacesAsync");
+      Logger.logError(getErrorMessage(error), "ArcadiaManager/listWorkspacesAsync");
       throw error;
     }
   }
@@ -68,7 +68,7 @@ export class ArcadiaResourceManager {
       const response = (await this._rpClient(uri).getAsync(uri, ArmApiVersions.arcadia)) as SparkPoolFeedResponse;
       return response && response.value;
     } catch (error) {
-      Logger.logError(error, "ArcadiaManager/listSparkPoolsAsync");
+      Logger.logError(getErrorMessage(error), "ArcadiaManager/listSparkPoolsAsync");
       throw error;
     }
   }
