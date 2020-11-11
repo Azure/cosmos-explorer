@@ -63,8 +63,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public isTemplateReady: ko.Observable<boolean>;
   public minRUAnotationVisible: ko.Computed<boolean>;
   public minRUs: ko.Computed<number>;
-  public maxRUs: ko.Computed<number>;
-  public maxRUsText: ko.PureComputed<string>;
   public notificationStatusInfo: ko.Observable<string>;
   public pendingNotification: ko.Observable<DataModels.Notification>;
   public requestUnitsUsageCost: ko.PureComputed<string>;
@@ -207,26 +205,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return PricingUtils.isLargerThanDefaultMinRU(this.minRUs());
     });
 
-    this.maxRUs = ko.computed<number>(() => {
-      const collectionThroughputInfo: DataModels.OfferThroughputInfo =
-        this.database &&
-        this.database.offer &&
-        this.database.offer() &&
-        this.database.offer().content &&
-        this.database.offer().content.collectionThroughputInfo;
-      const numPartitions = collectionThroughputInfo && collectionThroughputInfo.numPhysicalPartitions;
-      if (!!numPartitions) {
-        return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
-      }
-
-      const throughputDefaults = this.container.collectionCreationDefaults.throughput;
-      return throughputDefaults.unlimitedmax;
-    });
-
-    this.maxRUsText = ko.pureComputed(() => {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million.toLocaleString();
-    });
-
     this.throughputTitle = ko.pureComputed<string>(() => {
       if (this.isAutoPilotSelected()) {
         return AutoPilotUtils.getAutoPilotHeaderText();
@@ -268,15 +246,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         return throughputApplyShortDelayMessage(this.isAutoPilotSelected(), throughput, this.database.id());
       }
 
-      if (
-        this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-        this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
-      ) {
+      if (this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million) {
         return updateThroughputBeyondLimitWarningMessage;
-      }
-
-      if (this.throughput() > this.maxRUs()) {
-        return updateThroughputDelayedApplyWarningMessage;
       }
 
       if (this.pendingNotification()) {

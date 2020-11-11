@@ -170,7 +170,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public indexingPolicyElementFocused: ko.Observable<boolean>;
   public minRUs: ko.Computed<number>;
   public minRUAnotationVisible: ko.Computed<boolean>;
-  public maxRUsText: ko.PureComputed<string>;
   public notificationStatusInfo: ko.Observable<string>;
   public partitionKeyName: ko.Computed<string>;
   public partitionKeyVisible: ko.PureComputed<boolean>;
@@ -483,10 +482,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
     this.minRUAnotationVisible = ko.computed<boolean>(() => {
       return PricingUtils.isLargerThanDefaultMinRU(this.minRUs());
-    });
-
-    this.maxRUsText = ko.pureComputed(() => {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million.toLocaleString();
     });
 
     this.throughputTitle = ko.pureComputed<string>(() => {
