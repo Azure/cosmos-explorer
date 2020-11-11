@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import { Frame } from "puppeteer";
 
+let testExplorerFrame: Frame;
+
 export async function login(connectionString: string): Promise<Frame> {
   const prodUrl = "https://localhost:1234/hostedExplorer.html";
   page.goto(prodUrl);

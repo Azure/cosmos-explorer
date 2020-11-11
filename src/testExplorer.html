@@ -1,0 +1,22 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0" />
+    <title>Azure Cosmos DB</title>
+    <link rel="shortcut icon" href="images/CosmosDB_rgb_ui_lighttheme.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <switch-directory-pane params="{data: switchDirectoryPane}"></switch-directory-pane>
+
+    <button data-bind="click: postMessage, visible: isButtonVisible">Test login</button>
+    <iframe
+      id="explorerMenu"
+      name="explorer"
+      class="iframe"
+      title="explorer"
+      src="explorer.html?v=1.0.1&platform=Hosted"
+    >
+    </iframe>
+  </body>
+</html>

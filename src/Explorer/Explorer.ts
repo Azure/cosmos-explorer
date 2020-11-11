@@ -1724,6 +1724,8 @@ export default class Explorer {
         case MessageTypes.SendNotification:
         case MessageTypes.ClearNotification:
         case MessageTypes.LoadingStatus:
+        case MessageTypes.InitTestExplorer:
+        case MessageTypes.HideConnectScreen:
           return true;
       }
     }
@@ -1740,6 +1742,10 @@ export default class Explorer {
 
     if (!this._shouldProcessMessage(event)) {
       return;
+    }
+
+    if (event.data.data.type === MessageTypes.HideConnectScreen) {
+      this.hideConnectExplorerForm();
     }
 
     const message: any = event.data.data;
@@ -2537,6 +2543,7 @@ export default class Explorer {
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
+    console.log("auth header:" + JSON.stringify(authorizationHeader));
     try {
       const response = await fetch(disallowedLocationsUri, {
         method: "POST",
