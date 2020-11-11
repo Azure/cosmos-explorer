@@ -162,6 +162,7 @@ export interface Collection extends CollectionBase {
   loadStoredProcedures(): Promise<any>;
   loadTriggers(): Promise<any>;
   loadOffer(): Promise<void>;
+  loadAutopilotOfferWithRetry(): Promise<DataModels.Offer>;
 
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;

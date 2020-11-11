@@ -1331,6 +1331,22 @@ export default class Collection implements ViewModels.Collection {
     return this.container.findDatabaseWithId(this.databaseId);
   }
 
+  public async loadAutopilotOfferWithRetry(): Promise<DataModels.Offer> {
+    let retryCount = 0;
+    while (retryCount < Constants.LoadOfferRetry.MaxRetries) {
+      if (this.offer().content.offerAutopilotSettings) {
+        return this.offer();
+      } else {
+        await new Promise(resolve => setTimeout(resolve, Constants.LoadOfferRetry.RetryAfterMilliSeconds));
+        await this.loadOffer();
+      }
+      retryCount++;
+    }
+    throw new Error(
+      "Max Retries for loading offer are completed. Offer does not have an offerAutopilotSettings field."
+    );
+  }
+
   public async loadOffer(): Promise<void> {
     if (!this.container.isServerlessEnabled() && !this.offer()) {
       this.container.isRefreshingExplorer(true);

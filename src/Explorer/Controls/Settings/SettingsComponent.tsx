@@ -532,11 +532,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           }
           const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
           this.collection.offer(updatedOffer);
-          this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
+
           if (this.state.isAutoPilotSelected) {
+            const autoPilotOffer = await this.collection.loadAutopilotOfferWithRetry();
             this.setState({
-              autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
-              autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
+              autoPilotThroughput: autoPilotOffer.content.offerAutopilotSettings.maxThroughput,
+              autoPilotThroughputBaseline: autoPilotOffer.content.offerAutopilotSettings.maxThroughput
             });
           } else {
             this.setState({
@@ -544,6 +545,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               throughputBaseline: updatedOffer.content.offerThroughput
             });
           }
+
+          this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
         }
       }
       this.container.isRefreshingExplorer(false);
