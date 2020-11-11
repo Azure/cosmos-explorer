@@ -1343,7 +1343,7 @@ export default class Collection implements ViewModels.Collection {
       retryCount++;
     }
     throw new Error(
-      "Max Retries for loading offer are completed. Offer does not have an offerAutopilotSettings field."
+      "Max retries for loading offer are completed. Offer does not have an Autopilot settings field."
     );
   }
 
