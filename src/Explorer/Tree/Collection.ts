@@ -10,7 +10,6 @@ import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
 import { createDocument } from "../../Common/DocumentClientUtilityBase";
 import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
-import { readCollectionQuotaInfo } from "../../Common/dataAccess/readCollectionQuotaInfo";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -55,7 +54,6 @@ export default class Collection implements ViewModels.Collection {
   public defaultTtl: ko.Observable<number>;
   public indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   public uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
-  public quotaInfo: ko.Observable<DataModels.CollectionQuotaInfo>;
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
   public changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
@@ -94,13 +92,7 @@ export default class Collection implements ViewModels.Collection {
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
 
-  constructor(
-    container: Explorer,
-    databaseId: string,
-    data: DataModels.Collection,
-    quotaInfo: DataModels.CollectionQuotaInfo,
-    offer: DataModels.Offer
-  ) {
+  constructor(container: Explorer, databaseId: string, data: DataModels.Collection, offer: DataModels.Offer) {
     this.nodeKind = "Collection";
     this.container = container;
     this.self = data._self;
@@ -112,7 +104,6 @@ export default class Collection implements ViewModels.Collection {
     this.id = ko.observable(data.id);
     this.defaultTtl = ko.observable(data.defaultTtl);
     this.indexingPolicy = ko.observable(data.indexingPolicy);
-    this.quotaInfo = ko.observable(quotaInfo);
     this.offer = ko.observable(offer);
     this.conflictResolutionPolicy = ko.observable(data.conflictResolutionPolicy);
     this.changeFeedPolicy = ko.observable<DataModels.ChangeFeedPolicy>(data.changeFeedPolicy);
@@ -668,14 +659,6 @@ export default class Collection implements ViewModels.Collection {
       this.container.tabsManager.activateTab(settingsTabV2);
     }
   };
-
-  private async loadCollectionQuotaInfo(): Promise<void> {
-    // TODO: Use the collection entity cache to get quota info
-    const quotaInfoWithUniqueKeyPolicy = await readCollectionQuotaInfo(this);
-    this.uniqueKeyPolicy = quotaInfoWithUniqueKeyPolicy.uniqueKeyPolicy;
-    const quotaInfo = _.omit(quotaInfoWithUniqueKeyPolicy, "uniqueKeyPolicy");
-    this.quotaInfo(quotaInfo);
-  }
 
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
@@ -1349,7 +1332,6 @@ export default class Collection implements ViewModels.Collection {
 
       try {
         this.offer(await readCollectionOffer(params));
-        await this.loadCollectionQuotaInfo();
 
         TelemetryProcessor.traceSuccess(
           Action.LoadOffers,

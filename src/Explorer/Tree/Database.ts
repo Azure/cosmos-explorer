@@ -185,7 +185,7 @@ export default class Database implements ViewModels.Database {
     const deltaCollections = this.getDeltaCollections(collections);
 
     deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
-      const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
+      const collectionVM: Collection = new Collection(this.container, this.id(), collection, null);
       collectionVMs.push(collectionVM);
     });
 

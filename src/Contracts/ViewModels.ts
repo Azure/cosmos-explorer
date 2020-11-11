@@ -117,7 +117,6 @@ export interface Collection extends CollectionBase {
   analyticalStorageTtl: ko.Observable<number>;
   indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
-  quotaInfo: ko.Observable<DataModels.CollectionQuotaInfo>;
   offer: ko.Observable<DataModels.Offer>;
   conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
   changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;

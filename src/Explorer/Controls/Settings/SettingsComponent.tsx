@@ -1,54 +1,49 @@
+import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
 import * as React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import * as Constants from "../../../Common/Constants";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as SharedConstants from "../../../Shared/Constants";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import { traceStart, traceFailure, traceSuccess, trace } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import Explorer from "../../Explorer";
-import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import * as Constants from "../../../Common/Constants";
+import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
+import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import { userContext } from "../../../UserContext";
-import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
+import Explorer from "../../Explorer";
 import SettingsTab from "../../Tabs/SettingsTabV2";
-import { throughputUnit } from "./SettingsRenderUtils";
-import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
-import {
-  MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps
-} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
-import {
-  getMaxRUs,
-  hasDatabaseSharedThroughput,
-  GeospatialConfigType,
-  TtlType,
-  ChangeFeedPolicyState,
-  SettingsV2TabTypes,
-  getTabTitle,
-  isDirty,
-  AddMongoIndexProps,
-  MongoIndexTypes,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
-  getMongoNotification
-} from "./SettingsUtils";
+import "./SettingsComponent.less";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps
 } from "./SettingsSubComponents/ConflictResolutionComponent";
-import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
-import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
-import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import {
+  MongoIndexingPolicyComponent,
+  MongoIndexingPolicyComponentProps
+} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
+import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
+import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
+import {
+  AddMongoIndexProps,
+  ChangeFeedPolicyState,
+  GeospatialConfigType,
+  getMongoNotification,
+  getTabTitle,
+  hasDatabaseSharedThroughput,
+  isDirty,
+  MongoIndexTypes,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure,
+  SettingsV2TabTypes,
+  TtlType
+} from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -450,7 +445,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       if (this.state.isScaleSaveable) {
         const newThroughput = this.state.throughput;
         const newOffer: DataModels.Offer = { ...this.collection.offer() };
-        const originalThroughputValue: number = this.state.throughput;
 
         if (newOffer.content) {
           newOffer.content.offerThroughput = newThroughput;
@@ -488,62 +482,33 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           }
         }
 
-        if (
-          getMaxRUs(this.collection, this.container) <=
-            SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.container
-        ) {
-          const requestPayload = {
-            subscriptionId: userContext.subscriptionId,
-            databaseAccountName: userContext.databaseAccount.name,
-            resourceGroup: userContext.resourceGroup,
-            databaseName: this.collection.databaseId,
-            collectionName: this.collection.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
-          };
-
-          await updateOfferThroughputBeyondLimit(requestPayload);
-          this.collection.offer().content.offerThroughput = originalThroughputValue;
+        const updateOfferParams: DataModels.UpdateOfferParams = {
+          databaseId: this.collection.databaseId,
+          collectionId: this.collection.id(),
+          currentOffer: this.collection.offer(),
+          autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
+          manualThroughput: this.state.isAutoPilotSelected ? undefined : newThroughput
+        };
+        if (this.hasProvisioningTypeChanged()) {
+          if (this.state.isAutoPilotSelected) {
+            updateOfferParams.migrateToAutoPilot = true;
+          } else {
+            updateOfferParams.migrateToManual = true;
+          }
+        }
+        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+        this.collection.offer(updatedOffer);
+        this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
+        if (this.state.isAutoPilotSelected) {
           this.setState({
-            isScaleSaveable: false,
-            isScaleDiscardable: false,
-            throughput: originalThroughputValue,
-            throughputBaseline: originalThroughputValue,
-            initialNotification: {
-              description: `Throughput update for ${newThroughput} ${throughputUnit}`
-            } as DataModels.Notification
+            autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
+            autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
           });
         } else {
-          const updateOfferParams: DataModels.UpdateOfferParams = {
-            databaseId: this.collection.databaseId,
-            collectionId: this.collection.id(),
-            currentOffer: this.collection.offer(),
-            autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
-            manualThroughput: this.state.isAutoPilotSelected ? undefined : newThroughput
-          };
-          if (this.hasProvisioningTypeChanged()) {
-            if (this.state.isAutoPilotSelected) {
-              updateOfferParams.migrateToAutoPilot = true;
-            } else {
-              updateOfferParams.migrateToManual = true;
-            }
-          }
-          const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
-          this.collection.offer(updatedOffer);
-          this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
-          if (this.state.isAutoPilotSelected) {
-            this.setState({
-              autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
-              autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
-            });
-          } else {
-            this.setState({
-              throughput: updatedOffer.content.offerThroughput,
-              throughputBaseline: updatedOffer.content.offerThroughput
-            });
-          }
+          this.setState({
+            throughput: updatedOffer.content.offerThroughput,
+            throughputBaseline: updatedOffer.content.offerThroughput
+          });
         }
       }
       this.container.isRefreshingExplorer(false);

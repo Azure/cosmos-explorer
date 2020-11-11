@@ -1,35 +1,33 @@
-import React from "react";
-import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
 import {
-  getTextFieldStyles,
-  getToolTipContainer,
-  noLeftPaddingCheckBoxStyle,
-  titleAndInputStackProps,
-  checkBoxAndInputStackProps,
-  getChoiceGroupStyles,
-  messageBarStyles,
-  getEstimatedSpendElement,
-  getEstimatedAutoscaleSpendElement,
-  getAutoPilotV3SpendElement,
-  manualToAutoscaleDisclaimerElement
-} from "../../SettingsRenderUtils";
-import {
-  Text,
-  TextField,
+  Checkbox,
   ChoiceGroup,
   IChoiceGroupOption,
-  Checkbox,
-  Stack,
   Label,
   Link,
   MessageBar,
-  MessageBarType
+  MessageBarType,
+  Stack,
+  Text,
+  TextField
 } from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
-import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
-import * as SharedConstants from "../../../../../Shared/Constants";
+import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
-import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
+import {
+  checkBoxAndInputStackProps,
+  getAutoPilotV3SpendElement,
+  getChoiceGroupStyles,
+  getEstimatedAutoscaleSpendElement,
+  getEstimatedSpendElement,
+  getTextFieldStyles,
+  getToolTipContainer,
+  manualToAutoscaleDisclaimerElement,
+  messageBarStyles,
+  noLeftPaddingCheckBoxStyle,
+  titleAndInputStackProps
+} from "../../SettingsRenderUtils";
+import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
+import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;
@@ -38,7 +36,6 @@ export interface ThroughputInputAutoPilotV3Props {
   throughputBaseline: number;
   onThroughputChange: (newThroughput: number) => void;
   minimum: number;
-  maximum: number;
   step?: number;
   isEnabled?: boolean;
   spendAckChecked?: boolean;
@@ -59,7 +56,6 @@ export interface ThroughputInputAutoPilotV3Props {
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
-  getThroughputWarningMessage: () => JSX.Element;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -119,13 +115,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
           isDiscardable = true;
           isSaveable = true;
-          if (
-            !this.props.throughput ||
-            this.props.throughput < this.props.minimum ||
-            (this.props.throughput > this.props.maximum && (this.props.isEmulator || this.props.isFixed)) ||
-            (this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-              !this.props.canExceedMaximumValue)
-          ) {
+          if (!this.props.throughput || this.props.throughput < this.props.minimum) {
             isSaveable = false;
           }
         }
@@ -141,8 +131,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
-    this.throughputInputMaxValue = this.props.canExceedMaximumValue ? Int32.Max : this.props.maximum;
-    this.autoPilotInputMaxValue = this.props.isFixed ? this.props.maximum : Int32.Max;
+    this.throughputInputMaxValue = Number.MAX_SAFE_INTEGER;
+    this.autoPilotInputMaxValue = Number.MAX_SAFE_INTEGER;
   }
 
   public hasProvisioningTypeChanged = (): boolean =>
@@ -305,12 +295,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
         onChange={this.onThroughputChange}
       />
-
-      {this.props.getThroughputWarningMessage() && (
-        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
-          {this.props.getThroughputWarningMessage()}
-        </MessageBar>
-      )}
 
       {!this.props.isEmulator && this.getRequestUnitsUsageCost()}
 

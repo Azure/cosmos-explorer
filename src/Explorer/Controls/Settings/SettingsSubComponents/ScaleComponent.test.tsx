@@ -1,14 +1,13 @@
 import { shallow } from "enzyme";
+import ko from "knockout";
 import React from "react";
-import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
-import { container, collection } from "../TestUtils";
-import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import Explorer from "../../../Explorer";
 import * as Constants from "../../../../Common/Constants";
 import * as DataModels from "../../../../Contracts/DataModels";
+import Explorer from "../../../Explorer";
 import { throughputUnit } from "../SettingsRenderUtils";
-import * as SharedConstants from "../../../../Shared/Constants";
-import ko from "knockout";
+import { collection, container } from "../TestUtils";
+import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 describe("ScaleComponent", () => {
   const nonNationalCloudContainer = new Explorer();
@@ -48,9 +47,7 @@ describe("ScaleComponent", () => {
     let wrapper = shallow(<ScaleComponent {...baseProps} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists(ThroughputInputAutoPilotV3Component)).toEqual(true);
-    expect(wrapper.exists("#throughputApplyLongDelayMessage")).toEqual(true);
     expect(wrapper.exists("#throughputApplyShortDelayMessage")).toEqual(false);
-    expect(wrapper.find("#throughputApplyLongDelayMessage").html()).toContain(targetThroughput);
 
     const newCollection = { ...collection };
     const maxThroughput = 5000;
@@ -109,11 +106,6 @@ describe("ScaleComponent", () => {
     expect(scaleComponent.isAutoScaleEnabled()).toEqual(true);
   });
 
-  it("getMaxRUThroughputInputLimit", () => {
-    const scaleComponent = new ScaleComponent(baseProps);
-    expect(scaleComponent.getMaxRUThroughputInputLimit()).toEqual(40000);
-  });
-
   it("getThroughputTitle", () => {
     let scaleComponent = new ScaleComponent(baseProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
@@ -125,27 +117,5 @@ describe("ScaleComponent", () => {
     newProps = { ...baseProps, isAutoPilotSelected: true };
     scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (autoscale)");
-  });
-
-  it("canThroughputExceedMaximumValue", () => {
-    let scaleComponent = new ScaleComponent(baseProps);
-    expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
-
-    const newProps = { ...baseProps, container: nonNationalCloudContainer };
-    scaleComponent = new ScaleComponent(newProps);
-    expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
-  });
-
-  it("getThroughputWarningMessage", () => {
-    const throughputBeyondLimit = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million + 1000;
-    const throughputBeyondMaxRus = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million - 1000;
-
-    const newProps = { ...baseProps, container: nonNationalCloudContainer, throughput: throughputBeyondLimit };
-    let scaleComponent = new ScaleComponent(newProps);
-    expect(scaleComponent.getThroughputWarningMessage().props.id).toEqual("updateThroughputBeyondLimitWarningMessage");
-
-    newProps.throughput = throughputBeyondMaxRus;
-    scaleComponent = new ScaleComponent(newProps);
-    expect(scaleComponent.getThroughputWarningMessage().props.id).toEqual("updateThroughputDelayedApplyWarningMessage");
   });
 });

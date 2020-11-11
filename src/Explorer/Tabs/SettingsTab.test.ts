@@ -34,17 +34,6 @@ describe("Settings tab", () => {
     collections: [baseCollection]
   };
 
-  const quotaInfo: DataModels.CollectionQuotaInfo = {
-    storedProcedures: 0,
-    triggers: 0,
-    functions: 0,
-    documentsSize: 0,
-    documentsCount: 0,
-    collectionSize: 0,
-    usageSizeInKB: 0,
-    numPartitions: 0
-  };
-
   describe("Conflict Resolution", () => {
     describe("should show conflict resolution", () => {
       let explorer: Explorer;
@@ -70,7 +59,6 @@ describe("Settings tab", () => {
             explorer,
             "mydb",
             conflictResolution ? baseCollection : baseCollectionWithoutConflict,
-            quotaInfo,
             null
           ),
           onUpdateTabsButtons: undefined
@@ -186,7 +174,7 @@ describe("Settings tab", () => {
         tabPath: "",
         hashLocation: "",
         isActive: ko.observable(false),
-        collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
+        collection: new Collection(explorer, "mydb", baseCollection, null),
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
@@ -207,7 +195,7 @@ describe("Settings tab", () => {
         tabPath: "",
         hashLocation: "",
         isActive: ko.observable(false),
-        collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
+        collection: new Collection(explorer, "mydb", baseCollection, null),
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
@@ -223,7 +211,7 @@ describe("Settings tab", () => {
         tabPath: "",
         hashLocation: "",
         isActive: ko.observable(false),
-        collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
+        collection: new Collection(explorer, "mydb", baseCollection, null),
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
@@ -258,7 +246,7 @@ describe("Settings tab", () => {
         tabPath: "",
         hashLocation: "",
         isActive: ko.observable(false),
-        collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
+        collection: new Collection(explorer, "mydb", baseCollection, null),
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
@@ -272,7 +260,7 @@ describe("Settings tab", () => {
         tabPath: "",
         hashLocation: "",
         isActive: ko.observable(false),
-        collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
+        collection: new Collection(explorer, "mydb", baseCollection, null),
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
@@ -295,7 +283,7 @@ describe("Settings tab", () => {
         tabPath: "",
         hashLocation: "",
         isActive: ko.observable(false),
-        collection: new Collection(explorer, "mydb", baseCollection, quotaInfo, null),
+        collection: new Collection(explorer, "mydb", baseCollection, null),
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
       });
 
@@ -354,7 +342,6 @@ describe("Settings tab", () => {
           _ts: 0,
           id: "mycoll"
         },
-        quotaInfo,
         offer
       );
     }

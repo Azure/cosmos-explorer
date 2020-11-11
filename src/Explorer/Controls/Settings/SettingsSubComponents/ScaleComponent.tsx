@@ -1,24 +1,20 @@
+import { Label, MessageBar, MessageBarType, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import * as ViewModels from "../../../../Contracts/ViewModels";
+import { configContext, Platform } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
-import * as SharedConstants from "../../../../Shared/Constants";
+import * as ViewModels from "../../../../Contracts/ViewModels";
+import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import Explorer from "../../../Explorer";
 import {
   getTextFieldStyles,
-  subComponentStackProps,
-  titleAndInputStackProps,
-  throughputUnit,
-  getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
-  updateThroughputBeyondLimitWarningMessage,
-  updateThroughputDelayedApplyWarningMessage
+  subComponentStackProps,
+  throughputUnit,
+  titleAndInputStackProps
 } from "../SettingsRenderUtils";
-import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput } from "../SettingsUtils";
-import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
-import { configContext, Platform } from "../../../../ConfigContext";
+import { getMinRUs, hasDatabaseSharedThroughput } from "../SettingsUtils";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -75,40 +71,17 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     );
   };
 
-  public getMaxRUThroughputInputLimit = (): number => {
-    if (configContext.platform === Platform.Hosted && this.props.collection.partitionKey) {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-    }
-
-    return getMaxRUs(this.props.collection, this.props.container);
-  };
-
   public getThroughputTitle = (): string => {
     if (this.props.isAutoPilotSelected) {
       return AutoPilotUtils.getAutoPilotHeaderText();
     }
 
     const minThroughput: string = getMinRUs(this.props.collection, this.props.container).toLocaleString();
-    const maxThroughput: string =
-      this.canThroughputExceedMaximumValue() && !this.props.isFixedContainer
-        ? "unlimited"
-        : getMaxRUs(this.props.collection, this.props.container).toLocaleString();
+    const maxThroughput: string = !this.props.isFixedContainer ? "unlimited" : "10000";
     return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
   };
 
-  public canThroughputExceedMaximumValue = (): boolean => {
-    return (
-      !this.props.isFixedContainer &&
-      configContext.platform === Platform.Portal &&
-      !this.props.container.isRunningOnNationalCloud()
-    );
-  };
-
   public getInitialNotificationElement = (): JSX.Element => {
-    if (this.props.initialNotification) {
-      return this.getLongDelayMessage();
-    }
-
     const offer = this.props.collection?.offer && this.props.collection.offer();
     if (
       offer &&
@@ -135,47 +108,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return undefined;
   };
 
-  public getThroughputWarningMessage = (): JSX.Element => {
-    const throughputExceedsBackendLimits: boolean =
-      this.canThroughputExceedMaximumValue() &&
-      getMaxRUs(this.props.collection, this.props.container) <=
-        SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-      this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-
-    if (throughputExceedsBackendLimits && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
-      return updateThroughputBeyondLimitWarningMessage;
-    }
-
-    const throughputExceedsMaxValue: boolean =
-      !this.isEmulator && this.props.throughput > getMaxRUs(this.props.collection, this.props.container);
-
-    if (throughputExceedsMaxValue && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
-      return updateThroughputDelayedApplyWarningMessage;
-    }
-
-    return undefined;
-  };
-
-  public getLongDelayMessage = (): JSX.Element => {
-    const matches: string[] = this.props.initialNotification?.description.match(
-      `Throughput update for (.*) ${throughputUnit}`
-    );
-
-    const throughput = this.props.throughputBaseline;
-    const targetThroughput: number = matches.length > 1 && Number(matches[1]);
-    if (targetThroughput) {
-      return getThroughputApplyLongDelayMessage(
-        this.props.wasAutopilotOriginallySet,
-        throughput,
-        throughputUnit,
-        this.props.collection.databaseId,
-        this.props.collection.id(),
-        targetThroughput
-      );
-    }
-    return <></>;
-  };
-
   private getThroughputInputComponent = (): JSX.Element => (
     <ThroughputInputAutoPilotV3Component
       databaseAccount={this.props.container.databaseAccount()}
@@ -184,9 +116,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       throughputBaseline={this.props.throughputBaseline}
       onThroughputChange={this.props.onThroughputChange}
       minimum={getMinRUs(this.props.collection, this.props.container)}
-      maximum={this.getMaxRUThroughputInputLimit()}
       isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
-      canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
       label={this.getThroughputTitle()}
       isEmulator={this.isEmulator}
       isFixed={this.props.isFixedContainer}
@@ -199,7 +129,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       spendAckChecked={false}
       onScaleSaveableChange={this.props.onScaleSaveableChange}
       onScaleDiscardableChange={this.props.onScaleDiscardableChange}
-      getThroughputWarningMessage={this.getThroughputWarningMessage}
     />
   );
 

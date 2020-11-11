@@ -33,7 +33,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public keyspaceThroughput: ko.Observable<number>;
   public keyspaceCreateNew: ko.Observable<boolean>;
   public dedicateTableThroughput: ko.Observable<boolean>;
-  public canRequestSupport: ko.PureComputed<boolean>;
   public throughputSpendAckText: ko.Observable<string>;
   public throughputSpendAck: ko.Observable<boolean>;
   public sharedThroughputSpendAck: ko.Observable<boolean>;
@@ -226,15 +225,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
     this.costsVisible = ko.pureComputed(() => {
       return configContext.platform !== Platform.Emulator;
-    });
-
-    this.canRequestSupport = ko.pureComputed(() => {
-      if (configContext.platform !== Platform.Emulator && !this.container.isTryCosmosDBSubscription()) {
-        const offerThroughput: number = this.throughput();
-        return offerThroughput <= 100000;
-      }
-
-      return false;
     });
 
     this.sharedThroughputSpendAckVisible = ko.computed<boolean>(() => {

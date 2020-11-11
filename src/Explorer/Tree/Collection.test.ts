@@ -10,10 +10,9 @@ describe("Collection", () => {
     container: Explorer,
     databaseId: string,
     data: DataModels.Collection,
-    quotaInfo: DataModels.CollectionQuotaInfo,
     offer: DataModels.Offer
   ): Collection {
-    return new Collection(container, databaseId, data, quotaInfo, offer);
+    return new Collection(container, databaseId, data, offer);
   }
 
   function generateMockCollectionsDataModelWithPartitionKey(
@@ -50,7 +49,7 @@ describe("Collection", () => {
     });
     mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
-    return generateCollection(mockContainer, "abc", data, {} as DataModels.CollectionQuotaInfo, {} as DataModels.Offer);
+    return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);
   }
 
   describe("Partition key path parsing", () => {

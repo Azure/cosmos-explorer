@@ -20,7 +20,6 @@ import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { updateCollection } from "../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
-import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
@@ -151,9 +150,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
   public saveSettingsButton: ViewModels.Button;
   public discardSettingsChangesButton: ViewModels.Button;
-
-  public canRequestSupport: ko.Computed<boolean>;
-  public canThroughputExceedMaximumValue: ko.Computed<boolean>;
   public changeFeedPolicyOffId: string;
   public changeFeedPolicyOnId: string;
   public changeFeedPolicyToggled: ViewModels.Editable<ChangeFeedPolicyToggledState>;
@@ -174,8 +170,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public indexingPolicyElementFocused: ko.Observable<boolean>;
   public minRUs: ko.Computed<number>;
   public minRUAnotationVisible: ko.Computed<boolean>;
-  public maxRUs: ko.Computed<number>;
-  public maxRUThroughputInputLimit: ko.Computed<number>;
   public maxRUsText: ko.PureComputed<string>;
   public notificationStatusInfo: ko.Observable<string>;
   public partitionKeyName: ko.Computed<string>;
@@ -188,7 +182,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public rupmVisible: ko.Computed<boolean>;
   public scaleExpanded: ko.Observable<boolean>;
   public settingsExpanded: ko.Observable<boolean>;
-  public shouldDisplayPortalUsePrompt: ko.Computed<boolean>;
   public shouldShowIndexingPolicyEditor: ko.Computed<boolean>;
   public shouldShowNotificationStatusPrompt: ko.Computed<boolean>;
   public shouldShowStatusBar: ko.Computed<boolean>;
@@ -461,43 +454,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       return (this.container && this.container.isTryCosmosDBSubscription()) || false;
     });
 
-    this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(() => {
-      return (
-        this._isFixedContainer() &&
-        configContext.platform === Platform.Portal &&
-        !this.container.isRunningOnNationalCloud()
-      );
-    });
-
-    this.canRequestSupport = ko.pureComputed(() => {
-      if (configContext.platform === Platform.Emulator) {
-        return false;
-      }
-
-      if (this.isTryCosmosDBSubscription()) {
-        return false;
-      }
-
-      if (this.canThroughputExceedMaximumValue()) {
-        return false;
-      }
-
-      if (configContext.platform === Platform.Hosted) {
-        return false;
-      }
-
-      if (this.container.isServerlessEnabled()) {
-        return false;
-      }
-
-      const numPartitions = this.collection.quotaInfo().numPartitions;
-      return !!this.collection.partitionKeyProperty || numPartitions > 1;
-    });
-
-    this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(
-      () => configContext.platform === Platform.Hosted && !!this.collection.partitionKey
-    );
-
     this.minRUs = ko.computed<number>(() => {
       if (this.isTryCosmosDBSubscription() || this.container.isServerlessEnabled()) {
         return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
@@ -507,7 +463,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         this.collection && this.collection.offer && this.collection.offer() && this.collection.offer().content;
 
       if (offerContent && offerContent.offerAutopilotSettings) {
-        return 400;
+        SharedConstants.CollectionCreation.DefaultCollectionRUs400;
       }
 
       const collectionThroughputInfo: DataModels.OfferThroughputInfo =
@@ -521,56 +477,12 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return collectionThroughputInfo.minimumRUForCollection;
       }
 
-      const numPartitions =
-        (collectionThroughputInfo && collectionThroughputInfo.numPhysicalPartitions) ||
-        this.collection.quotaInfo().numPartitions;
-
-      if (!numPartitions || numPartitions === 1) {
-        return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-      }
-
-      let baseRU = SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-
-      const quotaInKb = this.collection.quotaInfo().collectionSize;
-      const quotaInGb = PricingUtils.usageInGB(quotaInKb);
-
-      const perPartitionGBQuota: number = Math.max(10, quotaInGb / numPartitions);
-      const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
-
-      return Math.max(baseRU, baseRUbyPartitions);
+      // minimumRUForCollection should always be present, but just in case return a default
+      return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     });
 
     this.minRUAnotationVisible = ko.computed<boolean>(() => {
       return PricingUtils.isLargerThanDefaultMinRU(this.minRUs());
-    });
-
-    this.maxRUs = ko.computed<number>(() => {
-      const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription();
-      if (isTryCosmosDBSubscription || this.container.isServerlessEnabled()) {
-        return Constants.TryCosmosExperience.maxRU;
-      }
-
-      const numPartitionsFromOffer: number =
-        this.collection &&
-        this.collection.offer &&
-        this.collection.offer() &&
-        this.collection.offer().content &&
-        this.collection.offer().content.collectionThroughputInfo &&
-        this.collection.offer().content.collectionThroughputInfo.numPhysicalPartitions;
-
-      const numPartitionsFromQuotaInfo: number = this.collection && this.collection.quotaInfo().numPartitions;
-
-      const numPartitions = numPartitionsFromOffer || numPartitionsFromQuotaInfo || 1;
-
-      return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
-    });
-
-    this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
-      if (configContext.platform === Platform.Hosted && this.collection.partitionKey) {
-        return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-      }
-
-      return this.maxRUs();
     });
 
     this.maxRUsText = ko.pureComputed(() => {
@@ -583,10 +495,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       }
 
       const minThroughput: string = this.minRUs().toLocaleString();
-      const maxThroughput: string =
-        this.canThroughputExceedMaximumValue() && !this._isFixedContainer()
-          ? "unlimited"
-          : this.maxRUs().toLocaleString();
+      const maxThroughput: string = !this._isFixedContainer() ? "unlimited" : "10000";
       return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
     });
 
@@ -675,22 +584,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
               return false;
             }
 
-            const isThroughputGreaterThanMaxRus = this.throughput() > this.maxRUs();
-            const isEmulator = configContext.platform === Platform.Emulator;
-            if (isThroughputGreaterThanMaxRus && isEmulator) {
-              return false;
-            }
-
-            if (isThroughputGreaterThanMaxRus && this._isFixedContainer()) {
-              return false;
-            }
-
-            const isThroughputMoreThan1Million =
-              this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-            if (!this.canThroughputExceedMaximumValue() && isThroughputMoreThan1Million) {
-              return false;
-            }
-
             if (this.throughput.editableIsDirty()) {
               return true;
             }
@@ -711,14 +604,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         }
 
         if (this.analyticalStorageTtlSelection() === "on" && !this.analyticalStorageTtlSeconds()) {
-          return false;
-        }
-
-        if (
-          this.rupm() === Constants.RUPMStates.on &&
-          this.throughput() >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo()?.numPartitions
-        ) {
           return false;
         }
 
@@ -841,14 +726,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.shouldShowNotificationStatusPrompt = ko.computed<boolean>(() => this.notificationStatusInfo().length > 0);
 
     this.warningMessage = ko.computed<string>(() => {
-      const throughputExceedsBackendLimits: boolean =
-        this.canThroughputExceedMaximumValue() &&
-        this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-        this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-
-      const throughputExceedsMaxValue: boolean =
-        configContext.platform !== Platform.Emulator && this.throughput() > this.maxRUs();
-
       const ttlOptionDirty: boolean = this.timeToLive.editableIsDirty();
       const ttlOrIndexingPolicyFieldsDirty: boolean =
         this.timeToLive.editableIsDirty() ||
@@ -888,26 +765,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
       if (this.overrideWithProvisionedThroughputSettings()) {
         return AutoPilotUtils.manualToAutoscaleDisclaimer;
-      }
-
-      if (
-        throughputExceedsBackendLimits &&
-        !!this.collection.partitionKey &&
-        !this._isFixedContainer() &&
-        !ttlFieldFocused &&
-        !this.indexingPolicyElementFocused()
-      ) {
-        return updateThroughputBeyondLimitWarningMessage;
-      }
-
-      if (
-        throughputExceedsMaxValue &&
-        !!this.collection.partitionKey &&
-        !this._isFixedContainer() &&
-        !ttlFieldFocused &&
-        !this.indexingPolicyElementFocused()
-      ) {
-        return updateThroughputDelayedApplyWarningMessage;
       }
 
       if (this.pendingNotification()) {
@@ -1099,54 +956,23 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           }
         }
 
-        if (
-          this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.container != null
-        ) {
-          const requestPayload = {
-            subscriptionId: userContext.subscriptionId,
-            databaseAccountName: userContext.databaseAccount.name,
-            resourceGroup: userContext.resourceGroup,
-            databaseName: this.collection.databaseId,
-            collectionName: this.collection.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
-          };
-
-          await updateOfferThroughputBeyondLimit(requestPayload);
-          this.collection.offer().content.offerThroughput = originalThroughputValue;
-          this.throughput(originalThroughputValue);
-          this.notificationStatusInfo(
-            throughputApplyDelayedMessage(
-              this.isAutoPilotSelected(),
-              originalThroughputValue,
-              this._getThroughputUnit(),
-              this.collection.databaseId,
-              this.collection.id(),
-              newThroughput
-            )
-          );
-          this.throughput.valueHasMutated(); // force component re-render
-        } else {
-          const updateOfferParams: DataModels.UpdateOfferParams = {
-            databaseId: this.collection.databaseId,
-            collectionId: this.collection.id(),
-            currentOffer: this.collection.offer(),
-            autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
-            manualThroughput: this.isAutoPilotSelected() ? undefined : newThroughput
-          };
-          if (this._hasProvisioningTypeChanged()) {
-            if (this.isAutoPilotSelected()) {
-              updateOfferParams.migrateToAutoPilot = true;
-            } else {
-              updateOfferParams.migrateToManual = true;
-            }
+        const updateOfferParams: DataModels.UpdateOfferParams = {
+          databaseId: this.collection.databaseId,
+          collectionId: this.collection.id(),
+          currentOffer: this.collection.offer(),
+          autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
+          manualThroughput: this.isAutoPilotSelected() ? undefined : newThroughput
+        };
+        if (this._hasProvisioningTypeChanged()) {
+          if (this.isAutoPilotSelected()) {
+            updateOfferParams.migrateToAutoPilot = true;
+          } else {
+            updateOfferParams.migrateToManual = true;
           }
-          const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
-          this.collection.offer(updatedOffer);
-          this.collection.offer.valueHasMutated();
         }
+        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+        this.collection.offer(updatedOffer);
+        this.collection.offer.valueHasMutated();
       }
 
       this.container.isRefreshingExplorer(false);

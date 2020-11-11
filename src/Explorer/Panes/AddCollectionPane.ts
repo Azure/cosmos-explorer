@@ -61,7 +61,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public maxCollectionsReachedMessage: ko.Observable<string>;
   public requestUnitsUsageCost: ko.Computed<string>;
   public dedicatedRequestUnitsUsageCost: ko.Computed<string>;
-  public canRequestSupport: ko.PureComputed<boolean>;
   public largePartitionKey: ko.Observable<boolean> = ko.observable<boolean>(false);
   public useIndexingForSharedThroughput: ko.Observable<boolean> = ko.observable<boolean>(true);
   public costsVisible: ko.PureComputed<boolean>;
@@ -312,19 +311,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
       if (!!isTryCosmosDB) {
         this.resetData();
       }
-    });
-
-    this.canRequestSupport = ko.pureComputed(() => {
-      if (
-        configContext.platform !== Platform.Emulator &&
-        !this.container.isTryCosmosDBSubscription() &&
-        configContext.platform !== Platform.Portal
-      ) {
-        const offerThroughput: number = this._getThroughput();
-        return offerThroughput <= 100000;
-      }
-
-      return false;
     });
 
     this.costsVisible = ko.pureComputed(() => {

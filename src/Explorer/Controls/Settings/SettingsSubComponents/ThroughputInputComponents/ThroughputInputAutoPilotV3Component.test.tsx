@@ -15,7 +15,6 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     throughputBaseline: 100,
     onThroughputChange: undefined,
     minimum: 10000,
-    maximum: 400,
     step: 100,
     isEnabled: true,
     isEmulator: false,
@@ -38,8 +37,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     },
     onScaleDiscardableChange: () => {
       return;
-    },
-    getThroughputWarningMessage: () => undefined
+    }
   };
 
   it("throughput input visible", () => {

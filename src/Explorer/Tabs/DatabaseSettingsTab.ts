@@ -17,7 +17,6 @@ import Explorer from "../Explorer";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { userContext } from "../../UserContext";
-import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
@@ -59,9 +58,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
   public saveSettingsButton: ViewModels.Button;
   public discardSettingsChangesButton: ViewModels.Button;
-
-  public canRequestSupport: ko.PureComputed<boolean>;
-  public canThroughputExceedMaximumValue: ko.Computed<boolean>;
   public costsVisible: ko.Computed<boolean>;
   public displayedError: ko.Observable<string>;
   public isTemplateReady: ko.Observable<boolean>;
@@ -69,13 +65,11 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public minRUs: ko.Computed<number>;
   public maxRUs: ko.Computed<number>;
   public maxRUsText: ko.PureComputed<string>;
-  public maxRUThroughputInputLimit: ko.Computed<number>;
   public notificationStatusInfo: ko.Observable<string>;
   public pendingNotification: ko.Observable<DataModels.Notification>;
   public requestUnitsUsageCost: ko.PureComputed<string>;
   public autoscaleCost: ko.PureComputed<string>;
   public shouldShowNotificationStatusPrompt: ko.Computed<boolean>;
-  public shouldDisplayPortalUsePrompt: ko.Computed<boolean>;
   public shouldShowStatusBar: ko.Computed<boolean>;
   public throughputTitle: ko.PureComputed<string>;
   public throughputAriaLabel: ko.PureComputed<string>;
@@ -181,22 +175,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return configContext.platform !== Platform.Emulator;
     });
 
-    this.shouldDisplayPortalUsePrompt = ko.pureComputed<boolean>(() => configContext.platform === Platform.Hosted);
-    this.canThroughputExceedMaximumValue = ko.pureComputed<boolean>(
-      () => configContext.platform === Platform.Portal && !this.container.isRunningOnNationalCloud()
-    );
-    this.canRequestSupport = ko.pureComputed(() => {
-      if (
-        configContext.platform === Platform.Emulator ||
-        configContext.platform === Platform.Hosted ||
-        this.canThroughputExceedMaximumValue()
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-
     this.overrideWithAutoPilotSettings = ko.pureComputed(() => {
       return this._hasProvisioningTypeChanged() && this._wasAutopilotOriginallySet();
     });
@@ -243,14 +221,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
       const throughputDefaults = this.container.collectionCreationDefaults.throughput;
       return throughputDefaults.unlimitedmax;
-    });
-
-    this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
-      if (configContext.platform === Platform.Hosted) {
-        return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-      }
-
-      return this.maxRUs();
     });
 
     this.maxRUsText = ko.pureComputed(() => {
@@ -300,8 +270,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
       if (
         this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-        this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-        this.canThroughputExceedMaximumValue()
+        this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
       ) {
         return updateThroughputBeyondLimitWarningMessage;
       }
@@ -365,13 +334,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           }
 
           if (this.throughput() < this.minRUs()) {
-            return false;
-          }
-
-          if (
-            !this.canThroughputExceedMaximumValue() &&
-            this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
-          ) {
             return false;
           }
 
@@ -450,40 +412,18 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           const originalThroughputValue = this.throughput.getEditableOriginalValue();
           const newThroughput = this.throughput();
 
-          if (
-            this.canThroughputExceedMaximumValue() &&
-            this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-            this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
-          ) {
-            const requestPayload = {
-              subscriptionId: userContext.subscriptionId,
-              databaseAccountName: userContext.databaseAccount.name,
-              resourceGroup: userContext.resourceGroup,
-              databaseName: this.database.id(),
-              throughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: false
-            };
-            await updateOfferThroughputBeyondLimit(requestPayload);
-            this.database.offer().content.offerThroughput = originalThroughputValue;
-            this.throughput(originalThroughputValue);
-            this.notificationStatusInfo(
-              throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
-            );
-            this.throughput.valueHasMutated(); // force component re-render
-          } else {
-            const updateOfferParams: DataModels.UpdateOfferParams = {
-              databaseId: this.database.id(),
-              currentOffer: this.database.offer(),
-              autopilotThroughput: undefined,
-              manualThroughput: newThroughput,
-              migrateToManual: this._hasProvisioningTypeChanged()
-            };
+          const updateOfferParams: DataModels.UpdateOfferParams = {
+            databaseId: this.database.id(),
+            currentOffer: this.database.offer(),
+            autopilotThroughput: undefined,
+            manualThroughput: newThroughput,
+            migrateToManual: this._hasProvisioningTypeChanged()
+          };
 
-            const updatedOffer = await updateOffer(updateOfferParams);
-            this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-            this.database.offer(updatedOffer);
-            this.database.offer.valueHasMutated();
-          }
+          const updatedOffer = await updateOffer(updateOfferParams);
+          this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
+          this.database.offer(updatedOffer);
+          this.database.offer.valueHasMutated();
         }
       }
     } catch (error) {

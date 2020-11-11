@@ -31,7 +31,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public throughputSpendAck: ko.Observable<boolean>;
   public throughputSpendAckVisible: ko.Computed<boolean>;
   public requestUnitsUsageCost: ko.Computed<string>;
-  public canRequestSupport: ko.PureComputed<boolean>;
   public costsVisible: ko.PureComputed<boolean>;
   public upsellMessage: ko.PureComputed<string>;
   public upsellMessageAriaLabel: ko.PureComputed<string>;
@@ -166,19 +165,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
       // TODO: change throughputSpendAckText to be a computed value, instead of having this side effect
       this.throughputSpendAckText(estimatedSpendAcknowledge);
       return estimatedSpend;
-    });
-
-    this.canRequestSupport = ko.pureComputed(() => {
-      if (
-        configContext.platform !== Platform.Emulator &&
-        !this.container.isTryCosmosDBSubscription() &&
-        configContext.platform !== Platform.Portal
-      ) {
-        const offerThroughput: number = this.throughput();
-        return offerThroughput <= 100000;
-      }
-
-      return false;
     });
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
