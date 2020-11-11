@@ -41,8 +41,11 @@ import { userContext } from "../../UserContext";
 import TabsBase from "../Tabs/TabsBase";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import promiseRetry from "p-retry";
 
 export default class Collection implements ViewModels.Collection {
+  private static readonly LoadOfferMaxRetries = 5;
+  private static readonly LoadOfferRetryAfterMilliSeconds = 5000;
   public nodeKind: string;
   public container: Explorer;
   public self: string;
@@ -1333,11 +1336,11 @@ export default class Collection implements ViewModels.Collection {
 
   public async loadAutopilotOfferWithRetry(): Promise<DataModels.Offer> {
     let retryCount = 0;
-    while (retryCount < Constants.LoadOfferRetry.MaxRetries) {
+    while (retryCount < Collection.LoadOfferMaxRetries) {
       if (this.offer().content.offerAutopilotSettings) {
         return this.offer();
       } else {
-        await new Promise(resolve => setTimeout(resolve, Constants.LoadOfferRetry.RetryAfterMilliSeconds));
+        await new Promise(resolve => setTimeout(resolve, Collection.LoadOfferRetryAfterMilliSeconds));
         await this.loadOffer();
       }
       retryCount++;

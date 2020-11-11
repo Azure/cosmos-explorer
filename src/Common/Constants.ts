@@ -437,8 +437,3 @@ export class TerminalQueryParams {
   public static readonly SubscriptionId = "subscriptionId";
   public static readonly TerminalEndpoint = "terminalEndpoint";
 }
-
-export class LoadOfferRetry {
-  public static readonly MaxRetries = 5;
-  public static readonly RetryAfterMilliSeconds = 5000;
-}
