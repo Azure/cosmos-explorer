@@ -209,18 +209,17 @@ const schema: DataModels.ISchema = {
 };
 
 const createMockContainer = (): Explorer => {
-  let mockContainer = new Explorer({
-    notificationsClient: null,
-    isEmulator: false
-  });
+  const mockContainer = new Explorer();
   mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-  mockContainer.onUpdateTabsButtons = () => {};
+  mockContainer.onUpdateTabsButtons = () => {
+    return;
+  };
 
   return mockContainer;
 };
 
-const createMockCollection = (container: Explorer): ViewModels.Collection => {
-  let mockCollection = {} as DataModels.Collection;
+const createMockCollection = (): ViewModels.Collection => {
+  const mockCollection = {} as DataModels.Collection;
   mockCollection._rid = "fakeRid";
   mockCollection._self = "fakeSelf";
   mockCollection.id = "fakeId";
@@ -231,8 +230,8 @@ const createMockCollection = (container: Explorer): ViewModels.Collection => {
     createMockContainer(),
     "fakeDatabaseId",
     mockCollection,
-    null,
-    null
+    undefined,
+    undefined
   );
 
   return mockCollectionVM;
@@ -243,7 +242,7 @@ describe("Resource tree for schema", () => {
   const resourceTree = new ResourceTreeAdapter(mockContainer);
 
   it("should render", () => {
-    const rootNode: TreeNode = resourceTree.buildSchemaNode(createMockCollection(mockContainer));
+    const rootNode: TreeNode = resourceTree.buildSchemaNode(createMockCollection());
     const props: TreeComponentProps = {
       rootNode,
       className: "dataResourceTree"
