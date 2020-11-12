@@ -249,6 +249,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         </Text>
       );
     }
+    return undefined;
   };
 
   private renderThroughputModeChoices = (): JSX.Element => {
