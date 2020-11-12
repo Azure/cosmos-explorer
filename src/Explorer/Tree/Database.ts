@@ -324,7 +324,7 @@ export default class Database implements ViewModels.Database {
     if (collection.analyticalStorageTtl !== undefined && this.container.isSchemaEnabled()) {
       collection.requestSchema = () => {
         this.junoClient.requestSchema({
-          id: null,
+          id: undefined,
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,
           accountName: userContext.databaseAccount.name,
