@@ -238,7 +238,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       userContext.subscriptionType !== SubscriptionType.Internal &&
       this.props.usageSizeInKB > oneTBinKB &&
       this.props.minimum >= usageInGB(this.props.usageSizeInKB) * minRUperGB;
-    if (featureFlagEnabled || collectionIsEligable) {
+    if (featureFlagEnabled || collectionIsEligible) {
       return (
         <Text>
           Need to scale below {this.props.minimum} RU/s? Reach out by filling{" "}
