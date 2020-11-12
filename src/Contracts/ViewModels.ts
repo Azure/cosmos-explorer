@@ -17,6 +17,7 @@ import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
 import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
+import { SubscriptionType } from "./SubscriptionType";
 
 export interface TokenProvider {
   getAuthHeader(): Promise<Headers>;
@@ -410,14 +411,6 @@ export interface ThroughputDefaults {
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
-}
-
-export enum SubscriptionType {
-  Benefits,
-  EA,
-  Free,
-  Internal,
-  PAYG
 }
 
 export class MonacoEditorSettings {

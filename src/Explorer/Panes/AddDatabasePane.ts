@@ -12,6 +12,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -256,7 +257,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const addDatabasePaneOpenMessage = {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         throughput: this.throughput(),
@@ -284,7 +285,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared()
       }),
       offerThroughput,
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         flight: this.container.flight()
@@ -327,10 +328,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType: ViewModels.SubscriptionType =
-      this.container.subscriptionType && this.container.subscriptionType();
+    const subscriptionType = this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
+    if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
@@ -349,7 +349,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared()
       }),
       offerThroughput: offerThroughput,
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         flight: this.container.flight()
@@ -373,7 +373,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared()
       }),
       offerThroughput: offerThroughput,
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         flight: this.container.flight()
