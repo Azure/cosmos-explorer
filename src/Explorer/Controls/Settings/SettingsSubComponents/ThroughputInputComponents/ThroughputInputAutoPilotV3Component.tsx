@@ -33,7 +33,6 @@ import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidat
 import { userContext } from "../../../../../UserContext";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
 import { usageInGB } from "../../../../../Utils/PricingUtils";
-import { features } from "process";
 import { Features } from "../../../../../Common/Constants";
 
 export interface ThroughputInputAutoPilotV3Props {
