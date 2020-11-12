@@ -360,7 +360,7 @@ const App: React.FunctionComponent = () => {
                 </span>
               </p>
               <p className="connectExplorerContent">
-                <input className="filterbtnstyle" type="submit" defaultValue="Connect" />
+                <input className="filterbtnstyle" type="submit" value="Connect" />
               </p>
               <p className="switchConnectTypeText" data-bind="click: $data.signInAad">
                 Sign In with Azure Account
@@ -407,7 +407,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
-      <div data-bind='component: { name: "problem-panes", params: { data: setupNotebooksPane} }' />
       <KOCommentIfStart if="isGitHubPaneEnabled" />
       <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
       <KOCommentEnd />
@@ -450,4 +449,4 @@ const App: React.FunctionComponent = () => {
   );
 };
 
-ReactDOM.render(<App />, document.body.firstElementChild);
+ReactDOM.render(<App />, document.body);
