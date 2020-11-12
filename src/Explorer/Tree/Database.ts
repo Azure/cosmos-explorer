@@ -13,6 +13,8 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import * as Logger from "../../Common/Logger";
 import Explorer from "../Explorer";
 import { readCollections } from "../../Common/dataAccess/readCollections";
+import { JunoClient, IJunoResponse } from "../../Juno/JunoClient";
+import { userContext } from "../../UserContext";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
@@ -29,6 +31,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseExpanded: ko.Observable<boolean>;
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
+  public junoClient: JunoClient;
 
   constructor(container: Explorer, data: any) {
     this.nodeKind = "Database";
@@ -43,6 +46,7 @@ export default class Database implements ViewModels.Database {
     this.isDatabaseShared = ko.pureComputed(() => {
       return this.offer && !!this.offer();
     });
+    this.junoClient = new JunoClient();
   }
 
   public onSettingsClick = () => {
@@ -184,6 +188,10 @@ export default class Database implements ViewModels.Database {
     const collections: DataModels.Collection[] = await readCollections(this.id());
     const deltaCollections = this.getDeltaCollections(collections);
 
+    collections.forEach((collection: DataModels.Collection) => {
+      this.addSchema(collection);
+    });
+
     deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
       const collectionVM: Collection = new Collection(this.container, this.id(), collection, null, null);
       collectionVMs.push(collectionVM);
@@ -307,5 +315,43 @@ export default class Database implements ViewModels.Database {
     });
 
     this.collections(collectionsToKeep);
+  }
+
+  public addSchema(collection: DataModels.Collection, interval?: number): NodeJS.Timeout {
+    let checkForSchema: NodeJS.Timeout = null;
+    interval = interval || 5000;
+
+    if (collection.analyticalStorageTtl !== undefined && this.container.isSchemaEnabled()) {
+      collection.requestSchema = () => {
+        this.junoClient.requestSchema({
+          id: undefined,
+          subscriptionId: userContext.subscriptionId,
+          resourceGroup: userContext.resourceGroup,
+          accountName: userContext.databaseAccount.name,
+          resource: `dbs/${this.id}/colls/${collection.id}`,
+          status: "new"
+        });
+        checkForSchema = setInterval(async () => {
+          const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(
+            userContext.databaseAccount.name,
+            this.id(),
+            collection.id
+          );
+
+          if (response.status >= 404) {
+            clearInterval(checkForSchema);
+          }
+
+          if (response.data !== null) {
+            clearInterval(checkForSchema);
+            collection.schema = response.data;
+          }
+        }, interval);
+      };
+
+      collection.requestSchema();
+    }
+
+    return checkForSchema;
   }
 }

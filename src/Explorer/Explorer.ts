@@ -87,6 +87,7 @@ import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
+import { SubscriptionType } from "../Contracts/SubscriptionType";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -119,7 +120,7 @@ export default class Explorer {
 
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;
+  public subscriptionType: ko.Observable<SubscriptionType>;
   public quotaId: ko.Observable<string>;
   public defaultExperience: ko.Observable<string>;
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
@@ -225,6 +226,7 @@ export default class Explorer {
   public shareTokenCopyHelperText: ko.Observable<string>;
   public shouldShowDataAccessExpiryDialog: ko.Observable<boolean>;
   public shouldShowContextSwitchPrompt: ko.Observable<boolean>;
+  public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
@@ -278,9 +280,7 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<ViewModels.SubscriptionType>(
-      SharedConstants.CollectionCreation.DefaultSubscriptionType
-    );
+    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.quotaId = ko.observable<string>("");
     let firstInitialization = true;
     this.isRefreshingExplorer = ko.observable<boolean>(true);
@@ -422,6 +422,7 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
 
+    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -1890,7 +1891,8 @@ export default class Explorer {
         masterKey,
         databaseAccount,
         resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId
+        subscriptionId: inputs.subscriptionId,
+        subscriptionType: inputs.subscriptionType
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,

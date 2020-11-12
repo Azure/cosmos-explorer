@@ -1,5 +1,5 @@
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import Explorer from "../Explorer";
 import AddDatabasePane from "./AddDatabasePane";
 import { DatabaseAccount } from "../../Contracts/DataModels";
@@ -44,31 +44,31 @@ describe("Add Database Pane", () => {
     });
 
     it("should be true if subscription type is Benefits", () => {
-      explorer.subscriptionType(ViewModels.SubscriptionType.Benefits);
+      explorer.subscriptionType(SubscriptionType.Benefits);
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
 
     it("should be false if subscription type is EA", () => {
-      explorer.subscriptionType(ViewModels.SubscriptionType.EA);
+      explorer.subscriptionType(SubscriptionType.EA);
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(false);
     });
 
     it("should be true if subscription type is Free", () => {
-      explorer.subscriptionType(ViewModels.SubscriptionType.Free);
+      explorer.subscriptionType(SubscriptionType.Free);
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
 
     it("should be true if subscription type is Internal", () => {
-      explorer.subscriptionType(ViewModels.SubscriptionType.Internal);
+      explorer.subscriptionType(SubscriptionType.Internal);
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
 
     it("should be true if subscription type is PAYG", () => {
-      explorer.subscriptionType(ViewModels.SubscriptionType.PAYG);
+      explorer.subscriptionType(SubscriptionType.PAYG);
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
