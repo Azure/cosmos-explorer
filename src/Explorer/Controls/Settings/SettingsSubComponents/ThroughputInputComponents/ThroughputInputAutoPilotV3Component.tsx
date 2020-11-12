@@ -229,6 +229,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   ): void => this.props.onAutoPilotSelected(option.key === "true");
 
   private minRUperGBSurvey = (): JSX.Element => {
+    const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={AzureSubscriptionId":${userContext.subscriptionId},"CosmosDBAccountName":${userContext.databaseAccount?.name}}`;
     const oneTBinKB = 1000000000;
     const minRUperGB = 10;
     return (
@@ -237,11 +238,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       this.props.minimum >= usageInGB(this.props.usageSizeInKB) * minRUperGB && (
         <Text>
           Need to scale below {this.props.minimum} RU/s? Reach out by filling{" "}
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbRzBPrdEMjvxPuDm8fCLUtXpUQ0JLV1Y5VVlDS1RNUE1aRzVHQlVQTVA1SS4u"
-          >
+          <a target="_blank" rel="noreferrer" href={href}>
             this questionnaire
           </a>
           .
