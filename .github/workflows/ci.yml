@@ -89,12 +89,6 @@ jobs:
         with:
           node-version: 12.x
       - uses: southpolesteve/cosmos-emulator-github-action@v1
-      - name: End to End Emualtor Tests
-        run: |
-          npm ci
-          npm start &
-          npm run wait-for-server
-          npm run test:e2e
       - name: End to End Tests
         run: |
           npm ci
@@ -128,7 +122,7 @@ jobs:
           sudo sysctl -p
           npm ci
           npm start &
-          npx wait-on  -i 5000 https-get://0.0.0.0:1234/
+          npx wait-on -i 5000 https-get://0.0.0.0:1234/
           node utils/accesibilityCheck.js
         shell: bash
         env:
