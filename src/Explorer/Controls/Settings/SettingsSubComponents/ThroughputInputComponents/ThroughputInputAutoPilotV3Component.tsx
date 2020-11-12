@@ -233,7 +233,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={"AzureSubscriptionId":"${userContext.subscriptionId}","CosmosDBAccountName":"${userContext.databaseAccount?.name}"}`;
     const oneTBinKB = 1000000000;
     const minRUperGB = 10;
-    const featureFlagEnabled = window.dataExplorer.isFeatureEnabled(Features.showMinRUSurvey);
+    const featureFlagEnabled = window.dataExplorer?.isFeatureEnabled(Features.showMinRUSurvey);
     const collectionIsEligable =
       userContext.subscriptionType !== SubscriptionType.Internal &&
       this.props.usageSizeInKB > oneTBinKB &&
