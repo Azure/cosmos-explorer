@@ -7,6 +7,7 @@ import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { number } from "prop-types";
 
 export interface IJunoResponse<T> {
   status: number;
@@ -427,6 +428,51 @@ export class JunoClient {
     };
   }
 
+  public async requestSchema(
+    schemaRequest: DataModels.ISchemaRequest
+  ): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
+    const response = await window.fetch(`${this.getAnalyticsUrl()}/${schemaRequest.accountName}/schema/request`, {
+      method: "POST",
+      body: JSON.stringify(schemaRequest),
+      headers: JunoClient.getHeaders()
+    });
+
+    let data: DataModels.ISchemaRequest;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
+  public async getSchema(
+    accountName: string,
+    databaseName: string,
+    containerName: string
+  ): Promise<IJunoResponse<DataModels.ISchema>> {
+    const response = await window.fetch(
+      `${this.getAnalyticsUrl()}/${accountName}/schema/${databaseName}/${containerName}`,
+      {
+        method: "GET",
+        headers: JunoClient.getHeaders()
+      }
+    );
+
+    let data: DataModels.ISchema;
+
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    }
+
+    return {
+      status: response.status,
+      data
+    };
+  }
+
   private async getNotebooks(input: RequestInfo, init?: RequestInit): Promise<IJunoResponse<IGalleryItem[]>> {
     const response = await window.fetch(input, init);
 
@@ -455,6 +501,10 @@ export class JunoClient {
 
   private getNotebooksAccountUrl(): string {
     return `${this.getNotebooksUrl()}/${this.getAccount()}`;
+  }
+
+  private getAnalyticsUrl(): string {
+    return `${configContext.JUNO_ENDPOINT}/api/analytics`;
   }
 
   private static getHeaders(): HeadersInit {

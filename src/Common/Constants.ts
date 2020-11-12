@@ -125,6 +125,7 @@ export class Features {
   public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
   public static readonly ttl90Days = "ttl90days";
   public static readonly enableRightPanelV2 = "enablerightpanelv2";
+  public static readonly enableSchema = "enableschema";
   public static readonly enableSDKoperations = "enablesdkoperations";
   public static readonly showMinRUSurvey = "showminrusurvey";
 }
