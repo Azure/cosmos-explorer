@@ -33,6 +33,8 @@ import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidat
 import { userContext } from "../../../../../UserContext";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
 import { usageInGB } from "../../../../../Utils/PricingUtils";
+import { features } from "process";
+import { Features } from "../../../../../Common/Constants";
 
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;
@@ -229,13 +231,16 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   ): void => this.props.onAutoPilotSelected(option.key === "true");
 
   private minRUperGBSurvey = (): JSX.Element => {
-    const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={AzureSubscriptionId":${userContext.subscriptionId},"CosmosDBAccountName":${userContext.databaseAccount?.name}}`;
+    const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={"AzureSubscriptionId":"${userContext.subscriptionId}","CosmosDBAccountName":"${userContext.databaseAccount?.name}"}`;
     const oneTBinKB = 1000000000;
     const minRUperGB = 10;
-    return (
+    const featureFlagEnabled = window.dataExplorer.isFeatureEnabled(Features.showMinRUSurvey);
+    const collectionIsEligable =
       userContext.subscriptionType !== SubscriptionType.Internal &&
       this.props.usageSizeInKB > oneTBinKB &&
-      this.props.minimum >= usageInGB(this.props.usageSizeInKB) * minRUperGB && (
+      this.props.minimum >= usageInGB(this.props.usageSizeInKB) * minRUperGB;
+    if (featureFlagEnabled || collectionIsEligable) {
+      return (
         <Text>
           Need to scale below {this.props.minimum} RU/s? Reach out by filling{" "}
           <a target="_blank" rel="noreferrer" href={href}>
@@ -243,8 +248,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           </a>
           .
         </Text>
-      )
-    );
+      );
+    }
   };
 
   private renderThroughputModeChoices = (): JSX.Element => {
