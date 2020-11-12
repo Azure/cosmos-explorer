@@ -234,7 +234,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const oneTBinKB = 1000000000;
     const minRUperGB = 10;
     const featureFlagEnabled = window.dataExplorer?.isFeatureEnabled(Features.showMinRUSurvey);
-    const collectionIsEligable =
+    const collectionIsEligible =
       userContext.subscriptionType !== SubscriptionType.Internal &&
       this.props.usageSizeInKB > oneTBinKB &&
       this.props.minimum >= usageInGB(this.props.usageSizeInKB) * minRUperGB;
