@@ -408,13 +408,13 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
       <div data-bind='component: { name: "problem-panes", params: { data: setupNotebooksPane} }' />
-      <KOCommentIfStart text="isGitHubPaneEnabled" />
+      <KOCommentIfStart if="isGitHubPaneEnabled" />
       <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
       <KOCommentEnd />
-      <KOCommentIfStart text="isPublishNotebookPaneEnabled" />
+      <KOCommentIfStart if="isPublishNotebookPaneEnabled" />
       <div data-bind="react: publishNotebookPaneAdapter" />
       <KOCommentEnd />
-      <KOCommentIfStart text="isCopyNotebookPaneEnabled" />
+      <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
       <div data-bind="react: copyNotebookPaneAdapter" />
       <KOCommentEnd />
       {/* Global access token expiration dialog - Start */}
