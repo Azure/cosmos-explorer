@@ -77,6 +77,7 @@ import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
+import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
@@ -406,11 +407,16 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
-      {window.dataExplorer?.isGitHubPaneEnabled && (
-        <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
-      )}
-      {window.dataExplorer?.isPublishNotebookPaneEnabled && <div data-bind="react: publishNotebookPaneAdapter" />}
-      {window.dataExplorer?.isCopyNotebookPaneEnabled && <div data-bind="react: copyNotebookPaneAdapter" />}
+      <div data-bind='component: { name: "problem-panes", params: { data: setupNotebooksPane} }' />
+      <KOCommentIfStart text="isGitHubPaneEnabled" />
+      <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
+      <KOCommentEnd />
+      <KOCommentIfStart text="isPublishNotebookPaneEnabled" />
+      <div data-bind="react: publishNotebookPaneAdapter" />
+      <KOCommentEnd />
+      <KOCommentIfStart text="isCopyNotebookPaneEnabled" />
+      <div data-bind="react: copyNotebookPaneAdapter" />
+      <KOCommentEnd />
       {/* Global access token expiration dialog - Start */}
       <div
         id="dataAccessTokenModal"
