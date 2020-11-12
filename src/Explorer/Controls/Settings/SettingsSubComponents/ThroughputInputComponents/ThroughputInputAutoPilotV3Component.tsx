@@ -30,6 +30,10 @@ import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../S
 import * as SharedConstants from "../../../../../Shared/Constants";
 import * as DataModels from "../../../../../Contracts/DataModels";
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+import { userContext } from "../../../../../UserContext";
+import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
+import { usageInGB } from "../../../../../Utils/PricingUtils";
+import { Features } from "../../../../../Common/Constants";
 
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;
@@ -60,6 +64,7 @@ export interface ThroughputInputAutoPilotV3Props {
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
   getThroughputWarningMessage: () => JSX.Element;
+  usageSizeInKB: number;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -224,6 +229,29 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     option?: IChoiceGroupOption
   ): void => this.props.onAutoPilotSelected(option.key === "true");
 
+  private minRUperGBSurvey = (): JSX.Element => {
+    const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={"AzureSubscriptionId":"${userContext.subscriptionId}","CosmosDBAccountName":"${userContext.databaseAccount?.name}"}`;
+    const oneTBinKB = 1000000000;
+    const minRUperGB = 10;
+    const featureFlagEnabled = window.dataExplorer?.isFeatureEnabled(Features.showMinRUSurvey);
+    const collectionIsEligible =
+      userContext.subscriptionType !== SubscriptionType.Internal &&
+      this.props.usageSizeInKB > oneTBinKB &&
+      this.props.minimum >= usageInGB(this.props.usageSizeInKB) * minRUperGB;
+    if (featureFlagEnabled || collectionIsEligible) {
+      return (
+        <Text>
+          Need to scale below {this.props.minimum} RU/s? Reach out by filling{" "}
+          <a target="_blank" rel="noreferrer" href={href}>
+            this questionnaire
+          </a>
+          .
+        </Text>
+      );
+    }
+    return undefined;
+  };
+
   private renderThroughputModeChoices = (): JSX.Element => {
     const labelId = "settingsV2RadioButtonLabelId";
     return (
@@ -275,6 +303,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         onChange={this.onAutoPilotThroughputChange}
       />
       {!this.overrideWithProvisionedThroughputSettings() && this.getAutoPilotUsageCost()}
+      {this.minRUperGBSurvey()}
       {this.props.spendAckVisible && (
         <Checkbox
           id="spendAckCheckBox"
@@ -305,15 +334,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
         onChange={this.onThroughputChange}
       />
-
       {this.props.getThroughputWarningMessage() && (
         <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
           {this.props.getThroughputWarningMessage()}
         </MessageBar>
       )}
-
       {!this.props.isEmulator && this.getRequestUnitsUsageCost()}
-
+      {this.minRUperGBSurvey()}
       {this.props.spendAckVisible && (
         <Checkbox
           id="spendAckCheckBox"
@@ -323,7 +350,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           onChange={this.onSpendAckChecked}
         />
       )}
-
       {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
     </Stack>
   );
