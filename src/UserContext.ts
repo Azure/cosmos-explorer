@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "./Contracts/DataModels";
-import { SubscriptionType } from "./Contracts/ViewModels";
+import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 
 interface UserContext {

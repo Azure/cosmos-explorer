@@ -31,7 +31,7 @@ import * as SharedConstants from "../../../../../Shared/Constants";
 import * as DataModels from "../../../../../Contracts/DataModels";
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import { userContext } from "../../../../../UserContext";
-import { SubscriptionType } from "../../../../../Contracts/ViewModels";
+import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
 import { usageInGB } from "../../../../../Utils/PricingUtils";
 
 export interface ThroughputInputAutoPilotV3Props {
