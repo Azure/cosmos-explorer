@@ -83,7 +83,6 @@ jobs:
     needs: [lint, format, compile, unittest]
     runs-on: windows-latest
     steps:
-        steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
