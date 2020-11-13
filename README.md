@@ -84,7 +84,7 @@ Unit tests are located adjacent to the code under test and run with [Jest](https
 4. Install dependencies: `npm install`
 5. Run cypress headless(`npm run test`) or in interactive mode(`npm run test:debug`)
 
-#### End to End Production Tests
+#### End to End CI Tests
 
 Jest and Puppeteer are used for end to end production runners and are contained in `test/`. To run these tests locally:
 

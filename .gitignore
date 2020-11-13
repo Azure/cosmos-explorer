@@ -9,9 +9,6 @@ pkg/DataExplorer/*
 test/out/*
 workers/**/*.js
 *.trx
-cypress/videos
-cypress/screenshots
-cypress/fixtures
 notebookapp/*
 Contracts/*
 .DS_Store
