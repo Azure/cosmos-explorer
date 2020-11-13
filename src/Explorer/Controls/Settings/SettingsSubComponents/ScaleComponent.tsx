@@ -200,6 +200,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       onScaleSaveableChange={this.props.onScaleSaveableChange}
       onScaleDiscardableChange={this.props.onScaleDiscardableChange}
       getThroughputWarningMessage={this.getThroughputWarningMessage}
+      usageSizeInKB={this.props.collection.quotaInfo().usageSizeInKB}
     />
   );
 

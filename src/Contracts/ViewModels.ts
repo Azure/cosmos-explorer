@@ -17,6 +17,7 @@ import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
 import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
+import { SubscriptionType } from "./SubscriptionType";
 
 export interface TokenProvider {
   getAuthHeader(): Promise<Headers>;
@@ -115,6 +116,8 @@ export interface CollectionBase extends TreeNode {
 export interface Collection extends CollectionBase {
   defaultTtl: ko.Observable<number>;
   analyticalStorageTtl: ko.Observable<number>;
+  schema?: DataModels.ISchema;
+  requestSchema?: () => void;
   indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   quotaInfo: ko.Observable<DataModels.CollectionQuotaInfo>;
@@ -358,6 +361,7 @@ export enum CollectionTabKind {
   SparkMasterTab = 16,
   Gallery = 17,
   NotebookViewer = 18,
+  Schema = 19,
   SettingsV2 = 19
 }
 
@@ -410,14 +414,6 @@ export interface ThroughputDefaults {
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
-}
-
-export enum SubscriptionType {
-  Benefits,
-  EA,
-  Free,
-  Internal,
-  PAYG
 }
 
 export class MonacoEditorSettings {

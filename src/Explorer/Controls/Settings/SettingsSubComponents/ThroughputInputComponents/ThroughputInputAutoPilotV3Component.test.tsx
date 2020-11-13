@@ -17,6 +17,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     minimum: 10000,
     maximum: 400,
     step: 100,
+    usageSizeInKB: 10000,
     isEnabled: true,
     isEmulator: false,
     spendAckChecked: false,

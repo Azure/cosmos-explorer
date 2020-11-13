@@ -7,6 +7,7 @@ import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import editable from "../../Common/EditableUtility";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -648,10 +649,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType: ViewModels.SubscriptionType =
-      this.container.subscriptionType && this.container.subscriptionType();
-
-    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
+    const subscriptionType = this.container.subscriptionType && this.container.subscriptionType();
+    if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
@@ -690,7 +689,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         databaseId: this.databaseId(),
         rupm: this.rupm()
       }),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -793,7 +792,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         uniqueKeyPolicy,
         collectionWithThroughputInShared: this.collectionWithThroughputInShared()
       }),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -868,7 +867,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           }),
-          subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -903,7 +902,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           },
-          subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
