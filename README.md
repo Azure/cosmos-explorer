@@ -76,17 +76,7 @@ Unit tests are located adjacent to the code under test and run with [Jest](https
 
 #### End to End CI Tests
 
-[Cypress](https://www.cypress.io/) is used for end to end tests and are contained in `cypress/`. Currently, it operates as sub project with its own typescript config and dependencies. It also only operates against the emulator. To run cypress tests:
-
-1. Ensure the emulator is running
-2. Start cosmos explorer in emulator mode: `PLATFORM=Emulator npm run watch`
-3. Move into `cypress/` folder: `cd cypress`
-4. Install dependencies: `npm install`
-5. Run cypress headless(`npm run test`) or in interactive mode(`npm run test:debug`)
-
-#### End to End CI Tests
-
-Jest and Puppeteer are used for end to end production runners and are contained in `test/`. To run these tests locally:
+Jest and Puppeteer are used for end to end browser based tests and are contained in `test/`. To run these tests locally:
 
 1. Copy .env.example to .env
 2. Update the values in .env including your local data explorer endpoint (ask a teammate/codeowner for help with .env values)
