@@ -52,12 +52,14 @@ class EditorViewModel extends JsonEditorViewModel {
   protected registerCompletionItemProvider() {
     let sqlCompletionItemProvider = new SqlCompletionItemProvider();
     if (EditorViewModel.providerRegistered.indexOf("sql") < 0) {
-      monaco.languages.registerCompletionItemProvider("sql", sqlCompletionItemProvider);
+      // TODO Remove when @azure/cosmos-language-service is updated
+      monaco.languages.registerCompletionItemProvider("sql", sqlCompletionItemProvider as any);
       EditorViewModel.providerRegistered.push("sql");
     }
   }
 
   protected getErrorMarkers(input: string): Q.Promise<monaco.editor.IMarkerData[]> {
-    return ErrorMarkProvider.getErrorMark(input);
+    // TODO Remove when @azure/cosmos-language-service is updated
+    return ErrorMarkProvider.getErrorMark(input) as any;
   }
 }
