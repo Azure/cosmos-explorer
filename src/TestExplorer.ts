@@ -41,7 +41,7 @@ class TestExplorer {
     window.location.search
       .substr(1)
       .split("&")
-      .forEach((item) => {
+      .forEach(item => {
         const tmp = item.split("=");
         const value = decodeURIComponent(tmp[1]);
         switch (tmp[0]) {
