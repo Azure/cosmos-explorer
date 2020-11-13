@@ -2543,7 +2543,6 @@ export default class Explorer {
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
-    console.log("auth header:" + JSON.stringify(authorizationHeader));
     try {
       const response = await fetch(disallowedLocationsUri, {
         method: "POST",
