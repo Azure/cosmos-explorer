@@ -66,7 +66,7 @@
     "jquery-ui-dist": "1.12.1",
     "knockout": "3.5.1",
     "mkdirp": "1.0.4",
-    "monaco-editor": "0.15.6",
+    "monaco-editor": "0.18.1",
     "object.entries": "1.1.0",
     "office-ui-fabric-react": "7.134.1",
     "p-retry": "4.2.0",
