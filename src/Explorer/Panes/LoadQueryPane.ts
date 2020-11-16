@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import * as Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -97,33 +96,30 @@ export class LoadQueryPane extends ContextualPaneBase {
     return true;
   };
 
-  public loadQueryFromFile(file: File): Q.Promise<void> {
+  public async loadQueryFromFile(file: File): Promise<void> {
     const selectedCollection: ViewModels.Collection = this.container && this.container.findSelectedCollection();
     if (!selectedCollection) {
       // should never get into this state
       Logger.logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
-      return Q.reject("No collection was selected");
+      throw new Error("No collection was selected");
     } else if (this.container.isPreferredApiMongoDB()) {
       selectedCollection.onNewMongoQueryClick(selectedCollection, null);
     } else {
       selectedCollection.onNewQueryClick(selectedCollection, null);
     }
-    const deferred: Q.Deferred<void> = Q.defer<void>();
     const reader = new FileReader();
     reader.onload = (evt: any): void => {
       const fileData: string = evt.target.result;
       const queryTab = this.container.tabsManager.activeTab() as QueryTab;
       queryTab.initialEditorContent(fileData);
       queryTab.sqlQueryEditorContent(fileData);
-      deferred.resolve();
     };
 
     reader.onerror = (evt: ProgressEvent): void => {
-      deferred.reject((evt as any).error.message);
+      throw new Error((evt as any).error.message);
     };
 
     reader.readAsText(file);
-    return deferred.promise;
   }
 
   private updateSelectedFilesTitle(fileList: FileList) {

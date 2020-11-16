@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -163,13 +162,13 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this._buildCommandBarOptions();
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): Promise<any> {
     return super.onTabClick().then(() => {
       this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Query);
     });
   }
 
-  public onExecuteQueryClick = (): Q.Promise<any> => {
+  public onExecuteQueryClick = (): Promise<any> => {
     const sqlStatement: string = this.selectedContent() || this.sqlQueryEditorContent();
     this.sqlStatementToExecute(sqlStatement);
     this.allResultsMetadata([]);
@@ -191,7 +190,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.collection && this.collection.container && this.collection.container.browseQueriesPane.open();
   };
 
-  public onFetchNextPageClick(): Q.Promise<any> {
+  public onFetchNextPageClick(): Promise<any> {
     const allResultsMetadata = (this.allResultsMetadata && this.allResultsMetadata()) || [];
     const metadata: ViewModels.QueryResultsMetadata = allResultsMetadata[allResultsMetadata.length - 1];
     const firstResultIndex: number = (metadata && Number(metadata.firstItemIndex)) || 1;
@@ -265,7 +264,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     return true;
   };
 
-  private _executeQueryDocumentsPage(firstItemIndex: number): Q.Promise<any> {
+  private _executeQueryDocumentsPage(firstItemIndex: number): Promise<any> {
     this.errors([]);
     this.roundTrips(undefined);
     if (this._iterator == null) {
@@ -277,7 +276,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   }
 
   // TODO: Position and enable spinner when request is in progress
-  private _queryDocumentsPage(firstItemIndex: number): Q.Promise<any> {
+  private _queryDocumentsPage(firstItemIndex: number): Promise<any> {
     this.isExecutionError(false);
     this._resetAggregateQueryMetrics();
     const startKey: number = TelemetryProcessor.traceStart(Action.ExecuteQuery, {
@@ -485,16 +484,14 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     }
   }
 
-  protected _initIterator(): Q.Promise<MinimalQueryIterator> {
+  protected _initIterator(): Promise<MinimalQueryIterator> {
     const options: any = QueryTab.getIteratorOptions(this.collection);
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
 
-    return Q(
-      queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options).then(
-        iterator => (this._iterator = iterator)
-      )
+    return queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options).then(
+      iterator => (this._iterator = iterator)
     );
   }
 

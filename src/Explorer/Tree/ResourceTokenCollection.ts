@@ -5,7 +5,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DocumentId from "./DocumentId";
 import DocumentsTab from "../Tabs/DocumentsTab";
-import Q from "q";
 import QueryTab from "../Tabs/QueryTab";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
@@ -41,9 +40,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.isCollectionExpanded = ko.observable<boolean>(true);
   }
 
-  public expandCollection(): Q.Promise<void> {
+  public async expandCollection(): Promise<void> {
     if (this.isCollectionExpanded()) {
-      return Q();
+      return;
     }
 
     this.isCollectionExpanded(true);
@@ -55,8 +54,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree
     });
-
-    return Q.resolve();
   }
 
   public collapseCollection() {

@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -340,24 +339,21 @@ export default class DocumentsTab extends TabsBase {
     return true;
   }
 
-  public onShowFilterClick(): Q.Promise<any> {
+  public async onShowFilterClick(): Promise<any> {
     this.isFilterCreated(true);
     this.isFilterExpanded(true);
 
     $(".filterDocExpanded").addClass("active");
     $("#content").addClass("active");
     $(".querydropdown").focus();
-
-    return Q();
   }
 
-  public onHideFilterClick(): Q.Promise<any> {
+  public async onHideFilterClick(): Promise<any> {
     this.isFilterExpanded(false);
 
     $(".filterDocExpanded").removeClass("active");
     $("#content").removeClass("active");
     $(".queryButton").focus();
-    return Q();
   }
 
   public onCloseButtonKeyDown = (source: any, event: KeyboardEvent): boolean => {
@@ -369,7 +365,7 @@ export default class DocumentsTab extends TabsBase {
     return true;
   };
 
-  public onApplyFilterClick(): Q.Promise<any> {
+  public onApplyFilterClick(): Promise<any> {
     // clear documents grid
     this.documentIds([]);
     return this.createIterator()
@@ -398,7 +394,7 @@ export default class DocumentsTab extends TabsBase {
       });
   }
 
-  public refreshDocumentsGrid(): Q.Promise<any> {
+  public refreshDocumentsGrid(): Promise<any> {
     return this.onApplyFilterClick();
   }
 
@@ -411,19 +407,17 @@ export default class DocumentsTab extends TabsBase {
     return true;
   };
 
-  public onDocumentIdClick(clickedDocumentId: DocumentId): Q.Promise<any> {
+  public async onDocumentIdClick(clickedDocumentId: DocumentId): Promise<any> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
-      return Q();
+      return;
     }
 
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
-
-    return Q();
   }
 
-  public onNewDocumentClick = (): Q.Promise<any> => {
+  public onNewDocumentClick = async (): Promise<any> => {
     if (this.isEditorDirty() && !this._isIgnoreDirtyEditor()) {
-      return Q();
+      return;
     }
     this.selectedDocumentId(null);
 
@@ -431,11 +425,9 @@ export default class DocumentsTab extends TabsBase {
     this.initialDocumentContent(defaultDocument);
     this.selectedDocumentContent.setBaseline(defaultDocument);
     this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
-
-    return Q();
   };
 
-  public onSaveNewDocumentClick = (): Q.Promise<any> => {
+  public onSaveNewDocumentClick = (): Promise<any> => {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -493,15 +485,13 @@ export default class DocumentsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   };
 
-  public onRevertNewDocumentClick = (): Q.Promise<any> => {
+  public onRevertNewDocumentClick = async (): Promise<any> => {
     this.initialDocumentContent("");
     this.selectedDocumentContent("");
     this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-
-    return Q();
   };
 
-  public onSaveExisitingDocumentClick = (): Q.Promise<any> => {
+  public onSaveExisitingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = JSON.parse(this.selectedDocumentContent());
 
@@ -560,15 +550,13 @@ export default class DocumentsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   };
 
-  public onRevertExisitingDocumentClick = (): Q.Promise<any> => {
+  public onRevertExisitingDocumentClick = async (): Promise<any> => {
     this.selectedDocumentContent.setBaseline(this.initialDocumentContent());
     this.initialDocumentContent.valueHasMutated();
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
-
-    return Q();
   };
 
-  public onDeleteExisitingDocumentClick = (): Q.Promise<any> => {
+  public onDeleteExisitingDocumentClick = async (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const msg = !this.isPreferredApiMongoDB
       ? "Are you sure you want to delete the selected item ?"
@@ -577,30 +565,27 @@ export default class DocumentsTab extends TabsBase {
     if (window.confirm(msg)) {
       return this._deleteDocument(selectedDocumentId);
     }
-
-    return Q();
   };
 
-  public onValidDocumentEdit(): Q.Promise<any> {
+  public async onValidDocumentEdit(): Promise<any> {
     if (
       this.editorState() === ViewModels.DocumentExplorerState.newDocumentInvalid ||
       this.editorState() === ViewModels.DocumentExplorerState.newDocumentValid
     ) {
       this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
-      return Q();
+      return;
     }
 
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
-    return Q();
   }
 
-  public onInvalidDocumentEdit(): Q.Promise<any> {
+  public async onInvalidDocumentEdit(): Promise<any> {
     if (
       this.editorState() === ViewModels.DocumentExplorerState.newDocumentInvalid ||
       this.editorState() === ViewModels.DocumentExplorerState.newDocumentValid
     ) {
       this.editorState(ViewModels.DocumentExplorerState.newDocumentInvalid);
-      return Q();
+      return;
     }
 
     if (
@@ -608,22 +593,20 @@ export default class DocumentsTab extends TabsBase {
       this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid
     ) {
       this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid);
-      return Q();
+      return;
     }
-
-    return Q();
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): Promise<any> {
     return super.onTabClick().then(() => {
       this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     });
   }
 
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): Promise<any> {
     return super.onActivate().then(() => {
       if (this._documentsIterator) {
-        return Q.resolve(this._documentsIterator);
+        return this._documentsIterator;
       }
 
       return this.createIterator().then(
@@ -653,7 +636,7 @@ export default class DocumentsTab extends TabsBase {
     });
   }
 
-  public onRefreshClick(): Q.Promise<any> {
+  public onRefreshClick(): Promise<any> {
     return this.refreshDocumentsGrid().then(() => {
       this.selectedDocumentContent("");
       this.selectedDocumentId(null);
@@ -665,11 +648,11 @@ export default class DocumentsTab extends TabsBase {
     return window.confirm(msg);
   };
 
-  protected __deleteDocument(documentId: DocumentId): Q.Promise<any> {
+  protected __deleteDocument(documentId: DocumentId): Promise<any> {
     return deleteDocument(this.collection, documentId);
   }
 
-  private _deleteDocument(selectedDocumentId: DocumentId): Q.Promise<any> {
+  private _deleteDocument(selectedDocumentId: DocumentId): Promise<any> {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -714,7 +697,7 @@ export default class DocumentsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   }
 
-  public createIterator(): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
+  public createIterator(): Promise<QueryIterator<ItemDefinition & Resource>> {
     let filters = this.lastFilterContents();
     const filter: string = this.filterContent().trim();
     const query: string = this.buildQuery(filter);
@@ -728,14 +711,14 @@ export default class DocumentsTab extends TabsBase {
     return queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
-  public selectDocument(documentId: DocumentId): Q.Promise<any> {
+  public selectDocument(documentId: DocumentId): Promise<any> {
     this.selectedDocumentId(documentId);
     return readDocument(this.collection, documentId).then((content: any) => {
       this.initDocumentEditor(documentId, content);
     });
   }
 
-  public loadNextPage(): Q.Promise<any> {
+  public loadNextPage(): Promise<any> {
     this.isExecuting(true);
     this.isExecutionError(false);
     return this._loadNextPageInternal()
@@ -809,8 +792,8 @@ export default class DocumentsTab extends TabsBase {
     }
   };
 
-  protected _loadNextPageInternal(): Q.Promise<DataModels.DocumentId[]> {
-    return Q(this._documentsIterator.fetchNext().then(response => response.resources));
+  protected _loadNextPageInternal(): Promise<DataModels.DocumentId[]> {
+    return this._documentsIterator.fetchNext().then(response => response.resources);
   }
 
   protected _onEditorContentChange(newContent: string) {
@@ -822,7 +805,7 @@ export default class DocumentsTab extends TabsBase {
     }
   }
 
-  public initDocumentEditor(documentId: DocumentId, documentContent: any): Q.Promise<any> {
+  public async initDocumentEditor(documentId: DocumentId, documentContent: any): Promise<any> {
     if (documentId) {
       const content: string = this.renderObjectForEditor(documentContent, null, 4);
       this.selectedDocumentContent.setBaseline(content);
@@ -832,8 +815,6 @@ export default class DocumentsTab extends TabsBase {
         : ViewModels.DocumentExplorerState.newDocumentValid;
       this.editorState(newState);
     }
-
-    return Q();
   }
 
   public buildQuery(filter: string): string {

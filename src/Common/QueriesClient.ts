@@ -136,7 +136,7 @@ export class QueriesClient {
     return queryDocuments(SavedQueries.DatabaseName, SavedQueries.CollectionName, this.fetchQueriesQuery(), options)
       .then(
         (queryIterator: QueryIterator<ItemDefinition & Resource>) => {
-          const fetchQueries = (firstItemIndex: number): Q.Promise<ViewModels.QueryResults> =>
+          const fetchQueries = (firstItemIndex: number): Promise<ViewModels.QueryResults> =>
             queryDocumentsPage(queriesCollection.id(), queryIterator, firstItemIndex, options);
           return QueryUtils.queryAllPages(fetchQueries).then(
             (results: ViewModels.QueryResults) => {

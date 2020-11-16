@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import * as Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "./TabsBase";
 import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
@@ -114,7 +113,7 @@ export default class GraphTab extends TabsBase {
       : `${account.name}.graphs.azure.com:443/`;
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): Promise<any> {
     return super.onTabClick().then(() => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     });

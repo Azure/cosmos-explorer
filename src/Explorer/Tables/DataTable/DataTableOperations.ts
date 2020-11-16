@@ -1,5 +1,4 @@
 import _ from "underscore";
-import Q from "q";
 
 import * as Entities from "../Entities";
 import * as QueryBuilderConstants from "../Constants";
@@ -84,11 +83,11 @@ export function filterColumns(table: DataTables.DataTable, settings: boolean[]):
  * Reorder columns based on current order.
  * If no current order is specified, reorder the columns based on intial order.
  */
-export function reorderColumns(
+export async function reorderColumns(
   table: DataTables.DataTable,
   targetOrder: number[],
   currentOrder?: number[]
-): Q.Promise<any> {
+): Promise<any> {
   var columnsCount: number = targetOrder.length;
   var isCurrentOrderPassedIn: boolean = !!currentOrder;
   if (!isCurrentOrderPassedIn) {
@@ -107,13 +106,9 @@ export function reorderColumns(
     var transformationOrder: number[] = isCurrentOrderPassedIn
       ? calculateTransformationOrder(currentOrder, targetOrder)
       : targetOrder;
-    try {
-      $.fn.dataTable.ColReorder(table).fnOrder(transformationOrder);
-    } catch (err) {
-      return Q.reject(err);
-    }
+    $.fn.dataTable.ColReorder(table).fnOrder(transformationOrder);
   }
-  return Q.resolve(null);
+  return null;
 }
 
 export function resetColumns(table: DataTables.DataTable): void {

@@ -1,7 +1,6 @@
 jest.mock("../../Common/dataAccess/deleteCollection");
 import * as ko from "knockout";
 import * as sinon from "sinon";
-import Q from "q";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -58,7 +57,7 @@ describe("Delete Collection Confirmation Pane", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
       let fakeExplorer = new Explorer();
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
-      fakeExplorer.refreshAllDatabases = () => Q.resolve();
+      fakeExplorer.refreshAllDatabases = () => Promise.resolve();
 
       let pane = new DeleteCollectionConfirmationPane({
         id: "deletecollectionconfirmationpane",
@@ -119,7 +118,7 @@ describe("Delete Collection Confirmation Pane", () => {
       fakeExplorer.selectedNode = ko.observable<TreeNode>();
       fakeExplorer.isLastCollection = () => true;
       fakeExplorer.isSelectedDatabaseShared = () => false;
-      fakeExplorer.refreshAllDatabases = () => Q.resolve();
+      fakeExplorer.refreshAllDatabases = () => Promise.resolve();
 
       let pane = new DeleteCollectionConfirmationPane({
         id: "deletecollectionconfirmationpane",

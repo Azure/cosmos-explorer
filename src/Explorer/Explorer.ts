@@ -217,7 +217,7 @@ export default class Explorer {
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
-  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
+  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Promise<void>;
   public renewTokenError: ko.Observable<string>;
   public tokenForRenewal: ko.Observable<string>;
   public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
@@ -1120,7 +1120,7 @@ export default class Explorer {
       "Initiating connection to account"
     );
     this.renewExplorerShareAccess(this, this.tokenForRenewal())
-      .fail((error: any) => {
+      .catch((error: any) => {
         const stringifiedError: string = error.message;
         this.renewTokenError("Invalid connection string specified");
         NotificationConsoleUtils.logConsoleMessage(
@@ -1157,33 +1157,27 @@ export default class Explorer {
     );
   }
 
-  public renewShareAccess(token: string): Q.Promise<void> {
+  public async renewShareAccess(token: string): Promise<void> {
     if (!this.renewExplorerShareAccess) {
-      return Q.reject("Not implemented");
+      throw "Not implemented";
     }
 
-    const deferred: Q.Deferred<void> = Q.defer<void>();
     const id: string = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
       "Initiating connection to account"
     );
-    this.renewExplorerShareAccess(this, token)
+    return this.renewExplorerShareAccess(this, token)
       .then(
         () => {
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Connection successful");
           this.renewAdHocAccessPane && this.renewAdHocAccessPane.close();
-          deferred.resolve();
         },
         (error: any) => {
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${error.message}`);
-          deferred.reject(error);
+          throw error;
         }
       )
-      .finally(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-      });
-
-    return deferred.promise;
+      .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
   }
 
   public displayGuestAccessTokenRenewalPrompt(): void {
@@ -1378,24 +1372,19 @@ export default class Explorer {
     }
   }
 
-  public refreshDatabaseForResourceToken(): Q.Promise<any> {
+  public async refreshDatabaseForResourceToken(): Promise<any> {
     const databaseId = this.resourceTokenDatabaseId();
     const collectionId = this.resourceTokenCollectionId();
     if (!databaseId || !collectionId) {
-      return Q.reject();
+      throw new Error();
     }
 
-    const deferred: Q.Deferred<void> = Q.defer();
-    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
-      this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
-      this.selectedNode(this.resourceTokenCollection());
-      deferred.resolve();
-    });
-
-    return deferred.promise;
+    const collection = await readCollection(databaseId, collectionId);
+    this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
+    this.selectedNode(this.resourceTokenCollection());
   }
 
-  public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
+  public refreshAllDatabases(isInitialLoad?: boolean): Promise<any> {
     this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
@@ -1412,89 +1401,85 @@ export default class Explorer {
     }
 
     // TODO: Refactor
-    const deferred: Q.Deferred<any> = Q.defer();
     this._setLoadingStatusText("Fetching databases...");
-    readDatabases().then(
-      (databases: DataModels.Database[]) => {
-        this._setLoadingStatusText("Successfully fetched databases.");
-        TelemetryProcessor.traceSuccess(
-          Action.LoadDatabases,
-          {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree
-          },
-          startKey
-        );
-        const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
-        const deltaDatabases = this.getDeltaDatabases(databases);
-        this.addDatabasesToList(deltaDatabases.toAdd);
-        this.deleteDatabasesFromList(deltaDatabases.toDelete);
-        this.selectedNode(currentlySelectedNode);
-        this._setLoadingStatusText("Fetching containers...");
-        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-          .then(
-            () => {
-              this._setLoadingStatusText("Successfully fetched containers.");
-              deferred.resolve();
-            },
-            reason => {
-              this._setLoadingStatusText("Failed to fetch containers.");
-              deferred.reject(reason);
-            }
-          )
-          .finally(() => this.isRefreshingExplorer(false));
-      },
-      error => {
-        this._setLoadingStatusText("Failed to fetch databases.");
-        this.isRefreshingExplorer(false);
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: error.message
-          },
-          startKey
-        );
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing databases: ${error.message}`
-        );
-      }
-    );
-
-    return deferred.promise.then(
-      () => {
-        if (resourceTreeStartKey != null) {
+    return readDatabases()
+      .then(
+        (databases: DataModels.Database[]) => {
+          this._setLoadingStatusText("Successfully fetched databases.");
           TelemetryProcessor.traceSuccess(
-            Action.LoadResourceTree,
+            Action.LoadDatabases,
             {
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree
             },
-            resourceTreeStartKey
+            startKey
           );
-        }
-      },
-      reason => {
-        if (resourceTreeStartKey != null) {
+          const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
+          const deltaDatabases = this.getDeltaDatabases(databases);
+          this.addDatabasesToList(deltaDatabases.toAdd);
+          this.deleteDatabasesFromList(deltaDatabases.toDelete);
+          this.selectedNode(currentlySelectedNode);
+          this._setLoadingStatusText("Fetching containers...");
+          this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
+            .then(
+              () => this._setLoadingStatusText("Successfully fetched containers."),
+              reason => {
+                this._setLoadingStatusText("Failed to fetch containers.");
+                throw reason;
+              }
+            )
+            .finally(() => this.isRefreshingExplorer(false));
+        },
+        error => {
+          this._setLoadingStatusText("Failed to fetch databases.");
+          this.isRefreshingExplorer(false);
           TelemetryProcessor.traceFailure(
-            Action.LoadResourceTree,
+            Action.LoadDatabases,
             {
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
+              databaseAccountName: this.databaseAccount().name,
+              defaultExperience: this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
-              error: reason
+              error: error.message
             },
-            resourceTreeStartKey
+            startKey
           );
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Error while refreshing databases: ${error.message}`
+          );
+          throw error;
         }
-      }
-    );
+      )
+      .then(
+        () => {
+          if (resourceTreeStartKey != null) {
+            TelemetryProcessor.traceSuccess(
+              Action.LoadResourceTree,
+              {
+                databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
+                defaultExperience: this.defaultExperience && this.defaultExperience(),
+                dataExplorerArea: Constants.Areas.ResourceTree
+              },
+              resourceTreeStartKey
+            );
+          }
+        },
+        reason => {
+          if (resourceTreeStartKey != null) {
+            TelemetryProcessor.traceFailure(
+              Action.LoadResourceTree,
+              {
+                databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
+                defaultExperience: this.defaultExperience && this.defaultExperience(),
+                dataExplorerArea: Constants.Areas.ResourceTree,
+                error: reason
+              },
+              resourceTreeStartKey
+            );
+          }
+        }
+      );
   }
 
   public onRefreshDatabasesKeyPress = (source: any, event: KeyboardEvent): boolean => {
@@ -1794,7 +1779,7 @@ export default class Explorer {
       inputs.extensionEndpoint = configContext.PROXY_PATH;
     }
 
-    const initPromise: Q.Promise<void> = inputs ? this.initDataExplorerWithFrameInputs(inputs) : Q();
+    const initPromise: Promise<void> = inputs ? this.initDataExplorerWithFrameInputs(inputs) : Promise.resolve();
 
     initPromise.then(() => {
       const openAction: ActionContracts.DataExplorerAction = message.openAction;
@@ -1888,7 +1873,7 @@ export default class Explorer {
     return false;
   }
 
-  public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): Q.Promise<void> {
+  public async initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): Promise<void> {
     if (inputs != null) {
       const authorizationToken = inputs.authorizationToken || "";
       const masterKey = inputs.masterKey || "";
@@ -1938,7 +1923,6 @@ export default class Explorer {
 
       this.isAccountReady(true);
     }
-    return Q();
   }
 
   public setFeatureFlagsFromFlights(flights: readonly string[]): void {
@@ -2056,7 +2040,7 @@ export default class Explorer {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
     // i.e addition of stored procedures, etc.
     const deferred: Q.Deferred<void> = Q.defer<void>();
-    let loadCollectionPromises: Q.Promise<void>[] = [];
+    let loadCollectionPromises: Promise<void>[] = [];
 
     // If the user has a lot of databases, only load expanded databases.
     const databasesToLoad =
@@ -2440,7 +2424,7 @@ export default class Explorer {
     return true;
   }
 
-  public renameNotebook(notebookFile: NotebookContentItem): Q.Promise<NotebookContentItem> {
+  public async renameNotebook(notebookFile: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
       Logger.logError(error, "Explorer/renameNotebook");
@@ -2457,39 +2441,35 @@ export default class Explorer {
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
-      return Q.reject();
+      throw new Error();
     }
 
     const originalPath = notebookFile.path;
-    const result = this.stringInputPane
-      .openWithOptions<NotebookContentItem>({
-        errorMessage: "Could not rename notebook",
-        inProgressMessage: "Renaming notebook to",
-        successMessage: "Renamed notebook to",
-        inputLabel: "Enter new notebook name",
-        paneTitle: "Rename Notebook",
-        submitButtonLabel: "Rename",
-        defaultInput: FileSystemUtil.stripExtension(notebookFile.name, "ipynb"),
-        onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
-      })
-      .then(newNotebookFile => {
-        const notebookTabs = this.tabsManager.getTabs(
-          ViewModels.CollectionTabKind.NotebookV2,
-          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
-        );
-        notebookTabs.forEach(tab => {
-          tab.tabTitle(newNotebookFile.name);
-          tab.tabPath(newNotebookFile.path);
-          (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
-        });
+    const newNotebookFile = await this.stringInputPane.openWithOptions<NotebookContentItem>({
+      errorMessage: "Could not rename notebook",
+      inProgressMessage: "Renaming notebook to",
+      successMessage: "Renamed notebook to",
+      inputLabel: "Enter new notebook name",
+      paneTitle: "Rename Notebook",
+      submitButtonLabel: "Rename",
+      defaultInput: FileSystemUtil.stripExtension(notebookFile.name, "ipynb"),
+      onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
+    });
+    const notebookTabs = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.NotebookV2,
+      (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
+    );
+    notebookTabs.forEach(tab => {
+      tab.tabTitle(newNotebookFile.name);
+      tab.tabPath(newNotebookFile.path);
+      (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
+    });
 
-        return newNotebookFile;
-      });
-    result.then(() => this.resourceTree.triggerRender());
-    return result;
+    this.resourceTree.triggerRender();
+    return newNotebookFile;
   }
 
-  public onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem> {
+  public async onCreateDirectory(parent: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
       Logger.logError(error, "Explorer/onCreateDirectory");
@@ -2497,7 +2477,7 @@ export default class Explorer {
       throw new Error(error);
     }
 
-    const result = this.stringInputPane.openWithOptions<NotebookContentItem>({
+    const result = await this.stringInputPane.openWithOptions<NotebookContentItem>({
       errorMessage: "Could not create directory ",
       inProgressMessage: "Creating directory ",
       successMessage: "Created directory ",
@@ -2507,7 +2487,7 @@ export default class Explorer {
       defaultInput: "",
       onSubmit: (input: string) => this.notebookManager?.notebookContentClient.createDirectory(parent, input)
     });
-    result.then(() => this.resourceTree.triggerRender());
+    this.resourceTree.triggerRender();
     return result;
   }
 

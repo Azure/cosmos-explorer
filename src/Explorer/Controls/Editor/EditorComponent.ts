@@ -57,7 +57,7 @@ class EditorViewModel extends JsonEditorViewModel {
     }
   }
 
-  protected getErrorMarkers(input: string): Q.Promise<monaco.editor.IMarkerData[]> {
+  protected async getErrorMarkers(input: string): Promise<monaco.editor.IMarkerData[]> {
     return ErrorMarkProvider.getErrorMark(input);
   }
 }

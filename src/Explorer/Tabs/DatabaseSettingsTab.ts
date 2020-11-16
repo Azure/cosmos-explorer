@@ -8,7 +8,6 @@ import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import DiscardIcon from "../../../images/discard.svg";
 import editable from "../../Common/EditableUtility";
-import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -22,12 +21,12 @@ import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/update
 import { configContext, Platform } from "../../ConfigContext";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
-You are about to request an increase in throughput beyond the pre-allocated capacity. 
-The service will scale out and increase throughput for the selected database. 
+You are about to request an increase in throughput beyond the pre-allocated capacity.
+The service will scale out and increase throughput for the selected database.
 This operation will take 1-3 business days to complete. You can track the status of this request in Notifications.`;
 
 const updateThroughputDelayedApplyWarningMessage: string = `
-You are about to request an increase in throughput beyond the pre-allocated capacity. 
+You are about to request an increase in throughput beyond the pre-allocated capacity.
 This operation will take some time to complete.`;
 
 const currentThroughput: (isAutoscale: boolean, throughput: number) => string = (isAutoscale, throughput) =>
@@ -36,17 +35,17 @@ const currentThroughput: (isAutoscale: boolean, throughput: number) => string = 
     : `Current manual throughput: ${throughput} RU/s`;
 
 const throughputApplyDelayedMessage = (isAutoscale: boolean, throughput: number, databaseName: string) =>
-  `The request to increase the throughput has successfully been submitted. 
+  `The request to increase the throughput has successfully been submitted.
   This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
   Database: ${databaseName}, ${currentThroughput(isAutoscale, throughput)}`;
 
 const throughputApplyShortDelayMessage = (isAutoscale: boolean, throughput: number, databaseName: string) =>
-  `A request to increase the throughput is currently in progress. 
+  `A request to increase the throughput is currently in progress.
   This operation will take some time to complete.<br />
   Database: ${databaseName}, ${currentThroughput(isAutoscale, throughput)}`;
 
 const throughputApplyLongDelayMessage = (isAutoscale: boolean, throughput: number, databaseName: string) =>
-  `A request to increase the throughput is currently in progress. 
+  `A request to increase the throughput is currently in progress.
   This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
   Database: ${databaseName}, ${currentThroughput(isAutoscale, throughput)}`;
 
@@ -544,7 +543,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     }
   };
 
-  public onRevertClick = (): Q.Promise<any> => {
+  public onRevertClick = async (): Promise<any> => {
     this.throughput.setBaseline(this.throughput.getEditableOriginalValue());
     this.isAutoPilotSelected.setBaseline(this.isAutoPilotSelected.getEditableOriginalValue());
     if (!this.hasAutoPilotV2FeatureFlag()) {
@@ -552,11 +551,9 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     } else {
       this.selectedAutoPilotTier.setBaseline(this.selectedAutoPilotTier.getEditableOriginalValue());
     }
-
-    return Q();
   };
 
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): Promise<any> {
     return super.onActivate().then(async () => {
       this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
       await this.database.loadOffer();

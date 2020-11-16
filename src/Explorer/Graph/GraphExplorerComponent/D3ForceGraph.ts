@@ -378,8 +378,7 @@ export class D3ForceGraph implements GraphRenderer {
    * @param targetPosition
    * @return promise with shift offset
    */
-  private shiftGraph(targetPosition: Point2D): Q.Promise<Point2D> {
-    const deferred: Q.Deferred<Point2D> = Q.defer<Point2D>();
+  private async shiftGraph(targetPosition: Point2D): Promise<Point2D> {
     const offset = { x: this.width / 2 - targetPosition.x, y: this.height / 2 - targetPosition.y };
     this.viewCenter = targetPosition;
 
@@ -391,18 +390,15 @@ export class D3ForceGraph implements GraphRenderer {
           .translate(-targetPosition.x, -targetPosition.y);
       };
 
-      this.zoomBackground
+      const transition = this.zoomBackground
         .transition()
         .duration(D3ForceGraph.TRANSITION_STEP1_MS)
-        .call(this.zoom.transform, transform)
-        .on("end", () => {
-          deferred.resolve(offset);
-        });
-    } else {
-      deferred.resolve(null);
-    }
+        .call(this.zoom.transform, transform);
 
-    return deferred.promise;
+      await new Promise(resolve => transition.on("end", resolve));
+      return offset;
+    }
+    return null;
   }
 
   private onGraphDataUpdate(graph: GraphData<D3Node, D3Link>) {
@@ -435,7 +431,7 @@ export class D3ForceGraph implements GraphRenderer {
     }
   }
 
-  private animateRemoveExitSelections(): Q.Promise<void> {
+  private animateRemoveExitSelections(): Promise<void> {
     const deferred1 = Q.defer<void>();
     const deferred2 = Q.defer<void>();
     const linkExitSelection = this.linkSelection.exit();
@@ -508,7 +504,7 @@ export class D3ForceGraph implements GraphRenderer {
       deferred2.resolve();
     }
 
-    return Q.allSettled([deferred1.promise, deferred2.promise]).then(undefined);
+    return Promise.all([deferred1.promise, deferred2.promise]).then(undefined);
   }
 
   /**

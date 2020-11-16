@@ -1,5 +1,4 @@
 import * as _ from "underscore";
-import Q from "q";
 import * as Entities from "./Entities";
 import { CassandraTableKey } from "./TableDataClient";
 import * as Constants from "./Constants";
@@ -19,8 +18,8 @@ export function guid() {
 /**
  * Returns a promise that resolves in the specified number of milliseconds.
  */
-export function delay(milliseconds: number): Q.Promise<any> {
-  return Q.delay(milliseconds);
+export function delay(milliseconds: number): Promise<any> {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
 /**

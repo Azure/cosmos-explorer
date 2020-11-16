@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as monaco from "monaco-editor";
-import Q from "q";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
@@ -186,7 +185,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     this._setBaselines();
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): Promise<any> {
     return super.onTabClick().then(() => {
       if (this.isNew()) {
         this.collection.selectedSubnodeKind(this.tabKind);
@@ -197,13 +196,11 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   public abstract onSaveClick: () => Promise<any>;
   public abstract onUpdateClick: () => Promise<any>;
 
-  public onDiscard = (): Q.Promise<any> => {
+  public onDiscard = async (): Promise<any> => {
     this.setBaselines();
     const original = this.editorContent.getEditableOriginalValue();
     const editorModel = this.editor() && this.editor().getModel();
     editorModel && editorModel.setValue(original);
-
-    return Q();
   };
 
   public onSaveOrUpdateClick(): Promise<any> {

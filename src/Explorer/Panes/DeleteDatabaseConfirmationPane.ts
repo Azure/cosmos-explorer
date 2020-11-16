@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -31,7 +30,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
     this.resetData();
   }
 
-  public submit(): Q.Promise<any> {
+  public async submit(): Promise<any> {
     if (!this._isValid()) {
       const selectedDatabase: ViewModels.Database = this.container.findSelectedDatabase();
       this.formErrors("Input database name does not match the selected database");
@@ -39,7 +38,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         ConsoleDataType.Error,
         `Error while deleting collection ${selectedDatabase && selectedDatabase.id()}: ${this.formErrors()}`
       );
-      return Q.resolve();
+      return;
     }
 
     this.formErrors("");
@@ -53,7 +52,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
       paneTitle: this.title()
     });
     // TODO: Should not be a Q promise anymore, but the Cassandra code requires it
-    let promise: Q.Promise<any>;
+    let promise: Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
       promise = (<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
         this.container.databaseAccount().properties.cassandraEndpoint,
@@ -62,7 +61,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.container
       );
     } else {
-      promise = Q(deleteDatabase(selectedDatabase.id()));
+      promise = deleteDatabase(selectedDatabase.id());
     }
     return promise.then(
       () => {

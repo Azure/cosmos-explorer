@@ -1,5 +1,4 @@
 import * as _ from "underscore";
-import * as Q from "q";
 import * as ko from "knockout";
 
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -84,7 +83,7 @@ export default class NotebookTabV2 extends TabsBase {
       });
   }
 
-  public onCloseTabButtonClick(): Q.Promise<any> {
+  public async onCloseTabButtonClick(): Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
       this.isActive(false);
@@ -100,11 +99,11 @@ export default class NotebookTabV2 extends TabsBase {
         "Cancel",
         undefined
       );
-      return Q.resolve(null);
     } else {
       cleanup();
-      return Q.resolve(null);
     }
+
+    return null;
   }
 
   public async reconfigureServiceEndpoints() {

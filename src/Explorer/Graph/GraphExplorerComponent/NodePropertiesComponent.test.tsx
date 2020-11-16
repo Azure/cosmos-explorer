@@ -1,6 +1,5 @@
 import React from "react";
 import { mount, ReactWrapper } from "enzyme";
-import * as Q from "q";
 import { NodePropertiesComponent, NodePropertiesComponentProps, Mode } from "./NodePropertiesComponent";
 import { GraphHighlightedNodeData, EditedProperties, EditedEdges, PossibleVertex } from "./GraphExplorer";
 
@@ -41,11 +40,11 @@ describe("Property pane", () => {
       node: highlightedNode,
       getPkIdFromNodeData: (v: GraphHighlightedNodeData): string => null,
       collectionPartitionKeyProperty: null,
-      updateVertexProperties: (editedProperties: EditedProperties): Q.Promise<void> => Q.resolve(),
+      updateVertexProperties: (editedProperties: EditedProperties): Promise<void> => Promise.resolve(),
       selectNode: (id: string): void => {},
-      updatePossibleVertices: (): Q.Promise<PossibleVertex[]> => Q.resolve(null),
+      updatePossibleVertices: async (): Promise<PossibleVertex[]> => null,
       possibleEdgeLabels: null,
-      editGraphEdges: (editedEdges: EditedEdges): Q.Promise<any> => Q.resolve(),
+      editGraphEdges: async (editedEdges: EditedEdges): Promise<any> => undefined,
       deleteHighlightedNode: (): void => {},
       onModeChanged: (newMode: Mode): void => {},
       viewMode: Mode.READONLY_PROP

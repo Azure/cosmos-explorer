@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -225,7 +224,7 @@ export default class ConflictsTab extends TabsBase {
     });
   }
 
-  public refreshDocumentsGrid(): Q.Promise<any> {
+  public refreshDocumentsGrid(): Promise<any> {
     // clear documents grid
     this.conflictIds([]);
     return this.createIterator()
@@ -256,19 +255,17 @@ export default class ConflictsTab extends TabsBase {
     return true;
   };
 
-  public onConflictIdClick(clickedDocumentId: ConflictId): Q.Promise<any> {
+  public async onConflictIdClick(clickedDocumentId: ConflictId): Promise<any> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
-      return Q();
+      return;
     }
 
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
-
-    return Q();
   }
 
-  public onAcceptChangesClick = (): Q.Promise<any> => {
+  public onAcceptChangesClick = async (): Promise<any> => {
     if (this.isEditorDirty() && !this._isIgnoreDirtyEditor()) {
-      return Q();
+      return;
     }
 
     this.isExecutionError(false);
@@ -286,7 +283,7 @@ export default class ConflictsTab extends TabsBase {
       conflictResourceId: selectedConflict.resourceId
     });
 
-    let operationPromise: Q.Promise<any> = Q();
+    let operationPromise: Promise<any>;
     if (selectedConflict.operationType === Constants.ConflictOperationType.Replace) {
       const documentContent = JSON.parse(this.selectedConflictContent());
 
@@ -358,7 +355,7 @@ export default class ConflictsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   };
 
-  public onDeleteClick = (): Q.Promise<any> => {
+  public onDeleteClick = (): Promise<any> => {
     this.isExecutionError(false);
     this.isExecuting(true);
 
@@ -418,40 +415,34 @@ export default class ConflictsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   };
 
-  public onDiscardClick = (): Q.Promise<any> => {
+  public onDiscardClick = async (): Promise<any> => {
     this.selectedConflictContent(this.selectedConflictContent.getEditableOriginalValue());
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
-
-    return Q();
   };
 
-  public onValidDocumentEdit(): Q.Promise<any> {
+  public async onValidDocumentEdit(): Promise<any> {
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
-    return Q();
   }
 
-  public onInvalidDocumentEdit(): Q.Promise<any> {
+  public async onInvalidDocumentEdit(): Promise<any> {
     if (
       this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentNoEdits ||
       this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid
     ) {
       this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid);
-      return Q();
     }
-
-    return Q();
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): Promise<any> {
     return super.onTabClick().then(() => {
       this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
     });
   }
 
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): Promise<any> {
     return super.onActivate().then(() => {
       if (this._documentsIterator) {
-        return Q.resolve(this._documentsIterator);
+        return this._documentsIterator;
       }
 
       return this.createIterator().then(
@@ -481,7 +472,7 @@ export default class ConflictsTab extends TabsBase {
     });
   }
 
-  public onRefreshClick(): Q.Promise<any> {
+  public onRefreshClick(): Promise<any> {
     return this.refreshDocumentsGrid().then(() => {
       this.selectedConflictContent("");
       this.selectedConflictId(null);
@@ -489,7 +480,7 @@ export default class ConflictsTab extends TabsBase {
     });
   }
 
-  public createIterator(): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {
+  public createIterator(): Promise<QueryIterator<ConflictDefinition & Resource>> {
     // TODO: Conflict Feed does not allow filtering atm
     const query: string = undefined;
     let options: any = {};
@@ -497,7 +488,7 @@ export default class ConflictsTab extends TabsBase {
     return queryConflicts(this.collection.databaseId, this.collection.id(), query, options);
   }
 
-  public loadNextPage(): Q.Promise<any> {
+  public loadNextPage(): Promise<any> {
     this.isExecuting(true);
     this.isExecutionError(false);
     return this._loadNextPageInternal()
@@ -564,8 +555,8 @@ export default class ConflictsTab extends TabsBase {
     }
   };
 
-  protected _loadNextPageInternal(): Q.Promise<DataModels.ConflictId[]> {
-    return Q(this._documentsIterator.fetchNext().then(response => response.resources));
+  protected _loadNextPageInternal(): Promise<DataModels.ConflictId[]> {
+    return this._documentsIterator.fetchNext().then(response => response.resources);
   }
 
   protected _onEditorContentChange(newContent: string) {
@@ -577,22 +568,20 @@ export default class ConflictsTab extends TabsBase {
     }
   }
 
-  public initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Q.Promise<any> {
+  public async initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Promise<any> {
     if (documentId) {
       let parsedConflictContent: any = JSON.parse(documentToInsert);
       const renderedConflictContent: string = this.renderObjectForEditor(parsedConflictContent, null, 4);
       this.selectedConflictContent.setBaseline(renderedConflictContent);
       this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
     }
-
-    return Q();
   }
 
-  public initDocumentEditorForReplace(
+  public async initDocumentEditorForReplace(
     documentId: ConflictId,
     conflictContent: any,
     currentContent: any
-  ): Q.Promise<any> {
+  ): Promise<any> {
     if (documentId) {
       currentContent = ConflictsTab.removeSystemProperties(currentContent);
       const renderedCurrentContent: string = this.renderObjectForEditor(currentContent, null, 4);
@@ -605,11 +594,9 @@ export default class ConflictsTab extends TabsBase {
       this.selectedConflictContent.setBaseline(renderedConflictContent);
       this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
     }
-
-    return Q();
   }
 
-  public initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Q.Promise<any> {
+  public async initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Promise<any> {
     if (documentId) {
       let parsedDocumentToDelete: any = JSON.parse(documentToDelete);
       parsedDocumentToDelete = ConflictsTab.removeSystemProperties(parsedDocumentToDelete);
@@ -617,15 +604,12 @@ export default class ConflictsTab extends TabsBase {
       this.selectedConflictContent.setBaseline(renderedDocumentToDelete);
       this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
     }
-
-    return Q();
   }
 
-  public initDocumentEditorForNoOp(documentId: ConflictId): Q.Promise<any> {
+  public async initDocumentEditorForNoOp(documentId: ConflictId): Promise<any> {
     this.selectedConflictContent(null);
     this.selectedConflictCurrent(null);
     this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-    return Q();
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {

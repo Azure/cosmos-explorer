@@ -36,11 +36,11 @@ export interface NodePropertiesComponentProps {
   node: GraphHighlightedNodeData;
   getPkIdFromNodeData: (v: GraphHighlightedNodeData) => string;
   collectionPartitionKeyProperty: string;
-  updateVertexProperties: (editedProperties: EditedProperties) => Q.Promise<void>;
+  updateVertexProperties: (editedProperties: EditedProperties) => Promise<void>;
   selectNode: (id: string) => void;
-  updatePossibleVertices: () => Q.Promise<PossibleVertex[]>;
+  updatePossibleVertices: () => Promise<PossibleVertex[]>;
   possibleEdgeLabels: Item[];
-  editGraphEdges: (editedEdges: EditedEdges) => Q.Promise<any>;
+  editGraphEdges: (editedEdges: EditedEdges) => Promise<any>;
   deleteHighlightedNode: () => void;
   onModeChanged: (newMode: Mode) => void;
   viewMode: Mode; // If viewMode is specified in parent, keep state in sync with it

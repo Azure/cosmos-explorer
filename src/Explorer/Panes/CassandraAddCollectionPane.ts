@@ -350,7 +350,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     }
     this.isExecuting(true);
     const autoPilotCommand = `cosmosdb_autoscale_max_throughput`;
-    let createTableAndKeyspacePromise: Q.Promise<any>;
+    let createTableAndKeyspacePromise: Promise<any>;
     const toCreateKeyspace: boolean = this.keyspaceCreateNew();
     const useAutoPilotForKeyspace: boolean =
       (!this.hasAutoPilotV2FeatureFlag() && this.isSharedAutoPilotSelected() && !!this.sharedAutoPilotThroughput()) ||

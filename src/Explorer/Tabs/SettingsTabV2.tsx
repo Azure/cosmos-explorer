@@ -41,7 +41,7 @@ export default class SettingsTabV2 extends TabsBase {
     });
   }
 
-  public onActivate(): Q.Promise<unknown> {
+  public onActivate(): Promise<unknown> {
     this.isExecuting(true);
     this.currentCollection.loadOffer().then(
       () => {

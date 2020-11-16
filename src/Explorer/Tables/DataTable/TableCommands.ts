@@ -1,5 +1,4 @@
 import _ from "underscore";
-import Q from "q";
 import * as DataTableUtilities from "./DataTableUtilities";
 import * as DataTableOperations from "./DataTableOperations";
 import TableEntityListViewModel from "./TableEntityListViewModel";
@@ -49,7 +48,7 @@ export default class TableCommands {
   /**
    * Edit entity
    */
-  public editEntityCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
+  public editEntityCommand(viewModel: TableEntityListViewModel): Promise<any> {
     if (!viewModel) {
       return null; // Error
     }
@@ -68,7 +67,7 @@ export default class TableCommands {
     return null;
   }
 
-  public deleteEntitiesCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
+  public deleteEntitiesCommand(viewModel: TableEntityListViewModel): Promise<any> {
     if (!viewModel) {
       return null; // Error
     }
@@ -92,7 +91,7 @@ export default class TableCommands {
     return null;
   }
 
-  public customizeColumnsCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
+  public customizeColumnsCommand(viewModel: TableEntityListViewModel): Promise<any> {
     var table: DataTables.DataTable = viewModel.table;
     var displayedColumnNames: string[] = DataTableOperations.getDataTableHeaders(table);
     var columnsCount: number = displayedColumnNames.length;
@@ -120,7 +119,7 @@ export default class TableCommands {
     return null;
   }
 
-  public reorderColumnsBasedOnSelectedEntities(viewModel: TableEntityListViewModel): Q.Promise<boolean> {
+  public reorderColumnsBasedOnSelectedEntities(viewModel: TableEntityListViewModel): Promise<boolean> {
     var selected = viewModel.selected();
     if (!selected || !selected.length) {
       return null;

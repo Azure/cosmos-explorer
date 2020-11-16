@@ -1,4 +1,3 @@
-import Q from "q";
 import * as monaco from "monaco-editor";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
@@ -107,8 +106,8 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
   protected registerCompletionItemProvider() {}
 
   // Interface. Will be implemented in children editor view model such as EditorViewModel.
-  protected getErrorMarkers(input: string): Q.Promise<monaco.editor.IMarkerData[]> {
-    return Q.Promise(() => {});
+  protected getErrorMarkers(input: string): Promise<monaco.editor.IMarkerData[]> {
+    return new Promise(() => {});
   }
 
   protected getEditorLanguage(): string {

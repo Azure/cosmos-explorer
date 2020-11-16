@@ -3,7 +3,6 @@ import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import AuthHeadersUtil from "../../Platform/Hosted/Authorization";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
-import Q from "q";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -53,7 +52,7 @@ export default class MongoShellTab extends TabsBase {
     // }
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): Promise<any> {
     return super.onTabClick().then(() => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     });

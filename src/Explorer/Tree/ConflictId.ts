@@ -1,4 +1,3 @@
-import Q from "q";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import DocumentId from "./DocumentId";
@@ -59,13 +58,13 @@ export default class ConflictId {
     return;
   }
 
-  public loadConflict(): Q.Promise<any> {
+  public async loadConflict(): Promise<any> {
     const conflictsTab = this.container;
     this.container.selectedConflictId(this);
 
     if (this.operationType === Constants.ConflictOperationType.Create) {
       this.container.initDocumentEditorForCreate(this, this.content);
-      return Q();
+      return;
     }
 
     this.container.loadingConflictData(true);
@@ -88,10 +87,10 @@ export default class ConflictId {
           this.operationType === Constants.ConflictOperationType.Delete
         ) {
           this.container.initDocumentEditorForNoOp(this);
-          return Q();
+          return;
         }
 
-        return Q.reject(reason);
+        throw reason;
       }
     );
   }

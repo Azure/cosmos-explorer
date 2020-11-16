@@ -9,7 +9,6 @@ import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import DiscardIcon from "../../../images/discard.svg";
 import editable from "../../Common/EditableUtility";
-import Q from "q";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -24,21 +23,21 @@ import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/update
 import { configContext, Platform } from "../../ConfigContext";
 
 const ttlWarning: string = `
-The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
+The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application.
 For more information see, <a target="_blank" href="https://aka.ms/cosmos-db-ttl">Time to Live (TTL) in Azure Cosmos DB</a>.`;
 
 const indexingPolicyTTLWarningMessage: string = `
-Changing the Indexing Policy impacts query results while the index transformation occurs. 
-When a change is made and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. 
+Changing the Indexing Policy impacts query results while the index transformation occurs.
+When a change is made and the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes.
 For more information see, <a target="_blank" href="https://aka.ms/cosmosdb/modify-index-policy">Modifying Indexing Policies</a>.`;
 
 const updateThroughputBeyondLimitWarningMessage: string = `
-You are about to request an increase in throughput beyond the pre-allocated capacity. 
-The service will scale out and increase throughput for the selected container. 
+You are about to request an increase in throughput beyond the pre-allocated capacity.
+The service will scale out and increase throughput for the selected container.
 This operation will take 1-3 business days to complete. You can track the status of this request in Notifications.`;
 
 const updateThroughputDelayedApplyWarningMessage: string = `
-You are about to request an increase in throughput beyond the pre-allocated capacity. 
+You are about to request an increase in throughput beyond the pre-allocated capacity.
 This operation will take some time to complete.`;
 
 // TODO: move to a utility classs and add unit tests
@@ -82,7 +81,7 @@ const throughputApplyDelayedMessage = (
   collectionName: string,
   requestedThroughput: number
 ): string => `
-The request to increase the throughput has successfully been submitted. 
+The request to increase the throughput has successfully been submitted.
 This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
 Database: ${databaseName}, Container: ${collectionName} ${currentThroughput(
   isAutoscale,
@@ -115,7 +114,7 @@ const throughputApplyLongDelayMessage = (
   collectionName: string,
   requestedThroughput: number
 ): string => `
-A request to increase the throughput is currently in progress. 
+A request to increase the throughput is currently in progress.
 This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
 Database: ${databaseName}, Container: ${collectionName} ${currentThroughput(
   isAutoscale,
@@ -1231,7 +1230,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.isExecuting(false);
   };
 
-  public onRevertClick = (): Q.Promise<any> => {
+  public onRevertClick = async (): Promise<any> => {
     TelemetryProcessor.trace(Action.DiscardSettings, ActionModifiers.Mark, {
       message: "Settings Discarded"
     });
@@ -1274,21 +1273,17 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         this.selectedAutoPilotTier(originalAutoPilotTier);
       }
     }
-
-    return Q();
   };
 
-  public onValidIndexingPolicyEdit(): Q.Promise<any> {
+  public async onValidIndexingPolicyEdit(): Promise<any> {
     this.indexingPolicyContent.editableIsValid(true);
-    return Q();
   }
 
-  public onInvalidIndexingPolicyEdit(): Q.Promise<any> {
+  public async onInvalidIndexingPolicyEdit(): Promise<any> {
     this.indexingPolicyContent.editableIsValid(false);
-    return Q();
   }
 
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): Promise<any> {
     return super.onActivate().then(async () => {
       this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
       const database: ViewModels.Database = this.collection.getDatabase();

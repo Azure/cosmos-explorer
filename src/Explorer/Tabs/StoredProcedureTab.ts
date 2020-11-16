@@ -1,6 +1,5 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import Q from "q";
 import * as _ from "underscore";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import * as Constants from "../../Common/Constants";
@@ -61,13 +60,11 @@ export default class StoredProcedureTab extends ScriptTabBase {
     });
   };
 
-  public onDiscard = (): Q.Promise<any> => {
+  public onDiscard = async (): Promise<any> => {
     this.setBaselines();
     const original = this.editorContent.getEditableOriginalValue();
     this.originalSprocBody(original);
     this.originalSprocBody.valueHasMutated(); // trigger a re-render of the editor
-
-    return Q();
   };
 
   public onUpdateClick = (): Promise<any> => {
@@ -284,8 +281,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
       .finally(() => this.isExecuting(false));
   }
 
-  public onDelete(): Q.Promise<any> {
+  public async onDelete(): Promise<any> {
     // TODO
-    return Q();
   }
 }

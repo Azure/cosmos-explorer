@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as DataModels from "../../Contracts/DataModels";
@@ -93,9 +92,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     });
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public async onTabClick(): Promise<any> {
     this.getContainer().tabsManager.activateTab(this);
-    return Q();
   }
 
   protected updateSelectedNode(): void {
@@ -127,7 +125,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return this.onSpaceOrEnterKeyPress(event, () => this.onCloseTabButtonClick());
   };
 
-  public onActivate(): Q.Promise<any> {
+  public async onActivate(): Promise<any> {
     this.updateSelectedNode();
     if (!!this.collection) {
       this.collection.selectedSubnodeKind(this.tabKind);
@@ -149,7 +147,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       tabTitle: this.tabTitle(),
       tabId: this.tabId
     });
-    return Q();
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
@@ -172,9 +169,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return true;
   };
 
-  public refresh(): Q.Promise<any> {
+  public async refresh(): Promise<any> {
     location.reload();
-    return Q();
   }
 
   protected getContainer(): Explorer {

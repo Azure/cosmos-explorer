@@ -3,7 +3,6 @@ jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 jest.mock("../../Common/dataAccess/createCollection");
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import Q from "q";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import { createDocument } from "../../Common/DocumentClientUtilityBase";
 import Explorer from "../Explorer";
@@ -21,7 +20,7 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
     explorerStub.hasAutoPilotV2FeatureFlag = ko.computed<boolean>(() => true);
     explorerStub.findDatabaseWithId = () => database;
-    explorerStub.refreshAllDatabases = () => Q.resolve();
+    explorerStub.refreshAllDatabases = () => Promise.resolve();
     return explorerStub;
   };
 

@@ -7,7 +7,6 @@ import {
   Resource
 } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
-import Q from "q";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -39,18 +38,17 @@ export function getCommonQueryOptions(options: FeedOptions): any {
   return options;
 }
 
-export function queryDocuments(
+export async function queryDocuments(
   databaseId: string,
   containerId: string,
   query: string,
   options: any
-): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
+): Promise<QueryIterator<ItemDefinition & Resource>> {
   options = getCommonQueryOptions(options);
-  const documentsIterator = client()
+  return client()
     .database(databaseId)
     .container(containerId)
     .items.query(query, options);
-  return Q(documentsIterator);
 }
 
 export function getPartitionKeyHeaderForConflict(conflictId: ConflictId): Object {
@@ -76,17 +74,15 @@ export function updateDocument(
   collection: ViewModels.CollectionBase,
   documentId: DocumentId,
   newDocument: any
-): Q.Promise<any> {
+): Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
 
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .item(documentId.id(), partitionKey)
-      .replace(newDocument)
-      .then(response => response.resource)
-  );
+  return client()
+    .database(collection.databaseId)
+    .container(collection.id())
+    .item(documentId.id(), partitionKey)
+    .replace(newDocument)
+    .then(response => response.resource);
 }
 
 export function executeStoredProcedure(
@@ -94,105 +90,89 @@ export function executeStoredProcedure(
   storedProcedure: StoredProcedure,
   partitionKeyValue: any,
   params: any[]
-): Q.Promise<any> {
-  // TODO remove this deferred. Kept it because of timeout code at bottom of function
-  const deferred = Q.defer<any>();
-
-  client()
-    .database(collection.databaseId)
-    .container(collection.id())
-    .scripts.storedProcedure(storedProcedure.id())
-    .execute(partitionKeyValue, params, { enableScriptLogging: true })
-    .then(response =>
-      deferred.resolve({
+): Promise<any> {
+  return Promise.race([
+    client()
+      .database(collection.databaseId)
+      .container(collection.id())
+      .scripts.storedProcedure(storedProcedure.id())
+      .execute(partitionKeyValue, params, { enableScriptLogging: true })
+      .then(response => ({
         result: response.resource,
         scriptLogs: response.headers[Constants.HttpHeaders.scriptLogResults]
-      })
+      })),
+    new Promise((_, reject) =>
+      setTimeout(
+        () => reject(`Request timed out while executing stored procedure ${storedProcedure.id()}`),
+        Constants.ClientDefaults.requestTimeoutMs
+      )
     )
-    .catch(error => deferred.reject(error));
-
-  return deferred.promise.timeout(
-    Constants.ClientDefaults.requestTimeoutMs,
-    `Request timed out while executing stored procedure ${storedProcedure.id()}`
-  );
+  ]);
 }
 
-export function createDocument(collection: ViewModels.CollectionBase, newDocument: any): Q.Promise<any> {
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .items.create(newDocument)
-      .then(response => response.resource)
-  );
+export function createDocument(collection: ViewModels.CollectionBase, newDocument: any): Promise<any> {
+  return client()
+    .database(collection.databaseId)
+    .container(collection.id())
+    .items.create(newDocument)
+    .then(response => response.resource);
 }
 
-export function readDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
+export function readDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
 
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .item(documentId.id(), partitionKey)
-      .read()
-      .then(response => response.resource)
-  );
+  return client()
+    .database(collection.databaseId)
+    .container(collection.id())
+    .item(documentId.id(), partitionKey)
+    .read()
+    .then(response => response.resource);
 }
 
-export function deleteDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Q.Promise<any> {
+export function deleteDocument(collection: ViewModels.CollectionBase, documentId: DocumentId): Promise<any> {
   const partitionKey = documentId.partitionKeyValue;
 
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .item(documentId.id(), partitionKey)
-      .delete()
-  );
+  return client()
+    .database(collection.databaseId)
+    .container(collection.id())
+    .item(documentId.id(), partitionKey)
+    .delete();
 }
 
 export function deleteConflict(
   collection: ViewModels.CollectionBase,
   conflictId: ConflictId,
   options: any = {}
-): Q.Promise<any> {
+): Promise<any> {
   options.partitionKey = options.partitionKey || getPartitionKeyHeaderForConflict(conflictId);
 
-  return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .conflict(conflictId.id())
-      .delete(options)
-  );
+  return client()
+    .database(collection.databaseId)
+    .container(collection.id())
+    .conflict(conflictId.id())
+    .delete(options);
 }
 
-export function refreshCachedOffers(): Q.Promise<void> {
+export async function refreshCachedOffers(): Promise<void> {
   if (configContext.platform === Platform.Portal) {
-    return sendCachedDataMessage(MessageTypes.RefreshOffers, []);
-  } else {
-    return Q();
+    sendCachedDataMessage(MessageTypes.RefreshOffers, []);
   }
 }
 
-export function refreshCachedResources(options?: any): Q.Promise<void> {
+export async function refreshCachedResources(options?: any): Promise<void> {
   if (configContext.platform === Platform.Portal) {
-    return sendCachedDataMessage(MessageTypes.RefreshResources, []);
-  } else {
-    return Q();
+    sendCachedDataMessage(MessageTypes.RefreshResources, []);
   }
 }
 
-export function queryConflicts(
+export async function queryConflicts(
   databaseId: string,
   containerId: string,
   query: string,
   options: any
-): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {
-  const documentsIterator = client()
+): Promise<QueryIterator<ConflictDefinition & Resource>> {
+  return client()
     .database(databaseId)
     .container(containerId)
     .conflicts.query(query, options);
-  return Q(documentsIterator);
 }

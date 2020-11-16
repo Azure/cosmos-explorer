@@ -1,5 +1,4 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-import Q from "q";
 import MongoUtility from "../../Common/MongoUtility";
 import QueryTab from "./QueryTab";
 import * as HeadersUtility from "../../Common/HeadersUtility";
@@ -20,10 +19,10 @@ export default class MongoQueryTab extends QueryTab {
     return MongoUtility.tojson(value, null, false);
   }
 
-  protected _initIterator(): Q.Promise<MinimalQueryIterator> {
+  protected async _initIterator(): Promise<MinimalQueryIterator> {
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
     this._iterator = queryIterator(this.collection.databaseId, this.collection, this.sqlStatementToExecute());
-    return Q(this._iterator);
+    return this._iterator;
   }
 }

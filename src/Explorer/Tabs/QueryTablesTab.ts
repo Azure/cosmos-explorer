@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "./TabsBase";
 import TableEntityListViewModel from "../Tables/DataTable/TableEntityListViewModel";
@@ -130,38 +129,38 @@ export default class QueryTablesTab extends TabsBase {
     this.buildCommandBarOptions();
   }
 
-  public onExecuteQueryClick = (): Q.Promise<any> => {
+  public onExecuteQueryClick = (): Promise<any> => {
     this.queryViewModel().runQuery();
     return null;
   };
 
-  public onQueryBuilderClick = (): Q.Promise<any> => {
+  public onQueryBuilderClick = (): Promise<any> => {
     this.queryViewModel().selectHelper();
     return null;
   };
 
-  public onQueryTextClick = (): Q.Promise<any> => {
+  public onQueryTextClick = (): Promise<any> => {
     this.queryViewModel().selectEditor();
     return null;
   };
 
-  public onAddEntityClick = (): Q.Promise<any> => {
+  public onAddEntityClick = (): Promise<any> => {
     this.container.addTableEntityPane.tableViewModel = this.tableEntityListViewModel();
     this.container.addTableEntityPane.open();
     return null;
   };
 
-  public onEditEntityClick = (): Q.Promise<any> => {
+  public onEditEntityClick = (): Promise<any> => {
     this.tableCommands.editEntityCommand(this.tableEntityListViewModel());
     return null;
   };
 
-  public onDeleteEntityClick = (): Q.Promise<any> => {
+  public onDeleteEntityClick = (): Promise<any> => {
     this.tableCommands.deleteEntitiesCommand(this.tableEntityListViewModel());
     return null;
   };
 
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): Promise<any> {
     return super.onActivate().then(() => {
       const columns =
         !!this.tableEntityListViewModel() &&

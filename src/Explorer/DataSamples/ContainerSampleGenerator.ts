@@ -70,7 +70,7 @@ export class ContainerSampleGenerator {
     if (!collection) {
       throw new Error("No container to populate");
     }
-    const promises: Q.Promise<any>[] = [];
+    const promises: Promise<any>[] = [];
 
     if (this.container.isPreferredApiGraph()) {
       // For Gremlin, all queries are executed sequentially, because some queries might be dependent on other queries

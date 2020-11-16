@@ -1,7 +1,6 @@
 jest.mock("../../Common/dataAccess/deleteDatabase");
 jest.mock("../../Shared/Telemetry/TelemetryProcessor");
 import * as ko from "knockout";
-import Q from "q";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -91,7 +90,7 @@ describe("Delete Database Confirmation Pane", () => {
           collections: ko.observableArray<ViewModels.Collection>()
         } as ViewModels.Database;
       };
-      fakeExplorer.refreshAllDatabases = () => Q.resolve();
+      fakeExplorer.refreshAllDatabases = () => Promise.resolve();
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.selectedDatabaseId = ko.computed<string>(() => selectedDatabaseId);
       fakeExplorer.isSelectedDatabaseShared = () => false;
