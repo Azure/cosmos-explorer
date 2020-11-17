@@ -14,7 +14,7 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
   const notebooksTestRunnerClientId = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_ID;
   const notebooksTestRunnerClientSecret = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET;
   const portalRunnerDatabaseAccount = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT;
-  const portalRunnerKey = process.env.PORTAL_RUNNER_KEY;
+  const portalRunnerDatabaseAccountKey = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY;
   const portalRunnerSubscripton = process.env.PORTAL_RUNNER_SUBSCRIPTION;
   const portalRunnerResourceGroup = process.env.PORTAL_RUNNER_RESOURCE_GROUP;
 
@@ -35,7 +35,7 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
     TestExplorerParams.portalRunnerDatabaseAccount,
     encodeURI(portalRunnerDatabaseAccount)
   );
-  testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerKey, encodeURI(portalRunnerKey));
+  testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerDatabaseAccountKey, encodeURI(portalRunnerDatabaseAccountKey));
   testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerSubscripton, encodeURI(portalRunnerSubscripton));
   testExplorerUrl.searchParams.append(
     TestExplorerParams.portalRunnerResourceGroup,

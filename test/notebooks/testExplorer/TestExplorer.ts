@@ -80,7 +80,7 @@ const initTestExplorer = async (): Promise<void> => {
   const portalRunnerDatabaseAccount = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccount)
   );
-  const portalRunnerKey = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerKey));
+  const portalRunnerDatabaseAccountKey = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccountKey));
   const portalRunnerSubscripton = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerSubscripton));
   const portalRunnerResourceGroup = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.portalRunnerResourceGroup)
@@ -115,7 +115,7 @@ const initTestExplorer = async (): Promise<void> => {
       quotaId: "Internal_2014-09-01",
       addCollectionDefaultFlight: "2",
       isTryCosmosDBSubscription: false,
-      masterKey: portalRunnerKey,
+      masterKey: portalRunnerDatabaseAccountKey,
       loadDatabaseAccountTimestamp: 1604663109836,
       dataExplorerVersion: "1.0.1",
       sharedThroughputMinimum: 400,
