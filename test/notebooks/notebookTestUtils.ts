@@ -10,18 +10,18 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
     return testExplorerFrame;
   }
 
-  const notebooksTestRunnerApplicationId = process.env.NOTEBOOKS_TEST_RUNNER_TENANT_ID;
+  const notebooksTestRunnerTenantId = process.env.NOTEBOOKS_TEST_RUNNER_TENANT_ID;
   const notebooksTestRunnerClientId = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_ID;
   const notebooksTestRunnerClientSecret = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET;
-  const notebooksAccountName = process.env.NOTEBOOKS_ACCOUNT_NAME;
-  const notebooksAccountKey = process.env.NOTEBOOKS_ACCOUNT_KEY;
-  const notebooksAccountSubscriptonId = process.env.NOTEBOOKS_ACCOUNT_SUBSCRIPTION_ID;
-  const notebooksAccountResourceGroup = process.env.NOTEBOOKS_ACCOUNT_RESOURCE_GROUP;
+  const portalRunnerDatabaseAccount = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT;
+  const portalRunnerKey = process.env.PORTAL_RUNNER_KEY;
+  const portalRunnerSubscripton = process.env.PORTAL_RUNNER_SUBSCRIPTION;
+  const portalRunnerResourceGroup = process.env.PORTAL_RUNNER_RESOURCE_GROUP;
 
   const testExplorerUrl = new URL("testExplorer.html", "https://localhost:1234");
   testExplorerUrl.searchParams.append(
-    TestExplorerParams.notebooksTestRunnerApplicationId,
-    encodeURI(notebooksTestRunnerApplicationId)
+    TestExplorerParams.notebooksTestRunnerTenantId,
+    encodeURI(notebooksTestRunnerTenantId)
   );
   testExplorerUrl.searchParams.append(
     TestExplorerParams.notebooksTestRunnerClientId,
@@ -31,15 +31,15 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
     TestExplorerParams.notebooksTestRunnerClientSecret,
     encodeURI(notebooksTestRunnerClientSecret)
   );
-  testExplorerUrl.searchParams.append(TestExplorerParams.notebooksAccountName, encodeURI(notebooksAccountName));
-  testExplorerUrl.searchParams.append(TestExplorerParams.notebooksAccountKey, encodeURI(notebooksAccountKey));
   testExplorerUrl.searchParams.append(
-    TestExplorerParams.notebooksAccountSubscriptonId,
-    encodeURI(notebooksAccountSubscriptonId)
+    TestExplorerParams.portalRunnerDatabaseAccount,
+    encodeURI(portalRunnerDatabaseAccount)
   );
+  testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerKey, encodeURI(portalRunnerKey));
+  testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerSubscripton, encodeURI(portalRunnerSubscripton));
   testExplorerUrl.searchParams.append(
-    TestExplorerParams.notebooksAccountResourceGroup,
-    encodeURI(notebooksAccountResourceGroup)
+    TestExplorerParams.portalRunnerResourceGroup,
+    encodeURI(portalRunnerResourceGroup)
   );
 
   await page.goto(testExplorerUrl.toString());

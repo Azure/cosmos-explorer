@@ -68,8 +68,8 @@ const initTestExplorer = async (): Promise<void> => {
   window.addEventListener("message", handleMessage, false);
 
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const notebooksTestRunnerApplicationId = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.notebooksTestRunnerApplicationId)
+  const notebooksTestRunnerTenantId = decodeURIComponent(
+    urlSearchParams.get(TestExplorerParams.notebooksTestRunnerTenantId)
   );
   const notebooksTestRunnerClientId = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.notebooksTestRunnerClientId)
@@ -77,33 +77,33 @@ const initTestExplorer = async (): Promise<void> => {
   const notebooksTestRunnerClientSecret = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.notebooksTestRunnerClientSecret)
   );
-  const notebooksAccountName = decodeURIComponent(urlSearchParams.get(TestExplorerParams.notebooksAccountName));
-  const notebooksAccountKey = decodeURIComponent(urlSearchParams.get(TestExplorerParams.notebooksAccountKey));
-  const notebooksAccountSubscriptonId = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.notebooksAccountSubscriptonId)
+  const portalRunnerDatabaseAccount = decodeURIComponent(
+    urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccount)
   );
-  const notebooksAccountResourceGroup = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.notebooksAccountResourceGroup)
+  const portalRunnerKey = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerKey));
+  const portalRunnerSubscripton = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerSubscripton));
+  const portalRunnerResourceGroup = decodeURIComponent(
+    urlSearchParams.get(TestExplorerParams.portalRunnerResourceGroup)
   );
 
   const token = await AADLogin(
-    notebooksTestRunnerApplicationId,
+    notebooksTestRunnerTenantId,
     notebooksTestRunnerClientId,
     notebooksTestRunnerClientSecret
   );
   const databaseAccount = await getDatabaseAccount(
     token,
-    notebooksAccountSubscriptonId,
-    notebooksAccountResourceGroup,
-    notebooksAccountName
+    portalRunnerSubscripton,
+    portalRunnerResourceGroup,
+    portalRunnerDatabaseAccount
   );
 
   const initTestExplorerContent = {
     type: MessageTypes.InitTestExplorer,
     inputs: {
       databaseAccount: databaseAccount,
-      subscriptionId: notebooksAccountSubscriptonId,
-      resourceGroup: notebooksAccountResourceGroup,
+      subscriptionId: portalRunnerSubscripton,
+      resourceGroup: portalRunnerResourceGroup,
       authorizationToken: `Bearer ${token}`,
       features: {},
       hasWriteAccess: true,
@@ -115,7 +115,7 @@ const initTestExplorer = async (): Promise<void> => {
       quotaId: "Internal_2014-09-01",
       addCollectionDefaultFlight: "2",
       isTryCosmosDBSubscription: false,
-      masterKey: notebooksAccountKey,
+      masterKey: portalRunnerKey,
       loadDatabaseAccountTimestamp: 1604663109836,
       dataExplorerVersion: "1.0.1",
       sharedThroughputMinimum: 400,

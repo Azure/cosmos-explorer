@@ -1,9 +1,9 @@
 export enum TestExplorerParams {
-  notebooksTestRunnerApplicationId = "notebooksTestRunnerApplicationId",
+  notebooksTestRunnerTenantId = "notebooksTestRunnerTenantId",
   notebooksTestRunnerClientId = "notebooksTestRunnerClientId",
   notebooksTestRunnerClientSecret = "notebooksTestRunnerClientSecret",
-  notebooksAccountName = "notebooksAccountName",
-  notebooksAccountKey = "notebooksAccountKey",
-  notebooksAccountSubscriptonId = "notebooksAccountSubscriptonId",
-  notebooksAccountResourceGroup = "notebooksAccountResourceGroup"
+  portalRunnerDatabaseAccount = "notebooksAccountName",
+  portalRunnerKey = "notebooksAccountKey",
+  portalRunnerSubscripton = "notebooksAccountSubscriptonId",
+  portalRunnerResourceGroup = "notebooksAccountResourceGroup"
 }
