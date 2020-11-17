@@ -7,9 +7,8 @@ import {
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { logConsoleError, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { logError } from "../Logger";
-import { sendNotificationForError } from "./sendNotificationForError";
+import { handleError } from "../ErrorHandlingUtils";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
 
 export async function createTrigger(
@@ -66,9 +65,7 @@ export async function createTrigger(
       .scripts.triggers.create(trigger);
     return response.resource;
   } catch (error) {
-    logConsoleError(`Error while creating trigger ${trigger.id}:\n ${error.message}`);
-    logError(error.message, "CreateTrigger", error.code);
-    sendNotificationForError(error);
+    handleError(error, "CreateTrigger", `Error while creating trigger ${trigger.id}`);
     throw error;
   } finally {
     clearMessage();

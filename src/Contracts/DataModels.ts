@@ -88,6 +88,38 @@ export interface Resource {
   id: string;
 }
 
+export interface IType {
+  name: string;
+  code: number;
+}
+
+export interface IDataField {
+  dataType: IType;
+  hasNulls: boolean;
+  isArray: boolean;
+  schemaType: IType;
+  name: string;
+  path: string;
+  maxRepetitionLevel: number;
+  maxDefinitionLevel: number;
+}
+
+export interface ISchema {
+  id: string;
+  accountName: string;
+  resource: string;
+  fields: IDataField[];
+}
+
+export interface ISchemaRequest {
+  id: string;
+  subscriptionId: string;
+  resourceGroup: string;
+  accountName: string;
+  resource: string;
+  status: string;
+}
+
 export interface Collection extends Resource {
   defaultTtl?: number;
   indexingPolicy?: IndexingPolicy;
@@ -98,6 +130,8 @@ export interface Collection extends Resource {
   changeFeedPolicy?: ChangeFeedPolicy;
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
+  schema?: ISchema;
+  requestSchema?: () => void;
 }
 
 export interface Database extends Resource {
@@ -214,18 +248,6 @@ export interface UniqueKeyPolicy {
 
 export interface UniqueKey {
   paths: string[];
-}
-
-// Returned by DocumentDb client proxy
-// Inner errors in BackendErrorDataModel when error is in SQL syntax
-export interface ErrorDataModel {
-  message: string;
-  severity?: string;
-  location?: {
-    start: string;
-    end: string;
-  };
-  code?: string;
 }
 
 export interface CreateDatabaseAndCollectionRequest {

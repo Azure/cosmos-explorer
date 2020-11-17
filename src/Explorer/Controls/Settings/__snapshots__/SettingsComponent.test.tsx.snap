@@ -971,6 +971,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isRefreshingExplorer": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
                 "isRightPanelV2Enabled": [Function],
+                "isSchemaEnabled": [Function],
                 "isServerlessEnabled": [Function],
                 "isSettingsV2Enabled": [Function],
                 "isSparkEnabled": [Function],
@@ -2251,6 +2252,7 @@ exports[`SettingsComponent renders 1`] = `
               "isRefreshingExplorer": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
               "isRightPanelV2Enabled": [Function],
+              "isSchemaEnabled": [Function],
               "isServerlessEnabled": [Function],
               "isSettingsV2Enabled": [Function],
               "isSparkEnabled": [Function],
@@ -3544,6 +3546,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isRefreshingExplorer": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
                 "isRightPanelV2Enabled": [Function],
+                "isSchemaEnabled": [Function],
                 "isServerlessEnabled": [Function],
                 "isSettingsV2Enabled": [Function],
                 "isSparkEnabled": [Function],
@@ -4824,6 +4827,7 @@ exports[`SettingsComponent renders 1`] = `
               "isRefreshingExplorer": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
               "isRightPanelV2Enabled": [Function],
+              "isSchemaEnabled": [Function],
               "isServerlessEnabled": [Function],
               "isSettingsV2Enabled": [Function],
               "isSparkEnabled": [Function],
@@ -5189,6 +5193,7 @@ exports[`SettingsComponent renders 1`] = `
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
+          refreshIndexTransformationProgress={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
         />

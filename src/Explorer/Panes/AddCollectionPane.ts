@@ -3,11 +3,11 @@ import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import editable from "../../Common/EditableUtility";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -15,6 +15,7 @@ import { configContext, Platform } from "../../ConfigContext";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { createCollection } from "../../Common/dataAccess/createCollection";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -648,10 +649,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType: ViewModels.SubscriptionType =
-      this.container.subscriptionType && this.container.subscriptionType();
-
-    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
+    const subscriptionType = this.container.subscriptionType && this.container.subscriptionType();
+    if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
@@ -690,7 +689,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         databaseId: this.databaseId(),
         rupm: this.rupm()
       }),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -793,7 +792,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         uniqueKeyPolicy,
         collectionWithThroughputInShared: this.collectionWithThroughputInShared()
       }),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -868,7 +867,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           }),
-          subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -881,10 +880,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.resetData();
         this.container.refreshAllDatabases();
       },
-      (reason: any) => {
+      (error: any) => {
         this.isExecuting(false);
-        const message = ErrorParserUtility.parse(reason);
-        const errorMessage = ErrorParserUtility.replaceKnownError(message[0].message);
+        const errorMessage: string = getErrorMessage(error);
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);
         const addCollectionPaneFailedMessage = {
@@ -904,7 +902,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           },
-          subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
@@ -912,7 +910,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
             flight: this.container.flight()
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
-          error: reason
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }

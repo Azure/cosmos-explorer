@@ -8,6 +8,9 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
     }
   }
 >
+  <IndexingPolicyRefreshComponent
+    refreshIndexTransformationProgress={[Function]}
+  />
   <Text>
     For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
     <StyledLinkBase

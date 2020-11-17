@@ -25,7 +25,7 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
     }
     logConsoleInfo(`Successfully deleted database ${databaseId}`);
   } catch (error) {
-    handleError(error, `Error while deleting database ${databaseId}`, "DeleteDatabase");
+    handleError(error, "DeleteDatabase", `Error while deleting database ${databaseId}`);
     throw error;
   } finally {
     clearMessage();

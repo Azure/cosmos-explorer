@@ -9,6 +9,7 @@ import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 import * as GitHubUtils from "../Utils/GitHubUtils";
 import UrlUtility from "../Common/UrlUtility";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export interface GitHubContentProviderParams {
   gitHubClient: GitHubClient;
@@ -40,7 +41,7 @@ export class GitHubContentProvider implements IContentProvider {
 
           return this.createSuccessAjaxResponse(HttpStatusCodes.NoContent, undefined);
         } catch (error) {
-          Logger.logError(error, "GitHubContentProvider/remove", error.errno);
+          Logger.logError(getErrorMessage(error), "GitHubContentProvider/remove", error.errno);
           return this.createErrorAjaxResponse(error);
         }
       })
@@ -64,7 +65,7 @@ export class GitHubContentProvider implements IContentProvider {
 
           return this.createSuccessAjaxResponse(HttpStatusCodes.OK, this.createContentModel(uri, content.data, params));
         } catch (error) {
-          Logger.logError(error, "GitHubContentProvider/get", error.errno);
+          Logger.logError(getErrorMessage(error), "GitHubContentProvider/get", error.errno);
           return this.createErrorAjaxResponse(error);
         }
       })
@@ -104,7 +105,7 @@ export class GitHubContentProvider implements IContentProvider {
             this.createContentModel(newUri, gitHubFile, { content: 0 })
           );
         } catch (error) {
-          Logger.logError(error, "GitHubContentProvider/update", error.errno);
+          Logger.logError(getErrorMessage(error), "GitHubContentProvider/update", error.errno);
           return this.createErrorAjaxResponse(error);
         }
       })
@@ -181,7 +182,7 @@ export class GitHubContentProvider implements IContentProvider {
             this.createContentModel(newUri, newGitHubFile, { content: 0 })
           );
         } catch (error) {
-          Logger.logError(error, "GitHubContentProvider/create", error.errno);
+          Logger.logError(getErrorMessage(error), "GitHubContentProvider/create", error.errno);
           return this.createErrorAjaxResponse(error);
         }
       })
@@ -259,7 +260,7 @@ export class GitHubContentProvider implements IContentProvider {
             this.createContentModel(uri, gitHubFile, { content: 0 })
           );
         } catch (error) {
-          Logger.logError(error, "GitHubContentProvider/update", error.errno);
+          Logger.logError(getErrorMessage(error), "GitHubContentProvider/update", error.errno);
           return this.createErrorAjaxResponse(error);
         }
       })
@@ -268,25 +269,25 @@ export class GitHubContentProvider implements IContentProvider {
 
   public listCheckpoints(_: ServerConfig, path: string): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
-    Logger.logError(error, "GitHubContentProvider/listCheckpoints", error.errno);
+    Logger.logError(error.message, "GitHubContentProvider/listCheckpoints", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
   public createCheckpoint(_: ServerConfig, path: string): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
-    Logger.logError(error, "GitHubContentProvider/createCheckpoint", error.errno);
+    Logger.logError(error.message, "GitHubContentProvider/createCheckpoint", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
   public deleteCheckpoint(_: ServerConfig, path: string, checkpointID: string): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
-    Logger.logError(error, "GitHubContentProvider/deleteCheckpoint", error.errno);
+    Logger.logError(error.message, "GitHubContentProvider/deleteCheckpoint", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
   public restoreFromCheckpoint(_: ServerConfig, path: string, checkpointID: string): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
-    Logger.logError(error, "GitHubContentProvider/restoreFromCheckpoint", error.errno);
+    Logger.logError(error.message, "GitHubContentProvider/restoreFromCheckpoint", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
@@ -423,7 +424,7 @@ export class GitHubContentProvider implements IContentProvider {
       request: {},
       status: error.errno,
       response: error,
-      responseText: error.message,
+      responseText: getErrorMessage(error),
       responseType: "json"
     };
   }

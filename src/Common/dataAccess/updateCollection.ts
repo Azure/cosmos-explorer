@@ -59,7 +59,7 @@ export async function updateCollection(
     logConsoleInfo(`Successfully updated container ${collectionId}`);
     return collection;
   } catch (error) {
-    handleError(error, `Failed to update container ${collectionId}`, "UpdateCollection");
+    handleError(error, "UpdateCollection", `Failed to update container ${collectionId}`);
     throw error;
   } finally {
     clearMessage();

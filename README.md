@@ -33,7 +33,7 @@ To run pure hosted mode, in `webpack.config.js` change index HtmlWebpackPlugin t
 
 ### Emulator Development
 
-In a window environment, running `npm run build` will automatically copy the built files from `/dist` over to the default emulator install paths. In a non-windows enironment you can specify an alternate endpoint using `EMULATOR_ENDPOINT` and webpack dev server will proxy requests for you.
+In a window environment, running `npm run build` will automatically copy the built files from `/dist` over to the default emulator install paths. In a non-windows environment you can specify an alternate endpoint using `EMULATOR_ENDPOINT` and webpack dev server will proxy requests for you.
 
 `PLATFORM=Emulator EMULATOR_ENDPOINT=https://my-vm.azure.com:8081 npm run watch`
 
@@ -60,7 +60,7 @@ The Cosmos Portal that consumes this repo is not currently open source. If you h
 You can however load a local running instance of data explorer in the production portal.
 
 1. Turn off browser SSL validation for localhost: chrome://flags/#allow-insecure-localhost OR Install valid SSL certs for localhost (on IE, follow these [instructions](https://www.technipages.com/ie-bypass-problem-with-this-websites-security-certificate) to install the localhost certificate in the right place)
-2. Whitelist `https://localhost:1234` domain for CORS in the Azure Cosmos DB portal
+2. Allowlist `https://localhost:1234` domain for CORS in the Azure Cosmos DB portal
 3. Start the project in portal mode: `PLATFORM=Portal npm run watch`
 4. Load the portal using the following link: https://ms.portal.azure.com/?dataExplorerSource=https%3A%2F%2Flocalhost%3A1234%2Fexplorer.html
 
@@ -76,24 +76,17 @@ Unit tests are located adjacent to the code under test and run with [Jest](https
 
 #### End to End CI Tests
 
-[Cypress](https://www.cypress.io/) is used for end to end tests and are contained in `cypress/`. Currently, it operates as sub project with its own typescript config and dependencies. It also only operates against the emulator. To run cypress tests:
+Jest and Puppeteer are used for end to end browser based tests and are contained in `test/`. To run these tests locally:
 
-1. Ensure the emulator is running
-2. Start cosmos explorer in emulator mode: `PLATFORM=Emulator npm run watch`
-3. Move into `cypress/` folder: `cd cypress`
-4. Install dependencies: `npm install`
-5. Run cypress headless(`npm run test`) or in interactive mode(`npm run test:debug`)
-
-#### End to End Production Runners
-
-Jest and Puppeteer are used for end to end production runners and are contained in `test/`. To run these tests locally:
-
-1. Copy .env.example to .env and fill in all variables
-2. Run `npm run test:e2e`
+1. Copy .env.example to .env
+2. Update the values in .env including your local data explorer endpoint (ask a teammate/codeowner for help with .env values)
+3. Make sure all packages are installed `npm install`
+4. Run the server `npm run start` and wait for it to start
+5. Run `npm run test:e2e`
 
 ### Releasing
 
-We generally adhear to the release strategy [documented by the Azure SDK Guidelines](https://azure.github.io/azure-sdk/policies_repobranching.html#release-branches). Most releases should happen from the master branch. If master contains commits that cannot be released, you may create a release from a `release/` or `hotfix/` branch. See linked documentation for more details.
+We generally adhere to the release strategy [documented by the Azure SDK Guidelines](https://azure.github.io/azure-sdk/policies_repobranching.html#release-branches). Most releases should happen from the master branch. If master contains commits that cannot be released, you may create a release from a `release/` or `hotfix/` branch. See linked documentation for more details.
 
 # Contributing
 

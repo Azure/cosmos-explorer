@@ -36,7 +36,7 @@ import {
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
-const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
+export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
@@ -245,15 +245,9 @@ export const ttlWarning: JSX.Element = (
   </Text>
 );
 
-export const indexingPolicyTTLWarningMessage: JSX.Element = (
+export const indexingPolicynUnsavedWarningMessage: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle}>
-    Changing the Indexing Policy impacts query results while the index transformation occurs. When a change is made and
-    the indexing mode is set to consistent or lazy, queries return eventual results until the operation completes. For
-    more information see,{" "}
-    <Link target="_blank" href="https://aka.ms/cosmosdb/modify-index-policy">
-      Modifying Indexing Policies
-    </Link>
-    .
+    You have not saved the latest changes made to your indexing policy. Please click save to confirm the changes.
   </Text>
 );
 
@@ -410,8 +404,8 @@ export const mongoIndexingPolicyAADError: JSX.Element = (
 
 export const mongoIndexTransformationRefreshingMessage: JSX.Element = (
   <Stack horizontal {...mongoWarningStackProps}>
-    <Text>Refreshing index transformation progress</Text>
-    <Spinner size={SpinnerSize.medium} />
+    <Text styles={infoAndToolTipTextStyle}>Refreshing index transformation progress</Text>
+    <Spinner size={SpinnerSize.small} />
   </Stack>
 );
 
@@ -421,14 +415,14 @@ export const renderMongoIndexTransformationRefreshMessage = (
 ): JSX.Element => {
   if (progress === 0) {
     return (
-      <Text>
+      <Text styles={infoAndToolTipTextStyle}>
         {"You can make more indexing changes once the current index transformation is complete. "}
         <Link onClick={performRefresh}>{"Refresh to check if it has completed."}</Link>
       </Text>
     );
   } else {
     return (
-      <Text>
+      <Text styles={infoAndToolTipTextStyle}>
         {`You can make more indexing changes once the current index transformation has completed. It is ${progress}% complete. `}
         <Link onClick={performRefresh}>{"Refresh to check the progress."}</Link>
       </Text>

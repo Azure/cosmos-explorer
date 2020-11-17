@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IndexingPolicyRefreshComponent renders 1`] = `
+<StyledMessageBarBase
+  messageBarType={5}
+>
+  <Text
+    styles={
+      Object {
+        "root": Object {
+          "fontSize": 12,
+        },
+      }
+    }
+  >
+    You can make more indexing changes once the current index transformation has completed. It is 90% complete. 
+    <StyledLinkBase
+      onClick={[Function]}
+    >
+      Refresh to check the progress.
+    </StyledLinkBase>
+  </Text>
+</StyledMessageBarBase>
+`;

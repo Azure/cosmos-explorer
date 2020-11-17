@@ -22,6 +22,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { userContext } from "../../UserContext";
 import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 const ttlWarning: string = `
 The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. 
@@ -1174,7 +1175,8 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
-          error: error.message
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error)
         },
         startKey
       );

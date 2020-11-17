@@ -179,7 +179,7 @@ module.exports = function(env = {}, argv = {}) {
   return {
     mode: mode,
     entry: {
-      main: "./src/Main.ts",
+      main: "./src/Main.tsx",
       index: "./src/Index.ts",
       quickstart: "./src/quickstart.ts",
       hostedExplorer: "./src/HostedExplorer.ts",

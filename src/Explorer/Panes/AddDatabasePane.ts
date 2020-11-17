@@ -1,7 +1,6 @@
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import * as ko from "knockout";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import * as SharedConstants from "../../Shared/Constants";
@@ -12,6 +11,8 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -256,7 +257,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const addDatabasePaneOpenMessage = {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         throughput: this.throughput(),
@@ -284,7 +285,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared()
       }),
       offerThroughput,
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         flight: this.container.flight()
@@ -296,18 +297,22 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.isExecuting(true);
 
     const createDatabaseParams: DataModels.CreateDatabaseParams = {
-      autoPilotMaxThroughput: this.maxAutoPilotThroughputSet(),
       databaseId: addDatabasePaneStartMessage.database.id,
-      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
-      offerThroughput: addDatabasePaneStartMessage.offerThroughput
+      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared
     };
+
+    if (this.isAutoPilotSelected()) {
+      createDatabaseParams.autoPilotMaxThroughput = this.maxAutoPilotThroughputSet();
+    } else {
+      createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
+    }
 
     createDatabase(createDatabaseParams).then(
       (database: DataModels.Database) => {
         this._onCreateDatabaseSuccess(offerThroughput, startKey);
       },
-      (reason: any) => {
-        this._onCreateDatabaseFailure(reason, offerThroughput, reason);
+      (error: any) => {
+        this._onCreateDatabaseFailure(error, offerThroughput, startKey);
       }
     );
   }
@@ -323,10 +328,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType: ViewModels.SubscriptionType =
-      this.container.subscriptionType && this.container.subscriptionType();
+    const subscriptionType = this.container.subscriptionType && this.container.subscriptionType();
 
-    if (subscriptionType === ViewModels.SubscriptionType.EA || this.container.isServerlessEnabled()) {
+    if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
 
@@ -345,7 +349,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared()
       }),
       offerThroughput: offerThroughput,
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         flight: this.container.flight()
@@ -356,11 +360,11 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.resetData();
   }
 
-  private _onCreateDatabaseFailure(reason: any, offerThroughput: number, startKey: number): void {
+  private _onCreateDatabaseFailure(error: any, offerThroughput: number, startKey: number): void {
     this.isExecuting(false);
-    const message = ErrorParserUtility.parse(reason);
-    this.formErrors(message[0].message);
-    this.formErrorsDetails(message[0].message);
+    const errorMessage = getErrorMessage(error);
+    this.formErrors(errorMessage);
+    this.formErrorsDetails(errorMessage);
     const addDatabasePaneFailedMessage = {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
@@ -369,13 +373,14 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared()
       }),
       offerThroughput: offerThroughput,
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         flight: this.container.flight()
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
-      error: reason
+      error: errorMessage,
+      errorStack: getErrorStack(error)
     };
     TelemetryProcessor.traceFailure(Action.CreateDatabase, addDatabasePaneFailedMessage, startKey);
   }

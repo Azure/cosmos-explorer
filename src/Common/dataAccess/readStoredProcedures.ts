@@ -35,7 +35,7 @@ export async function readStoredProcedures(
       .fetchAll();
     return response?.resources;
   } catch (error) {
-    handleError(error, `Failed to query stored procedures for container ${collectionId}`, "ReadStoredProcedures");
+    handleError(error, "ReadStoredProcedures", `Failed to query stored procedures for container ${collectionId}`);
     throw error;
   } finally {
     clearMessage();

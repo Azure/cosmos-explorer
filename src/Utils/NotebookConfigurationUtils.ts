@@ -1,5 +1,6 @@
 import * as DataModels from "../Contracts/DataModels";
 import * as Logger from "../Common/Logger";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 interface KernelConnectionMetadata {
   name: string;
@@ -78,13 +79,13 @@ export class NotebookConfigurationUtils {
         if (!response.ok) {
           const responseMessage = await response.json();
           Logger.logError(
-            JSON.stringify(responseMessage),
+            getErrorMessage(responseMessage),
             "NotebookConfigurationUtils/configureServiceEndpoints",
             response.status
           );
         }
       } catch (error) {
-        Logger.logError(error, "NotebookConfigurationUtils/configureServiceEndpoints");
+        Logger.logError(getErrorMessage(error), "NotebookConfigurationUtils/configureServiceEndpoints");
       }
     }
   }

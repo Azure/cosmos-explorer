@@ -7,16 +7,14 @@ import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/Notifi
 import * as Constants from "../../Common/Constants";
 import * as Entities from "./Entities";
 import * as HeadersUtility from "../../Common/HeadersUtility";
-import * as Logger from "../../Common/Logger";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TableConstants from "./Constants";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { sendMessage } from "../../Common/MessageHandler";
 import Explorer from "../Explorer";
 import { queryDocuments, deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
 import { configContext } from "../../ConfigContext";
+import { handleError } from "../../Common/ErrorHandlingUtils";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -188,14 +186,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve(entity);
         },
-        reason => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while adding new row to table ${collection.id()}:\n ${JSON.stringify(reason)}`
-          );
-          Logger.logError(JSON.stringify(reason), "AddRowCassandra", reason.code);
-          this._checkForbiddenError(reason);
-          deferred.reject(reason);
+        error => {
+          handleError(error, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
+          deferred.reject(error);
         }
       )
       .finally(() => {
@@ -267,14 +260,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve(newEntity);
         },
-        reason => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to update row ${newEntity.RowKey._}: ${JSON.stringify(reason)}`
-          );
-          Logger.logError(JSON.stringify(reason), "UpdateRowCassandra", reason.code);
-          this._checkForbiddenError(reason);
-          deferred.reject(reason);
+        error => {
+          handleError(error, "UpdateRowCassandra", `Failed to update row ${newEntity.RowKey._}`);
+          deferred.reject(error);
         }
       )
       .finally(() => {
@@ -332,16 +320,11 @@ export class CassandraAPIDataClient extends TableDataClient {
             ContinuationToken: data.paginationToken
           });
         },
-        reason => {
+        (error: any) => {
           if (shouldNotify) {
-            NotificationConsoleUtils.logConsoleMessage(
-              ConsoleDataType.Error,
-              `Failed to query rows for table ${collection.id()}: ${JSON.stringify(reason)}`
-            );
-            Logger.logError(JSON.stringify(reason), "QueryDocumentsCassandra", reason.status);
-            this._checkForbiddenError(reason);
+            handleError(error, "QueryDocumentsCassandra", `Failed to query rows for table ${collection.id()}`);
           }
-          deferred.reject(reason);
+          deferred.reject(error);
         }
       )
       .done(() => {
@@ -379,13 +362,8 @@ export class CassandraAPIDataClient extends TableDataClient {
                 `Successfully deleted row ${currEntityToDelete.RowKey._}`
               );
             },
-            reason => {
-              NotificationConsoleUtils.logConsoleMessage(
-                ConsoleDataType.Error,
-                `Error while deleting row ${currEntityToDelete.RowKey._}:\n ${JSON.stringify(reason)}`
-              );
-              Logger.logError(JSON.stringify(reason), "DeleteRowCassandra", reason.code);
-              this._checkForbiddenError(reason);
+            error => {
+              handleError(error, "DeleteRowCassandra", `Error while deleting row ${currEntityToDelete.RowKey._}`);
             }
           )
           .finally(() => {
@@ -420,14 +398,13 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve();
         },
-        reason => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while creating a keyspace with query ${createKeyspaceQuery}:\n ${JSON.stringify(reason)}`
+        error => {
+          handleError(
+            error,
+            "CreateKeyspaceCassandra",
+            `Error while creating a keyspace with query ${createKeyspaceQuery}`
           );
-          Logger.logError(JSON.stringify(reason), "CreateKeyspaceCassandra", reason.code);
-          this._checkForbiddenError(reason);
-          deferred.reject(reason);
+          deferred.reject(error);
         }
       )
       .finally(() => {
@@ -467,14 +444,9 @@ export class CassandraAPIDataClient extends TableDataClient {
               );
               deferred.resolve();
             },
-            reason => {
-              NotificationConsoleUtils.logConsoleMessage(
-                ConsoleDataType.Error,
-                `Error while creating a table with query ${createTableQuery}:\n ${JSON.stringify(reason)}`
-              );
-              Logger.logError(JSON.stringify(reason), "CreateTableCassandra", reason.code);
-              this._checkForbiddenError(reason);
-              deferred.reject(reason);
+            error => {
+              handleError(error, "CreateTableCassandra", `Error while creating a table with query ${createTableQuery}`);
+              deferred.reject(error);
             }
           )
           .finally(() => {
@@ -508,14 +480,13 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve();
         },
-        reason => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while deleting resource with query ${deleteQuery}:\n ${JSON.stringify(reason)}`
+        error => {
+          handleError(
+            error,
+            "DeleteKeyspaceOrTableCassandra",
+            `Error while deleting resource with query ${deleteQuery}`
           );
-          Logger.logError(JSON.stringify(reason), "DeleteKeyspaceOrTableCassandra", reason.code);
-          this._checkForbiddenError(reason);
-          deferred.reject(reason);
+          deferred.reject(error);
         }
       )
       .finally(() => {
@@ -563,14 +534,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve(data);
         },
-        reason => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error fetching keys for table ${collection.id()}:\n ${JSON.stringify(reason)}`
-          );
-          Logger.logError(JSON.stringify(reason), "FetchKeysCassandra", reason.status);
-          this._checkForbiddenError(reason);
-          deferred.reject(reason);
+        (error: any) => {
+          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
+          deferred.reject(error);
         }
       )
       .done(() => {
@@ -618,14 +584,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve(data.columns);
         },
-        reason => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error fetching schema for table ${collection.id()}:\n ${JSON.stringify(reason)}`
-          );
-          Logger.logError(JSON.stringify(reason), "FetchSchemaCassandra", reason.status);
-          this._checkForbiddenError(reason);
-          deferred.reject(reason);
+        (error: any) => {
+          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
+          deferred.reject(error);
         }
       )
       .done(() => {
@@ -712,13 +673,4 @@ export class CassandraAPIDataClient extends TableDataClient {
 
     displayTokenRenewalPromptForStatus(xhrObj.status);
   };
-
-  private _checkForbiddenError(reason: any) {
-    if (reason && reason.code === Constants.HttpStatusCodes.Forbidden) {
-      sendMessage({
-        type: MessageTypes.ForbiddenError,
-        reason: typeof reason === "string" ? "reason" : JSON.stringify(reason)
-      });
-    }
-  }
 }

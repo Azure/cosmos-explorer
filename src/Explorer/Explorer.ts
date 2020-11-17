@@ -86,6 +86,8 @@ import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandBut
 import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
+import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
+import { SubscriptionType } from "../Contracts/SubscriptionType";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -118,7 +120,7 @@ export default class Explorer {
 
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;
+  public subscriptionType: ko.Observable<SubscriptionType>;
   public quotaId: ko.Observable<string>;
   public defaultExperience: ko.Observable<string>;
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
@@ -224,6 +226,7 @@ export default class Explorer {
   public shareTokenCopyHelperText: ko.Observable<string>;
   public shouldShowDataAccessExpiryDialog: ko.Observable<boolean>;
   public shouldShowContextSwitchPrompt: ko.Observable<boolean>;
+  public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
@@ -277,9 +280,7 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<ViewModels.SubscriptionType>(
-      SharedConstants.CollectionCreation.DefaultSubscriptionType
-    );
+    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.quotaId = ko.observable<string>("");
     let firstInitialization = true;
     this.isRefreshingExplorer = ko.observable<boolean>(true);
@@ -421,6 +422,7 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
 
+    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -1039,11 +1041,11 @@ export default class Explorer {
           );
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, startTime);
           this.databaseAccount(databaseAccount);
-        } catch (e) {
+        } catch (error) {
           NotificationConsoleUtils.clearInProgressMessageWithId(logId);
           NotificationConsoleUtils.logConsoleMessage(
             ConsoleDataType.Error,
-            `Enabling Azure Synapse Link for this account failed. ${e.message || JSON.stringify(e)}`
+            `Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`
           );
           TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, startTime);
         } finally {
@@ -1112,7 +1114,7 @@ export default class Explorer {
     );
     this.renewExplorerShareAccess(this, this.tokenForRenewal())
       .fail((error: any) => {
-        const stringifiedError: string = error.message;
+        const stringifiedError: string = getErrorMessage(error);
         this.renewTokenError("Invalid connection string specified");
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
@@ -1141,7 +1143,7 @@ export default class Explorer {
         NotificationConsoleUtils.clearInProgressMessageWithId(id);
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Failed to generate share url: ${error.message}`
+          `Failed to generate share url: ${getErrorMessage(error)}`
         );
         console.error(error);
       }
@@ -1166,7 +1168,10 @@ export default class Explorer {
           deferred.resolve();
         },
         (error: any) => {
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect: ${error.message}`);
+          NotificationConsoleUtils.logConsoleMessage(
+            ConsoleDataType.Error,
+            `Failed to connect: ${getErrorMessage(error)}`
+          );
           deferred.reject(error);
         }
       )
@@ -1440,19 +1445,21 @@ export default class Explorer {
         this._setLoadingStatusText("Failed to fetch databases.");
         this.isRefreshingExplorer(false);
         deferred.reject(error);
+        const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
           Action.LoadDatabases,
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            error: error.message
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Error while refreshing databases: ${error.message}`
+          `Error while refreshing databases: ${errorMessage}`
         );
       }
     );
@@ -1471,7 +1478,7 @@ export default class Explorer {
           );
         }
       },
-      reason => {
+      error => {
         if (resourceTreeStartKey != null) {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
@@ -1479,7 +1486,8 @@ export default class Explorer {
               databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
               defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
-              error: reason
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             resourceTreeStartKey
           );
@@ -1528,7 +1536,7 @@ export default class Explorer {
           resolve(token);
         },
         (error: any) => {
-          Logger.logError(error, "Explorer/getArcadiaToken");
+          Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
           resolve(undefined);
         }
       );
@@ -1546,7 +1554,7 @@ export default class Explorer {
             workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
           },
           error => {
-            Logger.logError(error, "Explorer/this._arcadiaManager.listSparkPoolsAsync");
+            Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
           }
         );
         sparkPromises.push(promise);
@@ -1554,8 +1562,7 @@ export default class Explorer {
 
       return Promise.all(sparkPromises).then(() => workspaceItems);
     } catch (error) {
-      Logger.logError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error.message);
+      handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
       return Promise.resolve([]);
     }
   }
@@ -1590,10 +1597,10 @@ export default class Explorer {
       );
     } catch (error) {
       this._isInitializingNotebooks = false;
-      Logger.logError(error, "initNotebooks/getNotebookConnectionInfoAsync");
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to get notebook workspace connection info: ${error.message}`
+      handleError(
+        error,
+        "initNotebooks/getNotebookConnectionInfoAsync",
+        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`
       );
       throw error;
     } finally {
@@ -1616,9 +1623,10 @@ export default class Explorer {
 
   public resetNotebookWorkspace() {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookClient) {
-      const error = "Attempt to reset notebook workspace, but notebook is not enabled";
-      Logger.logError(error, "Explorer/resetNotebookWorkspace");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(
+        "Attempt to reset notebook workspace, but notebook is not enabled",
+        "Explorer/resetNotebookWorkspace"
+      );
       return;
     }
     const resetConfirmationDialogProps: DialogProps = {
@@ -1643,7 +1651,7 @@ export default class Explorer {
       const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
       return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
     } catch (error) {
-      Logger.logError(error, "Explorer/_containsDefaultNotebookWorkspace");
+      Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
     }
   }
@@ -1669,8 +1677,7 @@ export default class Explorer {
         await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
       }
     } catch (error) {
-      Logger.logError(error, "Explorer/ensureNotebookWorkspaceRunning");
-      NotificationConsoleUtils.logConsoleError(`Failed to initialize notebook workspace: ${error.message}`);
+      handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
     } finally {
       clearMessage && clearMessage();
     }
@@ -1685,7 +1692,10 @@ export default class Explorer {
       TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
     } catch (error) {
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, error);
+      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error)
+      });
       throw error;
     } finally {
       NotificationConsoleUtils.clearInProgressMessageWithId(id);
@@ -1882,7 +1892,8 @@ export default class Explorer {
         masterKey,
         databaseAccount,
         resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId
+        subscriptionId: inputs.subscriptionId,
+        subscriptionType: inputs.subscriptionType
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -2053,7 +2064,8 @@ export default class Explorer {
             databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
-            trace: error.message
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -2219,8 +2231,7 @@ export default class Explorer {
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/uploadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/uploadFile");
       throw new Error(error);
     }
 
@@ -2401,8 +2412,7 @@ export default class Explorer {
   public renameNotebook(notebookFile: NotebookContentItem): Q.Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/renameNotebook");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/renameNotebook");
       throw new Error(error);
     }
 
@@ -2450,8 +2460,7 @@ export default class Explorer {
   public onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
-      Logger.logError(error, "Explorer/onCreateDirectory");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/onCreateDirectory");
       throw new Error(error);
     }
 
@@ -2472,8 +2481,7 @@ export default class Explorer {
   public readFile(notebookFile: NotebookContentItem): Promise<string> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to read file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/downloadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/downloadFile");
       throw new Error(error);
     }
 
@@ -2483,8 +2491,7 @@ export default class Explorer {
   public downloadFile(notebookFile: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to download file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/downloadFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/downloadFile");
       throw new Error(error);
     }
 
@@ -2515,7 +2522,7 @@ export default class Explorer {
       (error: any) => {
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Could not download notebook ${error.message}`
+          `Could not download notebook ${getErrorMessage(error)}`
         );
 
         clearMessage();
@@ -2565,7 +2572,7 @@ export default class Explorer {
       );
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
-      Logger.logError(error, "Explorer/isNotebooksEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
       this.isNotebooksEnabledForAccount(false);
     }
   }
@@ -2594,7 +2601,7 @@ export default class Explorer {
         false;
       this.isSparkEnabledForAccount(isEnabled);
     } catch (error) {
-      Logger.logError(error, "Explorer/isSparkEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
       this.isSparkEnabledForAccount(false);
     }
   };
@@ -2619,7 +2626,7 @@ export default class Explorer {
         (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
       return isEnabled;
     } catch (error) {
-      Logger.logError(error, "Explorer/isSparkEnabledForAccount");
+      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
       return false;
     }
   };
@@ -2638,8 +2645,7 @@ export default class Explorer {
   public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
-      Logger.logError(error, "Explorer/deleteNotebookFile");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/deleteNotebookFile");
       throw new Error(error);
     }
 
@@ -2688,8 +2694,7 @@ export default class Explorer {
   public onNewNotebookClicked(parent?: NotebookContentItem): void {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
-      Logger.logError(error, "Explorer/onNewNotebookClicked");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
 
@@ -2722,16 +2727,17 @@ export default class Explorer {
         return this.openNotebook(newFile);
       })
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason: any) => {
-        const error = `Failed to create a new notebook: ${reason}`;
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      .catch((error: any) => {
+        const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
-            error
+            error: errorMessage,
+            errorStack: getErrorStack(error)
           },
           startKey
         );
@@ -2774,8 +2780,7 @@ export default class Explorer {
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
-      Logger.logError(error, "Explorer/refreshContentItem");
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      handleError(error, "Explorer/refreshContentItem");
       return Promise.reject(new Error(error));
     }
 
@@ -2961,7 +2966,7 @@ export default class Explorer {
       }
       return tokenRefreshInterval;
     } catch (error) {
-      Logger.logError(error, "Explorer/getTokenRefreshInterval");
+      Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
     }
   }

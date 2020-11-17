@@ -21,13 +21,12 @@ describe("ARM request", () => {
 
   it("should poll for async operations", async () => {
     const headers = new Headers();
-    headers.set("azure-asyncoperation", "https://foo.com/operationStatus");
+    headers.set("location", "https://foo.com/operationStatus");
     window.fetch = jest.fn().mockResolvedValue({
       ok: true,
       headers,
-      json: async () => {
-        return { status: "Succeeded" };
-      }
+      status: 200,
+      json: async () => ({})
     });
     await armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" });
     expect(window.fetch).toHaveBeenCalledTimes(2);
@@ -35,10 +34,11 @@ describe("ARM request", () => {
 
   it("should throw for failed async operations", async () => {
     const headers = new Headers();
-    headers.set("azure-asyncoperation", "https://foo.com/operationStatus");
+    headers.set("location", "https://foo.com/operationStatus");
     window.fetch = jest.fn().mockResolvedValue({
       ok: true,
       headers,
+      status: 200,
       json: async () => {
         return { status: "Failed" };
       }

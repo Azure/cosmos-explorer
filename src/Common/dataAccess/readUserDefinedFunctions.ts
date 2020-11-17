@@ -37,8 +37,8 @@ export async function readUserDefinedFunctions(
   } catch (error) {
     handleError(
       error,
-      `Failed to query user defined functions for container ${collectionId}`,
-      "ReadUserDefinedFunctions"
+      "ReadUserDefinedFunctions",
+      `Failed to query user defined functions for container ${collectionId}`
     );
     throw error;
   } finally {

@@ -30,7 +30,7 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
         .delete();
     }
   } catch (error) {
-    handleError(error, `Error while deleting user defined function ${id}`, "DeleteUserDefinedFunction");
+    handleError(error, "DeleteUserDefinedFunction", `Error while deleting user defined function ${id}`);
     throw error;
   } finally {
     clearMessage();

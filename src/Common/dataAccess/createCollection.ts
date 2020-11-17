@@ -55,7 +55,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
     logConsoleInfo(`Successfully created container ${params.collectionId}`);
     return collection;
   } catch (error) {
-    handleError(error, `Error while creating container ${params.collectionId}`, "CreateCollection");
+    handleError(error, "CreateCollection", `Error while creating container ${params.collectionId}`);
     throw error;
   } finally {
     clearMessage();

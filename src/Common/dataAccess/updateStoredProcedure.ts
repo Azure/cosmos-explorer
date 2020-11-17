@@ -64,7 +64,7 @@ export async function updateStoredProcedure(
       .replace(storedProcedure);
     return response?.resource;
   } catch (error) {
-    handleError(error, `Error while updating stored procedure ${storedProcedure.id}`, "UpdateStoredProcedure");
+    handleError(error, "UpdateStoredProcedure", `Error while updating stored procedure ${storedProcedure.id}`);
     throw error;
   } finally {
     clearMessage();

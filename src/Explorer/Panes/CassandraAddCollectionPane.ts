@@ -13,6 +13,8 @@ import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -313,7 +315,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         databaseId: this.keyspaceId(),
         rupm: false
       }),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: "u",
@@ -368,7 +370,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         hasDedicatedThroughput: this.dedicateTableThroughput()
       }),
       keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-      subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: "u",
@@ -415,7 +417,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             hasDedicatedThroughput: this.dedicateTableThroughput()
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-          subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: "u",
@@ -429,8 +431,9 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
       },
-      reason => {
-        this.formErrors(reason.exceptionMessage);
+      error => {
+        const errorMessage = getErrorMessage(error);
+        this.formErrors(errorMessage);
         this.isExecuting(false);
         const addCollectionPaneFailedMessage = {
           databaseAccountName: this.container.databaseAccount().name,
@@ -445,7 +448,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             hasDedicatedThroughput: this.dedicateTableThroughput()
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-          subscriptionType: ViewModels.SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: this.container.quotaId(),
           defaultsCheck: {
             storage: "u",
@@ -456,7 +459,8 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           toCreateKeyspace: toCreateKeyspace,
           createKeyspaceQuery: createKeyspaceQuery,
           createTableQuery: createTableQuery,
-          error: reason
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }

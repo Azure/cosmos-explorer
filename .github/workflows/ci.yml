@@ -79,32 +79,31 @@ jobs:
           name: dist
           path: dist/
   endtoendemulator:
-    name: "End To End Tests | Emulator | SQL"
+    name: "End To End Emulator Tests"
     needs: [lint, format, compile, unittest]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: Restore Cypress Binary Cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-binary-cache
+      - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: End to End Tests
         run: |
           npm ci
           npm start &
-          npm ci --prefix ./cypress
-          npm run test:ci --prefix ./cypress -- --spec ./integration/dataexplorer/ci-tests/createDatabase.spec.ts
+          npm run wait-for-server
+          npx jest -c ./jest.config.e2e.js --detectOpenHandles sql
         shell: bash
         env:
-          EMULATOR_ENDPOINT: https://0.0.0.0:8081/
+          DATA_EXPLORER_ENDPOINT: "https://localhost:1234/explorer.html?platform=Emulator"
+          PLATFORM: "Emulator"
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+      - uses: actions/upload-artifact@v2
+        with:
+          name: screenshots
+          path: failed-*
   accessibility:
     name: "Accessibility | Hosted"
     needs: [lint, format, compile, unittest]
@@ -123,13 +122,13 @@ jobs:
           sudo sysctl -p
           npm ci
           npm start &
-          npx wait-on  -i 5000 https-get://0.0.0.0:1234/
+          npx wait-on -i 5000 https-get://0.0.0.0:1234/
           node utils/accesibilityCheck.js
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-  endtoendpuppeteer:
-    name: "End to end puppeteer tests"
+  endtoendhosted:
+    name: "End to End Hosted Tests"
     needs: [lint, format, compile, unittest]
     runs-on: ubuntu-latest
     steps:
@@ -138,7 +137,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: End to End Puppeteer Tests
+      - name: End to End Hosted Tests
         run: |
           npm ci
           npm start &
@@ -150,10 +149,16 @@ jobs:
           PORTAL_RUNNER_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
           MONGO_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
           CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
+          TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
+          DATA_EXPLORER_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: screenshots
+          path: failed-*
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendpuppeteer]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -177,7 +182,7 @@ jobs:
   nugetmpac:
     name: Publish Nuget MPAC
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendpuppeteer]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}

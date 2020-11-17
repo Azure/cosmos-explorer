@@ -13,6 +13,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import StoredProcedure from "../Tree/StoredProcedure";
 import ScriptTabBase from "./ScriptTabBase";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 enum ToggleState {
   Result = "result",
@@ -104,7 +105,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
             startKey
           );
         },
-        (updateError: any) => {
+        (error: any) => {
           this.isExecutionError(true);
           TelemetryProcessor.traceFailure(
             Action.UpdateStoredProcedure,
@@ -112,7 +113,9 @@ export default class StoredProcedureTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -274,7 +277,9 @@ export default class StoredProcedureTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );

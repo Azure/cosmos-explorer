@@ -27,7 +27,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
       databases = sdkResponse.resources as DataModels.Database[];
     }
   } catch (error) {
-    handleError(error, `Error while querying databases`, "ReadDatabases");
+    handleError(error, "ReadDatabases", `Error while querying databases`);
     throw error;
   }
   clearMessage();

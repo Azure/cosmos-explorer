@@ -6,7 +6,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import { KeyCodes } from "../../Common/Constants";
-import * as ErrorParserUtility from "../../Common/ErrorParserUtility";
 import DocumentId from "../Tree/DocumentId";
 import editable from "../../Common/EditableUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
@@ -32,6 +31,7 @@ import {
   createDocument
 } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DocumentsTab extends TabsBase {
   public selectedDocumentId: ko.Observable<DocumentId>;
@@ -392,9 +392,8 @@ export default class DocumentsTab extends TabsBase {
         const focusElement = document.getElementById("errorStatusIcon");
         focusElement && focusElement.focus();
       })
-      .catch(reason => {
-        const message = ErrorParserUtility.parse(reason)[0].message;
-        window.alert(message);
+      .catch(error => {
+        window.alert(getErrorMessage(error));
       });
   }
 
@@ -474,17 +473,19 @@ export default class DocumentsTab extends TabsBase {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -541,17 +542,19 @@ export default class DocumentsTab extends TabsBase {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          const message = ErrorParserUtility.parse(reason)[0].message;
-          window.alert(message);
+          const errorMessage = getErrorMessage(error);
+          window.alert(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: errorMessage,
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -642,7 +645,8 @@ export default class DocumentsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: getErrorMessage(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );
@@ -696,16 +700,18 @@ export default class DocumentsTab extends TabsBase {
             startKey
           );
         },
-        reason => {
+        error => {
           this.isExecutionError(true);
-          console.error(reason);
+          console.error(error);
           TelemetryProcessor.traceFailure(
             Action.DeleteDocument,
             {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -774,10 +780,8 @@ export default class DocumentsTab extends TabsBase {
         },
         error => {
           this.isExecutionError(true);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            typeof error === "string" ? error : error.message
-          );
+          const errorMessage = getErrorMessage(error);
+          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,
@@ -788,7 +792,8 @@ export default class DocumentsTab extends TabsBase {
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
-                error: error
+                error: errorMessage,
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );

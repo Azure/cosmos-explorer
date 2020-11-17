@@ -7,7 +7,7 @@ import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { HashMap } from "../../../Common/HashMap";
-import * as Logger from "../../../Common/Logger";
+import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface GremlinClientParameters {
   endpoint: string;
@@ -58,26 +58,23 @@ export class GremlinClient {
         }
       },
       failureCallback: (result: Result, error: any) => {
-        if (typeof error !== "string") {
-          error = error.message;
-        }
-
+        const errorMessage = getErrorMessage(error);
         const requestId = result.requestId;
 
         if (!requestId || !this.pendingResults.has(requestId)) {
-          const msg = `Error: ${error}, unknown requestId:${requestId} ${GremlinClient.getRequestChargeString(
+          const errorMsg = `Error: ${errorMessage}, unknown requestId:${requestId} ${GremlinClient.getRequestChargeString(
             result.requestCharge
           )}`;
-          GremlinClient.reportError(msg);
+          handleError(errorMsg, GremlinClient.LOG_AREA);
 
           // Fail all pending requests if no request id (fatal)
           if (!requestId) {
             this.pendingResults.keys().forEach((reqId: string) => {
-              this.abortPendingRequest(reqId, error, null);
+              this.abortPendingRequest(reqId, errorMessage, null);
             });
           }
         } else {
-          this.abortPendingRequest(requestId, error, result.requestCharge);
+          this.abortPendingRequest(requestId, errorMessage, result.requestCharge);
         }
       },
       infoCallback: (msg: string) => {
@@ -132,15 +129,16 @@ export class GremlinClient {
     deferred.reject(error);
     this.pendingResults.delete(requestId);
 
-    GremlinClient.reportError(
-      `Aborting pending request ${requestId}. Error:${error} ${GremlinClient.getRequestChargeString(requestCharge)}`
-    );
+    const errorMsg = `Aborting pending request ${requestId}. Error:${error} ${GremlinClient.getRequestChargeString(
+      requestCharge
+    )}`;
+    handleError(errorMsg, GremlinClient.LOG_AREA);
   }
 
   private flushResult(requestId: string) {
     if (!this.pendingResults.has(requestId)) {
-      const msg = `Unknown requestId:${requestId}`;
-      GremlinClient.reportError(msg);
+      const errorMsg = `Unknown requestId:${requestId}`;
+      handleError(errorMsg, GremlinClient.LOG_AREA);
       return;
     }
 
@@ -158,8 +156,8 @@ export class GremlinClient {
    */
   private storePendingResult(result: Result): boolean {
     if (!this.pendingResults.has(result.requestId)) {
-      const msg = `Dropping result for unknown requestId:${result.requestId}`;
-      GremlinClient.reportError(msg);
+      const errorMsg = `Dropping result for unknown requestId:${result.requestId}`;
+      handleError(errorMsg, GremlinClient.LOG_AREA);
       return false;
     }
     const pendingResults = this.pendingResults.get(result.requestId).result;
@@ -179,9 +177,8 @@ export class GremlinClient {
     if (result.requestCharge === undefined || typeof result.requestCharge !== "number") {
       // Clear totalRequestCharge, even if it was a valid number as the total might be incomplete therefore incorrect
       pendingResults.totalRequestCharge = undefined;
-      GremlinClient.reportError(
-        `Unable to perform RU aggregation calculation with non numbers. Result request charge: ${result.requestCharge}. RequestId: ${result.requestId}`
-      );
+      const errorMsg = `Unable to perform RU aggregation calculation with non numbers. Result request charge: ${result.requestCharge}. RequestId: ${result.requestId}`;
+      handleError(errorMsg, GremlinClient.LOG_AREA);
     } else {
       if (pendingResults.totalRequestCharge === undefined) {
         pendingResults.totalRequestCharge = 0;
@@ -189,10 +186,5 @@ export class GremlinClient {
       pendingResults.totalRequestCharge += result.requestCharge;
     }
     return pendingResults.isIncomplete;
-  }
-
-  private static reportError(msg: string): void {
-    NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
-    Logger.logError(msg, GremlinClient.LOG_AREA);
   }
 }

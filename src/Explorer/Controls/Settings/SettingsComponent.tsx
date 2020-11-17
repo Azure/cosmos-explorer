@@ -46,10 +46,9 @@ import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric
 import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import {
-  getMongoDBCollectionIndexTransformationProgress,
-  readMongoDBCollectionThroughRP
-} from "../../../Common/dataAccess/readMongoDBCollection";
+import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
+import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -211,6 +210,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   componentDidMount(): void {
+    this.refreshIndexTransformationProgress();
     this.loadMongoIndexes();
     this.setAutoPilotStates();
     this.setBaseline();
@@ -232,8 +232,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.container.isEnableMongoCapabilityPresent() &&
       this.container.databaseAccount()
     ) {
-      await this.refreshIndexTransformationProgress();
-
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
@@ -248,10 +246,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public refreshIndexTransformationProgress = async (): Promise<void> => {
-    const currentProgress = await getMongoDBCollectionIndexTransformationProgress(
-      this.collection.databaseId,
-      this.collection.id()
-    );
+    const currentProgress = await getIndexTransformationProgress(this.collection.databaseId, this.collection.id());
     this.setState({ indexTransformationProgress: currentProgress });
   };
 
@@ -351,6 +346,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             break;
         }
 
+        const wasIndexingPolicyModified = this.state.isIndexingPolicyDirty;
         newCollection.defaultTtl = defaultTtl;
 
         newCollection.indexingPolicy = this.state.indexingPolicyContent;
@@ -386,6 +382,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
         this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
         this.collection.geospatialConfig(updatedCollection.geospatialConfig);
+
+        if (wasIndexingPolicyModified) {
+          await this.refreshIndexTransformationProgress();
+        }
+
         this.setState({
           isSubSettingsSaveable: false,
           isSubSettingsDiscardable: false,
@@ -437,7 +438,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
               defaultExperience: this.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.props.settingsTab.tabTitle(),
-              error: error.message
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -559,10 +561,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         },
         startKey
       );
-    } catch (reason) {
+    } catch (error) {
       this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
-      console.error(reason);
+      console.error(error);
       traceFailure(
         Action.SettingsV2Updated,
         {
@@ -572,7 +574,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
-          error: reason.message
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error)
         },
         startKey
       );
@@ -945,6 +948,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       indexingPolicyContentBaseline: this.state.indexingPolicyContentBaseline,
       onIndexingPolicyContentChange: this.onIndexingPolicyContentChange,
       logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage,
+      indexTransformationProgress: this.state.indexTransformationProgress,
+      refreshIndexTransformationProgress: this.refreshIndexTransformationProgress,
       onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange
     };
 

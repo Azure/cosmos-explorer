@@ -1,12 +1,9 @@
 import * as React from "react";
 import { ArcadiaWorkspace, SparkPool } from "../../../Contracts/DataModels";
 import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
-import {
-  IContextualMenuItem,
-  IContextualMenuProps,
-  ContextualMenuItemType
-} from "office-ui-fabric-react/lib/ContextualMenu";
+import { IContextualMenuItem, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
 import * as Logger from "../../../Common/Logger";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 
 export interface ArcadiaMenuPickerProps {
   selectText?: string;
@@ -47,7 +44,7 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
         selectedSparkPool: item.text
       });
     } catch (error) {
-      Logger.logError(error, "ArcadiaMenuPicker/_onSparkPoolClicked");
+      Logger.logError(getErrorMessage(error), "ArcadiaMenuPicker/_onSparkPoolClicked");
       throw error;
     }
   };
