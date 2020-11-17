@@ -80,7 +80,9 @@ const initTestExplorer = async (): Promise<void> => {
   const portalRunnerDatabaseAccount = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccount)
   );
-  const portalRunnerDatabaseAccountKey = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccountKey));
+  const portalRunnerDatabaseAccountKey = decodeURIComponent(
+    urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccountKey)
+  );
   const portalRunnerSubscripton = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerSubscripton));
   const portalRunnerResourceGroup = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.portalRunnerResourceGroup)

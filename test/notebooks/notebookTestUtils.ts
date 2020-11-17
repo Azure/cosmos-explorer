@@ -35,7 +35,10 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
     TestExplorerParams.portalRunnerDatabaseAccount,
     encodeURI(portalRunnerDatabaseAccount)
   );
-  testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerDatabaseAccountKey, encodeURI(portalRunnerDatabaseAccountKey));
+  testExplorerUrl.searchParams.append(
+    TestExplorerParams.portalRunnerDatabaseAccountKey,
+    encodeURI(portalRunnerDatabaseAccountKey)
+  );
   testExplorerUrl.searchParams.append(TestExplorerParams.portalRunnerSubscripton, encodeURI(portalRunnerSubscripton));
   testExplorerUrl.searchParams.append(
     TestExplorerParams.portalRunnerResourceGroup,
