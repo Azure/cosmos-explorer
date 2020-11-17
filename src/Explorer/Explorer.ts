@@ -1725,7 +1725,6 @@ export default class Explorer {
         case MessageTypes.ClearNotification:
         case MessageTypes.LoadingStatus:
         case MessageTypes.InitTestExplorer:
-        case MessageTypes.HideConnectScreen:
           return true;
       }
     }
@@ -1742,10 +1741,6 @@ export default class Explorer {
 
     if (!this._shouldProcessMessage(event)) {
       return;
-    }
-
-    if (event.data.data.type === MessageTypes.HideConnectScreen) {
-      this.hideConnectExplorerForm();
     }
 
     const message: any = event.data.data;

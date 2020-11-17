@@ -1,29 +1,38 @@
 import "expect-puppeteer";
 import { deleteNotebook, getNotebookNode, getTestExplorerFrame, uploadNotebook } from "./notebookTestUtils";
 import * as path from "path";
+import { ElementHandle, Frame } from "puppeteer";
 
 jest.setTimeout(300000);
 
+const notebookName = "GettingStarted.ipynb";
+let frame: Frame;
+let uploadedNotebookNode: ElementHandle<Element>;
+
 describe("Notebook UI tests", () => {
+  beforeAll(async () => {
+    frame = await getTestExplorerFrame();
+    const uploadNotebookPath = path.join(__dirname, "testNotebooks", notebookName);
+    await uploadNotebook(frame, uploadNotebookPath);
+    uploadedNotebookNode = await getNotebookNode(frame, notebookName);
+  });
+
+  afterAll(async () => {
+    await deleteNotebook(frame, uploadedNotebookNode);
+    const deletedNotebookNode = await getNotebookNode(frame, notebookName);
+    if (deletedNotebookNode) {
+      throw new Error(`Deletion of notebook ${notebookName} failed`);
+    }
+  });
+
   it("Upload, Open and Delete Notebook", async () => {
     try {
-      const frame = await getTestExplorerFrame();
-      const uploadNotebookName = "GettingStarted.ipynb";
-      const uploadNotebookPath = path.join(__dirname, "testNotebooks", uploadNotebookName);
-
-      await uploadNotebook(frame, uploadNotebookPath);
-      const uploadedNotebookNode = await getNotebookNode(frame, uploadNotebookName);
-
       await uploadedNotebookNode.click();
       await frame.waitForSelector(".tabNavText");
       const tabTitle = await frame.$eval(".tabNavText", element => element.textContent);
-      expect(tabTitle).toEqual(uploadNotebookName);
+      expect(tabTitle).toEqual(notebookName);
       const closeIcon = await frame.waitForSelector(".close-Icon");
       await closeIcon.click();
-
-      await deleteNotebook(frame, uploadedNotebookNode);
-      const deletedNotebookNode = await getNotebookNode(frame, uploadNotebookName);
-      expect(deletedNotebookNode).toBeUndefined();
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;

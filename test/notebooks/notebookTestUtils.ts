@@ -1,5 +1,5 @@
 import { ElementHandle, Frame } from "puppeteer";
-import { TestExplorerParams } from "../../src/TestExplorerParams";
+import { TestExplorerParams } from "./testExplorer/TestExplorerParams";
 
 export const NOTEBOOK_OPERATION_DELAY = 5000;
 export const RENDER_DELAY = 1000;
@@ -18,16 +18,31 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
   const notebooksAccountSubscriptonId = process.env.NOTEBOOKS_ACCOUNT_SUBSCRIPTION_ID;
   const notebooksAccountResourceGroup = process.env.NOTEBOOKS_ACCOUNT_RESOURCE_GROUP;
 
-  const prodUrl = `https://localhost:1234/testExplorer.html?
-${TestExplorerParams.notebooksTestRunnerApplicationId}=${encodeURI(notebooksTestRunnerApplicationId)}&
-${TestExplorerParams.notebooksTestRunnerClientId}=${encodeURI(notebooksTestRunnerClientId)}&
-${TestExplorerParams.notebooksTestRunnerClientSecret}=${encodeURI(notebooksTestRunnerClientSecret)}&
-${TestExplorerParams.notebooksAccountName}=${encodeURI(notebooksAccountName)}&
-${TestExplorerParams.notebooksAccountKey}=${encodeURI(notebooksAccountKey)}&
-${TestExplorerParams.notebooksAccountSubscriptonId}=${encodeURI(notebooksAccountSubscriptonId)}&
-${TestExplorerParams.notebooksAccountResourceGroup}=${encodeURI(notebooksAccountResourceGroup)}`;
+  const testExplorerUrl = new URL("testExplorer.html", "https://localhost:1234");
+  testExplorerUrl.searchParams.append(
+    TestExplorerParams.notebooksTestRunnerApplicationId,
+    encodeURI(notebooksTestRunnerApplicationId)
+  );
+  testExplorerUrl.searchParams.append(
+    TestExplorerParams.notebooksTestRunnerClientId,
+    encodeURI(notebooksTestRunnerClientId)
+  );
+  testExplorerUrl.searchParams.append(
+    TestExplorerParams.notebooksTestRunnerClientSecret,
+    encodeURI(notebooksTestRunnerClientSecret)
+  );
+  testExplorerUrl.searchParams.append(TestExplorerParams.notebooksAccountName, encodeURI(notebooksAccountName));
+  testExplorerUrl.searchParams.append(TestExplorerParams.notebooksAccountKey, encodeURI(notebooksAccountKey));
+  testExplorerUrl.searchParams.append(
+    TestExplorerParams.notebooksAccountSubscriptonId,
+    encodeURI(notebooksAccountSubscriptonId)
+  );
+  testExplorerUrl.searchParams.append(
+    TestExplorerParams.notebooksAccountResourceGroup,
+    encodeURI(notebooksAccountResourceGroup)
+  );
 
-  await page.goto(prodUrl);
+  await page.goto(testExplorerUrl.toString());
 
   const handle = await page.waitForSelector("iframe");
   testExplorerFrame = await handle.contentFrame();
