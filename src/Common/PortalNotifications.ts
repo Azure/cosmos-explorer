@@ -16,7 +16,7 @@ const notificationsPath = () => {
 };
 
 export const fetchPortalNotifications = async (): Promise<DataModels.Notification[]> => {
-  if (configContext.platform === Platform.Emulator) {
+  if (configContext.platform === Platform.Emulator || configContext.platform === Platform.Hosted) {
     return [];
   }
 

@@ -206,8 +206,6 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
-  public isSettingsV2Enabled: ko.Observable<boolean>;
-  public isMongoIndexEditorEnabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -412,8 +410,6 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
-    this.isSettingsV2Enabled = ko.observable(false);
-    this.isMongoIndexEditorEnabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1913,14 +1909,6 @@ export default class Explorer {
   public setFeatureFlagsFromFlights(flights: readonly string[]): void {
     if (!flights) {
       return;
-    }
-
-    if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
-      this.isSettingsV2Enabled(true);
-    }
-
-    if (flights.indexOf(Constants.Flights.MongoIndexEditor) !== -1) {
-      this.isMongoIndexEditorEnabled(true);
     }
   }
 
