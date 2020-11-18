@@ -47,7 +47,7 @@ export default class SettingsTabV2 extends TabsBase {
     this.currentCollection.loadOffer().then(
       () => {
         // passed in options and set by parent as "Settings" by default
-        this.tabTitle("Scale & Settings");
+        this.tabTitle(this.currentCollection.offer() ? "Settings" : "Scale & Settings")
         this.offerRead(true);
         this.options.getPendingNotification.then(
           (data: DataModels.Notification) => {

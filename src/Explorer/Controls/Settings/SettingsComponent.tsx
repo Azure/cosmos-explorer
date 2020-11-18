@@ -227,7 +227,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public loadMongoIndexes = async (): Promise<void> => {
     if (
-      this.container.isMongoIndexEditorEnabled() &&
       this.container.isPreferredApiMongoDB() &&
       this.container.isEnableMongoCapabilityPresent() &&
       this.container.databaseAccount()
@@ -1001,7 +1000,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
       });
     } else if (
-      this.container.isMongoIndexEditorEnabled() &&
       this.container.isPreferredApiMongoDB() &&
       this.container.isEnableMongoCapabilityPresent()
     ) {
