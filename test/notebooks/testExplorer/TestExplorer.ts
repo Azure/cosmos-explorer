@@ -46,7 +46,7 @@ const getDatabaseAccount = async (
   notebooksAccountName: string
 ): Promise<DatabaseAccountsGetResponse> => {
   const client = new CosmosDBManagementClient(new CustomSigner(token), notebooksAccountSubscriptonId);
-  return await client.databaseAccounts.get(notebooksAccountResourceGroup, notebooksAccountName);
+  return client.databaseAccounts.get(notebooksAccountResourceGroup, notebooksAccountName);
 };
 
 const sendMessageToExplorerFrame = (data: unknown): void => {
@@ -100,6 +100,8 @@ const initTestExplorer = async (): Promise<void> => {
     portalRunnerDatabaseAccount
   );
 
+  console.log("token:" + token)
+  console.log("db:" + databaseAccount)
   const initTestExplorerContent = {
     type: MessageTypes.InitTestExplorer,
     inputs: {
