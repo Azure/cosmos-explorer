@@ -1,5 +1,6 @@
 import { ElementHandle, Frame } from "puppeteer";
 import { TestExplorerParams } from "./testExplorer/TestExplorerParams";
+import * as path from "path";
 
 export const NOTEBOOK_OPERATION_DELAY = 5000;
 export const RENDER_DELAY = 2500;
@@ -53,9 +54,14 @@ export const getTestExplorerFrame = async (): Promise<Frame> => {
   return testExplorerFrame;
 };
 
-export const uploadNotebook = async (frame: Frame, uploadNotebookPath: string): Promise<void> => {
-  const notebookResourceTree = await frame.waitForSelector(".notebookResourceTree");
+export const uploadNotebookIfNotExist = async (frame: Frame, notebookName: string): Promise<ElementHandle<Element>> => {
+  const notebookNode = await getNotebookNode(frame, notebookName);
+  if (notebookNode) {
+    return notebookNode;
+  }
 
+  const uploadNotebookPath = path.join(__dirname, "testNotebooks", notebookName);
+  const notebookResourceTree = await frame.waitForSelector(".notebookResourceTree");
   const treeNodeHeadersBeforeUpload = await notebookResourceTree.$$(".treeNodeHeader");
 
   const ellipses = await treeNodeHeadersBeforeUpload[2].$("button");
@@ -76,6 +82,7 @@ export const uploadNotebook = async (frame: Frame, uploadNotebookPath: string): 
   await submitButton.click();
 
   await frame.waitFor(NOTEBOOK_OPERATION_DELAY);
+  return await getNotebookNode(frame, notebookName);
 };
 
 export const getNotebookNode = async (frame: Frame, uploadNotebookName: string): Promise<ElementHandle<Element>> => {
@@ -91,18 +98,4 @@ export const getNotebookNode = async (frame: Frame, uploadNotebookName: string):
     }
   }
   return undefined;
-};
-
-export const deleteNotebook = async (frame: Frame, notebookNodeToDelete: ElementHandle<Element>): Promise<void> => {
-  const ellipses = await notebookNodeToDelete.$(".treeMenuEllipsis");
-  await ellipses.click();
-
-  await frame.waitFor(RENDER_DELAY);
-
-  const menuItems = await frame.$$(".ms-ContextualMenu-item");
-  await menuItems[1].click();
-
-  const deleteAcceptButton = await frame.waitForSelector(".ms-Dialog-action");
-  await deleteAcceptButton.click();
-  await frame.waitFor(NOTEBOOK_OPERATION_DELAY);
 };
