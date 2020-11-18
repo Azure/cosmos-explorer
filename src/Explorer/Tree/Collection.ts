@@ -29,7 +29,6 @@ import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import SettingsTabV2 from "../Tabs/SettingsTabV2";
-import SettingsTab from "../Tabs/SettingsTab";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -582,8 +581,8 @@ export default class Collection implements ViewModels.Collection {
       onUpdateTabsButtons: this.container.onUpdateTabsButtons
     };
 
-      let settingsTabV2 = matchingTabs && (matchingTabs[0] as SettingsTabV2);
-      this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions, pendingNotificationsPromise);
+    let settingsTabV2 = matchingTabs && (matchingTabs[0] as SettingsTabV2);
+    this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions, pendingNotificationsPromise);
   };
 
   private launchSettingsTabV2 = (

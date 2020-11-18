@@ -999,10 +999,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
       });
-    } else if (
-      this.container.isPreferredApiMongoDB() &&
-      this.container.isEnableMongoCapabilityPresent()
-    ) {
+    } else if (this.container.isPreferredApiMongoDB() && this.container.isEnableMongoCapabilityPresent()) {
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
