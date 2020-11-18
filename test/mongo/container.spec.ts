@@ -82,10 +82,6 @@ describe("Collection Add and Delete Mongo spec", () => {
       );
 
       if (collections.length) {
-        await frame.waitFor(`div[class="collectionHeader main2 nodeItem "] > div[class="treeNodeHeader "]`, {
-          visible: true
-        });
-
         const textId = await frame.evaluate(element => {
           return element.attributes["data-test"].textContent;
         }, collections[0]);
