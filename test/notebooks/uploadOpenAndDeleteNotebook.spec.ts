@@ -1,5 +1,5 @@
 import "expect-puppeteer";
-import { deleteNotebook, getNotebookNode, getTestExplorerFrame, uploadNotebook } from "./notebookTestUtils";
+import { deleteNotebook, getNotebookNode, getTestExplorerFrame, RENDER_DELAY, uploadNotebook } from "./notebookTestUtils";
 import * as path from "path";
 import { ElementHandle, Frame } from "puppeteer";
 
@@ -23,6 +23,7 @@ describe("Notebook UI tests", () => {
       expect(tabTitle).toEqual(notebookName);
       const closeIcon = await frame.waitForSelector(".close-Icon");
       await closeIcon.click();
+      await frame.waitFor(RENDER_DELAY);
 
       await deleteNotebook(frame, uploadedNotebookNode);
       const deletedNotebookNode = await getNotebookNode(frame, notebookName);
