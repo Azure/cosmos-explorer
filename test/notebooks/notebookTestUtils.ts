@@ -2,7 +2,7 @@ import { ElementHandle, Frame } from "puppeteer";
 import { TestExplorerParams } from "./testExplorer/TestExplorerParams";
 
 export const NOTEBOOK_OPERATION_DELAY = 5000;
-export const RENDER_DELAY = 1000;
+export const RENDER_DELAY = 2500;
 
 let testExplorerFrame: Frame;
 export const getTestExplorerFrame = async (): Promise<Frame> => {
