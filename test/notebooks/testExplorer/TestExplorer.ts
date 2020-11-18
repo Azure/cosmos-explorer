@@ -100,8 +100,8 @@ const initTestExplorer = async (): Promise<void> => {
     portalRunnerDatabaseAccount
   );
 
-  console.log("token:" + token)
-  console.log("db:" + databaseAccount)
+  console.log("token:" + token);
+  console.log("db:" + databaseAccount);
   const initTestExplorerContent = {
     type: MessageTypes.InitTestExplorer,
     inputs: {

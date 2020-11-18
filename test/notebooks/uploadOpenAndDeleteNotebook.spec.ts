@@ -16,7 +16,7 @@ describe("Notebook UI tests", () => {
       const uploadNotebookPath = path.join(__dirname, "testNotebooks", notebookName);
       await uploadNotebook(frame, uploadNotebookPath);
       uploadedNotebookNode = await getNotebookNode(frame, notebookName);
-  
+
       await uploadedNotebookNode.click();
       await frame.waitForSelector(".tabNavText");
       const tabTitle = await frame.$eval(".tabNavText", element => element.textContent);
