@@ -1,5 +1,11 @@
 import "expect-puppeteer";
-import { deleteNotebook, getNotebookNode, getTestExplorerFrame, RENDER_DELAY, uploadNotebook } from "./notebookTestUtils";
+import {
+  deleteNotebook,
+  getNotebookNode,
+  getTestExplorerFrame,
+  RENDER_DELAY,
+  uploadNotebook
+} from "./notebookTestUtils";
 import * as path from "path";
 import { ElementHandle, Frame } from "puppeteer";
 
