@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Resource tree for schema should render 1`] = `
+<div
+  className="treeComponent dataResourceTree"
+>
+  <TreeNodeComponent
+    generation={0}
+    node={
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "label": "String",
+              },
+              Object {
+                "label": "HasNulls: true",
+              },
+            ],
+            "label": "_rid",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "label": "Int64",
+              },
+              Object {
+                "label": "HasNulls: true",
+              },
+            ],
+            "label": "_ts",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "label": "String",
+              },
+              Object {
+                "label": "HasNulls: true",
+              },
+            ],
+            "label": "id",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "label": "String",
+              },
+              Object {
+                "label": "HasNulls: true",
+              },
+            ],
+            "label": "pk",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "label": "String",
+              },
+              Object {
+                "label": "HasNulls: true",
+              },
+            ],
+            "label": "other",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "String",
+                  },
+                  Object {
+                    "label": "HasNulls: true",
+                  },
+                ],
+                "label": "name",
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "Int64",
+                  },
+                  Object {
+                    "label": "HasNulls: true",
+                  },
+                ],
+                "label": "someNumber",
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "Double",
+                  },
+                  Object {
+                    "label": "HasNulls: true",
+                  },
+                ],
+                "label": "anotherNumber",
+              },
+            ],
+            "label": "nested",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "label": "String",
+                          },
+                          Object {
+                            "label": "HasNulls: true",
+                          },
+                        ],
+                        "label": "name",
+                      },
+                      Object {
+                        "children": Array [
+                          Object {
+                            "label": "Int64",
+                          },
+                          Object {
+                            "label": "HasNulls: true",
+                          },
+                        ],
+                        "label": "someNumber",
+                      },
+                      Object {
+                        "children": Array [
+                          Object {
+                            "label": "Double",
+                          },
+                          Object {
+                            "label": "HasNulls: true",
+                          },
+                        ],
+                        "label": "anotherNumber",
+                      },
+                    ],
+                    "label": "items",
+                  },
+                ],
+                "label": "list",
+              },
+            ],
+            "label": "items",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "label": "String",
+              },
+              Object {
+                "label": "HasNulls: true",
+              },
+            ],
+            "label": "_etag",
+          },
+        ],
+        "label": "Schema",
+        "onClick": [Function],
+      }
+    }
+    paddingLeft={0}
+  />
+</div>
+`;

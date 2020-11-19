@@ -9,7 +9,6 @@ import MongoQueryTabTemplate from "./MongoQueryTab.html";
 import MongoShellTabTemplate from "./MongoShellTab.html";
 import QueryTabTemplate from "./QueryTab.html";
 import QueryTablesTabTemplate from "./QueryTablesTab.html";
-import SettingsTabTemplate from "./SettingsTab.html";
 import SettingsTabV2Template from "./SettingsTabV2.html";
 import DatabaseSettingsTabTemplate from "./DatabaseSettingsTab.html";
 import StoredProcedureTabTemplate from "./StoredProcedureTab.html";
@@ -129,15 +128,6 @@ export class QueryTablesTab {
     return {
       viewModel: TabComponent,
       template: QueryTablesTabTemplate
-    };
-  }
-}
-
-export class SettingsTab {
-  constructor() {
-    return {
-      viewModel: TabComponent,
-      template: SettingsTabTemplate
     };
   }
 }

@@ -3,8 +3,11 @@ import { Frame } from "puppeteer";
 
 export async function login(connectionString: string): Promise<Frame> {
   const prodUrl = process.env.DATA_EXPLORER_ENDPOINT;
-  page.goto(prodUrl, { waitUntil: "networkidle2" });
+  await page.goto(prodUrl);
 
+  if (process.env.PLATFORM === "Emulator") {
+    return page.mainFrame();
+  }
   // log in with connection string
   const handle = await page.waitForSelector("iframe");
   const frame = await handle.contentFrame();

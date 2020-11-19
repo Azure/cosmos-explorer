@@ -24,7 +24,6 @@ import {
   transparentDetailsRowStyles,
   createAndAddMongoIndexStackProps,
   separatorStyles,
-  mongoIndexingPolicyAADError,
   indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle
 } from "../../SettingsRenderUtils";
@@ -40,7 +39,6 @@ import {
 } from "../../SettingsUtils";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
-import { AuthType } from "../../../../../AuthType";
 import { IndexingPolicyRefreshComponent } from "../IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
 export interface MongoIndexingPolicyComponentProps {
@@ -321,7 +319,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
         </Stack>
       );
     } else {
-      return window.authType !== AuthType.AAD ? mongoIndexingPolicyAADError : <Spinner size={SpinnerSize.large} />;
+      return <Spinner size={SpinnerSize.large} />;
     }
   }
 }

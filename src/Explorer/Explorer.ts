@@ -87,6 +87,7 @@ import { updateUserContext, userContext } from "../UserContext";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
+import { SubscriptionType } from "../Contracts/SubscriptionType";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -119,7 +120,7 @@ export default class Explorer {
 
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  public subscriptionType: ko.Observable<ViewModels.SubscriptionType>;
+  public subscriptionType: ko.Observable<SubscriptionType>;
   public quotaId: ko.Observable<string>;
   public defaultExperience: ko.Observable<string>;
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
@@ -205,8 +206,6 @@ export default class Explorer {
   public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isCodeOfConductEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
-  public isSettingsV2Enabled: ko.Observable<boolean>;
-  public isMongoIndexEditorEnabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -225,6 +224,7 @@ export default class Explorer {
   public shareTokenCopyHelperText: ko.Observable<string>;
   public shouldShowDataAccessExpiryDialog: ko.Observable<boolean>;
   public shouldShowContextSwitchPrompt: ko.Observable<boolean>;
+  public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
@@ -278,9 +278,7 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<ViewModels.SubscriptionType>(
-      SharedConstants.CollectionCreation.DefaultSubscriptionType
-    );
+    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.quotaId = ko.observable<string>("");
     let firstInitialization = true;
     this.isRefreshingExplorer = ko.observable<boolean>(true);
@@ -412,8 +410,6 @@ export default class Explorer {
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
-    this.isSettingsV2Enabled = ko.observable(false);
-    this.isMongoIndexEditorEnabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -422,6 +418,7 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
     );
 
+    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -1890,7 +1887,8 @@ export default class Explorer {
         masterKey,
         databaseAccount,
         resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId
+        subscriptionId: inputs.subscriptionId,
+        subscriptionType: inputs.subscriptionType
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1910,14 +1908,6 @@ export default class Explorer {
   public setFeatureFlagsFromFlights(flights: readonly string[]): void {
     if (!flights) {
       return;
-    }
-
-    if (flights.indexOf(Constants.Flights.SettingsV2) !== -1) {
-      this.isSettingsV2Enabled(true);
-    }
-
-    if (flights.indexOf(Constants.Flights.MongoIndexEditor) !== -1) {
-      this.isMongoIndexEditorEnabled(true);
     }
   }
 

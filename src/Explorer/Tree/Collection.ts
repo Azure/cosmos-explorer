@@ -29,7 +29,6 @@ import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import SettingsTabV2 from "../Tabs/SettingsTabV2";
-import SettingsTab from "../Tabs/SettingsTab";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -63,6 +62,8 @@ export default class Collection implements ViewModels.Collection {
   public throughput: ko.Computed<number>;
   public rawDataModel: DataModels.Collection;
   public analyticalStorageTtl: ko.Observable<number>;
+  public schema: DataModels.ISchema;
+  public requestSchema: () => void;
   public geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
 
   // TODO move this to API customization class
@@ -117,6 +118,8 @@ export default class Collection implements ViewModels.Collection {
     this.conflictResolutionPolicy = ko.observable(data.conflictResolutionPolicy);
     this.changeFeedPolicy = ko.observable<DataModels.ChangeFeedPolicy>(data.changeFeedPolicy);
     this.analyticalStorageTtl = ko.observable(data.analyticalStorageTtl);
+    this.schema = data.schema;
+    this.requestSchema = data.requestSchema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
 
     // TODO fix this to only replace non-excaped single quotes
@@ -552,11 +555,6 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    const isSettingsV2Enabled = this.container.isSettingsV2Enabled();
-    if (!isSettingsV2Enabled) {
-      await this.loadOffer();
-    }
-
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
@@ -583,68 +581,8 @@ export default class Collection implements ViewModels.Collection {
       onUpdateTabsButtons: this.container.onUpdateTabsButtons
     };
 
-    if (isSettingsV2Enabled) {
-      let settingsTabV2 = matchingTabs && (matchingTabs[0] as SettingsTabV2);
-      this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions, pendingNotificationsPromise);
-    } else {
-      let settingsTab = matchingTabs && (matchingTabs[0] as SettingsTab);
-      this.launchSettingsTabV1(settingsTab, traceStartData, settingsTabOptions, pendingNotificationsPromise);
-    }
-  };
-
-  private launchSettingsTabV1 = (
-    settingsTab: SettingsTab,
-    traceStartData: any,
-    settingsTabOptions: ViewModels.TabOptions,
-    getPendingNotification: Q.Promise<DataModels.Notification>
-  ): void => {
-    if (!settingsTab) {
-      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
-      settingsTabOptions.onLoadStartKey = startKey;
-
-      getPendingNotification.then(
-        (data: any) => {
-          const pendingNotification: DataModels.Notification = data && data[0];
-          settingsTabOptions.tabKind = ViewModels.CollectionTabKind.Settings;
-          settingsTab = new SettingsTab(settingsTabOptions);
-          this.container.tabsManager.activateNewTab(settingsTab);
-          settingsTab.pendingNotification(pendingNotification);
-        },
-        (error: any) => {
-          const errorMessage = getErrorMessage(error);
-          TelemetryProcessor.traceFailure(
-            Action.Tab,
-            {
-              databaseAccountName: this.container.databaseAccount().name,
-              databaseName: this.databaseId,
-              collectionName: this.id(),
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: settingsTabOptions.title,
-              error: errorMessage,
-              errorStack: getErrorStack(error)
-            },
-            startKey
-          );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while fetching container settings for container ${this.id()}: ${errorMessage}`
-          );
-          throw error;
-        }
-      );
-    } else {
-      getPendingNotification.then(
-        (pendingNotification: DataModels.Notification) => {
-          settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateTab(settingsTab);
-        },
-        (error: any) => {
-          settingsTab.pendingNotification(undefined);
-          this.container.tabsManager.activateTab(settingsTab);
-        }
-      );
-    }
+    let settingsTabV2 = matchingTabs && (matchingTabs[0] as SettingsTabV2);
+    this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions, pendingNotificationsPromise);
   };
 
   private launchSettingsTabV2 = (

@@ -1,4 +1,4 @@
-import { SubscriptionType } from "../Contracts/ViewModels";
+import { SubscriptionType } from "../Contracts/SubscriptionType";
 
 export const hoursInAMonth = 730;
 export class AutoscalePricing {
