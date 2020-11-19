@@ -42,7 +42,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {updateThroughputDelayedApplyWarningMessage}
 
         {getThroughputApplyDelayedMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
-        {getThroughputApplyShortDelayMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
+        {getThroughputApplyShortDelayMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection")}
         {getThroughputApplyLongDelayMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
 
         {getToolTipContainer(<span>Sample Text</span>)}

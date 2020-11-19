@@ -290,8 +290,6 @@ src/Utils/DatabaseAccountUtils.ts
 src/Utils/JunoUtils.ts
 src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
-src/Utils/OfferUtils.test.ts
-src/Utils/OfferUtils.ts
 src/Utils/PricingUtils.test.ts
 src/Utils/QueryUtils.test.ts
 src/Utils/QueryUtils.ts

@@ -1,7 +1,5 @@
-import { collection, container } from "./TestUtils";
+import { collection } from "./TestUtils";
 import {
-  getMaxRUs,
-  getMinRUs,
   getMongoIndexType,
   getMongoNotification,
   getSanitizedInputValue,
@@ -23,16 +21,6 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import ko from "knockout";
 
 describe("SettingsUtils", () => {
-  it("getMaxRUs", () => {
-    expect(collection.offer().content.collectionThroughputInfo.numPhysicalPartitions).toEqual(4);
-    expect(getMaxRUs(collection, container)).toEqual(40000);
-  });
-
-  it("getMinRUs", () => {
-    expect(collection.offer().content.collectionThroughputInfo.numPhysicalPartitions).toEqual(4);
-    expect(getMinRUs(collection, container)).toEqual(6000);
-  });
-
   it("hasDatabaseSharedThroughput", () => {
     expect(hasDatabaseSharedThroughput(collection)).toEqual(undefined);
 

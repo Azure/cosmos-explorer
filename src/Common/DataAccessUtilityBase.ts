@@ -1,26 +1,13 @@
-import {
-  ConflictDefinition,
-  FeedOptions,
-  ItemDefinition,
-  OfferDefinition,
-  QueryIterator,
-  Resource
-} from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { ConflictDefinition, FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import Q from "q";
-import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
-import { OfferUtils } from "../Utils/OfferUtils";
 import * as Constants from "./Constants";
 import { client } from "./CosmosClient";
-import * as HeadersUtility from "./HeadersUtility";
-import { sendCachedDataMessage } from "./MessageHandler";
 
 export function getCommonQueryOptions(options: FeedOptions): any {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);

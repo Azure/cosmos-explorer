@@ -1,51 +1,28 @@
-import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { HttpHeaders } from "../Constants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { client } from "../CosmosClient";
+import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
 import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { readOffers } from "./readOffers";
+import { readOfferWithSDK } from "./readOfferWithSDK";
 import { userContext } from "../../UserContext";
 
-export const readDatabaseOffer = async (
-  params: DataModels.ReadDatabaseOfferParams
-): Promise<DataModels.OfferWithHeaders> => {
+export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
-  let offerId = params.offerId;
-  if (!offerId) {
-    offerId = await (window.authType === AuthType.AAD &&
-    !userContext.useSDKOperations &&
-    userContext.defaultExperience !== DefaultAccountExperienceType.Table
-      ? getDatabaseOfferIdWithARM(params.databaseId)
-      : getDatabaseOfferIdWithSDK(params.databaseResourceId));
-    if (!offerId) {
-      clearMessage();
-      return undefined;
-    }
-  }
-
-  const options: RequestOptions = {
-    initialHeaders: {
-      [HttpHeaders.populateCollectionThroughputInfo]: true
-    }
-  };
 
   try {
-    const response = await client()
-      .offer(offerId)
-      .read(options);
-    return (
-      response && {
-        ...response.resource,
-        headers: response.headers
-      }
-    );
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
+      return await readDatabaseOfferWithARM(params.databaseId);
+    }
+
+    return await readOfferWithSDK(params.offerId, params.databaseResourceId);
   } catch (error) {
     handleError(error, "ReadDatabaseOffer", `Error while querying offer for database ${params.databaseId}`);
     throw error;
@@ -54,13 +31,13 @@ export const readDatabaseOffer = async (
   }
 };
 
-const getDatabaseOfferIdWithARM = async (databaseId: string): Promise<string> => {
-  let rpResponse;
+const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;
   const defaultExperience = userContext.defaultExperience;
 
+  let rpResponse;
   try {
     switch (defaultExperience) {
       case DefaultAccountExperienceType.DocumentDB:
@@ -78,18 +55,39 @@ const getDatabaseOfferIdWithARM = async (databaseId: string): Promise<string> =>
       default:
         throw new Error(`Unsupported default experience type: ${defaultExperience}`);
     }
-
-    return rpResponse?.name;
   } catch (error) {
     if (error.code !== "NotFound") {
       throw error;
     }
+
     return undefined;
   }
-};
 
-const getDatabaseOfferIdWithSDK = async (databaseResourceId: string): Promise<string> => {
-  const offers = await readOffers();
-  const offer = offers.find(offer => offer.resource === databaseResourceId);
-  return offer?.id;
+  const resource = rpResponse?.properties?.resource;
+  if (resource) {
+    const offerId: string = rpResponse.name;
+    const minimumThroughput: number =
+      typeof resource.minimumThroughput === "string"
+        ? parseInt(resource.minimumThroughput)
+        : resource.minimumThroughput;
+    const autoscaleSettings = resource.autoscaleSettings;
+
+    if (autoscaleSettings) {
+      return {
+        id: offerId,
+        autoscaleMaxThroughput: autoscaleSettings.maxThroughput,
+        manualThroughput: undefined,
+        minimumThroughput
+      };
+    }
+
+    return {
+      id: offerId,
+      autoscaleMaxThroughput: undefined,
+      manualThroughput: resource.throughput,
+      minimumThroughput
+    };
+  }
+
+  return undefined;
 };

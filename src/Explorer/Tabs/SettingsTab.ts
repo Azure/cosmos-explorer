@@ -14,13 +14,10 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import TabsBase from "./TabsBase";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { updateCollection } from "../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { userContext } from "../../UserContext";
-import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
@@ -75,38 +72,15 @@ const currentThroughput = (
   return "";
 };
 
-const throughputApplyDelayedMessage = (
-  isAutoscale: boolean,
-  throughput: number,
-  throughputUnit: string,
-  databaseName: string,
-  collectionName: string,
-  requestedThroughput: number
-): string => `
-The request to increase the throughput has successfully been submitted. 
-This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
-Database: ${databaseName}, Container: ${collectionName} ${currentThroughput(
-  isAutoscale,
-  throughput,
-  throughputUnit,
-  requestedThroughput
-)}`;
-
 const throughputApplyShortDelayMessage = (
   isAutoscale: boolean,
   throughput: number,
   throughputUnit: string,
   databaseName: string,
-  collectionName: string,
-  targetThroughput: number
+  collectionName: string
 ): string => `
 A request to increase the throughput is currently in progress. This operation will take some time to complete.<br />
-Database: ${databaseName}, Container: ${collectionName} ${currentThroughput(
-  isAutoscale,
-  throughput,
-  throughputUnit,
-  targetThroughput
-)}`;
+Database: ${databaseName}, Container: ${collectionName} ${currentThroughput(isAutoscale, throughput, throughputUnit)}`;
 
 const throughputApplyLongDelayMessage = (
   isAutoscale: boolean,
@@ -144,7 +118,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public geospatialVisible: ko.Computed<boolean>;
   public indexingPolicyContent: ViewModels.Editable<any>;
   public isIndexingPolicyEditorInitializing: ko.Observable<boolean>;
-  public rupm: ViewModels.Editable<string>;
   public conflictResolutionPolicyMode: ViewModels.Editable<string>;
   public conflictResolutionPolicyPath: ViewModels.Editable<string>;
   public conflictResolutionPolicyProcedure: ViewModels.Editable<string>;
@@ -183,9 +156,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public partitionKeyValue: ko.Observable<string>;
   public isLargePartitionKeyEnabled: ko.Computed<boolean>;
   public requestUnitsUsageCost: ko.Computed<string>;
-  public rupmOnId: string;
-  public rupmOffId: string;
-  public rupmVisible: ko.Computed<boolean>;
   public scaleExpanded: ko.Observable<boolean>;
   public settingsExpanded: ko.Observable<boolean>;
   public shouldDisplayPortalUsePrompt: ko.Computed<boolean>;
@@ -219,7 +189,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
   public throughputProvisionedRadioId: string;
   public throughputModeRadioName: string;
 
-  private _offerReplacePending: ko.PureComputed<boolean>;
+  private _offerReplacePending: ko.Observable<boolean>;
   private container: Explorer;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
   private _isAutoPilotDirty: ko.Computed<boolean>;
@@ -242,8 +212,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.ttlOnId = `ttlOn${this.tabId}`;
     this.changeFeedPolicyOffId = `changeFeedOff${this.tabId}`;
     this.changeFeedPolicyOnId = `changeFeedOn${this.tabId}`;
-    this.rupmOnId = `rupmOn${this.tabId}`;
-    this.rupmOffId = `rupmOff${this.tabId}`;
     this.conflictResolutionPolicyModeCustom = `conflictResolutionPolicyModeCustom${this.tabId}`;
     this.conflictResolutionPolicyModeLWW = `conflictResolutionPolicyModeLWW${this.tabId}`;
     this.conflictResolutionPolicyModeCRDT = `conflictResolutionPolicyModeCRDT${this.tabId}`;
@@ -275,7 +243,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.analyticalStorageTtlSelection = editable.observable<string>();
     this.analyticalStorageTtlSeconds = editable.observable<number>();
     this.indexingPolicyContent = editable.observable<any>();
-    this.rupm = editable.observable<string>();
     // Mongo container with system partition key still treat as "Fixed"
     this._isFixedContainer = ko.pureComputed(
       () =>
@@ -286,17 +253,13 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.isAutoPilotSelected = ko.observable(false);
     this._wasAutopilotOriginallySet = ko.observable(false);
     this.autoPilotThroughput = ko.observable<number>(AutoPilotUtils.minAutoPilotThroughput);
-    const offer = this.collection && this.collection.offer && this.collection.offer();
-    const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
-
     this.userCanChangeProvisioningTypes = ko.observable(true);
 
-    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
-        this.isAutoPilotSelected(true);
-        this._wasAutopilotOriginallySet(true);
-        this.autoPilotThroughput(offerAutopilotSettings.maxThroughput);
-      }
+    const autoscaleMaxThroughput = this.collection?.offer()?.autoscaleMaxThroughput;
+    if (AutoPilotUtils.isValidAutoPilotThroughput(autoscaleMaxThroughput)) {
+      this.isAutoPilotSelected(true);
+      this._wasAutopilotOriginallySet(true);
+      this.autoPilotThroughput(autoscaleMaxThroughput);
     }
 
     this._hasProvisioningTypeChanged = ko.pureComputed<boolean>(() => {
@@ -318,18 +281,9 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this._isAutoPilotDirty = ko.pureComputed<boolean>(() => {
-      if (!this.isAutoPilotSelected()) {
-        return false;
-      }
-      const originalAutoPilotSettings = this.collection?.offer()?.content?.offerAutopilotSettings;
-      if (!originalAutoPilotSettings) {
-        return false;
-      }
-      const originalAutoPilotSetting = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
-      if (this.autoPilotThroughput() !== originalAutoPilotSetting) {
-        return true;
-      }
-      return false;
+      return (
+        this.isAutoPilotSelected() && this.collection?.offer()?.autoscaleMaxThroughput !== this.autoPilotThroughput()
+      );
     });
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
       const autoPilot = this.autoPilotThroughput();
@@ -347,7 +301,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
 
       const serverId: string = this.container.serverId();
       const offerThroughput: number = this.throughput();
-      const rupmEnabled = this.rupm() === Constants.RUPMStates.on;
 
       const regions =
         (account &&
@@ -366,7 +319,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           serverId,
           regions,
           multimaster,
-          rupmEnabled
+          false
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -423,32 +376,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       );
     });
 
-    this.rupmVisible = ko.computed(() => {
-      if (configContext.platform === Platform.Emulator) {
-        return false;
-      }
-      if (this.container.isFeatureEnabled(Constants.Features.enableRupm)) {
-        return true;
-      }
-      for (let i = 0, len = this.container.databases().length; i < len; i++) {
-        for (let j = 0, len2 = this.container.databases()[i].collections().length; j < len2; j++) {
-          const collectionOffer = this.container
-            .databases()
-            [i].collections()
-            [j].offer();
-          if (
-            collectionOffer &&
-            collectionOffer.content &&
-            collectionOffer.content.offerIsRUPerMinuteThroughputEnabled
-          ) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    });
-
     this.ttlVisible = ko.computed(() => {
       return (this.container && !this.container.isPreferredApiCassandra()) || false;
     });
@@ -503,41 +430,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
       }
 
-      const offerContent =
-        this.collection && this.collection.offer && this.collection.offer() && this.collection.offer().content;
-
-      if (offerContent && offerContent.offerAutopilotSettings) {
-        return 400;
-      }
-
-      const collectionThroughputInfo: DataModels.OfferThroughputInfo =
-        offerContent && offerContent.collectionThroughputInfo;
-
-      if (
-        collectionThroughputInfo &&
-        collectionThroughputInfo.minimumRUForCollection &&
-        collectionThroughputInfo.minimumRUForCollection > 0
-      ) {
-        return collectionThroughputInfo.minimumRUForCollection;
-      }
-
-      const numPartitions =
-        (collectionThroughputInfo && collectionThroughputInfo.numPhysicalPartitions) ||
-        this.collection.quotaInfo().numPartitions;
-
-      if (!numPartitions || numPartitions === 1) {
-        return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-      }
-
-      let baseRU = SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-
-      const quotaInKb = this.collection.quotaInfo().collectionSize;
-      const quotaInGb = PricingUtils.usageInGB(quotaInKb);
-
-      const perPartitionGBQuota: number = Math.max(10, quotaInGb / numPartitions);
-      const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
-
-      return Math.max(baseRU, baseRUbyPartitions);
+      return this.collection?.offer()?.minimumThroughput || SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     });
 
     this.minRUAnotationVisible = ko.computed<boolean>(() => {
@@ -545,24 +438,15 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     });
 
     this.maxRUs = ko.computed<number>(() => {
-      const isTryCosmosDBSubscription = this.isTryCosmosDBSubscription();
-      if (isTryCosmosDBSubscription || this.container.isServerlessEnabled()) {
+      if (this.isTryCosmosDBSubscription() || this.container.isServerlessEnabled()) {
         return Constants.TryCosmosExperience.maxRU;
       }
 
-      const numPartitionsFromOffer: number =
-        this.collection &&
-        this.collection.offer &&
-        this.collection.offer() &&
-        this.collection.offer().content &&
-        this.collection.offer().content.collectionThroughputInfo &&
-        this.collection.offer().content.collectionThroughputInfo.numPhysicalPartitions;
+      if (this._isFixedContainer()) {
+        return SharedConstants.CollectionCreation.MaxRUPerPartition;
+      }
 
-      const numPartitionsFromQuotaInfo: number = this.collection && this.collection.quotaInfo().numPartitions;
-
-      const numPartitions = numPartitionsFromOffer || numPartitionsFromQuotaInfo || 1;
-
-      return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
+      return this.container.collectionCreationDefaults.throughput.unlimitedmax;
     });
 
     this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
@@ -714,14 +598,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           return false;
         }
 
-        if (
-          this.rupm() === Constants.RUPMStates.on &&
-          this.throughput() >
-            SharedConstants.CollectionCreation.MaxRUPMPerPartition * this.collection.quotaInfo()?.numPartitions
-        ) {
-          return false;
-        }
-
         if (this.timeToLive.editableIsDirty()) {
           return true;
         }
@@ -747,10 +623,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         }
 
         if (this.indexingPolicyContent.editableIsDirty() && this.indexingPolicyContent.editableIsValid()) {
-          return true;
-        }
-
-        if (this.rupm.editableIsDirty()) {
           return true;
         }
 
@@ -803,10 +675,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           return true;
         }
 
-        if (this.rupm.editableIsDirty()) {
-          return true;
-        }
-
         if (
           this.conflictResolutionPolicyMode.editableIsDirty() ||
           this.conflictResolutionPolicyPath.editableIsDirty() ||
@@ -828,14 +696,9 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.ttlOnFocused = ko.observable<boolean>(false);
     this.indexingPolicyElementFocused = ko.observable<boolean>(false);
 
-    this._offerReplacePending = ko.pureComputed<boolean>(() => {
-      const offer = this.collection && this.collection.offer && this.collection.offer();
-      return (
-        offer &&
-        offer.hasOwnProperty("headers") &&
-        !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-      );
-    });
+    this._offerReplacePending = ko.observable<boolean>(
+      !!this.collection?.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending]
+    );
 
     this.notificationStatusInfo = ko.observable<string>("");
     this.shouldShowNotificationStatusPrompt = ko.computed<boolean>(() => this.notificationStatusInfo().length > 0);
@@ -855,34 +718,20 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         this.indexingPolicyContent.editableIsDirty() ||
         this.timeToLiveSeconds.editableIsDirty();
       const ttlFieldFocused: boolean = this.ttlOffFocused() || this.ttlOnDefaultFocused() || this.ttlOnFocused();
-      const offer = this.collection && this.collection.offer && this.collection.offer();
 
       if (ttlOptionDirty && this.timeToLive() === "on") {
         return ttlWarning;
       }
 
-      if (
-        offer &&
-        offer.hasOwnProperty("headers") &&
-        !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-      ) {
-        const throughput = offer.content.offerAutopilotSettings
-          ? offer.content.offerAutopilotSettings.maxThroughput
-          : undefined;
-
-        const targetThroughput =
-          offer &&
-          offer.content &&
-          ((offer.content.offerAutopilotSettings && offer.content.offerAutopilotSettings.targetMaxThroughput) ||
-            offer.content.offerThroughput);
-
+      const offer = this.collection?.offer();
+      if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+        const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
         return throughputApplyShortDelayMessage(
           this.isAutoPilotSelected(),
           throughput,
-          this._getThroughputUnit(),
+          "RU/s",
           this.collection.databaseId,
-          this.collection.id(),
-          targetThroughput
+          this.collection.id()
         );
       }
 
@@ -911,10 +760,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       }
 
       if (this.pendingNotification()) {
-        const throughputUnit: string = this._getThroughputUnit();
-        const matches: string[] = this.pendingNotification().description.match(
-          `Throughput update for (.*) ${throughputUnit}`
-        );
+        const matches: string[] = this.pendingNotification().description.match("Throughput update for (.*) RU/s");
 
         const throughput = this.throughput();
         const targetThroughput: number = matches.length > 1 && Number(matches[1]);
@@ -922,7 +768,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
           return throughputApplyLongDelayMessage(
             this.isAutoPilotSelected(),
             throughput,
-            throughputUnit,
+            "RU/s",
             this.collection.databaseId,
             this.collection.id(),
             targetThroughput
@@ -1050,103 +896,24 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         }
       }
 
-      if (
-        this.throughput.editableIsDirty() ||
-        this.rupm.editableIsDirty() ||
-        this._isAutoPilotDirty() ||
-        this._hasProvisioningTypeChanged()
-      ) {
-        const newThroughput = this.throughput();
-        const isRUPerMinuteThroughputEnabled: boolean = this.rupm() === Constants.RUPMStates.on;
-        let newOffer: DataModels.Offer = _.extend({}, this.collection.offer());
-        const originalThroughputValue: number = this.throughput.getEditableOriginalValue();
-
-        if (newOffer.content) {
-          newOffer.content.offerThroughput = newThroughput;
-          newOffer.content.offerIsRUPerMinuteThroughputEnabled = isRUPerMinuteThroughputEnabled;
-        } else {
-          newOffer = _.extend({}, newOffer, {
-            content: {
-              offerThroughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
-            }
-          });
-        }
-
-        const headerOptions: RequestOptions = { initialHeaders: {} };
-
-        if (this.isAutoPilotSelected()) {
-          newOffer.content.offerAutopilotSettings = {
-            maxThroughput: this.autoPilotThroughput()
-          };
-
-          // user has changed from provisioned --> autoscale
-          if (this._hasProvisioningTypeChanged()) {
-            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
-            delete newOffer.content.offerAutopilotSettings;
+      if (this.throughput.editableIsDirty() || this._isAutoPilotDirty() || this._hasProvisioningTypeChanged()) {
+        const updateOfferParams: DataModels.UpdateOfferParams = {
+          databaseId: this.collection.databaseId,
+          collectionId: this.collection.id(),
+          currentOffer: this.collection.offer(),
+          autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
+          manualThroughput: this.isAutoPilotSelected() ? undefined : this.throughput()
+        };
+        if (this._hasProvisioningTypeChanged()) {
+          if (this.isAutoPilotSelected()) {
+            updateOfferParams.migrateToAutoPilot = true;
           } else {
-            delete newOffer.content.offerThroughput;
-          }
-        } else {
-          this.isAutoPilotSelected(false);
-          this.userCanChangeProvisioningTypes(true);
-
-          // user has changed from autoscale --> provisioned
-          if (this._hasProvisioningTypeChanged()) {
-            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
-          } else {
-            delete newOffer.content.offerAutopilotSettings;
+            updateOfferParams.migrateToManual = true;
           }
         }
-
-        if (
-          this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.container != null
-        ) {
-          const requestPayload = {
-            subscriptionId: userContext.subscriptionId,
-            databaseAccountName: userContext.databaseAccount.name,
-            resourceGroup: userContext.resourceGroup,
-            databaseName: this.collection.databaseId,
-            collectionName: this.collection.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: isRUPerMinuteThroughputEnabled
-          };
-
-          await updateOfferThroughputBeyondLimit(requestPayload);
-          this.collection.offer().content.offerThroughput = originalThroughputValue;
-          this.throughput(originalThroughputValue);
-          this.notificationStatusInfo(
-            throughputApplyDelayedMessage(
-              this.isAutoPilotSelected(),
-              originalThroughputValue,
-              this._getThroughputUnit(),
-              this.collection.databaseId,
-              this.collection.id(),
-              newThroughput
-            )
-          );
-          this.throughput.valueHasMutated(); // force component re-render
-        } else {
-          const updateOfferParams: DataModels.UpdateOfferParams = {
-            databaseId: this.collection.databaseId,
-            collectionId: this.collection.id(),
-            currentOffer: this.collection.offer(),
-            autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
-            manualThroughput: this.isAutoPilotSelected() ? undefined : newThroughput
-          };
-          if (this._hasProvisioningTypeChanged()) {
-            if (this.isAutoPilotSelected()) {
-              updateOfferParams.migrateToAutoPilot = true;
-            } else {
-              updateOfferParams.migrateToManual = true;
-            }
-          }
-          const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
-          this.collection.offer(updatedOffer);
-          this.collection.offer.valueHasMutated();
-        }
+        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+        this.collection.offer(updatedOffer);
+        this.collection.offer.valueHasMutated();
       }
 
       this.container.isRefreshingExplorer(false);
@@ -1195,7 +962,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     this.geospatialConfigType.setBaseline(this.geospatialConfigType.getEditableOriginalValue());
     this.analyticalStorageTtlSelection.setBaseline(this.analyticalStorageTtlSelection.getEditableOriginalValue());
     this.analyticalStorageTtlSeconds.setBaseline(this.analyticalStorageTtlSeconds.getEditableOriginalValue());
-    this.rupm.setBaseline(this.rupm.getEditableOriginalValue());
     this.changeFeedPolicyToggled.setBaseline(this.changeFeedPolicyToggled.getEditableOriginalValue());
 
     this.conflictResolutionPolicyMode.setBaseline(this.conflictResolutionPolicyMode.getEditableOriginalValue());
@@ -1219,9 +985,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     }
 
     if (this.isAutoPilotSelected()) {
-      const originalAutoPilotSettings = this.collection.offer().content.offerAutopilotSettings;
-      const originalAutoPilotMaxThroughput = originalAutoPilotSettings && originalAutoPilotSettings.maxThroughput;
-      this.autoPilotThroughput(originalAutoPilotMaxThroughput);
+      this.autoPilotThroughput(this.collection.offer()?.autoscaleMaxThroughput);
     }
 
     return Q();
@@ -1401,10 +1165,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
     return true;
   }
 
-  private _getThroughputUnit(): string {
-    return this.rupm() === Constants.RUPMStates.on ? "RU/m" : "RU/s";
-  }
-
   public getUpdatedConflictResolutionPolicy(): DataModels.ConflictResolutionPolicy {
     if (
       !this.conflictResolutionPolicyMode.editableIsDirty() &&
@@ -1512,23 +1272,9 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       }
     }
 
-    const offerThroughput =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.offerThroughput;
-
-    const offerIsRUPerMinuteThroughputEnabled =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.offerIsRUPerMinuteThroughputEnabled;
-
     const changeFeedPolicyToggled: ChangeFeedPolicyToggledState = this.changeFeedPolicyToggled();
     this.changeFeedPolicyToggled.setBaseline(changeFeedPolicyToggled);
-    this.throughput.setBaseline(offerThroughput);
+    this.throughput.setBaseline(this.collection?.offer()?.manualThroughput);
     this.timeToLive.setBaseline(timeToLive);
     this.timeToLiveSeconds.setBaseline(timeToLiveSeconds);
     this.indexingPolicyContent.setBaseline(this.collection.indexingPolicy());
@@ -1545,7 +1291,6 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
         conflictResolutionPolicy && conflictResolutionPolicy.conflictResolutionProcedure
       )
     );
-    this.rupm.setBaseline(offerIsRUPerMinuteThroughputEnabled ? Constants.RUPMStates.on : Constants.RUPMStates.off);
 
     const indexingPolicyContent = this.collection.indexingPolicy();
     const value: string = JSON.stringify(indexingPolicyContent, null, 4);
@@ -1566,15 +1311,7 @@ export default class SettingsTab extends TabsBase implements ViewModels.WaitsFor
       this.GEOMETRY;
     this.geospatialConfigType.setBaseline(geospatialConfigType);
 
-    const maxThroughput =
-      this.collection &&
-      this.collection.offer &&
-      this.collection.offer() &&
-      this.collection.offer().content &&
-      this.collection.offer().content.offerAutopilotSettings &&
-      this.collection.offer().content.offerAutopilotSettings.maxThroughput;
-
-    this.autoPilotThroughput(maxThroughput || AutoPilotUtils.minAutoPilotThroughput);
+    this.autoPilotThroughput(this.collection?.offer()?.autoscaleMaxThroughput);
   }
 
   private _createIndexingPolicyEditor() {

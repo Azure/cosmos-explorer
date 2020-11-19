@@ -2,28 +2,22 @@ import * as React from "react";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
-import * as SharedConstants from "../../../Shared/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { traceStart, traceFailure, traceSuccess, trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../../Explorer";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import { userContext } from "../../../UserContext";
-import { updateOfferThroughputBeyondLimit } from "../../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import SettingsTab from "../../Tabs/SettingsTabV2";
-import { throughputUnit } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   MongoIndexingPolicyComponent,
   MongoIndexingPolicyComponentProps
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import {
-  getMaxRUs,
   hasDatabaseSharedThroughput,
   GeospatialConfigType,
   TtlType,
@@ -275,19 +269,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private setAutoPilotStates = (): void => {
-    const offer = this.collection?.offer && this.collection.offer();
-    const offerAutopilotSettings = offer?.content?.offerAutopilotSettings;
+    const autoscaleMaxThroughput = this.collection?.offer()?.autoscaleMaxThroughput;
 
-    if (
-      offerAutopilotSettings &&
-      offerAutopilotSettings.maxThroughput &&
-      AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)
-    ) {
+    if (autoscaleMaxThroughput && AutoPilotUtils.isValidAutoPilotThroughput(autoscaleMaxThroughput)) {
       this.setState({
         isAutoPilotSelected: true,
         wasAutopilotOriginallySet: true,
-        autoPilotThroughput: offerAutopilotSettings.maxThroughput,
-        autoPilotThroughputBaseline: offerAutopilotSettings.maxThroughput
+        autoPilotThroughput: autoscaleMaxThroughput,
+        autoPilotThroughputBaseline: autoscaleMaxThroughput
       });
     }
   };
@@ -305,12 +294,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     !!this.collection.conflictResolutionPolicy();
 
   public isOfferReplacePending = (): boolean => {
-    const offer = this.collection?.offer && this.collection.offer();
-    return (
-      offer &&
-      Object.keys(offer).find(value => value === "headers") &&
-      !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-    );
+    return !!this.collection?.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending];
   };
 
   public onSaveClick = async (): Promise<void> => {
@@ -448,102 +432,33 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
 
       if (this.state.isScaleSaveable) {
-        const newThroughput = this.state.throughput;
-        const newOffer: DataModels.Offer = { ...this.collection.offer() };
-        const originalThroughputValue: number = this.state.throughput;
-
-        if (newOffer.content) {
-          newOffer.content.offerThroughput = newThroughput;
-        } else {
-          newOffer.content = {
-            offerThroughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
-          };
-        }
-
-        const headerOptions: RequestOptions = { initialHeaders: {} };
-
-        if (this.state.isAutoPilotSelected) {
-          newOffer.content.offerAutopilotSettings = {
-            maxThroughput: this.state.autoPilotThroughput
-          };
-
-          // user has changed from provisioned --> autoscale
-          if (this.hasProvisioningTypeChanged()) {
-            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToAutopilot] = "true";
-            delete newOffer.content.offerAutopilotSettings;
-          } else {
-            delete newOffer.content.offerThroughput;
-          }
-        } else {
-          this.setState({
-            isAutoPilotSelected: false
-          });
-
-          // user has changed from autoscale --> provisioned
-          if (this.hasProvisioningTypeChanged()) {
-            headerOptions.initialHeaders[Constants.HttpHeaders.migrateOfferToManualThroughput] = "true";
-          } else {
-            delete newOffer.content.offerAutopilotSettings;
-          }
-        }
-
-        if (
-          getMaxRUs(this.collection, this.container) <=
-            SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          newThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-          this.container
-        ) {
-          const requestPayload = {
-            subscriptionId: userContext.subscriptionId,
-            databaseAccountName: userContext.databaseAccount.name,
-            resourceGroup: userContext.resourceGroup,
-            databaseName: this.collection.databaseId,
-            collectionName: this.collection.id(),
-            throughput: newThroughput,
-            offerIsRUPerMinuteThroughputEnabled: false
-          };
-
-          await updateOfferThroughputBeyondLimit(requestPayload);
-          this.collection.offer().content.offerThroughput = originalThroughputValue;
-          this.setState({
-            isScaleSaveable: false,
-            isScaleDiscardable: false,
-            throughput: originalThroughputValue,
-            throughputBaseline: originalThroughputValue,
-            initialNotification: {
-              description: `Throughput update for ${newThroughput} ${throughputUnit}`
-            } as DataModels.Notification
-          });
-        } else {
-          const updateOfferParams: DataModels.UpdateOfferParams = {
-            databaseId: this.collection.databaseId,
-            collectionId: this.collection.id(),
-            currentOffer: this.collection.offer(),
-            autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
-            manualThroughput: this.state.isAutoPilotSelected ? undefined : newThroughput
-          };
-          if (this.hasProvisioningTypeChanged()) {
-            if (this.state.isAutoPilotSelected) {
-              updateOfferParams.migrateToAutoPilot = true;
-            } else {
-              updateOfferParams.migrateToManual = true;
-            }
-          }
-          const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
-          this.collection.offer(updatedOffer);
-          this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
+        const updateOfferParams: DataModels.UpdateOfferParams = {
+          databaseId: this.collection.databaseId,
+          collectionId: this.collection.id(),
+          currentOffer: this.collection.offer(),
+          autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
+          manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput
+        };
+        if (this.hasProvisioningTypeChanged()) {
           if (this.state.isAutoPilotSelected) {
-            this.setState({
-              autoPilotThroughput: updatedOffer.content.offerAutopilotSettings.maxThroughput,
-              autoPilotThroughputBaseline: updatedOffer.content.offerAutopilotSettings.maxThroughput
-            });
+            updateOfferParams.migrateToAutoPilot = true;
           } else {
-            this.setState({
-              throughput: updatedOffer.content.offerThroughput,
-              throughputBaseline: updatedOffer.content.offerThroughput
-            });
+            updateOfferParams.migrateToManual = true;
           }
+        }
+        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+        this.collection.offer(updatedOffer);
+        this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
+        if (this.state.isAutoPilotSelected) {
+          this.setState({
+            autoPilotThroughput: updatedOffer.autoscaleMaxThroughput,
+            autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput
+          });
+        } else {
+          this.setState({
+            throughput: updatedOffer.manualThroughput,
+            throughputBaseline: updatedOffer.manualThroughput
+          });
         }
       }
       this.container.isRefreshingExplorer(false);
@@ -809,7 +724,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    const offerThroughput = this.collection?.offer && this.collection.offer()?.content?.offerThroughput;
+    const offerThroughput = this.collection.offer()?.manualThroughput;
     const changeFeedPolicy = this.collection.rawDataModel?.changeFeedPolicy
       ? ChangeFeedPolicyState.On
       : ChangeFeedPolicyState.Off;

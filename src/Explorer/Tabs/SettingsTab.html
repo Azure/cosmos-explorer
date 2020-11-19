@@ -80,62 +80,6 @@
         <div class="storageCapacityTitle throughputStorageValue" data-bind="html: storageCapacityTitle"></div>
         <!-- /ko -->
 
-        <div data-bind="visible: rupmVisible">
-          <div class="formTitle">RU/m</div>
-          <div class="tabs" aria-label="RU/m">
-            <div class="tab">
-              <label
-                data-bind="
-                                attr:{
-                                    for: rupmOnId
-                                },
-                                css: {
-                                    dirty: rupm.editableIsDirty,
-                                    selectedRadio: rupm() === 'on',
-                                    unselectedRadio: rupm() !== 'on'
-                                }"
-                >On</label
-              >
-              <input
-                type="radio"
-                name="rupm"
-                value="on"
-                class="radio"
-                data-bind="
-                                attr:{
-                                    id: rupmOnId
-                                },
-                                checked: rupm"
-              />
-            </div>
-            <div class="tab">
-              <label
-                data-bind="
-                                attr:{
-                                    for: rupmOffId
-                                },
-                                css:  {
-                                    dirty: rupm.editableIsDirty,
-                                    selectedRadio: rupm() === 'off',
-                                    unselectedRadio: rupm() !== 'off'
-                                }"
-                >Off</label
-              >
-              <input
-                type="radio"
-                name="rupm"
-                value="off"
-                class="radio"
-                data-bind="
-                                    attr:{
-                                        id: rupmOffId
-                                    },
-                                    checked: rupm"
-              />
-            </div>
-          </div>
-        </div>
-
         <!-- TODO: Replace link with call to the Azure Support blade -->
         <div data-bind="visible: isAutoScaleEnabled">
           <div class="autoScaleThroughputTitle">Throughput (RU/s)</div>

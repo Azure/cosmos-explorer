@@ -1361,8 +1361,7 @@ export default class Collection implements ViewModels.Collection {
             databaseAccountName: this.container.databaseAccount().name,
             databaseName: this.databaseId,
             collectionName: this.id(),
-            defaultExperience: this.container.defaultExperience(),
-            offerVersion: this.offer()?.offerVersion
+            defaultExperience: this.container.defaultExperience()
           },
           startKey
         );

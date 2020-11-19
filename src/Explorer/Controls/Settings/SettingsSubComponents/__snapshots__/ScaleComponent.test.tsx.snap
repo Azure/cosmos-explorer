@@ -1,5 +1,83 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ScaleComponent renders with correct initial notification 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
+  <StyledMessageBarBase
+    messageBarType={5}
+  >
+    <Text
+      id="throughputApplyLongDelayMessage"
+      styles={
+        Object {
+          "root": Object {
+            "fontSize": 12,
+          },
+        }
+      }
+    >
+      A request to increase the throughput is currently in progress. This operation will take 1-3 business days to complete. View the latest status in Notifications.
+      <br />
+      Database: 
+      test
+      , Container: 
+      test
+       
+      , Current autoscale throughput: 100 - 1000 RU/s, Target autoscale throughput: 600 - 6000 RU/s
+    </Text>
+  </StyledMessageBarBase>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 20,
+      }
+    }
+  >
+    <ThroughputInputAutoPilotV3Component
+      canExceedMaximumValue={true}
+      getThroughputWarningMessage={[Function]}
+      isAutoPilotSelected={false}
+      isEmulator={false}
+      isEnabled={true}
+      isFixed={false}
+      label="Throughput (6,000 - unlimited RU/s)"
+      maxAutoPilotThroughput={4000}
+      maxAutoPilotThroughputBaseline={4000}
+      maximum={1000000}
+      minimum={6000}
+      onAutoPilotSelected={[Function]}
+      onMaxAutoPilotThroughputChange={[Function]}
+      onScaleDiscardableChange={[Function]}
+      onScaleSaveableChange={[Function]}
+      onThroughputChange={[Function]}
+      spendAckChecked={false}
+      throughput={1000}
+      throughputBaseline={1000}
+      wasAutopilotOriginallySet={true}
+    />
+    <Stack
+      tokens={
+        Object {
+          "childrenGap": 5,
+        }
+      }
+    >
+      <StyledLabelBase>
+        Storage capacity
+      </StyledLabelBase>
+      <Text>
+        Unlimited
+      </Text>
+    </Stack>
+  </Stack>
+</Stack>
+`;
+
 exports[`ScaleComponent renders with correct intiial notification 1`] = `
 <Stack
   tokens={
@@ -48,7 +126,7 @@ exports[`ScaleComponent renders with correct intiial notification 1`] = `
       label="Throughput (6,000 - unlimited RU/s)"
       maxAutoPilotThroughput={4000}
       maxAutoPilotThroughputBaseline={4000}
-      maximum={40000}
+      maximum={1000000}
       minimum={6000}
       onAutoPilotSelected={[Function]}
       onMaxAutoPilotThroughputChange={[Function]}

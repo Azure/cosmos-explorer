@@ -1,9 +1,6 @@
-import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { HttpHeaders } from "../Constants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { client } from "../CosmosClient";
+import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
 import { handleError } from "../ErrorHandlingUtils";
 import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
@@ -11,50 +8,22 @@ import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/20
 import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { getTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { readOffers } from "./readOffers";
+import { readOfferWithSDK } from "./readOfferWithSDK";
 import { userContext } from "../../UserContext";
 
-export const readCollectionOffer = async (
-  params: DataModels.ReadCollectionOfferParams
-): Promise<DataModels.OfferWithHeaders> => {
+export const readCollectionOffer = async (params: ReadCollectionOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
-  let offerId = params.offerId;
-  if (!offerId) {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
-      try {
-        offerId = await getCollectionOfferIdWithARM(params.databaseId, params.collectionId);
-      } catch (error) {
-        clearMessage();
-        if (error.code !== "NotFound") {
-          throw error;
-        }
-        return undefined;
-      }
-    } else {
-      offerId = await getCollectionOfferIdWithSDK(params.collectionResourceId);
-      if (!offerId) {
-        clearMessage();
-        return undefined;
-      }
-    }
-  }
-
-  const options: RequestOptions = {
-    initialHeaders: {
-      [HttpHeaders.populateCollectionThroughputInfo]: true
-    }
-  };
 
   try {
-    const response = await client()
-      .offer(offerId)
-      .read(options);
-    return (
-      response && {
-        ...response.resource,
-        headers: response.headers
-      }
-    );
+    if (
+      window.authType === AuthType.AAD &&
+      !userContext.useSDKOperations &&
+      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+    ) {
+      return await readCollectionOfferWithARM(params.databaseId, params.collectionId);
+    }
+
+    return await readOfferWithSDK(params.offerId, params.collectionResourceId);
   } catch (error) {
     handleError(error, "ReadCollectionOffer", `Error while querying offer for collection ${params.collectionId}`);
     throw error;
@@ -63,61 +32,90 @@ export const readCollectionOffer = async (
   }
 };
 
-const getCollectionOfferIdWithARM = async (databaseId: string, collectionId: string): Promise<string> => {
-  let rpResponse;
+const readCollectionOfferWithARM = async (databaseId: string, collectionId: string): Promise<Offer> => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;
   const defaultExperience = userContext.defaultExperience;
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
-      rpResponse = await getSqlContainerThroughput(
-        subscriptionId,
-        resourceGroup,
-        accountName,
-        databaseId,
-        collectionId
-      );
-      break;
-    case DefaultAccountExperienceType.MongoDB:
-      rpResponse = await getMongoDBCollectionThroughput(
-        subscriptionId,
-        resourceGroup,
-        accountName,
-        databaseId,
-        collectionId
-      );
-      break;
-    case DefaultAccountExperienceType.Cassandra:
-      rpResponse = await getCassandraTableThroughput(
-        subscriptionId,
-        resourceGroup,
-        accountName,
-        databaseId,
-        collectionId
-      );
-      break;
-    case DefaultAccountExperienceType.Graph:
-      rpResponse = await getGremlinGraphThroughput(
-        subscriptionId,
-        resourceGroup,
-        accountName,
-        databaseId,
-        collectionId
-      );
-      break;
-    case DefaultAccountExperienceType.Table:
-      rpResponse = await getTableThroughput(subscriptionId, resourceGroup, accountName, collectionId);
-      break;
-    default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+
+  let rpResponse;
+  try {
+    switch (defaultExperience) {
+      case DefaultAccountExperienceType.DocumentDB:
+        rpResponse = await getSqlContainerThroughput(
+          subscriptionId,
+          resourceGroup,
+          accountName,
+          databaseId,
+          collectionId
+        );
+        break;
+      case DefaultAccountExperienceType.MongoDB:
+        rpResponse = await getMongoDBCollectionThroughput(
+          subscriptionId,
+          resourceGroup,
+          accountName,
+          databaseId,
+          collectionId
+        );
+        break;
+      case DefaultAccountExperienceType.Cassandra:
+        rpResponse = await getCassandraTableThroughput(
+          subscriptionId,
+          resourceGroup,
+          accountName,
+          databaseId,
+          collectionId
+        );
+        break;
+      case DefaultAccountExperienceType.Graph:
+        rpResponse = await getGremlinGraphThroughput(
+          subscriptionId,
+          resourceGroup,
+          accountName,
+          databaseId,
+          collectionId
+        );
+        break;
+      case DefaultAccountExperienceType.Table:
+        rpResponse = await getTableThroughput(subscriptionId, resourceGroup, accountName, collectionId);
+        break;
+      default:
+        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+    }
+  } catch (error) {
+    if (error.code !== "NotFound") {
+      throw error;
+    }
+
+    return undefined;
   }
 
-  return rpResponse?.name;
-};
+  const resource = rpResponse?.properties?.resource;
+  if (resource) {
+    const offerId: string = rpResponse.name;
+    const minimumThroughput: number =
+      typeof resource.minimumThroughput === "string"
+        ? parseInt(resource.minimumThroughput)
+        : resource.minimumThroughput;
+    const autoscaleSettings = resource.autoscaleSettings;
 
-const getCollectionOfferIdWithSDK = async (collectionResourceId: string): Promise<string> => {
-  const offers = await readOffers();
-  const offer = offers.find(offer => offer.resource === collectionResourceId);
-  return offer?.id;
+    if (autoscaleSettings) {
+      return {
+        id: offerId,
+        autoscaleMaxThroughput: autoscaleSettings.maxThroughput,
+        manualThroughput: undefined,
+        minimumThroughput
+      };
+    }
+
+    return {
+      id: offerId,
+      autoscaleMaxThroughput: undefined,
+      manualThroughput: resource.throughput,
+      minimumThroughput
+    };
+  }
+
+  return undefined;
 };

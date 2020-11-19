@@ -1,10 +1,6 @@
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as Constants from "../../../Common/Constants";
-import * as SharedConstants from "../../../Shared/Constants";
-import * as PricingUtils from "../../../Utils/PricingUtils";
-
-import Explorer from "../../Explorer";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 
 const zeroValue = 0;
@@ -69,57 +65,6 @@ export interface MongoNotificationMessage {
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
   const database: ViewModels.Database = collection.getDatabase();
   return database?.isDatabaseShared() && !collection.offer();
-};
-
-export const getMaxRUs = (collection: ViewModels.Collection, container: Explorer): number => {
-  const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription() || false;
-  if (isTryCosmosDBSubscription) {
-    return Constants.TryCosmosExperience.maxRU;
-  }
-
-  const numPartitionsFromOffer: number =
-    collection?.offer && collection.offer()?.content?.collectionThroughputInfo?.numPhysicalPartitions;
-
-  const numPartitionsFromQuotaInfo: number = collection?.quotaInfo()?.numPartitions;
-
-  const numPartitions = numPartitionsFromOffer ?? numPartitionsFromQuotaInfo ?? 1;
-
-  return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
-};
-
-export const getMinRUs = (collection: ViewModels.Collection, container: Explorer): number => {
-  const isTryCosmosDBSubscription = container?.isTryCosmosDBSubscription();
-  if (isTryCosmosDBSubscription) {
-    return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-  }
-
-  const offerContent = collection?.offer && collection.offer()?.content;
-
-  if (offerContent?.offerAutopilotSettings) {
-    return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-  }
-
-  const collectionThroughputInfo: DataModels.OfferThroughputInfo = offerContent?.collectionThroughputInfo;
-
-  if (collectionThroughputInfo?.minimumRUForCollection > 0) {
-    return collectionThroughputInfo.minimumRUForCollection;
-  }
-
-  const numPartitions = collectionThroughputInfo?.numPhysicalPartitions ?? collection.quotaInfo()?.numPartitions;
-
-  if (!numPartitions || numPartitions === 1) {
-    return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-  }
-
-  const baseRU = SharedConstants.CollectionCreation.DefaultCollectionRUs400;
-
-  const quotaInKb = collection.quotaInfo().collectionSize;
-  const quotaInGb = PricingUtils.usageInGB(quotaInKb);
-
-  const perPartitionGBQuota: number = Math.max(10, quotaInGb / numPartitions);
-  const baseRUbyPartitions: number = ((numPartitions * perPartitionGBQuota) / 10) * 100;
-
-  return Math.max(baseRU, baseRUbyPartitions);
 };
 
 export const parseConflictResolutionMode = (modeFromBackend: string): DataModels.ConflictResolutionMode => {
