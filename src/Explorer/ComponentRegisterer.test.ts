@@ -44,10 +44,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("user-defined-function-tab")).toBe(true);
   });
 
-  it("should register settings-tab component", () => {
-    expect(ko.components.isRegistered("settings-tab")).toBe(true);
-  });
-
   it("should register settings-tab-v2 component", () => {
     expect(ko.components.isRegistered("settings-tab-v2")).toBe(true);
   });

@@ -12,6 +12,7 @@ import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import SettingsTab from "../../Tabs/SettingsTabV2";
+import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   MongoIndexingPolicyComponent,
@@ -43,6 +44,7 @@ import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/genera
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import { isEmpty } from "underscore";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -221,7 +223,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public loadMongoIndexes = async (): Promise<void> => {
     if (
-      this.container.isMongoIndexEditorEnabled() &&
       this.container.isPreferredApiMongoDB() &&
       this.container.isEnableMongoCapabilityPresent() &&
       this.container.databaseAccount()
@@ -915,15 +916,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
       });
-    } else if (
-      this.container.isMongoIndexEditorEnabled() &&
-      this.container.isPreferredApiMongoDB() &&
-      this.container.isEnableMongoCapabilityPresent()
-    ) {
-      tabs.push({
-        tab: SettingsV2TabTypes.IndexingPolicyTab,
-        content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
-      });
+    } else if (this.container.isPreferredApiMongoDB()) {
+      if (isEmpty(this.container.features())) {
+        tabs.push({
+          tab: SettingsV2TabTypes.IndexingPolicyTab,
+          content: mongoIndexingPolicyAADError
+        });
+      } else if (this.container.isEnableMongoCapabilityPresent()) {
+        tabs.push({
+          tab: SettingsV2TabTypes.IndexingPolicyTab,
+          content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
+        });
+      }
     }
 
     if (this.hasConflictResolution()) {

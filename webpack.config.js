@@ -141,6 +141,11 @@ module.exports = function(env = {}, argv = {}) {
       chunks: ["hostedExplorer"]
     }),
     new HtmlWebpackPlugin({
+      filename: "testExplorer.html",
+      template: "test/notebooks/testExplorer/testExplorer.html",
+      chunks: ["testExplorer"]
+    }),
+    new HtmlWebpackPlugin({
       filename: "Heatmap.html",
       template: "src/Controls/Heatmap/Heatmap.html",
       chunks: ["heatmap"]
@@ -178,6 +183,7 @@ module.exports = function(env = {}, argv = {}) {
       index: "./src/Index.ts",
       quickstart: "./src/quickstart.ts",
       hostedExplorer: "./src/HostedExplorer.ts",
+      testExplorer: "./test/notebooks/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
