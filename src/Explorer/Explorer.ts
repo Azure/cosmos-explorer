@@ -1730,6 +1730,7 @@ export default class Explorer {
         case MessageTypes.SendNotification:
         case MessageTypes.ClearNotification:
         case MessageTypes.LoadingStatus:
+        case MessageTypes.InitTestExplorer:
           return true;
       }
     }

@@ -50,13 +50,24 @@
               id="fileImportLinkNotebook"
               data-bind="event: { click: onImportLinkClick, keypress: onImportLinkKeyPress }"
             >
-              <img class="fileImportImg" src="/folder_16x16.svg" alt="upload files" title="Upload files" />
+              <img
+                id="importFileButton"
+                class="fileImportImg"
+                src="/folder_16x16.svg"
+                alt="upload files"
+                title="Upload files"
+              />
             </a>
           </div>
         </div>
         <div class="paneFooter">
           <div class="leftpanel-okbut">
-            <input type="submit" data-bind="attr: { value: submitButtonLabel }" class="btncreatecoll1" />
+            <input
+              id="uploadFileButton"
+              type="submit"
+              data-bind="attr: { value: submitButtonLabel }"
+              class="btncreatecoll1"
+            />
           </div>
         </div>
         <!-- Upload File inputs - End -->

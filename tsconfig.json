@@ -19,6 +19,6 @@
     "noEmit": true,
     "types": ["jest"]
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "./test/notebooks/testExplorer/**/*"],
   "exclude": ["./src/**/__mocks__/**/*"]
 }

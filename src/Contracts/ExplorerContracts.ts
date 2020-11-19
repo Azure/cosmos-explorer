@@ -32,7 +32,8 @@ export enum MessageTypes {
   GetArcadiaToken,
   CreateWorkspace,
   CreateSparkPool,
-  RefreshDatabaseAccount
+  RefreshDatabaseAccount,
+  InitTestExplorer
 }
 
 export { Versions, ActionContracts, Diagnostics };
