@@ -222,7 +222,7 @@ export interface SDKOfferDefinition extends Resource {
   offerType?: string;
   content?: {
     offerThroughput: number;
-    offerIsRUPerMinuteThroughputEnabled: boolean;
+    offerIsRUPerMinuteThroughputEnabled?: boolean;
     collectionThroughputInfo?: OfferThroughputInfo;
     offerAutopilotSettings?: AutoPilotOfferSettings;
   };
