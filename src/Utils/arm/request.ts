@@ -33,18 +33,36 @@ export class ARMError extends Error {
   public code: string | number;
 }
 
+interface ARMQueryParams {
+  filter?: string;
+  metricNames?: string;
+}
+
 interface Options {
   host: string;
   path: string;
   apiVersion: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
+  queryParams?: ARMQueryParams;
 }
 
 // TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
-export async function armRequest<T>({ host, path, apiVersion, method, body: requestBody }: Options): Promise<T> {
+export async function armRequest<T>({
+  host,
+  path,
+  apiVersion,
+  method,
+  body: requestBody,
+  queryParams
+}: Options): Promise<T> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
+  if (queryParams) {
+    queryParams.filter && url.searchParams.append("$filter", queryParams.filter);
+    queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
+  }
+
   const response = await window.fetch(url.href, {
     method,
     headers: {

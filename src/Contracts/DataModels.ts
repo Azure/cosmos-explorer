@@ -230,18 +230,6 @@ export interface SDKOfferDefinition extends Resource {
   offerResourceId?: string;
 }
 
-export interface CollectionQuotaInfo {
-  storedProcedures: number;
-  triggers: number;
-  functions: number;
-  documentsSize: number;
-  collectionSize: number;
-  documentsCount: number;
-  usageSizeInKB: number;
-  numPartitions: number;
-  uniqueKeyPolicy?: UniqueKeyPolicy; // TODO: This should ideally not be a part of the collection quota. Remove after refactoring. (#119617)
-}
-
 export interface OfferThroughputInfo {
   minimumRUForCollection: number;
   numPhysicalPartitions: number;

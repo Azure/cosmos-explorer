@@ -350,3 +350,23 @@ export async function deleteSqlTrigger(
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/triggers/${triggerName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
+
+export async function getMetrics(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  containerName: string
+): Promise<unknown> {
+  const filter = `DatabaseName eq '${databaseName}' and CollectionName eq '${containerName}'`;
+  const metricName = "DataUsage,IndexUsage,DocumentQuota";
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/providers/microsoft.insights/metrics`;
+  return armRequest({
+    host: configContext.ARM_ENDPOINT,
+    path,
+    method: "GET",
+    apiVersion: "2018-01-01",
+    filter,
+    metricName
+  });
+}
