@@ -229,9 +229,7 @@ const createMockCollection = (): ViewModels.Collection => {
   const mockCollectionVM: ViewModels.Collection = new Collection(
     createMockContainer(),
     "fakeDatabaseId",
-    mockCollection,
-    undefined,
-    undefined
+    mockCollection
   );
 
   return mockCollectionVM;
