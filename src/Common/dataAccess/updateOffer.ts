@@ -1,13 +1,14 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { HttpHeaders } from "../Constants";
-import { Offer, UpdateOfferParams } from "../../Contracts/DataModels";
+import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
 import { OfferDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { parseSDKOfferResponse } from "../OfferUtility";
 import { readCollectionOffer } from "./readCollectionOffer";
 import { readDatabaseOffer } from "./readDatabaseOffer";
 import {
@@ -373,21 +374,21 @@ const createUpdateOfferBody = (params: UpdateOfferParams): ThroughputSettingsUpd
 };
 
 const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => {
-  const currentOffer = params.currentOffer;
-  const newOffer: Offer = {
+  const sdkOfferDefinition = params.currentOffer.offerDefinition;
+  const newOffer: SDKOfferDefinition = {
     content: {
       offerThroughput: undefined,
       offerIsRUPerMinuteThroughputEnabled: false
     },
     _etag: undefined,
     _ts: undefined,
-    _rid: currentOffer._rid,
-    _self: currentOffer._self,
-    id: currentOffer.id,
-    offerResourceId: currentOffer.offerResourceId,
-    offerVersion: currentOffer.offerVersion,
-    offerType: currentOffer.offerType,
-    resource: currentOffer.resource
+    _rid: sdkOfferDefinition._rid,
+    _self: sdkOfferDefinition._self,
+    id: sdkOfferDefinition.id,
+    offerResourceId: sdkOfferDefinition.offerResourceId,
+    offerVersion: sdkOfferDefinition.offerVersion,
+    offerType: sdkOfferDefinition.offerType,
+    resource: sdkOfferDefinition.resource
   };
 
   if (params.autopilotThroughput) {
@@ -415,5 +416,6 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
     .offer(params.currentOffer.id)
     // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
     .replace((newOffer as unknown) as OfferDefinition, options);
-  return sdkResponse?.resource;
+
+  return parseSDKOfferResponse(sdkResponse);
 };

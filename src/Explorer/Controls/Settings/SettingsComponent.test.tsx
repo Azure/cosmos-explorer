@@ -89,12 +89,11 @@ describe("SettingsComponent", () => {
   it("auto pilot helper functions pass on correct value", () => {
     const newCollection = { ...collection };
     newCollection.offer = ko.observable<DataModels.Offer>({
-      content: {
-        offerAutopilotSettings: {
-          maxThroughput: 10000
-        }
-      }
-    } as DataModels.Offer);
+      autoscaleMaxThroughput: 10000,
+      manualThroughput: undefined,
+      minimumThroughput: 400,
+      id: "test"
+    });
 
     const props = { ...baseProps };
     props.settingsTab.collection = newCollection;
@@ -185,21 +184,6 @@ describe("SettingsComponent", () => {
 
     settingsComponentInstance = new SettingsComponent(props);
     expect(settingsComponentInstance.hasConflictResolution()).toEqual(true);
-  });
-
-  it("isOfferReplacePending", () => {
-    let settingsComponentInstance = new SettingsComponent(baseProps);
-    expect(settingsComponentInstance.isOfferReplacePending()).toEqual(undefined);
-
-    const newCollection = { ...collection };
-    newCollection.offer = ko.observable({
-      headers: { "x-ms-offer-replace-pending": true }
-    } as DataModels.OfferWithHeaders);
-    const props = { ...baseProps };
-    props.settingsTab.collection = newCollection;
-
-    settingsComponentInstance = new SettingsComponent(props);
-    expect(settingsComponentInstance.isOfferReplacePending()).toEqual(true);
   });
 
   it("save calls updateCollection, updateMongoDBCollectionThroughRP and updateOffer", async () => {

@@ -208,21 +208,26 @@ export interface QueryMetrics {
   vmExecutionTime: any;
 }
 
-export interface Offer extends Resource {
+export interface Offer {
+  id: string;
+  autoscaleMaxThroughput: number;
+  manualThroughput: number;
+  minimumThroughput: number;
+  offerDefinition?: SDKOfferDefinition;
+  headers?: any;
+}
+
+export interface SDKOfferDefinition extends Resource {
   offerVersion?: string;
   offerType?: string;
   content?: {
     offerThroughput: number;
-    offerIsRUPerMinuteThroughputEnabled: boolean;
+    offerIsRUPerMinuteThroughputEnabled?: boolean;
     collectionThroughputInfo?: OfferThroughputInfo;
     offerAutopilotSettings?: AutoPilotOfferSettings;
   };
   resource?: string;
   offerResourceId?: string;
-}
-
-export interface OfferWithHeaders extends Offer {
-  headers: any;
 }
 
 export interface CollectionQuotaInfo {

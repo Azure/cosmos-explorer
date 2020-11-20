@@ -227,7 +227,7 @@ exports[`SettingsUtils functions render 1`] = `
     , Container: 
     sampleCollection
      
-    , Current manual throughput: 1000 RU/s, Target manual throughput: 2000
+    , Current manual throughput: 1000 RU/s
   </Text>
   <Text
     id="throughputApplyLongDelayMessage"

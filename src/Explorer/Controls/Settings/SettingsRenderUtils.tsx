@@ -319,14 +319,13 @@ export const getThroughputApplyShortDelayMessage = (
   throughput: number,
   throughputUnit: string,
   databaseName: string,
-  collectionName: string,
-  targetThroughput: number
+  collectionName: string
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyShortDelayMessage">
     A request to increase the throughput is currently in progress. This operation will take some time to complete.
     <br />
     Database: {databaseName}, Container: {collectionName}{" "}
-    {getCurrentThroughput(isAutoscale, throughput, throughputUnit, targetThroughput)}
+    {getCurrentThroughput(isAutoscale, throughput, throughputUnit)}
   </Text>
 );
 

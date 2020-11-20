@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ScaleComponent renders with correct intiial notification 1`] = `
+exports[`ScaleComponent renders with correct initial notification 1`] = `
 <Stack
   tokens={
     Object {
@@ -48,7 +48,7 @@ exports[`ScaleComponent renders with correct intiial notification 1`] = `
       label="Throughput (6,000 - unlimited RU/s)"
       maxAutoPilotThroughput={4000}
       maxAutoPilotThroughputBaseline={4000}
-      maximum={40000}
+      maximum={1000000}
       minimum={6000}
       onAutoPilotSelected={[Function]}
       onMaxAutoPilotThroughputChange={[Function]}

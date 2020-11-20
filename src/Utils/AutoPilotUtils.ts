@@ -7,15 +7,6 @@ export const minAutoPilotThroughput = 4000;
 
 export const autoPilotIncrementStep = 1000;
 
-export function isValidV3AutoPilotOffer(offer: Offer): boolean {
-  const maxThroughput =
-    offer &&
-    offer.content &&
-    offer.content.offerAutopilotSettings &&
-    offer.content.offerAutopilotSettings.maxThroughput;
-  return isValidAutoPilotThroughput(maxThroughput);
-}
-
 export function isValidAutoPilotThroughput(maxThroughput: number): boolean {
   if (!maxThroughput) {
     return false;

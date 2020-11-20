@@ -20,15 +20,11 @@ export const collection = ({
   uniqueKeyPolicy: {} as DataModels.UniqueKeyPolicy,
   quotaInfo: ko.observable<DataModels.CollectionQuotaInfo>({} as DataModels.CollectionQuotaInfo),
   offer: ko.observable<DataModels.Offer>({
-    content: {
-      offerThroughput: 10000,
-      offerIsRUPerMinuteThroughputEnabled: false,
-      collectionThroughputInfo: {
-        minimumRUForCollection: 6000,
-        numPhysicalPartitions: 4
-      } as DataModels.OfferThroughputInfo
-    }
-  } as DataModels.Offer),
+    autoscaleMaxThroughput: undefined,
+    manualThroughput: 10000,
+    minimumThroughput: 6000,
+    id: "offer"
+  }),
   conflictResolutionPolicy: ko.observable<DataModels.ConflictResolutionPolicy>(
     {} as DataModels.ConflictResolutionPolicy
   ),

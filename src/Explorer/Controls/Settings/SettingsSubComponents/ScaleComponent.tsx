@@ -12,10 +12,9 @@ import {
   throughputUnit,
   getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
-  updateThroughputBeyondLimitWarningMessage,
-  updateThroughputDelayedApplyWarningMessage
+  updateThroughputBeyondLimitWarningMessage
 } from "../SettingsRenderUtils";
-import { getMaxRUs, getMinRUs, hasDatabaseSharedThroughput } from "../SettingsUtils";
+import { hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
 import { configContext, Platform } from "../../../../ConfigContext";
@@ -62,11 +61,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   private getStorageCapacityTitle = (): JSX.Element => {
-    // Mongo container with system partition key still treat as "Fixed"
-    const isFixed =
-      !this.props.collection.partitionKey ||
-      (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey);
-    const capacity: string = isFixed ? "Fixed" : "Unlimited";
+    const capacity: string = this.props.isFixedContainer ? "Fixed" : "Unlimited";
     return (
       <Stack {...titleAndInputStackProps}>
         <Label>Storage capacity</Label>
@@ -75,12 +70,26 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     );
   };
 
-  public getMaxRUThroughputInputLimit = (): number => {
-    if (configContext.platform === Platform.Hosted && this.props.collection.partitionKey) {
-      return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
+  public getMaxRUs = (): number => {
+    if (this.props.container?.isTryCosmosDBSubscription()) {
+      return Constants.TryCosmosExperience.maxRU;
     }
 
-    return getMaxRUs(this.props.collection, this.props.container);
+    if (this.props.isFixedContainer) {
+      return SharedConstants.CollectionCreation.MaxRUPerPartition;
+    }
+
+    return SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
+  };
+
+  public getMinRUs = (): number => {
+    if (this.props.container?.isTryCosmosDBSubscription()) {
+      return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
+    }
+
+    return (
+      this.props.collection.offer()?.minimumThroughput || SharedConstants.CollectionCreation.DefaultCollectionRUs400
+    );
   };
 
   public getThroughputTitle = (): string => {
@@ -88,11 +97,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return AutoPilotUtils.getAutoPilotHeaderText();
     }
 
-    const minThroughput: string = getMinRUs(this.props.collection, this.props.container).toLocaleString();
-    const maxThroughput: string =
-      this.canThroughputExceedMaximumValue() && !this.props.isFixedContainer
-        ? "unlimited"
-        : getMaxRUs(this.props.collection, this.props.container).toLocaleString();
+    const minThroughput: string = this.getMinRUs().toLocaleString();
+    const maxThroughput: string = !this.props.isFixedContainer ? "unlimited" : this.getMaxRUs().toLocaleString();
     return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
   };
 
@@ -109,26 +115,15 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return this.getLongDelayMessage();
     }
 
-    const offer = this.props.collection?.offer && this.props.collection.offer();
-    if (
-      offer &&
-      Object.keys(offer).find(value => {
-        return value === "headers";
-      }) &&
-      !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-    ) {
-      const throughput = offer?.content?.offerAutopilotSettings?.maxThroughput;
-
-      const targetThroughput =
-        offer.content?.offerAutopilotSettings?.targetMaxThroughput || offer?.content?.offerThroughput;
-
+    const offer = this.props.collection?.offer();
+    if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+      const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
       return getThroughputApplyShortDelayMessage(
         this.props.isAutoPilotSelected,
         throughput,
         throughputUnit,
         this.props.collection.databaseId,
-        this.props.collection.id(),
-        targetThroughput
+        this.props.collection.id()
       );
     }
 
@@ -138,19 +133,10 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   public getThroughputWarningMessage = (): JSX.Element => {
     const throughputExceedsBackendLimits: boolean =
       this.canThroughputExceedMaximumValue() &&
-      getMaxRUs(this.props.collection, this.props.container) <=
-        SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
       this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
 
     if (throughputExceedsBackendLimits && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
       return updateThroughputBeyondLimitWarningMessage;
-    }
-
-    const throughputExceedsMaxValue: boolean =
-      !this.isEmulator && this.props.throughput > getMaxRUs(this.props.collection, this.props.container);
-
-    if (throughputExceedsMaxValue && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
-      return updateThroughputDelayedApplyWarningMessage;
     }
 
     return undefined;
@@ -183,8 +169,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       throughput={this.props.throughput}
       throughputBaseline={this.props.throughputBaseline}
       onThroughputChange={this.props.onThroughputChange}
-      minimum={getMinRUs(this.props.collection, this.props.container)}
-      maximum={this.getMaxRUThroughputInputLimit()}
+      minimum={this.getMinRUs()}
+      maximum={this.getMaxRUs()}
       isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
       canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
       label={this.getThroughputTitle()}

@@ -76,7 +76,6 @@
     "./src/Utils/BlobUtils.ts",
     "./src/Utils/GitHubUtils.ts",
     "./src/Utils/MessageValidation.ts",
-    "./src/Utils/OfferUtils.ts",
     "./src/Utils/StringUtils.ts",
     "./src/Utils/WindowUtils.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/types.ts",

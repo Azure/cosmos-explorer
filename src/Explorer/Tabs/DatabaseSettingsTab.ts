@@ -16,8 +16,6 @@ import { RequestOptions } from "@azure/cosmos/dist-esm";
 import Explorer from "../Explorer";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { userContext } from "../../UserContext";
-import { updateOfferThroughputBeyondLimit } from "../../Common/dataAccess/updateOfferThroughputBeyondLimit";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
@@ -34,11 +32,6 @@ const currentThroughput: (isAutoscale: boolean, throughput: number) => string = 
   isAutoscale
     ? `Current autoscale throughput: ${Math.round(throughput / 10)} - ${throughput} RU/s`
     : `Current manual throughput: ${throughput} RU/s`;
-
-const throughputApplyDelayedMessage = (isAutoscale: boolean, throughput: number, databaseName: string) =>
-  `The request to increase the throughput has successfully been submitted. 
-  This operation will take 1-3 business days to complete. View the latest status in Notifications.<br />
-  Database: ${databaseName}, ${currentThroughput(isAutoscale, throughput)}`;
 
 const throughputApplyShortDelayMessage = (isAutoscale: boolean, throughput: number, databaseName: string) =>
   `A request to increase the throughput is currently in progress. 
@@ -66,8 +59,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public displayedError: ko.Observable<string>;
   public isTemplateReady: ko.Observable<boolean>;
   public minRUAnotationVisible: ko.Computed<boolean>;
-  public minRUs: ko.Computed<number>;
-  public maxRUs: ko.Computed<number>;
+  public minRUs: ko.Observable<number>;
+  public maxRUs: ko.Observable<number>;
   public maxRUsText: ko.PureComputed<string>;
   public maxRUThroughputInputLimit: ko.Computed<number>;
   public notificationStatusInfo: ko.Observable<string>;
@@ -92,7 +85,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
   private _hasProvisioningTypeChanged: ko.Computed<boolean>;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
-  private _offerReplacePending: ko.Computed<boolean>;
+  private _offerReplacePending: ko.Observable<boolean>;
   private container: Explorer;
 
   constructor(options: ViewModels.TabOptions) {
@@ -111,15 +104,14 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this._wasAutopilotOriginallySet = ko.observable(false);
     this.isAutoPilotSelected = editable.observable(false);
     this.autoPilotThroughput = editable.observable<number>();
-    const offer = this.database && this.database.offer && this.database.offer();
-    const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
     this.userCanChangeProvisioningTypes = ko.observable(true);
 
-    if (offerAutopilotSettings && offerAutopilotSettings.maxThroughput) {
-      if (AutoPilotUtils.isValidAutoPilotThroughput(offerAutopilotSettings.maxThroughput)) {
+    const autoscaleMaxThroughput = this.database?.offer()?.autoscaleMaxThroughput;
+    if (autoscaleMaxThroughput) {
+      if (AutoPilotUtils.isValidAutoPilotThroughput(autoscaleMaxThroughput)) {
         this._wasAutopilotOriginallySet(true);
         this.isAutoPilotSelected(true);
-        this.autoPilotThroughput(offerAutopilotSettings.maxThroughput);
+        this.autoPilotThroughput(autoscaleMaxThroughput);
       }
     }
 
@@ -205,45 +197,15 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return this._hasProvisioningTypeChanged() && !this._wasAutopilotOriginallySet();
     });
 
-    this.minRUs = ko.computed<number>(() => {
-      const offerContent =
-        this.database && this.database.offer && this.database.offer() && this.database.offer().content;
-
-      // TODO: backend is returning 1,000,000 as min throughput which seems wrong
-      // Setting to min throughput to not block and let the backend pass or fail
-      if (offerContent && offerContent.offerAutopilotSettings) {
-        return 400;
-      }
-
-      const collectionThroughputInfo: DataModels.OfferThroughputInfo =
-        offerContent && offerContent.collectionThroughputInfo;
-
-      if (collectionThroughputInfo && !!collectionThroughputInfo.minimumRUForCollection) {
-        return collectionThroughputInfo.minimumRUForCollection;
-      }
-      const throughputDefaults = this.container.collectionCreationDefaults.throughput;
-      return throughputDefaults.unlimitedmin;
-    });
+    this.minRUs = ko.observable<number>(
+      this.database.offer()?.minimumThroughput || this.container.collectionCreationDefaults.throughput.unlimitedmin
+    );
 
     this.minRUAnotationVisible = ko.computed<boolean>(() => {
       return PricingUtils.isLargerThanDefaultMinRU(this.minRUs());
     });
 
-    this.maxRUs = ko.computed<number>(() => {
-      const collectionThroughputInfo: DataModels.OfferThroughputInfo =
-        this.database &&
-        this.database.offer &&
-        this.database.offer() &&
-        this.database.offer().content &&
-        this.database.offer().content.collectionThroughputInfo;
-      const numPartitions = collectionThroughputInfo && collectionThroughputInfo.numPhysicalPartitions;
-      if (!!numPartitions) {
-        return SharedConstants.CollectionCreation.MaxRUPerPartition * numPartitions;
-      }
-
-      const throughputDefaults = this.container.collectionCreationDefaults.throughput;
-      return throughputDefaults.unlimitedmax;
-    });
+    this.maxRUs = ko.observable<number>(this.container.collectionCreationDefaults.throughput.unlimitedmax);
 
     this.maxRUThroughputInputLimit = ko.pureComputed<number>(() => {
       if (configContext.platform === Platform.Hosted) {
@@ -269,37 +231,23 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return this.throughputTitle() + this.requestUnitsUsageCost();
     });
     this.pendingNotification = ko.observable<DataModels.Notification>();
-    this._offerReplacePending = ko.pureComputed<boolean>(() => {
-      const offer = this.database && this.database.offer && this.database.offer();
-      return (
-        offer &&
-        offer.hasOwnProperty("headers") &&
-        !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-      );
-    });
+    this._offerReplacePending = ko.observable<boolean>(
+      !!this.database.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending]
+    );
     this.notificationStatusInfo = ko.observable<string>("");
     this.shouldShowNotificationStatusPrompt = ko.computed<boolean>(() => this.notificationStatusInfo().length > 0);
     this.warningMessage = ko.computed<string>(() => {
-      const offer = this.database && this.database.offer && this.database.offer();
-
       if (this.overrideWithProvisionedThroughputSettings()) {
         return AutoPilotUtils.manualToAutoscaleDisclaimer;
       }
 
-      if (
-        offer &&
-        offer.hasOwnProperty("headers") &&
-        !!(offer as DataModels.OfferWithHeaders).headers[Constants.HttpHeaders.offerReplacePending]
-      ) {
-        const throughput = offer.content.offerAutopilotSettings
-          ? offer.content.offerAutopilotSettings.maxThroughput
-          : offer.content.offerThroughput;
-
+      const offer = this.database.offer();
+      if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+        const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
         return throughputApplyShortDelayMessage(this.isAutoPilotSelected(), throughput, this.database.id());
       }
 
       if (
-        this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
         this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
         this.canThroughputExceedMaximumValue()
       ) {
@@ -432,60 +380,26 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     const headerOptions: RequestOptions = { initialHeaders: {} };
 
     try {
-      if (this.isAutoPilotSelected()) {
-        const updateOfferParams: DataModels.UpdateOfferParams = {
-          databaseId: this.database.id(),
-          currentOffer: this.database.offer(),
-          autopilotThroughput: this.autoPilotThroughput(),
-          manualThroughput: undefined,
-          migrateToAutoPilot: this._hasProvisioningTypeChanged()
-        };
+      const updateOfferParams: DataModels.UpdateOfferParams = {
+        databaseId: this.database.id(),
+        currentOffer: this.database.offer(),
+        autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
+        manualThroughput: this.isAutoPilotSelected() ? undefined : this.throughput()
+      };
 
-        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
-        this.database.offer(updatedOffer);
-        this.database.offer.valueHasMutated();
-        this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-      } else {
-        if (this.throughput.editableIsDirty() || this.isAutoPilotSelected.editableIsDirty()) {
-          const originalThroughputValue = this.throughput.getEditableOriginalValue();
-          const newThroughput = this.throughput();
-
-          if (
-            this.canThroughputExceedMaximumValue() &&
-            this.maxRUs() <= SharedConstants.CollectionCreation.DefaultCollectionRUs1Million &&
-            this.throughput() > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million
-          ) {
-            const requestPayload = {
-              subscriptionId: userContext.subscriptionId,
-              databaseAccountName: userContext.databaseAccount.name,
-              resourceGroup: userContext.resourceGroup,
-              databaseName: this.database.id(),
-              throughput: newThroughput,
-              offerIsRUPerMinuteThroughputEnabled: false
-            };
-            await updateOfferThroughputBeyondLimit(requestPayload);
-            this.database.offer().content.offerThroughput = originalThroughputValue;
-            this.throughput(originalThroughputValue);
-            this.notificationStatusInfo(
-              throughputApplyDelayedMessage(this.isAutoPilotSelected(), newThroughput, this.database.id())
-            );
-            this.throughput.valueHasMutated(); // force component re-render
-          } else {
-            const updateOfferParams: DataModels.UpdateOfferParams = {
-              databaseId: this.database.id(),
-              currentOffer: this.database.offer(),
-              autopilotThroughput: undefined,
-              manualThroughput: newThroughput,
-              migrateToManual: this._hasProvisioningTypeChanged()
-            };
-
-            const updatedOffer = await updateOffer(updateOfferParams);
-            this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
-            this.database.offer(updatedOffer);
-            this.database.offer.valueHasMutated();
-          }
+      if (this._hasProvisioningTypeChanged()) {
+        if (this.isAutoPilotSelected()) {
+          updateOfferParams.migrateToAutoPilot = true;
+        } else {
+          updateOfferParams.migrateToManual = true;
         }
       }
+
+      const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+      this.database.offer(updatedOffer);
+      this.database.offer.valueHasMutated();
+      this._setBaseline();
+      this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
     } catch (error) {
       this.container.isRefreshingExplorer(false);
       this.isExecutionError(true);
@@ -527,15 +441,10 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
   private _setBaseline() {
     const offer = this.database && this.database.offer && this.database.offer();
-    const offerThroughput = offer.content && offer.content.offerThroughput;
-    const offerAutopilotSettings = offer && offer.content && offer.content.offerAutopilotSettings;
-
-    this.throughput.setBaseline(offerThroughput);
+    this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotThroughput(offer.autoscaleMaxThroughput));
+    this.autoPilotThroughput.setBaseline(offer.autoscaleMaxThroughput);
+    this.throughput.setBaseline(offer.manualThroughput);
     this.userCanChangeProvisioningTypes(true);
-
-    const maxThroughputForAutoPilot = offerAutopilotSettings && offerAutopilotSettings.maxThroughput;
-    this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotThroughput(maxThroughputForAutoPilot));
-    this.autoPilotThroughput.setBaseline(maxThroughputForAutoPilot || AutoPilotUtils.minAutoPilotThroughput);
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
