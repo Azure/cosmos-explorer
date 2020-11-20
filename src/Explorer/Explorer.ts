@@ -37,6 +37,7 @@ import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
+import { RecommendationsAdapter } from "./Recommendations/RecommendationsAdapter";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
@@ -207,6 +208,7 @@ export default class Explorer {
   public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isSettingsV2Enabled: ko.Observable<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
+  public isRecosEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -261,6 +263,7 @@ export default class Explorer {
   private _dialogProps: ko.Observable<DialogProps>;
   private addSynapseLinkDialog: DialogComponentAdapter;
   private _addSynapseLinkDialogProps: ko.Observable<DialogProps>;
+  private recommendationsAdapter: RecommendationsAdapter
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -415,6 +418,7 @@ export default class Explorer {
     //this.isSettingsV2Enabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSettingsV2));
     this.isSettingsV2Enabled = ko.observable(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
+    this.isRecosEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
@@ -888,7 +892,7 @@ export default class Explorer {
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
     this.notificationConsoleComponentAdapter = new NotificationConsoleComponentAdapter(this);
-
+    
     this._initSettings();
 
     TelemetryProcessor.traceSuccess(
@@ -915,6 +919,7 @@ export default class Explorer {
 
         this.gitHubReposPane = this.notebookManager.gitHubReposPane;
         this.isGitHubPaneEnabled(true);
+        this.isRecosEnabled(true);
       }
 
       this.refreshCommandBarButtons();
@@ -1001,6 +1006,8 @@ export default class Explorer {
     });
     this.addSynapseLinkDialog = new DialogComponentAdapter();
     this.addSynapseLinkDialog.parameters = this._addSynapseLinkDialogProps;
+    this.recommendationsAdapter = new RecommendationsAdapter(this);
+    
   }
 
   public openEnableSynapseLinkDialog(): void {

@@ -11,6 +11,11 @@
   <body>
     <div class="flexContainer">
       <div id="divExplorer" class="flexContainer hideOverflows" style="display: none">
+        <!-- ko if: isRecosEnabled -->
+        <div>
+          <div data-bind="react: recommendationsAdapter"></div>         
+        </div>
+        <!-- /ko -->
         <!-- Main Command Bar - Start -->
         <div data-bind="react: commandBarComponentAdapter"></div>
         <!-- Main Command Bar - End -->

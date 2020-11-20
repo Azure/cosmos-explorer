@@ -41,6 +41,11 @@ export interface IGalleryItem {
   pendingScanJobIds: string[];
 }
 
+export interface IRecommendationData {
+  id: number;
+  description: string;
+}
+
 export interface IPublicGalleryData {
   metadata: IPublicGalleryMetaData;
   notebooksData: IGalleryItem[];
@@ -125,6 +130,20 @@ export class JunoClient {
       status: response.status,
       data: undefined
     };
+  }
+
+  public async getRecos(): Promise<IRecommendationData> {
+    var db = this.databaseAccount().id.split("/");
+    var subId = db[2];
+    var rg = db[4];
+    var acc = db[8];
+    const url = `https://localhost/api/recommendations?subId=${subId}&rg=${rg}&account=${acc}`;
+    const response = await window.fetch(url, {
+      method: "GET",
+      headers: JunoClient.getHeaders()
+    });
+
+    return response.json();
   }
 
   public async getGitHubToken(code: string): Promise<IGitHubResponse<IGitHubOAuthToken>> {
