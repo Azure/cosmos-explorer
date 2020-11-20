@@ -39,7 +39,7 @@ interface MetricsResponse {
   value: MetricsData[];
 }
 
-export const getCollectionUsageSizeMetrics = async (databaseName: string, containerName: string): Promise<number> => {
+export const getCollectionUsageSizeInKB = async (databaseName: string, containerName: string): Promise<number> => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;

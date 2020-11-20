@@ -18,6 +18,7 @@ export const collection = ({
     excludedPaths: []
   }),
   uniqueKeyPolicy: {} as DataModels.UniqueKeyPolicy,
+  usageSizeInKB: ko.observable(100),
   offer: ko.observable<DataModels.Offer>({
     autoscaleMaxThroughput: undefined,
     manualThroughput: 10000,

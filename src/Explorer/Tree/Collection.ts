@@ -10,7 +10,7 @@ import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
 import { createDocument } from "../../Common/DocumentClientUtilityBase";
 import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
-import { getCollectionUsageSizeMetrics } from "../../Common/dataAccess/getCollectionDataUsageSize";
+import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -1273,7 +1273,7 @@ export default class Collection implements ViewModels.Collection {
 
       try {
         this.offer(await readCollectionOffer(params));
-        this.usageSizeInKB(await getCollectionUsageSizeMetrics(this.databaseId, this.id()));
+        this.usageSizeInKB(await getCollectionUsageSizeInKB(this.databaseId, this.id()));
 
         TelemetryProcessor.traceSuccess(
           Action.LoadOffers,

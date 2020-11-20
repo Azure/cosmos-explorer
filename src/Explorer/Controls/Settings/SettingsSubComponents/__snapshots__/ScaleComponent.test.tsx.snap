@@ -58,6 +58,7 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
       spendAckChecked={false}
       throughput={1000}
       throughputBaseline={1000}
+      usageSizeInKB={100}
       wasAutopilotOriginallySet={true}
     />
     <Stack

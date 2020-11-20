@@ -1300,9 +1300,9 @@ exports[`SettingsComponent renders 1`] = `
                 "version": 2,
               },
               "partitionKeyProperty": "partitionKey",
-              "quotaInfo": [Function],
               "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
+              "usageSizeInKB": [Function],
             }
           }
           container={
@@ -3871,9 +3871,9 @@ exports[`SettingsComponent renders 1`] = `
                 "version": 2,
               },
               "partitionKeyProperty": "partitionKey",
-              "quotaInfo": [Function],
               "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
+              "usageSizeInKB": [Function],
             }
           }
           container={
