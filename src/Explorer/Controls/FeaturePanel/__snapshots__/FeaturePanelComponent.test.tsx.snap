@@ -133,12 +133,6 @@ exports[`Feature panel renders all flags 1`] = `
         />
         <StyledCheckboxBase
           checked={false}
-          key="feature.enablerupm"
-          label="Enable RUPM"
-          onChange={[Function]}
-        />
-        <StyledCheckboxBase
-          checked={false}
           key="feature.dataexplorerexecutesproc"
           label="Execute stored procedure"
           onChange={[Function]}

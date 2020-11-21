@@ -31,7 +31,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {getAutoPilotV3SpendElement(1000, true)}
         {getAutoPilotV3SpendElement(undefined, true)}
 
-        {getEstimatedSpendElement(1000, "mooncake", 2, false, true)}
+        {getEstimatedSpendElement(1000, "mooncake", 2, false)}
 
         {getEstimatedAutoscaleSpendElement(1000, "mooncake", 2, false)}
 

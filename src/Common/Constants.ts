@@ -108,7 +108,6 @@ export class CapabilityNames {
 export class Features {
   public static readonly cosmosdb = "cosmosdb";
   public static readonly enableChangeFeedPolicy = "enablechangefeedpolicy";
-  public static readonly enableRupm = "enablerupm";
   public static readonly executeSproc = "dataexplorerexecutesproc";
   public static readonly hostedDataExplorer = "hosteddataexplorerenabled";
   public static readonly enableTtl = "enablettl";
@@ -179,11 +178,6 @@ export class CassandraBackend {
   public static readonly guestKeysApi: string = "api/guest/cassandra/keys";
   public static readonly schemaApi: string = "api/cassandra/schema";
   public static readonly guestSchemaApi: string = "api/guest/cassandra/schema";
-}
-
-export class RUPMStates {
-  public static on: string = "on";
-  public static off: string = "off";
 }
 
 export class Queries {
