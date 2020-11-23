@@ -44,7 +44,8 @@ export enum SettingsV2TabTypes {
   ScaleTab,
   ConflictResolutionTab,
   SubSettingsTab,
-  IndexingPolicyTab
+  IndexingPolicyTab,
+  SelfServe
 }
 
 export interface IsComponentDirtyResult {
@@ -146,6 +147,8 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
       return "Settings";
     case SettingsV2TabTypes.IndexingPolicyTab:
       return "Indexing Policy";
+    case SettingsV2TabTypes.SelfServe:
+      return "SelfServe";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }

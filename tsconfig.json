@@ -12,6 +12,8 @@
     "downlevelIteration": true,
     "module": "esnext",
     "target": "es5",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "lib": ["es5", "es6", "dom", "webworker.importscripts"],
     "jsx": "react",
     "moduleResolution": "node",
