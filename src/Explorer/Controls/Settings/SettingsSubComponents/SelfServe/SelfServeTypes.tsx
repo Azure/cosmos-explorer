@@ -24,7 +24,6 @@ export const InfoBar = (metadataKey: string, info: Info) => {
         } else {
           context.info = info
         }
-        console.log("class context:" + JSON.stringify(context))
         Reflect.defineMetadata(metadataKey, context, target)  
     };
 };
@@ -45,7 +44,6 @@ export const Property = (metadataKey: string, parentProperty?: string): Property
       } else {
           context.children[property] = {id: property, input: {}}
       }
-      console.log("props context:" + JSON.stringify(context))
       Reflect.defineMetadata(metadataKey, context, target)
     };
 };
@@ -57,7 +55,7 @@ export const modifyInputTypes = (metadataKey: string, fieldName: string, value: 
             throw new Error("Incorrect order")
         }
         context.children[property].input[fieldName] = value
-        //context = modifyType(property)
+        //TODO: recurse to find correct child
         console.log("props context:" + JSON.stringify(context))
         Reflect.defineMetadata(metadataKey, context, target)
       };
