@@ -1,6 +1,6 @@
 import React from "react";
 import { Descriptor, InputType, SmartUiComponent } from "../../../SmartUi/SmartUiComponent";
-import { SqlX } from "./SelfServeTypes";
+import { SqlX } from "./SqlX";
 
 interface SelfServeComponentProps {
     propertyNames: string[]
@@ -33,8 +33,8 @@ export class SelfServeCmponent extends React.Component<SelfServeComponentProps> 
               text: "More Details"
             }
           },
-          children: [
-            {
+          children: {
+          "instanceCount" : {
               id: "instanceCount",
               input: {
                 label: "Instance Count",
@@ -47,7 +47,7 @@ export class SelfServeCmponent extends React.Component<SelfServeComponentProps> 
                 inputType: "slider"
               }
             },
-            {
+            "instanceSize": {
               id: "instanceSize",
               input: {
                 label: "Instance Size",
@@ -61,9 +61,9 @@ export class SelfServeCmponent extends React.Component<SelfServeComponentProps> 
                 defaultKey: "1Core4Gb"
               }
             }
-          ]
         }
-      };
+      }
+    };
 
 
 
@@ -80,8 +80,8 @@ export class SelfServeCmponent extends React.Component<SelfServeComponentProps> 
       };
     
     public render() : JSX.Element {
-        console.log('keys: ', SqlX.toJson());
-
-        return <SmartUiComponent descriptor={this.selfServeData} onChange={this.exampleCallbacks} />
+      const data : Descriptor = {root: SqlX.toJson()}
+        //return <SmartUiComponent descriptor={this.selfServeData} onChange={this.exampleCallbacks} />
+        return <SmartUiComponent descriptor={data} onChange={this.exampleCallbacks} />
     }
 }
