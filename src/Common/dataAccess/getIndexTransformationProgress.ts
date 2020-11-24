@@ -14,7 +14,7 @@ export async function getIndexTransformationProgress(databaseId: string, collect
     const response = await client()
       .database(databaseId)
       .container(collectionId)
-      .read();
+      .read({populateQuotaInfo: true});
 
     indexTransformationPercentage = parseInt(
       response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
