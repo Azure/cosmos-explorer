@@ -5,7 +5,7 @@
 import * as React from "react";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 import AnimateHeight from "react-animate-height";
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react/";
+import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
 import LoadingIcon from "../../../../images/loading.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
