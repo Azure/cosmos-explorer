@@ -99,7 +99,22 @@
         .notificationConsoleControls {
             padding: @MediumSpace;
             margin-left:@DefaultSpace;
+            display: flex;
+            align-items: center;
 
+            .ms-Dropdown-container {
+                display: flex;
+                .ms-Dropdown-title {
+                    height: 25px;
+                    line-height: 25px;
+                }
+                .ms-Dropdown {
+                    min-width: 110px;
+                    margin-left: 10px;
+                    height: 25px;
+                    line-height: 25px;
+                }
+            }
             #consoleFilterLabel {
                 padding: 4px;
             }
@@ -107,6 +122,7 @@
             .consoleSplitter {
                 border-left: 1px solid @BaseMedium;
                 margin: @MediumSpace;
+                height: 20px;
             }
 
             .clearNotificationsButton {
