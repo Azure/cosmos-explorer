@@ -5,7 +5,7 @@
 import * as React from "react";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 import AnimateHeight from "react-animate-height";
-
+import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
 import LoadingIcon from "../../../../images/loading.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
@@ -53,7 +53,12 @@ export class NotificationConsoleComponent extends React.Component<
   NotificationConsoleComponentState
 > {
   private static readonly transitionDurationMs = 200;
-  private static readonly FilterOptions = ["All", "In Progress", "Info", "Error"];
+  private static readonly FilterOptions = [
+    { key: "All", text: "All" },
+    { key: "In Progress", text: "In progress" },
+    { key: "Info", text: "Info" },
+    { key: "Error", text: "Error" }
+  ];
   private headerTimeoutId: number;
   private prevHeaderStatus: string;
   private consoleHeaderElement: HTMLElement;
@@ -62,7 +67,7 @@ export class NotificationConsoleComponent extends React.Component<
     super(props);
     this.state = {
       headerStatus: "",
-      selectedFilter: NotificationConsoleComponent.FilterOptions[0],
+      selectedFilter: NotificationConsoleComponent.FilterOptions[0].key || "",
       isExpanded: props.isConsoleExpanded
     };
     this.prevHeaderStatus = null;
@@ -150,20 +155,15 @@ export class NotificationConsoleComponent extends React.Component<
         >
           <div className="notificationConsoleContents">
             <div className="notificationConsoleControls">
-              <label id="consoleFilterLabel">Filter</label>
-              <select
-                aria-labelledby="consoleFilterLabel"
+              <Dropdown
+                label="Filter:"
                 role="combobox"
-                aria-label={this.state.selectedFilter}
-                value={this.state.selectedFilter}
+                selectedKey={this.state.selectedFilter}
+                options={NotificationConsoleComponent.FilterOptions}
                 onChange={this.onFilterSelected.bind(this)}
-              >
-                {NotificationConsoleComponent.FilterOptions.map((value: string) => (
-                  <option value={value} key={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
+                aria-labelledby="consoleFilterLabel"
+                aria-label={this.state.selectedFilter}
+              />
               <span className="consoleSplitter" />
               <span
                 className="clearNotificationsButton"
@@ -220,8 +220,8 @@ export class NotificationConsoleComponent extends React.Component<
     ));
   }
 
-  private onFilterSelected(event: React.ChangeEvent<HTMLSelectElement>): void {
-    this.setState({ selectedFilter: event.target.value });
+  private onFilterSelected(event: React.ChangeEvent<HTMLSelectElement>, option: IDropdownOption): void {
+    this.setState({ selectedFilter: String(option.key) });
   }
 
   private getFilteredConsoleData(): ConsoleData[] {
