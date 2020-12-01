@@ -110,43 +110,34 @@ exports[`NotificationConsoleComponent renders the console (expanded) 1`] = `
       <div
         className="notificationConsoleControls"
       >
-        <label
-          id="consoleFilterLabel"
-        >
-          Filter
-        </label>
-        <select
+        <StyledWithResponsiveMode
           aria-label="All"
           aria-labelledby="consoleFilterLabel"
+          label="Filter:"
           onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "All",
+                "text": "All",
+              },
+              Object {
+                "key": "In Progress",
+                "text": "In progress",
+              },
+              Object {
+                "key": "Info",
+                "text": "Info",
+              },
+              Object {
+                "key": "Error",
+                "text": "Error",
+              },
+            ]
+          }
           role="combobox"
-          value="All"
-        >
-          <option
-            key="All"
-            value="All"
-          >
-            All
-          </option>
-          <option
-            key="In Progress"
-            value="In Progress"
-          >
-            In Progress
-          </option>
-          <option
-            key="Info"
-            value="Info"
-          >
-            Info
-          </option>
-          <option
-            key="Error"
-            value="Error"
-          >
-            Error
-          </option>
-        </select>
+          selectedKey="All"
+        />
         <span
           className="consoleSplitter"
         />
