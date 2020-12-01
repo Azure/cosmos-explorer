@@ -133,19 +133,12 @@ export default class AddDatabasePane extends ContextualPaneBase {
       let estimatedSpendAcknowledge: string;
       let estimatedSpend: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
-          offerThroughput,
-          serverId,
-          regions,
-          multimaster,
-          false /*rupmEnabled*/
-        );
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
         estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isAutoPilotSelected()
         );
       } else {
@@ -160,7 +153,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isAutoPilotSelected()
         );
       }

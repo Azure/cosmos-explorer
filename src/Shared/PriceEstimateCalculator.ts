@@ -1,17 +1,13 @@
 import * as Constants from "./Constants";
 
-export function computeRUUsagePrice(serverId: string, rupmEnabled: boolean, requestUnits: number): string {
+export function computeRUUsagePrice(serverId: string, requestUnits: number): string {
   if (serverId === "mooncake") {
-    let ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRU,
-      rupmCharge = rupmEnabled ? requestUnits * Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRUPM : 0;
-    return (
-      calculateEstimateNumber(ruCharge + rupmCharge) + " " + Constants.OfferPricing.HourlyPricing.mooncake.Currency
-    );
+    let ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRU;
+    return calculateEstimateNumber(ruCharge) + " " + Constants.OfferPricing.HourlyPricing.mooncake.Currency;
   }
 
-  let ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRU,
-    rupmCharge = rupmEnabled ? requestUnits * Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRUPM : 0;
-  return calculateEstimateNumber(ruCharge + rupmCharge) + " " + Constants.OfferPricing.HourlyPricing.default.Currency;
+  let ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRU;
+  return calculateEstimateNumber(ruCharge) + " " + Constants.OfferPricing.HourlyPricing.default.Currency;
 }
 
 export function computeStorageUsagePrice(serverId: string, storageUsedRoundUpToGB: number): string {
