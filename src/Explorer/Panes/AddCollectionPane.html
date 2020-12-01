@@ -243,38 +243,6 @@
           </div>
           <!-- Unlimited Button Content - Start -->
           <div class="tabcontent" data-bind="visible: isUnlimitedStorageSelected() || databaseHasSharedOffer()">
-              <div data-bind="visible: rupmVisible">
-                  <div class="tabs">
-                      <p>
-                          <span class="mandatoryStar">*</span>
-                          <span class="addCollectionLabel">RU/m</span>
-                          <span class="infoTooltip" role="tooltip" tabindex="0">
-                              <img class="infoImg" src="/info-bubble.svg" alt="More information">
-                              <span class="tooltiptext throughputRuInfo">
-                                  For each 100 Request Units per second (RU/s) provisioned, 1,000 Request Units
-                                  per
-                                  minute
-                                  (RU/m) can be provisioned. E.g.: for a container with 5,000 RU/s provisioned
-                                  with
-                                  RU/m
-                                  enabled, the RU/m budget will be 50,000 RU/m.
-                              </span>
-                          </span>
-                      </p>
-                      <div tabindex="0" data-bind="event: { keydown: onRupmOptionsKeyDown }" aria-label="RU/m">
-                          <div class="tab">
-                              <input type="radio" id="rupmOn2" name="rupmcoll2" value="on" class="radio"
-                                  data-bind="checked: rupm">
-                              <label for="rupmOn2">ON</label>
-                          </div>
-                          <div class="tab">
-                              <input type="radio" id="rupmOff2" name="rupmcoll2" value="off" class="radio"
-                                  data-bind="checked: rupm">
-                              <label for="rupmOff2">OFF</label>
-                          </div>
-                      </div>
-                  </div>
-              </div>
               <div data-bind="visible: partitionKeyVisible">
                   <p>
                       <span class="mandatoryStar">*</span>

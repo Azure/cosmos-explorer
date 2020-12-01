@@ -25,37 +25,37 @@ describe("PricingUtils Tests", () => {
 
   describe("computeRUUsagePriceHourly()", () => {
     it("should return 0 for NaN regions default cloud", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", false, 1, null, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, null, false);
       expect(value).toBe(0);
     });
 
     it("should return 0 for -1 regions", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", false, 1, -1, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, -1, false);
       expect(value).toBe(0);
     });
 
-    it("should return 0.00008 for default cloud, rupm disabled, 1RU, 1 region, multimaster disabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", false, 1, 1, false);
+    it("should return 0.00008 for default cloud, 1RU, 1 region, multimaster disabled", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, false);
       expect(value).toBe(0.00008);
     });
 
-    it("should return 0.00051 for Mooncake cloud, rupm disabled, 1RU, 1 region, multimaster disabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("mooncake", false, 1, 1, false);
+    it("should return 0.00051 for Mooncake cloud, 1RU, 1 region, multimaster disabled", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("mooncake", 1, 1, false);
       expect(value).toBe(0.00051);
     });
 
-    it("should return 0.00016 for default cloud, rupm disabled, 1RU, 2 regions, multimaster disabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", false, 1, 2, false);
+    it("should return 0.00016 for default cloud, 1RU, 2 regions, multimaster disabled", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, false);
       expect(value).toBe(0.00016);
     });
 
-    it("should return 0.00008 for default cloud, rupm disabled, 1RU, 1 region, multimaster enabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", false, 1, 1, true);
+    it("should return 0.00008 for default cloud, 1RU, 1 region, multimaster enabled", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, true);
       expect(value).toBe(0.00008);
     });
 
-    it("should return 0.00048 for default cloud, rupm disabled, 1RU, 2 region, multimaster enabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", false, 1, 2, true);
+    it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, true);
       expect(value).toBe(0.00048);
     });
   });
@@ -147,18 +147,6 @@ describe("PricingUtils Tests", () => {
     it("should return 0.00051 for mooncake", () => {
       const value = PricingUtils.getPricePerRu("mooncake");
       expect(value).toBe(0.00051);
-    });
-  });
-
-  describe("getPricePerRuPm()", () => {
-    it("should return 0.000027397260273972603 for default clouds", () => {
-      const value = PricingUtils.getPricePerRuPm("default");
-      expect(value).toBe(0.000027397260273972603);
-    });
-
-    it("should return 0.00027397260273972606 for mooncake", () => {
-      const value = PricingUtils.getPricePerRuPm("mooncake");
-      expect(value).toBe(0.00027397260273972606);
     });
   });
 
@@ -254,52 +242,48 @@ describe("PricingUtils Tests", () => {
   });
 
   describe("getEstimatedSpendHtml()", () => {
-    it("should return 'Cost (USD): <b>$0.000080 hourly / $0.0019 daily / $0.058 monthly </b> (1 region, 1RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 1RU/s on default cloud, 1 region, with multimaster, and no rupm", () => {
+    it("should return 'Cost (USD): <b>$0.000080 hourly / $0.0019 daily / $0.058 monthly </b> (1 region, 1RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 1RU/s on default cloud, 1 region, with multimaster", () => {
       const value = PricingUtils.getEstimatedSpendHtml(
         1 /*RU/s*/,
         "default" /* cloud */,
         1 /* region */,
-        true /* multimaster */,
-        false /* rupm */
+        true /* multimaster */
       );
       expect(value).toBe(
         "Cost (USD): <b>$0.000080 hourly / $0.0019 daily / $0.058 monthly </b> (1 region, 1RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
       );
     });
 
-    it("should return 'Cost (RMB): <b>¥0.00051 hourly / ¥0.012 daily / ¥0.37 monthly </b> (1 region, 1RU/s, ¥0.00051/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 1RU/s on mooncake, 1 region, with multimaster, and no rupm", () => {
+    it("should return 'Cost (RMB): <b>¥0.00051 hourly / ¥0.012 daily / ¥0.37 monthly </b> (1 region, 1RU/s, ¥0.00051/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 1RU/s on mooncake, 1 region, with multimaster", () => {
       const value = PricingUtils.getEstimatedSpendHtml(
         1 /*RU/s*/,
         "mooncake" /* cloud */,
         1 /* region */,
-        true /* multimaster */,
-        false /* rupm */
+        true /* multimaster */
       );
       expect(value).toBe(
         "Cost (RMB): <b>¥0.00051 hourly / ¥0.012 daily / ¥0.37 monthly </b> (1 region, 1RU/s, ¥0.00051/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
       );
     });
 
-    it("should return 'Cost (USD): <b>$0.13 hourly / $3.07 daily / $140.16 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 400RU/s on default cloud, 2 region, with multimaster, and no rupm", () => {
+    it("should return 'Cost (USD): <b>$0.13 hourly / $3.07 daily / $140.16 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 400RU/s on default cloud, 2 region, with multimaster", () => {
       const value = PricingUtils.getEstimatedSpendHtml(
         400 /*RU/s*/,
         "default" /* cloud */,
         2 /* region */,
-        true /* multimaster */,
-        false /* rupm */
+        true /* multimaster */
       );
       expect(value).toBe(
         "Cost (USD): <b>$0.19 hourly / $4.61 daily / $140.16 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
       );
     });
 
-    it("should return 'Cost (USD): <b>$0.064 hourly / $1.54 daily / $46.72 monthly </b> (2 regions, 400RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 400RU/s on default cloud, 2 region, without multimaster, and no rupm", () => {
+    it("should return 'Cost (USD): <b>$0.064 hourly / $1.54 daily / $46.72 monthly </b> (2 regions, 400RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>' for 400RU/s on default cloud, 2 region, without multimaster", () => {
       const value = PricingUtils.getEstimatedSpendHtml(
         400 /*RU/s*/,
         "default" /* cloud */,
         2 /* region */,
-        false /* multimaster */,
-        false /* rupm */
+        false /* multimaster */
       );
       expect(value).toBe(
         "Cost (USD): <b>$0.064 hourly / $1.54 daily / $46.72 monthly </b> (2 regions, 400RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
@@ -308,49 +292,45 @@ describe("PricingUtils Tests", () => {
   });
 
   describe("getEstimatedSpendAcknowledgeString()", () => {
-    it("should return 'I acknowledge the estimated $0.0019 daily cost for the throughput above.' for 1RU/s on default cloud, 1 region, with multimaster, and no rupm", () => {
+    it("should return 'I acknowledge the estimated $0.0019 daily cost for the throughput above.' for 1RU/s on default cloud, 1 region, with multimaster", () => {
       const value = PricingUtils.getEstimatedSpendAcknowledgeString(
         1 /*RU/s*/,
         "default" /* cloud */,
         1 /* region */,
         true /* multimaster */,
-        false /* rupm */,
         false
       );
       expect(value).toBe("I acknowledge the estimated $0.0019 daily cost for the throughput above.");
     });
 
-    it("should return 'I acknowledge the estimated ¥0.012 daily cost for the throughput above.' for 1RU/s on mooncake, 1 region, with multimaster, and no rupm", () => {
+    it("should return 'I acknowledge the estimated ¥0.012 daily cost for the throughput above.' for 1RU/s on mooncake, 1 region, with multimaster", () => {
       const value = PricingUtils.getEstimatedSpendAcknowledgeString(
         1 /*RU/s*/,
         "mooncake" /* cloud */,
         1 /* region */,
         true /* multimaster */,
-        false /* rupm */,
         false
       );
       expect(value).toBe("I acknowledge the estimated ¥0.012 daily cost for the throughput above.");
     });
 
-    it("should return 'I acknowledge the estimated $3.07 daily cost for the throughput above.' for 400RU/s on default cloud, 2 region, with multimaster, and no rupm", () => {
+    it("should return 'I acknowledge the estimated $3.07 daily cost for the throughput above.' for 400RU/s on default cloud, 2 region, with multimaster", () => {
       const value = PricingUtils.getEstimatedSpendAcknowledgeString(
         400 /*RU/s*/,
         "default" /* cloud */,
         2 /* region */,
         true /* multimaster */,
-        false /* rupm */,
         false
       );
       expect(value).toBe("I acknowledge the estimated $4.61 daily cost for the throughput above.");
     });
 
-    it("should return 'I acknowledge the estimated $1.54 daily cost for the throughput above.' for 400RU/s on default cloud, 2 region, without multimaster, and no rupm", () => {
+    it("should return 'I acknowledge the estimated $1.54 daily cost for the throughput above.' for 400RU/s on default cloud, 2 region, without multimaster", () => {
       const value = PricingUtils.getEstimatedSpendAcknowledgeString(
         400 /*RU/s*/,
         "default" /* cloud */,
         2 /* region */,
         false /* multimaster */,
-        false /* rupm */,
         false
       );
       expect(value).toBe("I acknowledge the estimated $1.54 daily cost for the throughput above.");
