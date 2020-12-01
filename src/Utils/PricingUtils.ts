@@ -225,7 +225,7 @@ export function getEstimatedSpendHtml(
   const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
 
   return (
-    `Estimated cost (${currency}): <b>` +
+    `Cost (${currency}): <b>` +
     `${currencySign}${calculateEstimateNumber(hourlyPrice)} hourly / ` +
     `${currencySign}${calculateEstimateNumber(dailyPrice)} daily / ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
