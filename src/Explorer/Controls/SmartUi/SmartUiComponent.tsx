@@ -75,7 +75,7 @@ export interface Node {
   id: string;
   info?: Info;
   input?: AnyInput;
-  children?: { [id: string]: Node} ;
+  children?: Node[];
 }
 
 export interface Descriptor {
@@ -113,9 +113,11 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       <MessageBar>
         {info.message}
-        <Link href={info.link.href} target="_blank">
-          {info.link.text}
-        </Link>
+        {info.link && (
+          <Link href={info.link.href} target="_blank">
+            {info.link.text}
+          </Link>
+        )}
       </MessageBar>
     );
   }
@@ -324,10 +326,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       <Stack tokens={containerStackTokens} className="widgetRendererContainer">
         {node.info && this.renderInfo(node.info)}
         {node.input && this.renderInput(node.input)}
-        {node.children && Object.entries(node.children).map(([key, value]) => {
-        return <div key={key}>{this.renderNode(value as Node)}</div>
-      })
-      }
+        {node.children && node.children.map(child => <div key={child.id}>{this.renderNode(child)}</div>)}
       </Stack>
     );
   }

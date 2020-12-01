@@ -13,8 +13,8 @@ describe("SmartUiComponent", () => {
           text: "More Details"
         }
       },
-      children: {
-        "throughput": {
+      children: [
+        {
           id: "throughput",
           input: {
             label: "Throughput (input)",
@@ -27,7 +27,7 @@ describe("SmartUiComponent", () => {
             inputType: "spin"
           }
         },
-        "throughput2": {
+        {
           id: "throughput2",
           input: {
             label: "Throughput (Slider)",
@@ -40,7 +40,7 @@ describe("SmartUiComponent", () => {
             inputType: "slider"
           }
         },
-        "containerId": {
+        {
           id: "containerId",
           input: {
             label: "Container id",
@@ -48,7 +48,7 @@ describe("SmartUiComponent", () => {
             type: "string"
           }
         },
-        "analyticalStore": {
+        {
           id: "analyticalStore",
           input: {
             label: "Analytical Store",
@@ -59,7 +59,7 @@ describe("SmartUiComponent", () => {
             type: "boolean"
           }
         },
-        "database": {
+        {
           id: "database",
           input: {
             label: "Database",
@@ -73,8 +73,8 @@ describe("SmartUiComponent", () => {
             defaultKey: "db2"
           }
         }
+      ]
     }
-  }
   };
 
   const exampleCallbacks = (newValues: Map<string, InputType>): void => {

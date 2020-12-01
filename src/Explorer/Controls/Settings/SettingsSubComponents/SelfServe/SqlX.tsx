@@ -1,34 +1,58 @@
-import { DataFieldName, Label, Min, Max, Step, DefaultKey, DefaultValue, Property, Type, NumberInputType, Choices } from "./SelfServeTypes";
-import { EnumItem } from "../../../SmartUi/SmartUiComponent";
-const SqlXRoot = 'SqlXRoot';
+import {
+  DataFieldName,
+  Label,
+  Min,
+  Max,
+  Step,
+  DefaultKey,
+  DefaultValue,
+  Type,
+  NumberInputType,
+  Choices,
+  ParentOf,
+  PropertyInfo
+} from "./PropertyDescriptors";
+import { Descriptor, EnumItem, Info } from "../../../SmartUi/SmartUiComponent";
+import { SmartUi, ClassInfo, SelfServeClass } from "./ClassDescriptors";
 
+@SmartUi()
+@SelfServeClass()
+@ClassInfo(SqlX.sqlXInfo)
 export class SqlX {
-    @Label(SqlXRoot, "Instance Count")
-    @DataFieldName(SqlXRoot, "instanceCount")
-    @Min(SqlXRoot, 1)
-    @Max(SqlXRoot, 5)
-    @Step(SqlXRoot, 1)
-    @DefaultValue(SqlXRoot, 1)
-    @NumberInputType(SqlXRoot, "slider")
-    @Type(SqlXRoot, "number")
-    @Property(SqlXRoot)
-    static instanceCount: any;
+  @PropertyInfo(SqlX.instanceSizeInfo)
+  @Label("Instance Size")
+  @DataFieldName("instanceSize")
+  @Choices(SqlX.instanceSizeOptions)
+  @DefaultKey("1Core4Gb")
+  @Type("enum")
+  static instanceSize: any;
 
-    @Label(SqlXRoot, "Instance Size")
-    @DataFieldName(SqlXRoot, "instanceSize")
-    @Choices(SqlXRoot, SqlX.instanceTypeOptions)
-    @DefaultKey(SqlXRoot, "1Core4Gb")
-    @Type(SqlXRoot, "enum")
-    @Property(SqlXRoot)
-    static instanceType: any;
+  @Label("Instance Count")
+  @DataFieldName("instanceCount")
+  @Min(1)
+  @Max(5)
+  @Step(1)
+  @DefaultValue(1)
+  @NumberInputType("slider")
+  @Type("number")
+  @ParentOf(["instanceSize"])
+  static instanceCount: any;
 
-    static instanceTypeOptions : EnumItem[] = [
-        { label: "1Core4Gb", key: "1Core4Gb", value: "1Core4Gb" },
-        { label: "2Core8Gb", key: "2Core8Gb", value: "2Core8Gb" },
-        { label: "4Core16Gb", key: "4Core16Gb", value: "4Core16Gb" }
-      ]
-      
-    public static toJson = () : any => {
-        return Reflect.getMetadata(SqlXRoot, SqlX)
-    }
+  static instanceSizeOptions: EnumItem[] = [
+    { label: "1Core4Gb", key: "1Core4Gb", value: "1Core4Gb" },
+    { label: "2Core8Gb", key: "2Core8Gb", value: "2Core8Gb" },
+    { label: "4Core16Gb", key: "4Core16Gb", value: "4Core16Gb" }
+  ];
+
+  static sqlXInfo: Info = {
+    message: "SqlX is a self serve class"
+  };
+
+  static instanceSizeInfo: Info = {
+    message: "instance size will be updated in the future"
+  };
+
+  public static toSmartUiDescriptor = (): Descriptor => {
+    return Reflect.getMetadata(SqlX.name, SqlX) as Descriptor;
+  };
 }
