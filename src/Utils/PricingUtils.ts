@@ -229,7 +229,9 @@ export function getEstimatedSpendHtml(
     `${currencySign}${calculateEstimateNumber(hourlyPrice)} hourly / ` +
     `${currencySign}${calculateEstimateNumber(dailyPrice)} daily / ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
-    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)`
+    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)` +
+    `<p style='padding: 10px 0px 0px 0px;'>` +
+    `<em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>`
   );
 }
 
