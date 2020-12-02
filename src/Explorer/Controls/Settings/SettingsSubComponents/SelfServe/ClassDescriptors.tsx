@@ -1,5 +1,5 @@
-import { Descriptor, Info } from "../../../SmartUi/SmartUiComponent";
-import { addPropertyToMap, DescriptorType, toSmartUiDescriptor } from "./SelfServeUtils";
+import { Descriptor, Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { addPropertyToMap, toSmartUiDescriptor } from "./SelfServeUtils";
 
 interface SelfServeBaseCLass {
   toSmartUiDescriptor: () => Descriptor;
@@ -19,6 +19,12 @@ export const SmartUi = (): ClassDecorator => {
 
 export const ClassInfo = (info: Info): ClassDecorator => {
   return (target: Function) => {
-    addPropertyToMap(target, "root", target.name, "info", info, DescriptorType.ClassDescriptor);
+    addPropertyToMap(target, "root", target.name, "info", info);
+  };
+};
+
+export const OnSubmit = (onSubmit: (currentValues: Map<string, InputType>) => Promise<void>): ClassDecorator => {
+  return (target: Function) => {
+    addPropertyToMap(target, "root", target.name, "onSubmit", onSubmit);
   };
 };

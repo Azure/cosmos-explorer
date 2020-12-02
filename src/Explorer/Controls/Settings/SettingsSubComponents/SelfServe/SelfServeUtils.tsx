@@ -9,7 +9,8 @@ import {
   NumberInput,
   StringInput,
   BooleanInput,
-  EnumInput
+  EnumInput,
+  InputType
 } from "../../../SmartUi/SmartUiComponent";
 
 export interface CommonInputTypes {
@@ -29,11 +30,8 @@ export interface CommonInputTypes {
   choices?: EnumItem[];
   defaultKey?: string;
   inputType?: string;
-}
-
-export enum DescriptorType {
-  ClassDescriptor,
-  PropertyDescriptor
+  onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
+  onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
 }
 
 const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
@@ -53,13 +51,11 @@ const getValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T
 
 export const addPropertyToMap = (
   target: Object,
-  property: string,
+  propertyKey: string,
   metadataKey: string,
   descriptorName: string,
-  descriptorValue: any,
-  descriptorType: DescriptorType
+  descriptorValue: any
 ): void => {
-  const propertyKey = property.toString();
   const descriptorKey = descriptorName.toString() as keyof CommonInputTypes;
   let context = Reflect.getMetadata(metadataKey, target) as Map<String, CommonInputTypes>;
 
@@ -67,12 +63,16 @@ export const addPropertyToMap = (
     context = new Map<String, CommonInputTypes>();
   }
 
+  if (!(context instanceof Map)) {
+    throw new Error("@SmartUi should be the first decorator for the class.");
+  }
+
   let propertyObject = context.get(propertyKey);
   if (!propertyObject) {
     propertyObject = { id: propertyKey };
   }
 
-  if (getValue(descriptorKey, propertyObject)) {
+  if (getValue(descriptorKey, propertyObject) && descriptorKey !== "type") {
     throw new Error("duplicate descriptor");
   }
 
@@ -125,7 +125,14 @@ export const toSmartUiDescriptor = (metadataKey: string, target: Object): void =
   const root = context.get("root");
   context.delete("root");
 
+  if (!root || !("onSubmit" in root)) {
+    throw new Error(
+      "@OnSubmit decorator not declared for the class. Please ensure @SmartUi is the first decorator used for the class."
+    );
+  }
+
   let smartUiDescriptor = {
+    onSubmit: root.onSubmit,
     root: {
       id: "root",
       info: root.info,
@@ -187,25 +194,27 @@ const getChildFromRoot = (key: String, smartUiDescriptor: Descriptor): CommonInp
 };
 
 const getInput = (value: CommonInputTypes): AnyInput => {
+  if (!value.label || !value.type || !value.dataFieldName) {
+    throw new Error("label, onChange, type and dataFieldName are required.");
+  }
+  console.log(value.type);
   switch (value.type) {
-    case "number":
+    case "Number":
       if (!value.step || !value.defaultValue || !value.inputType) {
         throw new Error("step, defaultValue and inputType are needed for number type");
       }
       return value as NumberInput;
-    case "string":
+    case "String":
       return value as StringInput;
-    case "boolean":
-      if (!value.trueLabel || !value.falseLabel || !value.defaultValue) {
+    case "Boolean":
+      if (!value.trueLabel || !value.falseLabel || value.defaultValue === undefined) {
         throw new Error("truelabel, falselabel and defaultValue are needed for boolean type");
       }
       return value as BooleanInput;
-    case "enum":
+    default:
       if (!value.choices || !value.defaultKey) {
         throw new Error("choices and defaultKey are needed for enum type");
       }
       return value as EnumInput;
-    default:
-      throw new Error("Unknown type");
   }
 };

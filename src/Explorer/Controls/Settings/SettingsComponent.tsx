@@ -903,7 +903,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     tabs.push({
       tab: SettingsV2TabTypes.SelfServe,
-      content: <SelfServeComponent propertyNames={["prop1", "prop2"]} />
+      content: <SelfServeComponent />
     });
 
     if (!hasDatabaseSharedThroughput(this.collection) && this.collection.offer()) {

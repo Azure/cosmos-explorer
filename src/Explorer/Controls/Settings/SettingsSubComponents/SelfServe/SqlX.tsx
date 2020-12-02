@@ -6,27 +6,37 @@ import {
   Step,
   DefaultKey,
   DefaultValue,
-  Type,
   NumberInputType,
   Choices,
   ParentOf,
-  PropertyInfo
+  PropertyInfo,
+  OnChange,
+  TrueLabel,
+  FalseLabel,
+  Placeholder
 } from "./PropertyDescriptors";
-import { Descriptor, EnumItem, Info } from "../../../SmartUi/SmartUiComponent";
-import { SmartUi, ClassInfo, SelfServeClass } from "./ClassDescriptors";
+import { Descriptor, EnumItem, Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { SmartUi, ClassInfo, SelfServeClass, OnSubmit } from "./ClassDescriptors";
+
+enum Sizes {
+  OneCore4Gb = "OneCore4Gb",
+  TwoCore8Gb = "TwoCore8Gb",
+  FourCore16Gb = "FourCore16Gb"
+}
 
 @SmartUi()
-@SelfServeClass()
 @ClassInfo(SqlX.sqlXInfo)
+@OnSubmit(SqlX.onSubmit)
+@SelfServeClass()
 export class SqlX {
   @PropertyInfo(SqlX.instanceSizeInfo)
   @Label("Instance Size")
   @DataFieldName("instanceSize")
   @Choices(SqlX.instanceSizeOptions)
-  @DefaultKey("1Core4Gb")
-  @Type("enum")
-  static instanceSize: any;
+  @DefaultKey(Sizes.OneCore4Gb)
+  static instanceSize: EnumItem;
 
+  @OnChange(SqlX.onInstanceCountChange)
   @Label("Instance Count")
   @DataFieldName("instanceCount")
   @Min(1)
@@ -34,14 +44,25 @@ export class SqlX {
   @Step(1)
   @DefaultValue(1)
   @NumberInputType("slider")
-  @Type("number")
-  @ParentOf(["instanceSize"])
-  static instanceCount: any;
+  @ParentOf(["instanceSize", "instanceName", "isAllowed"])
+  static instanceCount: number;
+
+  @Label("Feature Allowed")
+  @DataFieldName("isAllowed")
+  @DefaultValue(false)
+  @TrueLabel("allowed")
+  @FalseLabel("not allowed")
+  static isAllowed: boolean;
+
+  @Label("Instance Name")
+  @DataFieldName("instanceName")
+  @Placeholder("instance name")
+  static instanceName: string;
 
   static instanceSizeOptions: EnumItem[] = [
-    { label: "1Core4Gb", key: "1Core4Gb", value: "1Core4Gb" },
-    { label: "2Core8Gb", key: "2Core8Gb", value: "2Core8Gb" },
-    { label: "4Core16Gb", key: "4Core16Gb", value: "4Core16Gb" }
+    { label: Sizes.OneCore4Gb, key: Sizes.OneCore4Gb, value: Sizes.OneCore4Gb },
+    { label: Sizes.TwoCore8Gb, key: Sizes.TwoCore8Gb, value: Sizes.TwoCore8Gb },
+    { label: Sizes.FourCore16Gb, key: Sizes.FourCore16Gb, value: Sizes.FourCore16Gb }
   ];
 
   static sqlXInfo: Info = {
@@ -50,6 +71,30 @@ export class SqlX {
 
   static instanceSizeInfo: Info = {
     message: "instance size will be updated in the future"
+  };
+
+  static onInstanceCountChange = (
+    currentState: Map<string, InputType>,
+    newValue: InputType
+  ): Map<string, InputType> => {
+    currentState.set("instanceCount", newValue);
+    if ((newValue as number) === 1) {
+      currentState.set("isAllowed", false);
+    }
+    return currentState;
+  };
+
+  static onSubmit = async (currentValues: Map<string, InputType>): Promise<void> => {
+    console.log(
+      "instanceCount:" +
+        currentValues.get("instanceCount") +
+        ", instanceSize:" +
+        currentValues.get("instanceSize") +
+        ", instanceName:" +
+        currentValues.get("instanceName") +
+        ", isAllowed:" +
+        currentValues.get("isAllowed")
+    );
   };
 
   public static toSmartUiDescriptor = (): Descriptor => {

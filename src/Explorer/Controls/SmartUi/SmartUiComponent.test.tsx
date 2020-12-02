@@ -4,6 +4,7 @@ import { SmartUiComponent, Descriptor, InputType } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
   const exampleData: Descriptor = {
+    onSubmit: async (currentValues: Map<string, InputType>) => {},
     root: {
       id: "root",
       info: {
@@ -24,7 +25,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "spin"
+            inputType: "spin",
+            onChange: undefined
           }
         },
         {
@@ -37,7 +39,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "slider"
+            inputType: "slider",
+            onChange: undefined
           }
         },
         {
@@ -45,7 +48,8 @@ describe("SmartUiComponent", () => {
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
+            type: "string",
+            onChange: undefined
           }
         },
         {
@@ -56,7 +60,8 @@ describe("SmartUiComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
+            type: "boolean",
+            onChange: undefined
           }
         },
         {
@@ -70,6 +75,7 @@ describe("SmartUiComponent", () => {
               { label: "Database 2", key: "db2", value: "database2" },
               { label: "Database 3", key: "db3", value: "database3" }
             ],
+            onChange: undefined,
             defaultKey: "db2"
           }
         }
@@ -77,12 +83,8 @@ describe("SmartUiComponent", () => {
     }
   };
 
-  const exampleCallbacks = (newValues: Map<string, InputType>): void => {
-    console.log("New values:", newValues);
-  };
-
   it("should render", () => {
-    const wrapper = shallow(<SmartUiComponent descriptor={exampleData} onChange={exampleCallbacks} />);
+    const wrapper = shallow(<SmartUiComponent descriptor={exampleData} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

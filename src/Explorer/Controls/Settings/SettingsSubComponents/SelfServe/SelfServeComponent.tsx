@@ -2,26 +2,13 @@ import React from "react";
 import { Descriptor, InputType, SmartUiComponent } from "../../../SmartUi/SmartUiComponent";
 import { SqlX } from "./SqlX";
 
-interface SelfServeComponentProps {
-  propertyNames: string[];
-}
-
-export class SelfServeCmponent extends React.Component<SelfServeComponentProps> {
-  private properties: any = {};
-
-  constructor(props: SelfServeComponentProps) {
-    super(props);
-    let stringer = "{";
-    for (var i = 0; i < props.propertyNames.length; i++) {
-      stringer += `"${props.propertyNames[i]}":null,`;
-    }
-    stringer = stringer.substring(0, stringer.length - 1);
-    console.log(stringer);
-    stringer += "}";
-    this.properties = JSON.parse(stringer);
-  }
+export class SelfServeCmponent extends React.Component {
+  private onSubmit = async (currentValues: Map<string, InputType>): Promise<void> => {
+    console.log(currentValues.get("instanceCount"), currentValues.get("instanceSize"));
+  };
 
   private selfServeData: Descriptor = {
+    onSubmit: this.onSubmit,
     root: {
       id: "root",
       info: {
@@ -37,12 +24,19 @@ export class SelfServeCmponent extends React.Component<SelfServeComponentProps> 
           input: {
             label: "Instance Count",
             dataFieldName: "instanceCount",
-            type: "number",
+            type: "Number",
             min: 1,
             max: 5,
             step: 1,
             defaultValue: 1,
-            inputType: "slider"
+            inputType: "slider",
+            onChange: (currentState: Map<string, InputType>, newValue: InputType): Map<string, InputType> => {
+              currentState.set("instanceCount", newValue);
+              if ((newValue as number) === 1) {
+                currentState.set("instanceSize", "1Core4Gb");
+              }
+              return currentState;
+            }
           }
         },
         {
@@ -50,33 +44,25 @@ export class SelfServeCmponent extends React.Component<SelfServeComponentProps> 
           input: {
             label: "Instance Size",
             dataFieldName: "instanceSize",
-            type: "enum",
+            type: "Object",
             choices: [
               { label: "1Core4Gb", key: "1Core4Gb", value: "1Core4Gb" },
               { label: "2Core8Gb", key: "2Core8Gb", value: "2Core8Gb" },
               { label: "4Core16Gb", key: "4Core16Gb", value: "4Core16Gb" }
             ],
-            defaultKey: "1Core4Gb"
+            defaultKey: "1Core4Gb",
+            onChange: (currentState: Map<string, InputType>, newValue: InputType): Map<string, InputType> => {
+              currentState.set("instanceSize", newValue);
+              return currentState;
+            }
           }
         }
       ]
     }
   };
 
-  private exampleCallbacks = (newValues: Map<string, InputType>): void => {
-    for (var i = 0; i < this.props.propertyNames.length; i++) {
-      const prop = this.props.propertyNames[i];
-      const newVal = newValues.get(prop);
-      if (newVal) {
-        this.properties[`${prop}`] = newVal;
-      }
-    }
-
-    console.log(this.properties);
-  };
-
   public render(): JSX.Element {
-    //return <SmartUiComponent descriptor={this.selfServeData} onChange={this.exampleCallbacks} />
-    return <SmartUiComponent descriptor={SqlX.toSmartUiDescriptor()} onChange={this.exampleCallbacks} />;
+    //return <SmartUiComponent descriptor={this.selfServeData} />
+    return <SmartUiComponent descriptor={SqlX.toSmartUiDescriptor()} />;
   }
 }

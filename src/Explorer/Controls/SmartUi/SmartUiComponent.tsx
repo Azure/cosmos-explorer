@@ -8,7 +8,7 @@ import { Text } from "office-ui-fabric-react/lib/Text";
 import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
-import { Link, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import { Link, MessageBar, MessageBarType, PrimaryButton } from "office-ui-fabric-react";
 
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
@@ -21,17 +21,18 @@ import "./SmartUiComponent.less";
  * - a descriptor of the UX.
  */
 
-export type InputTypeValue = "number" | "string" | "boolean" | "enum";
+export type InputTypeValue = "Number" | "String" | "Boolean" | "Object";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type EnumItem = { label: string; key: string; value: any };
 
-export type InputType = number | string | boolean | EnumItem;
+export type InputType = Number | String | Boolean | EnumItem;
 
 interface BaseInput {
   label: string;
   dataFieldName: string;
   type: InputTypeValue;
+  onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   placeholder?: string;
 }
 
@@ -80,13 +81,13 @@ export interface Node {
 
 export interface Descriptor {
   root: Node;
+  onSubmit: (currentValues: Map<string, InputType>) => Promise<void>;
 }
 
 /************************** Component implementation starts here ************************************* */
 
 export interface SmartUiComponentProps {
   descriptor: Descriptor;
-  onChange: (newValues: Map<string, InputType>) => void;
 }
 
 interface SmartUiComponentState {
@@ -104,10 +105,36 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   constructor(props: SmartUiComponentProps) {
     super(props);
     this.state = {
-      currentValues: new Map(),
+      currentValues: this.setDefaultValues(),
       errors: new Map()
     };
   }
+
+  private setDefaultValues = (): Map<string, InputType> => {
+    const defaults = new Map();
+    this.setDefaults(this.props.descriptor.root, defaults);
+    return defaults;
+  };
+
+  private setDefaults = (currentNode: Node, defaults: Map<string, InputType>) => {
+    if (currentNode.input?.dataFieldName) {
+      defaults.set(currentNode.input.dataFieldName, this.getDefault(currentNode.input));
+    }
+    currentNode.children?.map((child: Node) => this.setDefaults(child, defaults));
+  };
+
+  private getDefault = (input: AnyInput): InputType => {
+    switch (input.type) {
+      case "String":
+        return (input as StringInput).defaultValue;
+      case "Number":
+        return (input as NumberInput).defaultValue;
+      case "Boolean":
+        return (input as BooleanInput).defaultValue;
+      default:
+        return (input as EnumInput).defaultKey;
+    }
+  };
 
   private renderInfo(info: Info): JSX.Element {
     return (
@@ -122,10 +149,16 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private onInputChange = (newValue: string | number | boolean, dataFieldName: string) => {
-    const { currentValues } = this.state;
-    currentValues.set(dataFieldName, newValue);
-    this.setState({ currentValues }, () => this.props.onChange(this.state.currentValues));
+  private onInputChange = (input: AnyInput, newValue: InputType) => {
+    if (input.onChange) {
+      const newValues = input.onChange(this.state.currentValues, newValue);
+      this.setState({ currentValues: newValues });
+    } else {
+      const dataFieldName = input.dataFieldName;
+      const { currentValues } = this.state;
+      currentValues.set(dataFieldName, newValue);
+      this.setState({ currentValues });
+    }
   };
 
   private renderStringInput(input: StringInput): JSX.Element {
@@ -138,7 +171,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             type="text"
             value={input.defaultValue}
             placeholder={input.placeholder}
-            onChange={(_, newValue) => this.onInputChange(newValue, input.dataFieldName)}
+            onChange={(_, newValue) => this.onInputChange(input, newValue)}
             styles={{
               subComponentStyles: {
                 label: {
@@ -161,10 +194,11 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     this.setState({ errors });
   }
 
-  private onValidate = (value: string, min: number, max: number, dataFieldName: string): string => {
+  private onValidate = (input: AnyInput, value: string, min: number, max: number): string => {
     const newValue = InputUtils.onValidateValueChange(value, min, max);
+    const dataFieldName = input.dataFieldName;
     if (newValue) {
-      this.onInputChange(newValue, dataFieldName);
+      this.onInputChange(input, newValue);
       this.clearError(dataFieldName);
       return newValue.toString();
     } else {
@@ -175,20 +209,22 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return undefined;
   };
 
-  private onIncrement = (value: string, step: number, max: number, dataFieldName: string): string => {
+  private onIncrement = (input: AnyInput, value: string, step: number, max: number): string => {
     const newValue = InputUtils.onIncrementValue(value, step, max);
+    const dataFieldName = input.dataFieldName;
     if (newValue) {
-      this.onInputChange(newValue, dataFieldName);
+      this.onInputChange(input, newValue);
       this.clearError(dataFieldName);
       return newValue.toString();
     }
     return undefined;
   };
 
-  private onDecrement = (value: string, step: number, min: number, dataFieldName: string): string => {
+  private onDecrement = (input: AnyInput, value: string, step: number, min: number): string => {
     const newValue = InputUtils.onDecrementValue(value, step, min);
+    const dataFieldName = input.dataFieldName;
     if (newValue) {
-      this.onInputChange(newValue, dataFieldName);
+      this.onInputChange(input, newValue);
       this.clearError(dataFieldName);
       return newValue.toString();
     }
@@ -205,9 +241,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           <SpinButton
             {...props}
             defaultValue={defaultValue.toString()}
-            onValidate={newValue => this.onValidate(newValue, min, max, dataFieldName)}
-            onIncrement={newValue => this.onIncrement(newValue, step, max, dataFieldName)}
-            onDecrement={newValue => this.onDecrement(newValue, step, min, dataFieldName)}
+            onValidate={newValue => this.onValidate(input, newValue, min, max)}
+            onIncrement={newValue => this.onIncrement(input, newValue, step, max)}
+            onDecrement={newValue => this.onDecrement(input, newValue, step, min)}
             labelPosition={Position.top}
             styles={{
               label: {
@@ -228,7 +264,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           // valueFormat={}
           {...props}
           defaultValue={defaultValue}
-          onChange={newValue => this.onInputChange(newValue, dataFieldName)}
+          onChange={newValue => this.onInputChange(input, newValue)}
           styles={{
             titleLabel: {
               ...SmartUiComponent.labelStyle,
@@ -257,12 +293,12 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             {
               label: input.falseLabel,
               key: "false",
-              onSelect: () => this.onInputChange(false, dataFieldName)
+              onSelect: () => this.onInputChange(input, false)
             },
             {
               label: input.trueLabel,
               key: "true",
-              onSelect: () => this.onInputChange(true, dataFieldName)
+              onSelect: () => this.onInputChange(input, true)
             }
           ]}
           selectedKey={
@@ -278,7 +314,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderEnumInput(input: EnumInput): JSX.Element {
-    const { label, defaultKey, dataFieldName, choices, placeholder } = input;
+    const { label, defaultKey: defaultKey, dataFieldName, choices, placeholder } = input;
     return (
       <Dropdown
         label={label}
@@ -287,7 +323,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             ? (this.state.currentValues.get(dataFieldName) as string)
             : defaultKey
         }
-        onChange={(_, item: IDropdownOption) => this.onInputChange(item.key.toString(), dataFieldName)}
+        onChange={(_, item: IDropdownOption) => this.onInputChange(input, item.key.toString())}
         placeholder={placeholder}
         options={choices.map(c => ({
           key: c.key,
@@ -306,16 +342,14 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private renderInput(input: AnyInput): JSX.Element {
     switch (input.type) {
-      case "string":
+      case "String":
         return this.renderStringInput(input as StringInput);
-      case "number":
+      case "Number":
         return this.renderNumberInput(input as NumberInput);
-      case "boolean":
+      case "Boolean":
         return this.renderBooleanInput(input as BooleanInput);
-      case "enum":
-        return this.renderEnumInput(input as EnumInput);
       default:
-        throw new Error(`Unknown input type: ${input.type}`);
+        return this.renderEnumInput(input as EnumInput);
     }
   }
 
@@ -332,6 +366,17 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   render(): JSX.Element {
-    return <>{this.renderNode(this.props.descriptor.root)}</>;
+    const containerStackTokens: IStackTokens = { childrenGap: 20 };
+
+    return (
+      <Stack tokens={containerStackTokens}>
+        {this.renderNode(this.props.descriptor.root)}
+        <PrimaryButton
+          styles={{ root: { width: 100 } }}
+          text="submit"
+          onClick={async () => await this.props.descriptor.onSubmit(this.state.currentValues)}
+        />
+      </Stack>
+    );
   }
 }

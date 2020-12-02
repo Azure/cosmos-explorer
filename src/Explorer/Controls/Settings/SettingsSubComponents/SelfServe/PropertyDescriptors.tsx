@@ -1,21 +1,23 @@
-import { EnumItem, Info, InputTypeValue } from "../../../SmartUi/SmartUiComponent";
-import { addPropertyToMap, DescriptorType } from "./SelfServeUtils";
+import { EnumItem, Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { addPropertyToMap } from "./SelfServeUtils";
 
 const addToMap = (descriptorName: string, descriptorValue: any): PropertyDecorator => {
   return (target, property) => {
     const className = (target as Function).name;
+    var propertyType = Reflect.getMetadata("design:type", target, property);
+    addPropertyToMap(target, property.toString(), className, "type", propertyType.name);
+
     if (!className) {
       throw new Error("property descriptor applied to non static field!");
     }
-    addPropertyToMap(
-      target,
-      property.toString(),
-      className,
-      descriptorName,
-      descriptorValue,
-      DescriptorType.PropertyDescriptor
-    );
+    addPropertyToMap(target, property.toString(), className, descriptorName, descriptorValue);
   };
+};
+
+export const OnChange = (
+  onChange: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
+): PropertyDecorator => {
+  return addToMap("onChange", onChange);
 };
 
 export const PropertyInfo = (info: Info): PropertyDecorator => {
@@ -28,10 +30,6 @@ export const Placeholder = (placeholder: string): PropertyDecorator => {
 
 export const ParentOf = (children: string[]): PropertyDecorator => {
   return addToMap("parentOf", children);
-};
-
-export const Type = (type: InputTypeValue): PropertyDecorator => {
-  return addToMap("type", type);
 };
 
 export const Label = (label: string): PropertyDecorator => {
