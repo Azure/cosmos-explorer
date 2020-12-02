@@ -42,7 +42,7 @@ export default class SettingsTabV2 extends TabsBase {
     });
   }
 
-  public onActivate(): Q.Promise<unknown> {
+  public async onActivate(): Promise<void> {
     this.isExecuting(true);
     this.currentCollection.loadOffer().then(
       () => {
@@ -87,9 +87,8 @@ export default class SettingsTabV2 extends TabsBase {
       }
     );
 
-    return super.onActivate().then(() => {
-      this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.SettingsV2);
-    });
+    super.onActivate();
+    this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.SettingsV2);
   }
 
   public getSettingsTabContainer(): Explorer {
