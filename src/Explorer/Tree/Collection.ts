@@ -23,6 +23,7 @@ import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
+import MongoDocumentsTabV2 from "../Tabs/MongoDocumentsTabV2";
 import MongoQueryTab from "../Tabs/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
@@ -496,11 +497,11 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const mongoDocumentsTabs: MongoDocumentsTab[] = this.container.tabsManager.getTabs(
+    const mongoDocumentsTabs: MongoDocumentsTabV2[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
       (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as MongoDocumentsTab[];
-    let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
+    ) as MongoDocumentsTabV2[];
+    let mongoDocumentsTab: MongoDocumentsTabV2 = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
     if (mongoDocumentsTab) {
       this.container.tabsManager.activateTab(mongoDocumentsTab);
@@ -515,9 +516,8 @@ export default class Collection implements ViewModels.Collection {
       });
       this.documentIds([]);
 
-      mongoDocumentsTab = new MongoDocumentsTab({
-        partitionKey: this.partitionKey,
-        documentIds: this.documentIds,
+      mongoDocumentsTab = new MongoDocumentsTabV2({
+        container: this.container,
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Documents",
         tabPath: "",

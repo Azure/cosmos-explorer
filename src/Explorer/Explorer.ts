@@ -2346,13 +2346,11 @@ export default class Explorer {
       this.tabsManager.activateTab(notebookTab);
     } else {
       const options: NotebookTabOptions = {
-        account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookV2,
         node: null,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
         collection: null,
-        masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
         isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
