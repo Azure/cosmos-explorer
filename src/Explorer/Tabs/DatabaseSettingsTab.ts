@@ -155,8 +155,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           this.overrideWithAutoPilotSettings() ? this.autoPilotThroughput() : this.throughput(),
           serverId,
           regions,
-          multimaster,
-          false /*rupmEnabled*/
+          multimaster
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(

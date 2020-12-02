@@ -248,7 +248,6 @@ export interface CreateDatabaseAndCollectionRequest {
   collectionId: string;
   offerThroughput: number;
   databaseLevelThroughput: boolean;
-  rupmEnabled?: boolean;
   partitionKey?: PartitionKey;
   indexingPolicy?: IndexingPolicy;
   uniqueKeyPolicy?: UniqueKeyPolicy;
