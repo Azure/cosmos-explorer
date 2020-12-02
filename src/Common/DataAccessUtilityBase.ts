@@ -1,44 +1,12 @@
-import { ConflictDefinition, FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { ConflictDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import Q from "q";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
-import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
 import * as Constants from "./Constants";
 import { client } from "./CosmosClient";
-
-export function getCommonQueryOptions(options: FeedOptions): any {
-  const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
-  options = options || {};
-  options.populateQueryMetrics = true;
-  options.enableScanInQuery = options.enableScanInQuery || true;
-  if (!options.partitionKey) {
-    options.forceQueryPlan = true;
-  }
-  options.maxItemCount =
-    options.maxItemCount ||
-    (storedItemPerPageSetting !== undefined && storedItemPerPageSetting) ||
-    Constants.Queries.itemsPerPage;
-  options.maxDegreeOfParallelism = LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism);
-
-  return options;
-}
-
-export function queryDocuments(
-  databaseId: string,
-  containerId: string,
-  query: string,
-  options: any
-): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
-  options = getCommonQueryOptions(options);
-  const documentsIterator = client()
-    .database(databaseId)
-    .container(containerId)
-    .items.query(query, options);
-  return Q(documentsIterator);
-}
 
 export function getPartitionKeyHeaderForConflict(conflictId: ConflictId): Object {
   const partitionKeyDefinition: DataModels.PartitionKey = conflictId.partitionKey;

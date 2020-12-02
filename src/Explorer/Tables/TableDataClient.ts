@@ -4,6 +4,7 @@ import Q from "q";
 import { displayTokenRenewalPromptForStatus, getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AuthType } from "../../AuthType";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { FeedOptions } from "@azure/cosmos/dist-esm";
 import * as Constants from "../../Common/Constants";
 import * as Entities from "./Entities";
 import * as HeadersUtility from "../../Common/HeadersUtility";
@@ -12,9 +13,10 @@ import * as TableConstants from "./Constants";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import { queryDocuments, deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
+import { deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
 import { configContext } from "../../ConfigContext";
 import { handleError } from "../../Common/ErrorHandlingUtils";
+import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -38,19 +40,19 @@ export abstract class TableDataClient {
     collection: ViewModels.Collection,
     originalDocument: any,
     newEntity: Entities.ITableEntity
-  ): Q.Promise<Entities.ITableEntity>;
+  ): Promise<Entities.ITableEntity>;
 
   public abstract queryDocuments(
     collection: ViewModels.Collection,
     query: string,
     shouldNotify?: boolean,
     paginationToken?: string
-  ): Q.Promise<Entities.IListTableEntitiesResult>;
+  ): Promise<Entities.IListTableEntitiesResult>;
 
   public abstract deleteDocuments(
     collection: ViewModels.Collection,
     entitiesToDelete: Entities.ITableEntity[]
-  ): Q.Promise<any>;
+  ): Promise<any>;
 }
 
 export class TablesAPIDataClient extends TableDataClient {
@@ -74,77 +76,63 @@ export class TablesAPIDataClient extends TableDataClient {
     return deferred.promise;
   }
 
-  public updateDocument(
+  public async updateDocument(
     collection: ViewModels.Collection,
     originalDocument: any,
     entity: Entities.ITableEntity
-  ): Q.Promise<Entities.ITableEntity> {
-    const deferred = Q.defer<Entities.ITableEntity>();
-
-    updateDocument(
-      collection,
-      originalDocument,
-      TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
-    ).then(
-      (newDocument: any) => {
-        const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
-        deferred.resolve(newEntity);
-      },
-      reason => {
-        deferred.reject(reason);
-      }
-    );
-    return deferred.promise;
+  ): Promise<Entities.ITableEntity> {
+    try {
+      const newDocument = updateDocument(
+        collection,
+        originalDocument,
+        TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
+      );
+      return TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
+    } catch (error) {
+      handleError(error, "TablesAPIDataClient/updateDocument");
+      throw error;
+    }
   }
 
-  public queryDocuments(
+  public async queryDocuments(
     collection: ViewModels.Collection,
     query: string
-  ): Q.Promise<Entities.IListTableEntitiesResult> {
-    const deferred = Q.defer<Entities.IListTableEntitiesResult>();
+  ): Promise<Entities.IListTableEntitiesResult> {
+    try {
+      const options = {
+        enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey()
+      } as FeedOptions;
+      const iterator = queryDocuments(collection.databaseId, collection.id(), query, options);
+      const response = await iterator.fetchNext();
+      const documents = response?.resources;
+      const entities = TableEntityProcessor.convertDocumentsToEntities(documents);
 
-    let options: any = {};
-    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-    queryDocuments(collection.databaseId, collection.id(), query, options).then(
-      iterator => {
-        iterator
-          .fetchNext()
-          .then(response => response.resources)
-          .then(
-            (documents: any[] = []) => {
-              let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
-              let finalEntities: Entities.IListTableEntitiesResult = <Entities.IListTableEntitiesResult>{
-                Results: entities,
-                ContinuationToken: iterator.hasMoreResults(),
-                iterator: iterator
-              };
-              deferred.resolve(finalEntities);
-            },
-            reason => {
-              deferred.reject(reason);
-            }
-          );
-      },
-      reason => {
-        deferred.reject(reason);
-      }
-    );
-    return deferred.promise;
+      return {
+        Results: entities,
+        ContinuationToken: iterator.hasMoreResults(),
+        iterator: iterator
+      };
+    } catch (error) {
+      handleError(error, "TablesAPIDataClient/queryDocuments", "Query documents failed");
+      throw error;
+    }
   }
 
-  public deleteDocuments(collection: ViewModels.Collection, entitiesToDelete: Entities.ITableEntity[]): Q.Promise<any> {
-    let documentsToDelete: any[] = TableEntityProcessor.convertEntitiesToDocuments(
+  public async deleteDocuments(
+    collection: ViewModels.Collection,
+    entitiesToDelete: Entities.ITableEntity[]
+  ): Promise<any> {
+    const documentsToDelete: any[] = TableEntityProcessor.convertEntitiesToDocuments(
       <Entities.ITableEntityForTablesAPI[]>entitiesToDelete,
       collection
     );
-    let promiseArray: Q.Promise<any>[] = [];
-    documentsToDelete &&
-      documentsToDelete.forEach(document => {
+
+    await Promise.all(
+      documentsToDelete?.map(async document => {
         document.id = ko.observable<string>(document.id);
-        let promise: Q.Promise<any> = deleteDocument(collection, document);
-        promiseArray.push(promise);
-      });
-    return Q.all(promiseArray);
+        await deleteDocument(collection, document);
+      })
+    );
   }
 }
 
@@ -180,10 +168,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         (data: any) => {
           entity[TableConstants.EntityKeyNames.RowKey] = entity[this.getCassandraPartitionKeyProperty(collection)];
           entity[TableConstants.EntityKeyNames.RowKey]._ = entity[TableConstants.EntityKeyNames.RowKey]._.toString();
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `Successfully added new row to table ${collection.id()}`
-          );
+          NotificationConsoleUtils.logConsoleInfo(`Successfully added new row to table ${collection.id()}`);
           deferred.resolve(entity);
         },
         error => {
@@ -197,181 +182,149 @@ export class CassandraAPIDataClient extends TableDataClient {
     return deferred.promise;
   }
 
-  public updateDocument(
+  public async updateDocument(
     collection: ViewModels.Collection,
     originalDocument: any,
     newEntity: Entities.ITableEntity
-  ): Q.Promise<Entities.ITableEntity> {
-    const notificationId = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      `Updating row ${originalDocument.RowKey._}`
-    );
-    const deferred = Q.defer<Entities.ITableEntity>();
-    let promiseArray: Q.Promise<any>[] = [];
-    let query = `UPDATE ${collection.databaseId}.${collection.id()}`;
-    let isChange: boolean = false;
-    for (let property in newEntity) {
-      if (!originalDocument[property] || newEntity[property]._.toString() !== originalDocument[property]._.toString()) {
-        if (this.isStringType(newEntity[property].$)) {
-          query = `${query} SET ${property} = '${newEntity[property]._}',`;
-        } else {
-          query = `${query} SET ${property} = ${newEntity[property]._},`;
+  ): Promise<Entities.ITableEntity> {
+    const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Updating row ${originalDocument.RowKey._}`);
+
+    try {
+      let whereSegment = " WHERE";
+      let keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
+        collection.cassandraKeys.clusteringKeys
+      );
+      for (let keyIndex in keys) {
+        const key = keys[keyIndex].property;
+        const keyType = keys[keyIndex].type;
+        whereSegment += this.isStringType(keyType)
+          ? ` ${key} = '${newEntity[key]._}' AND`
+          : ` ${key} = ${newEntity[key]._} AND`;
+      }
+      whereSegment = whereSegment.slice(0, whereSegment.length - 4);
+
+      let updateQuery = `UPDATE ${collection.databaseId}.${collection.id()}`;
+      let isPropertyUpdated = false;
+      for (let property in newEntity) {
+        if (
+          !originalDocument[property] ||
+          newEntity[property]._.toString() !== originalDocument[property]._.toString()
+        ) {
+          updateQuery += this.isStringType(newEntity[property].$)
+            ? ` SET ${property} = '${newEntity[property]._}',`
+            : ` SET ${property} = ${newEntity[property]._},`;
+          isPropertyUpdated = true;
         }
-        isChange = true;
       }
-    }
-    query = query.slice(0, query.length - 1);
-    let whereSegment = " WHERE";
-    let keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
-      collection.cassandraKeys.clusteringKeys
-    );
-    for (let keyIndex in keys) {
-      const key = keys[keyIndex].property;
-      const keyType = keys[keyIndex].type;
-      if (this.isStringType(keyType)) {
-        whereSegment = `${whereSegment} ${key} = '${newEntity[key]._}' AND`;
-      } else {
-        whereSegment = `${whereSegment} ${key} = ${newEntity[key]._} AND`;
+
+      if (isPropertyUpdated) {
+        updateQuery = updateQuery.slice(0, updateQuery.length - 1);
+        updateQuery += whereSegment;
+        await this.queryDocuments(collection, updateQuery);
       }
-    }
-    whereSegment = whereSegment.slice(0, whereSegment.length - 4);
-    query = query + whereSegment;
-    if (isChange) {
-      promiseArray.push(this.queryDocuments(collection, query));
-    }
-    query = `DELETE `;
-    for (let property in originalDocument) {
-      if (property !== TableConstants.EntityKeyNames.RowKey && !newEntity[property] && !!originalDocument[property]) {
-        query = `${query} ${property},`;
-      }
-    }
-    if (query.length > 7) {
-      query = query.slice(0, query.length - 1);
-      query = `${query} FROM ${collection.databaseId}.${collection.id()}${whereSegment}`;
-      promiseArray.push(this.queryDocuments(collection, query));
-    }
-    Q.all(promiseArray)
-      .then(
-        (data: any) => {
-          newEntity[TableConstants.EntityKeyNames.RowKey] = originalDocument[TableConstants.EntityKeyNames.RowKey];
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `Successfully updated row ${newEntity.RowKey._}`
-          );
-          deferred.resolve(newEntity);
-        },
-        error => {
-          handleError(error, "UpdateRowCassandra", `Failed to update row ${newEntity.RowKey._}`);
-          deferred.reject(error);
+
+      let deleteQuery = `DELETE `;
+      let isPropertyDeleted = false;
+      for (let property in originalDocument) {
+        if (property !== TableConstants.EntityKeyNames.RowKey && !newEntity[property] && !!originalDocument[property]) {
+          deleteQuery += ` ${property},`;
+          isPropertyDeleted = true;
         }
-      )
-      .finally(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
-      });
-    return deferred.promise;
+      }
+
+      if (isPropertyDeleted) {
+        deleteQuery = deleteQuery.slice(0, deleteQuery.length - 1);
+        deleteQuery += ` FROM ${collection.databaseId}.${collection.id()}${whereSegment}`;
+        await this.queryDocuments(collection, deleteQuery);
+      }
+
+      newEntity[TableConstants.EntityKeyNames.RowKey] = originalDocument[TableConstants.EntityKeyNames.RowKey];
+      NotificationConsoleUtils.logConsoleInfo(`Successfully updated row ${newEntity.RowKey._}`);
+      return newEntity;
+    } catch (error) {
+      handleError(error, "UpdateRowCassandra", "Failed to update row ${newEntity.RowKey._}");
+      throw error;
+    } finally {
+      clearMessage();
+    }
   }
 
-  public queryDocuments(
+  public async queryDocuments(
     collection: ViewModels.Collection,
     query: string,
     shouldNotify?: boolean,
     paginationToken?: string
-  ): Q.Promise<Entities.IListTableEntitiesResult> {
-    let notificationId: string;
-    if (shouldNotify) {
-      notificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Querying rows for table ${collection.id()}`
-      );
-    }
-    const deferred = Q.defer<Entities.IListTableEntitiesResult>();
-    const authType = window.authType;
-    const apiEndpoint: string =
-      authType === AuthType.EncryptedToken
-        ? Constants.CassandraBackend.guestQueryApi
-        : Constants.CassandraBackend.queryApi;
-    $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
-      type: "POST",
-      data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
-        keyspaceId: collection.databaseId,
-        tableId: collection.id(),
-        query: query,
-        paginationToken: paginationToken
-      },
-      beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
-      cache: false
-    })
-      .then(
-        (data: any) => {
-          if (shouldNotify) {
-            NotificationConsoleUtils.logConsoleMessage(
-              ConsoleDataType.Info,
-              `Successfully fetched ${data.result.length} rows for table ${collection.id()}`
-            );
-          }
-          deferred.resolve({
-            Results: data.result,
-            ContinuationToken: data.paginationToken
-          });
+  ): Promise<Entities.IListTableEntitiesResult> {
+    const clearMessage =
+      shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
+    try {
+      const authType = window.authType;
+      const apiEndpoint: string =
+        authType === AuthType.EncryptedToken
+          ? Constants.CassandraBackend.guestQueryApi
+          : Constants.CassandraBackend.queryApi;
+      const data: any = await $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
+        type: "POST",
+        data: {
+          accountName:
+            collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
+          cassandraEndpoint: this.trimCassandraEndpoint(
+            collection.container.databaseAccount().properties.cassandraEndpoint
+          ),
+          resourceId: collection.container.databaseAccount().id,
+          keyspaceId: collection.databaseId,
+          tableId: collection.id(),
+          query,
+          paginationToken
         },
-        (error: any) => {
-          if (shouldNotify) {
-            handleError(error, "QueryDocumentsCassandra", `Failed to query rows for table ${collection.id()}`);
-          }
-          deferred.reject(error);
-        }
-      )
-      .done(() => {
-        if (shouldNotify) {
-          NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
-        }
+        beforeSend: this.setAuthorizationHeader,
+        error: this.handleAjaxError,
+        cache: false
       });
-    return deferred.promise;
+      shouldNotify &&
+        NotificationConsoleUtils.logConsoleInfo(
+          `Successfully fetched ${data.result.length} rows for table ${collection.id()}`
+        );
+      return {
+        Results: data.result,
+        ContinuationToken: data.paginationToken
+      };
+    } catch (error) {
+      shouldNotify &&
+        handleError(error, "QueryDocumentsCassandra", `Failed to query rows for table ${collection.id()}`);
+      throw error;
+    } finally {
+      clearMessage?.();
+    }
   }
 
-  public deleteDocuments(collection: ViewModels.Collection, entitiesToDelete: Entities.ITableEntity[]): Q.Promise<any> {
+  public async deleteDocuments(
+    collection: ViewModels.Collection,
+    entitiesToDelete: Entities.ITableEntity[]
+  ): Promise<any> {
     const query = `DELETE FROM ${collection.databaseId}.${collection.id()} WHERE `;
-    let promiseArray: Q.Promise<any>[] = [];
-    let partitionKeyProperty = this.getCassandraPartitionKeyProperty(collection);
-    for (let i = 0, len = entitiesToDelete.length; i < len; i++) {
-      let currEntityToDelete: Entities.ITableEntity = entitiesToDelete[i];
-      let currQuery = query;
-      let partitionKeyValue = currEntityToDelete[partitionKeyProperty];
-      if (partitionKeyValue._ != null && this.isStringType(partitionKeyValue.$)) {
-        currQuery = `${currQuery}${partitionKeyProperty} = '${partitionKeyValue._}' AND `;
-      } else {
-        currQuery = `${currQuery}${partitionKeyProperty} = ${partitionKeyValue._} AND `;
-      }
-      currQuery = currQuery.slice(0, currQuery.length - 5);
-      const notificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Deleting row ${currEntityToDelete.RowKey._}`
-      );
-      promiseArray.push(
-        this.queryDocuments(collection, currQuery)
-          .then(
-            () => {
-              NotificationConsoleUtils.logConsoleMessage(
-                ConsoleDataType.Info,
-                `Successfully deleted row ${currEntityToDelete.RowKey._}`
-              );
-            },
-            error => {
-              handleError(error, "DeleteRowCassandra", `Error while deleting row ${currEntityToDelete.RowKey._}`);
-            }
-          )
-          .finally(() => {
-            NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
-          })
-      );
-    }
-    return Q.all(promiseArray);
+    const partitionKeyProperty = this.getCassandraPartitionKeyProperty(collection);
+
+    await Promise.all(
+      entitiesToDelete.map(async (currEntityToDelete: Entities.ITableEntity) => {
+        const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Deleting row ${currEntityToDelete.RowKey._}`);
+        const partitionKeyValue = currEntityToDelete[partitionKeyProperty];
+        const currQuery =
+          query + this.isStringType(partitionKeyValue.$)
+            ? `${partitionKeyProperty} = '${partitionKeyValue._}'`
+            : `${partitionKeyProperty} = ${partitionKeyValue._}`;
+
+        try {
+          await this.queryDocuments(collection, currQuery);
+          NotificationConsoleUtils.logConsoleInfo(`Successfully deleted row ${currEntityToDelete.RowKey._}`);
+        } catch (error) {
+          handleError(error, "DeleteRowCassandra", `Error while deleting row ${currEntityToDelete.RowKey._}`);
+          throw error;
+        } finally {
+          clearMessage();
+        }
+      })
+    );
   }
 
   public createKeyspace(

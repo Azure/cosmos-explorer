@@ -28,8 +28,10 @@ import * as Constants from "../../../Common/Constants";
 import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
-import { queryDocuments, queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
+import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
+import { queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
+import { FeedOptions } from "@azure/cosmos/dist-esm";
 
 export interface GraphAccessor {
   applyFilter: () => void;
@@ -725,26 +727,32 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   /**
    * Execute DocDB query and get all results
    */
-  public executeNonPagedDocDbQuery(query: string): Q.Promise<DataModels.DocumentId[]> {
-    // TODO maxItemCount: this reduces throttling, but won't cap the # of results
-    return queryDocuments(this.props.databaseId, this.props.collectionId, query, {
-      maxItemCount: GraphExplorer.PAGE_ALL,
-      enableCrossPartitionQuery:
-        StorageUtility.LocalStorageUtility.getEntryString(StorageUtility.StorageKey.IsCrossPartitionQueryEnabled) ===
-        "true"
-    }).then(
-      (iterator: QueryIterator<ItemDefinition & Resource>) => {
-        return iterator.fetchNext().then(response => response.resources);
-      },
-      (reason: any) => {
-        GraphExplorer.reportToConsole(
-          ConsoleDataType.Error,
-          `Failed to execute non-paged query ${query}. Reason:${reason}`,
-          reason
-        );
-        return null;
-      }
-    );
+  public async executeNonPagedDocDbQuery(query: string): Promise<DataModels.DocumentId[]> {
+    try {
+      // TODO maxItemCount: this reduces throttling, but won't cap the # of results
+      const iterator: QueryIterator<ItemDefinition & Resource> = queryDocuments(
+        this.props.databaseId,
+        this.props.collectionId,
+        query,
+        {
+          maxItemCount: GraphExplorer.PAGE_ALL,
+          enableCrossPartitionQuery:
+            StorageUtility.LocalStorageUtility.getEntryString(
+              StorageUtility.StorageKey.IsCrossPartitionQueryEnabled
+            ) === "true"
+        } as FeedOptions
+      );
+      const response = await iterator.fetchNext();
+
+      return response?.resources;
+    } catch (error) {
+      GraphExplorer.reportToConsole(
+        ConsoleDataType.Error,
+        `Failed to execute non-paged query ${query}. Reason:${error}`,
+        error
+      );
+      return null;
+    }
   }
 
   /**
@@ -864,7 +872,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   /**
    * User executes query
    */
-  public submitQuery(query: string): void {
+  public async submitQuery(query: string): Promise<void> {
     // Clear any progress indicator
     this.executeCounter = 0;
     this.setState({
@@ -882,24 +890,22 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     // Remember query
     this.pushToLatestQueryFragments(query);
 
-    let backendPromise;
-
-    if (query.toLocaleLowerCase() === "g.V()".toLocaleLowerCase()) {
-      backendPromise = this.executeDocDbGVQuery();
-    } else {
-      backendPromise = this.executeGremlinQuery(query);
-    }
-
-    backendPromise.then(
-      (result: UserQueryResult) => (this.queryTotalRequestCharge = result.requestCharge),
-      (error: any) => {
-        const errorMsg = `Failure in submitting query: ${query}: ${getErrorMessage(error)}`;
-        GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
-        this.setState({
-          filterQueryError: errorMsg
-        });
+    try {
+      let result: UserQueryResult;
+      if (query.toLocaleLowerCase() === "g.V()".toLocaleLowerCase()) {
+        result = await this.executeDocDbGVQuery();
+      } else {
+        result = await this.executeGremlinQuery(query);
       }
-    );
+
+      this.queryTotalRequestCharge = result.requestCharge;
+    } catch (error) {
+      const errorMsg = `Failure in submitting query: ${query}: ${getErrorMessage(error)}`;
+      GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
+      this.setState({
+        filterQueryError: errorMsg
+      });
+    }
   }
 
   /**
@@ -1390,7 +1396,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   /**
    * Update possible vertices to display in UI
    */
-  private updatePossibleVertices(): Q.Promise<PossibleVertex[]> {
+  private updatePossibleVertices(): Promise<PossibleVertex[]> {
     const highlightedNodeId = this.state.highlightedNode ? this.state.highlightedNode.id : null;
 
     const q = `SELECT c.id, c["${this.props.graphConfigUiData.nodeCaptionChoice() ||
@@ -1721,32 +1727,36 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     );
   }
 
-  private executeDocDbGVQuery(): Q.Promise<UserQueryResult> {
+  private async executeDocDbGVQuery(): Promise<UserQueryResult> {
     let query = "select root.id from root where IS_DEFINED(root._isEdge) = false order by root._ts desc";
     if (this.props.collectionPartitionKeyProperty) {
       query = `select root.id, root.${this.props.collectionPartitionKeyProperty} from root where IS_DEFINED(root._isEdge) = false order by root._ts asc`;
     }
 
-    return queryDocuments(this.props.databaseId, this.props.collectionId, query, {
-      maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
-      enableCrossPartitionQuery: LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-    })
-      .then(
-        (iterator: QueryIterator<ItemDefinition & Resource>) => {
-          this.currentDocDBQueryInfo = {
-            iterator: iterator,
-            index: 0,
-            query: query
-          };
-        },
-        (reason: any) => {
-          GraphExplorer.reportToConsole(
-            ConsoleDataType.Error,
-            `Failed to execute CosmosDB query: ${query} reason:${reason}`
-          );
-        }
-      )
-      .then(() => this.loadMoreRootNodes());
+    try {
+      const iterator: QueryIterator<ItemDefinition & Resource> = queryDocuments(
+        this.props.databaseId,
+        this.props.collectionId,
+        query,
+        {
+          maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
+          enableCrossPartitionQuery:
+            LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
+        } as FeedOptions
+      );
+      this.currentDocDBQueryInfo = {
+        iterator: iterator,
+        index: 0,
+        query: query
+      };
+      return await this.loadMoreRootNodes();
+    } catch (error) {
+      GraphExplorer.reportToConsole(
+        ConsoleDataType.Error,
+        `Failed to execute CosmosDB query: ${query} reason:${error}`
+      );
+      throw error;
+    }
   }
 
   private loadMoreRootNodes(): Q.Promise<UserQueryResult> {

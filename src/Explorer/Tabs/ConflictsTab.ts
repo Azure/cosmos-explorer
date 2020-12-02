@@ -445,52 +445,38 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public onTabClick(): Q.Promise<any> {
-    return super.onTabClick().then(() => {
-      this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
-    });
+  public async onTabClick(): Promise<void> {
+    super.onTabClick();
+    this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
   }
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
-      if (this._documentsIterator) {
-        return Q.resolve(this._documentsIterator);
-      }
+  public async onActivate(): Promise<void> {
+    super.onActivate();
 
-      return this.createIterator().then(
-        (iterator: QueryIterator<ItemDefinition & Resource>) => {
-          this._documentsIterator = iterator;
-          return this.loadNextPage();
-        },
-        error => {
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
-            TelemetryProcessor.traceFailure(
-              Action.Tab,
-              {
-                databaseAccountName: this.collection.container.databaseAccount().name,
-                databaseName: this.collection.databaseId,
-                collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle(),
-                error: getErrorMessage(error),
-                errorStack: getErrorStack(error)
-              },
-              this.onLoadStartKey
-            );
-            this.onLoadStartKey = null;
-          }
+    if (!this._documentsIterator) {
+      try {
+        this._documentsIterator = await this.createIterator();
+        await this.loadNextPage();
+      } catch (error) {
+        if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+          TelemetryProcessor.traceFailure(
+            Action.Tab,
+            {
+              databaseAccountName: this.collection.container.databaseAccount().name,
+              databaseName: this.collection.databaseId,
+              collectionName: this.collection.id(),
+              defaultExperience: this.collection.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
+            },
+            this.onLoadStartKey
+          );
+          this.onLoadStartKey = null;
         }
-      );
-    });
-  }
-
-  public onRefreshClick(): Q.Promise<any> {
-    return this.refreshDocumentsGrid().then(() => {
-      this.selectedConflictContent("");
-      this.selectedConflictId(null);
-      this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-    });
+      }
+    }
   }
 
   public createIterator(): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {

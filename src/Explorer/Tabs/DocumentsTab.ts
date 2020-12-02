@@ -23,15 +23,10 @@ import { extractPartitionKey, PartitionKeyDefinition, QueryIterator, ItemDefinit
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import {
-  readDocument,
-  queryDocuments,
-  deleteDocument,
-  updateDocument,
-  createDocument
-} from "../../Common/DocumentClientUtilityBase";
+import { readDocument, deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 
 export default class DocumentsTab extends TabsBase {
   public selectedDocumentId: ko.Observable<DocumentId>;
@@ -369,36 +364,22 @@ export default class DocumentsTab extends TabsBase {
     return true;
   };
 
-  public onApplyFilterClick(): Q.Promise<any> {
+  public async refreshDocumentsGrid(): Promise<void> {
     // clear documents grid
     this.documentIds([]);
-    return this.createIterator()
-      .then(
-        // reset iterator
-        iterator => {
-          this._documentsIterator = iterator;
-        }
-      )
-      .then(
-        // load documents
-        () => {
-          return this.loadNextPage();
-        }
-      )
-      .then(() => {
-        // collapse filter
-        this.appliedFilter(this.filterContent());
-        this.isFilterExpanded(false);
-        const focusElement = document.getElementById("errorStatusIcon");
-        focusElement && focusElement.focus();
-      })
-      .catch(error => {
-        window.alert(getErrorMessage(error));
-      });
-  }
 
-  public refreshDocumentsGrid(): Q.Promise<any> {
-    return this.onApplyFilterClick();
+    try {
+      // reset iterator
+      this._documentsIterator = this.createIterator();
+      // load documents
+      await this.loadNextPage();
+      // collapse filter
+      this.appliedFilter(this.filterContent());
+      this.isFilterExpanded(false);
+      document.getElementById("errorStatusIcon")?.focus();
+    } catch (error) {
+      window.alert(getErrorMessage(error));
+    }
   }
 
   public onRefreshButtonKeyDown = (source: any, event: KeyboardEvent): boolean => {
@@ -617,53 +598,40 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   }
 
-  public onTabClick(): Q.Promise<any> {
-    return super.onTabClick().then(() => {
-      this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
-    });
+  public async onTabClick(): Promise<void> {
+    super.onTabClick();
+    this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
-      if (this._documentsIterator) {
-        return Q.resolve(this._documentsIterator);
-      }
+  public async onActivate(): Promise<void> {
+    super.onActivate();
 
-      return this.createIterator().then(
-        (iterator: QueryIterator<ItemDefinition & Resource>) => {
-          this._documentsIterator = iterator;
-          return this.loadNextPage();
-        },
-        error => {
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
-            TelemetryProcessor.traceFailure(
-              Action.Tab,
-              {
-                databaseAccountName: this.collection.container.databaseAccount().name,
-                databaseName: this.collection.databaseId,
-                collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle(),
-                error: getErrorMessage(error),
-                errorStack: getErrorStack(error)
-              },
-              this.onLoadStartKey
-            );
-            this.onLoadStartKey = null;
-          }
+    if (!this._documentsIterator) {
+      try {
+        this._documentsIterator = this.createIterator();
+        await this.loadNextPage();
+      } catch (error) {
+        if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+          TelemetryProcessor.traceFailure(
+            Action.Tab,
+            {
+              databaseAccountName: this.collection.container.databaseAccount().name,
+              databaseName: this.collection.databaseId,
+              collectionName: this.collection.id(),
+              defaultExperience: this.collection.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
+            },
+            this.onLoadStartKey
+          );
+          this.onLoadStartKey = null;
         }
-      );
-    });
+      }
+    }
   }
 
-  public onRefreshClick(): Q.Promise<any> {
-    return this.refreshDocumentsGrid().then(() => {
-      this.selectedDocumentContent("");
-      this.selectedDocumentId(null);
-      this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-    });
-  }
   private _isIgnoreDirtyEditor = (): boolean => {
     var msg: string = "Changes will be lost. Do you want to continue?";
     return window.confirm(msg);
@@ -720,7 +688,7 @@ export default class DocumentsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   }
 
-  public createIterator(): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
+  public createIterator(): QueryIterator<ItemDefinition & Resource> {
     let filters = this.lastFilterContents();
     const filter: string = this.filterContent().trim();
     const query: string = this.buildQuery(filter);

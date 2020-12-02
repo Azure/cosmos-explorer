@@ -15,9 +15,10 @@ import { QueryUtils } from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
-import { queryDocuments, queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
+import { queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 
 enum ToggleState {
   Result,
@@ -163,10 +164,9 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this._buildCommandBarOptions();
   }
 
-  public onTabClick(): Q.Promise<any> {
-    return super.onTabClick().then(() => {
-      this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Query);
-    });
+  public onTabClick(): void {
+    super.onTabClick();
+    this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Query);
   }
 
   public onExecuteQueryClick = (): Q.Promise<any> => {
@@ -174,7 +174,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.sqlStatementToExecute(sqlStatement);
     this.allResultsMetadata([]);
     this.queryResults("");
-    this._iterator = null;
+    this._iterator = undefined;
 
     return this._executeQueryDocumentsPage(0);
   };
@@ -268,9 +268,8 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   private _executeQueryDocumentsPage(firstItemIndex: number): Q.Promise<any> {
     this.error("");
     this.roundTrips(undefined);
-    if (this._iterator == null) {
-      const queryIteratorPromise = this._initIterator();
-      return queryIteratorPromise.finally(() => this._queryDocumentsPage(firstItemIndex));
+    if (this._iterator === undefined) {
+      this._initIterator();
     }
 
     return this._queryDocumentsPage(firstItemIndex);
@@ -477,16 +476,17 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     }
   }
 
-  protected _initIterator(): Q.Promise<MinimalQueryIterator> {
+  protected _initIterator(): void {
     const options: any = QueryTab.getIteratorOptions(this.collection);
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
 
-    return Q(
-      queryDocuments(this.collection.databaseId, this.collection.id(), this.sqlStatementToExecute(), options).then(
-        iterator => (this._iterator = iterator)
-      )
+    this._iterator = queryDocuments(
+      this.collection.databaseId,
+      this.collection.id(),
+      this.sqlStatementToExecute(),
+      options
     );
   }
 

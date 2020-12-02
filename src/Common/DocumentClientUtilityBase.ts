@@ -1,4 +1,4 @@
-import { ConflictDefinition, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { ConflictDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import Q from "q";
 import * as ViewModels from "../Contracts/ViewModels";
 import ConflictId from "../Explorer/Tree/ConflictId";
@@ -9,16 +9,6 @@ import * as Constants from "./Constants";
 import * as DataAccessUtilityBase from "./DataAccessUtilityBase";
 import { MinimalQueryIterator, nextPage } from "./IteratorUtilities";
 import { handleError } from "./ErrorHandlingUtils";
-
-// TODO: Log all promise resolutions and errors with verbosity levels
-export function queryDocuments(
-  databaseId: string,
-  containerId: string,
-  query: string,
-  options: any
-): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
-  return DataAccessUtilityBase.queryDocuments(databaseId, containerId, query, options);
-}
 
 export function queryConflicts(
   databaseId: string,
