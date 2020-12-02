@@ -126,7 +126,6 @@ export class OfferPricing {
       Standard: {
         StartingPrice: 24 / hoursInAMonth, // per hour
         PricePerRU: 0.00008,
-        PricePerRUPM: (10 * 2) / 1000 / hoursInAMonth, // preview price: $2 per 1000 RU/m per month -> 100 RU/s
         PricePerGB: 0.25 / hoursInAMonth
       }
     },
@@ -139,7 +138,6 @@ export class OfferPricing {
       Standard: {
         StartingPrice: OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice / hoursInAMonth, // per hour
         PricePerRU: 0.00051,
-        PricePerRUPM: (10 * 20) / 1000 / hoursInAMonth, // preview price: 20rmb per 1000 RU/m per month -> 100 RU/s
         PricePerGB: OfferPricing.MonthlyPricing.mooncake.Standard.PricePerGB / hoursInAMonth
       }
     }
@@ -156,7 +154,6 @@ export class CollectionCreation {
   public static readonly MinRU7PartitionsTo25Partitions: number = 2500;
   public static readonly MinRUPerPartitionAbove25Partitions: number = 100;
   public static readonly MaxRUPerPartition: number = 10000;
-  public static readonly MaxRUPMPerPartition: number = 5000;
   public static readonly MinPartitionedCollectionRUs: number = 2500;
 
   public static readonly NumberOfPartitionsInFixedCollection: number = 1;
