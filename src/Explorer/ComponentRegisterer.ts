@@ -26,7 +26,7 @@ ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponent
 ko.components.register("tabs-manager", TabsManagerKOComponent());
 
 // Collection Tabs
-ko.components.register("documents-tab", new TabComponents.DocumentsTab());
+ko.components.register("documents-tab", new TabComponents.MongoDocumentsTabV2());
 ko.components.register("mongo-documents-tab", new TabComponents.MongoDocumentsTab());
 ko.components.register("stored-procedure-tab", new TabComponents.StoredProcedureTab());
 ko.components.register("trigger-tab", new TabComponents.TriggerTab());
