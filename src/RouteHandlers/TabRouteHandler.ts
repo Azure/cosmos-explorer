@@ -175,6 +175,19 @@ export class TabRouteHandler {
     });
   }
 
+  private _openMongoSchemaTabForResource(databaseId: string, collectionId: string): void {
+    this._executeActionHelper(() => {
+      const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
+        databaseId,
+        collectionId
+      );
+      collection &&
+        collection.container &&
+        collection.container.isPreferredApiMongoDB() &&
+        collection.onMongoDBSchemaClick();
+    });
+  }
+
   private _openQueryTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(

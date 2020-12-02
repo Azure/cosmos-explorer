@@ -80,6 +80,14 @@ function openCollectionTab(
         }
 
         if (
+          action.tabKind === ActionContracts.TabKind.MongoSchema ||
+          (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.MongoSchema]
+        ) {
+          collection.onMongoDBSchemaClick();
+          break;
+        }
+
+        if (
           action.tabKind === ActionContracts.TabKind.TableEntities ||
           (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.TableEntities]
         ) {

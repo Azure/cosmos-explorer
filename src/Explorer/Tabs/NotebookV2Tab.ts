@@ -12,10 +12,9 @@ import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
 import RunIcon from "../../../images/notebook/Notebook-run.svg";
 import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
-import { Areas, ArmApiVersions } from "../../Common/Constants";
+import { ArmApiVersions } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
 import { trackEvent } from "../../Shared/appInsights";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -23,25 +22,19 @@ import { userContext } from "../../UserContext";
 import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import Explorer from "../Explorer";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
-import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
+import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 import template from "./NotebookV2Tab.html";
-import TabsBase from "./TabsBase";
 
-export interface NotebookTabOptions extends ViewModels.TabOptions {
-  account: DataModels.DatabaseAccount;
-  masterKey: string;
-  container: Explorer;
+export interface NotebookTabOptions extends NotebookTabBaseOptions {
   notebookContentItem: NotebookContentItem;
 }
 
-export default class NotebookTabV2 extends TabsBase {
+export default class NotebookTabV2 extends NotebookTabBase {
   public static readonly component = { name: "notebookv2-tab", template };
-  private static clientManager: NotebookClientV2;
-  private container: Explorer;
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
@@ -50,22 +43,12 @@ export default class NotebookTabV2 extends TabsBase {
     super(options);
 
     this.container = options.container;
-
-    if (!NotebookTabV2.clientManager) {
-      NotebookTabV2.clientManager = new NotebookClientV2({
-        connectionInfo: this.container.notebookServerInfo(),
-        databaseAccountName: this.container.databaseAccount().name,
-        defaultExperience: this.container.defaultExperience(),
-        contentProvider: this.container.notebookManager?.notebookContentProvider,
-      });
-    }
-
     this.notebookPath = ko.observable(options.notebookContentItem.path);
     this.container.notebookServerInfo.subscribe(() => logConsoleInfo("New notebook server info received."));
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
       notebooksBasePath: this.container.getNotebookBasePath(),
-      notebookClient: NotebookTabV2.clientManager,
+      notebookClient: NotebookTabBase.clientManager,
       onUpdateKernelInfo: this.onKernelUpdate,
     });
 
@@ -108,10 +91,6 @@ export default class NotebookTabV2 extends TabsBase {
     }
 
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
-  }
-
-  public getContainer(): Explorer {
-    return this.container;
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
@@ -188,7 +167,7 @@ export default class NotebookTabV2 extends TabsBase {
       {
         iconSrc: null,
         iconAlt: kernelLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         hasPopup: false,
         disabled: availableKernels.length < 1,
@@ -198,16 +177,16 @@ export default class NotebookTabV2 extends TabsBase {
         dropdownWidth: 100,
         children: availableKernels.map(
           (kernel: KernelSpecsDisplay) =>
-            ({
-              iconSrc: null,
-              iconAlt: kernel.displayName,
-              onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
-              commandButtonLabel: kernel.displayName,
-              dropdownItemKey: kernel.name,
-              hasPopup: false,
-              disabled: false,
-              ariaLabel: kernel.displayName,
-            } as CommandButtonComponentProps)
+          ({
+            iconSrc: null,
+            iconAlt: kernel.displayName,
+            onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
+            commandButtonLabel: kernel.displayName,
+            dropdownItemKey: kernel.name,
+            hasPopup: false,
+            disabled: false,
+            ariaLabel: kernel.displayName,
+          } as CommandButtonComponentProps)
         ),
         ariaLabel: kernelLabel,
       },
@@ -298,7 +277,7 @@ export default class NotebookTabV2 extends TabsBase {
       {
         iconSrc: null,
         iconAlt: null,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         ariaLabel: cellTypeLabel,
         hasPopup: false,
@@ -386,7 +365,7 @@ export default class NotebookTabV2 extends TabsBase {
         iconSrc: null,
         iconAlt: workspaceLabel,
         ariaLabel: workspaceLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         hasPopup: false,
         disabled: this.container.arcadiaWorkspaces.length < 1,
@@ -499,10 +478,4 @@ export default class NotebookTabV2 extends TabsBase {
 
     this.container.copyNotebook(notebookContent.name, content);
   };
-
-  private traceTelemetry(actionType: number) {
-    TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {
-      dataExplorerArea: Areas.Notebook,
-    });
-  }
 }

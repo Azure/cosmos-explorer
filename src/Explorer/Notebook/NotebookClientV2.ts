@@ -202,10 +202,11 @@ export class NotebookClientV2 {
         case actions.FETCH_KERNELSPECS_FULFILLED: {
           const payload = ((action as unknown) as actions.FetchKernelspecsFulfilled).payload;
           const defaultKernelName = payload.defaultKernelName;
-          this.kernelSpecsForDisplay = Object.keys(payload.kernelspecs)
-            .map((name) => ({
-              name,
-              displayName: payload.kernelspecs[name].displayName,
+          this.kernelSpecsForDisplay = Object.values(payload.kernelspecs)
+            .filter((spec) => !spec.metadata?.hasOwnProperty("hidden"))
+            .map((spec) => ({
+              name: spec.name,
+              displayName: spec.displayName,
             }))
             .sort((a: KernelSpecsDisplay, b: KernelSpecsDisplay) => {
               // Put default at the top, otherwise lexicographically compare

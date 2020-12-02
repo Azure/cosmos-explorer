@@ -33,6 +33,7 @@ describe("OpenActions", () => {
       collection.expandCollection = jest.fn();
       collection.onDocumentDBDocumentsClick = jest.fn();
       collection.onMongoDBDocumentsClick = jest.fn();
+      collection.onMongoDBSchemaClick = jest.fn();
       collection.onTableEntitiesClick = jest.fn();
       collection.onGraphDocumentsClick = jest.fn();
       collection.onNewQueryClick = jest.fn();
