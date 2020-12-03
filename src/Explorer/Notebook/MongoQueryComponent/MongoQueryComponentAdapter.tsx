@@ -33,7 +33,6 @@ export class MongoQueryComponentAdapter extends NotebookComponentBootstrapper im
   }
 
   public renderComponent(): JSX.Element {
-    console.log("Rendering from adapter");
     return (
       <Provider store={this.getStore()}>
         <MongoQueryComponent contentRef={this.contentRef} kernelRef={this.kernelRef} />;
