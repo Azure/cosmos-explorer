@@ -11,6 +11,7 @@ import { KernelOutputError, StreamText } from "@nteract/outputs";
 import TransformMedia from "@nteract/stateful-components/lib/outputs/transform-media";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import { actions, selectors, AppState, ContentRef, KernelRef } from "@nteract/core";
+import loadTransform from "../NotebookComponent/loadTransform";
 import { connect } from "react-redux";
 
 interface MongoQueryComponentPureProps {
@@ -20,6 +21,7 @@ interface MongoQueryComponentPureProps {
 
 interface MongoQueryComponentDispatchProps {
   runCell: (contentRef: ContentRef, cellId: string) => void;
+  addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => void;
 }
 
 type OutputType = "rich" | "json";
@@ -42,6 +44,10 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
     };
   }
 
+  componentDidMount(): void {
+    loadTransform(this.props);
+  }
+
   private onExecute = () => {
     this.props.runCell(this.props.contentRef, this.props.firstCellId);
   };
@@ -59,7 +65,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
     const { firstCellId: id, contentRef } = this.props;
 
     if (!id) {
-      return <>NO FIRST CELL</>;
+      return <></>;
     }
 
     return (
@@ -127,6 +133,14 @@ const makeMapStateToProps = (state: AppState, initialProps: InitialProps) => {
 const makeMapDispatchToProps = (/* initialDispatch: Dispatch, initialProps: MongoQueryComponentProps */) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
+      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => {
+        return dispatch(
+          actions.addTransform({
+            mediaType: transform.MIMETYPE,
+            component: transform
+          })
+        );
+      },
       runCell: (contentRef: ContentRef, cellId: string) => {
         return dispatch(
           actions.executeCell({
