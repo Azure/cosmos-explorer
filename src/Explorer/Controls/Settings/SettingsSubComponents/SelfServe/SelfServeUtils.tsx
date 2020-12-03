@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {
-  EnumItem,
+  ChoiceItem,
   Node,
   Info,
   InputTypeValue,
@@ -9,26 +9,26 @@ import {
   NumberInput,
   StringInput,
   BooleanInput,
-  EnumInput,
+  ChoiceInput,
   InputType
 } from "../../../SmartUi/SmartUiComponent";
 
 export interface CommonInputTypes {
   id: string;
-  info?: Info;
+  info?: (() => Promise<Info>) | Info;
   parentOf?: string[];
   type?: InputTypeValue;
-  label?: string;
-  placeholder?: string;
+  label?: (() => Promise<string>) | string;
+  placeholder?: (() => Promise<string>) | string;
   dataFieldName?: string;
-  min?: number;
-  max?: number;
-  step?: number;
+  min?: (() => Promise<number>) | number;
+  max?: (() => Promise<number>) | number;
+  step?: (() => Promise<number>) | number;
   defaultValue?: any;
-  trueLabel?: string;
-  falseLabel?: string;
-  choices?: EnumItem[];
-  defaultKey?: string;
+  trueLabel?: (() => Promise<string>) | string;
+  falseLabel?: (() => Promise<string>) | string;
+  choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
+  defaultKey?: (() => Promise<string>) | string;
   inputType?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
@@ -72,7 +72,7 @@ export const addPropertyToMap = (
     propertyObject = { id: propertyKey };
   }
 
-  if (getValue(descriptorKey, propertyObject) && descriptorKey !== "type") {
+  if (getValue(descriptorKey, propertyObject) && descriptorKey !== "type" && descriptorKey !== "dataFieldName") {
     throw new Error("duplicate descriptor");
   }
 
@@ -82,42 +82,6 @@ export const addPropertyToMap = (
   Reflect.defineMetadata(metadataKey, context, target);
 };
 
-/*
-const modifyParentProperty = (children: {[key: string]: any}, parentProperty: string, property: string | symbol) : any => {
-    if (parentProperty in children) {
-        children[parentProperty][property] ={id: property, input: {}}
-        return children
-    } else {
-        const keys = Object.keys(children)
-        for(var i =0; i< keys.length; i++) {
-            children[keys[i]] = modifyParentProperty(children[keys[i]], parentProperty, property)
-            return children
-        }
-    }
-    return children
-}
-
-export const PropertyParser = (metadataKey: string, parentProperty?: string): PropertyDecorator => {
-    return (target, property) => {
-      let context = Reflect.getMetadata(metadataKey, target)
-      if(!context) {
-        context = {id: "root", info: undefined,  input: undefined, children: {} }
-        context.children[property] = {id: property, input: {}}
-      }
-      if (parentProperty) {
-          const prevContextValue  = JSON.stringify(context) 
-          context.children = modifyParentProperty(context.children, parentProperty, property)
-          if (JSON.stringify(context) === prevContextValue) {
-              throw new Error(`${parentProperty} not defined. declare it before the child property with @Property decorator.`)
-          }
-      } else {
-          context.children[property] = {id: property, input: {}}
-      }
-      Reflect.defineMetadata(metadataKey, context, target)
-    };
-};
-*/
-
 export const toSmartUiDescriptor = (metadataKey: string, target: Object): void => {
   const context = Reflect.getMetadata(metadataKey, target) as Map<String, CommonInputTypes>;
   Reflect.defineMetadata(metadataKey, context, target);
@@ -125,7 +89,7 @@ export const toSmartUiDescriptor = (metadataKey: string, target: Object): void =
   const root = context.get("root");
   context.delete("root");
 
-  if (!root || !("onSubmit" in root)) {
+  if (!root?.onSubmit) {
     throw new Error(
       "@OnSubmit decorator not declared for the class. Please ensure @SmartUi is the first decorator used for the class."
     );
@@ -157,12 +121,12 @@ const addToDescriptor = (
   let value = context.get(key);
   if (!value) {
     // should already be added to root
-    value = getChildFromRoot(key, smartUiDescriptor);
-    if (!value) {
+    const childNode = getChildFromRoot(key, smartUiDescriptor);
+    if (!childNode) {
       // if not found at root level, error out
       throw new Error("Either child does not exist or child has been assigned to more than one parent");
     }
-    root.children.push(value);
+    root.children.push(childNode);
     return;
   }
 
@@ -180,7 +144,7 @@ const addToDescriptor = (
   root.children.push(element);
 };
 
-const getChildFromRoot = (key: String, smartUiDescriptor: Descriptor): CommonInputTypes => {
+const getChildFromRoot = (key: String, smartUiDescriptor: Descriptor): Node => {
   let i = 0;
   const children = smartUiDescriptor.root.children;
   for (; i < children.length; i++) {
@@ -197,16 +161,16 @@ const getInput = (value: CommonInputTypes): AnyInput => {
   if (!value.label || !value.type || !value.dataFieldName) {
     throw new Error("label, onChange, type and dataFieldName are required.");
   }
-  console.log(value.type);
+
   switch (value.type) {
-    case "Number":
+    case "number":
       if (!value.step || !value.defaultValue || !value.inputType) {
         throw new Error("step, defaultValue and inputType are needed for number type");
       }
       return value as NumberInput;
-    case "String":
+    case "string":
       return value as StringInput;
-    case "Boolean":
+    case "boolean":
       if (!value.trueLabel || !value.falseLabel || value.defaultValue === undefined) {
         throw new Error("truelabel, falselabel and defaultValue are needed for boolean type");
       }
@@ -215,6 +179,6 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       if (!value.choices || !value.defaultKey) {
         throw new Error("choices and defaultKey are needed for enum type");
       }
-      return value as EnumInput;
+      return value as ChoiceInput;
   }
 };

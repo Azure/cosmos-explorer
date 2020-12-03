@@ -17,7 +17,7 @@ export const SmartUi = (): ClassDecorator => {
   };
 };
 
-export const ClassInfo = (info: Info): ClassDecorator => {
+export const ClassInfo = (info: (() => Promise<Info>) | Info): ClassDecorator => {
   return (target: Function) => {
     addPropertyToMap(target, "root", target.name, "info", info);
   };

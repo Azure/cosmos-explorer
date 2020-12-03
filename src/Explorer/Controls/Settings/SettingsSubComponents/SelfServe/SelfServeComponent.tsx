@@ -24,7 +24,7 @@ export class SelfServeCmponent extends React.Component {
           input: {
             label: "Instance Count",
             dataFieldName: "instanceCount",
-            type: "Number",
+            type: "number",
             min: 1,
             max: 5,
             step: 1,
@@ -44,7 +44,7 @@ export class SelfServeCmponent extends React.Component {
           input: {
             label: "Instance Size",
             dataFieldName: "instanceSize",
-            type: "Object",
+            type: "object",
             choices: [
               { label: "1Core4Gb", key: "1Core4Gb", value: "1Core4Gb" },
               { label: "2Core8Gb", key: "2Core8Gb", value: "2Core8Gb" },

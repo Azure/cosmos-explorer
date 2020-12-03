@@ -69,7 +69,7 @@ describe("SmartUiComponent", () => {
           input: {
             label: "Database",
             dataFieldName: "database",
-            type: "enum",
+            type: "object",
             choices: [
               { label: "Database 1", key: "db1", value: "database1" },
               { label: "Database 2", key: "db2", value: "database2" },
