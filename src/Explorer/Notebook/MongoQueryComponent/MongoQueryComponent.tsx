@@ -69,7 +69,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
 
   private onOutputTypeChange = (e: React.FormEvent<HTMLElement | HTMLInputElement>, option: IChoiceGroupOption): void => {
     const outputType = option.key as OutputType;
-    this.setState({ outputType });
+    this.setState({ outputType }, () => this.onInputChange(this.props.inputValue));
   };
 
   private onInputChange = (text: string) => {
