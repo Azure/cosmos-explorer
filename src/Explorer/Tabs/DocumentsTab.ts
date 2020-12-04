@@ -19,14 +19,24 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
-import { extractPartitionKey, PartitionKeyDefinition, QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import {
+  extractPartitionKey,
+  PartitionKeyDefinition,
+  QueryIterator,
+  ItemDefinition,
+  Resource,
+  Item
+} from "@azure/cosmos";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { readDocument, deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
+import { readDocument } from "../../Common/dataAccess/readDocument";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { createDocument } from "../../Common/dataAccess/createDocument";
 
 export default class DocumentsTab extends TabsBase {
   public selectedDocumentId: ko.Observable<DocumentId>;
@@ -415,7 +425,7 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onSaveNewDocumentClick = (): Q.Promise<any> => {
+  public onSaveNewDocumentClick = (): Promise<any> => {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -483,7 +493,7 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onSaveExisitingDocumentClick = (): Q.Promise<any> => {
+  public onSaveExisitingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = JSON.parse(this.selectedDocumentContent());
 
@@ -552,17 +562,15 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onDeleteExisitingDocumentClick = (): Q.Promise<any> => {
+  public onDeleteExisitingDocumentClick = async (): Promise<void> => {
     const selectedDocumentId = this.selectedDocumentId();
     const msg = !this.isPreferredApiMongoDB
       ? "Are you sure you want to delete the selected item ?"
       : "Are you sure you want to delete the selected document ?";
 
     if (window.confirm(msg)) {
-      return this._deleteDocument(selectedDocumentId);
+      await this._deleteDocument(selectedDocumentId);
     }
-
-    return Q();
   };
 
   public onValidDocumentEdit(): Q.Promise<any> {
@@ -637,11 +645,11 @@ export default class DocumentsTab extends TabsBase {
     return window.confirm(msg);
   };
 
-  protected __deleteDocument(documentId: DocumentId): Q.Promise<any> {
+  protected __deleteDocument(documentId: DocumentId): Promise<void> {
     return deleteDocument(this.collection, documentId);
   }
 
-  private _deleteDocument(selectedDocumentId: DocumentId): Q.Promise<any> {
+  private _deleteDocument(selectedDocumentId: DocumentId): Promise<void> {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -652,7 +660,7 @@ export default class DocumentsTab extends TabsBase {
     this.isExecuting(true);
     return this.__deleteDocument(selectedDocumentId)
       .then(
-        (result: any) => {
+        () => {
           this.documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
           this.selectedDocumentContent("");
           this.selectedDocumentId(null);
@@ -702,11 +710,10 @@ export default class DocumentsTab extends TabsBase {
     return queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
-  public selectDocument(documentId: DocumentId): Q.Promise<any> {
+  public async selectDocument(documentId: DocumentId): Promise<void> {
     this.selectedDocumentId(documentId);
-    return readDocument(this.collection, documentId).then((content: any) => {
-      this.initDocumentEditor(documentId, content);
-    });
+    const content = await readDocument(this.collection, documentId);
+    this.initDocumentEditor(documentId, content);
   }
 
   public loadNextPage(): Q.Promise<any> {

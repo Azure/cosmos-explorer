@@ -16,18 +16,16 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteIcon from "../../../images/delete.svg";
-import { QueryIterator, ItemDefinition, Resource, ConflictDefinition } from "@azure/cosmos";
+import { QueryIterator, Resource, ConflictDefinition, FeedOptions } from "@azure/cosmos";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import Explorer from "../Explorer";
-import {
-  queryConflicts,
-  deleteConflict,
-  deleteDocument,
-  createDocument,
-  updateDocument
-} from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { deleteConflict } from "../../Common/dataAccess/deleteConflict";
+import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
 
 export default class ConflictsTab extends TabsBase {
   public selectedConflictId: ko.Observable<ConflictId>;
@@ -225,25 +223,15 @@ export default class ConflictsTab extends TabsBase {
     });
   }
 
-  public refreshDocumentsGrid(): Q.Promise<any> {
-    // clear documents grid
-    this.conflictIds([]);
-    return this.createIterator()
-      .then(
-        // reset iterator
-        iterator => {
-          this._documentsIterator = iterator;
-        }
-      )
-      .then(
-        // load documents
-        () => {
-          return this.loadNextPage();
-        }
-      )
-      .catch(error => {
-        window.alert(getErrorMessage(error));
-      });
+  public async refreshDocumentsGrid(): Promise<void> {
+    try {
+      // clear documents grid
+      this.conflictIds([]);
+      this._documentsIterator = this.createIterator();
+      await this.loadNextPage();
+    } catch (error) {
+      window.alert(getErrorMessage(error));
+    }
   }
 
   public onRefreshButtonKeyDown = (source: any, event: KeyboardEvent): boolean => {
@@ -265,9 +253,9 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public onAcceptChangesClick = (): Q.Promise<any> => {
+  public onAcceptChangesClick = async (): Promise<void> => {
     if (this.isEditorDirty() && !this._isIgnoreDirtyEditor()) {
-      return Q();
+      return;
     }
 
     this.isExecutionError(false);
@@ -285,81 +273,79 @@ export default class ConflictsTab extends TabsBase {
       conflictResourceId: selectedConflict.resourceId
     });
 
-    let operationPromise: Q.Promise<any> = Q();
-    if (selectedConflict.operationType === Constants.ConflictOperationType.Replace) {
-      const documentContent = JSON.parse(this.selectedConflictContent());
+    try {
+      if (selectedConflict.operationType === Constants.ConflictOperationType.Replace) {
+        const documentContent = JSON.parse(this.selectedConflictContent());
 
-      operationPromise = updateDocument(
-        this.collection,
-        selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty]),
-        documentContent
-      );
-    }
+        await updateDocument(
+          this.collection,
+          selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty]),
+          documentContent
+        );
+      }
 
-    if (selectedConflict.operationType === Constants.ConflictOperationType.Create) {
-      const documentContent = JSON.parse(this.selectedConflictContent());
+      if (selectedConflict.operationType === Constants.ConflictOperationType.Create) {
+        const documentContent = JSON.parse(this.selectedConflictContent());
 
-      operationPromise = createDocument(this.collection, documentContent);
-    }
+        await createDocument(this.collection, documentContent);
+      }
 
-    if (selectedConflict.operationType === Constants.ConflictOperationType.Delete && !!this.selectedConflictContent()) {
-      const documentContent = JSON.parse(this.selectedConflictContent());
+      if (
+        selectedConflict.operationType === Constants.ConflictOperationType.Delete &&
+        !!this.selectedConflictContent()
+      ) {
+        const documentContent = JSON.parse(this.selectedConflictContent());
 
-      operationPromise = deleteDocument(
-        this.collection,
-        selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty])
-      );
-    }
+        await deleteDocument(
+          this.collection,
+          selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty])
+        );
+      }
 
-    return operationPromise
-      .then(
-        () => {
-          return deleteConflict(this.collection, selectedConflict).then(() => {
-            this.conflictIds.remove((conflictId: ConflictId) => conflictId.rid === selectedConflict.rid);
-            this.selectedConflictContent("");
-            this.selectedConflictCurrent("");
-            this.selectedConflictId(null);
-            this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-            TelemetryProcessor.traceSuccess(
-              Action.ResolveConflict,
-              {
-                databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-                defaultExperience: this.collection && this.collection.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle(),
-                conflictResourceType: selectedConflict.resourceType,
-                conflictOperationType: selectedConflict.operationType,
-                conflictResourceId: selectedConflict.resourceId
-              },
-              startKey
-            );
-          });
+      await deleteConflict(this.collection, selectedConflict);
+      this.conflictIds.remove((conflictId: ConflictId) => conflictId.rid === selectedConflict.rid);
+      this.selectedConflictContent("");
+      this.selectedConflictCurrent("");
+      this.selectedConflictId(null);
+      this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      TelemetryProcessor.traceSuccess(
+        Action.ResolveConflict,
+        {
+          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
+          defaultExperience: this.collection && this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          conflictResourceType: selectedConflict.resourceType,
+          conflictOperationType: selectedConflict.operationType,
+          conflictResourceId: selectedConflict.resourceId
         },
-        error => {
-          this.isExecutionError(true);
-          const errorMessage = getErrorMessage(error);
-          window.alert(errorMessage);
-          TelemetryProcessor.traceFailure(
-            Action.ResolveConflict,
-            {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
-              conflictResourceType: selectedConflict.resourceType,
-              conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId,
-              error: errorMessage,
-              errorStack: getErrorStack(error)
-            },
-            startKey
-          );
-        }
-      )
-      .finally(() => this.isExecuting(false));
+        startKey
+      );
+    } catch (error) {
+      this.isExecutionError(true);
+      const errorMessage = getErrorMessage(error);
+      window.alert(errorMessage);
+      TelemetryProcessor.traceFailure(
+        Action.ResolveConflict,
+        {
+          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
+          defaultExperience: this.collection && this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          conflictResourceType: selectedConflict.resourceType,
+          conflictOperationType: selectedConflict.operationType,
+          conflictResourceId: selectedConflict.resourceId,
+          error: errorMessage,
+          errorStack: getErrorStack(error)
+        },
+        startKey
+      );
+    } finally {
+      this.isExecuting(false);
+    }
   };
 
-  public onDeleteClick = (): Q.Promise<any> => {
+  public onDeleteClick = async (): Promise<void> => {
     this.isExecutionError(false);
     this.isExecuting(true);
 
@@ -375,50 +361,48 @@ export default class ConflictsTab extends TabsBase {
       conflictResourceId: selectedConflict.resourceId
     });
 
-    return deleteConflict(this.collection, selectedConflict)
-      .then(
-        () => {
-          this.conflictIds.remove((conflictId: ConflictId) => conflictId.rid === selectedConflict.rid);
-          this.selectedConflictContent("");
-          this.selectedConflictCurrent("");
-          this.selectedConflictId(null);
-          this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-          TelemetryProcessor.traceSuccess(
-            Action.DeleteConflict,
-            {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
-              conflictResourceType: selectedConflict.resourceType,
-              conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId
-            },
-            startKey
-          );
+    try {
+      await deleteConflict(this.collection, selectedConflict);
+      this.conflictIds.remove((conflictId: ConflictId) => conflictId.rid === selectedConflict.rid);
+      this.selectedConflictContent("");
+      this.selectedConflictCurrent("");
+      this.selectedConflictId(null);
+      this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      TelemetryProcessor.traceSuccess(
+        Action.DeleteConflict,
+        {
+          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
+          defaultExperience: this.collection && this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          conflictResourceType: selectedConflict.resourceType,
+          conflictOperationType: selectedConflict.operationType,
+          conflictResourceId: selectedConflict.resourceId
         },
-        error => {
-          this.isExecutionError(true);
-          const errorMessage = getErrorMessage(error);
-          window.alert(errorMessage);
-          TelemetryProcessor.traceFailure(
-            Action.DeleteConflict,
-            {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
-              conflictResourceType: selectedConflict.resourceType,
-              conflictOperationType: selectedConflict.operationType,
-              conflictResourceId: selectedConflict.resourceId,
-              error: errorMessage,
-              errorStack: getErrorStack(error)
-            },
-            startKey
-          );
-        }
-      )
-      .finally(() => this.isExecuting(false));
+        startKey
+      );
+    } catch (error) {
+      this.isExecutionError(true);
+      const errorMessage = getErrorMessage(error);
+      window.alert(errorMessage);
+      TelemetryProcessor.traceFailure(
+        Action.DeleteConflict,
+        {
+          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
+          defaultExperience: this.collection && this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          conflictResourceType: selectedConflict.resourceType,
+          conflictOperationType: selectedConflict.operationType,
+          conflictResourceId: selectedConflict.resourceId,
+          error: errorMessage,
+          errorStack: getErrorStack(error)
+        },
+        startKey
+      );
+    } finally {
+      this.isExecuting(false);
+    }
   };
 
   public onDiscardClick = (): Q.Promise<any> => {
@@ -479,12 +463,13 @@ export default class ConflictsTab extends TabsBase {
     }
   }
 
-  public createIterator(): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {
+  public createIterator(): QueryIterator<ConflictDefinition & Resource> {
     // TODO: Conflict Feed does not allow filtering atm
     const query: string = undefined;
-    let options: any = {};
-    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-    return queryConflicts(this.collection.databaseId, this.collection.id(), query, options);
+    const options = {
+      enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey()
+    };
+    return queryConflicts(this.collection.databaseId, this.collection.id(), query, options as FeedOptions);
   }
 
   public loadNextPage(): Q.Promise<any> {

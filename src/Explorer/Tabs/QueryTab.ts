@@ -15,10 +15,10 @@ import { QueryUtils } from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
-import { queryDocumentsPage } from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
+import { queryDocumentsPage } from "../../Common/dataAccess/queryDocumentsPage";
 
 enum ToggleState {
   Result,
@@ -169,14 +169,14 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Query);
   }
 
-  public onExecuteQueryClick = (): Q.Promise<any> => {
+  public onExecuteQueryClick = async (): Promise<void> => {
     const sqlStatement: string = this.selectedContent() || this.sqlQueryEditorContent();
     this.sqlStatementToExecute(sqlStatement);
     this.allResultsMetadata([]);
     this.queryResults("");
     this._iterator = undefined;
 
-    return this._executeQueryDocumentsPage(0);
+    await this._executeQueryDocumentsPage(0);
   };
 
   public onLoadQueryClick = (): void => {
@@ -191,13 +191,13 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.collection && this.collection.container && this.collection.container.browseQueriesPane.open();
   };
 
-  public onFetchNextPageClick(): Q.Promise<any> {
+  public async onFetchNextPageClick(): Promise<void> {
     const allResultsMetadata = (this.allResultsMetadata && this.allResultsMetadata()) || [];
     const metadata: ViewModels.QueryResultsMetadata = allResultsMetadata[allResultsMetadata.length - 1];
     const firstResultIndex: number = (metadata && Number(metadata.firstItemIndex)) || 1;
     const itemCount: number = (metadata && Number(metadata.itemCount)) || 0;
 
-    return this._executeQueryDocumentsPage(firstResultIndex + itemCount - 1);
+    await this._executeQueryDocumentsPage(firstResultIndex + itemCount - 1);
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
@@ -265,18 +265,18 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     return true;
   };
 
-  private _executeQueryDocumentsPage(firstItemIndex: number): Q.Promise<any> {
+  private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<any> {
     this.error("");
     this.roundTrips(undefined);
     if (this._iterator === undefined) {
       this._initIterator();
     }
 
-    return this._queryDocumentsPage(firstItemIndex);
+    await this._queryDocumentsPage(firstItemIndex);
   }
 
   // TODO: Position and enable spinner when request is in progress
-  private _queryDocumentsPage(firstItemIndex: number): Q.Promise<any> {
+  private async _queryDocumentsPage(firstItemIndex: number): Promise<void> {
     this.isExecutionError(false);
     this._resetAggregateQueryMetrics();
     const startKey: number = TelemetryProcessor.traceStart(Action.ExecuteQuery, {
@@ -288,90 +288,90 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
-    const queryDocuments = (firstItemIndex: number) =>
-      queryDocumentsPage(this.collection && this.collection.id(), this._iterator, firstItemIndex, options);
+    const queryDocuments = async (firstItemIndex: number) =>
+      await queryDocumentsPage(this.collection && this.collection.id(), this._iterator, firstItemIndex);
     this.isExecuting(true);
-    return QueryUtils.queryPagesUntilContentPresent(firstItemIndex, queryDocuments)
-      .then(
-        (queryResults: ViewModels.QueryResults) => {
-          const allResultsMetadata = (this.allResultsMetadata && this.allResultsMetadata()) || [];
-          const metadata: ViewModels.QueryResultsMetadata = allResultsMetadata[allResultsMetadata.length - 1];
-          const resultsMetadata: ViewModels.QueryResultsMetadata = {
-            hasMoreResults: queryResults.hasMoreResults,
-            itemCount: queryResults.itemCount,
-            firstItemIndex: queryResults.firstItemIndex,
-            lastItemIndex: queryResults.lastItemIndex
-          };
-          this.allResultsMetadata.push(resultsMetadata);
-          this.activityId(queryResults.activityId);
-          this.roundTrips(queryResults.roundTrips);
 
-          this._updateQueryMetricsMap(queryResults.headers[Constants.HttpHeaders.queryMetrics]);
+    try {
+      const queryResults: ViewModels.QueryResults = await QueryUtils.queryPagesUntilContentPresent(
+        firstItemIndex,
+        queryDocuments
+      );
+      const allResultsMetadata = (this.allResultsMetadata && this.allResultsMetadata()) || [];
+      const metadata: ViewModels.QueryResultsMetadata = allResultsMetadata[allResultsMetadata.length - 1];
+      const resultsMetadata: ViewModels.QueryResultsMetadata = {
+        hasMoreResults: queryResults.hasMoreResults,
+        itemCount: queryResults.itemCount,
+        firstItemIndex: queryResults.firstItemIndex,
+        lastItemIndex: queryResults.lastItemIndex
+      };
+      this.allResultsMetadata.push(resultsMetadata);
+      this.activityId(queryResults.activityId);
+      this.roundTrips(queryResults.roundTrips);
 
-          if (queryResults.itemCount == 0 && metadata != null && metadata.itemCount >= 0) {
-            // we let users query for the next page because the SDK sometimes specifies there are more elements
-            // even though there aren't any so we should not update the prior query results.
-            return;
-          }
+      this._updateQueryMetricsMap(queryResults.headers[Constants.HttpHeaders.queryMetrics]);
 
-          const documents: any[] = queryResults.documents;
-          const results = this.renderObjectForEditor(documents, null, 4);
+      if (queryResults.itemCount == 0 && metadata != null && metadata.itemCount >= 0) {
+        // we let users query for the next page because the SDK sometimes specifies there are more elements
+        // even though there aren't any so we should not update the prior query results.
+        return;
+      }
 
-          const resultsDisplay: string =
-            queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`;
-          this.showingDocumentsDisplayText(resultsDisplay);
-          this.requestChargeDisplayText(`${queryResults.requestCharge} RUs`);
+      const documents: any[] = queryResults.documents;
+      const results = this.renderObjectForEditor(documents, null, 4);
 
-          if (!this.queryResults() && !results) {
-            const errorMessage: string = JSON.stringify({
-              error: `Returned no results after query execution`,
-              accountName: this.collection && this.collection.container.databaseAccount(),
-              databaseName: this.collection && this.collection.databaseId,
-              collectionName: this.collection && this.collection.id(),
-              sqlQuery: this.sqlStatementToExecute(),
-              hasMoreResults: resultsMetadata.hasMoreResults,
-              itemCount: resultsMetadata.itemCount,
-              responseHeaders: queryResults && queryResults.headers
-            });
-            Logger.logError(errorMessage, "QueryTab");
-          }
+      const resultsDisplay: string =
+        queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`;
+      this.showingDocumentsDisplayText(resultsDisplay);
+      this.requestChargeDisplayText(`${queryResults.requestCharge} RUs`);
 
-          this.queryResults(results);
+      if (!this.queryResults() && !results) {
+        const errorMessage: string = JSON.stringify({
+          error: `Returned no results after query execution`,
+          accountName: this.collection && this.collection.container.databaseAccount(),
+          databaseName: this.collection && this.collection.databaseId,
+          collectionName: this.collection && this.collection.id(),
+          sqlQuery: this.sqlStatementToExecute(),
+          hasMoreResults: resultsMetadata.hasMoreResults,
+          itemCount: resultsMetadata.itemCount,
+          responseHeaders: queryResults && queryResults.headers
+        });
+        Logger.logError(errorMessage, "QueryTab");
+      }
 
-          TelemetryProcessor.traceSuccess(
-            Action.ExecuteQuery,
-            {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
-            },
-            startKey
-          );
+      this.queryResults(results);
+
+      TelemetryProcessor.traceSuccess(
+        Action.ExecuteQuery,
+        {
+          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
+          defaultExperience: this.collection && this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle()
         },
-        (error: any) => {
-          this.isExecutionError(true);
-          const errorMessage = getErrorMessage(error);
-          this.error(errorMessage);
-          TelemetryProcessor.traceFailure(
-            Action.ExecuteQuery,
-            {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
-              error: errorMessage,
-              errorStack: getErrorStack(error)
-            },
-            startKey
-          );
-          document.getElementById("error-display").focus();
-        }
-      )
-      .finally(() => {
-        this.isExecuting(false);
-        this.togglesOnFocus();
-      });
+        startKey
+      );
+    } catch (error) {
+      this.isExecutionError(true);
+      const errorMessage = getErrorMessage(error);
+      this.error(errorMessage);
+      TelemetryProcessor.traceFailure(
+        Action.ExecuteQuery,
+        {
+          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
+          defaultExperience: this.collection && this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle(),
+          error: errorMessage,
+          errorStack: getErrorStack(error)
+        },
+        startKey
+      );
+      document.getElementById("error-display").focus();
+    } finally {
+      this.isExecuting(false);
+      this.togglesOnFocus();
+    }
   }
 
   private _updateQueryMetricsMap(metricsMap: { [partitionKeyRange: string]: DataModels.QueryMetrics }): void {

@@ -1,11 +1,11 @@
-jest.mock("../../Common/DocumentClientUtilityBase");
 jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 jest.mock("../../Common/dataAccess/createCollection");
+jest.mock("../../Common/dataAccess/createDocument");
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Q from "q";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
-import { createDocument } from "../../Common/DocumentClientUtilityBase";
+import { createDocument } from "../../Common/dataAccess/createDocument";
 import Explorer from "../Explorer";
 import { updateUserContext } from "../../UserContext";
 

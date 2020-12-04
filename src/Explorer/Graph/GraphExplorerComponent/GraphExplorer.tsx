@@ -29,7 +29,7 @@ import { InputProperty } from "../../../Contracts/ViewModels";
 import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
-import { queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
+import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import { FeedOptions } from "@azure/cosmos/dist-esm";
 
@@ -1759,57 +1759,49 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }
   }
 
-  private loadMoreRootNodes(): Q.Promise<UserQueryResult> {
+  private async loadMoreRootNodes(): Promise<UserQueryResult> {
     if (!this.currentDocDBQueryInfo) {
-      return Q.resolve(null);
+      return undefined;
     }
-    let RU: string = GraphExplorer.REQUEST_CHARGE_UNKNOWN_MSG;
 
+    let RU: string = GraphExplorer.REQUEST_CHARGE_UNKNOWN_MSG;
     const queryInfoStr = `${this.currentDocDBQueryInfo.query} (${this.currentDocDBQueryInfo.index + 1}-${this
       .currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE})`;
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${queryInfoStr}`);
 
-    return queryDocumentsPage(
-      this.props.collectionId,
-      this.currentDocDBQueryInfo.iterator,
-      this.currentDocDBQueryInfo.index,
-      {
-        enableCrossPartitionQuery:
-          LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-      }
-    )
-      .then((results: ViewModels.QueryResults) => {
-        GraphExplorer.clearConsoleProgress(id);
-        this.currentDocDBQueryInfo.index = results.lastItemIndex + 1;
-        this.setState({ hasMoreRoots: results.hasMoreResults });
-        RU = results.requestCharge.toString();
-        GraphExplorer.reportToConsole(
-          ConsoleDataType.Info,
-          `Executed: ${queryInfoStr} ${GremlinClient.GremlinClient.getRequestChargeString(RU)}`
-        );
-        const documents = results.documents || [];
-        return documents.map(
-          (item: DataModels.DocumentId) => {
-            return GraphExplorer.getPkIdFromDocumentId(item, this.props.collectionPartitionKeyProperty);
-          },
-          (reason: any) => {
-            // Failure
-            GraphExplorer.clearConsoleProgress(id);
-            const errorMsg = `Failed to query: ${this.currentDocDBQueryInfo.query}. Reason:${reason}`;
-            GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
-            this.setState({
-              filterQueryError: errorMsg
-            });
-            this.setFilterQueryStatus(FilterQueryStatus.ErrorResult);
-            throw reason;
-          }
-        );
-      })
-      .then((pkIds: string[]) => {
-        const arg = pkIds.join(",");
-        return this.executeGremlinQuery(`g.V(${arg})`);
-      })
-      .then(() => ({ requestCharge: RU }));
+    try {
+      const results: ViewModels.QueryResults = await queryDocumentsPage(
+        this.props.collectionId,
+        this.currentDocDBQueryInfo.iterator,
+        this.currentDocDBQueryInfo.index
+      );
+
+      GraphExplorer.clearConsoleProgress(id);
+      this.currentDocDBQueryInfo.index = results.lastItemIndex + 1;
+      this.setState({ hasMoreRoots: results.hasMoreResults });
+      RU = results.requestCharge.toString();
+      GraphExplorer.reportToConsole(
+        ConsoleDataType.Info,
+        `Executed: ${queryInfoStr} ${GremlinClient.GremlinClient.getRequestChargeString(RU)}`
+      );
+      const pkIds: string[] = results.documents?.map((item: DataModels.DocumentId) =>
+        GraphExplorer.getPkIdFromDocumentId(item, this.props.collectionPartitionKeyProperty)
+      );
+
+      const arg = pkIds.join(",");
+      await this.executeGremlinQuery(`g.V(${arg})`);
+
+      return { requestCharge: RU };
+    } catch (error) {
+      GraphExplorer.clearConsoleProgress(id);
+      const errorMsg = `Failed to query: ${this.currentDocDBQueryInfo.query}. Reason:${getErrorMessage(error)}`;
+      GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
+      this.setState({
+        filterQueryError: errorMsg
+      });
+      this.setFilterQueryStatus(FilterQueryStatus.ErrorResult);
+      throw error;
+    }
   }
 
   private executeGremlinQuery(query: string): Q.Promise<UserQueryResult> {

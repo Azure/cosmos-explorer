@@ -13,10 +13,12 @@ import * as TableConstants from "./Constants";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import { deleteDocument, updateDocument, createDocument } from "../../Common/DocumentClientUtilityBase";
 import { configContext } from "../../ConfigContext";
 import { handleError } from "../../Common/ErrorHandlingUtils";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];

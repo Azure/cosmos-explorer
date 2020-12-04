@@ -9,9 +9,11 @@ import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueryUtils } from "../Utils/QueryUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
 import { userContext } from "../UserContext";
-import { createDocument, deleteDocument, queryDocumentsPage } from "./DocumentClientUtilityBase";
+import { queryDocumentsPage } from "./dataAccess/queryDocumentsPage";
 import { createCollection } from "./dataAccess/createCollection";
 import { handleError } from "./ErrorHandlingUtils";
+import { createDocument } from "./dataAccess/createDocument";
+import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
 
 export class QueriesClient {
@@ -104,8 +106,8 @@ export class QueriesClient {
       this.fetchQueriesQuery(),
       options
     );
-    const fetchQueries = (firstItemIndex: number): Q.Promise<ViewModels.QueryResults> =>
-      queryDocumentsPage(queriesCollection.id(), queryIterator, firstItemIndex, options);
+    const fetchQueries = async (firstItemIndex: number): Promise<ViewModels.QueryResults> =>
+      await queryDocumentsPage(queriesCollection.id(), queryIterator, firstItemIndex);
     return QueryUtils.queryAllPages(fetchQueries)
       .then(
         (results: ViewModels.QueryResults) => {

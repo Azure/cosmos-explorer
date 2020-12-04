@@ -1,5 +1,5 @@
-jest.mock("../../../Common/DocumentClientUtilityBase");
 jest.mock("../../../Common/dataAccess/queryDocuments");
+jest.mock("../../../Common/dataAccess/queryDocumentsPage");
 import React from "react";
 import * as sinon from "sinon";
 import { mount, ReactWrapper } from "enzyme";
@@ -14,7 +14,7 @@ import * as StorageUtility from "../../../Shared/StorageUtility";
 import GraphTab from "../../Tabs/GraphTab";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
-import { queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
+import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 
 describe("Check whether query result is vertex array", () => {
   it("should reject null as vertex array", () => {

@@ -58,41 +58,36 @@ export class QueryUtils {
     return projections.join(",");
   }
 
-  public static queryPagesUntilContentPresent(
+  public static async queryPagesUntilContentPresent(
     firstItemIndex: number,
-    queryItems: (itemIndex: number) => Q.Promise<ViewModels.QueryResults>
-  ): Q.Promise<ViewModels.QueryResults> {
+    queryItems: (itemIndex: number) => Promise<ViewModels.QueryResults>
+  ): Promise<ViewModels.QueryResults> {
     let roundTrips: number = 0;
     let netRequestCharge: number = 0;
-    const doRequest = (itemIndex: number): Q.Promise<ViewModels.QueryResults> =>
-      queryItems(itemIndex).then(
-        (results: ViewModels.QueryResults) => {
-          roundTrips = roundTrips + 1;
-          results.roundTrips = roundTrips;
-          results.requestCharge = Number(results.requestCharge) + netRequestCharge;
-          netRequestCharge = Number(results.requestCharge);
-          const resultsMetadata: ViewModels.QueryResultsMetadata = {
-            hasMoreResults: results.hasMoreResults,
-            itemCount: results.itemCount,
-            firstItemIndex: results.firstItemIndex,
-            lastItemIndex: results.lastItemIndex
-          };
-          if (resultsMetadata.itemCount === 0 && resultsMetadata.hasMoreResults) {
-            return doRequest(resultsMetadata.lastItemIndex);
-          }
-          return Q.resolve(results);
-        },
-        (error: any) => {
-          return Q.reject(error);
-        }
-      );
+    const doRequest = async (itemIndex: number): Promise<ViewModels.QueryResults> => {
+      const results: ViewModels.QueryResults = await queryItems(itemIndex);
+      roundTrips = roundTrips + 1;
+      results.roundTrips = roundTrips;
+      results.requestCharge = Number(results.requestCharge) + netRequestCharge;
+      netRequestCharge = Number(results.requestCharge);
+      const resultsMetadata: ViewModels.QueryResultsMetadata = {
+        hasMoreResults: results.hasMoreResults,
+        itemCount: results.itemCount,
+        firstItemIndex: results.firstItemIndex,
+        lastItemIndex: results.lastItemIndex
+      };
+      if (resultsMetadata.itemCount === 0 && resultsMetadata.hasMoreResults) {
+        return await doRequest(resultsMetadata.lastItemIndex);
+      }
+      return results;
+    };
 
-    return doRequest(firstItemIndex);
+    return await doRequest(firstItemIndex);
   }
 
-  public static queryAllPages(
-    queryItems: (itemIndex: number) => Q.Promise<ViewModels.QueryResults>
-  ): Q.Promise<ViewModels.QueryResults> {
+  public static async queryAllPages(
+    queryItems: (itemIndex: number) => Promise<ViewModels.QueryResults>
+  ): Promise<ViewModels.QueryResults> {
     const queryResults: ViewModels.QueryResults = {
       documents: [],
       activityId: undefined,
@@ -103,25 +98,20 @@ export class QueryUtils {
       requestCharge: 0,
       roundTrips: 0
     };
-    const doRequest = (itemIndex: number): Q.Promise<ViewModels.QueryResults> =>
-      queryItems(itemIndex).then(
-        (results: ViewModels.QueryResults) => {
-          const { requestCharge, hasMoreResults, itemCount, lastItemIndex, documents } = results;
-          queryResults.roundTrips = queryResults.roundTrips + 1;
-          queryResults.requestCharge = Number(queryResults.requestCharge) + Number(requestCharge);
-          queryResults.hasMoreResults = hasMoreResults;
-          queryResults.itemCount = queryResults.itemCount + itemCount;
-          queryResults.lastItemIndex = lastItemIndex;
-          queryResults.documents = queryResults.documents.concat(documents);
-          if (queryResults.hasMoreResults) {
-            return doRequest(queryResults.lastItemIndex + 1);
-          }
-          return Q.resolve(queryResults);
-        },
-        (error: any) => {
-          return Q.reject(error);
-        }
-      );
+    const doRequest = async (itemIndex: number): Promise<ViewModels.QueryResults> => {
+      const results: ViewModels.QueryResults = await queryItems(itemIndex);
+      const { requestCharge, hasMoreResults, itemCount, lastItemIndex, documents } = results;
+      queryResults.roundTrips = queryResults.roundTrips + 1;
+      queryResults.requestCharge = Number(queryResults.requestCharge) + Number(requestCharge);
+      queryResults.hasMoreResults = hasMoreResults;
+      queryResults.itemCount = queryResults.itemCount + itemCount;
+      queryResults.lastItemIndex = lastItemIndex;
+      queryResults.documents = queryResults.documents.concat(documents);
+      if (queryResults.hasMoreResults) {
+        return doRequest(queryResults.lastItemIndex + 1);
+      }
+      return queryResults;
+    };
 
     return doRequest(0);
   }
