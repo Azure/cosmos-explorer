@@ -18,6 +18,8 @@ import "./MongoQueryComponent.less";
 interface MongoQueryComponentPureProps {
   contentRef: ContentRef;
   kernelRef: KernelRef;
+  databaseId: string;
+  collectionId: string;
 }
 
 interface MongoQueryComponentDispatchProps {
@@ -71,7 +73,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
   };
 
   private onInputChange = (text: string) => {
-    this.props.onChange(this.createFilterQuery("mydb", "airbnb-ch", text),
+    this.props.onChange(this.createFilterQuery(this.props.databaseId, this.props.collectionId, text),
       this.props.firstCellId, this.props.contentRef);
   };
 

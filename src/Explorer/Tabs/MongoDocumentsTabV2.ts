@@ -10,7 +10,7 @@ export default class MongoDocumentsTabV2 extends NotebookTabBase {
     this.mongoQueryComponentAdapter = new MongoQueryComponentAdapter({
       contentRef: undefined,
       notebookClient: NotebookTabBase.clientManager
-    });
+    }, options.collection?.databaseId, options.collection?.id());
   }
 
   public onCloseTabButtonClick(): Q.Promise<void> {

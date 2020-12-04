@@ -13,7 +13,7 @@ export class MongoQueryComponentAdapter extends NotebookComponentBootstrapper im
   public parameters: unknown;
   private kernelRef: KernelRef;
 
-  constructor(options: NotebookComponentBootstrapperOptions) {
+  constructor(options: NotebookComponentBootstrapperOptions, private databaseId: string, private collectionId: string) {
     super(options);
 
     if (!this.contentRef) {
@@ -33,9 +33,16 @@ export class MongoQueryComponentAdapter extends NotebookComponentBootstrapper im
   }
 
   public renderComponent(): JSX.Element {
+    const props = {
+      contentRef: this.contentRef,
+      kernelRef: this.kernelRef,
+      databaseId: this.databaseId,
+      collectionId: this.collectionId
+    };
+
     return (
       <Provider store={this.getStore()}>
-        <MongoQueryComponent contentRef={this.contentRef} kernelRef={this.kernelRef} />;
+        <MongoQueryComponent {...props} />;
       </Provider>
     );
   }
