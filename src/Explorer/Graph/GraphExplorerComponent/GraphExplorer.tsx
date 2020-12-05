@@ -1784,7 +1784,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         ConsoleDataType.Info,
         `Executed: ${queryInfoStr} ${GremlinClient.GremlinClient.getRequestChargeString(RU)}`
       );
-      const pkIds: string[] = results.documents?.map((item: DataModels.DocumentId) =>
+      const pkIds: string[] = (results.documents || []).map((item: DataModels.DocumentId) =>
         GraphExplorer.getPkIdFromDocumentId(item, this.props.collectionPartitionKeyProperty)
       );
 

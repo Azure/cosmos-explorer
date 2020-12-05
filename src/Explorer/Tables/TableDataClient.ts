@@ -84,7 +84,7 @@ export class TablesAPIDataClient extends TableDataClient {
     entity: Entities.ITableEntity
   ): Promise<Entities.ITableEntity> {
     try {
-      const newDocument = updateDocument(
+      const newDocument = await updateDocument(
         collection,
         originalDocument,
         TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
