@@ -1,15 +1,5 @@
-import { Descriptor, Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { Info, InputType } from "../../../SmartUi/SmartUiComponent";
 import { addPropertyToMap, toSmartUiDescriptor } from "./SelfServeUtils";
-
-interface SelfServeBaseCLass {
-  toSmartUiDescriptor: () => Descriptor;
-}
-
-export function SelfServeClass() {
-  return <U extends SelfServeBaseCLass>(constructor: U) => {
-    constructor;
-  };
-}
 
 export const SmartUi = (): ClassDecorator => {
   return (target: Function) => {

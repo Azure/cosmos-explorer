@@ -45,7 +45,7 @@ import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readM
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { isEmpty } from "underscore";
-import { SelfServeCmponent as SelfServeComponent } from "./SettingsSubComponents/SelfServe/SelfServeComponent";
+import { SelfServeComponent } from "./SettingsSubComponents/SelfServe/SelfServeComponent";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;

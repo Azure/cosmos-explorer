@@ -4,7 +4,7 @@ import { SmartUiComponent, Descriptor, InputType } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
   const exampleData: Descriptor = {
-    onSubmit: async (currentValues: Map<string, InputType>) => {},
+    onSubmit: async () => {},
     root: {
       id: "root",
       info: {

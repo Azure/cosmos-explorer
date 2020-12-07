@@ -22,6 +22,10 @@ export const OnChange = (
   return addToMap("onChange", onChange);
 };
 
+export const CustomElement = (customElement: (() => Promise<JSX.Element>) | JSX.Element): PropertyDecorator => {
+  return addToMap("customElement", customElement);
+};
+
 export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecorator => {
   return addToMap("info", info);
 };

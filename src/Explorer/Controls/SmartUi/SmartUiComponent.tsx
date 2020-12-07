@@ -28,12 +28,13 @@ export type ChoiceItem = { label: string; key: string; value: any };
 
 export type InputType = Number | String | Boolean | ChoiceItem;
 
-interface BaseInput {
+export interface BaseInput {
   label: (() => Promise<string>) | string;
   dataFieldName: string;
   type: InputTypeValue;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   placeholder?: (() => Promise<string>) | string;
+  customElement?: (() => Promise<JSX.Element>) | JSX.Element;
 }
 
 /**
@@ -41,9 +42,9 @@ interface BaseInput {
  */
 export interface NumberInput extends BaseInput {
   min?: (() => Promise<number>) | number;
-  max?: (() => Promise<number>) | number
-  step: (() => Promise<number>) | number
-  defaultValue: (() => Promise<number>) | number
+  max?: (() => Promise<number>) | number;
+  step: (() => Promise<number>) | number;
+  defaultValue: (() => Promise<number>) | number;
   inputType: "spin" | "slider";
 }
 
@@ -109,22 +110,22 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       errors: new Map()
     };
 
-    this.setDefaultValues()
+    this.setDefaultValues();
   }
 
-  private setDefaultValues = async () : Promise<void> => {
-    const defaults = new Map<string, InputType>()
-    await this.setDefaults(this.props.descriptor.root, defaults)
-    this.setState({currentValues: defaults})
-  }
+  private setDefaultValues = async (): Promise<void> => {
+    const defaults = new Map<string, InputType>();
+    await this.setDefaults(this.props.descriptor.root, defaults);
+    this.setState({ currentValues: defaults });
+  };
 
-  private setDefaults = async (currentNode: Node, defaults: Map<string, InputType>) : Promise<void> => {
+  private setDefaults = async (currentNode: Node, defaults: Map<string, InputType>): Promise<void> => {
     if (currentNode.info && currentNode.info instanceof Function) {
-      currentNode.info = await (currentNode.info as Function)()
+      currentNode.info = await (currentNode.info as Function)();
     }
 
     if (currentNode.input) {
-      currentNode.input = await this.getModifiedInput(currentNode.input)
+      currentNode.input = await this.getModifiedInput(currentNode.input);
       defaults.set(currentNode.input.dataFieldName, this.getDefaultValue(currentNode.input));
     }
 
@@ -132,58 +133,64 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   };
 
   private getModifiedInput = async (input: AnyInput): Promise<AnyInput> => {
-
     if (input.label instanceof Function) {
-      input.label = await (input.label as Function)()
+      input.label = await (input.label as Function)();
     }
 
     if (input.placeholder instanceof Function) {
-      input.placeholder = await (input.placeholder as Function)()
+      input.placeholder = await (input.placeholder as Function)();
+    }
+
+    if (input.customElement) {
+      if (input.customElement instanceof Function) {
+        input.customElement = await (input.customElement as Function)();
+      }
+      return input;
     }
 
     switch (input.type) {
       case "string":
-        const stringInput = input as StringInput
+        const stringInput = input as StringInput;
         if (stringInput.defaultValue instanceof Function) {
-          stringInput.defaultValue = await (stringInput.defaultValue as Function)()
+          stringInput.defaultValue = await (stringInput.defaultValue as Function)();
         }
         return stringInput;
       case "number":
-        const numberInput = input as NumberInput
+        const numberInput = input as NumberInput;
         if (numberInput.defaultValue instanceof Function) {
-          numberInput.defaultValue = await (numberInput.defaultValue as Function)()
+          numberInput.defaultValue = await (numberInput.defaultValue as Function)();
         }
         if (numberInput.min instanceof Function) {
-          numberInput.min = await (numberInput.min as Function)()
+          numberInput.min = await (numberInput.min as Function)();
         }
         if (numberInput.max instanceof Function) {
-          numberInput.max = await (numberInput.max as Function)()
+          numberInput.max = await (numberInput.max as Function)();
         }
         if (numberInput.step instanceof Function) {
-          numberInput.step = await (numberInput.step as Function)()
+          numberInput.step = await (numberInput.step as Function)();
         }
         return numberInput;
       case "boolean":
-        const booleanInput = input as BooleanInput
+        const booleanInput = input as BooleanInput;
         if (booleanInput.defaultValue instanceof Function) {
-          booleanInput.defaultValue = await (booleanInput.defaultValue as Function)()
+          booleanInput.defaultValue = await (booleanInput.defaultValue as Function)();
         }
         if (booleanInput.trueLabel instanceof Function) {
-          booleanInput.trueLabel = await (booleanInput.trueLabel as Function)()
+          booleanInput.trueLabel = await (booleanInput.trueLabel as Function)();
         }
         if (booleanInput.falseLabel instanceof Function) {
-          booleanInput.falseLabel = await (booleanInput.falseLabel as Function)()
+          booleanInput.falseLabel = await (booleanInput.falseLabel as Function)();
         }
         return booleanInput;
       default:
-        const enumInput = input as ChoiceInput
+        const enumInput = input as ChoiceInput;
         if (enumInput.defaultKey instanceof Function) {
-          enumInput.defaultKey = await (enumInput.defaultKey as Function)()
+          enumInput.defaultKey = await (enumInput.defaultKey as Function)();
         }
         if (enumInput.choices instanceof Function) {
-          enumInput.choices = await (enumInput.choices as Function)()
+          enumInput.choices = await (enumInput.choices as Function)();
         }
-        return enumInput
+        return enumInput;
     }
   };
 
@@ -297,12 +304,12 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private renderNumberInput(input: NumberInput): JSX.Element {
     const { label, min, max, defaultValue, dataFieldName, step } = input;
-    const props = { 
-      label: label as string, 
-      min: min as number, 
-      max: max as number, 
-      ariaLabel: label as string, 
-      step: step as number 
+    const props = {
+      label: label as string,
+      min: min as number,
+      max: max as number,
+      ariaLabel: label as string,
+      step: step as number
     };
 
     if (input.inputType === "spin") {
@@ -391,7 +398,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         selectedKey={
           this.state.currentValues.has(dataFieldName)
             ? (this.state.currentValues.get(dataFieldName) as string)
-            : defaultKey as string
+            : (defaultKey as string)
         }
         onChange={(_, item: IDropdownOption) => this.onInputChange(input, item.key.toString())}
         placeholder={placeholder as string}
@@ -411,6 +418,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderInput(input: AnyInput): JSX.Element {
+    if (input.customElement) {
+      return input.customElement as JSX.Element;
+    }
     switch (input.type) {
       case "string":
         return this.renderStringInput(input as StringInput);
@@ -437,8 +447,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 20 };
-    return (
-      this.state.currentValues && this.state.currentValues.size ?
+    return this.state.currentValues && this.state.currentValues.size ? (
       <Stack tokens={containerStackTokens}>
         {this.renderNode(this.props.descriptor.root)}
         <PrimaryButton
@@ -447,7 +456,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           onClick={async () => await this.props.descriptor.onSubmit(this.state.currentValues)}
         />
       </Stack>
-      :
+    ) : (
       <Spinner size={SpinnerSize.large} />
     );
   }

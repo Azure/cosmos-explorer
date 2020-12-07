@@ -13,6 +13,12 @@ import {
   InputType
 } from "../../../SmartUi/SmartUiComponent";
 
+export class SelfServeBase {
+  public static toSmartUiDescriptor(): Descriptor {
+    return Reflect.getMetadata(this.name, this) as Descriptor;
+  }
+}
+
 export interface CommonInputTypes {
   id: string;
   info?: (() => Promise<Info>) | Info;
@@ -32,6 +38,7 @@ export interface CommonInputTypes {
   inputType?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
+  customElement?: (() => Promise<JSX.Element>) | JSX.Element;
 }
 
 const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(

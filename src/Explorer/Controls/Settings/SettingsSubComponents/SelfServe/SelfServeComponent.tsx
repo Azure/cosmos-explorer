@@ -2,7 +2,7 @@ import React from "react";
 import { Descriptor, InputType, SmartUiComponent } from "../../../SmartUi/SmartUiComponent";
 import { SqlX } from "./SqlX";
 
-export class SelfServeCmponent extends React.Component {
+export class SelfServeComponent extends React.Component {
   private onSubmit = async (currentValues: Map<string, InputType>): Promise<void> => {
     console.log(currentValues.get("instanceCount"), currentValues.get("instanceSize"));
   };
