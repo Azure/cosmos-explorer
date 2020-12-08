@@ -1,4 +1,4 @@
-import { ChoiceItem, Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { ChoiceItem, Info, InputType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { addPropertyToMap } from "./SelfServeUtils";
 
 const addToMap = (descriptorName: string, descriptorValue: any): PropertyDecorator => {

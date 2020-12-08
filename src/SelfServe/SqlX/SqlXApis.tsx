@@ -1,6 +1,6 @@
 import { Text } from "office-ui-fabric-react";
 import React from "react";
-import { ChoiceItem, Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { ChoiceItem, Info, InputType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 
 export enum Sizes {
   OneCore4Gb = "OneCore4Gb",
@@ -61,5 +61,5 @@ export const getPromise = <T extends number | string | boolean | ChoiceItem[] | 
 };
 
 export const renderTextInput = async (): Promise<JSX.Element> => {
-  return <Text>SqlX is a new feature of Cosmos DB</Text>;
+  return <Text>SqlX is a new feature of Cosmos DB.</Text>;
 };

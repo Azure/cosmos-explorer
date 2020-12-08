@@ -14,11 +14,9 @@ import {
   Placeholder,
   DefaultNumberValue,
   DefaultBooleanValue,
-  DefaultStringValue,
   CustomElement
-} from "./PropertyDescriptors";
-import { SmartUi, ClassInfo, OnSubmit } from "./ClassDescriptors";
-import { ChoiceItem } from "../../../SmartUi/SmartUiComponent";
+} from "../PropertyDescriptors";
+import { SmartUi, ClassInfo, OnSubmit } from "../ClassDescriptors";
 import {
   getPromise,
   instanceSizeInfo,
@@ -29,7 +27,8 @@ import {
   Sizes,
   sqlXInfo
 } from "./SqlXApis";
-import { SelfServeBase } from "./SelfServeUtils";
+import { SelfServeBase } from "../SelfServeUtils";
+import { ChoiceItem } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 
 @SmartUi()
 @ClassInfo(getPromise(sqlXInfo))
@@ -42,7 +41,6 @@ export class SqlX extends SelfServeBase {
   @PropertyInfo(getPromise(instanceSizeInfo))
   @Label(getPromise("Instance Size"))
   @Choices(getPromise(instanceSizeOptions))
-  //@Choices(instanceSizeOptions)
   @DefaultKey(getPromise(Sizes.OneCore4Gb))
   static instanceSize: ChoiceItem;
 

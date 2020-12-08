@@ -45,7 +45,6 @@ import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readM
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { isEmpty } from "underscore";
-import { SelfServeComponent } from "./SettingsSubComponents/SelfServe/SelfServeComponent";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -900,11 +899,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     const tabs: SettingsV2TabInfo[] = [];
-
-    tabs.push({
-      tab: SettingsV2TabTypes.SelfServe,
-      content: <SelfServeComponent />
-    });
 
     if (!hasDatabaseSharedThroughput(this.collection) && this.collection.offer()) {
       tabs.push({

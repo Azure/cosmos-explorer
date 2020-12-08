@@ -11,7 +11,7 @@ import {
   BooleanInput,
   ChoiceInput,
   InputType
-} from "../../../SmartUi/SmartUiComponent";
+} from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
 export class SelfServeBase {
   public static toSmartUiDescriptor(): Descriptor {

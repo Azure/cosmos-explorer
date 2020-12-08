@@ -1,4 +1,4 @@
-import { Info, InputType } from "../../../SmartUi/SmartUiComponent";
+import { Info, InputType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { addPropertyToMap, toSmartUiDescriptor } from "./SelfServeUtils";
 
 export const SmartUi = (): ClassDecorator => {
