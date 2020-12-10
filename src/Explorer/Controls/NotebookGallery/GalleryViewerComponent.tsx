@@ -398,7 +398,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        const response = await this.props.junoClient.fetchPublicNotebooks();
+        const response = await this.props.junoClient.getPublicNotebooks();
         this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
         this.publicNotebooks = response.data?.notebooksData;
 
