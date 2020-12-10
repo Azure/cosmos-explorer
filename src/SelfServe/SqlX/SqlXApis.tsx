@@ -1,6 +1,7 @@
 import { Text } from "office-ui-fabric-react";
 import React from "react";
 import { ChoiceItem, Info, InputType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
+import { TextComponent } from "./TextComponent";
 
 export enum Sizes {
   OneCore4Gb = "OneCore4Gb",
@@ -28,7 +29,7 @@ export const onInstanceCountChange = (
 ): Map<string, InputType> => {
   currentState.set("instanceCount", newValue);
   if ((newValue as number) === 1) {
-    currentState.set("isAllowed", false);
+    currentState.set("instanceSize", Sizes.OneCore4Gb);
   }
   return currentState;
 };
@@ -60,6 +61,10 @@ export const getPromise = <T extends number | string | boolean | ChoiceItem[] | 
   return f;
 };
 
-export const renderTextInput = async (): Promise<JSX.Element> => {
-  return <Text>SqlX is a new feature of Cosmos DB.</Text>;
-};
+export const renderText = (text: string) : (currentValues: Map<string, InputType>) => Promise<JSX.Element> => {
+  const f = async (currentValues: Map<string, InputType>): Promise<JSX.Element> => {
+    //return <Text>SqlX is a new feature of Cosmos DB.</Text>;
+    return <TextComponent text={text} currentValues={currentValues}/>
+  };
+  return f
+}

@@ -22,7 +22,7 @@ export const OnChange = (
   return addToMap("onChange", onChange);
 };
 
-export const CustomElement = (customElement: (() => Promise<JSX.Element>) | JSX.Element): PropertyDecorator => {
+export const CustomElement = (customElement: ((currentValues: Map<string, InputType>) => Promise<JSX.Element>) | JSX.Element): PropertyDecorator => {
   return addToMap("customElement", customElement);
 };
 

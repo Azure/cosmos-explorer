@@ -23,7 +23,7 @@ import {
   instanceSizeOptions,
   onInstanceCountChange,
   onSubmit,
-  renderTextInput,
+  renderText,
   Sizes,
   sqlXInfo
 } from "./SqlXApis";
@@ -34,9 +34,10 @@ import { ChoiceItem } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 @ClassInfo(getPromise(sqlXInfo))
 @OnSubmit(onSubmit)
 export class SqlX extends SelfServeBase {
-  @Label(getPromise("About"))
-  @CustomElement(renderTextInput)
-  static about: string;
+
+  @Label(getPromise("Description"))
+  @CustomElement(renderText("This is the description part of SqlX"))
+  static description: string;
 
   @PropertyInfo(getPromise(instanceSizeInfo))
   @Label(getPromise("Instance Size"))
@@ -44,15 +45,9 @@ export class SqlX extends SelfServeBase {
   @DefaultKey(getPromise(Sizes.OneCore4Gb))
   static instanceSize: ChoiceItem;
 
-  @OnChange(onInstanceCountChange)
-  @Label(getPromise("Instance Count"))
-  @Min(getPromise(0))
-  @Max(getPromise(5))
-  @Step(getPromise(1))
-  @DefaultNumberValue(getPromise(1))
-  @NumberInputType("slider")
-  @ParentOf(["instanceSize", "instanceName", "isAllowed"])
-  static instanceCount: number;
+  @Label(getPromise("About"))
+  @CustomElement(renderText("This is the about part of SqlX"))
+  static about: string;
 
   @Label("Feature Allowed")
   @DefaultBooleanValue(false)
@@ -63,4 +58,14 @@ export class SqlX extends SelfServeBase {
   @Label("Instance Name")
   @Placeholder("instance name")
   static instanceName: string;
+
+  @OnChange(onInstanceCountChange)
+  @Label(getPromise("Instance Count"))
+  @Min(getPromise(0))
+  @Max(getPromise(5))
+  @Step(getPromise(1))
+  @DefaultNumberValue(getPromise(1))
+  @NumberInputType("slider")
+  @ParentOf(["instanceSize", "about", "instanceName", "isAllowed", ])
+  static instanceCount: number;
 }

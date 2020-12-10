@@ -13,6 +13,8 @@ import {
   InputType
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
+const SelfServeType = "selfServeType"
+
 export class SelfServeBase {
   public static toSmartUiDescriptor(): Descriptor {
     return Reflect.getMetadata(this.name, this) as Descriptor;
@@ -38,7 +40,7 @@ export interface CommonInputTypes {
   inputType?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
-  customElement?: (() => Promise<JSX.Element>) | JSX.Element;
+  customElement?: ((currentValues: Map<string, InputType>) => Promise<JSX.Element>) | JSX.Element;
 }
 
 const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
@@ -154,11 +156,13 @@ const addToDescriptor = (
 const getChildFromRoot = (key: String, smartUiDescriptor: Descriptor): Node => {
   let i = 0;
   const children = smartUiDescriptor.root.children;
-  for (; i < children.length; i++) {
-    if (children[i].id === key) {
+  while (i < children.length) {
+    if (children[i]?.id === key) {
       const value = children[i];
       delete children[i];
       return value;
+    } else {
+      i++;
     }
   }
   return undefined;
@@ -171,8 +175,8 @@ const getInput = (value: CommonInputTypes): AnyInput => {
 
   switch (value.type) {
     case "number":
-      if (!value.step || !value.defaultValue || !value.inputType) {
-        throw new Error("step, defaultValue and inputType are needed for number type");
+      if (!value.step || !value.defaultValue || !value.inputType || !value.min || !value.max) {
+        throw new Error("step, min, miax, defaultValue and inputType are needed for number type");
       }
       return value as NumberInput;
     case "string":
@@ -189,3 +193,13 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       return value as ChoiceInput;
   }
 };
+
+export enum SelfServeTypes {
+  sqlx="sqlx"
+}
+
+export const getSelfServeType = (search: string): SelfServeTypes => {
+  const params = new URLSearchParams(search);
+  const selfServeTypeParam = params.get(SelfServeType)?.toLowerCase()
+  return SelfServeTypes[selfServeTypeParam as keyof typeof SelfServeTypes]
+}
