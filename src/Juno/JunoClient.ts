@@ -174,7 +174,11 @@ export class JunoClient {
     return this.getNotebooks(`${this.getNotebooksUrl()}/gallery/samples`);
   }
 
-  public async getPublicNotebooks(): Promise<IJunoResponse<IPublicGalleryData>> {
+  public async getPublicNotebooks(): Promise<IJunoResponse<IGalleryItem[]>> {
+    return this.getNotebooks(`${this.getNotebooksUrl()}/gallery/public`);
+  }
+
+  public async getPublicGalleryData(): Promise<IJunoResponse<IPublicGalleryData>> {
     const url = `${this.getNotebooksAccountUrl()}/gallery/public`;
     const response = await window.fetch(url, {
       method: "PATCH",

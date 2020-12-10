@@ -17,7 +17,7 @@ import {
   Text
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
+import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
@@ -398,9 +398,15 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        const response = await this.props.junoClient.getPublicNotebooks();
-        this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
-        this.publicNotebooks = response.data?.notebooksData;
+        let response: IJunoResponse<IGalleryItem[]> | IJunoResponse<IPublicGalleryData>;
+        if (this.props.container) {
+          response = await this.props.junoClient.getPublicGalleryData();
+          this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
+          this.publicNotebooks = response.data?.notebooksData;
+        } else {
+          response = await this.props.junoClient.getPublicNotebooks();
+          this.publicNotebooks = response.data;
+        }
 
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
