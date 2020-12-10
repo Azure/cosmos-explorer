@@ -364,15 +364,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        let response: IJunoResponse<IPublicGalleryData> | IJunoResponse<IGalleryItem[]>;
-        if (this.props.container.isCodeOfConductEnabled()) {
-          response = await this.props.junoClient.fetchPublicNotebooks();
-          this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
-          this.publicNotebooks = response.data?.notebooksData;
-        } else {
-          response = await this.props.junoClient.getPublicNotebooks();
-          this.publicNotebooks = response.data;
-        }
+        const response = await this.props.junoClient.fetchPublicNotebooks();
+        this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
+        this.publicNotebooks = response.data?.notebooksData;
 
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
