@@ -114,7 +114,7 @@ export function reportAbuse(
 
       try {
         const response = await junoClient.reportAbuse(notebookId, abuseCategory, additionalDetails);
-        if (response.status != HttpStatusCodes.Accepted) {
+        if (response.status !== HttpStatusCodes.Accepted) {
           throw new Error(`Received HTTP ${response.status} when submitting report for ${data.name}`);
         }
 

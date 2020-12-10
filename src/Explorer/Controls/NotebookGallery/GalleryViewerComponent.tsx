@@ -17,7 +17,7 @@ import {
   Text
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { IGalleryItem, JunoClient, IJunoResponse, IPublicGalleryData } from "../../../Juno/JunoClient";
+import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
@@ -185,7 +185,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   private isEmptyData = (data: IGalleryItem[]): boolean => {
-    return !data || data.length == 0;
+    return !data || data.length === 0;
   };
 
   private createEmptyTabContent = (iconName: string, line1: string, line2: string): JSX.Element => {
