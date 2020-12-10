@@ -8,7 +8,7 @@ describe("IndexingPolicyComponent", () => {
     automatic: false,
     indexingMode: "",
     includedPaths: [],
-    excludedPaths: []
+    excludedPaths: [],
   };
   const baseProps: IndexingPolicyComponentProps = {
     shouldDiscardIndexingPolicy: false,
@@ -27,7 +27,7 @@ describe("IndexingPolicyComponent", () => {
       return;
     },
     indexTransformationProgress: undefined,
-    refreshIndexTransformationProgress: () => new Promise(jest.fn())
+    refreshIndexTransformationProgress: () => new Promise(jest.fn()),
   };
 
   it("renders", () => {

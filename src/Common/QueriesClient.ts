@@ -18,7 +18,7 @@ export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
     paths: [`/${SavedQueries.PartitionKeyProperty}`],
     kind: BackendDefaults.partitionKeyKind,
-    version: BackendDefaults.partitionKeyVersion
+    version: BackendDefaults.partitionKeyVersion,
   };
   private static readonly FetchQuery: string = "SELECT * FROM c";
   private static readonly FetchMongoQuery: string = "{}";
@@ -41,7 +41,7 @@ export class QueriesClient {
       databaseId: SavedQueries.DatabaseName,
       partitionKey: QueriesClient.PartitionKey,
       offerThroughput: SavedQueries.OfferThroughput,
-      databaseLevelThroughput: false
+      databaseLevelThroughput: false,
     })
       .then(
         (collection: DataModels.Collection) => {
@@ -135,7 +135,7 @@ export class QueriesClient {
                   resourceId: resourceId,
                   queryName: queryName,
                   query: query,
-                  id: id
+                  id: id,
                 };
                 try {
                   this.validateQuery(parsedQuery);
@@ -192,7 +192,7 @@ export class QueriesClient {
     const documentId = new DocumentId(
       {
         partitionKey: QueriesClient.PartitionKey,
-        partitionKeyProperty: "id"
+        partitionKeyProperty: "id",
       } as DocumentsTab,
       query,
       query.queryName

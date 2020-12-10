@@ -4,7 +4,7 @@ import { SplitterMetrics } from "./Constants";
 
 export enum SplitterDirection {
   Horizontal = "horizontal",
-  Vertical = "vertical"
+  Vertical = "vertical",
 }
 
 export interface SplitterBounds {
@@ -50,7 +50,7 @@ export class Splitter {
       animate: true,
       animateDuration: "fast",
       start: this.onResizeStart,
-      stop: this.onResizeStop
+      stop: this.onResizeStop,
     };
 
     if (isVerticalSplitter) {
@@ -90,9 +90,7 @@ export class Splitter {
     this.lastWidth = $(this.leftSide).width();
     $(this.splitter).css("left", SplitterMetrics.CollapsedPositionLeft);
     $(this.leftSide).css("width", "");
-    $(this.leftSide)
-      .resizable("option", "disabled", true)
-      .removeClass("ui-resizable-disabled"); // remove class so splitter is visible
+    $(this.leftSide).resizable("option", "disabled", true).removeClass("ui-resizable-disabled"); // remove class so splitter is visible
     $(this.splitter).removeClass("ui-resizable-e");
     this.isCollapsed(true);
   }

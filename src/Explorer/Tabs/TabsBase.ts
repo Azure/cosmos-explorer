@@ -76,7 +76,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
   }
 
@@ -90,7 +90,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
-      tabId: this.tabId
+      tabId: this.tabId,
     });
   }
 
@@ -149,7 +149,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       defaultExperience: this.getContainer().defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
-      tabId: this.tabId
+      tabId: this.tabId,
     });
     return Q();
   }

@@ -31,9 +31,7 @@
     <div class="filterDocCollapsed" data-bind="visible: !isFilterExpanded() && !isPreferredApiMongoDB">
       <span class="selectQuery">SELECT * FROM c</span>
       <span class="appliedQuery" data-bind="text: appliedFilter"></span>
-      <button class="filterbtnstyle queryButton" data-bind="click: onShowFilterClick">
-        Edit Filter
-      </button>
+      <button class="filterbtnstyle queryButton" data-bind="click: onShowFilterClick">Edit Filter</button>
     </div>
     <div
       class="filterDocCollapsed"
@@ -71,9 +69,7 @@
     >
       <div>
         <div class="editFilterContainer">
-          <span class="filterspan" data-bind="visible: !isPreferredApiMongoDB">
-            SELECT * FROM c
-          </span>
+          <span class="filterspan" data-bind="visible: !isPreferredApiMongoDB"> SELECT * FROM c </span>
           <input
             type="text"
             list="filtersList"
@@ -95,8 +91,7 @@
             <option
               data-bind="
                                 value: $data"
-            >
-            </option>
+            ></option>
           </datalist>
 
           <span class="filterbuttonpad">
@@ -119,7 +114,7 @@
             data-bind="
                             click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"
           >
-            <img src="/close-black.svg" style="height: 14px; width: 14px;" alt="Hide filter" />
+            <img src="/close-black.svg" style="height: 14px; width: 14px" alt="Hide filter" />
           </span>
         </div>
       </div>

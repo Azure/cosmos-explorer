@@ -105,7 +105,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       return `Throughput (${this.minThroughputRU().toLocaleString()} - ${this.maxThroughputRU().toLocaleString()} RU/s)`;
     });
     this.userTableQuery = ko.observable<string>("(userid int, name text, email text, PRIMARY KEY (userid))");
-    this.keyspaceId.subscribe(keyspaceId => {
+    this.keyspaceId.subscribe((keyspaceId) => {
       this.createTableQuery(`CREATE TABLE ${keyspaceId}.`);
     });
 
@@ -296,16 +296,16 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         storage: Constants.BackendDefaults.multiPartitionStorageInGb,
         offerThroughput: this.throughput(),
         partitionKey: "",
-        databaseId: this.keyspaceId()
+        databaseId: this.keyspaceId(),
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: this.container.quotaId(),
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
-      dataExplorerArea: Constants.Areas.ContextualPane
+      dataExplorerArea: Constants.Areas.ContextualPane,
     };
     const focusElement = document.getElementById("keyspace-id");
     focusElement && focusElement.focus();
@@ -349,7 +349,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         offerThroughput: this.throughput(),
         partitionKey: "",
         databaseId: this.keyspaceId(),
-        hasDedicatedThroughput: this.dedicateTableThroughput()
+        hasDedicatedThroughput: this.dedicateTableThroughput(),
       }),
       keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
@@ -357,12 +357,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
-        flight: this.container.flight()
+        flight: this.container.flight(),
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       toCreateKeyspace: toCreateKeyspace,
       createKeyspaceQuery: createKeyspaceQuery,
-      createTableQuery: createTableQuery
+      createTableQuery: createTableQuery,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
     if (toCreateKeyspace) {
@@ -395,7 +395,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             offerThroughput: this.throughput(),
             partitionKey: "",
             databaseId: this.keyspaceId(),
-            hasDedicatedThroughput: this.dedicateTableThroughput()
+            hasDedicatedThroughput: this.dedicateTableThroughput(),
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
@@ -403,16 +403,16 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
-            flight: this.container.flight()
+            flight: this.container.flight(),
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           toCreateKeyspace: toCreateKeyspace,
           createKeyspaceQuery: createKeyspaceQuery,
-          createTableQuery: createTableQuery
+          createTableQuery: createTableQuery,
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
       },
-      error => {
+      (error) => {
         const errorMessage = getErrorMessage(error);
         this.formErrors(errorMessage);
         this.isExecuting(false);
@@ -425,7 +425,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             offerThroughput: this.throughput(),
             partitionKey: "",
             databaseId: this.keyspaceId(),
-            hasDedicatedThroughput: this.dedicateTableThroughput()
+            hasDedicatedThroughput: this.dedicateTableThroughput(),
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
@@ -433,14 +433,14 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
-            flight: this.container.flight()
+            flight: this.container.flight(),
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           toCreateKeyspace: toCreateKeyspace,
           createKeyspaceQuery: createKeyspaceQuery,
           createTableQuery: createTableQuery,
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
@@ -535,13 +535,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       this.sharedAutoPilotThroughput()
     ) {
       return {
-        maxThroughput: this.sharedAutoPilotThroughput() * 1
+        maxThroughput: this.sharedAutoPilotThroughput() * 1,
       };
     }
 
     if (this.selectedAutoPilotThroughput()) {
       return {
-        maxThroughput: this.selectedAutoPilotThroughput() * 1
+        maxThroughput: this.selectedAutoPilotThroughput() * 1,
       };
     }
 

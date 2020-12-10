@@ -28,7 +28,7 @@ describe("MongoIndexingPolicyComponent", () => {
     },
     onMongoIndexingPolicyDiscardableChange: () => {
       return;
-    }
+    },
   };
 
   it("renders", () => {
@@ -55,24 +55,24 @@ describe("MongoIndexingPolicyComponent", () => {
         false,
         false,
         true,
-        sampleWarning
+        sampleWarning,
       ],
       [
         { type: MongoNotificationType.Error, message: sampleError } as MongoNotificationMessage,
         false,
         false,
         true,
-        undefined
+        undefined,
       ],
       [
         { type: MongoNotificationType.Error, message: sampleError } as MongoNotificationMessage,
         true,
         false,
         true,
-        undefined
+        undefined,
       ],
       [undefined, false, true, true, undefined],
-      [undefined, true, true, true, undefined]
+      [undefined, true, true, true, undefined],
     ];
 
     test.each(cases)(
@@ -87,7 +87,7 @@ describe("MongoIndexingPolicyComponent", () => {
         const addMongoIndexProps = {
           mongoIndex: { key: { keys: ["sampleKey"] } },
           type: MongoIndexTypes.Single,
-          notification: notification
+          notification: notification,
         };
 
         let indexesToDrop: number[] = [];

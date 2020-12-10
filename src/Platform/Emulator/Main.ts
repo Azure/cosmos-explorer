@@ -10,14 +10,14 @@ export function initializeExplorer(): Explorer {
     type: "",
     kind: AccountKind.DocumentDB,
     tags: {
-      [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB
+      [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB,
     },
     properties: {
       documentEndpoint: "",
       tableEndpoint: "",
       gremlinEndpoint: "",
-      cassandraEndpoint: ""
-    }
+      cassandraEndpoint: "",
+    },
   });
   explorer.isAccountReady(true);
   return explorer;

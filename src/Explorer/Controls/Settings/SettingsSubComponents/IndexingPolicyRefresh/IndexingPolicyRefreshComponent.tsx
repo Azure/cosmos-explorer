@@ -2,7 +2,7 @@ import * as React from "react";
 import { MessageBar, MessageBarType } from "office-ui-fabric-react";
 import {
   mongoIndexTransformationRefreshingMessage,
-  renderMongoIndexTransformationRefreshMessage
+  renderMongoIndexTransformationRefreshMessage,
 } from "../../SettingsRenderUtils";
 import { handleError } from "../../../../../Common/ErrorHandlingUtils";
 import { isIndexTransforming } from "../../SettingsUtils";
@@ -23,7 +23,7 @@ export class IndexingPolicyRefreshComponent extends React.Component<
   constructor(props: IndexingPolicyRefreshComponentProps) {
     super(props);
     this.state = {
-      isRefreshing: false
+      isRefreshing: false,
     };
   }
 

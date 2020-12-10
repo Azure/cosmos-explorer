@@ -31,10 +31,10 @@ export default class AuthHeadersUtil {
       graph: AuthHeadersUtil._graphEndpoint,
       armAuthArea: AuthHeadersUtil._armAuthArea,
       armEndpoint: AuthHeadersUtil._armEndpoint,
-      arcadiaEndpoint: AuthHeadersUtil._arcadiaEndpoint
+      arcadiaEndpoint: AuthHeadersUtil._arcadiaEndpoint,
     },
     tenant: undefined,
-    cacheLocation: window.navigator.userAgent.indexOf("Edge") > -1 ? "localStorage" : undefined
+    cacheLocation: window.navigator.userAgent.indexOf("Edge") > -1 ? "localStorage" : undefined,
   });
 
   public static getAccessInputMetadata(accessInput: string): Q.Promise<DataModels.AccessInputMetadata> {
@@ -54,7 +54,7 @@ export default class AuthHeadersUtil {
       type: "GET",
       headers: headers,
       cache: false,
-      dataType: "text"
+      dataType: "text",
     }).then(
       (data: string, textStatus: string, xhr: JQueryXHR<any>) => {
         if (!data) {
@@ -94,7 +94,7 @@ export default class AuthHeadersUtil {
       type: "POST",
       headers: headers,
       contentType: "application/json",
-      cache: false
+      cache: false,
     });
   }
 
@@ -114,7 +114,7 @@ export default class AuthHeadersUtil {
       type: "POST",
       headers: headers,
       contentType: "application/json",
-      cache: false
+      cache: false,
     });
   }
 
@@ -219,7 +219,7 @@ export default class AuthHeadersUtil {
         `${AuthHeadersUtil._graphEndpoint}/me/thumbnailPhoto?api-version=${AuthHeadersUtil._graphApiVersion}`,
         {
           method: "GET",
-          headers: headers
+          headers: headers,
         }
       );
       if (!response.ok) {
@@ -244,10 +244,7 @@ export default class AuthHeadersUtil {
         }
       } catch (reason) {
         if (reason.status === 401) {
-          const authUrl: string = reason.headers
-            .get("www-authenticate")
-            .split(",")[0]
-            .split("=")[1];
+          const authUrl: string = reason.headers.get("www-authenticate").split(",")[0].split("=")[1];
           // Fetch the tenant GUID ID and the length should be 36.
           const tenantId: string = authUrl.substring(authUrl.lastIndexOf("/") + 1, authUrl.lastIndexOf("/") + 37);
           return Promise.resolve(tenantId);

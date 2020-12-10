@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import {
   ThroughputInputAutoPilotV3Component,
-  ThroughputInputAutoPilotV3Props
+  ThroughputInputAutoPilotV3Props,
 } from "./ThroughputInputAutoPilotV3Component";
 import * as DataModels from "../../../../../Contracts/DataModels";
 
@@ -40,7 +40,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     onScaleDiscardableChange: () => {
       return;
     },
-    getThroughputWarningMessage: () => undefined
+    getThroughputWarningMessage: () => undefined,
   };
 
   it("throughput input visible", () => {

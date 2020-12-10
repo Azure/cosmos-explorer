@@ -281,5 +281,5 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
 
 export const ThroughputInputComponentAutoPilotV3 = {
   viewModel: ThroughputInputViewModel,
-  template: ThroughputInputComponentAutoscaleV3
+  template: ThroughputInputComponentAutoscaleV3,
 };

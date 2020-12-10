@@ -12,9 +12,9 @@ describe("readCollections", () => {
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
-        name: "test"
+        name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB
+      defaultExperience: DefaultAccountExperienceType.DocumentDB,
     });
   });
 
@@ -32,12 +32,12 @@ describe("readCollections", () => {
           containers: {
             readAll: () => {
               return {
-                fetchAll: (): unknown => []
+                fetchAll: (): unknown => [],
               };
-            }
-          }
+            },
+          },
         };
-      }
+      },
     });
     await readCollections("database");
     expect(client).toHaveBeenCalled();

@@ -46,7 +46,7 @@ export class CommandBarComponentAdapter implements ReactAdapter {
       container.isSynapseLinkUpdating,
       container.databaseAccount,
       this.isNotebookTabActive,
-      container.isServerlessEnabled
+      container.isServerlessEnabled,
     ];
 
     ko.computed(() => ko.toJSON(toWatch)).subscribe(() => this.triggerRender());
@@ -95,7 +95,7 @@ export class CommandBarComponentAdapter implements ReactAdapter {
             items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}
             farItems={uiFabricControlButtons}
             styles={{
-              root: { backgroundColor: backgroundColor }
+              root: { backgroundColor: backgroundColor },
             }}
             overflowButtonProps={{ ariaLabel: "More commands" }}
           />

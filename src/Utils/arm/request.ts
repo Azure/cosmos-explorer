@@ -54,7 +54,7 @@ export async function armRequest<T>({
   apiVersion,
   method,
   body: requestBody,
-  queryParams
+  queryParams,
 }: Options): Promise<T> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -66,9 +66,9 @@ export async function armRequest<T>({
   const response = await window.fetch(url.href, {
     method,
     headers: {
-      Authorization: userContext.authorizationToken
+      Authorization: userContext.authorizationToken,
     },
-    body: requestBody ? JSON.stringify(requestBody) : undefined
+    body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
   if (!response.ok) {
     let error: ARMError;
@@ -100,8 +100,8 @@ export async function armRequest<T>({
 async function getOperationStatus(operationStatusUrl: string) {
   const response = await window.fetch(operationStatusUrl, {
     headers: {
-      Authorization: userContext.authorizationToken
-    }
+      Authorization: userContext.authorizationToken,
+    },
   });
 
   if (!response.ok) {

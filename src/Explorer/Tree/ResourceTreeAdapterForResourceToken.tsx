@@ -34,7 +34,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       return {
         label: undefined,
         isExpanded: true,
-        children: []
+        children: [],
       };
     }
 
@@ -50,12 +50,12 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
           description: "Data",
           data: {
             databaseId: collection.databaseId,
-            collectionId: collection.id()
-          }
+            collectionId: collection.id(),
+          },
         });
       },
       isSelected: () =>
-        this.isDataNodeSelected(collection.databaseId, collection.id(), ViewModels.CollectionTabKind.Documents)
+        this.isDataNodeSelected(collection.databaseId, collection.id(), ViewModels.CollectionTabKind.Documents),
     });
 
     const collectionNode: TreeNode = {
@@ -69,16 +69,16 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         this.container.selectedNode(collection);
         this.container.onUpdateTabsButtons([]);
         this.container.tabsManager.refreshActiveTab(
-          tab => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+          (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
         );
       },
-      isSelected: () => this.isDataNodeSelected(collection.databaseId, collection.id())
+      isSelected: () => this.isDataNodeSelected(collection.databaseId, collection.id()),
     };
 
     return {
       label: undefined,
       isExpanded: true,
-      children: [collectionNode]
+      children: [collectionNode],
     };
   }
 

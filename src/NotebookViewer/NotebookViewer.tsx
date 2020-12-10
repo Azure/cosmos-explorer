@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 import { initializeConfiguration, configContext } from "../ConfigContext";
 import {
   NotebookViewerComponent,
-  NotebookViewerComponentProps
+  NotebookViewerComponentProps,
 } from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
@@ -59,7 +59,7 @@ const render = (
     hideInputs,
     hidePrompts,
     onBackClick: onBackClick,
-    onTagClick: undefined
+    onTagClick: undefined,
   };
 
   if (galleryItem) {

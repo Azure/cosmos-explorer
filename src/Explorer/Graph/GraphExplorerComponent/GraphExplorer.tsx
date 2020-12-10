@@ -91,7 +91,7 @@ enum FilterQueryStatus {
   GraphResult,
   Loading,
   NonGraphResult,
-  ErrorResult
+  ErrorResult,
 }
 
 interface GraphExplorerState {
@@ -157,7 +157,7 @@ enum ResultDisplay {
   None,
   Graph,
   Json,
-  Stats
+  Stats,
 }
 
 interface UserQueryResult {
@@ -235,7 +235,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       resultDisplay: ResultDisplay.None,
       filterQueryError: null,
       filterQueryWarning: null,
-      filterQueryStatus: FilterQueryStatus.NoResult
+      filterQueryStatus: FilterQueryStatus.NoResult,
     };
 
     // Not part of React state
@@ -250,26 +250,26 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         title: "JSON",
         content: {
           className: "graphJsonEditor graphTabContent",
-          render: () => this.renderResultAsJson()
+          render: () => this.renderResultAsJson(),
         },
-        isVisible: () => true
+        isVisible: () => true,
       },
       {
         title: "Graph",
         content: {
           className: "graphTabContent",
-          render: () => this.renderResultAsGraph()
+          render: () => this.renderResultAsGraph(),
         },
-        isVisible: () => this.state.filterQueryStatus === FilterQueryStatus.GraphResult
+        isVisible: () => this.state.filterQueryStatus === FilterQueryStatus.GraphResult,
       },
       {
         title: GraphExplorer.QUERY_STATS_BUTTON_LABEL,
         content: {
           className: "graphTabContent",
-          render: () => this.renderResultStats()
+          render: () => this.renderResultStats(),
         },
-        isVisible: () => true
-      }
+        isVisible: () => true,
+      },
     ];
 
     this.queryRawData = null;
@@ -284,7 +284,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }
 
     /* TODO Make this Knockout-free ! */
-    this.props.graphConfigUiData.nodeCaptionChoice.subscribe(key => {
+    this.props.graphConfigUiData.nodeCaptionChoice.subscribe((key) => {
       this.props.graphConfig.nodeCaption(key);
       const selectedNode = this.state.highlightedNode;
       if (selectedNode) {
@@ -293,20 +293,20 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
       this.render();
     });
-    this.props.graphConfigUiData.nodeColorKeyChoice.subscribe(val => {
+    this.props.graphConfigUiData.nodeColorKeyChoice.subscribe((val) => {
       this.props.graphConfig.nodeColorKey(val === GraphExplorer.NONE_CHOICE ? null : val);
       this.render();
     });
-    this.props.graphConfigUiData.showNeighborType.subscribe(val => {
+    this.props.graphConfigUiData.showNeighborType.subscribe((val) => {
       this.props.graphConfig.showNeighborType(val);
       this.render();
     });
 
-    this.props.graphConfigUiData.nodeIconChoice.subscribe(val => {
+    this.props.graphConfigUiData.nodeIconChoice.subscribe((val) => {
       this.updateNodeIcons(val, this.props.graphConfigUiData.nodeIconSet());
       this.render();
     });
-    this.props.graphConfigUiData.nodeIconSet.subscribe(val => {
+    this.props.graphConfigUiData.nodeIconSet.subscribe((val) => {
       this.updateNodeIcons(this.props.graphConfigUiData.nodeIconChoice(), val);
       this.render();
     });
@@ -314,7 +314,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     props.onGraphAccessorCreated({
       applyFilter: this.submitQuery.bind(this),
-      addVertex: this.addVertex.bind(this)
+      addVertex: this.addVertex.bind(this),
     });
   } // constructor
 
@@ -339,7 +339,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     let pkId = editedProperties.pkId;
     let updateQueryFragment = "";
 
-    finalProperties.forEach(p => {
+    finalProperties.forEach((p) => {
       // Partition key cannot be updated
       if (p.key === partitionKeyProperty) {
         return;
@@ -368,7 +368,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       this.setNodePropertiesViewMode(NodeProperties.Mode.READONLY_PROP);
       return Q.resolve({
         data: [],
-        isIncomplete: false
+        isIncomplete: false,
       });
     }
 
@@ -388,7 +388,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     } else {
       promise = Q.resolve({
         data: [],
-        isIncomplete: false
+        isIncomplete: false,
       });
     }
 
@@ -681,8 +681,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
               : null),
           currentPage: {
             start: offsetIndex,
-            end: offsetIndex + addedEdgesNb
-          }
+            end: offsetIndex + addedEdgesNb,
+          },
         };
       }
       updateGraphData();
@@ -731,10 +731,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       maxItemCount: GraphExplorer.PAGE_ALL,
       enableCrossPartitionQuery:
         StorageUtility.LocalStorageUtility.getEntryString(StorageUtility.StorageKey.IsCrossPartitionQueryEnabled) ===
-        "true"
+        "true",
     }).then(
       (iterator: QueryIterator<ItemDefinition & Resource>) => {
-        return iterator.fetchNext().then(response => response.resources);
+        return iterator.fetchNext().then((response) => response.resources);
       },
       (reason: any) => {
         GraphExplorer.reportToConsole(
@@ -870,7 +870,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     this.setState({
       rootMap: {},
       hasMoreRoots: false,
-      selectedRootId: null
+      selectedRootId: null,
     });
     this.setFilterQueryStatus(FilterQueryStatus.Loading);
 
@@ -896,7 +896,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         const errorMsg = `Failure in submitting query: ${query}: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
-          filterQueryError: errorMsg
+          filterQueryError: errorMsg,
         });
       }
     );
@@ -1030,7 +1030,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           collectionName: this.props.collectionId,
           defaultExperience: Constants.DefaultAccountExperience.Graph,
           dataExplorerArea: Constants.Areas.Tab,
-          tabTitle: "Graph"
+          tabTitle: "Graph",
         },
         this.props.onLoadStartKey
       );
@@ -1142,7 +1142,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         $.each(documents, (index: number, doc: any) => {
           newIconsMap[doc["_graph_icon_property_value"]] = {
             data: doc["icon"],
-            format: doc["format"]
+            format: doc["format"],
           };
         });
 
@@ -1166,7 +1166,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         this.setResultDisplay(ResultDisplay.None);
         this.setState({
           filterQueryError: null,
-          filterQueryWarning: null
+          filterQueryWarning: null,
         });
         break;
       case FilterQueryStatus.NonGraphResult:
@@ -1200,7 +1200,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         let result = GraphData.GraphData.getNodePropValue(value, key);
         return {
           caption: result !== undefined ? result : value.id,
-          id: value.id
+          id: value.id,
         };
       }
     );
@@ -1267,7 +1267,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       databaseId: this.props.databaseId,
       collectionId: this.props.collectionId,
       masterKey: this.props.masterKey,
-      maxResultSize: GraphExplorer.MAX_RESULT_SIZE
+      maxResultSize: GraphExplorer.MAX_RESULT_SIZE,
     });
   }
 
@@ -1292,7 +1292,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const isTabsContentExpanded = !this.state.isTabsContentExpanded;
     this.setState({
       isTabsContentExpanded: isTabsContentExpanded,
-      isPropertiesCollapsed: isTabsContentExpanded
+      isPropertiesCollapsed: isTabsContentExpanded,
     });
   }
 
@@ -1393,8 +1393,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private updatePossibleVertices(): Q.Promise<PossibleVertex[]> {
     const highlightedNodeId = this.state.highlightedNode ? this.state.highlightedNode.id : null;
 
-    const q = `SELECT c.id, c["${this.props.graphConfigUiData.nodeCaptionChoice() ||
-      "id"}"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
+    const q = `SELECT c.id, c["${
+      this.props.graphConfigUiData.nodeCaptionChoice() || "id"
+    }"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
     return this.executeNonPagedDocDbQuery(q).then(
       (documents: DataModels.DocumentId[]) => {
         let possibleVertices = [] as PossibleVertex[];
@@ -1408,13 +1409,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           if (typeof item.p === "string" || item.p instanceof String) {
             possibleVertices.push({
               value: item.id,
-              caption: item.p
+              caption: item.p,
             });
           } else {
             if (item.hasOwnProperty("p")) {
               possibleVertices.push({
                 value: item.id,
-                caption: item.p[0]["_value"]
+                caption: item.p[0]["_value"],
               });
             }
           }
@@ -1542,7 +1543,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     // A bit of translation to make it easier to display
     let props: { [id: string]: ViewModels.GremlinPropertyValueType[] } = {};
     for (let p in data.properties) {
-      props[p] = data.properties[p].map(gremlinProperty => gremlinProperty.value);
+      props[p] = data.properties[p].map((gremlinProperty) => gremlinProperty.value);
     }
 
     // update neighbors
@@ -1558,7 +1559,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       properties: props,
       areNeighborsUnknown: !data._inEdgeIds || !data._outEdgeIds,
       sources: sources, //<VertexBasicInfo[]>[],
-      targets: targets //<VertexBasicInfo[]>[]
+      targets: targets, //<VertexBasicInfo[]>[]
     };
 
     // Update KO
@@ -1621,7 +1622,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         (value: string, index: number, array: string[]): InputTypeaheadComponent.Item => {
           return { caption: value, value: value };
         }
-      )
+      ),
     });
   }
 
@@ -1681,11 +1682,11 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       onHighlightedNode: this.onHighlightedNode.bind(this),
       onLoadMoreData: this.onLoadMoreData.bind(this),
       onInitialized: (instance: D3ForceGraph.GraphRenderer): void => this.onMiddlePaneInitialized(instance),
-      onGraphUpdated: this.onGraphUpdated.bind(this)
+      onGraphUpdated: this.onGraphUpdated.bind(this),
     };
 
     const graphVizProp: GraphVizComponentProps = {
-      forceGraphParams: forceGraphParams
+      forceGraphParams: forceGraphParams,
     };
 
     return (
@@ -1729,14 +1730,14 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     return queryDocuments(this.props.databaseId, this.props.collectionId, query, {
       maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
-      enableCrossPartitionQuery: LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
+      enableCrossPartitionQuery: LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true",
     })
       .then(
         (iterator: QueryIterator<ItemDefinition & Resource>) => {
           this.currentDocDBQueryInfo = {
             iterator: iterator,
             index: 0,
-            query: query
+            query: query,
           };
         },
         (reason: any) => {
@@ -1755,8 +1756,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }
     let RU: string = GraphExplorer.REQUEST_CHARGE_UNKNOWN_MSG;
 
-    const queryInfoStr = `${this.currentDocDBQueryInfo.query} (${this.currentDocDBQueryInfo.index + 1}-${this
-      .currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE})`;
+    const queryInfoStr = `${this.currentDocDBQueryInfo.query} (${this.currentDocDBQueryInfo.index + 1}-${
+      this.currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE
+    })`;
     const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${queryInfoStr}`);
 
     return queryDocumentsPage(
@@ -1765,7 +1767,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       this.currentDocDBQueryInfo.index,
       {
         enableCrossPartitionQuery:
-          LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
+          LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true",
       }
     )
       .then((results: ViewModels.QueryResults) => {
@@ -1788,7 +1790,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
             const errorMsg = `Failed to query: ${this.currentDocDBQueryInfo.query}. Reason:${reason}`;
             GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
             this.setState({
-              filterQueryError: errorMsg
+              filterQueryError: errorMsg,
             });
             this.setFilterQueryStatus(FilterQueryStatus.ErrorResult);
             throw reason;
@@ -1817,7 +1819,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         const errorMsg = `Failed to execute query: ${query}: ${error}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
-          filterQueryError: errorMsg
+          filterQueryError: errorMsg,
         });
         this.setFilterQueryStatus(FilterQueryStatus.ErrorResult);
         throw error;
@@ -1830,7 +1832,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         const errorMsg = `Failed to process query result: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
-          filterQueryError: errorMsg
+          filterQueryError: errorMsg,
         });
       });
 

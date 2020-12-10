@@ -33,10 +33,7 @@ export function queryDocuments(
   options: any
 ): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
   options = getCommonQueryOptions(options);
-  const documentsIterator = client()
-    .database(databaseId)
-    .container(containerId)
-    .items.query(query, options);
+  const documentsIterator = client().database(databaseId).container(containerId).items.query(query, options);
   return Q(documentsIterator);
 }
 
@@ -72,7 +69,7 @@ export function updateDocument(
       .container(collection.id())
       .item(documentId.id(), partitionKey)
       .replace(newDocument)
-      .then(response => response.resource)
+      .then((response) => response.resource)
   );
 }
 
@@ -90,13 +87,13 @@ export function executeStoredProcedure(
     .container(collection.id())
     .scripts.storedProcedure(storedProcedure.id())
     .execute(partitionKeyValue, params, { enableScriptLogging: true })
-    .then(response =>
+    .then((response) =>
       deferred.resolve({
         result: response.resource,
-        scriptLogs: response.headers[Constants.HttpHeaders.scriptLogResults]
+        scriptLogs: response.headers[Constants.HttpHeaders.scriptLogResults],
       })
     )
-    .catch(error => deferred.reject(error));
+    .catch((error) => deferred.reject(error));
 
   return deferred.promise.timeout(
     Constants.ClientDefaults.requestTimeoutMs,
@@ -110,7 +107,7 @@ export function createDocument(collection: ViewModels.CollectionBase, newDocumen
       .database(collection.databaseId)
       .container(collection.id())
       .items.create(newDocument)
-      .then(response => response.resource)
+      .then((response) => response.resource)
   );
 }
 
@@ -123,7 +120,7 @@ export function readDocument(collection: ViewModels.CollectionBase, documentId: 
       .container(collection.id())
       .item(documentId.id(), partitionKey)
       .read()
-      .then(response => response.resource)
+      .then((response) => response.resource)
   );
 }
 
@@ -131,11 +128,7 @@ export function deleteDocument(collection: ViewModels.CollectionBase, documentId
   const partitionKey = documentId.partitionKeyValue;
 
   return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .item(documentId.id(), partitionKey)
-      .delete()
+    client().database(collection.databaseId).container(collection.id()).item(documentId.id(), partitionKey).delete()
   );
 }
 
@@ -147,11 +140,7 @@ export function deleteConflict(
   options.partitionKey = options.partitionKey || getPartitionKeyHeaderForConflict(conflictId);
 
   return Q(
-    client()
-      .database(collection.databaseId)
-      .container(collection.id())
-      .conflict(conflictId.id())
-      .delete(options)
+    client().database(collection.databaseId).container(collection.id()).conflict(conflictId.id()).delete(options)
   );
 }
 
@@ -161,9 +150,6 @@ export function queryConflicts(
   query: string,
   options: any
 ): Q.Promise<QueryIterator<ConflictDefinition & Resource>> {
-  const documentsIterator = client()
-    .database(databaseId)
-    .container(containerId)
-    .conflicts.query(query, options);
+  const documentsIterator = client().database(databaseId).container(containerId).conflicts.query(query, options);
   return Q(documentsIterator);
 }

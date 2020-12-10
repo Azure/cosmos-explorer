@@ -11,8 +11,8 @@ describe("nextPage", () => {
           queryMetrics: {},
           requestCharge: 1,
           headers: {},
-          activityId: "foo"
-        })
+          activityId: "foo",
+        }),
     };
 
     expect(await nextPage(fakeIterator, 10)).toMatchSnapshot();

@@ -1,7 +1,7 @@
 export enum Platform {
   Portal = "Portal",
   Hosted = "Hosted",
-  Emulator = "Emulator"
+  Emulator = "Emulator",
 }
 
 interface ConfigContext {
@@ -37,7 +37,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
     `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
-    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
   ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
@@ -52,7 +52,7 @@ let configContext: Readonly<ConfigContext> = {
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
-  BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+  BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
 };
 
 export function resetConfigContext(): void {
@@ -73,7 +73,7 @@ if (process.env.NODE_ENV === "development") {
     BACKEND_ENDPOINT: "https://localhost:" + port,
     MONGO_BACKEND_ENDPOINT: "https://localhost:" + port,
     PROXY_PATH: "/proxy",
-    EMULATOR_ENDPOINT: "https://localhost:8081"
+    EMULATOR_ENDPOINT: "https://localhost:8081",
   });
 }
 
@@ -86,7 +86,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
         Object.assign(configContext, externalConfig);
         if (allowedParentFrameOrigins && allowedParentFrameOrigins.length > 0) {
           updateConfigContext({
-            allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins]
+            allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins],
           });
         }
       } catch (error) {

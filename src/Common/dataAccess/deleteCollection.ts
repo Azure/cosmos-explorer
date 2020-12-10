@@ -16,10 +16,7 @@ export async function deleteCollection(databaseId: string, collectionId: string)
     if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       await deleteCollectionWithARM(databaseId, collectionId);
     } else {
-      await client()
-        .database(databaseId)
-        .container(collectionId)
-        .delete();
+      await client().database(databaseId).container(collectionId).delete();
     }
     logConsoleInfo(`Successfully deleted container ${collectionId}`);
   } catch (error) {

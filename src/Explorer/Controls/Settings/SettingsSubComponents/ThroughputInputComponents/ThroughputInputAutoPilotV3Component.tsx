@@ -11,7 +11,7 @@ import {
   getEstimatedSpendElement,
   getEstimatedAutoscaleSpendElement,
   getAutoPilotV3SpendElement,
-  manualToAutoscaleDisclaimerElement
+  manualToAutoscaleDisclaimerElement,
 } from "../../SettingsRenderUtils";
 import {
   Text,
@@ -23,7 +23,7 @@ import {
   Label,
   Link,
   MessageBar,
-  MessageBarType
+  MessageBarType,
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
@@ -82,7 +82,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private autoPilotInputMaxValue: number;
   private options: IChoiceGroupOption[] = [
     { key: "true", text: "Autoscale" },
-    { key: "false", text: "Manual" }
+    { key: "false", text: "Manual" },
   ];
 
   componentDidMount(): void {
@@ -142,7 +142,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
     this.state = {
-      spendAckChecked: this.props.spendAckChecked
+      spendAckChecked: this.props.spendAckChecked,
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;

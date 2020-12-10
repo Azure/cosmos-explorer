@@ -14,7 +14,7 @@ import {
   getMongoIndexTypeText,
   SingleFieldText,
   WildcardText,
-  isIndexTransforming
+  isIndexTransforming,
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -46,7 +46,7 @@ describe("SettingsUtils", () => {
         onDeleteDatabaseContextMenuClick: undefined,
         readSettings: undefined,
         onSettingsClick: undefined,
-        loadOffer: undefined
+        loadOffer: undefined,
       } as ViewModels.Database;
     };
     newCollection.offer(undefined);
@@ -68,7 +68,7 @@ describe("SettingsUtils", () => {
       automatic: true,
       indexingMode: "consistent",
       includedPaths: [],
-      excludedPaths: []
+      excludedPaths: [],
     } as DataModels.IndexingPolicy;
 
     const cases = [
@@ -76,7 +76,7 @@ describe("SettingsUtils", () => {
       [0, 1],
       [true, false],
       [undefined, indexingPolicy],
-      [indexingPolicy, { ...indexingPolicy, automatic: false }]
+      [indexingPolicy, { ...indexingPolicy, automatic: false }],
     ];
 
     test.each(cases)("", (baseline: isDirtyTypes, current: isDirtyTypes) => {

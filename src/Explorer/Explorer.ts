@@ -95,7 +95,7 @@ var tmp = ComponentRegisterer;
 
 enum ShareAccessToggleState {
   ReadWrite,
-  Read
+  Read,
 }
 
 interface AdHocAccessData {
@@ -243,7 +243,7 @@ export default class Explorer {
 
   private _panes: ContextualPaneBase[] = [];
   private _importExplorerConfigComplete: boolean = false;
-  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = database => false;
+  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
   private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
@@ -266,7 +266,7 @@ export default class Explorer {
 
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.addCollectionText = ko.observable<string>("New Collection");
     this.addDatabaseText = ko.observable<string>("New Database");
@@ -322,7 +322,7 @@ export default class Explorer {
         this.notebookWorkspaceManager = new NotebookWorkspaceManager(this.armEndpoint());
         this.arcadiaWorkspaces = ko.observableArray();
         this._arcadiaManager = new ArcadiaResourceManager(this.armEndpoint());
-        this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then(isRegistered =>
+        this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then((isRegistered) =>
           this.hasStorageAnalyticsAfecFeature(isRegistered)
         );
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
@@ -337,7 +337,7 @@ export default class Explorer {
               isNotebookEnabled: this.isNotebookEnabled(),
               databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
               defaultExperience: this.defaultExperience && this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Notebook
+              dataExplorerArea: Constants.Areas.Notebook,
             });
 
             if (this.isNotebookEnabled()) {
@@ -383,7 +383,7 @@ export default class Explorer {
 
     this.shareAccessData = ko.observable<AdHocAccessData>({
       readWriteUrl: undefined,
-      readUrl: undefined
+      readUrl: undefined,
     });
     this.tokenForRenewal = ko.observable<string>("");
     this.renewTokenError = ko.observable<string>("");
@@ -457,23 +457,23 @@ export default class Explorer {
 
     const splitterBounds: SplitterBounds = {
       min: ExplorerMetrics.SplitterMinWidth,
-      max: ExplorerMetrics.SplitterMaxWidth
+      max: ExplorerMetrics.SplitterMaxWidth,
     };
     this.splitter = new Splitter({
       splitterId: "h_splitter1",
       leftId: "resourcetree",
       bounds: splitterBounds,
-      direction: SplitterDirection.Vertical
+      direction: SplitterDirection.Vertical,
     });
     this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
-    this.databaseAccount.subscribe(databaseAccount => {
+    this.databaseAccount.subscribe((databaseAccount) => {
       const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
         databaseAccount
       );
       this.defaultExperience(defaultExperience);
       updateUserContext({
-        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience)
+        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
       });
     });
 
@@ -512,7 +512,7 @@ export default class Explorer {
       () =>
         this.databaseAccount &&
         this.databaseAccount()?.properties?.capabilities?.find(
-          item => item.name === Constants.CapabilityNames.EnableServerless
+          (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
 
@@ -599,7 +599,7 @@ export default class Explorer {
       id: "adddatabasepane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.addCollectionPane = new AddCollectionPane({
@@ -607,98 +607,98 @@ export default class Explorer {
       id: "addcollectionpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
       id: "deletecollectionconfirmationpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
       id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.addTableEntityPane = new AddTableEntityPane({
       id: "addtableentitypane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.editTableEntityPane = new EditTableEntityPane({
       id: "edittableentitypane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.tableColumnOptionsPane = new TableColumnOptionsPane({
       id: "tablecolumnoptionspane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.querySelectPane = new QuerySelectPane({
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.newVertexPane = new NewVertexPane({
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.settingsPane = new SettingsPane({
       id: "settingspane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.executeSprocParamsPane = new ExecuteSprocParamsPane({
       id: "executesprocparamspane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.renewAdHocAccessPane = new RenewAdHocAccessPane({
       id: "renewadhocaccesspane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.uploadItemsPane = new UploadItemsPane({
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
@@ -707,42 +707,42 @@ export default class Explorer {
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.saveQueryPane = new SaveQueryPane({
       id: "savequerypane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.browseQueriesPane = new BrowseQueriesPane({
       id: "browsequeriespane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.uploadFilePane = new UploadFilePane({
       id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.stringInputPane = new StringInputPane({
       id: "stringinputpane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.setupNotebooksPane = new SetupNotebooksPane({
       id: "setupnotebookspane",
       visible: ko.observable<boolean>(false),
 
-      container: this
+      container: this,
     });
 
     this.tabsManager = new TabsManager();
@@ -768,25 +768,25 @@ export default class Explorer {
       this.browseQueriesPane,
       this.uploadFilePane,
       this.stringInputPane,
-      this.setupNotebooksPane
+      this.setupNotebooksPane,
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
       "contextmenu",
-      function(e) {
+      function (e) {
         e.preventDefault();
       },
       false
     );
 
-    $(function() {
+    $(function () {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });
 
     // TODO move this to API customization class
-    this.defaultExperience.subscribe(defaultExperience => {
+    this.defaultExperience.subscribe((defaultExperience) => {
       const defaultExperienceNormalizedString = (
         defaultExperience || Constants.DefaultAccountExperience.Default
       ).toLowerCase();
@@ -900,7 +900,7 @@ export default class Explorer {
           notebookBasePath: this.notebookBasePath,
           resourceTree: this.resourceTree,
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
-          refreshNotebookList: () => this.refreshNotebookList()
+          refreshNotebookList: () => this.refreshNotebookList(),
         });
 
         this.gitHubReposPane = this.notebookManager.gitHubReposPane;
@@ -917,17 +917,17 @@ export default class Explorer {
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
     this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
       notebookServerEndpoint: undefined,
-      authToken: undefined
+      authToken: undefined,
     });
     this.notebookBasePath = ko.observable(Constants.Notebook.defaultBasePath);
     this.sparkClusterConnectionInfo = ko.observable<DataModels.SparkClusterConnectionInfo>({
       userName: undefined,
       password: undefined,
-      endpoints: []
+      endpoints: [],
     });
 
     // Override notebook server parameters from URL parameters
-    const featureSubcription = this.features.subscribe(features => {
+    const featureSubcription = this.features.subscribe((features) => {
       const serverInfo = this.notebookServerInfo();
       if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
         serverInfo.notebookServerEndpoint = features[Constants.Features.notebookServerUrl];
@@ -950,9 +950,9 @@ export default class Explorer {
           endpoints: [
             {
               endpoint: features[Constants.Features.livyEndpoint],
-              kind: DataModels.SparkClusterEndpointKind.Livy
-            }
-          ]
+              kind: DataModels.SparkClusterEndpointKind.Livy,
+            },
+          ],
         });
         this.sparkClusterConnectionInfo.valueHasMutated();
       }
@@ -972,7 +972,7 @@ export default class Explorer {
       primaryButtonText: undefined,
       secondaryButtonText: undefined,
       onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined
+      onSecondaryButtonClick: undefined,
     });
     this.dialogComponentAdapter = new DialogComponentAdapter();
     this.dialogComponentAdapter.parameters = this._dialogProps;
@@ -987,7 +987,7 @@ export default class Explorer {
       primaryButtonText: undefined,
       secondaryButtonText: undefined,
       onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined
+      onSecondaryButtonClick: undefined,
     });
     this.addSynapseLinkDialog = new DialogComponentAdapter();
     this.addSynapseLinkDialog.parameters = this._addSynapseLinkDialogProps;
@@ -997,7 +997,7 @@ export default class Explorer {
     const addSynapseLinkDialogProps: DialogProps = {
       linkProps: {
         linkText: "Learn more",
-        linkUrl: "https://aka.ms/cosmosdb-synapselink"
+        linkUrl: "https://aka.ms/cosmosdb-synapselink",
       },
       isModal: true,
       visible: true,
@@ -1026,8 +1026,8 @@ export default class Explorer {
             "2019-12-12",
             {
               properties: {
-                enableAnalyticalStorage: true
-              }
+                enableAnalyticalStorage: true,
+              },
             }
           );
           NotificationConsoleUtils.clearInProgressMessageWithId(logId);
@@ -1052,7 +1052,7 @@ export default class Explorer {
       onSecondaryButtonClick: () => {
         this._closeSynapseLinkModalDialog();
         TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
-      }
+      },
     };
     this._addSynapseLinkDialogProps(addSynapseLinkDialogProps);
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
@@ -1071,7 +1071,7 @@ export default class Explorer {
       description: "Copy full screen URL",
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
       defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ShareDialog
+      dataExplorerArea: Constants.Areas.ShareDialog,
     });
   }
 
@@ -1128,7 +1128,7 @@ export default class Explorer {
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully generated share url");
         this.shareAccessData({
           readWriteUrl: this._getShareAccessUrlForToken(tokenResponse.readWrite),
-          readUrl: this._getShareAccessUrlForToken(tokenResponse.read)
+          readUrl: this._getShareAccessUrlForToken(tokenResponse.read),
         });
         !this.shareAccessData().readWriteUrl && this.shareAccessToggleState(ShareAccessToggleState.Read); // select read toggle by default for readers
         this.shareAccessToggleState.valueHasMutated(); // to set initial url and token state
@@ -1186,14 +1186,14 @@ export default class Explorer {
         click: () => {
           this.renewAdHocAccessPane.open();
           $("#dataAccessTokenModal").dialog("close");
-        }
+        },
       };
       const cancelButton = {
         text: "Cancel",
         class: "connectDialogButtons cancelBtn",
         click: () => {
           $("#dataAccessTokenModal").dialog("close");
-        }
+        },
       };
 
       $("#dataAccessTokenModal").dialog({
@@ -1208,10 +1208,10 @@ export default class Explorer {
         resizable: false,
         title: "Temporary access expired",
         width: 435,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false)
+        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false),
       });
       $("#dataAccessTokenModal").dialog("option", "classes", {
-        "ui-dialog-titlebar": "connectTitlebar"
+        "ui-dialog-titlebar": "connectTitlebar",
       });
     }
     this.shouldShowDataAccessExpiryDialog(true);
@@ -1230,14 +1230,14 @@ export default class Explorer {
         $("#contextSwitchPrompt").dialog("close");
         this.tabsManager.closeTabs(); // clear all tabs so we dont leave any tabs from previous session open
         this.renewShareAccess(connectionString);
-      }
+      },
     };
     const noButton = {
       text: "Cancel",
       class: "connectDialogButtons cancelBtn",
       click: () => {
         $("#contextSwitchPrompt").dialog("close");
-      }
+      },
     };
 
     if (!$("#contextSwitchPrompt").dialog("instance")) {
@@ -1253,17 +1253,14 @@ export default class Explorer {
         resizable: false,
         title: "Switch account",
         width: 440,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false)
+        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false),
       });
       $("#contextSwitchPrompt").dialog("option", "classes", {
-        "ui-dialog-titlebar": "connectTitlebar"
+        "ui-dialog-titlebar": "connectTitlebar",
       });
       $("#contextSwitchPrompt").dialog("option", "open", (event: Event, ui: JQueryUI.DialogUIParams) => {
         $(".ui-dialog ").css("z-index", 1001);
-        $("#contextSwitchPrompt")
-          .parent()
-          .siblings(".ui-widget-overlay")
-          .css("z-index", 1000);
+        $("#contextSwitchPrompt").parent().siblings(".ui-widget-overlay").css("z-index", 1000);
       });
     }
     $("#contextSwitchPrompt").dialog("option", "buttons", [yesButton, noButton]); // rebind buttons so callbacks accept current connection string
@@ -1392,14 +1389,14 @@ export default class Explorer {
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
       defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
     let resourceTreeStartKey: number = null;
     if (isInitialLoad) {
       resourceTreeStartKey = TelemetryProcessor.traceStart(Action.LoadResourceTree, {
         databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
         defaultExperience: this.defaultExperience && this.defaultExperience(),
-        dataExplorerArea: Constants.Areas.ResourceTree
+        dataExplorerArea: Constants.Areas.ResourceTree,
       });
     }
 
@@ -1414,7 +1411,7 @@ export default class Explorer {
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.ResourceTree
+            dataExplorerArea: Constants.Areas.ResourceTree,
           },
           startKey
         );
@@ -1430,14 +1427,14 @@ export default class Explorer {
               this._setLoadingStatusText("Successfully fetched containers.");
               deferred.resolve();
             },
-            reason => {
+            (reason) => {
               this._setLoadingStatusText("Failed to fetch containers.");
               deferred.reject(reason);
             }
           )
           .finally(() => this.isRefreshingExplorer(false));
       },
-      error => {
+      (error) => {
         this._setLoadingStatusText("Failed to fetch databases.");
         this.isRefreshingExplorer(false);
         deferred.reject(error);
@@ -1449,7 +1446,7 @@ export default class Explorer {
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
             error: errorMessage,
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );
@@ -1468,13 +1465,13 @@ export default class Explorer {
             {
               databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
               defaultExperience: this.defaultExperience && this.defaultExperience(),
-              dataExplorerArea: Constants.Areas.ResourceTree
+              dataExplorerArea: Constants.Areas.ResourceTree,
             },
             resourceTreeStartKey
           );
         }
       },
-      error => {
+      (error) => {
         if (resourceTreeStartKey != null) {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
@@ -1483,7 +1480,7 @@ export default class Explorer {
               defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
               error: getErrorMessage(error),
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             resourceTreeStartKey
           );
@@ -1505,7 +1502,7 @@ export default class Explorer {
       description: "Refresh button clicked",
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
       defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.isRefreshingExplorer(true);
     this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
@@ -1546,10 +1543,10 @@ export default class Explorer {
       const sparkPromises: Promise<void>[] = [];
       workspaces.forEach((workspace, i) => {
         let promise = this._arcadiaManager.listSparkPoolsAsync(workspaces[i].id).then(
-          sparkpools => {
+          (sparkpools) => {
             workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
           },
-          error => {
+          (error) => {
             Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
           }
         );
@@ -1584,7 +1581,7 @@ export default class Explorer {
     await this.ensureNotebookWorkspaceRunning();
     let connectionInfo: DataModels.NotebookWorkspaceConnectionInfo = {
       authToken: undefined,
-      notebookServerEndpoint: undefined
+      notebookServerEndpoint: undefined,
     };
     try {
       connectionInfo = await this.notebookWorkspaceManager.getNotebookConnectionInfoAsync(
@@ -1633,7 +1630,7 @@ export default class Explorer {
       primaryButtonText: "OK",
       secondaryButtonText: "Cancel",
       onPrimaryButtonClick: this._resetNotebookWorkspace,
-      onSecondaryButtonClick: this._closeModalDialog
+      onSecondaryButtonClick: this._closeModalDialog,
     };
     this._dialogProps(resetConfirmationDialogProps);
   }
@@ -1645,7 +1642,7 @@ export default class Explorer {
 
     try {
       const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
-      return workspaces && workspaces.length > 0 && workspaces.some(workspace => workspace.name === "default");
+      return workspaces && workspaces.length > 0 && workspaces.some((workspace) => workspace.name === "default");
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
@@ -1690,7 +1687,7 @@ export default class Explorer {
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to reset notebook workspace: ${error}`);
       TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
         error: getErrorMessage(error),
-        errorStack: getErrorStack(error)
+        errorStack: getErrorStack(error),
       });
       throw error;
     } finally {
@@ -1880,7 +1877,7 @@ export default class Explorer {
 
       updateConfigContext({
         BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
-        ARM_ENDPOINT: this.armEndpoint()
+        ARM_ENDPOINT: this.armEndpoint(),
       });
 
       updateUserContext({
@@ -1889,14 +1886,14 @@ export default class Explorer {
         databaseAccount,
         resourceGroup: inputs.resourceGroup,
         subscriptionId: inputs.subscriptionId,
-        subscriptionType: inputs.subscriptionType
+        subscriptionType: inputs.subscriptionType,
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
           resourceId: this.databaseAccount && this.databaseAccount().id,
           dataExplorerArea: Constants.Areas.ResourceTree,
-          databaseAccount: this.databaseAccount && this.databaseAccount()
+          databaseAccount: this.databaseAccount && this.databaseAccount(),
         },
         inputs.loadDatabaseAccountTimestamp
       );
@@ -1924,7 +1921,7 @@ export default class Explorer {
     return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
       const openedSprocTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
-        tab => tab.node && tab.node.rid === storedProcedure.rid
+        (tab) => tab.node && tab.node.rid === storedProcedure.rid
       );
       return (
         storedProcedure.rid === this.selectedNode().rid ||
@@ -1938,7 +1935,7 @@ export default class Explorer {
     return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
       const openedUdfTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.UserDefinedFunctions,
-        tab => tab.node && tab.node.rid === userDefinedFunction.rid
+        (tab) => tab.node && tab.node.rid === userDefinedFunction.rid
       );
       return (
         userDefinedFunction.rid === this.selectedNode().rid ||
@@ -1952,7 +1949,7 @@ export default class Explorer {
     return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
       const openedTriggerTab = this.tabsManager.getTabs(
         ViewModels.CollectionTabKind.Triggers,
-        tab => tab.node && tab.node.rid === trigger.rid
+        (tab) => tab.node && tab.node.rid === trigger.rid
       );
       return (
         trigger.rid === this.selectedNode().rid ||
@@ -1980,7 +1977,7 @@ export default class Explorer {
   public signInAad = () => {
     TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
     sendMessage({
-      type: MessageTypes.AadSignIn
+      type: MessageTypes.AadSignIn,
     });
   };
 
@@ -1992,20 +1989,20 @@ export default class Explorer {
   public clickHostedAccountSwitch = () => {
     sendMessage({
       type: MessageTypes.UpdateAccountSwitch,
-      click: true
+      click: true,
     });
   };
 
   public clickHostedDirectorySwitch = () => {
     sendMessage({
       type: MessageTypes.UpdateDirectoryControl,
-      click: true
+      click: true,
     });
   };
 
   public refreshDatabaseAccount = () => {
     sendMessage({
-      type: MessageTypes.RefreshDatabaseAccount
+      type: MessageTypes.RefreshDatabaseAccount,
     });
   };
 
@@ -2019,12 +2016,12 @@ export default class Explorer {
     const databasesToLoad =
       this.databases().length <= Explorer.MaxNbDatabasesToAutoExpand
         ? this.databases()
-        : this.databases().filter(db => db.isDatabaseExpanded());
+        : this.databases().filter((db) => db.isDatabaseExpanded());
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
       defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
     databasesToLoad.forEach(async (database: ViewModels.Database) => {
       await database.loadCollections();
@@ -2032,7 +2029,7 @@ export default class Explorer {
       if (isNewDatabase) {
         database.expandDatabase();
       }
-      this.tabsManager.refreshActiveTab(tab => tab.collection && tab.collection.getDatabase().id() === database.id());
+      this.tabsManager.refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
     });
 
     Q.all(loadCollectionPromises).done(
@@ -2053,7 +2050,7 @@ export default class Explorer {
             defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
             error: getErrorMessage(error),
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );
@@ -2068,7 +2065,7 @@ export default class Explorer {
       const accountMetadataInfo = {
         databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
         defaultExperience: this.defaultExperience && this.defaultExperience(),
-        dataExplorerArea: Constants.Areas.ShareDialog
+        dataExplorerArea: Constants.Areas.ShareDialog,
       };
       const openFullscreenButton = {
         text: "Open",
@@ -2085,7 +2082,7 @@ export default class Explorer {
           hiddenAnchorElement.target = "_blank";
           $("#shareDataAccessFlyout").dialog("close");
           hiddenAnchorElement.click();
-        }
+        },
       };
       const cancelButton = {
         text: "Cancel",
@@ -2097,7 +2094,7 @@ export default class Explorer {
             _.extend({}, { description: "Cancel open full screen" }, accountMetadataInfo)
           );
           $("#shareDataAccessFlyout").dialog("close");
-        }
+        },
       };
       $("#shareDataAccessFlyout").dialog({
         autoOpen: false,
@@ -2109,7 +2106,7 @@ export default class Explorer {
         resizable: false,
         title: "Open Full Screen",
         width: 400,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowShareDialogContents(false)
+        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowShareDialogContents(false),
       });
       $("#shareDataAccessFlyout").dialog("option", "classes", {
         "ui-widget-content": "shareUrlDialog",
@@ -2117,7 +2114,7 @@ export default class Explorer {
         "ui-dialog-titlebar-close": "shareClose",
         "ui-button": "shareCloseIcon",
         "ui-button-icon": "cancelIcon",
-        "ui-icon": ""
+        "ui-icon": "",
       });
       $("#shareDataAccessFlyout").dialog("option", "open", (event: Event, ui: JQueryUI.DialogUIParams) =>
         $(".openFullScreenBtn").focus()
@@ -2236,7 +2233,7 @@ export default class Explorer {
     const parent = this.resourceTree.myNotebooksContentRoot;
 
     if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
-      const existingItem = _.find(parent.children, node => node.name === name);
+      const existingItem = _.find(parent.children, (node) => node.name === name);
       if (existingItem) {
         return this.openNotebook(existingItem);
       }
@@ -2257,7 +2254,7 @@ export default class Explorer {
         this.notebookToImport = undefined; // we don't want to try opening this notebook again
       }
 
-      const existingItem = _.find(parent.children, node => node.name === name);
+      const existingItem = _.find(parent.children, (node) => node.name === name);
       if (existingItem) {
         return this.openNotebook(existingItem);
       }
@@ -2301,7 +2298,7 @@ export default class Explorer {
       primaryButtonText: "Close",
       secondaryButtonText: undefined,
       onPrimaryButtonClick: this._closeModalDialog,
-      onSecondaryButtonClick: undefined
+      onSecondaryButtonClick: undefined,
     });
   }
 
@@ -2333,7 +2330,7 @@ export default class Explorer {
       },
       choiceGroupProps,
       textFieldProps,
-      primaryButtonDisabled: isPrimaryButtonDisabled
+      primaryButtonDisabled: isPrimaryButtonDisabled,
     });
   }
 
@@ -2358,7 +2355,7 @@ export default class Explorer {
 
     const notebookTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.NotebookV2,
-      tab =>
+      (tab) =>
         (tab as NotebookV2Tab).notebookPath &&
         FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
     ) as NotebookV2Tab[];
@@ -2381,7 +2378,7 @@ export default class Explorer {
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
         container: this,
-        notebookContentItem
+        notebookContentItem,
       };
 
       try {
@@ -2426,14 +2423,14 @@ export default class Explorer {
         paneTitle: "Rename Notebook",
         submitButtonLabel: "Rename",
         defaultInput: FileSystemUtil.stripExtension(notebookFile.name, "ipynb"),
-        onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
+        onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input),
       })
-      .then(newNotebookFile => {
+      .then((newNotebookFile) => {
         const notebookTabs = this.tabsManager.getTabs(
           ViewModels.CollectionTabKind.NotebookV2,
           (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
         );
-        notebookTabs.forEach(tab => {
+        notebookTabs.forEach((tab) => {
           tab.tabTitle(newNotebookFile.name);
           tab.tabPath(newNotebookFile.path);
           (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
@@ -2460,7 +2457,7 @@ export default class Explorer {
       paneTitle: "Create new directory",
       submitButtonLabel: "Create",
       defaultInput: "",
-      onSubmit: (input: string) => this.notebookManager?.notebookContentClient.createDirectory(parent, input)
+      onSubmit: (input: string) => this.notebookManager?.notebookContentClient.createDirectory(parent, input),
     });
     result.then(() => this.resourceTree.triggerRender());
     return result;
@@ -2537,12 +2534,12 @@ export default class Explorer {
       const response = await fetch(disallowedLocationsUri, {
         method: "POST",
         body: JSON.stringify({
-          resourceTypes: [Constants.ArmResourceTypes.notebookWorkspaces]
+          resourceTypes: [Constants.ArmResourceTypes.notebookWorkspaces],
         }),
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          [Constants.HttpHeaders.contentType]: "application/json"
-        }
+          [Constants.HttpHeaders.contentType]: "application/json",
+        },
       });
 
       if (!response.ok) {
@@ -2556,7 +2553,7 @@ export default class Explorer {
         return;
       }
       const isAccountInAllowedLocation = !disallowedLocations.some(
-        disallowedLocation => disallowedLocation === databaseAccountLocation
+        (disallowedLocation) => disallowedLocation === databaseAccountLocation
       );
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
@@ -2658,7 +2655,7 @@ export default class Explorer {
         primaryButtonText: "Close",
         secondaryButtonText: undefined,
         onPrimaryButtonClick: this._closeModalDialog,
-        onSecondaryButtonClick: undefined
+        onSecondaryButtonClick: undefined,
       });
       return Promise.reject();
     }
@@ -2696,7 +2693,7 @@ export default class Explorer {
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
       databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
       defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.Notebook
+      dataExplorerArea: Constants.Areas.Notebook,
     });
 
     this.notebookManager?.notebookContentClient
@@ -2708,7 +2705,7 @@ export default class Explorer {
           {
             databaseAccountName: this.databaseAccount().name,
             defaultExperience: this.defaultExperience(),
-            dataExplorerArea: Constants.Areas.Notebook
+            dataExplorerArea: Constants.Areas.Notebook,
           },
           startKey
         );
@@ -2725,7 +2722,7 @@ export default class Explorer {
             defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
             error: errorMessage,
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );
@@ -2761,7 +2758,7 @@ export default class Explorer {
         return this.uploadFile(file.name, fileContent, parent);
       },
       extensions: undefined,
-      submitButtonLabel: "Upload"
+      submitButtonLabel: "Upload",
     });
   }
 
@@ -2805,7 +2802,7 @@ export default class Explorer {
 
     const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Terminal,
-      tab => tab.hashLocation() == hashLocation
+      (tab) => tab.hashLocation() == hashLocation
     ) as TerminalTab[];
     let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
@@ -2825,7 +2822,7 @@ export default class Explorer {
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
         container: this,
-        kind: kind
+        kind: kind,
       });
 
       this.tabsManager.activateNewTab(newTab);
@@ -2838,7 +2835,7 @@ export default class Explorer {
 
     const galleryTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Gallery,
-      tab => tab.hashLocation() == hashLocation
+      (tab) => tab.hashLocation() == hashLocation
     );
     let galleryTab = galleryTabs && galleryTabs[0];
 
@@ -2866,7 +2863,7 @@ export default class Explorer {
         hashLocation: hashLocation,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
         isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null
+        onLoadStartKey: null,
       });
 
       this.tabsManager.activateNewTab(newTab);
@@ -2888,7 +2885,7 @@ export default class Explorer {
       return notebookViewerTab.notebookUrl === notebookUrl;
     };
 
-    const notebookViewerTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2, tab => {
+    const notebookViewerTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab) => {
       return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
     });
     let notebookViewerTab = notebookViewerTabs && notebookViewerTabs[0];
@@ -2910,7 +2907,7 @@ export default class Explorer {
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
         container: this,
-        notebookUrl
+        notebookUrl,
       });
 
       this.tabsManager.activateNewTab(notebookViewerTab);
@@ -3009,7 +3006,7 @@ export default class Explorer {
       if (response.status === Constants.HttpStatusCodes.OK) {
         this.notebookToImport = {
           name: NotebookUtil.getName(path),
-          content: await response.text()
+          content: await response.text(),
         };
 
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);

@@ -360,7 +360,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             .getTableSchema(this.queryTablesTab.collection)
             .then((headers: CassandraTableKey[]) => {
               this.updateHeaders(
-                headers.map(header => header.property),
+                headers.map((header) => header.property),
                 true
               );
             });
@@ -400,7 +400,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               dataExplorerArea: Areas.Tab,
               tabTitle: this.queryTablesTab.tabTitle(),
               error: errorMessage,
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             this.queryTablesTab.onLoadStartKey
           );
@@ -436,12 +436,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       if (this._documentIterator && this.continuationToken) {
         // TODO handle Cassandra case
 
-        promise = Q(this._documentIterator.fetchNext().then(response => response.resources)).then(
+        promise = Q(this._documentIterator.fetchNext().then((response) => response.resources)).then(
           (documents: any[]) => {
             let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
             let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
               Results: entities,
-              ContinuationToken: this._documentIterator.hasMoreResults()
+              ContinuationToken: this._documentIterator.hasMoreResults(),
             };
             return Q.resolve(finalEntities);
           }

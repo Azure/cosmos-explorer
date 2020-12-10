@@ -40,8 +40,8 @@ describe("ScaleComponent", () => {
       return;
     },
     initialNotification: {
-      description: `Throughput update for ${targetThroughput} ${throughputUnit}`
-    } as DataModels.Notification
+      description: `Throughput update for ${targetThroughput} ${throughputUnit}`,
+    } as DataModels.Notification,
   };
 
   it("renders with correct initial notification", () => {
@@ -59,12 +59,12 @@ describe("ScaleComponent", () => {
       autoscaleMaxThroughput: maxThroughput,
       minimumThroughput: 400,
       id: "offer",
-      headers: { "x-ms-offer-replace-pending": true }
+      headers: { "x-ms-offer-replace-pending": true },
     });
     const newProps = {
       ...baseProps,
       initialNotification: undefined as DataModels.Notification,
-      collection: newCollection
+      collection: newCollection,
     };
     wrapper = shallow(<ScaleComponent {...newProps} />);
     expect(wrapper.exists("#throughputApplyShortDelayMessage")).toEqual(true);
@@ -95,10 +95,10 @@ describe("ScaleComponent", () => {
         capabilities: [
           {
             name: Constants.CapabilityNames.EnableAutoScale.toLowerCase(),
-            description: undefined
-          }
-        ]
-      }
+            description: undefined,
+          },
+        ],
+      },
     });
     const props = { ...baseProps, container: newContainer };
     const scaleComponent = new ScaleComponent(props);

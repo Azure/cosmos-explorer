@@ -19,7 +19,7 @@ import {
   mongoIndexingPolicyDisclaimer,
   mongoIndexingPolicyAADError,
   mongoIndexTransformationRefreshingMessage,
-  renderMongoIndexTransformationRefreshMessage
+  renderMongoIndexTransformationRefreshMessage,
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {

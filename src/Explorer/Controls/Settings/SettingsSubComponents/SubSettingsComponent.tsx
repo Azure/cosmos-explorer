@@ -9,7 +9,7 @@ import {
   TtlOn,
   TtlOff,
   TtlOnNoDefault,
-  getSanitizedInputValue
+  getSanitizedInputValue,
 } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
@@ -21,7 +21,7 @@ import {
   IChoiceGroupOption,
   ChoiceGroup,
   MessageBar,
-  MessageBarType
+  MessageBarType,
 } from "office-ui-fabric-react";
 import {
   getTextFieldStyles,
@@ -30,7 +30,7 @@ import {
   titleAndInputStackProps,
   getChoiceGroupStyles,
   ttlWarning,
-  messageBarStyles
+  messageBarStyles,
 } from "../SettingsRenderUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -128,7 +128,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off" },
     { key: TtlType.OnNoDefault, text: "On (no default)" },
-    { key: TtlType.On, text: "On" }
+    { key: TtlType.On, text: "On" },
   ];
 
   public getTtlValue = (value: string): TtlType => {
@@ -213,7 +213,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off", disabled: true },
     { key: TtlType.OnNoDefault, text: "On (no default)" },
-    { key: TtlType.On, text: "On" }
+    { key: TtlType.On, text: "On" },
   ];
 
   private getAnalyticalStorageTtlComponent = (): JSX.Element => (
@@ -250,7 +250,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: GeospatialConfigType.Geography, text: "Geography" },
-    { key: GeospatialConfigType.Geometry, text: "Geometry" }
+    { key: GeospatialConfigType.Geometry, text: "Geometry" },
   ];
 
   private getGeoSpatialComponent = (): JSX.Element => (
@@ -266,7 +266,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private changeFeedChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: ChangeFeedPolicyState.Off, text: "Off" },
-    { key: ChangeFeedPolicyState.On, text: "On" }
+    { key: ChangeFeedPolicyState.On, text: "On" },
   ];
 
   private getChangeFeedComponent = (): JSX.Element => {

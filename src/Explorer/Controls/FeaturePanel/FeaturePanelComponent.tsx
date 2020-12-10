@@ -15,23 +15,23 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
   const baseUrlOptions = [
     { key: "https://localhost:1234/explorer.html", text: "localhost:1234" },
     { key: "https://cosmos.azure.com/explorer.html", text: "cosmos.azure.com" },
-    { key: "https://portal.azure.com", text: "portal" }
+    { key: "https://portal.azure.com", text: "portal" },
   ];
 
   const platformOptions = [
     { key: "Hosted", text: "Hosted" },
     { key: "Portal", text: "Portal" },
     { key: "Emulator", text: "Emulator" },
-    { key: "", text: "None" }
+    { key: "", text: "None" },
   ];
 
   // React hooks to keep state
   const [baseUrl, setBaseUrl] = React.useState<IDropdownOption>(
-    baseUrlOptions.find(o => o.key === window.location.origin + window.location.pathname) || baseUrlOptions[0]
+    baseUrlOptions.find((o) => o.key === window.location.origin + window.location.pathname) || baseUrlOptions[0]
   );
   const [platform, setPlatform] = React.useState<IDropdownOption>(
     urlParams.has("platform")
-      ? platformOptions.find(o => o.key === urlParams.get("platform")) || platformOptions[0]
+      ? platformOptions.find((o) => o.key === urlParams.get("platform")) || platformOptions[0]
       : platformOptions[0]
   );
 
@@ -52,13 +52,13 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     {
       key: "feature.enableLinkInjection",
       label: "Enable Injecting Notebook Viewer Link into the first cell",
-      value: "true"
+      value: "true",
     },
     { key: "feature.canexceedmaximumvalue", label: "Can exceed max value", value: "true" },
     {
       key: "feature.enablefixedcollectionwithsharedthroughput",
       label: "Enable fixed collection with shared throughput",
-      value: "true"
+      value: "true",
     },
     { key: "feature.ttl90days", label: "TTL 90 days", value: "true" },
     { key: "feature.enablenotebooks", label: "Enable notebooks", value: "true" },
@@ -66,10 +66,10 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       key: "feature.customportal",
       label: "Force Production portal (portal only)",
       value: "false",
-      disabled: (): boolean => baseUrl.key !== "https://portal.azure.com"
+      disabled: (): boolean => baseUrl.key !== "https://portal.azure.com",
     },
     { key: "feature.enablespark", label: "Enable Synapse", value: "true" },
-    { key: "feature.enableautopilotv2", label: "Enable Auto-pilot V2", value: "true" }
+    { key: "feature.enableautopilotv2", label: "Enable Auto-pilot V2", value: "true" },
   ];
 
   const stringFeatures: {
@@ -88,23 +88,23 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       key: "dataExplorerSource",
       label: "Data Explorer Source (portal only)",
       placeholder: "https://localhost:1234/explorer.html",
-      disabled: (): boolean => baseUrl.key !== "https://portal.azure.com"
+      disabled: (): boolean => baseUrl.key !== "https://portal.azure.com",
     },
-    { key: "feature.livyendpoint", label: "Livy endpoint", placeholder: "" }
+    { key: "feature.livyendpoint", label: "Livy endpoint", placeholder: "" },
   ];
 
   booleanFeatures.forEach(
-    f => (f.reactState = React.useState<boolean>(urlParams.has(f.key) ? urlParams.get(f.key) === "true" : false))
+    (f) => (f.reactState = React.useState<boolean>(urlParams.has(f.key) ? urlParams.get(f.key) === "true" : false))
   );
   stringFeatures.forEach(
-    f => (f.reactState = React.useState<string>(urlParams.has(f.key) ? urlParams.get(f.key) : undefined))
+    (f) => (f.reactState = React.useState<string>(urlParams.has(f.key) ? urlParams.get(f.key) : undefined))
   );
 
   const buildUrl = (): string => {
     const fragments = (platform.key === "" ? [] : [`platform=${platform.key}`])
-      .concat(booleanFeatures.map(f => (f.reactState[0] ? `${f.key}=${f.value}` : "")))
-      .concat(stringFeatures.map(f => (f.reactState[0] ? `${f.key}=${encodeURIComponent(f.reactState[0])}` : "")))
-      .filter(v => v && v.length > 0);
+      .concat(booleanFeatures.map((f) => (f.reactState[0] ? `${f.key}=${f.value}` : "")))
+      .concat(stringFeatures.map((f) => (f.reactState[0] ? `${f.key}=${encodeURIComponent(f.reactState[0])}` : "")))
+      .filter((v) => v && v.length > 0);
 
     const paramString = fragments.length < 1 ? "" : `?${fragments.join("&")}`;
     return `${baseUrl.key}${paramString}`;
@@ -119,38 +119,38 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
   };
 
   booleanFeatures.forEach(
-    f =>
+    (f) =>
       (f.onChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
         f.reactState[1](checked);
       })
   );
 
   stringFeatures.forEach(
-    f =>
+    (f) =>
       (f.onChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
         f.reactState[1](newValue);
       })
   );
 
   const onNotebookShortcut = (): void => {
-    booleanFeatures.find(f => f.key === "feature.enablenotebooks").reactState[1](true);
+    booleanFeatures.find((f) => f.key === "feature.enablenotebooks").reactState[1](true);
     stringFeatures
-      .find(f => f.key === "feature.notebookserverurl")
+      .find((f) => f.key === "feature.notebookserverurl")
       .reactState[1]("https://localhost:10001/12345/notebook/");
-    stringFeatures.find(f => f.key === "feature.notebookservertoken").reactState[1]("token");
-    stringFeatures.find(f => f.key === "feature.notebookbasepath").reactState[1]("./notebooks");
-    setPlatform(platformOptions.find(o => o.key === "Hosted"));
+    stringFeatures.find((f) => f.key === "feature.notebookservertoken").reactState[1]("token");
+    stringFeatures.find((f) => f.key === "feature.notebookbasepath").reactState[1]("./notebooks");
+    setPlatform(platformOptions.find((o) => o.key === "Hosted"));
   };
 
   const onPortalLocalDEShortcut = (): void => {
-    setBaseUrl(baseUrlOptions.find(o => o.key === "https://portal.azure.com"));
-    setPlatform(platformOptions.find(o => o.key === "Portal"));
-    stringFeatures.find(f => f.key === "dataExplorerSource").reactState[1]("https://localhost:1234/explorer.html");
+    setBaseUrl(baseUrlOptions.find((o) => o.key === "https://portal.azure.com"));
+    setPlatform(platformOptions.find((o) => o.key === "Portal"));
+    stringFeatures.find((f) => f.key === "dataExplorerSource").reactState[1]("https://localhost:1234/explorer.html");
   };
 
   const onReset = (): void => {
-    booleanFeatures.forEach(f => f.reactState[1](false));
-    stringFeatures.forEach(f => f.reactState[1](""));
+    booleanFeatures.forEach((f) => f.reactState[1](false));
+    stringFeatures.forEach((f) => f.reactState[1](""));
   };
 
   const stackTokens = { childrenGap: 10 };
@@ -169,7 +169,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
   const anchorOptions = {
     href: buildUrl(),
     target: "_blank",
-    rel: "noopener"
+    rel: "noopener",
   };
 
   return (
@@ -201,7 +201,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
         </Stack>
         <Stack horizontal>
           <Stack className="checkboxRow" horizontalAlign="space-between">
-            {leftBooleanFeatures.map(f => (
+            {leftBooleanFeatures.map((f) => (
               <Checkbox
                 key={f.key}
                 label={f.label}
@@ -212,7 +212,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
             ))}
           </Stack>
           <Stack className="checkboxRow" horizontalAlign="space-between">
-            {rightBooleanFeatures.map(f => (
+            {rightBooleanFeatures.map((f) => (
               <Checkbox
                 key={f.key}
                 label={f.label}
@@ -225,7 +225,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
         </Stack>
         <Stack horizontal tokens={stackTokens}>
           <Stack horizontalAlign="space-between">
-            {leftStringFeatures.map(f => (
+            {leftStringFeatures.map((f) => (
               <TextField
                 key={f.key}
                 value={f.reactState[0]}
@@ -238,7 +238,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
             ))}
           </Stack>
           <Stack horizontalAlign="space-between">
-            {rightStringFeatures.map(f => (
+            {rightStringFeatures.map((f) => (
               <TextField
                 key={f.key}
                 value={f.reactState[0]}

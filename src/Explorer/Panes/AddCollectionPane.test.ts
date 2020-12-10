@@ -16,10 +16,10 @@ describe("Add Collection Pane", () => {
         cassandraEndpoint: "",
         gremlinEndpoint: "",
         tableEndpoint: "",
-        enableFreeTier: false
+        enableFreeTier: false,
       },
       type: undefined,
-      tags: []
+      tags: [],
     };
 
     const mockFreeTierDatabaseAccount: DatabaseAccount = {
@@ -32,10 +32,10 @@ describe("Add Collection Pane", () => {
         cassandraEndpoint: "",
         gremlinEndpoint: "",
         tableEndpoint: "",
-        enableFreeTier: true
+        enableFreeTier: true,
       },
       type: undefined,
-      tags: []
+      tags: [],
     };
 
     beforeEach(() => {

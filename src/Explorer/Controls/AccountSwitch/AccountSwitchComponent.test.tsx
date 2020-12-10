@@ -16,7 +16,7 @@ const createBlankProps = (): AccountSwitchComponentProps => {
     subscriptions: [],
     selectedSubscriptionId: null,
     isLoadingSubscriptions: false,
-    onSubscriptionChange: jest.fn()
+    onSubscriptionChange: jest.fn(),
   };
 };
 
@@ -28,7 +28,7 @@ const createBlankAccount = (): DatabaseAccount => {
     properties: null,
     location: "",
     tags: null,
-    type: ""
+    type: "",
   };
 };
 
@@ -40,7 +40,7 @@ const createBlankSubscription = (): Subscription => {
     state: "",
     subscriptionPolicies: null,
     tenantId: "",
-    uniqueDisplayName: ""
+    uniqueDisplayName: "",
   };
 };
 

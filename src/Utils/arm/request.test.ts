@@ -13,7 +13,7 @@ describe("ARM request", () => {
       ok: true,
       json: async () => {
         return {};
-      }
+      },
     });
     await armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" });
     expect(window.fetch).toHaveBeenCalled();
@@ -26,7 +26,7 @@ describe("ARM request", () => {
       ok: true,
       headers,
       status: 200,
-      json: async () => ({})
+      json: async () => ({}),
     });
     await armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" });
     expect(window.fetch).toHaveBeenCalledTimes(2);
@@ -41,7 +41,7 @@ describe("ARM request", () => {
       status: 200,
       json: async () => {
         return { status: "Failed" };
-      }
+      },
     });
     await expect(() =>
       armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" })

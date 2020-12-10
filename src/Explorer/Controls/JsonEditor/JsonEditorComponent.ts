@@ -11,7 +11,7 @@ export class JsonEditorComponent {
   constructor() {
     return {
       viewModel: JsonEditorViewModel,
-      template
+      template,
     };
   }
 }
@@ -96,7 +96,7 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
       lineNumbers: this.params.lineNumbers || "off",
       fontSize: 12,
       ariaLabel: this.params.ariaLabel,
-      theme: this.params.theme
+      theme: this.params.theme,
     };
 
     this.editorContainer.innerHTML = "";
@@ -145,7 +145,7 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
     this.observer.observe(document.body, {
       attributes: true,
       subtree: true,
-      childList: true
+      childList: true,
     });
 
     this.editor.getModel().onDidChangeContent(async (e: monaco.editor.IModelContentChangedEvent) => {

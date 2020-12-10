@@ -75,7 +75,7 @@ export class QueryUtils {
             hasMoreResults: results.hasMoreResults,
             itemCount: results.itemCount,
             firstItemIndex: results.firstItemIndex,
-            lastItemIndex: results.lastItemIndex
+            lastItemIndex: results.lastItemIndex,
           };
           if (resultsMetadata.itemCount === 0 && resultsMetadata.hasMoreResults) {
             return doRequest(resultsMetadata.lastItemIndex);
@@ -101,7 +101,7 @@ export class QueryUtils {
       firstItemIndex: 0,
       lastItemIndex: 0,
       requestCharge: 0,
-      roundTrips: 0
+      roundTrips: 0,
     };
     const doRequest = (itemIndex: number): Q.Promise<ViewModels.QueryResults> =>
       queryItems(itemIndex).then(

@@ -7,7 +7,7 @@ import {
   ApiKind,
   DatabaseAccount,
   GenerateTokenResponse,
-  resourceTokenConnectionStringProperties
+  resourceTokenConnectionStringProperties,
 } from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { CollectionCreation } from "../../Shared/Constants";
@@ -80,11 +80,11 @@ export default class Main {
         type: MessageTypes.UpdateAccountSwitch,
         props: {
           authType: AuthType.EncryptedToken,
-          displayText: "Loading..."
-        }
+          displayText: "Loading...",
+        },
       });
       updateUserContext({
-        accessToken: Main._encryptedToken
+        accessToken: Main._encryptedToken,
       });
       Main._getAccessInputMetadata(Main._encryptedToken).then(
         () => {
@@ -104,7 +104,7 @@ export default class Main {
       );
     } else if (authType === AuthType.AAD) {
       sendMessage({
-        type: MessageTypes.GetAccessAadRequest
+        type: MessageTypes.GetAccessAadRequest,
       });
       if (this._getAadAccessDeferred != null) {
         // already request aad access, don't duplicate
@@ -180,7 +180,7 @@ export default class Main {
       collectionId,
       databaseId,
       partitionKey,
-      resourceToken
+      resourceToken,
     };
   }
 
@@ -205,7 +205,7 @@ export default class Main {
         window.authType = AuthType.EncryptedToken;
 
         updateUserContext({
-          accessToken: Main._encryptedToken
+          accessToken: Main._encryptedToken,
         });
         Main._getAccessInputMetadata(Main._encryptedToken).then(
           () => {
@@ -294,8 +294,8 @@ export default class Main {
         type: MessageTypes.UpdateAccountSwitch,
         props: {
           authType: AuthType.EncryptedToken,
-          selectedAccountName: Main._accessInputMetadata.accountName
-        }
+          selectedAccountName: Main._accessInputMetadata.accountName,
+        },
       });
       return explorer.initDataExplorerWithFrameInputs({
         databaseAccount: {
@@ -303,7 +303,7 @@ export default class Main {
           name: Main._accessInputMetadata.accountName,
           kind: this._getDatabaseAccountKindFromExperience(apiExperience),
           properties: HostedUtils.getDatabaseAccountPropertiesFromMetadata(Main._accessInputMetadata),
-          tags: { defaultExperience: apiExperience }
+          tags: { defaultExperience: apiExperience },
         },
         subscriptionId,
         resourceGroup,
@@ -318,7 +318,7 @@ export default class Main {
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
-        isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+        isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
       });
     }
 
@@ -338,7 +338,7 @@ export default class Main {
         subscriptionType: CollectionCreation.DefaultSubscriptionType,
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
-        isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+        isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
       };
       return explorer.initDataExplorerWithFrameInputs(inputs);
     }
@@ -353,7 +353,7 @@ export default class Main {
           name: Main._accessInputMetadata.accountName,
           kind: this._getDatabaseAccountKindFromExperience(apiExperience),
           properties: HostedUtils.getDatabaseAccountPropertiesFromMetadata(Main._accessInputMetadata),
-          tags: { defaultExperience: apiExperience }
+          tags: { defaultExperience: apiExperience },
         },
         subscriptionId,
         resourceGroup,
@@ -369,7 +369,7 @@ export default class Main {
         quotaId: undefined,
         addCollectionDefaultFlight: explorer.flight(),
         isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
-        isAuthWithresourceToken: true
+        isAuthWithresourceToken: true,
       });
     }
 
@@ -388,7 +388,7 @@ export default class Main {
         "click",
         () => {
           sendMessage({
-            type: MessageTypes.ExplorerClickEvent
+            type: MessageTypes.ExplorerClickEvent,
           });
         },
         true
@@ -471,7 +471,7 @@ export default class Main {
     }
     updateUserContext({
       resourceToken: properties.resourceToken,
-      endpoint: properties.accountEndpoint
+      endpoint: properties.accountEndpoint,
     });
     explorer.resourceTokenDatabaseId(properties.databaseId);
     explorer.resourceTokenCollectionId(properties.collectionId);
@@ -501,7 +501,7 @@ export default class Main {
       apiEndpoint,
       apiKind,
       documentEndpoint,
-      expiryTimestamp: ""
+      expiryTimestamp: "",
     };
   };
 

@@ -8,7 +8,7 @@ const createNotSignedInProps = (): MeControlComponentProps => {
     user: null,
     onSignInClick: jest.fn(),
     onSignOutClick: jest.fn(),
-    onSwitchDirectoryClick: jest.fn()
+    onSwitchDirectoryClick: jest.fn(),
   };
 };
 
@@ -19,11 +19,11 @@ const createSignedInProps = (): MeControlComponentProps => {
       name: "Test User",
       email: "testuser@contoso.com",
       tenantName: "Contoso",
-      imageUrl: "../../../../images/dotnet.png"
+      imageUrl: "../../../../images/dotnet.png",
     },
     onSignInClick: jest.fn(),
     onSignOutClick: jest.fn(),
-    onSwitchDirectoryClick: jest.fn()
+    onSwitchDirectoryClick: jest.fn(),
   };
 };
 

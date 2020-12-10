@@ -13,9 +13,9 @@ describe("deleteCollection", () => {
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
-        name: "test"
+        name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB
+      defaultExperience: DefaultAccountExperienceType.DocumentDB,
     });
   });
 
@@ -32,11 +32,11 @@ describe("deleteCollection", () => {
         return {
           container: () => {
             return {
-              delete: (): unknown => undefined
+              delete: (): unknown => undefined,
             };
-          }
+          },
         };
-      }
+      },
     });
     await deleteCollection("database", "collection");
     expect(client).toHaveBeenCalled();

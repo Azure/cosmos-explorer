@@ -15,15 +15,15 @@ describe("createCollection", () => {
     collectionId: "testContainer",
     databaseId: "testDatabase",
     databaseLevelThroughput: true,
-    offerThroughput: 400
+    offerThroughput: 400,
   };
 
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
-        name: "test"
+        name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB
+      defaultExperience: DefaultAccountExperienceType.DocumentDB,
     });
   });
 
@@ -41,12 +41,12 @@ describe("createCollection", () => {
           return {
             database: {
               containers: {
-                create: () => ({})
-              }
-            }
+                create: () => ({}),
+              },
+            },
           };
-        }
-      }
+        },
+      },
     });
     await createCollection(createCollectionParams);
     expect(client).toHaveBeenCalled();
@@ -60,7 +60,7 @@ describe("createCollection", () => {
       collectionId: "testContainer",
       databaseId: "testDatabase",
       databaseLevelThroughput: false,
-      offerThroughput: 400
+      offerThroughput: 400,
     };
     expect(constructRpOptions(manualThroughputParams)).toEqual({ throughput: 400 });
 
@@ -70,12 +70,12 @@ describe("createCollection", () => {
       databaseId: "testDatabase",
       databaseLevelThroughput: false,
       offerThroughput: 400,
-      autoPilotMaxThroughput: 4000
+      autoPilotMaxThroughput: 4000,
     };
     expect(constructRpOptions(autoPilotThroughputParams)).toEqual({
       autoscaleSettings: {
-        maxThroughput: 4000
-      }
+        maxThroughput: 4000,
+      },
     });
   });
 });

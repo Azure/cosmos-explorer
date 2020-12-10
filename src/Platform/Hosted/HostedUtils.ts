@@ -11,22 +11,22 @@ export class HostedUtils {
     if (apiExperience === Constants.DefaultAccountExperience.Cassandra) {
       properties = Object.assign(properties, {
         cassandraEndpoint: metadata.apiEndpoint,
-        capabilities: [{ name: Constants.CapabilityNames.EnableCassandra }]
+        capabilities: [{ name: Constants.CapabilityNames.EnableCassandra }],
       });
     } else if (apiExperience === Constants.DefaultAccountExperience.Table) {
       properties = Object.assign(properties, {
         tableEndpoint: metadata.apiEndpoint,
-        capabilities: [{ name: Constants.CapabilityNames.EnableTable }]
+        capabilities: [{ name: Constants.CapabilityNames.EnableTable }],
       });
     } else if (apiExperience === Constants.DefaultAccountExperience.Graph) {
       properties = Object.assign(properties, {
         gremlinEndpoint: metadata.apiEndpoint,
-        capabilities: [{ name: Constants.CapabilityNames.EnableGremlin }]
+        capabilities: [{ name: Constants.CapabilityNames.EnableGremlin }],
       });
     } else if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
       if (metadata.apiKind === DataModels.ApiKind.MongoDBCompute) {
         properties = Object.assign(properties, {
-          mongoEndpoint: metadata.mongoEndpoint
+          mongoEndpoint: metadata.mongoEndpoint,
         });
       }
     }

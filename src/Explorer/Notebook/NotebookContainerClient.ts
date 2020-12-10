@@ -35,7 +35,7 @@ export class NotebookContainerClient {
   private scheduleHeartbeat(delayMs: number): void {
     setTimeout(() => {
       this.getMemoryUsage()
-        .then(memoryUsageInfo => this.onMemoryUsageInfoUpdate(memoryUsageInfo))
+        .then((memoryUsageInfo) => this.onMemoryUsageInfoUpdate(memoryUsageInfo))
         .finally(() => this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs));
     }, delayMs);
   }
@@ -57,8 +57,8 @@ export class NotebookContainerClient {
         method: "GET",
         headers: {
           Authorization: authToken,
-          "content-type": "application/json"
-        }
+          "content-type": "application/json",
+        },
       });
       if (response.ok) {
         if (this.reconnectingNotificationId) {
@@ -69,7 +69,7 @@ export class NotebookContainerClient {
         if (memoryUsageInfo) {
           return {
             totalKB: memoryUsageInfo.total,
-            freeKB: memoryUsageInfo.free
+            freeKB: memoryUsageInfo.free,
           };
         }
       }
@@ -108,7 +108,7 @@ export class NotebookContainerClient {
     try {
       await fetch(`${notebookServerEndpoint}/api/shutdown`, {
         method: "POST",
-        headers: { Authorization: authToken }
+        headers: { Authorization: authToken },
       });
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
@@ -126,7 +126,7 @@ export class NotebookContainerClient {
 
     return {
       notebookServerEndpoint,
-      authToken
+      authToken,
     };
   }
 

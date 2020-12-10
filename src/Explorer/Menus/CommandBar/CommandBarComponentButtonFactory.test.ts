@@ -32,7 +32,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableAzureSynapseLinkBtn = buttons.find(
-        button => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
       expect(enableAzureSynapseLinkBtn).toBeDefined();
     });
@@ -42,7 +42,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableAzureSynapseLinkBtn = buttons.find(
-        button => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
       expect(enableAzureSynapseLinkBtn).toBeUndefined();
     });
@@ -73,7 +73,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const enableNotebookBtn = buttons.find(button => button.commandButtonLabel === enableNotebookBtnLabel);
+      const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeUndefined();
     });
 
@@ -83,7 +83,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const enableNotebookBtn = buttons.find(button => button.commandButtonLabel === enableNotebookBtnLabel);
+      const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeUndefined();
     });
 
@@ -93,7 +93,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const enableNotebookBtn = buttons.find(button => button.commandButtonLabel === enableNotebookBtnLabel);
+      const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeDefined();
       expect(enableNotebookBtn.disabled).toBe(false);
       expect(enableNotebookBtn.tooltipText).toBe("");
@@ -105,7 +105,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const enableNotebookBtn = buttons.find(button => button.commandButtonLabel === enableNotebookBtnLabel);
+      const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeDefined();
       expect(enableNotebookBtn.disabled).toBe(true);
       expect(enableNotebookBtn.tooltipText).toBe(
@@ -142,7 +142,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openMongoShellBtn = buttons.find(button => button.commandButtonLabel === openMongoShellBtnLabel);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
 
@@ -150,13 +150,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openMongoShellBtn = buttons.find(button => button.commandButtonLabel === openMongoShellBtnLabel);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
 
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openMongoShellBtn = buttons.find(button => button.commandButtonLabel === openMongoShellBtnLabel);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
       expect(openMongoShellBtn.disabled).toBe(true);
       expect(openMongoShellBtn.tooltipText).toBe(
@@ -168,7 +168,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openMongoShellBtn = buttons.find(button => button.commandButtonLabel === openMongoShellBtnLabel);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
       expect(openMongoShellBtn.disabled).toBe(false);
       expect(openMongoShellBtn.tooltipText).toBe("");
@@ -178,7 +178,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebookEnabled = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openMongoShellBtn = buttons.find(button => button.commandButtonLabel === openMongoShellBtnLabel);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
       expect(openMongoShellBtn.disabled).toBe(false);
       expect(openMongoShellBtn.tooltipText).toBe("");
@@ -189,7 +189,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openMongoShellBtn = buttons.find(button => button.commandButtonLabel === openMongoShellBtnLabel);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
       expect(openMongoShellBtn.disabled).toBe(false);
       expect(openMongoShellBtn.tooltipText).toBe("");
@@ -224,7 +224,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openCassandraShellBtn = buttons.find(button => button.commandButtonLabel === openCassandraShellBtnLabel);
+      const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
@@ -232,13 +232,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openCassandraShellBtn = buttons.find(button => button.commandButtonLabel === openCassandraShellBtnLabel);
+      const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openCassandraShellBtn = buttons.find(button => button.commandButtonLabel === openCassandraShellBtnLabel);
+      const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeDefined();
       expect(openCassandraShellBtn.disabled).toBe(true);
       expect(openCassandraShellBtn.tooltipText).toBe(
@@ -250,7 +250,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openCassandraShellBtn = buttons.find(button => button.commandButtonLabel === openCassandraShellBtnLabel);
+      const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeDefined();
       expect(openCassandraShellBtn.disabled).toBe(false);
       expect(openCassandraShellBtn.tooltipText).toBe("");
@@ -260,7 +260,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebookEnabled = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openCassandraShellBtn = buttons.find(button => button.commandButtonLabel === openCassandraShellBtnLabel);
+      const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeDefined();
       expect(openCassandraShellBtn.disabled).toBe(false);
       expect(openCassandraShellBtn.tooltipText).toBe("");
@@ -271,7 +271,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const openCassandraShellBtn = buttons.find(button => button.commandButtonLabel === openCassandraShellBtnLabel);
+      const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeDefined();
       expect(openCassandraShellBtn.disabled).toBe(false);
       expect(openCassandraShellBtn.tooltipText).toBe("");
@@ -313,7 +313,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebookEnabled = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
-      const connectToGitHubBtn = buttons.find(button => button.commandButtonLabel === connectToGitHubBtnLabel);
+      const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
       expect(connectToGitHubBtn).toBeDefined();
     });
 
@@ -323,7 +323,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const manageGitHubSettingsBtn = buttons.find(
-        button => button.commandButtonLabel === manageGitHubSettingsBtnLabel
+        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel
       );
       expect(manageGitHubSettingsBtn).toBeDefined();
     });
@@ -331,11 +331,11 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled - connect to github and manage github settings buttons should be hidden", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
 
-      const connectToGitHubBtn = buttons.find(button => button.commandButtonLabel === connectToGitHubBtnLabel);
+      const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
       expect(connectToGitHubBtn).toBeUndefined();
 
       const manageGitHubSettingsBtn = buttons.find(
-        button => button.commandButtonLabel === manageGitHubSettingsBtnLabel
+        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel
       );
       expect(manageGitHubSettingsBtn).toBeUndefined();
     });

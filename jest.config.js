@@ -42,8 +42,8 @@ module.exports = {
       branches: 20,
       functions: 24,
       lines: 30,
-      statements: 29.0
-    }
+      statements: 29.0,
+    },
   },
 
   // Make calling deprecated APIs throw helpful error messages
@@ -76,7 +76,7 @@ module.exports = {
     "office-ui-fabric-react/lib/(.*)$": "office-ui-fabric-react/lib-commonjs/$1", // https://github.com/OfficeDev/office-ui-fabric-react/wiki/Fabric-6-Release-Notes
     "^dnd-core$": "dnd-core/dist/cjs",
     "^react-dnd$": "react-dnd/dist/cjs",
-    "^react-dnd-html5-backend$": "react-dnd-html5-backend/dist/cjs"
+    "^react-dnd-html5-backend$": "react-dnd-html5-backend/dist/cjs",
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -164,11 +164,11 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     "^.+\\.html?$": "html-loader-jest",
-    "^.+\\.[t|j]sx?$": "babel-jest"
+    "^.+\\.[t|j]sx?$": "babel-jest",
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  transformIgnorePatterns: ["/node_modules/", "/externals/"]
+  transformIgnorePatterns: ["/node_modules/", "/externals/"],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

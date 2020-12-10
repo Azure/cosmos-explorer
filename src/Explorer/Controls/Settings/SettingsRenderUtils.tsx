@@ -10,7 +10,7 @@ import {
   getMultimasterMultiplier,
   computeRUUsagePriceHourly,
   getPricePerRu,
-  calculateEstimateNumber
+  calculateEstimateNumber,
 } from "../../../Utils/PricingUtils";
 import {
   ITextFieldStyles,
@@ -32,7 +32,7 @@ import {
   MessageBarType,
   Stack,
   Spinner,
-  SpinnerSize
+  SpinnerSize,
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -41,49 +41,49 @@ export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
     margin: 0,
-    padding: "2 0 2 0"
+    padding: "2 0 2 0",
   },
   text: {
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 };
 
 export const subComponentStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 20 }
+  tokens: { childrenGap: 20 },
 };
 
 export const titleAndInputStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 5 }
+  tokens: { childrenGap: 5 },
 };
 
 export const mongoWarningStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 5 }
+  tokens: { childrenGap: 5 },
 };
 
 export const mongoErrorMessageStyles: Partial<IMessageBarStyles> = { root: { marginLeft: 10 } };
 
 export const createAndAddMongoIndexStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 5 }
+  tokens: { childrenGap: 5 },
 };
 
 export const addMongoIndexStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 10 }
+  tokens: { childrenGap: 10 },
 };
 
 export const checkBoxAndInputStackProps: Partial<IStackProps> = {
-  tokens: { childrenGap: 10 }
+  tokens: { childrenGap: 10 },
 };
 
 export const toolTipLabelStackTokens: IStackTokens = {
-  childrenGap: 6
+  childrenGap: 6,
 };
 
 export const accordionStackTokens: IStackTokens = {
-  childrenGap: 10
+  childrenGap: 10,
 };
 
 export const addMongoIndexSubElementsTokens: IStackTokens = {
-  childrenGap: 20
+  childrenGap: 20,
 };
 
 export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
@@ -98,20 +98,20 @@ export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   root: {
     selectors: {
       ":hover": {
-        background: "transparent"
-      }
-    }
-  }
+        background: "transparent",
+      },
+    },
+  },
 };
 
 export const customDetailsListStyles: Partial<IDetailsListStyles> = {
   root: {
     selectors: {
       ".ms-FocusZone": {
-        paddingTop: 0
-      }
-    }
-  }
+        paddingTop: 0,
+      },
+    },
+  },
 };
 
 export const separatorStyles: Partial<ISeparatorStyles> = {
@@ -119,11 +119,11 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
     {
       selectors: {
         "::before": {
-          background: StyleConstants.BaseMedium
-        }
-      }
-    }
-  ]
+          background: StyleConstants.BaseMedium,
+        },
+      },
+    },
+  ],
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
@@ -436,10 +436,10 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
     selectors: {
       ":disabled": {
         backgroundColor: StyleConstants.BaseMedium,
-        borderColor: StyleConstants.BaseMediumHigh
-      }
-    }
-  }
+        borderColor: StyleConstants.BaseMediumHigh,
+      },
+    },
+  },
 });
 
 export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<IChoiceGroupStyles> => ({
@@ -447,18 +447,18 @@ export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTyp
     {
       selectors: {
         ".ms-ChoiceField-field.is-checked::before": {
-          borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : ""
+          borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
         },
         ".ms-ChoiceField-field.is-checked::after": {
-          borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : ""
+          borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
         },
         ".ms-ChoiceField-wrapper label": {
           whiteSpace: "nowrap",
           fontSize: 14,
           fontFamily: StyleConstants.DataExplorerFont,
-          padding: "2px 5px"
-        }
-      }
-    }
-  ]
+          padding: "2px 5px",
+        },
+      },
+    },
+  ],
 });

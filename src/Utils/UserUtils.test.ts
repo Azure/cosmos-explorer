@@ -6,8 +6,8 @@ describe("UserUtils", () => {
     const user: AuthenticationContext.UserInfo = {
       userName: "userName",
       profile: {
-        name: "name"
-      }
+        name: "name",
+      },
     };
     AuthHeadersUtil.getCachedUser = jest.fn().mockReturnValue(user);
 

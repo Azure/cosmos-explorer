@@ -121,8 +121,8 @@ export default class MongoShellTab extends TabsBase {
           databaseId: databaseId,
           collectionId: collectionId,
           encryptedAuthToken: encryptedAuthToken,
-          apiEndpoint: apiEndpoint
-        }
+          apiEndpoint: apiEndpoint,
+        },
       },
       configContext.BACKEND_ENDPOINT
     );

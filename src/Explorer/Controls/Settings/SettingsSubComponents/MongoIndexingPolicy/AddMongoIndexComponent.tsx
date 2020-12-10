@@ -7,21 +7,21 @@ import {
   TextField,
   Dropdown,
   IDropdownOption,
-  ITextField
+  ITextField,
 } from "office-ui-fabric-react";
 import {
   addMongoIndexSubElementsTokens,
   mongoErrorMessageStyles,
   mongoWarningStackProps,
   shortWidthDropDownStyles,
-  shortWidthTextFieldStyles
+  shortWidthTextFieldStyles,
 } from "../../SettingsRenderUtils";
 import {
   getMongoIndexTypeText,
   MongoIndexTypes,
   MongoNotificationMessage,
   MongoNotificationType,
-  MongoWildcardPlaceHolder
+  MongoWildcardPlaceHolder,
 } from "../../SettingsUtils";
 
 export interface AddMongoIndexComponentProps {
@@ -39,7 +39,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
   private indexTypes: IDropdownOption[] = [MongoIndexTypes.Single, MongoIndexTypes.Wildcard].map(
     (value: MongoIndexTypes) => ({
       text: getMongoIndexTypeText(value),
-      key: value
+      key: value,
     })
   );
 

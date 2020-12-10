@@ -56,7 +56,7 @@ export enum ApiKind {
   Table,
   Cassandra,
   Graph,
-  MongoDBCompute
+  MongoDBCompute,
 }
 
 export interface GenerateTokenResponse {
@@ -334,7 +334,7 @@ export interface Notification {
 
 export enum ConflictResolutionMode {
   Custom = "Custom",
-  LastWriterWins = "LastWriterWins"
+  LastWriterWins = "LastWriterWins",
 }
 
 /**
@@ -472,7 +472,7 @@ export interface SparkClusterEndpoint {
 export enum SparkClusterEndpointKind {
   SparkUI = "SparkUI",
   HistoryServerUI = "HistoryServerUI",
-  Livy = "Livy"
+  Livy = "Livy",
 }
 
 export interface RpParameters {

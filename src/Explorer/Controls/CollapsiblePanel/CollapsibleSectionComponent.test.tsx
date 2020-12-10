@@ -5,7 +5,7 @@ import { CollapsibleSectionComponent, CollapsibleSectionProps } from "./Collapsi
 describe("CollapsibleSectionComponent", () => {
   it("renders", () => {
     const props: CollapsibleSectionProps = {
-      title: "Sample title"
+      title: "Sample title",
     };
 
     const wrapper = shallow(<CollapsibleSectionComponent {...props} />);

@@ -60,22 +60,22 @@ export class MeControlComponent extends React.Component<MeControlComponentProps>
       directionalHintFixed: true,
       directionalHint: DirectionalHint.bottomRightEdge,
       calloutProps: {
-        minPagePadding: 0
+        minPagePadding: 0,
       },
       items: [
         {
           key: "Persona",
-          onRender: this._renderPersonaComponent
+          onRender: this._renderPersonaComponent,
         },
         {
           key: "SwitchDirectory",
-          onRender: this._renderSwitchDirectory
+          onRender: this._renderSwitchDirectory,
         },
         {
           key: "SignOut",
-          onRender: this._renderSignOut
-        }
-      ]
+          onRender: this._renderSignOut,
+        },
+      ],
     };
 
     const personaProps: IPersonaSharedProps = {
@@ -86,7 +86,7 @@ export class MeControlComponent extends React.Component<MeControlComponentProps>
       showInitialsUntilImageLoads: true,
       initialsColor: PersonaInitialsColor.teal,
       size: PersonaSize.size28,
-      className: "mecontrolHeaderPersona"
+      className: "mecontrolHeaderPersona",
     };
 
     const buttonProps: IButtonProps = {
@@ -98,8 +98,8 @@ export class MeControlComponent extends React.Component<MeControlComponentProps>
         rootHovered: { backgroundColor: "#393939" },
         rootFocused: { backgroundColor: "#393939" },
         rootPressed: { backgroundColor: "#393939" },
-        rootExpanded: { backgroundColor: "#393939" }
-      }
+        rootExpanded: { backgroundColor: "#393939" },
+      },
     };
 
     return (
@@ -121,7 +121,7 @@ export class MeControlComponent extends React.Component<MeControlComponentProps>
       showInitialsUntilImageLoads: true,
       initialsColor: PersonaInitialsColor.teal,
       size: PersonaSize.size72,
-      className: "mecontrolContextualMenuPersona"
+      className: "mecontrolContextualMenuPersona",
     };
 
     return <Persona {...personaProps} />;
@@ -159,8 +159,8 @@ export class MeControlComponent extends React.Component<MeControlComponentProps>
       styles: {
         rootHovered: { backgroundColor: "#393939", color: "#fff" },
         rootFocused: { backgroundColor: "#393939", color: "#fff" },
-        rootPressed: { backgroundColor: "#393939", color: "#fff" }
-      }
+        rootPressed: { backgroundColor: "#393939", color: "#fff" },
+      },
     };
     return <DefaultButton {...buttonProps} />;
   };

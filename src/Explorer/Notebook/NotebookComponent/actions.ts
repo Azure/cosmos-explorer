@@ -13,7 +13,7 @@ export interface CloseNotebookAction {
 export const closeNotebook = (payload: { contentRef: ContentRef }): CloseNotebookAction => {
   return {
     type: CLOSE_NOTEBOOK,
-    payload
+    payload,
   };
 };
 
@@ -30,7 +30,7 @@ export const executeFocusedCellAndFocusNext = (payload: {
 }): ExecuteFocusedCellAndFocusNextAction => {
   return {
     type: EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT,
-    payload
+    payload,
   };
 };
 
@@ -45,7 +45,7 @@ export interface UpdateKernelRestartDelayAction {
 export const UpdateKernelRestartDelay = (payload: { delayMs: number }): UpdateKernelRestartDelayAction => {
   return {
     type: UPDATE_KERNEL_RESTART_DELAY,
-    payload
+    payload,
   };
 };
 
@@ -60,7 +60,7 @@ export interface SetHoveredCellAction {
 export const setHoveredCell = (payload: { cellId: CellId }): SetHoveredCellAction => {
   return {
     type: SET_HOVERED_CELL,
-    payload
+    payload,
   };
 };
 
@@ -81,7 +81,7 @@ export const traceNotebookTelemetry = (payload: {
 }): TraceNotebookTelemetryAction => {
   return {
     type: TRACE_NOTEBOOK_TELEMETRY,
-    payload
+    payload,
   };
 };
 
@@ -100,6 +100,6 @@ export const UpdateNotebookParentDomElt = (payload: {
 }): UpdateNotebookParentDomEltAction => {
   return {
     type: UPDATE_NOTEBOOK_PARENT_DOM_ELTS,
-    payload
+    payload,
   };
 };

@@ -67,7 +67,7 @@ export class TablesAPIDataClient extends TableDataClient {
         const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
         deferred.resolve(newEntity);
       },
-      reason => {
+      (reason) => {
         deferred.reject(reason);
       }
     );
@@ -90,7 +90,7 @@ export class TablesAPIDataClient extends TableDataClient {
         const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
         deferred.resolve(newEntity);
       },
-      reason => {
+      (reason) => {
         deferred.reject(reason);
       }
     );
@@ -106,26 +106,26 @@ export class TablesAPIDataClient extends TableDataClient {
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
     queryDocuments(collection.databaseId, collection.id(), query, options).then(
-      iterator => {
+      (iterator) => {
         iterator
           .fetchNext()
-          .then(response => response.resources)
+          .then((response) => response.resources)
           .then(
             (documents: any[] = []) => {
               let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
               let finalEntities: Entities.IListTableEntitiesResult = <Entities.IListTableEntitiesResult>{
                 Results: entities,
                 ContinuationToken: iterator.hasMoreResults(),
-                iterator: iterator
+                iterator: iterator,
               };
               deferred.resolve(finalEntities);
             },
-            reason => {
+            (reason) => {
               deferred.reject(reason);
             }
           );
       },
-      reason => {
+      (reason) => {
         deferred.reject(reason);
       }
     );
@@ -139,7 +139,7 @@ export class TablesAPIDataClient extends TableDataClient {
     );
     let promiseArray: Q.Promise<any>[] = [];
     documentsToDelete &&
-      documentsToDelete.forEach(document => {
+      documentsToDelete.forEach((document) => {
         document.id = ko.observable<string>(document.id);
         let promise: Q.Promise<any> = deleteDocument(collection, document);
         promiseArray.push(promise);
@@ -186,7 +186,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve(entity);
         },
-        error => {
+        (error) => {
           handleError(error, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
           deferred.reject(error);
         }
@@ -260,7 +260,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve(newEntity);
         },
-        error => {
+        (error) => {
           handleError(error, "UpdateRowCassandra", `Failed to update row ${newEntity.RowKey._}`);
           deferred.reject(error);
         }
@@ -301,11 +301,11 @@ export class CassandraAPIDataClient extends TableDataClient {
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
         query: query,
-        paginationToken: paginationToken
+        paginationToken: paginationToken,
       },
       beforeSend: this.setAuthorizationHeader,
       error: this.handleAjaxError,
-      cache: false
+      cache: false,
     })
       .then(
         (data: any) => {
@@ -317,7 +317,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           }
           deferred.resolve({
             Results: data.result,
-            ContinuationToken: data.paginationToken
+            ContinuationToken: data.paginationToken,
           });
         },
         (error: any) => {
@@ -362,7 +362,7 @@ export class CassandraAPIDataClient extends TableDataClient {
                 `Successfully deleted row ${currEntityToDelete.RowKey._}`
               );
             },
-            error => {
+            (error) => {
               handleError(error, "DeleteRowCassandra", `Error while deleting row ${currEntityToDelete.RowKey._}`);
             }
           )
@@ -398,7 +398,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve();
         },
-        error => {
+        (error) => {
           handleError(
             error,
             "CreateKeyspaceCassandra",
@@ -444,7 +444,7 @@ export class CassandraAPIDataClient extends TableDataClient {
               );
               deferred.resolve();
             },
-            error => {
+            (error) => {
               handleError(error, "CreateTableCassandra", `Error while creating a table with query ${createTableQuery}`);
               deferred.reject(error);
             }
@@ -453,7 +453,7 @@ export class CassandraAPIDataClient extends TableDataClient {
             NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
           });
       },
-      reason => {
+      (reason) => {
         deferred.reject(reason);
       }
     );
@@ -480,7 +480,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           );
           deferred.resolve();
         },
-        error => {
+        (error) => {
           handleError(
             error,
             "DeleteKeyspaceOrTableCassandra",
@@ -519,11 +519,11 @@ export class CassandraAPIDataClient extends TableDataClient {
         ),
         resourceId: collection.container.databaseAccount().id,
         keyspaceId: collection.databaseId,
-        tableId: collection.id()
+        tableId: collection.id(),
       },
       beforeSend: this.setAuthorizationHeader,
       error: this.handleAjaxError,
-      cache: false
+      cache: false,
     })
       .then(
         (data: CassandraTableKeys) => {
@@ -569,11 +569,11 @@ export class CassandraAPIDataClient extends TableDataClient {
         ),
         resourceId: collection.container.databaseAccount().id,
         keyspaceId: collection.databaseId,
-        tableId: collection.id()
+        tableId: collection.id(),
       },
       beforeSend: this.setAuthorizationHeader,
       error: this.handleAjaxError,
-      cache: false
+      cache: false,
     })
       .then(
         (data: any) => {
@@ -613,16 +613,16 @@ export class CassandraAPIDataClient extends TableDataClient {
         accountName: explorer.databaseAccount() && explorer.databaseAccount().name,
         cassandraEndpoint: this.trimCassandraEndpoint(cassandraEndpoint),
         resourceId: resourceId,
-        query: query
+        query: query,
       },
       beforeSend: this.setAuthorizationHeader,
       error: this.handleAjaxError,
-      cache: false
+      cache: false,
     }).then(
       (data: any) => {
         deferred.resolve();
       },
-      reason => {
+      (reason) => {
         deferred.reject(reason);
       }
     );

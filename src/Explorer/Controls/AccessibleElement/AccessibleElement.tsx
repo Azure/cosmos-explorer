@@ -31,7 +31,7 @@ export class AccessibleElement extends React.Component<AccessibleElementProps> {
       ...elementProps,
       onKeyPress: this.onKeyPress,
       onClick: this.props.onActivated,
-      tabIndex
+      tabIndex,
     });
   }
 }

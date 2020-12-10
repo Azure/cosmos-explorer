@@ -13,7 +13,7 @@ export class BindingHandlersRegisterer {
       ) {
         const value = ko.unwrap(wrappedValueAccessor());
         bindingContext?.$data.isTemplateReady(value);
-      }
+      },
     } as ko.BindingHandler;
 
     ReactBindingHandler.Registerer.register();

@@ -6,6 +6,6 @@ module.exports = {
     slowMo: 55,
     defaultViewport: null,
     ignoreHTTPSErrors: true,
-    args: ["--disable-web-security"]
-  }
+    args: ["--disable-web-security"],
+  },
 };

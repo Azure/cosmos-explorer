@@ -84,7 +84,7 @@ window.authType = AuthType.AAD;
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
-    initializeConfiguration().then(config => {
+    initializeConfiguration().then((config) => {
       if (config.platform === Platform.Hosted) {
         try {
           Hosted.initializeExplorer().then(

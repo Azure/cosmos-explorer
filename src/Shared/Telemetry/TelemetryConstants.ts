@@ -90,7 +90,7 @@ export enum Action {
   DiscardSettings,
   SettingsV2Updated,
   SettingsV2Discarded,
-  MongoIndexUpdated
+  MongoIndexUpdated,
 }
 
 export const ActionModifiers = {
@@ -104,7 +104,7 @@ export const ActionModifiers = {
   Submit: "submit",
   IndexAll: "index all properties",
   NoIndex: "no indexing",
-  Cancel: "cancel"
+  Cancel: "cancel",
 } as const;
 
 export enum SourceBlade {
@@ -129,5 +129,5 @@ export enum SourceBlade {
   RpcProvider,
   ScaleCollection,
   ScriptExplorer,
-  Keys
+  Keys,
 }

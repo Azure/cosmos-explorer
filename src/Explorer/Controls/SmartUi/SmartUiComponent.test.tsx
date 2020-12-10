@@ -10,8 +10,8 @@ describe("SmartUiComponent", () => {
         message: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details"
-        }
+          text: "More Details",
+        },
       },
       children: [
         {
@@ -24,8 +24,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "spin"
-          }
+            inputType: "spin",
+          },
         },
         {
           id: "throughput2",
@@ -37,16 +37,16 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "slider"
-          }
+            inputType: "slider",
+          },
         },
         {
           id: "containerId",
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
-          }
+            type: "string",
+          },
         },
         {
           id: "analyticalStore",
@@ -56,8 +56,8 @@ describe("SmartUiComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
-          }
+            type: "boolean",
+          },
         },
         {
           id: "database",
@@ -68,13 +68,13 @@ describe("SmartUiComponent", () => {
             choices: [
               { label: "Database 1", key: "db1", value: "database1" },
               { label: "Database 2", key: "db2", value: "database2" },
-              { label: "Database 3", key: "db3", value: "database3" }
+              { label: "Database 3", key: "db3", value: "database3" },
             ],
-            defaultKey: "db2"
-          }
-        }
-      ]
-    }
+            defaultKey: "db2",
+          },
+        },
+      ],
+    },
   };
 
   const exampleCallbacks = (newValues: Map<string, InputType>): void => {

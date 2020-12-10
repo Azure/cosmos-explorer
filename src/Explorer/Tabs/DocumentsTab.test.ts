@@ -18,7 +18,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -34,51 +34,51 @@ describe("Documents tab", () => {
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
-      container: explorer
+      container: explorer,
     });
 
     const collectionWithSystemPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
       partitionKey: {
         paths: ["/foo"],
         kind: "Hash",
         version: 2,
-        systemKey: true
+        systemKey: true,
       },
-      container: explorer
+      container: explorer,
     });
 
     const collectionWithNonSystemPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
       partitionKey: {
         paths: ["/foo"],
         kind: "Hash",
         version: 2,
-        systemKey: false
+        systemKey: false,
       },
-      container: explorer
+      container: explorer,
     });
 
     const mongoCollectionWithSystemPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
       database: {
-        id: ko.observable<string>("foo")
+        id: ko.observable<string>("foo"),
       },
       partitionKey: {
         paths: ["/foo"],
         kind: "Hash",
         version: 2,
-        systemKey: true
+        systemKey: true,
       },
-      container: mongoExplorer
+      container: mongoExplorer,
     });
 
     it("should be false for null or undefined collection", () => {
@@ -91,7 +91,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -108,7 +108,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -125,7 +125,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -142,7 +142,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -159,7 +159,7 @@ describe("Documents tab", () => {
         hashLocation: "",
         isActive: ko.observable<boolean>(false),
 
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

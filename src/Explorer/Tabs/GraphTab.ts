@@ -101,7 +101,7 @@ export default class GraphTab extends TabsBase {
           this.onLoadStartKey = null;
         }
       },
-      resourceId: options.account.id
+      resourceId: options.account.id,
     });
 
     this.isFilterQueryLoading = ko.observable(false);
@@ -170,7 +170,7 @@ export default class GraphTab extends TabsBase {
       nodeSize: ko.observable(GraphTab.NODE_SIZE),
       linkWidth: ko.observable(GraphTab.LINK_WIDTH),
       nodeIconKey: ko.observable(null),
-      iconsMap: ko.observable({})
+      iconsMap: ko.observable({}),
     };
   }
 
@@ -182,7 +182,7 @@ export default class GraphTab extends TabsBase {
       nodeCaptionChoice: ko.observable(graphConfig.nodeCaption()),
       nodeColorKeyChoice: ko.observable(graphConfig.nodeColorKey()),
       nodeIconChoice: ko.observable(graphConfig.nodeIconKey()),
-      nodeIconSet: ko.observable(null)
+      nodeIconSet: ko.observable(null),
     };
   }
 
@@ -217,8 +217,8 @@ export default class GraphTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: this.isNewVertexDisabled()
-      }
+        disabled: this.isNewVertexDisabled(),
+      },
     ];
     buttons.push();
     if (this.isGraphDisplayed()) {
@@ -230,7 +230,7 @@ export default class GraphTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: this.isPropertyEditing()
+        disabled: this.isPropertyEditing(),
       });
     }
     return buttons;

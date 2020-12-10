@@ -26,7 +26,7 @@ export class NotebookUtil {
       name,
       path,
       type: NotebookUtil.getType(type),
-      timestamp: NotebookUtil.getCurrentTimestamp()
+      timestamp: NotebookUtil.getCurrentTimestamp(),
     };
   }
 
@@ -66,7 +66,7 @@ export class NotebookUtil {
 
     return {
       cwd,
-      kernelSpecName
+      kernelSpecName,
     };
   }
 
@@ -149,7 +149,7 @@ export class NotebookUtil {
         const cell = notebookObject.cellMap.get(cellId);
         if (cell?.cell_type === "code") {
           const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
-            output => output.output_type === "display_data" || output.output_type === "execute_result"
+            (output) => output.output_type === "display_data" || output.output_type === "execute_result"
           );
           if (displayOutput) {
             return codeCellIndex;

@@ -18,7 +18,7 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
       manualThroughput: undefined,
       minimumThroughput,
       offerDefinition,
-      headers: offerResponse.headers
+      headers: offerResponse.headers,
     };
   }
 
@@ -28,6 +28,6 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
     manualThroughput: offerContent.offerThroughput,
     minimumThroughput,
     offerDefinition,
-    headers: offerResponse.headers
+    headers: offerResponse.headers,
   };
 };

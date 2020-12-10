@@ -9,7 +9,7 @@ import {
   GremlinSimpleClientParameters,
   Result,
   GremlinRequestMessage,
-  GremlinResponseMessage
+  GremlinResponseMessage,
 } from "./GremlinSimpleClient";
 
 describe("Gremlin Simple Client", () => {
@@ -24,7 +24,7 @@ describe("Gremlin Simple Client", () => {
       successCallback: (result: Result) => {},
       progressCallback: (result: Result) => {},
       failureCallback: (result: Result, error: string) => {},
-      infoCallback: (msg: string) => {}
+      infoCallback: (msg: string) => {},
     };
   };
 
@@ -41,10 +41,10 @@ describe("Gremlin Simple Client", () => {
   } => ({
     attributes: {
       "x-ms-request-charge": requestCharge,
-      "x-ms-total-request-charge": -123
+      "x-ms-total-request-charge": -123,
     },
     code: code,
-    message: null
+    message: null,
   });
 
   beforeEach(() => {
@@ -60,7 +60,7 @@ describe("Gremlin Simple Client", () => {
           fakeSocket.onmessage(fakeSocket.fakeResponse);
         }
       },
-      close: () => {}
+      close: () => {},
     };
     sandbox.stub(GremlinSimpleClient, "createWebSocket").returns(fakeSocket);
   });
@@ -89,9 +89,9 @@ describe("Gremlin Simple Client", () => {
       status: {
         code: 200,
         attributes: { graphExecutionStatus: 200, StorageRU: 2.29, ComputeRU: 1.07, PerPartitionComputeCharges: {} },
-        message: ""
+        message: "",
       },
-      result: { data: ["é"], meta: {} }
+      result: { data: ["é"], meta: {} },
     };
     const expectedDecodedUint8ArrayValues = [
       123,
@@ -323,7 +323,7 @@ describe("Gremlin Simple Client", () => {
       123,
       125,
       125,
-      125
+      125,
     ];
     // We do our best here to emulate what the server should return
     const gremlinResponseData = new Uint8Array(<any>expectedDecodedUint8ArrayValues).buffer;
@@ -352,7 +352,7 @@ describe("Gremlin Simple Client", () => {
     const fakeResponse: GremlinResponseMessage = {
       status: fakeStatus(200, null),
       requestId: "id",
-      result: { data: "mydata" }
+      result: { data: "mydata" },
     };
     sandbox.stub(client, "decodeMessage").returns(fakeResponse);
     const onMessageSpy = sandbox.spy(client, "onMessage");
@@ -368,7 +368,7 @@ describe("Gremlin Simple Client", () => {
     fakeSocket.fakeResponse = {
       status: fakeStatus(200, null),
       requestId: Object.keys(client.pendingRequests)[0],
-      data: new Uint8Array([1, 1, 1, 1]).buffer
+      data: new Uint8Array([1, 1, 1, 1]).buffer,
     };
     client.executeGremlinQuery("test");
     fakeSocket.onopen();
@@ -386,7 +386,7 @@ describe("Gremlin Simple Client", () => {
     const fakeResponse: GremlinResponseMessage = {
       status: fakeStatus(200, RU),
       requestId: Object.keys(client.pendingRequests)[0],
-      result: { data: "mydata" }
+      result: { data: "mydata" },
     };
     sandbox.stub(client, "decodeMessage").returns(fakeResponse);
     client.onMessage(new MessageEvent("test2"));
@@ -394,7 +394,7 @@ describe("Gremlin Simple Client", () => {
       onSuccessSpy.calledWith({
         requestId: fakeResponse.requestId,
         data: fakeResponse.result.data,
-        requestCharge: RU
+        requestCharge: RU,
       })
     ).toBe(true);
   });
@@ -410,7 +410,7 @@ describe("Gremlin Simple Client", () => {
     const fakeResponse: GremlinResponseMessage = {
       status: fakeStatus(204, RU),
       requestId: Object.keys(client.pendingRequests)[0],
-      result: { data: "THIS SHOULD BE IGNORED" }
+      result: { data: "THIS SHOULD BE IGNORED" },
     };
     sandbox.stub(client, "decodeMessage").returns(fakeResponse);
     client.onMessage(new MessageEvent("test2"));
@@ -418,7 +418,7 @@ describe("Gremlin Simple Client", () => {
       onSuccessSpy.calledWith({
         requestId: fakeResponse.requestId,
         data: null,
-        requestCharge: RU
+        requestCharge: RU,
       })
     ).toBe(true);
   });
@@ -435,7 +435,7 @@ describe("Gremlin Simple Client", () => {
     const fakeResponse: GremlinResponseMessage = {
       status: fakeStatus(206, RU),
       requestId: Object.keys(client.pendingRequests)[0],
-      result: { data: [1, 2, 3] }
+      result: { data: [1, 2, 3] },
     };
     sandbox.stub(client, "decodeMessage").returns(fakeResponse);
     client.onMessage(new MessageEvent("test2"));
@@ -443,7 +443,7 @@ describe("Gremlin Simple Client", () => {
       onProgressSpy.calledWith({
         requestId: fakeResponse.requestId,
         data: fakeResponse.result.data,
-        requestCharge: RU
+        requestCharge: RU,
       })
     ).toBe(true);
     expect(onSuccessSpy.notCalled).toBe(true);
@@ -460,7 +460,7 @@ describe("Gremlin Simple Client", () => {
     const fakeResponse: GremlinResponseMessage = {
       status: fakeStatus(407, null),
       requestId: Object.keys(client.pendingRequests)[0],
-      result: { data: <any>null }
+      result: { data: <any>null },
     };
     sandbox.stub(client, "decodeMessage").returns(fakeResponse);
     client.onMessage(new MessageEvent("test2"));
@@ -489,7 +489,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(401, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -501,7 +501,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(401, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -513,7 +513,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(498, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -525,7 +525,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(500, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -537,7 +537,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(597, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -549,7 +549,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(598, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -561,7 +561,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(599, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -573,7 +573,7 @@ describe("Gremlin Simple Client", () => {
       const fakeResponse: GremlinResponseMessage = {
         status: fakeStatus(123123123, null),
         requestId: "id",
-        result: { data: <any>null }
+        result: { data: <any>null },
       };
       sandbox.stub(client, "decodeMessage").returns(fakeResponse);
       client.onMessage(null);
@@ -595,16 +595,16 @@ describe("Gremlin Simple Client", () => {
       args: {
         gremlin: "gremlin",
         bindings: {},
-        language: "language"
-      }
+        language: "language",
+      },
     };
     const expectedResult: GremlinRequestMessage = {
       requestId: request.requestId,
       processor: request.processor,
       op: "authentication",
       args: {
-        SASL: expectedSASLResult
-      }
+        SASL: expectedSASLResult,
+      },
     };
     const actual = client.buildChallengeResponse(request);
     expect(actual).toEqual(expectedResult);
