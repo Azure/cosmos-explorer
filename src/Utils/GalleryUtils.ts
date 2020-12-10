@@ -10,6 +10,7 @@ import Explorer from "../Explorer/Explorer";
 import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { handleError } from "../Common/ErrorHandlingUtils";
+import { HttpStatusCodes } from "../Common/Constants";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -113,7 +114,7 @@ export function reportAbuse(
 
       try {
         const response = await junoClient.reportAbuse(notebookId, abuseCategory, additionalDetails);
-        if (!response.data) {
+        if (response.status != HttpStatusCodes.Accepted) {
           throw new Error(`Received HTTP ${response.status} when submitting report for ${data.name}`);
         }
 
