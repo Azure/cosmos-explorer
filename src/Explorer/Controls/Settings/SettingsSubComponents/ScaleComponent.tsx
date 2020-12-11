@@ -12,7 +12,7 @@ import {
   throughputUnit,
   getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
-  updateThroughputBeyondLimitWarningMessage
+  updateThroughputBeyondLimitWarningMessage,
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
@@ -116,7 +116,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     }
 
     const offer = this.props.collection?.offer();
-    if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+    if (offer?.offerReplacePending) {
       const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
       return getThroughputApplyShortDelayMessage(
         this.props.isAutoPilotSelected,
