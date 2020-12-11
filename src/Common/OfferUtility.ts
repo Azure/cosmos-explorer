@@ -1,5 +1,6 @@
 import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
 import { OfferResponse } from "@azure/cosmos";
+import { HttpHeaders } from "./Constants";
 
 export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
   const offerDefinition: SDKOfferDefinition = offerResponse?.resource;
@@ -18,7 +19,7 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
       manualThroughput: undefined,
       minimumThroughput,
       offerDefinition,
-      headers: offerResponse.headers
+      offerReplacePending: offerResponse.headers?.[HttpHeaders.offerReplacePending] === "true"
     };
   }
 
@@ -28,6 +29,6 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
     manualThroughput: offerContent.offerThroughput,
     minimumThroughput,
     offerDefinition,
-    headers: offerResponse.headers
+    offerReplacePending: offerResponse.headers?.[HttpHeaders.offerReplacePending] === "true"
   };
 };

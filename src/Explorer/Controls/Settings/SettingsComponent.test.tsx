@@ -92,7 +92,8 @@ describe("SettingsComponent", () => {
       autoscaleMaxThroughput: 10000,
       manualThroughput: undefined,
       minimumThroughput: 400,
-      id: "test"
+      id: "test",
+      offerReplacePending: false
     });
 
     const props = { ...baseProps };

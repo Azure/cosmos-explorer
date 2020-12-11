@@ -214,7 +214,7 @@ export interface Offer {
   manualThroughput: number;
   minimumThroughput: number;
   offerDefinition?: SDKOfferDefinition;
-  headers?: any;
+  offerReplacePending: boolean;
 }
 
 export interface SDKOfferDefinition extends Resource {
