@@ -15,7 +15,7 @@ export const collection = ({
     automatic: true,
     indexingMode: "default",
     includedPaths: [],
-    excludedPaths: [],
+    excludedPaths: []
   }),
   uniqueKeyPolicy: {} as DataModels.UniqueKeyPolicy,
   usageSizeInKB: ko.observable(100),
@@ -24,7 +24,7 @@ export const collection = ({
     manualThroughput: 10000,
     minimumThroughput: 6000,
     id: "offer",
-    offerReplacePending: false,
+    offerReplacePending: false
   }),
   conflictResolutionPolicy: ko.observable<DataModels.ConflictResolutionPolicy>(
     {} as DataModels.ConflictResolutionPolicy
@@ -37,10 +37,10 @@ export const collection = ({
   partitionKey: {
     paths: [],
     kind: "hash",
-    version: 2,
+    version: 2
   },
   partitionKeyProperty: "partitionKey",
   readSettings: () => {
     return;
-  },
+  }
 } as unknown) as ViewModels.Collection;

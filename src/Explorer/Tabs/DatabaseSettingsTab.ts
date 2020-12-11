@@ -334,7 +334,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.discardSettingsChangesButton = {
@@ -354,7 +354,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.isTemplateReady = ko.observable<boolean>(false);
@@ -371,7 +371,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
 
     const headerOptions: RequestOptions = { initialHeaders: {} };
@@ -381,7 +381,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         databaseId: this.database.id(),
         currentOffer: this.database.offer(),
         autopilotThroughput: this.isAutoPilotSelected() ? this.autoPilotThroughput() : undefined,
-        manualThroughput: this.isAutoPilotSelected() ? undefined : this.throughput(),
+        manualThroughput: this.isAutoPilotSelected() ? undefined : this.throughput()
       };
 
       if (this._hasProvisioningTypeChanged()) {
@@ -412,7 +412,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           error: errorMessage,
-          errorStack: getErrorStack(error),
+          errorStack: getErrorStack(error)
         },
         startKey
       );
@@ -455,7 +455,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveSettingsButton.enabled(),
+        disabled: !this.saveSettingsButton.enabled()
       });
     }
 
@@ -468,7 +468,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardSettingsChangesButton.enabled(),
+        disabled: !this.discardSettingsChangesButton.enabled()
       });
     }
     return buttons;
@@ -480,7 +480,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         this.saveSettingsButton.visible,
         this.saveSettingsButton.enabled,
         this.discardSettingsChangesButton.visible,
-        this.discardSettingsChangesButton.enabled,
+        this.discardSettingsChangesButton.enabled
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();

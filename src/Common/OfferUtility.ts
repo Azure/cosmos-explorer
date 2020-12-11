@@ -19,7 +19,7 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
       manualThroughput: undefined,
       minimumThroughput,
       offerDefinition,
-      offerReplacePending: offerResponse.headers?.[HttpHeaders.offerReplacePending] === "true",
+      offerReplacePending: offerResponse.headers?.[HttpHeaders.offerReplacePending] === "true"
     };
   }
 
@@ -29,6 +29,6 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
     manualThroughput: offerContent.offerThroughput,
     minimumThroughput,
     offerDefinition,
-    offerReplacePending: offerResponse.headers?.[HttpHeaders.offerReplacePending] === "true",
+    offerReplacePending: offerResponse.headers?.[HttpHeaders.offerReplacePending] === "true"
   };
 };

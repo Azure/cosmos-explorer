@@ -9,7 +9,7 @@ import ko from "knockout";
 import { TtlType, isDirty } from "./SettingsUtils";
 import Explorer from "../../Explorer";
 jest.mock("../../../Common/dataAccess/getIndexTransformationProgress", () => ({
-  getIndexTransformationProgress: jest.fn().mockReturnValue(undefined),
+  getIndexTransformationProgress: jest.fn().mockReturnValue(undefined)
 }));
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
@@ -20,20 +20,20 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     conflictResolutionPolicy: undefined,
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
-    geospatialConfig: undefined,
+    geospatialConfig: undefined
   } as DataModels.Collection),
   updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
     id: undefined,
     shardKey: undefined,
     indexes: [],
-    analyticalStorageTtl: undefined,
-  } as MongoDBCollectionResource),
+    analyticalStorageTtl: undefined
+  } as MongoDBCollectionResource)
 }));
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import Q from "q";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
-  updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
+  updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer)
 }));
 
 describe("SettingsComponent", () => {
@@ -49,8 +49,8 @@ describe("SettingsComponent", () => {
       onUpdateTabsButtons: undefined,
       getPendingNotification: Q.Promise<DataModels.Notification>(() => {
         return;
-      }),
-    }),
+      })
+    })
   };
 
   it("renders", () => {
@@ -71,7 +71,7 @@ describe("SettingsComponent", () => {
       isScaleSaveable: false,
       isScaleDiscardable: false,
       isSubSettingsSaveable: true,
-      isSubSettingsDiscardable: true,
+      isSubSettingsDiscardable: true
     });
     wrapper.update();
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toEqual(true);
@@ -93,7 +93,7 @@ describe("SettingsComponent", () => {
       manualThroughput: undefined,
       minimumThroughput: 400,
       id: "test",
-      offerReplacePending: false,
+      offerReplacePending: false
     });
 
     const props = { ...baseProps };
@@ -106,7 +106,7 @@ describe("SettingsComponent", () => {
       userCanChangeProvisioningTypes: true,
       isAutoPilotSelected: true,
       wasAutopilotOriginallySet: false,
-      autoPilotThroughput: 1000,
+      autoPilotThroughput: 1000
     });
     wrapper.update();
     expect(settingsComponentInstance.hasProvisioningTypeChanged()).toEqual(true);
@@ -141,7 +141,7 @@ describe("SettingsComponent", () => {
       onDeleteDatabaseContextMenuClick: undefined,
       readSettings: undefined,
       onSettingsClick: undefined,
-      loadOffer: undefined,
+      loadOffer: undefined
     } as ViewModels.Database;
     newCollection.getDatabase = () => newDatabase;
     newCollection.offer = ko.observable(undefined);
@@ -170,14 +170,14 @@ describe("SettingsComponent", () => {
         tableEndpoint: undefined,
         gremlinEndpoint: undefined,
         cassandraEndpoint: undefined,
-        enableMultipleWriteLocations: true,
-      },
+        enableMultipleWriteLocations: true
+      }
     });
     const newCollection = { ...collection };
     newCollection.container = newContainer;
     newCollection.conflictResolutionPolicy = ko.observable({
       mode: DataModels.ConflictResolutionMode.Custom,
-      conflictResolutionProcedure: undefined,
+      conflictResolutionProcedure: undefined
     } as DataModels.ConflictResolutionPolicy);
 
     const props = { ...baseProps };
@@ -193,7 +193,7 @@ describe("SettingsComponent", () => {
     wrapper.update();
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
     settingsComponentInstance.mongoDBCollectionResource = {
-      id: "id",
+      id: "id"
     };
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
@@ -238,7 +238,7 @@ describe("SettingsComponent", () => {
 
     wrapper.setState({
       conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.LastWriterWins,
-      conflictResolutionPolicyPath: conflictResolutionPolicyPath,
+      conflictResolutionPolicyPath: conflictResolutionPolicyPath
     });
     wrapper.update();
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
@@ -248,7 +248,7 @@ describe("SettingsComponent", () => {
 
     wrapper.setState({
       conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.Custom,
-      conflictResolutionPolicyProcedure: conflictResolutionPolicyProcedure,
+      conflictResolutionPolicyProcedure: conflictResolutionPolicyProcedure
     });
     wrapper.update();
     conflictResolutionPolicy = settingsComponentInstance.getUpdatedConflictResolutionPolicy();

@@ -12,7 +12,7 @@ import {
   throughputUnit,
   getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
-  updateThroughputBeyondLimitWarningMessage,
+  updateThroughputBeyondLimitWarningMessage
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
