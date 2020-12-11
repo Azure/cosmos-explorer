@@ -40,6 +40,7 @@ export interface CommonInputTypes {
   inputType?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
+  initialize?: () => Promise<Map<string, InputType>>;
   customElement?: ((currentValues: Map<string, InputType>) => Promise<JSX.Element>) | JSX.Element;
 }
 
@@ -106,6 +107,7 @@ export const toSmartUiDescriptor = (metadataKey: string, target: Object): void =
 
   let smartUiDescriptor = {
     onSubmit: root.onSubmit,
+    initialize: root.initialize,
     root: {
       id: "root",
       info: root.info,
@@ -175,20 +177,20 @@ const getInput = (value: CommonInputTypes): AnyInput => {
 
   switch (value.type) {
     case "number":
-      if (!value.step || !value.defaultValue || !value.inputType || !value.min || !value.max) {
-        throw new Error("step, min, miax, defaultValue and inputType are needed for number type");
+      if (!value.step || !value.inputType || !value.min || !value.max) {
+        throw new Error("step, min, miax and inputType are needed for number type");
       }
       return value as NumberInput;
     case "string":
       return value as StringInput;
     case "boolean":
-      if (!value.trueLabel || !value.falseLabel || value.defaultValue === undefined) {
-        throw new Error("truelabel, falselabel and defaultValue are needed for boolean type");
+      if (!value.trueLabel || !value.falseLabel) {
+        throw new Error("truelabel and falselabel are needed for boolean type");
       }
       return value as BooleanInput;
     default:
-      if (!value.choices || !value.defaultKey) {
-        throw new Error("choices and defaultKey are needed for enum type");
+      if (!value.choices) {
+        throw new Error("choices are needed for enum type");
       }
       return value as ChoiceInput;
   }

@@ -12,6 +12,7 @@ import { Link, MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize }
 
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
+import { Widget } from "@phosphor/widgets";
 
 /**
  * Generic UX renderer
@@ -44,14 +45,14 @@ export interface NumberInput extends BaseInput {
   min: (() => Promise<number>) | number;
   max: (() => Promise<number>) | number;
   step: (() => Promise<number>) | number;
-  defaultValue: (() => Promise<number>) | number;
+  defaultValue?: (() => Promise<number>) | number;
   inputType: "spin" | "slider";
 }
 
 export interface BooleanInput extends BaseInput {
   trueLabel: (() => Promise<string>) | string;
   falseLabel: (() => Promise<string>) | string;
-  defaultValue: (() => Promise<boolean>) | boolean;
+  defaultValue?: (() => Promise<boolean>) | boolean;
 }
 
 export interface StringInput extends BaseInput {
@@ -60,7 +61,7 @@ export interface StringInput extends BaseInput {
 
 export interface ChoiceInput extends BaseInput {
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
-  defaultKey: (() => Promise<string>) | string;
+  defaultKey?: (() => Promise<string>) | string;
 }
 
 export interface Info {
@@ -82,6 +83,7 @@ export interface Node {
 
 export interface Descriptor {
   root: Node;
+  initialize?: () => Promise<Map<string, InputType>>;
   onSubmit: (currentValues: Map<string, InputType>) => Promise<void>;
 }
 
@@ -142,7 +144,12 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private setDefaultValues = async (): Promise<void> => {
-    const defaults = new Map<string, InputType>();
+    let defaults = new Map<string, InputType>()
+    
+    if (this.props.descriptor.initialize) {
+      defaults = await this.props.descriptor.initialize()
+    }
+
     await this.setDefaults(this.props.descriptor.root, defaults);
     this.setState({ currentValues: defaults });
   };
@@ -154,7 +161,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
     if (currentNode.input) {
       currentNode.input = await this.getModifiedInput(currentNode.input);
-      defaults.set(currentNode.input.dataFieldName, this.getDefaultValue(currentNode.input));
+      if (!defaults.get(currentNode.input.dataFieldName)) {
+        defaults.set(currentNode.input.dataFieldName, this.getDefaultValue(currentNode.input));
+      }
     }
 
     await Promise.all(currentNode.children?.map(async (child: Node) => await this.setDefaults(child, defaults)));
@@ -225,7 +234,8 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private getDefaultValue = (input: AnyInput): InputType => {
     switch (input.type) {
       case "string":
-        return (input as StringInput).defaultValue as string;
+        const stringInput = input as StringInput 
+        return stringInput.defaultValue ? (stringInput.defaultValue as string) : "";
       case "number":
         return (input as NumberInput).defaultValue as number;
       case "boolean":
@@ -261,6 +271,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   };
 
   private renderStringInput(input: StringInput): JSX.Element {
+    const value = this.state.currentValues.get(input.dataFieldName) as string
     return (
       <div className="stringInputContainer">
         <div>
@@ -268,7 +279,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             id={`${input.dataFieldName}-input`}
             label={input.label as string}
             type="text"
-            defaultValue={input.defaultValue as string}
+            value={value}
             placeholder={input.placeholder as string}
             onChange={(_, newValue) => this.onInputChange(input, newValue)}
             styles={{
@@ -340,12 +351,13 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       step: step as number
     };
 
+    const value = this.state.currentValues.get(dataFieldName) as number
     if (input.inputType === "spin") {
       return (
         <div>
           <SpinButton
             {...props}
-            defaultValue={(defaultValue as number).toString()}
+            value={value.toString()}
             onValidate={newValue => this.onValidate(input, newValue, props.min, props.max)}
             onIncrement={newValue => this.onIncrement(input, newValue, props.step, props.max)}
             onDecrement={newValue => this.onDecrement(input, newValue, props.step, props.min)}
@@ -368,7 +380,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           // showValue={true}
           // valueFormat={}
           {...props}
-          defaultValue={defaultValue as number}
+          value={value}
           onChange={newValue => this.onInputChange(input, newValue)}
           styles={{
             titleLabel: {
@@ -486,18 +498,21 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 20 };
     return this.state.currentValues && this.state.currentValues.size ? (
-      <Stack tokens={containerStackTokens}>
+      <Stack tokens={containerStackTokens} styles={{root: {width: 400, padding: 10}}}>
         {this.renderNode(this.props.descriptor.root)}
         <Stack horizontal tokens={{childrenGap: 10}}>
         <PrimaryButton
           styles={{ root: { width: 100 } }}
           text="submit"
-          onClick={async () => await this.props.descriptor.onSubmit(this.state.currentValues)}
+          onClick={async () => {
+            await this.props.descriptor.onSubmit(this.state.currentValues)
+            this.setDefaultValues()
+          }}
         />
         <PrimaryButton
           styles={{ root: { width: 100 } }}
           text="discard"
-          onClick={async () => this.setDefaultValues()}
+          onClick={async () => await this.setDefaultValues()}
         />
         </Stack>
       </Stack>

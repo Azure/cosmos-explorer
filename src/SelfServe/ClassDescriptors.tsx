@@ -18,3 +18,9 @@ export const OnSubmit = (onSubmit: (currentValues: Map<string, InputType>) => Pr
     addPropertyToMap(target, "root", target.name, "onSubmit", onSubmit);
   };
 };
+
+export const Initialize = (initialize: () => Promise<Map<string, InputType>>): ClassDecorator => {
+  return (target: Function) => {
+    addPropertyToMap(target, "root", target.name, "initialize", initialize);
+  };
+};

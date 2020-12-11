@@ -2,6 +2,7 @@ import { Text } from "office-ui-fabric-react";
 import React from "react";
 import { ChoiceItem, Info, InputType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import { TextComponent } from "./TextComponent";
+import {SessionStorageUtility} from "../../Shared/StorageUtility"
 
 export enum Sizes {
   OneCore4Gb = "OneCore4Gb",
@@ -45,6 +46,20 @@ export const onSubmit = async (currentValues: Map<string, InputType>): Promise<v
       ", isAllowed:" +
       currentValues.get("isAllowed")
   );
+
+  SessionStorageUtility.setEntry("instanceCount", currentValues.get("instanceCount")?.toString())
+  SessionStorageUtility.setEntry("instanceSize", currentValues.get("instanceSize")?.toString())
+  SessionStorageUtility.setEntry("instanceName", currentValues.get("instanceName")?.toString())
+  SessionStorageUtility.setEntry("isAllowed", currentValues.get("isAllowed")?.toString())
+};
+
+export const initializeSqlX = async () : Promise<Map<string, InputType>> => {
+  let defaults = new Map<string, InputType>()
+  defaults.set("instanceCount",  parseInt(SessionStorageUtility.getEntry("instanceCount")))
+  defaults.set("instanceSize",  SessionStorageUtility.getEntry("instanceSize"))
+  defaults.set("instanceName",  SessionStorageUtility.getEntry("instanceName"))
+  defaults.set("isAllowed",  SessionStorageUtility.getEntry("isAllowed") === "true")
+  return defaults
 };
 
 export const delay = (ms: number): Promise<void> => {
@@ -63,7 +78,6 @@ export const getPromise = <T extends number | string | boolean | ChoiceItem[] | 
 
 export const renderText = (text: string) : (currentValues: Map<string, InputType>) => Promise<JSX.Element> => {
   const f = async (currentValues: Map<string, InputType>): Promise<JSX.Element> => {
-    //return <Text>SqlX is a new feature of Cosmos DB.</Text>;
     return <TextComponent text={text} currentValues={currentValues}/>
   };
   return f

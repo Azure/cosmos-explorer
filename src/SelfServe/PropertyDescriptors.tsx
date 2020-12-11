@@ -1,7 +1,12 @@
-import { ChoiceItem, Info, InputType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { ChoiceItem, Descriptor, Info, InputType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { addPropertyToMap } from "./SelfServeUtils";
 
-const addToMap = (descriptorName: string, descriptorValue: any): PropertyDecorator => {
+interface Decorator {
+  name: string,
+  value: any
+}
+
+const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
   return (target, property) => {
     const className = (target as Function).name;
     var propertyType = (Reflect.getMetadata("design:type", target, property).name as string).toLowerCase();
@@ -12,76 +17,69 @@ const addToMap = (descriptorName: string, descriptorValue: any): PropertyDecorat
     if (!className) {
       throw new Error("property descriptor applied to non static field!");
     }
-    addPropertyToMap(target, property.toString(), className, descriptorName, descriptorValue);
+    decorators.map((decorator: Decorator) => addPropertyToMap(target, property.toString(), className, decorator.name, decorator.value));
   };
 };
 
 export const OnChange = (
   onChange: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
 ): PropertyDecorator => {
-  return addToMap("onChange", onChange);
+  return addToMap({name: "onChange", value: onChange});
 };
 
 export const CustomElement = (customElement: ((currentValues: Map<string, InputType>) => Promise<JSX.Element>) | JSX.Element): PropertyDecorator => {
-  return addToMap("customElement", customElement);
+  return addToMap({name: "customElement", value: customElement});
 };
 
 export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecorator => {
-  return addToMap("info", info);
+  return addToMap({name: "info", value: info});
 };
 
 export const Placeholder = (placeholder: (() => Promise<string>) | string): PropertyDecorator => {
-  return addToMap("placeholder", placeholder);
+  return addToMap({name: "placeholder", value: placeholder});
 };
 
 export const ParentOf = (children: string[]): PropertyDecorator => {
-  return addToMap("parentOf", children);
+  return addToMap({name: "parentOf", value: children});
 };
 
 export const Label = (label: (() => Promise<string>) | string): PropertyDecorator => {
-  return addToMap("label", label);
+  return addToMap({name: "label", value: label});
 };
 
-export const Min = (min: (() => Promise<number>) | number): PropertyDecorator => {
-  return addToMap("min", min);
-};
-
-export const Max = (max: (() => Promise<number>) | number): PropertyDecorator => {
-  return addToMap("max", max);
-};
-
-export const Step = (step: (() => Promise<number>) | number): PropertyDecorator => {
-  return addToMap("step", step);
+export const NumberInput = (min: (() => Promise<number>) | number,
+max: (() => Promise<number>) | number,
+step: (() => Promise<number>) | number,
+numberInputType: string,
+defaultNumberValue?: (() => Promise<number>) | number,
+): PropertyDecorator => {
+  return addToMap(
+    {name: "min", value: min},
+    {name: "max", value: max},
+    {name: "step", value: step},
+    {name: "defaultValue", value: defaultNumberValue},
+    {name: "inputType", value: numberInputType}
+  );
 };
 
 export const DefaultStringValue = (defaultStringValue: (() => Promise<string>) | string): PropertyDecorator => {
-  return addToMap("defaultValue", defaultStringValue);
+  return addToMap({name: "defaultValue", value: defaultStringValue});
 };
 
-export const DefaultNumberValue = (defaultNumberValue: (() => Promise<number>) | number): PropertyDecorator => {
-  return addToMap("defaultValue", defaultNumberValue);
+export const BooleanInput = (trueLabel: (() => Promise<string>) | string,
+falseLabel: (() => Promise<string>) | string,
+defaultBooleanValue?: (() => Promise<boolean>) | boolean): PropertyDecorator => {
+  return addToMap(
+    {name: "defaultValue", value: defaultBooleanValue},
+    {name: "trueLabel", value: trueLabel},
+    {name: "falseLabel", value: falseLabel}
+  );
 };
 
-export const DefaultBooleanValue = (defaultBooleanValue: (() => Promise<boolean>) | boolean): PropertyDecorator => {
-  return addToMap("defaultValue", defaultBooleanValue);
-};
-
-export const TrueLabel = (trueLabel: (() => Promise<string>) | string): PropertyDecorator => {
-  return addToMap("trueLabel", trueLabel);
-};
-
-export const FalseLabel = (falseLabel: (() => Promise<string>) | string): PropertyDecorator => {
-  return addToMap("falseLabel", falseLabel);
-};
-
-export const Choices = (choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[]): PropertyDecorator => {
-  return addToMap("choices", choices);
-};
-
-export const DefaultKey = (defaultKey: (() => Promise<string>) | string): PropertyDecorator => {
-  return addToMap("defaultKey", defaultKey);
-};
-
-export const NumberInputType = (numberInputType: string): PropertyDecorator => {
-  return addToMap("inputType", numberInputType);
+export const ChoiceInput = (choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[], 
+defaultKey?: (() => Promise<string>) | string): PropertyDecorator => {
+  return addToMap(
+    {name: "choices", value: choices}, 
+    {name: "defaultKey", value: defaultKey}
+  );
 };

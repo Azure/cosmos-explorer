@@ -1,24 +1,19 @@
 import {
   Label,
-  Min,
-  Max,
-  Step,
-  DefaultKey,
-  NumberInputType,
-  Choices,
   ParentOf,
   PropertyInfo,
   OnChange,
-  TrueLabel,
-  FalseLabel,
   Placeholder,
-  DefaultNumberValue,
-  DefaultBooleanValue,
-  CustomElement
+  CustomElement,
+  DefaultStringValue,
+  ChoiceInput,
+  BooleanInput,
+  NumberInput
 } from "../PropertyDescriptors";
-import { SmartUi, ClassInfo, OnSubmit } from "../ClassDescriptors";
+import { SmartUi, ClassInfo, OnSubmit, Initialize } from "../ClassDescriptors";
 import {
   getPromise,
+  initializeSqlX,
   instanceSizeInfo,
   instanceSizeOptions,
   onInstanceCountChange,
@@ -32,6 +27,7 @@ import { ChoiceItem } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 
 @SmartUi()
 @ClassInfo(getPromise(sqlXInfo))
+@Initialize(initializeSqlX)
 @OnSubmit(onSubmit)
 export class SqlX extends SelfServeBase {
 
@@ -39,10 +35,10 @@ export class SqlX extends SelfServeBase {
   @CustomElement(renderText("This is the description part of SqlX"))
   static description: string;
 
-  @PropertyInfo(getPromise(instanceSizeInfo))
   @Label(getPromise("Instance Size"))
-  @Choices(getPromise(instanceSizeOptions))
-  @DefaultKey(getPromise(Sizes.OneCore4Gb))
+  @PropertyInfo(getPromise(instanceSizeInfo))
+  //@ChoiceInput(getPromise(instanceSizeOptions), getPromise(Sizes.OneCore4Gb))
+  @ChoiceInput(getPromise(instanceSizeOptions))
   static instanceSize: ChoiceItem;
 
   @Label(getPromise("About"))
@@ -50,22 +46,18 @@ export class SqlX extends SelfServeBase {
   static about: string;
 
   @Label("Feature Allowed")
-  @DefaultBooleanValue(false)
-  @TrueLabel("allowed")
-  @FalseLabel("not allowed")
+  //@BooleanInput("allowed", "not allowed", false)
+  @BooleanInput("allowed", "not allowed")
   static isAllowed: boolean;
 
   @Label("Instance Name")
   @Placeholder("instance name")
   static instanceName: string;
 
-  @OnChange(onInstanceCountChange)
   @Label(getPromise("Instance Count"))
-  @Min(getPromise(0))
-  @Max(getPromise(5))
-  @Step(getPromise(1))
-  @DefaultNumberValue(getPromise(1))
-  @NumberInputType("slider")
+  @OnChange(onInstanceCountChange)
   @ParentOf(["instanceSize", "about", "instanceName", "isAllowed", ])
+  //@NumberInput(getPromise(1), getPromise(5), getPromise(1), "slider", getPromise(0))
+  @NumberInput(getPromise(1), getPromise(5), getPromise(1), "slider")
   static instanceCount: number;
 }
