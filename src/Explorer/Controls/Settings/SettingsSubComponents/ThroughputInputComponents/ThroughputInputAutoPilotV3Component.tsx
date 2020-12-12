@@ -23,7 +23,8 @@ import {
   Label,
   Link,
   MessageBar,
-  MessageBarType
+  MessageBarType,
+  FontIcon
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
@@ -318,6 +319,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private renderThroughputInput = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
+      <Text>
+        Estimate your required throughput with
+        <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+          {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
+        </Link>
+      </Text>
       <TextField
         required
         type="number"
@@ -349,6 +356,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           onChange={this.onSpendAckChecked}
         />
       )}
+      <br/>
       {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
     </Stack>
   );

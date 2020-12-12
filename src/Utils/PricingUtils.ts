@@ -1,6 +1,8 @@
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
 
+export const estimatedCostDisclaimer: string = "*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
+
 /**
  * Anything that is not a number should return 0
  * Otherwise, return numberOfRegions
@@ -217,7 +219,7 @@ export function getEstimatedSpendHtml(
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
     `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)` +
     `<p style='padding: 10px 0px 0px 0px;'>` +
-    `<em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>`
+    `<em>${estimatedCostDisclaimer}</em></p>`
   );
 }
 

@@ -10,7 +10,8 @@ import {
   getMultimasterMultiplier,
   computeRUUsagePriceHourly,
   getPricePerRu,
-  calculateEstimateNumber
+  calculateEstimateNumber,
+  estimatedCostDisclaimer
 } from "../../../Utils/PricingUtils";
 import {
   ITextFieldStyles,
@@ -32,7 +33,11 @@ import {
   MessageBarType,
   Stack,
   Spinner,
-  SpinnerSize
+  SpinnerSize,
+  DetailsList,
+  IColumn,
+  SelectionMode,
+  DetailsListLayoutMode
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
@@ -195,33 +200,71 @@ export const getEstimatedAutoscaleSpendElement = (
   );
 };
 
+interface IEstimatedSpendingDisplayProps {
+  costType: JSX.Element,
+  hourly: JSX.Element,
+  daily: JSX.Element,
+  monthly: JSX.Element
+}
+
 export const getEstimatedSpendElement = (
   throughput: number,
   serverId: string,
   regions: number,
-  multimaster: boolean
+  multimaster: boolean,
+  newthroughput?: number
 ): JSX.Element => {
+  //TODO: refactor prices (incl pricePerRu) to function returning a tuple/interface
   const hourlyPrice: number = computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * hoursInAMonth;
+  //TODO: do we still want the currency displayed somewhere?
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
   const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
+  const estimatedSpendingColumns: IColumn[] = [
+    { key: "costType", name: "", fieldName: "costType", minWidth: 100, maxWidth: 200, isResizable: true},
+    { key: "hourly", name: "Hourly", fieldName: "hourly", minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: "daily", name: "Daily", fieldName: "daily", minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true }
+  ];
+  let estimatedSpendingItems: IEstimatedSpendingDisplayProps[] = [
+    { costType: <Text>Current Cost</Text>,
+      hourly: <Text>{currencySign} {calculateEstimateNumber(hourlyPrice)}</Text>,
+      daily: <Text>{currencySign} {calculateEstimateNumber(dailyPrice)}</Text>,
+      monthly: <Text>{currencySign} {calculateEstimateNumber(monthlyPrice)}</Text>
+    }];
+
+  if (newthroughput) {
+    const newHourlyPrice: number = computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
+    const newDailyPrice: number = hourlyPrice * 24;
+    const newMonthlyPrice: number = hourlyPrice * hoursInAMonth;
+    estimatedSpendingItems.unshift({
+      costType: <Text><b>Updated Cost</b></Text>,
+      hourly: <Text><b>{currencySign} {calculateEstimateNumber(newHourlyPrice)}</b></Text>,
+      daily: <Text><b>{currencySign} {calculateEstimateNumber(newDailyPrice)}</b></Text>,
+      monthly: <Text><b>{currencySign} {calculateEstimateNumber(newMonthlyPrice)}</b></Text>
+    });
+  }
 
   return (
-    <Text id="throughputSpendElement">
-      Estimated cost ({currency}):{" "}
-      <b>
-        {currencySign}
-        {calculateEstimateNumber(hourlyPrice)} hourly {` / `}
-        {currencySign}
-        {calculateEstimateNumber(dailyPrice)} daily {` / `}
-        {currencySign}
-        {calculateEstimateNumber(monthlyPrice)} monthly{" "}
-      </b>
-      ({"regions: "} {regions}, {throughput}RU/s, {currencySign}
-      {pricePerRu}/RU)
-    </Text>
+    <Stack {...subComponentStackProps} styles={mediumWidthStackStyles}>
+      <DetailsList
+        styles={customDetailsListStyles}
+        disableSelectionZone
+        items={estimatedSpendingItems}
+        columns={estimatedSpendingColumns}
+        selectionMode={SelectionMode.none}
+        layoutMode={DetailsListLayoutMode.justified}
+      />
+      <Text id="throughputSpendElement">
+        ({"regions: "} {regions}, {throughput}RU/s, {currencySign}
+        {pricePerRu}/RU)
+      </Text>
+      <Text>
+        <em>{estimatedCostDisclaimer}</em>
+      </Text>
+    </Stack>
   );
 };
 
