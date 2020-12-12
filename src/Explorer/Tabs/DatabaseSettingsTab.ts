@@ -230,9 +230,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return this.throughputTitle() + this.requestUnitsUsageCost();
     });
     this.pendingNotification = ko.observable<DataModels.Notification>();
-    this._offerReplacePending = ko.observable<boolean>(
-      !!this.database.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending]
-    );
+    this._offerReplacePending = ko.observable<boolean>(!!this.database.offer()?.offerReplacePending);
     this.notificationStatusInfo = ko.observable<string>("");
     this.shouldShowNotificationStatusPrompt = ko.computed<boolean>(() => this.notificationStatusInfo().length > 0);
     this.warningMessage = ko.computed<string>(() => {
@@ -241,7 +239,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       }
 
       const offer = this.database.offer();
-      if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+      if (offer?.offerReplacePending) {
         const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
         return throughputApplyShortDelayMessage(this.isAutoPilotSelected(), throughput, this.database.id());
       }

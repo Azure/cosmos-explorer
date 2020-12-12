@@ -178,8 +178,7 @@ export class JunoClient {
     return this.getNotebooks(`${this.getNotebooksUrl()}/gallery/public`);
   }
 
-  // will be renamed once feature.enableCodeOfConduct flag is removed
-  public async fetchPublicNotebooks(): Promise<IJunoResponse<IPublicGalleryData>> {
+  public async getPublicGalleryData(): Promise<IJunoResponse<IPublicGalleryData>> {
     const url = `${this.getNotebooksAccountUrl()}/gallery/public`;
     const response = await window.fetch(url, {
       method: "PATCH",
@@ -405,7 +404,7 @@ export class JunoClient {
   }
 
   public async reportAbuse(notebookId: string, abuseCategory: string, notes: string): Promise<IJunoResponse<boolean>> {
-    const response = await window.fetch(`${this.getNotebooksUrl()}/avert/reportAbuse`, {
+    const response = await window.fetch(`${this.getNotebooksUrl()}/gallery/reportAbuse`, {
       method: "POST",
       body: JSON.stringify({
         notebookId,
