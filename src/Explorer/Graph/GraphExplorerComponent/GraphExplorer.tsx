@@ -31,7 +31,7 @@ import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.g
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
-import { FeedOptions } from "@azure/cosmos/dist-esm";
+import { FeedOptions } from "@azure/cosmos";
 
 export interface GraphAccessor {
   applyFilter: () => void;

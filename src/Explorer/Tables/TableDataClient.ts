@@ -4,7 +4,7 @@ import Q from "q";
 import { displayTokenRenewalPromptForStatus, getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AuthType } from "../../AuthType";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { FeedOptions } from "@azure/cosmos/dist-esm";
+import { FeedOptions } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
 import * as Entities from "./Entities";
 import * as HeadersUtility from "../../Common/HeadersUtility";
