@@ -105,7 +105,8 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         id: offerId,
         autoscaleMaxThroughput: autoscaleSettings.maxThroughput,
         manualThroughput: undefined,
-        minimumThroughput
+        minimumThroughput,
+        offerReplacePending: resource.offerReplacePending === "true"
       };
     }
 
@@ -113,7 +114,8 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
       id: offerId,
       autoscaleMaxThroughput: undefined,
       manualThroughput: resource.throughput,
-      minimumThroughput
+      minimumThroughput,
+      offerReplacePending: resource.offerReplacePending === "true"
     };
   }
 

@@ -98,26 +98,21 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     author: string,
     notebookContent: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
-    isCodeOfConductEnabled: boolean,
     isLinkInjectionEnabled: boolean
   ): Promise<void> {
-    if (isCodeOfConductEnabled) {
-      try {
-        const response = await this.junoClient.isCodeOfConductAccepted();
-        if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
-          throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
-        }
-
-        this.isCodeOfConductAccepted = response.data;
-      } catch (error) {
-        handleError(
-          error,
-          "PublishNotebookPaneAdapter/isCodeOfConductAccepted",
-          "Failed to check if code of conduct was accepted"
-        );
+    try {
+      const response = await this.junoClient.isCodeOfConductAccepted();
+      if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
+        throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
       }
-    } else {
-      this.isCodeOfConductAccepted = true;
+
+      this.isCodeOfConductAccepted = response.data;
+    } catch (error) {
+      handleError(
+        error,
+        "PublishNotebookPaneAdapter/isCodeOfConductAccepted",
+        "Failed to check if code of conduct was accepted"
+      );
     }
 
     this.name = name;

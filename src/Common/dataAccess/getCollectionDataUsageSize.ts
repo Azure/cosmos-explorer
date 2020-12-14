@@ -1,3 +1,4 @@
+import { AuthType } from "../../AuthType";
 import { armRequest } from "../../Utils/arm/request";
 import { configContext } from "../../ConfigContext";
 import { handleError } from "../ErrorHandlingUtils";
@@ -40,6 +41,10 @@ interface MetricsResponse {
 }
 
 export const getCollectionUsageSizeInKB = async (databaseName: string, containerName: string): Promise<number> => {
+  if (window.authType !== AuthType.AAD) {
+    return undefined;
+  }
+
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;

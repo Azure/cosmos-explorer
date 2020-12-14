@@ -23,7 +23,8 @@ export const collection = ({
     autoscaleMaxThroughput: undefined,
     manualThroughput: 10000,
     minimumThroughput: 6000,
-    id: "offer"
+    id: "offer",
+    offerReplacePending: false
   }),
   conflictResolutionPolicy: ko.observable<DataModels.ConflictResolutionPolicy>(
     {} as DataModels.ConflictResolutionPolicy
