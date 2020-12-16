@@ -6,8 +6,6 @@ import {
   IconButton,
   Text,
   SelectionMode,
-  IDetailsRowProps,
-  DetailsRow,
   IColumn,
   MessageBar,
   MessageBarType,

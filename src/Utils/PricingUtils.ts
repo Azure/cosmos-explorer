@@ -1,7 +1,7 @@
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
 
-export const estimatedCostDisclaimer: string =
+export const estimatedCostDisclaimer =
   "*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
 
 /**

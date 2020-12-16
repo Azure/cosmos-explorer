@@ -39,7 +39,7 @@ import * as DataModels from "../../../../../Contracts/DataModels";
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import { userContext } from "../../../../../UserContext";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
-import { usageInGB, calculateEstimateNumber, computeRUUsagePriceHourly } from "../../../../../Utils/PricingUtils";
+import { usageInGB, calculateEstimateNumber } from "../../../../../Utils/PricingUtils";
 import { Features } from "../../../../../Common/Constants";
 
 export interface ThroughputInputAutoPilotV3Props {
@@ -174,9 +174,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     const isDirty: boolean = this.IsComponentDirty().isDiscardable;
     const serverId: string = this.props.serverId;
-    let currentThroughput: number = isDirty ? this.props.throughputBaseline : this.props.throughput;
-    let newThroughput: number = isDirty ? this.props.throughput : null;
-
     const regions = account?.properties?.readLocations?.length || 1;
     const multimaster = account?.properties?.enableMultipleWriteLocations || false;
 
@@ -189,7 +186,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         serverId,
         regions,
         multimaster,
-        isDirty ? this.props.throughput : null
+        isDirty ? this.props.throughput : undefined
       );
     } else {
       estimatedSpend = this.getEstimatedAutoscaleSpendElement(
@@ -197,7 +194,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         serverId,
         regions,
         multimaster,
-        isDirty ? this.props.maxAutoPilotThroughput : null
+        isDirty ? this.props.maxAutoPilotThroughput : undefined
       );
     }
     return estimatedSpend;
@@ -240,7 +237,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles: transparentDetailsHeaderStyle
       }
     ];
-    let estimatedSpendingItems: IAutoscaleEstimatedSpendingDisplayProps[] = [
+    const estimatedSpendingItems: IAutoscaleEstimatedSpendingDisplayProps[] = [
       {
         costType: <Text>Current Cost</Text>,
         minPerMonth: (
@@ -343,7 +340,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles: transparentDetailsHeaderStyle
       }
     ];
-    let estimatedSpendingItems: IManualEstimatedSpendingDisplayProps[] = [
+    const estimatedSpendingItems: IManualEstimatedSpendingDisplayProps[] = [
       {
         costType: <Text>Current Cost</Text>,
         hourly: (
