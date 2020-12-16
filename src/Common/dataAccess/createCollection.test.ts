@@ -1,6 +1,5 @@
 jest.mock("../../Utils/arm/request");
 jest.mock("../CosmosClient");
-jest.mock("../DataAccessUtilityBase");
 import { AuthType } from "../../AuthType";
 import { CreateCollectionParams, DatabaseAccount } from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
