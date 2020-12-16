@@ -19,6 +19,7 @@ export function initializeExplorer(): Explorer {
       cassandraEndpoint: ""
     }
   });
+
   explorer.isAccountReady(true);
   return explorer;
 }
