@@ -133,7 +133,6 @@ export default class Explorer {
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
-  public serverId: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
@@ -365,7 +364,6 @@ export default class Explorer {
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
     this.features = ko.observable();
-    this.serverId = ko.observable<string>();
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
@@ -1854,7 +1852,6 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.features(inputs.features);
-      this.serverId(inputs.serverId);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess);
@@ -1866,7 +1863,8 @@ export default class Explorer {
 
       updateConfigContext({
         BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
-        ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT)
+        ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+        serverId: inputs.serverId
       });
 
       updateUserContext({
@@ -1953,9 +1951,9 @@ export default class Explorer {
 
   public isRunningOnNationalCloud(): boolean {
     return (
-      this.serverId() === Constants.ServerIds.blackforest ||
-      this.serverId() === Constants.ServerIds.fairfax ||
-      this.serverId() === Constants.ServerIds.mooncake
+      userContext === Constants.ServerIds.blackforest ||
+      userContext === Constants.ServerIds.fairfax ||
+      userContext === Constants.ServerIds.mooncake
     );
   }
 

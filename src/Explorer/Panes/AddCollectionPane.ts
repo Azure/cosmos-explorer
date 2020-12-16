@@ -186,7 +186,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId: string = this.container.serverId();
+      const serverId = configContext.serverId;
       const regions =
         (account &&
           account.properties &&
@@ -200,7 +200,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       if (!this.isSharedAutoPilotSelected()) {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
-          serverId,
+          configContext.serverId,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
@@ -240,7 +240,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId: string = this.container.serverId();
+      const serverId: string = configContext.serverId;
       const regions =
         (account &&
           account.properties &&
@@ -482,7 +482,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
+      return PricingUtils.getUpsellMessage(configContext.serverId, this.isFreeTierAccount());
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {

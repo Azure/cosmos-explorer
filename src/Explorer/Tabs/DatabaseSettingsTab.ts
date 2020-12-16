@@ -139,7 +139,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         return "";
       }
 
-      const serverId = this.container.serverId();
+      const serverId = configContext.serverId;
       const regions =
         (account &&
           account.properties &&

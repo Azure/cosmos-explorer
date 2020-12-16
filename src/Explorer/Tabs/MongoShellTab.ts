@@ -33,7 +33,7 @@ export default class MongoShellTab extends TabsBase {
       this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
       const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
       let baseUrl = "/content/mongoshell/dist/";
-      if (this._container.serverId() === "localhost") {
+      if (configContext.serverId === "localhost") {
         baseUrl = "/content/mongoshell/";
       }
 

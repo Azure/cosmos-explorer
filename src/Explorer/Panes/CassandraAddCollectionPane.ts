@@ -127,7 +127,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
+      const serverId = configContext.serverId;
       const regions =
         (account &&
           account.properties &&
@@ -172,7 +172,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
+      const serverId = configContext.serverId;
       const regions =
         (account &&
           account.properties &&
