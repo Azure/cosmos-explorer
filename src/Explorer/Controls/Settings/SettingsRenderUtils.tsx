@@ -3,14 +3,12 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
 import { Urls, StyleConstants } from "../../../Common/Constants";
 import {
-  computeAutoscaleUsagePriceHourly,
   getPriceCurrency,
   getCurrencySign,
   getAutoscalePricePerRu,
   getMultimasterMultiplier,
   computeRUUsagePriceHourly,
   getPricePerRu,
-  calculateEstimateNumber,
   estimatedCostDisclaimer
 } from "../../../Utils/PricingUtils";
 import {
@@ -37,9 +35,36 @@ import {
   DetailsList,
   IColumn,
   SelectionMode,
-  DetailsListLayoutMode
+  DetailsListLayoutMode,
+  IDetailsRowProps,
+  DetailsRow,
+  IDetailsColumnStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
+
+export interface IEstimatedSpendingDisplayProps {
+  costType: JSX.Element;
+}
+
+export interface IManualEstimatedSpendingDisplayProps extends IEstimatedSpendingDisplayProps {
+  hourly: JSX.Element;
+  daily: JSX.Element;
+  monthly: JSX.Element;
+}
+
+export interface IAutoscaleEstimatedSpendingDisplayProps extends IEstimatedSpendingDisplayProps {
+  minPerMonth: JSX.Element;
+  maxPerMonth: JSX.Element;
+}
+
+export interface IPriceBreakdown {
+  hourlyPrice: number;
+  dailyPrice: number;
+  monthlyPrice: number;
+  pricePerRu: number;
+  currency: string;
+  currencySign: string;
+}
 
 export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
 
@@ -109,6 +134,16 @@ export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   }
 };
 
+export const transparentDetailsHeaderStyle: Partial<IDetailsColumnStyles> = {
+  root: {
+    selectors: {
+      ":hover": {
+        background: "transparent"
+      }
+    }
+  }
+};
+
 export const customDetailsListStyles: Partial<IDetailsListStyles> = {
   root: {
     selectors: {
@@ -134,6 +169,10 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
 export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
 
 export const throughputUnit = "RU/s";
+
+export function onRenderRow(props: IDetailsRowProps): JSX.Element {
+  return <DetailsRow {...props} styles={transparentDetailsRowStyles} />;
+}
 
 export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,
@@ -170,96 +209,56 @@ export const getAutoPilotV3SpendElement = (
   );
 };
 
-export const getEstimatedAutoscaleSpendElement = (
+export const getRuPriceBreakdown = (
   throughput: number,
   serverId: string,
-  regions: number,
-  multimaster: boolean
-): JSX.Element => {
-  const hourlyPrice: number = computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster);
-  const monthlyPrice: number = hourlyPrice * hoursInAMonth;
-  const currency: string = getPriceCurrency(serverId);
-  const currencySign: string = getCurrencySign(serverId);
-  const pricePerRu =
-    getAutoscalePricePerRu(serverId, getMultimasterMultiplier(regions, multimaster)) *
-    getMultimasterMultiplier(regions, multimaster);
-
-  return (
-    <Text id="autoscaleSpendElement">
-      Estimated monthly cost ({currency}) is{" "}
-      <b>
-        {currencySign}
-        {calculateEstimateNumber(monthlyPrice / 10)}
-        {` - `}
-        {currencySign}
-        {calculateEstimateNumber(monthlyPrice)}{" "}
-      </b>
-      ({"regions: "} {regions}, {throughput / 10} - {throughput} RU/s, {currencySign}
-      {pricePerRu}/RU)
-    </Text>
+  numberOfRegions: number,
+  isMultimaster: boolean,
+  isAutoscale: boolean
+): IPriceBreakdown => {
+  const hourlyPrice: number = computeRUUsagePriceHourly(
+    serverId,
+    throughput,
+    numberOfRegions,
+    isMultimaster,
+    isAutoscale
   );
+  const basePricePerRu: number = isAutoscale
+    ? getAutoscalePricePerRu(serverId, getMultimasterMultiplier(numberOfRegions, isMultimaster))
+    : getPricePerRu(serverId);
+  return {
+    hourlyPrice: hourlyPrice,
+    dailyPrice: hourlyPrice * 24,
+    monthlyPrice: hourlyPrice * hoursInAMonth,
+    pricePerRu: basePricePerRu * getMultimasterMultiplier(numberOfRegions, isMultimaster),
+    currency: getPriceCurrency(serverId),
+    currencySign: getCurrencySign(serverId)
+  };
 };
 
-interface IEstimatedSpendingDisplayProps {
-  costType: JSX.Element,
-  hourly: JSX.Element,
-  daily: JSX.Element,
-  monthly: JSX.Element
-}
-
-export const getEstimatedSpendElement = (
+export const getEstimatedSpendingElement = (
+  estimatedSpendingColumns: IColumn[],
+  estimatedSpendingItems: IEstimatedSpendingDisplayProps[],
   throughput: number,
-  serverId: string,
-  regions: number,
-  multimaster: boolean,
-  newthroughput?: number
+  numberOfRegions: number,
+  priceBreakdown: IPriceBreakdown,
+  isAutoscale: boolean
 ): JSX.Element => {
-  //TODO: refactor prices (incl pricePerRu) to function returning a tuple/interface
-  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
-  const dailyPrice: number = hourlyPrice * 24;
-  const monthlyPrice: number = hourlyPrice * hoursInAMonth;
-  //TODO: do we still want the currency displayed somewhere?
-  const currency: string = getPriceCurrency(serverId);
-  const currencySign: string = getCurrencySign(serverId);
-  const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
-  const estimatedSpendingColumns: IColumn[] = [
-    { key: "costType", name: "", fieldName: "costType", minWidth: 100, maxWidth: 200, isResizable: true},
-    { key: "hourly", name: "Hourly", fieldName: "hourly", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "daily", name: "Daily", fieldName: "daily", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true }
-  ];
-  let estimatedSpendingItems: IEstimatedSpendingDisplayProps[] = [
-    { costType: <Text>Current Cost</Text>,
-      hourly: <Text>{currencySign} {calculateEstimateNumber(hourlyPrice)}</Text>,
-      daily: <Text>{currencySign} {calculateEstimateNumber(dailyPrice)}</Text>,
-      monthly: <Text>{currencySign} {calculateEstimateNumber(monthlyPrice)}</Text>
-    }];
-
-  if (newthroughput) {
-    const newHourlyPrice: number = computeRUUsagePriceHourly(serverId, throughput, regions, multimaster);
-    const newDailyPrice: number = hourlyPrice * 24;
-    const newMonthlyPrice: number = hourlyPrice * hoursInAMonth;
-    estimatedSpendingItems.unshift({
-      costType: <Text><b>Updated Cost</b></Text>,
-      hourly: <Text><b>{currencySign} {calculateEstimateNumber(newHourlyPrice)}</b></Text>,
-      daily: <Text><b>{currencySign} {calculateEstimateNumber(newDailyPrice)}</b></Text>,
-      monthly: <Text><b>{currencySign} {calculateEstimateNumber(newMonthlyPrice)}</b></Text>
-    });
-  }
-
+  const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
-    <Stack {...subComponentStackProps} styles={mediumWidthStackStyles}>
+    <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
       <DetailsList
-        styles={customDetailsListStyles}
         disableSelectionZone
         items={estimatedSpendingItems}
         columns={estimatedSpendingColumns}
         selectionMode={SelectionMode.none}
         layoutMode={DetailsListLayoutMode.justified}
+        onRenderRow={onRenderRow}
       />
       <Text id="throughputSpendElement">
-        ({"regions: "} {regions}, {throughput}RU/s, {currencySign}
-        {pricePerRu}/RU)
+        ({"regions: "} {numberOfRegions}, {ruRange}
+        {throughput} RU/s, {priceBreakdown.currencySign}
+        {priceBreakdown.pricePerRu}/RU)
       </Text>
       <Text>
         <em>{estimatedCostDisclaimer}</em>
@@ -305,6 +304,13 @@ export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
     You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some
     time to complete.
+  </Text>
+);
+
+export const saveThroughputWarningMessage: JSX.Element = (
+  <Text styles={infoAndToolTipTextStyle}>
+    Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below
+    before saving your changes
   </Text>
 );
 

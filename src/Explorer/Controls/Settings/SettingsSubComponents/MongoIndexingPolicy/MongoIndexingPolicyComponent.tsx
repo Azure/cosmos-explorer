@@ -21,11 +21,11 @@ import {
   mongoIndexingPolicyDisclaimer,
   mediumWidthStackStyles,
   subComponentStackProps,
-  transparentDetailsRowStyles,
   createAndAddMongoIndexStackProps,
   separatorStyles,
   indexingPolicynUnsavedWarningMessage,
-  infoAndToolTipTextStyle
+  infoAndToolTipTextStyle,
+  onRenderRow
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -140,10 +140,6 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     return undefined;
   };
 
-  private onRenderRow = (props: IDetailsRowProps): JSX.Element => {
-    return <DetailsRow {...props} styles={transparentDetailsRowStyles} />;
-  };
-
   private getActionButton = (arrayPosition: number, isCurrentIndex: boolean): JSX.Element => {
     return isCurrentIndex ? (
       <IconButton
@@ -253,7 +249,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
                 items={initialIndexes}
                 columns={this.initialIndexesColumns}
                 selectionMode={SelectionMode.none}
-                onRenderRow={this.onRenderRow}
+                onRenderRow={onRenderRow}
                 layoutMode={DetailsListLayoutMode.justified}
               />
               {this.renderIndexesToBeAdded()}
@@ -279,7 +275,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
               items={indexesToBeDropped}
               columns={this.indexesToBeDroppedColumns}
               selectionMode={SelectionMode.none}
-              onRenderRow={this.onRenderRow}
+              onRenderRow={onRenderRow}
               layoutMode={DetailsListLayoutMode.justified}
             />
           )}

@@ -25,38 +25,66 @@ describe("PricingUtils Tests", () => {
 
   describe("computeRUUsagePriceHourly()", () => {
     it("should return 0 for NaN regions default cloud", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, null, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, null, false, false);
+      expect(value).toBe(0);
+    });
+    it("should return 0 for NaN regions default cloud, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, null, false, true);
       expect(value).toBe(0);
     });
 
     it("should return 0 for -1 regions", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, -1, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, -1, false, false);
+      expect(value).toBe(0);
+    });
+    it("should return 0 for -1 regions, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, -1, false, true);
       expect(value).toBe(0);
     });
 
     it("should return 0.00008 for default cloud, 1RU, 1 region, multimaster disabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, false, false);
       expect(value).toBe(0.00008);
+    });
+    it("should return 0.00008 for default cloud, 1RU, 1 region, multimaster disabled, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, false, true);
+      expect(value).toBe(0.00012);
     });
 
     it("should return 0.00051 for Mooncake cloud, 1RU, 1 region, multimaster disabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("mooncake", 1, 1, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("mooncake", 1, 1, false, false);
       expect(value).toBe(0.00051);
+    });
+    it("should return 0.00051 for Mooncake cloud, 1RU, 1 region, multimaster disabled, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("mooncake", 1, 1, false, true);
+      expect(value).toBe(0.00076);
     });
 
     it("should return 0.00016 for default cloud, 1RU, 2 regions, multimaster disabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, false);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, false, false);
       expect(value).toBe(0.00016);
+    });
+    it("should return 0.00016 for default cloud, 1RU, 2 regions, multimaster disabled, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, false, true);
+      expect(value).toBe(0.00024);
     });
 
     it("should return 0.00008 for default cloud, 1RU, 1 region, multimaster enabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, true);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, true, false);
       expect(value).toBe(0.00008);
+    });
+    it("should return 0.00008 for default cloud, 1RU, 1 region, multimaster enabled, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 1, true, true);
+      expect(value).toBe(0.00012);
     });
 
     it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled", () => {
-      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, true);
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, true, false);
       expect(value).toBe(0.00048);
+    });
+    it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled, autoscale", () => {
+      const value = PricingUtils.computeRUUsagePriceHourly("default", 1, 2, true, true);
+      expect(value).toBe(0.00096);
     });
   });
 

@@ -1,9 +1,9 @@
 import { shallow } from "enzyme";
 import React from "react";
+import { IColumn, Text } from "office-ui-fabric-react";
 import {
   getAutoPilotV3SpendElement,
-  getEstimatedSpendElement,
-  getEstimatedAutoscaleSpendElement,
+  getEstimatedSpendingElement,
   manualToAutoscaleDisclaimerElement,
   ttlWarning,
   indexingPolicynUnsavedWarningMessage,
@@ -19,11 +19,37 @@ import {
   mongoIndexingPolicyDisclaimer,
   mongoIndexingPolicyAADError,
   mongoIndexTransformationRefreshingMessage,
-  renderMongoIndexTransformationRefreshMessage
+  renderMongoIndexTransformationRefreshMessage,
+  IManualEstimatedSpendingDisplayProps,
+  IPriceBreakdown,
+  getRuPriceBreakdown
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
   public render(): JSX.Element {
+    const estimatedSpendingColumns: IColumn[] = [
+      { key: "costType", name: "", fieldName: "costType", minWidth: 100, maxWidth: 200, isResizable: true },
+      { key: "hourly", name: "Hourly", fieldName: "hourly", minWidth: 100, maxWidth: 200, isResizable: true },
+      { key: "daily", name: "Daily", fieldName: "daily", minWidth: 100, maxWidth: 200, isResizable: true },
+      { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true }
+    ];
+    const estimatedSpendingItems: IManualEstimatedSpendingDisplayProps[] = [
+      {
+        costType: <Text>Current Cost</Text>,
+        hourly: <Text>$ 1.02</Text>,
+        daily: <Text>$ 24.48</Text>,
+        monthly: <Text>$ 744.6</Text>
+      }
+    ];
+    const priceBreakdown: IPriceBreakdown = {
+      hourlyPrice: 1.02,
+      dailyPrice: 24.48,
+      monthlyPrice: 744.6,
+      pricePerRu: 0.00051,
+      currency: "RMB",
+      currencySign: "¥"
+    };
+
     return (
       <>
         {getAutoPilotV3SpendElement(1000, false)}
@@ -31,9 +57,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {getAutoPilotV3SpendElement(1000, true)}
         {getAutoPilotV3SpendElement(undefined, true)}
 
-        {getEstimatedSpendElement(1000, "mooncake", 2, false)}
-
-        {getEstimatedAutoscaleSpendElement(1000, "mooncake", 2, false)}
+        {getEstimatedSpendingElement(estimatedSpendingColumns, estimatedSpendingItems, 1000, 2, priceBreakdown, false)}
 
         {manualToAutoscaleDisclaimerElement}
         {ttlWarning}
@@ -68,5 +92,15 @@ describe("SettingsUtils functions", () => {
   it("render", () => {
     const wrapper = shallow(<SettingsRenderUtilsTestComponent />);
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should return correct price breakdown for a manual RU setting of 500, 1 region, multimaster disabled", () => {
+    const prices = getRuPriceBreakdown(500, "", 1, false, false);
+    expect(prices.hourlyPrice).toBe(0.04);
+    expect(prices.dailyPrice).toBe(0.96);
+    expect(prices.monthlyPrice).toBe(29.2);
+    expect(prices.pricePerRu).toBe(0.00008);
+    expect(prices.currency).toBe("USD");
+    expect(prices.currencySign).toBe("$");
   });
 });
