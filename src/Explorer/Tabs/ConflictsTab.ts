@@ -429,7 +429,7 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public async onTabClick(): Promise<void> {
+  public onTabClick(): void {
     super.onTabClick();
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
   }

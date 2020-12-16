@@ -606,7 +606,7 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   }
 
-  public async onTabClick(): Promise<void> {
+  public onTabClick(): void {
     super.onTabClick();
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }

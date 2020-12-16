@@ -43,49 +43,45 @@ export default class SettingsTabV2 extends TabsBase {
   }
 
   public async onActivate(): Promise<void> {
-    this.isExecuting(true);
-    this.currentCollection.loadOffer().then(
-      () => {
-        // passed in options and set by parent as "Settings" by default
-        this.tabTitle(this.currentCollection.offer() ? "Settings" : "Scale & Settings");
-        this.offerRead(true);
-        this.options.getPendingNotification.then(
-          (data: DataModels.Notification) => {
-            this.notification = data;
-            this.notificationRead(true);
-            this.isExecuting(false);
-          },
-          error => {
-            const errorMessage = getErrorMessage(error);
-            this.notification = undefined;
-            this.notificationRead(true);
-            this.isExecuting(false);
-            traceFailure(
-              Action.Tab,
-              {
-                databaseAccountName: this.options.collection.container.databaseAccount().name,
-                databaseName: this.options.collection.databaseId,
-                collectionName: this.options.collection.id(),
-                defaultExperience: this.options.collection.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle,
-                error: errorMessage,
-                errorStack: getErrorStack(error)
-              },
-              this.options.onLoadStartKey
-            );
-            logConsoleError(
-              `Error while fetching container settings for container ${this.options.collection.id()}: ${errorMessage}`
-            );
-            throw error;
-          }
-        );
-      },
-      () => {
-        this.offerRead(true);
-        this.isExecuting(false);
-      }
-    );
+    try {
+      this.isExecuting(true);
+      await this.currentCollection.loadOffer();
+      // passed in options and set by parent as "Settings" by default
+      this.tabTitle(this.currentCollection.offer() ? "Settings" : "Scale & Settings");
+
+      this.options.getPendingNotification.then(
+        (data: DataModels.Notification) => {
+          this.notification = data;
+          this.notificationRead(true);
+        },
+        error => {
+          const errorMessage = getErrorMessage(error);
+          this.notification = undefined;
+          this.notificationRead(true);
+          traceFailure(
+            Action.Tab,
+            {
+              databaseAccountName: this.options.collection.container.databaseAccount().name,
+              databaseName: this.options.collection.databaseId,
+              collectionName: this.options.collection.id(),
+              defaultExperience: this.options.collection.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.tabTitle,
+              error: errorMessage,
+              errorStack: getErrorStack(error)
+            },
+            this.options.onLoadStartKey
+          );
+          logConsoleError(
+            `Error while fetching container settings for container ${this.options.collection.id()}: ${errorMessage}`
+          );
+          throw error;
+        }
+      );
+    } finally {
+      this.offerRead(true);
+      this.isExecuting(false);
+    }
 
     super.onActivate();
     this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.SettingsV2);
