@@ -312,7 +312,8 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public resetData() {
     this.databaseId("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
-    this.isAutoPilotSelected(false);
+    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+
     this.maxAutoPilotThroughputSet(AutoPilotUtils.minAutoPilotThroughput);
     this._updateThroughputLimitByDatabase();
     this.throughputSpendAck(false);
