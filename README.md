@@ -13,29 +13,18 @@ UI for Azure Cosmos DB. Powers the [Azure Portal](https://portal.azure.com/), ht
 
 ### Watch mode
 
-Run `npm run watch` to start the development server and automatically rebuild on changes
+Run `npm start` to start the development server and automatically rebuild on changes
 
-### Specifying Development Platform
+### Hosted Development (https://cosmos.azure.com)
 
-Setting the environment variable `PLATFORM` during the build process will force the explorer to load the specified platform. By default in development it will run in `Hosted` mode. Valid options:
-
-- Hosted
-- Emulator
-- Portal
-
-`PLATFORM=Emulator npm run watch`
-
-### Hosted Development
-
-The default webpack dev server configuration will proxy requests to the production portal backend: `https://main.documentdb.ext.azure.com`. This will allow you to use production connection strings on your local machine.
-
-To run pure hosted mode, in `webpack.config.js` change index HtmlWebpackPlugin to use hostedExplorer.html and change entry for index to use HostedExplorer.ts.
+- Visit: `https://localhost:1234/hostedExplorer.html`
+- Local sign in via AAD will NOT work.
+- The default webpack dev server configuration will proxy requests to the production portal backend: `https://main.documentdb.ext.azure.com`. This will allow you to use production connection strings on your local machine.
 
 ### Emulator Development
 
-In a window environment, running `npm run build` will automatically copy the built files from `/dist` over to the default emulator install paths. In a non-windows environment you can specify an alternate endpoint using `EMULATOR_ENDPOINT` and webpack dev server will proxy requests for you.
-
-`PLATFORM=Emulator EMULATOR_ENDPOINT=https://my-vm.azure.com:8081 npm run watch`
+- Start the Cosmos Emulator
+- Visit: https://localhost:1234/index.html
 
 #### Setting up a Remote Emulator
 
@@ -55,16 +44,8 @@ The Cosmos emulator currently only runs in Windows environments. You can still d
 
 ### Portal Development
 
-The Cosmos Portal that consumes this repo is not currently open source. If you have access to this project, `npm run build` will copy the built files over to the portal where they will be loaded by the portal development environment
-
-You can however load a local running instance of data explorer in the production portal.
-
-1. Turn off browser SSL validation for localhost: chrome://flags/#allow-insecure-localhost OR Install valid SSL certs for localhost (on IE, follow these [instructions](https://www.technipages.com/ie-bypass-problem-with-this-websites-security-certificate) to install the localhost certificate in the right place)
-2. Allowlist `https://localhost:1234` domain for CORS in the Azure Cosmos DB portal
-3. Start the project in portal mode: `PLATFORM=Portal npm run watch`
-4. Load the portal using the following link: https://ms.portal.azure.com/?dataExplorerSource=https%3A%2F%2Flocalhost%3A1234%2Fexplorer.html
-
-Live reload will occur, but data explorer will not properly integrate again with the parent iframe. You will have to manually reload the page.
+- Visit: https://ms.portal.azure.com/?dataExplorerSource=https%3A%2F%2Flocalhost%3A1234%2Fexplorer.html
+- You may have to manually visit https://localhost:1234/explorer.html first and click through any SSL certificate warnings
 
 ### Testing
 
