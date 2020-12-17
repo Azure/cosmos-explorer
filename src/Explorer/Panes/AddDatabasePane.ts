@@ -13,6 +13,7 @@ import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import { userContext } from "../../UserContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -250,7 +251,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: this.throughput(),
         flight: this.container.flight()
@@ -278,7 +279,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       }),
       offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: this.container.flight()
       },
@@ -343,7 +344,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       }),
       offerThroughput: offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: this.container.flight()
       },
@@ -367,7 +368,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       }),
       offerThroughput: offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: this.container.flight()
       },

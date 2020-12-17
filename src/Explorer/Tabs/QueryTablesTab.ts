@@ -161,17 +161,16 @@ export default class QueryTablesTab extends TabsBase {
     return null;
   };
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
-      const columns =
-        !!this.tableEntityListViewModel() &&
-        !!this.tableEntityListViewModel().table &&
-        this.tableEntityListViewModel().table.columns;
-      if (!!columns) {
-        columns.adjust();
-        $(window).resize();
-      }
-    });
+  public onActivate(): void {
+    super.onActivate();
+    const columns =
+      !!this.tableEntityListViewModel() &&
+      !!this.tableEntityListViewModel().table &&
+      this.tableEntityListViewModel().table.columns;
+    if (!!columns) {
+      columns.adjust();
+      $(window).resize();
+    }
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {

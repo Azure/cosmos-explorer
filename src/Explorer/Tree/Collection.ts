@@ -8,7 +8,6 @@ import * as Constants from "../../Common/Constants";
 import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
 import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
-import { createDocument } from "../../Common/DocumentClientUtilityBase";
 import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
 import * as Logger from "../../Common/Logger";
@@ -39,6 +38,7 @@ import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { createDocument } from "../../Common/dataAccess/createDocument";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -1091,8 +1091,7 @@ export default class Collection implements ViewModels.Collection {
     return deferred.promise;
   }
 
-  private _createDocumentsFromFile(fileName: string, documentContent: string): Q.Promise<UploadDetailsRecord> {
-    const deferred: Q.Deferred<UploadDetailsRecord> = Q.defer();
+  private async _createDocumentsFromFile(fileName: string, documentContent: string): Promise<UploadDetailsRecord> {
     const record: UploadDetailsRecord = {
       fileName: fileName,
       numSucceeded: 0,
@@ -1102,39 +1101,25 @@ export default class Collection implements ViewModels.Collection {
 
     try {
       const content = JSON.parse(documentContent);
-      const promises: Array<Q.Promise<any>> = [];
-
-      const triggerCreateDocument: (documentContent: any) => Q.Promise<any> = (documentContent: any) => {
-        return createDocument(this, documentContent).then(
-          doc => {
-            record.numSucceeded++;
-            return Q.resolve();
-          },
-          error => {
-            record.numFailed++;
-            record.errors = [...record.errors, getErrorMessage(error)];
-            return Q.resolve();
-          }
-        );
-      };
 
       if (Array.isArray(content)) {
-        for (let i = 0; i < content.length; i++) {
-          promises.push(triggerCreateDocument(content[i]));
-        }
+        await Promise.all(
+          content.map(async documentContent => {
+            await createDocument(this, documentContent);
+            record.numSucceeded++;
+          })
+        );
       } else {
-        promises.push(triggerCreateDocument(content));
+        await createDocument(this, documentContent);
+        record.numSucceeded++;
       }
 
-      Q.all(promises).then(() => {
-        deferred.resolve(record);
-      });
-    } catch (e) {
+      return record;
+    } catch (error) {
       record.numFailed++;
-      record.errors = [...record.errors, e.message];
-      deferred.resolve(record);
+      record.errors = [...record.errors, error.message];
+      return record;
     }
-    return deferred.promise;
   }
 
   private _getPendingThroughputSplitNotification(): Q.Promise<DataModels.Notification> {

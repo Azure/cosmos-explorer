@@ -15,6 +15,7 @@ import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import { userContext } from "../../UserContext";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -299,7 +300,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         databaseId: this.keyspaceId()
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
@@ -353,7 +354,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       }),
       keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
@@ -399,7 +400,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
-          subscriptionQuotaId: this.container.quotaId(),
+          subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
@@ -429,7 +430,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
-          subscriptionQuotaId: this.container.quotaId(),
+          subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),

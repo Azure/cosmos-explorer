@@ -12,8 +12,8 @@ import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 export class NotebookWorkspaceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
 
-  constructor(private _armEndpoint: string) {
-    this.resourceProviderClientFactory = new ResourceProviderClientFactory(this._armEndpoint);
+  constructor() {
+    this.resourceProviderClientFactory = new ResourceProviderClientFactory();
   }
 
   public async getNotebookWorkspacesAsync(cosmosdbResourceId: string): Promise<NotebookWorkspace[]> {

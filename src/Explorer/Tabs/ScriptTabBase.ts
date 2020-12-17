@@ -186,12 +186,11 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     this._setBaselines();
   }
 
-  public onTabClick(): Q.Promise<any> {
-    return super.onTabClick().then(() => {
-      if (this.isNew()) {
-        this.collection.selectedSubnodeKind(this.tabKind);
-      }
-    });
+  public onTabClick(): void {
+    super.onTabClick();
+    if (this.isNew()) {
+      this.collection.selectedSubnodeKind(this.tabKind);
+    }
   }
 
   public abstract onSaveClick: () => Promise<any>;

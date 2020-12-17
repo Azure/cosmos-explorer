@@ -18,7 +18,7 @@ import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPa
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
-import EnvironmentUtility from "../Common/EnvironmentUtility";
+import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import hasher from "hasher";
 import NewVertexPane from "./Panes/NewVertexPane";
@@ -121,7 +121,6 @@ export default class Explorer {
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public subscriptionType: ko.Observable<SubscriptionType>;
-  public quotaId: ko.Observable<string>;
   public defaultExperience: ko.Observable<string>;
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
   public isPreferredApiCassandra: ko.Computed<boolean>;
@@ -135,12 +134,10 @@ export default class Explorer {
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
-  public armEndpoint: ko.Observable<string>;
   public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
-  public parentFrameDataExplorerVersion: ko.Observable<string> = ko.observable<string>("");
   public mostRecentActivity: MostRecentActivity.MostRecentActivity;
 
   // Notification Console
@@ -279,7 +276,6 @@ export default class Explorer {
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
-    this.quotaId = ko.observable<string>("");
     let firstInitialization = true;
     this.isRefreshingExplorer = ko.observable<boolean>(true);
     this.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
@@ -319,9 +315,9 @@ export default class Explorer {
       if (isAccountReady) {
         this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
-        this.notebookWorkspaceManager = new NotebookWorkspaceManager(this.armEndpoint());
+        this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
-        this._arcadiaManager = new ArcadiaResourceManager(this.armEndpoint());
+        this._arcadiaManager = new ArcadiaResourceManager();
         this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then(isRegistered =>
           this.hasStorageAnalyticsAfecFeature(isRegistered)
         );
@@ -371,7 +367,6 @@ export default class Explorer {
 
     this.features = ko.observable();
     this.serverId = ko.observable<string>();
-    this.armEndpoint = ko.observable<string>(undefined);
     this.queriesClient = new QueriesClient(this);
     this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
@@ -1015,9 +1010,7 @@ export default class Explorer {
         this.isSynapseLinkUpdating(true);
         this._closeSynapseLinkModalDialog();
 
-        const resourceProviderClient = new ResourceProviderClientFactory(this.armEndpoint()).getOrCreate(
-          this.databaseAccount().id
-        );
+        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(this.databaseAccount().id);
 
         try {
           const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
@@ -1757,61 +1750,59 @@ export default class Explorer {
       inputs.extensionEndpoint = configContext.PROXY_PATH;
     }
 
-    const initPromise: Q.Promise<void> = inputs ? this.initDataExplorerWithFrameInputs(inputs) : Q();
+    this.initDataExplorerWithFrameInputs(inputs);
 
-    initPromise.then(() => {
-      const openAction: ActionContracts.DataExplorerAction = message.openAction;
-      if (!!openAction) {
-        if (this.isRefreshingExplorer()) {
-          const subscription = this.databases.subscribe((databases: ViewModels.Database[]) => {
-            handleOpenAction(openAction, this.nonSystemDatabases(), this);
-            subscription.dispose();
-          });
-        } else {
+    const openAction: ActionContracts.DataExplorerAction = message.openAction;
+    if (!!openAction) {
+      if (this.isRefreshingExplorer()) {
+        const subscription = this.databases.subscribe((databases: ViewModels.Database[]) => {
           handleOpenAction(openAction, this.nonSystemDatabases(), this);
-        }
+          subscription.dispose();
+        });
+      } else {
+        handleOpenAction(openAction, this.nonSystemDatabases(), this);
       }
-      if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
-        handleCachedDataMessage(message);
-        return;
+    }
+    if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
+      handleCachedDataMessage(message);
+      return;
+    }
+    if (message.type) {
+      switch (message.type) {
+        case MessageTypes.UpdateLocationHash:
+          if (!message.locationHash) {
+            break;
+          }
+          hasher.replaceHash(message.locationHash);
+          RouteHandler.getInstance().parseHash(message.locationHash);
+          break;
+        case MessageTypes.SendNotification:
+          if (!message.message) {
+            break;
+          }
+          NotificationConsoleUtils.logConsoleMessage(
+            message.consoleDataType || ConsoleDataType.Info,
+            message.message,
+            message.id
+          );
+          break;
+        case MessageTypes.ClearNotification:
+          if (!message.id) {
+            break;
+          }
+          NotificationConsoleUtils.clearInProgressMessageWithId(message.id);
+          break;
+        case MessageTypes.LoadingStatus:
+          if (!message.text) {
+            break;
+          }
+          this._setLoadingStatusText(message.text, message.title);
+          break;
       }
-      if (message.type) {
-        switch (message.type) {
-          case MessageTypes.UpdateLocationHash:
-            if (!message.locationHash) {
-              break;
-            }
-            hasher.replaceHash(message.locationHash);
-            RouteHandler.getInstance().parseHash(message.locationHash);
-            break;
-          case MessageTypes.SendNotification:
-            if (!message.message) {
-              break;
-            }
-            NotificationConsoleUtils.logConsoleMessage(
-              message.consoleDataType || ConsoleDataType.Info,
-              message.message,
-              message.id
-            );
-            break;
-          case MessageTypes.ClearNotification:
-            if (!message.id) {
-              break;
-            }
-            NotificationConsoleUtils.clearInProgressMessageWithId(message.id);
-            break;
-          case MessageTypes.LoadingStatus:
-            if (!message.text) {
-              break;
-            }
-            this._setLoadingStatusText(message.text, message.title);
-            break;
-        }
-        return;
-      }
+      return;
+    }
 
-      this.splashScreenAdapter.forceRender();
-    });
+    this.splashScreenAdapter.forceRender();
   }
 
   public findSelectedDatabase(): ViewModels.Database {
@@ -1851,8 +1842,14 @@ export default class Explorer {
     return false;
   }
 
-  public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): Q.Promise<void> {
+  public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
+      // In development mode, save the iframe message from the portal in session storage.
+      // This allows webpack hot reload to funciton properly
+      if (process.env.NODE_ENV === "development") {
+        sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
+      }
+
       const authorizationToken = inputs.authorizationToken || "";
       const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
@@ -1861,25 +1858,18 @@ export default class Explorer {
       }
       this.features(inputs.features);
       this.serverId(inputs.serverId);
-      this.armEndpoint(EnvironmentUtility.normalizeArmEndpointUri(inputs.csmEndpoint || configContext.ARM_ENDPOINT));
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType);
-      this.quotaId(inputs.quotaId);
       this.hasWriteAccess(inputs.hasWriteAccess);
       this.flight(inputs.addCollectionDefaultFlight);
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
       this.setFeatureFlagsFromFlights(inputs.flights);
-
-      if (!!inputs.dataExplorerVersion) {
-        this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
-      }
-
       this._importExplorerConfigComplete = true;
 
       updateConfigContext({
         BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
-        ARM_ENDPOINT: this.armEndpoint()
+        ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT)
       });
 
       updateUserContext({
@@ -1888,7 +1878,8 @@ export default class Explorer {
         databaseAccount,
         resourceGroup: inputs.resourceGroup,
         subscriptionId: inputs.subscriptionId,
-        subscriptionType: inputs.subscriptionType
+        subscriptionType: inputs.subscriptionType,
+        quotaId: inputs.quotaId
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1902,7 +1893,6 @@ export default class Explorer {
 
       this.isAccountReady(true);
     }
-    return Q();
   }
 
   public setFeatureFlagsFromFlights(flights: readonly string[]): void {
@@ -2569,7 +2559,7 @@ export default class Explorer {
 
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
     const subscriptionId = userContext.subscriptionId;
-    const armEndpoint = this.armEndpoint();
+    const armEndpoint = configContext.ARM_ENDPOINT;
     const authType = window.authType as AuthType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
@@ -2578,7 +2568,7 @@ export default class Explorer {
     }
 
     const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
-    const resourceProviderClient = new ResourceProviderClientFactory(this.armEndpoint()).getOrCreate(featureUri);
+    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
     try {
       const sparkNotebooksFeature: DataModels.AfecFeature = await resourceProviderClient.getAsync(
         featureUri,
@@ -2598,7 +2588,7 @@ export default class Explorer {
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
     const subscriptionId = userContext.subscriptionId;
-    const armEndpoint = this.armEndpoint();
+    const armEndpoint = configContext.ARM_ENDPOINT;
     const authType = window.authType as AuthType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
@@ -2606,7 +2596,7 @@ export default class Explorer {
     }
 
     const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
-    const resourceProviderClient = new ResourceProviderClientFactory(this.armEndpoint()).getOrCreate(featureUri);
+    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
     try {
       const featureStatus: DataModels.AfecFeature = await resourceProviderClient.getAsync(
         featureUri,
