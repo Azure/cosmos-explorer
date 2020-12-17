@@ -19,19 +19,24 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
-import { extractPartitionKey, PartitionKeyDefinition, QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import {
+  extractPartitionKey,
+  PartitionKeyDefinition,
+  QueryIterator,
+  ItemDefinition,
+  Resource,
+  Item
+} from "@azure/cosmos";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import {
-  readDocument,
-  queryDocuments,
-  deleteDocument,
-  updateDocument,
-  createDocument
-} from "../../Common/DocumentClientUtilityBase";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
+import { readDocument } from "../../Common/dataAccess/readDocument";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { createDocument } from "../../Common/dataAccess/createDocument";
 
 export default class DocumentsTab extends TabsBase {
   public selectedDocumentId: ko.Observable<DocumentId>;
@@ -369,36 +374,22 @@ export default class DocumentsTab extends TabsBase {
     return true;
   };
 
-  public onApplyFilterClick(): Q.Promise<any> {
+  public async refreshDocumentsGrid(): Promise<void> {
     // clear documents grid
     this.documentIds([]);
-    return this.createIterator()
-      .then(
-        // reset iterator
-        iterator => {
-          this._documentsIterator = iterator;
-        }
-      )
-      .then(
-        // load documents
-        () => {
-          return this.loadNextPage();
-        }
-      )
-      .then(() => {
-        // collapse filter
-        this.appliedFilter(this.filterContent());
-        this.isFilterExpanded(false);
-        const focusElement = document.getElementById("errorStatusIcon");
-        focusElement && focusElement.focus();
-      })
-      .catch(error => {
-        window.alert(getErrorMessage(error));
-      });
-  }
 
-  public refreshDocumentsGrid(): Q.Promise<any> {
-    return this.onApplyFilterClick();
+    try {
+      // reset iterator
+      this._documentsIterator = this.createIterator();
+      // load documents
+      await this.loadNextPage();
+      // collapse filter
+      this.appliedFilter(this.filterContent());
+      this.isFilterExpanded(false);
+      document.getElementById("errorStatusIcon")?.focus();
+    } catch (error) {
+      window.alert(getErrorMessage(error));
+    }
   }
 
   public onRefreshButtonKeyDown = (source: any, event: KeyboardEvent): boolean => {
@@ -434,7 +425,7 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onSaveNewDocumentClick = (): Q.Promise<any> => {
+  public onSaveNewDocumentClick = (): Promise<any> => {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -502,7 +493,7 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onSaveExisitingDocumentClick = (): Q.Promise<any> => {
+  public onSaveExisitingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = JSON.parse(this.selectedDocumentContent());
 
@@ -571,17 +562,15 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onDeleteExisitingDocumentClick = (): Q.Promise<any> => {
+  public onDeleteExisitingDocumentClick = async (): Promise<void> => {
     const selectedDocumentId = this.selectedDocumentId();
     const msg = !this.isPreferredApiMongoDB
       ? "Are you sure you want to delete the selected item ?"
       : "Are you sure you want to delete the selected document ?";
 
     if (window.confirm(msg)) {
-      return this._deleteDocument(selectedDocumentId);
+      await this._deleteDocument(selectedDocumentId);
     }
-
-    return Q();
   };
 
   public onValidDocumentEdit(): Q.Promise<any> {
@@ -617,63 +606,50 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   }
 
-  public onTabClick(): Q.Promise<any> {
-    return super.onTabClick().then(() => {
-      this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
-    });
+  public onTabClick(): void {
+    super.onTabClick();
+    this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(() => {
-      if (this._documentsIterator) {
-        return Q.resolve(this._documentsIterator);
-      }
+  public async onActivate(): Promise<void> {
+    super.onActivate();
 
-      return this.createIterator().then(
-        (iterator: QueryIterator<ItemDefinition & Resource>) => {
-          this._documentsIterator = iterator;
-          return this.loadNextPage();
-        },
-        error => {
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
-            TelemetryProcessor.traceFailure(
-              Action.Tab,
-              {
-                databaseAccountName: this.collection.container.databaseAccount().name,
-                databaseName: this.collection.databaseId,
-                collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
-                dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle(),
-                error: getErrorMessage(error),
-                errorStack: getErrorStack(error)
-              },
-              this.onLoadStartKey
-            );
-            this.onLoadStartKey = null;
-          }
+    if (!this._documentsIterator) {
+      try {
+        this._documentsIterator = this.createIterator();
+        await this.loadNextPage();
+      } catch (error) {
+        if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+          TelemetryProcessor.traceFailure(
+            Action.Tab,
+            {
+              databaseAccountName: this.collection.container.databaseAccount().name,
+              databaseName: this.collection.databaseId,
+              collectionName: this.collection.id(),
+              defaultExperience: this.collection.container.defaultExperience(),
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: this.tabTitle(),
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error)
+            },
+            this.onLoadStartKey
+          );
+          this.onLoadStartKey = null;
         }
-      );
-    });
+      }
+    }
   }
 
-  public onRefreshClick(): Q.Promise<any> {
-    return this.refreshDocumentsGrid().then(() => {
-      this.selectedDocumentContent("");
-      this.selectedDocumentId(null);
-      this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-    });
-  }
   private _isIgnoreDirtyEditor = (): boolean => {
     var msg: string = "Changes will be lost. Do you want to continue?";
     return window.confirm(msg);
   };
 
-  protected __deleteDocument(documentId: DocumentId): Q.Promise<any> {
+  protected __deleteDocument(documentId: DocumentId): Promise<void> {
     return deleteDocument(this.collection, documentId);
   }
 
-  private _deleteDocument(selectedDocumentId: DocumentId): Q.Promise<any> {
+  private _deleteDocument(selectedDocumentId: DocumentId): Promise<void> {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
@@ -684,7 +660,7 @@ export default class DocumentsTab extends TabsBase {
     this.isExecuting(true);
     return this.__deleteDocument(selectedDocumentId)
       .then(
-        (result: any) => {
+        () => {
           this.documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
           this.selectedDocumentContent("");
           this.selectedDocumentId(null);
@@ -720,7 +696,7 @@ export default class DocumentsTab extends TabsBase {
       .finally(() => this.isExecuting(false));
   }
 
-  public createIterator(): Q.Promise<QueryIterator<ItemDefinition & Resource>> {
+  public createIterator(): QueryIterator<ItemDefinition & Resource> {
     let filters = this.lastFilterContents();
     const filter: string = this.filterContent().trim();
     const query: string = this.buildQuery(filter);
@@ -734,11 +710,10 @@ export default class DocumentsTab extends TabsBase {
     return queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
-  public selectDocument(documentId: DocumentId): Q.Promise<any> {
+  public async selectDocument(documentId: DocumentId): Promise<void> {
     this.selectedDocumentId(documentId);
-    return readDocument(this.collection, documentId).then((content: any) => {
-      this.initDocumentEditor(documentId, content);
-    });
+    const content = await readDocument(this.collection, documentId);
+    this.initDocumentEditor(documentId, content);
   }
 
   public loadNextPage(): Q.Promise<any> {
