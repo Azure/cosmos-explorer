@@ -624,7 +624,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
       });
     });
 
-    this.shouldCreateMongoWildcardIndex = ko.computed(function() {return this.container.isMongoIndexingEnabled()}, this);
+    this.shouldCreateMongoWildcardIndex = ko.computed(function() {
+      return this.container.isMongoIndexingEnabled();
+    }, this);
   }
 
   public getSharedThroughputDefault(): boolean {

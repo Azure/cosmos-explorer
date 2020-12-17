@@ -132,7 +132,7 @@ export class Features {
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
   public static readonly MongoIndexEditor = "mongoindexeditor";
-  public static readonly MongoIndexing = "mongoindexing"
+  public static readonly MongoIndexing = "mongoindexing";
 }
 
 export class AfecFeatures {
