@@ -902,7 +902,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
     this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
-    
+
     this.uniqueKeys([]);
     this.useIndexingForSharedThroughput(true);
 

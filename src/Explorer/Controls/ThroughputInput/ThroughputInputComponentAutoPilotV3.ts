@@ -198,15 +198,15 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     this.label = options.label || ko.observable<string>();
     this.showAutoPilot = options.showAutoPilot !== undefined ? options.showAutoPilot : ko.observable<boolean>(true);
     this.isAutoPilotSelected = options.isAutoPilotSelected || ko.observable<boolean>(false);
-    this.isAutoPilotSelected.subscribe((value) => {
+    this.isAutoPilotSelected.subscribe(value => {
       TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
         changedSelectedValueTo: value ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
         databaseAccountName: userContext.databaseAccount?.name,
         subscriptionId: userContext.subscriptionId,
         apiKind: userContext.defaultExperience,
-        dataExplorerArea: "Scale Tab V1",
-      }); 
-    })
+        dataExplorerArea: "Scale Tab V1"
+      });
+    });
 
     this.throughputAutoPilotRadioId = options.throughputAutoPilotRadioId;
     this.throughputProvisionedRadioId = options.throughputProvisionedRadioId;

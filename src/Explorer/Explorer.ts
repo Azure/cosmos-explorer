@@ -1912,7 +1912,7 @@ export default class Explorer {
 
     if (flights.indexOf(Constants.Flights.AutoscaleTest) !== -1) {
       this.isAutoscaleDefaultEnabled(true);
-    } 
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {

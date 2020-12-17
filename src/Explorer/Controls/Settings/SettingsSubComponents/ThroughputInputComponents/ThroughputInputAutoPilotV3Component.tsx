@@ -234,14 +234,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   ): void => {
     this.props.onAutoPilotSelected(option.key === "true");
     TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
-      changedSelectedValueTo: option.key === "true" ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
+      changedSelectedValueTo:
+        option.key === "true" ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
       subscriptionId: userContext.subscriptionId,
       databaseAccountName: this.props.databaseAccount?.name,
       databaseName: this.props.databaseName,
       collectionName: this.props.collectionName,
       apiKind: userContext.defaultExperience,
       dataExplorerArea: "Scale Tab V2"
-    }); 
+    });
   };
 
   private minRUperGBSurvey = (): JSX.Element => {
