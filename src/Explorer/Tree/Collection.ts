@@ -551,7 +551,7 @@ export default class Collection implements ViewModels.Collection {
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
     const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
-    const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Settings, tab => {
+    const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.SettingsV2, tab => {
       return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
     });
 
