@@ -14,6 +14,7 @@ interface UserContext {
   defaultExperience?: DefaultAccountExperienceType;
   useSDKOperations?: boolean;
   subscriptionType?: SubscriptionType;
+  quotaId?: string;
 }
 
 const userContext: Readonly<UserContext> = {} as const;
