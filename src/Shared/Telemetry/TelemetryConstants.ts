@@ -22,6 +22,7 @@ export enum Action {
   MongoShell,
   ContextualPane,
   ScaleThroughput,
+  ToggleAutoscaleSetting,
   SelectItem,
   Tab,
   UpdateDocument,
@@ -104,7 +105,9 @@ export const ActionModifiers = {
   Submit: "submit",
   IndexAll: "index all properties",
   NoIndex: "no indexing",
-  Cancel: "cancel"
+  Cancel: "cancel",
+  ToggleAutoscaleOn: "autoscale on",
+  ToggleAutoscaleOff: "autoscale off"
 } as const;
 
 export enum SourceBlade {
