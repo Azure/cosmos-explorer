@@ -9,8 +9,8 @@ import * as DataModels from "../../../../../Contracts/DataModels";
 describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {
     databaseAccount: {} as DataModels.DatabaseAccount,
-    databaseName: "databaseName",
-    collectionName: "collectionName",
+    databaseName: "test",
+    collectionName: "test",
     serverId: undefined,
     wasAutopilotOriginallySet: false,
     throughput: 100,
