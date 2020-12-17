@@ -8,14 +8,13 @@ import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
 import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { configContext } from "../ConfigContext";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export class ArcadiaResourceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;
 
-  constructor(private armEndpoint = configContext.ARM_ENDPOINT) {
-    this.resourceProviderClientFactory = new ResourceProviderClientFactory(this.armEndpoint);
+  constructor() {
+    this.resourceProviderClientFactory = new ResourceProviderClientFactory();
   }
 
   public async getWorkspacesAsync(arcadiaResourceId: string): Promise<ArcadiaWorkspace[]> {
