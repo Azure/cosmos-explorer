@@ -268,7 +268,7 @@ export default class Main {
     masterKey?: string /* master key extracted from connection string if available */,
     account?: DatabaseAccount,
     authorizationToken?: string /* access key */
-  ): Q.Promise<void> {
+  ): void {
     const serverId: string = AuthHeadersUtil.serverId;
     const authType: string = (<any>window).authType;
     const accountResourceId =
@@ -373,7 +373,7 @@ export default class Main {
       });
     }
 
-    return Q.reject(`Unsupported AuthType ${authType}`);
+    throw new Error(`Unsupported AuthType ${authType}`);
   }
 
   private static _instantiateExplorer(): Explorer {

@@ -2,7 +2,7 @@ import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { deleteStoredProcedure } from "../../Common/dataAccess/deleteStoredProcedure";
-import { executeStoredProcedure } from "../../Common/DocumentClientUtilityBase";
+import { executeStoredProcedure } from "../../Common/dataAccess/executeStoredProcedure";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";

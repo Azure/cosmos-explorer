@@ -731,7 +731,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "arcadiaToken": [Function],
-                "armEndpoint": [Function],
                 "browseQueriesPane": BrowseQueriesPane {
                   "canSaveQueries": [Function],
                   "container": [Circular],
@@ -1023,7 +1022,6 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
-                "parentFrameDataExplorerVersion": [Function],
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -1049,7 +1047,6 @@ exports[`SettingsComponent renders 1`] = `
                   "titleLabel": "Select Columns",
                   "visible": [Function],
                 },
-                "quotaId": [Function],
                 "refreshDatabaseAccount": [Function],
                 "refreshNotebookList": [Function],
                 "refreshTreeTitle": [Function],
@@ -2005,7 +2002,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "arcadiaToken": [Function],
-              "armEndpoint": [Function],
               "browseQueriesPane": BrowseQueriesPane {
                 "canSaveQueries": [Function],
                 "container": [Circular],
@@ -2297,7 +2293,6 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
-              "parentFrameDataExplorerVersion": [Function],
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -2323,7 +2318,6 @@ exports[`SettingsComponent renders 1`] = `
                 "titleLabel": "Select Columns",
                 "visible": [Function],
               },
-              "quotaId": [Function],
               "refreshDatabaseAccount": [Function],
               "refreshNotebookList": [Function],
               "refreshTreeTitle": [Function],
@@ -3292,7 +3286,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "arcadiaToken": [Function],
-                "armEndpoint": [Function],
                 "browseQueriesPane": BrowseQueriesPane {
                   "canSaveQueries": [Function],
                   "container": [Circular],
@@ -3584,7 +3577,6 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
-                "parentFrameDataExplorerVersion": [Function],
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -3610,7 +3602,6 @@ exports[`SettingsComponent renders 1`] = `
                   "titleLabel": "Select Columns",
                   "visible": [Function],
                 },
-                "quotaId": [Function],
                 "refreshDatabaseAccount": [Function],
                 "refreshNotebookList": [Function],
                 "refreshTreeTitle": [Function],
@@ -4566,7 +4557,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "arcadiaToken": [Function],
-              "armEndpoint": [Function],
               "browseQueriesPane": BrowseQueriesPane {
                 "canSaveQueries": [Function],
                 "container": [Circular],
@@ -4858,7 +4848,6 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
-              "parentFrameDataExplorerVersion": [Function],
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -4884,7 +4873,6 @@ exports[`SettingsComponent renders 1`] = `
                 "titleLabel": "Select Columns",
                 "visible": [Function],
               },
-              "quotaId": [Function],
               "refreshDatabaseAccount": [Function],
               "refreshNotebookList": [Function],
               "refreshTreeTitle": [Function],

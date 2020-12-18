@@ -65,7 +65,7 @@ export default class DocumentId {
     return JSON.stringify(partitionKeyValue);
   }
 
-  public loadDocument(): Q.Promise<any> {
-    return this.container.selectDocument(this);
+  public async loadDocument(): Promise<void> {
+    await this.container.selectDocument(this);
   }
 }

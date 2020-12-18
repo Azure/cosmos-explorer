@@ -6,7 +6,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { extractPartitionKey } from "@azure/cosmos";
 import ConflictsTab from "../Tabs/ConflictsTab";
-import { readDocument } from "../../Common/DocumentClientUtilityBase";
+import { readDocument } from "../../Common/dataAccess/readDocument";
 
 export default class ConflictId {
   public container: ConflictsTab;
@@ -59,41 +59,42 @@ export default class ConflictId {
     return;
   }
 
-  public loadConflict(): Q.Promise<any> {
-    const conflictsTab = this.container;
+  public async loadConflict(): Promise<void> {
     this.container.selectedConflictId(this);
 
     if (this.operationType === Constants.ConflictOperationType.Create) {
       this.container.initDocumentEditorForCreate(this, this.content);
-      return Q();
+      return;
     }
 
     this.container.loadingConflictData(true);
-    return readDocument(this.container.collection, this.buildDocumentIdFromConflict(this.partitionKeyValue)).then(
-      (currentDocumentContent: any) => {
-        this.container.loadingConflictData(false);
-        if (this.operationType === Constants.ConflictOperationType.Replace) {
-          this.container.initDocumentEditorForReplace(this, this.content, currentDocumentContent);
-        } else {
-          this.container.initDocumentEditorForDelete(this, currentDocumentContent);
-        }
-      },
-      (reason: any) => {
-        this.container.loadingConflictData(false);
 
-        // Document could be deleted
-        if (
-          reason &&
-          reason.code === Constants.HttpStatusCodes.NotFound &&
-          this.operationType === Constants.ConflictOperationType.Delete
-        ) {
-          this.container.initDocumentEditorForNoOp(this);
-          return Q();
-        }
+    try {
+      const currentDocumentContent = await readDocument(
+        this.container.collection,
+        this.buildDocumentIdFromConflict(this.partitionKeyValue)
+      );
 
-        return Q.reject(reason);
+      if (this.operationType === Constants.ConflictOperationType.Replace) {
+        this.container.initDocumentEditorForReplace(this, this.content, currentDocumentContent);
+      } else {
+        this.container.initDocumentEditorForDelete(this, currentDocumentContent);
       }
-    );
+    } catch (error) {
+      // Document could be deleted
+      if (
+        error &&
+        error.code === Constants.HttpStatusCodes.NotFound &&
+        this.operationType === Constants.ConflictOperationType.Delete
+      ) {
+        this.container.initDocumentEditorForNoOp(this);
+        return;
+      }
+
+      throw error;
+    } finally {
+      this.container.loadingConflictData(false);
+    }
   }
 
   public getPartitionKeyValueAsString(): string {

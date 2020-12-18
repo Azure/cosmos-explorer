@@ -4,8 +4,8 @@ import GraphTab from ".././Tabs/GraphTab";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { createDocument } from "../../Common/DocumentClientUtilityBase";
 import { createCollection } from "../../Common/dataAccess/createCollection";
+import { createDocument } from "../../Common/dataAccess/createDocument";
 import { userContext } from "../../UserContext";
 
 interface SampleDataFile extends DataModels.CreateCollectionParams {
@@ -95,12 +95,15 @@ export class ContainerSampleGenerator {
         .reduce((previous, current) => previous.then(current), Promise.resolve());
     } else {
       // For SQL all queries are executed at the same time
-      this.sampleDataFile.data.map(doc => {
-        const subPromise = createDocument(collection, doc);
-        subPromise.catch(reason => NotificationConsoleUtils.logConsoleError(reason));
-        promises.push(subPromise);
-      });
-      await Promise.all(promises);
+      await Promise.all(
+        this.sampleDataFile.data.map(async doc => {
+          try {
+            await createDocument(collection, doc);
+          } catch (error) {
+            NotificationConsoleUtils.logConsoleError(error);
+          }
+        })
+      );
     }
   }
 
