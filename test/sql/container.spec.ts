@@ -5,7 +5,7 @@ import { generateUniqueName, login } from "../utils/shared";
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RETRY_DELAY = 5000;
-const CREATE_DELAY = 15000;
+const CREATE_DELAY = 10000;
 const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete SQL spec", () => {
@@ -54,7 +54,7 @@ describe("Collection Add and Delete SQL spec", () => {
       // validate created
       // open database menu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(CREATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       const databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
       const selectedDbId = await frame.evaluate(element => {
