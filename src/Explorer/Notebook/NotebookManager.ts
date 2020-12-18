@@ -128,17 +128,9 @@ export default class NotebookManager {
     name: string,
     content: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
-    isCodeOfConductEnabled: boolean,
     isLinkInjectionEnabled: boolean
   ): Promise<void> {
-    await this.publishNotebookPaneAdapter.open(
-      name,
-      getFullName(),
-      content,
-      parentDomElement,
-      isCodeOfConductEnabled,
-      isLinkInjectionEnabled
-    );
+    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement, isLinkInjectionEnabled);
   }
 
   public openCopyNotebookPane(name: string, content: string): void {

@@ -94,9 +94,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     });
   }
 
-  public onTabClick(): Q.Promise<any> {
+  public onTabClick(): void {
     this.getContainer().tabsManager.activateTab(this);
-    return Q();
   }
 
   protected updateSelectedNode(): void {
@@ -128,7 +127,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return this.onSpaceOrEnterKeyPress(event, () => this.onCloseTabButtonClick());
   };
 
-  public onActivate(): Q.Promise<any> {
+  public onActivate(): void {
     this.updateSelectedNode();
     if (!!this.collection) {
       this.collection.selectedSubnodeKind(this.tabKind);
@@ -151,7 +150,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       tabTitle: this.tabTitle(),
       tabId: this.tabId
     });
-    return Q();
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {

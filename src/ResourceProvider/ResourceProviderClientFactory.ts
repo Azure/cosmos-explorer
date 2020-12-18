@@ -1,10 +1,14 @@
+import { configContext } from "../ConfigContext";
 import { IResourceProviderClientFactory, IResourceProviderClient } from "./IResourceProviderClient";
 import { ResourceProviderClient } from "./ResourceProviderClient";
 
 export class ResourceProviderClientFactory implements IResourceProviderClientFactory<any> {
+  private armEndpoint: string;
   private cachedClients: { [url: string]: IResourceProviderClient<any> } = {};
 
-  constructor(private armEndpoint: string) {}
+  constructor() {
+    this.armEndpoint = configContext.ARM_ENDPOINT;
+  }
 
   public getOrCreate(url: string): IResourceProviderClient<any> {
     if (!url) {

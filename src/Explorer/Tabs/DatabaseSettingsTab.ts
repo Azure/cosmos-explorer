@@ -232,9 +232,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return this.throughputTitle() + this.requestUnitsUsageCost();
     });
     this.pendingNotification = ko.observable<DataModels.Notification>();
-    this._offerReplacePending = ko.observable<boolean>(
-      !!this.database.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending]
-    );
+    this._offerReplacePending = ko.observable<boolean>(!!this.database.offer()?.offerReplacePending);
     this.notificationStatusInfo = ko.observable<string>("");
     this.shouldShowNotificationStatusPrompt = ko.computed<boolean>(() => this.notificationStatusInfo().length > 0);
     this.warningMessage = ko.computed<string>(() => {
@@ -243,7 +241,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       }
 
       const offer = this.database.offer();
-      if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+      if (offer?.offerReplacePending) {
         const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
         return throughputApplyShortDelayMessage(this.isAutoPilotSelected(), throughput, this.database.id());
       }
@@ -444,11 +442,10 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     return Q();
   };
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(async () => {
-      this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
-      await this.database.loadOffer();
-    });
+  public async onActivate(): Promise<void> {
+    super.onActivate();
+    this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
+    await this.database.loadOffer();
   }
 
   private _setBaseline() {
