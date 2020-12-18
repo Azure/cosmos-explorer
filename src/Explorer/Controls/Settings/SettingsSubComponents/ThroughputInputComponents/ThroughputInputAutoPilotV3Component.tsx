@@ -583,9 +583,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       warningMessage = saveThroughputWarningMessage;
     }
 
-    return (
-      <>{warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}</>
-    );
+    return <>{warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}</>;
   };
 
   public render(): JSX.Element {
