@@ -3029,4 +3029,25 @@ export default class Explorer {
       })
     );
   }
+
+  public isFirstResourceCreated(): boolean {
+    const databases: ViewModels.Database[] = this.databases();
+
+    if (!databases || databases.length === 0) {
+      return false;
+    }
+
+    return databases.some(database => {
+      // user has created at least one collection
+      if (database.collections()?.length > 0) {
+        return true;
+      }
+      // user has created a database with shared throughput
+      if (database.offer()) {
+        return true;
+      }
+      // use has created an empty database without shared throughput
+      return false;
+    });
+  }
 }

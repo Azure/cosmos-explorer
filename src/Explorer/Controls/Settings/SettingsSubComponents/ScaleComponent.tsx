@@ -176,6 +176,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       label={this.getThroughputTitle()}
       isEmulator={this.isEmulator}
       isFixed={this.props.isFixedContainer}
+      isFreeTierAccount={this.isFreeTierAccount()}
       isAutoPilotSelected={this.props.isAutoPilotSelected}
       onAutoPilotSelected={this.props.onAutoPilotSelected}
       wasAutopilotOriginallySet={this.props.wasAutopilotOriginallySet}
@@ -190,9 +191,26 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     />
   );
 
+  private isFreeTierAccount(): boolean {
+    const databaseAccount = this.props.container?.databaseAccount();
+    return databaseAccount?.properties?.enableFreeTier;
+  }
+
+  private getFreeTierInfoMessage(): string {
+    return "With free tier, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale.";
+  }
+
   public render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
+        {this.isFreeTierAccount() && (
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={{ text: { fontSize: 14 } }}
+          >
+            {this.getFreeTierInfoMessage()}
+          </MessageBar>
+        )}
         {this.getInitialNotificationElement() && (
           <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
         )}

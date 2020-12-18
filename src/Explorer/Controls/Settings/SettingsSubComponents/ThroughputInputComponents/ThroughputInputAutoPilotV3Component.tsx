@@ -22,8 +22,7 @@ import {
   Stack,
   Label,
   Link,
-  MessageBar,
-  MessageBarType
+  MessageBar
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
@@ -51,6 +50,7 @@ export interface ThroughputInputAutoPilotV3Props {
   spendAckVisible?: boolean;
   showAsMandatory?: boolean;
   isFixed: boolean;
+  isFreeTierAccount: boolean;
   isEmulator: boolean;
   label: string;
   infoBubbleText?: string;
@@ -69,6 +69,7 @@ export interface ThroughputInputAutoPilotV3Props {
 
 interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
+  exceedFreeTierThroughput: boolean;
 }
 
 export class ThroughputInputAutoPilotV3Component extends React.Component<
@@ -142,7 +143,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
     this.state = {
-      spendAckChecked: this.props.spendAckChecked
+      spendAckChecked: this.props.spendAckChecked,
+      exceedFreeTierThroughput:
+        this.props.isFreeTierAccount && !this.props.isAutoPilotSelected && this.props.throughput > 400
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
@@ -219,6 +222,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
+      this.setState({ exceedFreeTierThroughput: this.props.isFreeTierAccount && newThroughput > 400 });
       this.props.onThroughputChange(newThroughput);
     }
   };
@@ -262,7 +266,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           />
         </Label>
         {this.overrideWithProvisionedThroughputSettings() && (
-          <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={messageBarStyles}
+          >
             {manualToAutoscaleDisclaimerElement}
           </MessageBar>
         )}
@@ -333,8 +340,21 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
         onChange={this.onThroughputChange}
       />
+      {this.state.exceedFreeTierThroughput && (
+        <MessageBar
+          messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+          styles={messageBarStyles}
+        >
+          {
+            "With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s."
+          }
+        </MessageBar>
+      )}
       {this.props.getThroughputWarningMessage() && (
-        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+        <MessageBar
+          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+          styles={messageBarStyles}
+        >
           {this.props.getThroughputWarningMessage()}
         </MessageBar>
       )}

@@ -57,6 +57,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public canThroughputExceedMaximumValue: ko.Computed<boolean>;
   public costsVisible: ko.Computed<boolean>;
   public displayedError: ko.Observable<string>;
+  public isFreeTierAccount: ko.Computed<boolean>;
   public isTemplateReady: ko.Observable<boolean>;
   public minRUAnotationVisible: ko.Computed<boolean>;
   public minRUs: ko.Observable<number>;
@@ -82,6 +83,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public throughputAutoPilotRadioId: string;
   public throughputProvisionedRadioId: string;
   public throughputModeRadioName: string;
+  public freeTierExceedThroughputWarning: ko.Computed<string>;
 
   private _hasProvisioningTypeChanged: ko.Computed<boolean>;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
@@ -360,6 +362,17 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     };
 
     this.isTemplateReady = ko.observable<boolean>(false);
+
+    this.isFreeTierAccount = ko.computed<boolean>(() => {
+      const databaseAccount = this.container?.databaseAccount();
+      return databaseAccount?.properties?.enableFreeTier;
+    });
+
+    this.freeTierExceedThroughputWarning = ko.computed<string>(() =>
+      this.isFreeTierAccount()
+        ? "With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s."
+        : ""
+    );
 
     this._buildCommandBarOptions();
   }

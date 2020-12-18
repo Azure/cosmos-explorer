@@ -26,6 +26,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     spendAckVisible: false,
     showAsMandatory: true,
     isFixed: false,
+    isFreeTierAccount: false,
     label: "label",
     infoBubbleText: "infoBubbleText",
     canExceedMaximumValue: true,

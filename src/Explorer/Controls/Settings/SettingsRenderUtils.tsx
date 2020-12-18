@@ -36,7 +36,7 @@ import {
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
-export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
+export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14 } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
@@ -126,7 +126,10 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
   ]
 };
 
-export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
+export const messageBarStyles: Partial<IMessageBarStyles> = {
+  root: { marginTop: "5px", backgroundColor: "white" },
+  text: { fontSize: 14 }
+};
 
 export const throughputUnit = "RU/s";
 

@@ -1,5 +1,6 @@
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
+import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 
 /**
  * Anything that is not a number should return 0
@@ -241,9 +242,19 @@ export function getEstimatedSpendAcknowledgeString(
       )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
-export function getUpsellMessage(serverId = "default", isFreeTier = false): string {
+export function getUpsellMessage(
+  serverId = "default",
+  isFreeTier = false,
+  isFirstResourceCreated = false,
+  defaultExperience: string,
+  isCollection: boolean
+): string {
   if (isFreeTier) {
-    return "With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s.";
+    const collectionName = getCollectionName(defaultExperience);
+    const resourceType = isCollection ? collectionName : "database";
+    return isFirstResourceCreated
+      ? `The free tier discount of 400 RU/s has already been applied to a database or ${collectionName} in this account. Billing will apply to this ${resourceType} after it is created.`
+      : `With free tier, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Billing will apply if you provision more than 400 RU/s of manual throughput, or if the ${resourceType} scales beyond 400 RU/s with autoscale.`;
   } else {
     let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
 
@@ -252,5 +263,21 @@ export function getUpsellMessage(serverId = "default", isFreeTier = false): stri
     }
 
     return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
+  }
+}
+
+function getCollectionName(defaultExperience: string): string {
+  switch (defaultExperience) {
+    case DefaultAccountExperienceType.DocumentDB:
+      return "container";
+    case DefaultAccountExperienceType.MongoDB:
+      return "collection";
+    case DefaultAccountExperienceType.Table:
+    case DefaultAccountExperienceType.Cassandra:
+      return "table";
+    case DefaultAccountExperienceType.Graph:
+      return "graph";
+    default:
+      throw Error("unknown API type");
   }
 }

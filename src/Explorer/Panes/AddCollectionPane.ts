@@ -88,6 +88,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public isSynapseLinkUpdating: ko.Computed<boolean>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
+  public freeTierExceedThroughputTooltip: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
   public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
@@ -98,7 +99,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     super(options);
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
-    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
     this.formWarnings = ko.observable<string>();
     this.collectionId = ko.observable<string>();
     this.databaseId = ko.observable<string>();
@@ -480,8 +480,20 @@ export default class AddCollectionPane extends ContextualPaneBase {
       this.resetData();
     });
 
+    this.freeTierExceedThroughputTooltip = ko.pureComputed<string>(() =>
+      this.isFreeTierAccount() && !this.container.isFirstResourceCreated()
+        ? "The first 400 RU/s in this account are free. Billing will apply to any throughput beyond 400 RU/s."
+        : ""
+    );
+
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
+      return PricingUtils.getUpsellMessage(
+        this.container.serverId(),
+        this.isFreeTierAccount(),
+        this.container.isFirstResourceCreated(),
+        this.container.defaultExperience(),
+        true
+      );
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
@@ -531,6 +543,23 @@ export default class AddCollectionPane extends ContextualPaneBase {
       const isFreeTierAccount =
         databaseAccount && databaseAccount.properties && databaseAccount.properties.enableFreeTier;
       return isFreeTierAccount;
+    });
+
+    this.showUpsellMessage = ko.pureComputed(() => {
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
+      if (
+        this.isFreeTierAccount() &&
+        !this.databaseCreateNew() &&
+        this.databaseHasSharedOffer() &&
+        !this.collectionWithThroughputInShared()
+      ) {
+        return false;
+      }
+
+      return true;
     });
 
     this.showIndexingOptionsForSharedThroughput = ko.computed<boolean>(() => {
