@@ -8,7 +8,7 @@ exports[`IndexingPolicyRefreshComponent renders 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
