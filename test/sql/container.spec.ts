@@ -5,7 +5,7 @@ import { generateUniqueName, login } from "../utils/shared";
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
 const RETRY_DELAY = 5000;
-const CREATE_DELAY = 10000;
+const CREATE_DELAY = 15000;
 const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete SQL spec", () => {
