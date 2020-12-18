@@ -16,6 +16,7 @@ import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { userContext } from "../../UserContext";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -670,7 +671,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         databaseId: this.databaseId()
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: this._getThroughput(),
@@ -772,7 +773,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         collectionWithThroughputInShared: this.collectionWithThroughputInShared()
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: offerThroughput,
@@ -846,7 +847,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           }),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
-          subscriptionQuotaId: this.container.quotaId(),
+          subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
@@ -880,7 +881,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
             collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           },
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
-          subscriptionQuotaId: this.container.quotaId(),
+          subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
