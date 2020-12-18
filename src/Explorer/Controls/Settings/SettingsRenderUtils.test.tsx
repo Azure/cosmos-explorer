@@ -20,8 +20,8 @@ import {
   mongoIndexingPolicyAADError,
   mongoIndexTransformationRefreshingMessage,
   renderMongoIndexTransformationRefreshMessage,
-  IManualEstimatedSpendingDisplayProps,
-  IPriceBreakdown,
+  ManualEstimatedSpendingDisplayProps,
+  PriceBreakdown,
   getRuPriceBreakdown
 } from "./SettingsRenderUtils";
 
@@ -33,7 +33,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
       { key: "daily", name: "Daily", fieldName: "daily", minWidth: 100, maxWidth: 200, isResizable: true },
       { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true }
     ];
-    const estimatedSpendingItems: IManualEstimatedSpendingDisplayProps[] = [
+    const estimatedSpendingItems: ManualEstimatedSpendingDisplayProps[] = [
       {
         costType: <Text>Current Cost</Text>,
         hourly: <Text>$ 1.02</Text>,
@@ -41,7 +41,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         monthly: <Text>$ 744.6</Text>
       }
     ];
-    const priceBreakdown: IPriceBreakdown = {
+    const priceBreakdown: PriceBreakdown = {
       hourlyPrice: 1.02,
       dailyPrice: 24.48,
       monthlyPrice: 744.6,

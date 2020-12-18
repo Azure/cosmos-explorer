@@ -12,9 +12,9 @@ import {
   getAutoPilotV3SpendElement,
   manualToAutoscaleDisclaimerElement,
   saveThroughputWarningMessage,
-  IManualEstimatedSpendingDisplayProps,
-  IAutoscaleEstimatedSpendingDisplayProps,
-  IPriceBreakdown,
+  ManualEstimatedSpendingDisplayProps,
+  AutoscaleEstimatedSpendingDisplayProps,
+  PriceBreakdown,
   getRuPriceBreakdown,
   transparentDetailsHeaderStyle
 } from "../../SettingsRenderUtils";
@@ -207,7 +207,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     isMultimaster: boolean,
     newThroughput?: number
   ): JSX.Element => {
-    const prices: IPriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
+    const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
     const estimatedSpendingColumns: IColumn[] = [
       {
         key: "costType",
@@ -237,7 +237,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles: transparentDetailsHeaderStyle
       }
     ];
-    const estimatedSpendingItems: IAutoscaleEstimatedSpendingDisplayProps[] = [
+    const estimatedSpendingItems: AutoscaleEstimatedSpendingDisplayProps[] = [
       {
         costType: <Text>Current Cost</Text>,
         minPerMonth: (
@@ -254,7 +254,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     ];
 
     if (newThroughput) {
-      const newPrices: IPriceBreakdown = getRuPriceBreakdown(
+      const newPrices: PriceBreakdown = getRuPriceBreakdown(
         newThroughput,
         serverId,
         numberOfRegions,
@@ -301,7 +301,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     isMultimaster: boolean,
     newThroughput?: number
   ): JSX.Element => {
-    const prices: IPriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
+    const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
     const estimatedSpendingColumns: IColumn[] = [
       {
         key: "costType",
@@ -340,7 +340,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles: transparentDetailsHeaderStyle
       }
     ];
-    const estimatedSpendingItems: IManualEstimatedSpendingDisplayProps[] = [
+    const estimatedSpendingItems: ManualEstimatedSpendingDisplayProps[] = [
       {
         costType: <Text>Current Cost</Text>,
         hourly: (
@@ -362,7 +362,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     ];
 
     if (newThroughput) {
-      const newPrices: IPriceBreakdown = getRuPriceBreakdown(
+      const newPrices: PriceBreakdown = getRuPriceBreakdown(
         newThroughput,
         serverId,
         numberOfRegions,

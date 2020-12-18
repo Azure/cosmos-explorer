@@ -42,22 +42,22 @@ import {
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
-export interface IEstimatedSpendingDisplayProps {
+export interface EstimatedSpendingDisplayProps {
   costType: JSX.Element;
 }
 
-export interface IManualEstimatedSpendingDisplayProps extends IEstimatedSpendingDisplayProps {
+export interface ManualEstimatedSpendingDisplayProps extends EstimatedSpendingDisplayProps {
   hourly: JSX.Element;
   daily: JSX.Element;
   monthly: JSX.Element;
 }
 
-export interface IAutoscaleEstimatedSpendingDisplayProps extends IEstimatedSpendingDisplayProps {
+export interface AutoscaleEstimatedSpendingDisplayProps extends EstimatedSpendingDisplayProps {
   minPerMonth: JSX.Element;
   maxPerMonth: JSX.Element;
 }
 
-export interface IPriceBreakdown {
+export interface PriceBreakdown {
   hourlyPrice: number;
   dailyPrice: number;
   monthlyPrice: number;
@@ -215,7 +215,7 @@ export const getRuPriceBreakdown = (
   numberOfRegions: number,
   isMultimaster: boolean,
   isAutoscale: boolean
-): IPriceBreakdown => {
+): PriceBreakdown => {
   const hourlyPrice: number = computeRUUsagePriceHourly(
     serverId,
     throughput,
@@ -238,10 +238,10 @@ export const getRuPriceBreakdown = (
 
 export const getEstimatedSpendingElement = (
   estimatedSpendingColumns: IColumn[],
-  estimatedSpendingItems: IEstimatedSpendingDisplayProps[],
+  estimatedSpendingItems: EstimatedSpendingDisplayProps[],
   throughput: number,
   numberOfRegions: number,
-  priceBreakdown: IPriceBreakdown,
+  priceBreakdown: PriceBreakdown,
   isAutoscale: boolean
 ): JSX.Element => {
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
