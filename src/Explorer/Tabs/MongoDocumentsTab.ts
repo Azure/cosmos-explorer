@@ -44,7 +44,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     super.buildCommandBarOptions();
   }
 
-  public onSaveNewDocumentClick = (): Q.Promise<any> => {
+  public onSaveNewDocumentClick = (): Promise<any> => {
     const documentContent = JSON.parse(this.selectedDocumentContent());
     this.displayedError("");
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
@@ -78,12 +78,12 @@ export default class MongoDocumentsTab extends DocumentsTab {
         startKey
       );
       Logger.logError("Failed to save new document: Document shard key not defined", "MongoDocumentsTab");
-      return Q.reject("Document without shard key");
+      throw new Error("Document without shard key");
     }
 
     this.isExecutionError(false);
     this.isExecuting(true);
-    return Q(createDocument(this.collection.databaseId, this.collection, this.partitionKeyProperty, documentContent))
+    return createDocument(this.collection.databaseId, this.collection, this.partitionKeyProperty, documentContent)
       .then(
         (savedDocument: any) => {
           let partitionKeyArray = extractPartitionKey(
@@ -136,7 +136,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   };
 
-  public onSaveExisitingDocumentClick = (): Q.Promise<any> => {
+  public onSaveExisitingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = this.selectedDocumentContent();
     this.isExecutionError(false);
@@ -148,7 +148,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       tabTitle: this.tabTitle()
     });
 
-    return Q(updateDocument(this.collection.databaseId, this.collection, selectedDocumentId, documentContent))
+    return updateDocument(this.collection.databaseId, this.collection, selectedDocumentId, documentContent)
       .then(
         (updatedDocument: any) => {
           let value: string = this.renderObjectForEditor(updatedDocument || {}, null, 4);
@@ -204,13 +204,10 @@ export default class MongoDocumentsTab extends DocumentsTab {
     return filter || "{}";
   }
 
-  public selectDocument(documentId: DocumentId): Q.Promise<any> {
+  public async selectDocument(documentId: DocumentId): Promise<void> {
     this.selectedDocumentId(documentId);
-    return Q(
-      readDocument(this.collection.databaseId, this.collection, documentId).then((content: any) => {
-        this.initDocumentEditor(documentId, content);
-      })
-    );
+    const content = await readDocument(this.collection.databaseId, this.collection, documentId);
+    this.initDocumentEditor(documentId, content);
   }
 
   public loadNextPage(): Q.Promise<any> {
@@ -330,7 +327,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     return partitionKey;
   }
 
-  protected __deleteDocument(documentId: DocumentId): Q.Promise<any> {
-    return Q(deleteDocument(this.collection.databaseId, this.collection, documentId));
+  protected __deleteDocument(documentId: DocumentId): Promise<void> {
+    return deleteDocument(this.collection.databaseId, this.collection, documentId);
   }
 }

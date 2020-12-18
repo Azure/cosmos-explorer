@@ -429,11 +429,10 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     return Q();
   };
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(async () => {
-      this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
-      await this.database.loadOffer();
-    });
+  public async onActivate(): Promise<void> {
+    super.onActivate();
+    this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
+    await this.database.loadOffer();
   }
 
   private _setBaseline() {

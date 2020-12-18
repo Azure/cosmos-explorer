@@ -421,53 +421,47 @@ export default class TableEntityListViewModel extends DataTableViewModel {
    * Note that this also means that we can get less entities than the requested download size in a successful call.
    * See Microsoft Azure API Documentation at: https://msdn.microsoft.com/en-us/library/azure/dd135718.aspx
    */
-  private prefetchData(
+  private async prefetchData(
     tableQuery: Entities.ITableQuery,
     downloadSize: number,
     currentRetry: number = 0
-  ): Q.Promise<any> {
+  ): Promise<IListTableEntitiesSegmentedResult> {
     if (!this.cache.serverCallInProgress) {
       this.cache.serverCallInProgress = true;
       this.allDownloaded = false;
       this.lastPrefetchTime = new Date().getTime();
-      var time = this.lastPrefetchTime;
+      const time = this.lastPrefetchTime;
 
-      var promise: Q.Promise<IListTableEntitiesSegmentedResult>;
       if (this._documentIterator && this.continuationToken) {
         // TODO handle Cassandra case
+        const response = await this._documentIterator.fetchNext();
+        const entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(response?.resources);
 
-        promise = Q(this._documentIterator.fetchNext().then(response => response.resources)).then(
-          (documents: any[]) => {
-            let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
-            let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
-              Results: entities,
-              ContinuationToken: this._documentIterator.hasMoreResults()
-            };
-            return Q.resolve(finalEntities);
-          }
-        );
-      } else if (this.continuationToken && this.queryTablesTab.container.isPreferredApiCassandra()) {
-        promise = this.queryTablesTab.container.tableDataClient.queryDocuments(
-          this.queryTablesTab.collection,
-          this.cqlQuery(),
-          true,
-          this.continuationToken
-        );
-      } else {
-        let query = this.sqlQuery();
-        if (this.queryTablesTab.container.isPreferredApiCassandra()) {
-          query = this.cqlQuery();
-        }
-        promise = this.queryTablesTab.container.tableDataClient.queryDocuments(
-          this.queryTablesTab.collection,
-          query,
-          true
-        );
+        return {
+          Results: entities,
+          ContinuationToken: this._documentIterator.hasMoreResults()
+        };
       }
-      return promise
-        .then((result: IListTableEntitiesSegmentedResult) => {
+
+      try {
+        let documents: IListTableEntitiesSegmentedResult;
+        if (this.continuationToken && this.queryTablesTab.container.isPreferredApiCassandra()) {
+          documents = await this.queryTablesTab.container.tableDataClient.queryDocuments(
+            this.queryTablesTab.collection,
+            this.cqlQuery(),
+            true,
+            this.continuationToken
+          );
+        } else {
+          const query = this.queryTablesTab.container.isPreferredApiCassandra() ? this.cqlQuery() : this.sqlQuery();
+          documents = await this.queryTablesTab.container.tableDataClient.queryDocuments(
+            this.queryTablesTab.collection,
+            query,
+            true
+          );
+
           if (!this._documentIterator) {
-            this._documentIterator = result.iterator;
+            this._documentIterator = documents.iterator;
           }
           var actualDownloadSize: number = 0;
 
@@ -478,11 +472,11 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             return Q.resolve(null);
           }
 
-          var entities = result.Results;
+          var entities = documents.Results;
           actualDownloadSize = entities.length;
 
           // Queries can fetch no results and still return a continuation header. See prefetchAndRender() method.
-          this.continuationToken = this.isCancelled ? null : result.ContinuationToken;
+          this.continuationToken = this.isCancelled ? null : documents.ContinuationToken;
 
           if (!this.continuationToken) {
             this.allDownloaded = true;
@@ -514,20 +508,22 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           // For #2.1, set prefetch exceeds maximum retry number and end prefetch.
           // For #2.2, go to next round prefetch.
           if (this.allDownloaded || nextDownloadSize === 0) {
-            return Q.resolve(result);
+            return documents;
           }
 
           if (currentRetry >= TableEntityListViewModel._maximumNumberOfPrefetchRetries) {
-            result.ExceedMaximumRetries = true;
-            return Q.resolve(result);
+            documents.ExceedMaximumRetries = true;
+            return documents;
           }
-          return this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
-        })
-        .catch((error: Error) => {
-          this.cache.serverCallInProgress = false;
-          return Q.reject(error);
-        });
+
+          return await this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
+        }
+      } catch (error) {
+        this.cache.serverCallInProgress = false;
+        throw error;
+      }
     }
-    return null;
+
+    return undefined;
   }
 }
