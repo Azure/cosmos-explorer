@@ -584,7 +584,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     }
 
     return (
-      <>{warningMessage && <MessageBar messageBarType={MessageBarType.severeWarning}>{warningMessage}</MessageBar>}</>
+      <>{warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}</>
     );
   };
 
