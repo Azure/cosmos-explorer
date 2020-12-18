@@ -1527,6 +1527,21 @@ p {
   color: @AccentHigh;
 }
 
+.inputTooltip {
+  .inputTooltip();
+}
+
+.inputTooltip .inputTooltipText {
+  top: -68px;
+  .inputTooltipText();
+}
+
+.inputTooltip .inputTooltipText::after {
+  border-width: @MediumSpace @MediumSpace 0 @MediumSpace;
+  top: 55px;
+  .inputTooltipTextAfter();
+}
+
 .nowrap {
   white-space: nowrap;
 }
@@ -3056,13 +3071,12 @@ settings-pane {
 
 .freeTierInlineWarning {
   display: inline-flex;
-  padding: @DefaultSpace;
+  padding: 8px 8px 8px 0;
   width: 100%;
 
   .freeTierWarningIcon img {
     height: 20px;
     width: 20px;
-    margin-left: 4px;
   }
 
   .freeTierWarningMessage {
