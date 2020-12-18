@@ -9,7 +9,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
   }
 >
   <StyledMessageBarBase
-    messageBarType={3}
+    messageBarType={5}
   >
     <Text
       styles={
