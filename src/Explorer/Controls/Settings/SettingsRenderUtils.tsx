@@ -216,13 +216,13 @@ export const getRuPriceBreakdown = (
   isMultimaster: boolean,
   isAutoscale: boolean
 ): PriceBreakdown => {
-  const hourlyPrice: number = computeRUUsagePriceHourly(
-    serverId,
-    throughput,
-    numberOfRegions,
-    isMultimaster,
-    isAutoscale
-  );
+  const hourlyPrice: number = computeRUUsagePriceHourly({
+    serverId: serverId,
+    requestUnits: throughput,
+    numberOfRegions: numberOfRegions,
+    multimasterEnabled: isMultimaster,
+    isAutoscale: isAutoscale
+  });
   const basePricePerRu: number = isAutoscale
     ? getAutoscalePricePerRu(serverId, getMultimasterMultiplier(numberOfRegions, isMultimaster))
     : getPricePerRu(serverId);
