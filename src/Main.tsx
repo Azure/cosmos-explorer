@@ -126,9 +126,11 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
+      <div id="divSelfServe" data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter">
+      </div>
       <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
         {/* Main Command Bar - Start */}
-        <div data-bind="react: commandBarComponentAdapter" />
+        <div data-bind="visible: selfServeType() === 'none', react: commandBarComponentAdapter" />
         {/* Main Command Bar - End */}
         {/* Share url flyout - Start */}
         <div
@@ -196,7 +198,7 @@ const App: React.FunctionComponent = () => {
         </div>
         {/* Share url flyout - End */}
         {/* Collections Tree and Tabs - Begin */}
-        <div className="resourceTreeAndTabs">
+        <div className="resourceTreeAndTabs" data-bind="visible: selfServeType() === 'none'">
           {/* Collections Tree - Start */}
           <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
             <div className="collectionsTreeWithSplitter">
@@ -303,7 +305,7 @@ const App: React.FunctionComponent = () => {
             data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
           >
             <form className="connectExplorerFormContainer">
-              <div className="connectExplorer" data-bind="react: splashScreenAdapter" />
+              <div className="connectExplorer" data-bind="visible: selfServeType() === 'none', react: splashScreenAdapter" />
             </form>
           </div>
           <div
@@ -317,7 +319,7 @@ const App: React.FunctionComponent = () => {
           role="contentinfo"
           aria-label="Notification console"
           id="explorerNotificationConsole"
-          data-bind="react: notificationConsoleComponentAdapter"
+          data-bind="react: notificationConsoleComponentAdapter, visible: selfServeType() === 'none'"
         />
       </div>
       {/* Explorer Connection - Encryption Token / AAD - Start */}
@@ -373,14 +375,13 @@ const App: React.FunctionComponent = () => {
       {/* Global loader - Start */}
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
-          <p className="connectExplorerContent">
-            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+          <div className="splashLoaderTitle" data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter">
+          </div>
+          <p className="connectExplorerContent" id="explorerConnectingImage" data-bind="visible: selfServeType() === 'none'">
           </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-            Welcome to Azure Cosmos DB
+          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle" data-bind="visible: selfServeType() === 'none'">
           </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-            Connecting...
+          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert" data-bind="visible: selfServeType() === 'none'">
           </p>
         </div>
       </div>

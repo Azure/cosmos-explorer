@@ -88,6 +88,9 @@ import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
+import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
+import { SelfServeTypes } from "../SelfServe/SelfServeUtils";
+import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -132,6 +135,7 @@ export default class Explorer {
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
+  public selfServeType: ko.Observable<SelfServeTypes>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
@@ -159,6 +163,7 @@ export default class Explorer {
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
+  private selfServeComponentAdapter: SelfServeComponentAdapter
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -255,6 +260,7 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
+  private selfServeLoadingComponentAdapter : SelfServeLoadingComponentAdapter;
   private splashScreenAdapter: SplashScreenComponentAdapter;
   private notificationConsoleComponentAdapter: NotificationConsoleComponentAdapter;
   private dialogComponentAdapter: DialogComponentAdapter;
@@ -297,6 +303,7 @@ export default class Explorer {
       }
     });
     this.isAccountReady = ko.observable<boolean>(false);
+    this.selfServeType = ko.observable<SelfServeTypes>(undefined);
     this._isInitializingNotebooks = false;
     this._isInitializingSparkConnectionInfo = false;
     this.arcadiaToken = ko.observable<string>();
@@ -702,6 +709,7 @@ export default class Explorer {
     });
 
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
+    this.selfServeComponentAdapter = new SelfServeComponentAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
@@ -877,6 +885,7 @@ export default class Explorer {
     });
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
+    this.selfServeLoadingComponentAdapter = new SelfServeLoadingComponentAdapter();
     this.notificationConsoleComponentAdapter = new NotificationConsoleComponentAdapter(this);
 
     this._initSettings();
@@ -1854,6 +1863,12 @@ export default class Explorer {
 
   public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): Q.Promise<void> {
     if (inputs != null) {
+      inputs.selfServeType 
+      ? this.selfServeType(inputs.selfServeType) 
+      : this.selfServeType(SelfServeTypes.none);
+      this._setLoadingStatusText("Connecting...", "Welcome to Azure Cosmos DB")
+      this._setConnectingImage()
+      
       const authorizationToken = inputs.authorizationToken || "";
       const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
@@ -2983,6 +2998,11 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
+  }
+
+  private _setConnectingImage() {
+    const connectingImage = document.getElementById("explorerConnectingImage");
+    connectingImage.innerHTML="<img src=\"../images/HdeConnectCosmosDB.svg\" >";
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {
