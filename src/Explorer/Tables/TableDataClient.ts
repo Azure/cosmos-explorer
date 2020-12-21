@@ -265,9 +265,11 @@ export class CassandraAPIDataClient extends TableDataClient {
         authType === AuthType.EncryptedToken
           ? Constants.CassandraBackend.guestQueryApi
           : Constants.CassandraBackend.queryApi;
-      const data: any = await $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
-        type: "POST",
-        data: {
+      const authorizationHeader = getAuthorizationHeader();
+
+      const response = await fetch(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
+        method: "POST",
+        body: JSON.stringify({
           accountName:
             collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
           cassandraEndpoint: this.trimCassandraEndpoint(
@@ -278,11 +280,19 @@ export class CassandraAPIDataClient extends TableDataClient {
           tableId: collection.id(),
           query,
           paginationToken
-        },
-        beforeSend: this.setAuthorizationHeader,
-        error: this.handleAjaxError,
-        cache: false
+        }),
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [Constants.HttpHeaders.contentType]: "application/json"
+        }
       });
+
+      if (!response.ok) {
+        displayTokenRenewalPromptForStatus(response.status);
+        throw Error(`Failed to query rows for table ${collection.id()}`);
+      }
+
+      const data = await response.json();
       shouldNotify &&
         NotificationConsoleUtils.logConsoleInfo(
           `Successfully fetched ${data.result.length} rows for table ${collection.id()}`
@@ -450,9 +460,9 @@ export class CassandraAPIDataClient extends TableDataClient {
     return deferred.promise;
   }
 
-  public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
+  public async getTableKeys(collection: ViewModels.Collection): Promise<CassandraTableKeys> {
     if (!!collection.cassandraKeys) {
-      return Q.resolve(collection.cassandraKeys);
+      return collection.cassandraKeys;
     }
     const notificationId = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
@@ -464,45 +474,51 @@ export class CassandraAPIDataClient extends TableDataClient {
         ? Constants.CassandraBackend.guestKeysApi
         : Constants.CassandraBackend.keysApi;
     let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
-    const deferred = Q.defer<CassandraTableKeys>();
-    $.ajax(endpoint, {
-      type: "POST",
-      data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
-        keyspaceId: collection.databaseId,
-        tableId: collection.id()
-      },
-      beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
-      cache: false
-    })
-      .then(
-        (data: CassandraTableKeys) => {
-          collection.cassandraKeys = data;
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `Successfully fetched keys for table ${collection.id()}`
-          );
-          deferred.resolve(data);
-        },
-        (error: any) => {
-          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
-          deferred.reject(error);
+    const authorizationHeader = getAuthorizationHeader();
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: JSON.stringify({
+          accountName:
+            collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
+          cassandraEndpoint: this.trimCassandraEndpoint(
+            collection.container.databaseAccount().properties.cassandraEndpoint
+          ),
+          resourceId: collection.container.databaseAccount().id,
+          keyspaceId: collection.databaseId,
+          tableId: collection.id()
+        }),
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [Constants.HttpHeaders.contentType]: "application/json"
         }
-      )
-      .done(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
       });
-    return deferred.promise;
+
+      if (!response.ok) {
+        displayTokenRenewalPromptForStatus(response.status);
+        throw Error(`Fetching keys for table ${collection.id()} failed`);
+      }
+
+      const data: CassandraTableKeys = await response.json();
+      collection.cassandraKeys = data;
+      NotificationConsoleUtils.logConsoleMessage(
+        ConsoleDataType.Info,
+        `Successfully fetched keys for table ${collection.id()}`
+      );
+
+      return data;
+    } catch (error) {
+      handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
+      throw error;
+    } finally {
+      NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
+    }
   }
 
-  public getTableSchema(collection: ViewModels.Collection): Q.Promise<CassandraTableKey[]> {
+  public async getTableSchema(collection: ViewModels.Collection): Promise<CassandraTableKey[]> {
     if (!!collection.cassandraSchema) {
-      return Q.resolve(collection.cassandraSchema);
+      return collection.cassandraSchema;
     }
     const notificationId = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
@@ -514,74 +530,79 @@ export class CassandraAPIDataClient extends TableDataClient {
         ? Constants.CassandraBackend.guestSchemaApi
         : Constants.CassandraBackend.schemaApi;
     let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
-    const deferred = Q.defer<CassandraTableKey[]>();
-    $.ajax(endpoint, {
-      type: "POST",
-      data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
-        keyspaceId: collection.databaseId,
-        tableId: collection.id()
-      },
-      beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
-      cache: false
-    })
-      .then(
-        (data: any) => {
-          collection.cassandraSchema = data.columns;
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `Successfully fetched schema for table ${collection.id()}`
-          );
-          deferred.resolve(data.columns);
-        },
-        (error: any) => {
-          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
-          deferred.reject(error);
+    const authorizationHeader = getAuthorizationHeader();
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: JSON.stringify({
+          accountName:
+            collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
+          cassandraEndpoint: this.trimCassandraEndpoint(
+            collection.container.databaseAccount().properties.cassandraEndpoint
+          ),
+          resourceId: collection.container.databaseAccount().id,
+          keyspaceId: collection.databaseId,
+          tableId: collection.id()
+        }),
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [Constants.HttpHeaders.contentType]: "application/json"
         }
-      )
-      .done(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
       });
-    return deferred.promise;
+
+      if (!response.ok) {
+        displayTokenRenewalPromptForStatus(response.status);
+        throw Error(`Failed to fetch schema for table ${collection.id()}`);
+      }
+
+      const data = await response.json();
+      collection.cassandraSchema = data.columns;
+      NotificationConsoleUtils.logConsoleMessage(
+        ConsoleDataType.Info,
+        `Successfully fetched schema for table ${collection.id()}`
+      );
+
+      return data.columns;
+    } catch (error) {
+      handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
+      throw error;
+    } finally {
+      NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
+    }
   }
 
-  private createOrDeleteQuery(
+  private async createOrDeleteQuery(
     cassandraEndpoint: string,
     resourceId: string,
     query: string,
     explorer: Explorer
-  ): Q.Promise<any> {
-    const deferred = Q.defer();
+  ): Promise<void> {
     const authType = window.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi
         : Constants.CassandraBackend.createOrDeleteApi;
-    $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
-      type: "POST",
-      data: {
+    const authorizationHeader = getAuthorizationHeader();
+
+    const response = await fetch(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
+      method: "POST",
+      body: JSON.stringify({
         accountName: explorer.databaseAccount() && explorer.databaseAccount().name,
         cassandraEndpoint: this.trimCassandraEndpoint(cassandraEndpoint),
-        resourceId: resourceId,
-        query: query
-      },
-      beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
-      cache: false
-    }).then(
-      (data: any) => {
-        deferred.resolve();
-      },
-      reason => {
-        deferred.reject(reason);
+        resourceId,
+        query
+      }),
+      headers: {
+        [authorizationHeader.header]: authorizationHeader.token,
+        [Constants.HttpHeaders.contentType]: "application/json"
       }
-    );
-    return deferred.promise;
+    });
+
+    if (!response.ok) {
+      displayTokenRenewalPromptForStatus(response.status);
+      throw Error(`Failed to create or delete keyspace/table`);
+    }
   }
 
   private trimCassandraEndpoint(cassandraEndpoint: string): string {
@@ -600,13 +621,6 @@ export class CassandraAPIDataClient extends TableDataClient {
     return cassandraEndpoint;
   }
 
-  private setAuthorizationHeader: (xhr: XMLHttpRequest) => boolean = (xhr: XMLHttpRequest): boolean => {
-    const authorizationHeaderMetadata: ViewModels.AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
-    xhr.setRequestHeader(authorizationHeaderMetadata.header, authorizationHeaderMetadata.token);
-
-    return true;
-  };
-
   private isStringType(dataType: string): boolean {
     // TODO figure out rest of types that are considered strings by Cassandra (if any have been missed)
     return (
@@ -620,12 +634,4 @@ export class CassandraAPIDataClient extends TableDataClient {
   private getCassandraPartitionKeyProperty(collection: ViewModels.Collection): string {
     return collection.cassandraKeys.partitionKeys[0].property;
   }
-
-  private handleAjaxError = (xhrObj: XMLHttpRequest, textStatus: string, errorThrown: string): void => {
-    if (!xhrObj) {
-      return;
-    }
-
-    displayTokenRenewalPromptForStatus(xhrObj.status);
-  };
 }
