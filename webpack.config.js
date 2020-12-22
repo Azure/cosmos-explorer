@@ -9,8 +9,8 @@ const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const TerserPlugin = require("terser-webpack-plugin");
 const isCI = require("is-ci");
+const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -56,35 +56,18 @@ const htmlRule = {
   ]
 };
 
-// We compile our own code with ts-loader
 const typescriptRule = {
   test: /\.tsx?$/,
   use: [
     {
-      loader: "ts-loader",
+      loader: "esbuild-loader",
       options: {
-        transpileOnly: true
+        loader: "tsx",
+        target: "es2017"
       }
     }
   ],
   exclude: /node_modules/
-};
-
-// Third party modules are compiled with babel since using ts-loader that much causes webpack to run out of memory
-const ModulesRule = {
-  test: /\.js$/,
-  use: [
-    {
-      loader: "babel-loader",
-      options: {
-        cacheDirectory: ".cache/babel",
-        presets: [["@babel/preset-env", { targets: { ie: "11" }, useBuiltIns: false }]]
-      }
-    }
-  ],
-  include: /node_modules/,
-  // Exclude large modules we know don't need transpiling
-  exclude: /vega|monaco|plotly/
 };
 
 module.exports = function(env = {}, argv = {}) {
@@ -96,7 +79,6 @@ module.exports = function(env = {}, argv = {}) {
   };
 
   if (mode === "production") {
-    rules.push(ModulesRule);
     envVars.NODE_ENV = "production";
   }
 
@@ -105,6 +87,7 @@ module.exports = function(env = {}, argv = {}) {
   }
 
   const plugins = [
+    new ESBuildPlugin(),
     new CleanWebpackPlugin(["dist"]),
     new CreateFileWebpack({
       path: "./dist",
@@ -211,13 +194,8 @@ module.exports = function(env = {}, argv = {}) {
     optimization: {
       minimize: mode === "production" ? true : false,
       minimizer: [
-        new TerserPlugin({
-          cache: ".cache/terser",
-          terserOptions: {
-            // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
-            compress: false,
-            mangle: true
-          }
+        new ESBuildMinifyPlugin({
+          target: "es2015" // Syntax to compile to (see options below for possible values)
         })
       ]
     },
