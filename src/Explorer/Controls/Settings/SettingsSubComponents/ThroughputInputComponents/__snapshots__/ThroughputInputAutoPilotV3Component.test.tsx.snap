@@ -9,13 +9,18 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
   }
 >
   <StyledMessageBarBase
-    messageBarType={5}
+    messageBarIconProps={
+      Object {
+        "className": "messageBarWarningIcon",
+        "iconName": "WarningSolid",
+      }
+    }
   >
     <Text
       styles={
         Object {
           "root": Object {
-            "fontSize": 12,
+            "fontSize": 14,
           },
         }
       }
