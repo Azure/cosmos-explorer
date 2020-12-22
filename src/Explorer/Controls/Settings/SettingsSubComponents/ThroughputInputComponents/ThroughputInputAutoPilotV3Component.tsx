@@ -28,7 +28,6 @@ import {
   Label,
   Link,
   MessageBar,
-  MessageBarType,
   FontIcon,
   IColumn
 } from "office-ui-fabric-react";
@@ -604,7 +603,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       warningMessage = saveThroughputWarningMessage;
     }
 
-    return <>{warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}</>;
+    return (
+      <>
+        {warningMessage && (
+          <MessageBar messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}>
+            {warningMessage}
+          </MessageBar>
+        )}
+      </>
+    );
   };
 
   public render(): JSX.Element {
