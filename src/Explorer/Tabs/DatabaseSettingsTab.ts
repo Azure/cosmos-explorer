@@ -368,7 +368,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
     this.freeTierExceedThroughputWarning = ko.computed<string>(() =>
       this.isFreeTierAccount()
-        ? "With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s."
+        ? "Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale."
         : ""
     );
 

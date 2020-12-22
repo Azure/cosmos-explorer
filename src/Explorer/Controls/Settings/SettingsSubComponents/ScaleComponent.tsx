@@ -16,7 +16,7 @@ import {
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import { Link, Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
 import { configContext, Platform } from "../../../../ConfigContext";
 
 export interface ScaleComponentProps {
@@ -196,8 +196,19 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return databaseAccount?.properties?.enableFreeTier;
   }
 
-  private getFreeTierInfoMessage(): string {
-    return "With free tier, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale.";
+  private getFreeTierInfoMessage(): JSX.Element {
+    return (
+      <Text>
+        With free tier, you will get the first 400 RU/s and 5 GB of storage in this account for free. To keep your
+        account free, keep the total RU/s across all resources in the account to 400 RU/s.
+        <Link
+          href="https://docs.microsoft.com/en-us/azure/cosmos-db/understand-your-bill#billing-examples-with-free-tier-accounts"
+          target="_blank"
+        >
+          Learn more.
+        </Link>
+      </Text>
+    );
   }
 
   public render(): JSX.Element {
