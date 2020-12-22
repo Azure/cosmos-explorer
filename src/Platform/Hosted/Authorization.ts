@@ -10,6 +10,7 @@ import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility"
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 export default class AuthHeadersUtil {
   public static serverId: string = Constants.ServerIds.productionPortal;
@@ -37,8 +38,7 @@ export default class AuthHeadersUtil {
     cacheLocation: window.navigator.userAgent.indexOf("Edge") > -1 ? "localStorage" : undefined
   });
 
-  public static getAccessInputMetadata(accessInput: string): Q.Promise<DataModels.AccessInputMetadata> {
-    const deferred: Q.Deferred<DataModels.AccessInputMetadata> = Q.defer<DataModels.AccessInputMetadata>();
+  public static async getAccessInputMetadata(accessInput: string): Promise<DataModels.AccessInputMetadata> {
     const url = `${configContext.BACKEND_ENDPOINT}${Constants.ApiEndpoints.guestRuntimeProxy}/accessinputmetadata`;
     const authType: string = (<any>window).authType;
     const headers: { [headerName: string]: string } = {};
@@ -49,58 +49,55 @@ export default class AuthHeadersUtil {
       headers[Constants.HttpHeaders.connectionString] = accessInput;
     }
 
-    $.ajax({
-      url: url,
-      type: "GET",
-      headers: headers,
-      cache: false,
-      dataType: "text"
-    }).then(
-      (data: string, textStatus: string, xhr: JQueryXHR<any>) => {
-        if (!data) {
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to get access input metadata`);
-          deferred.reject(`Failed to get access input metadata`);
-        }
+    let responseText: string;
+    try {
+      const timeout = setTimeout(() => {
+        throw Error("Request timed out while fetching access input metadata");
+      }, Constants.ClientDefaults.requestTimeoutMs);
 
-        try {
-          const metadata: DataModels.AccessInputMetadata = JSON.parse(JSON.parse(data));
-          deferred.resolve(metadata); // TODO: update to a single JSON parse once backend response is stringified exactly once
-        } catch (error) {
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, "Failed to parse access input metadata");
-          deferred.reject("Failed to parse access input metadata");
-          throw error;
-        }
-      },
-      (xhr: JQueryXHR<any>, textStatus: string, error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while fetching access input metadata: ${JSON.stringify(xhr.responseText)}`
-        );
-        deferred.reject(xhr.responseText);
+      const response = await fetch(url, {
+        headers,
+        method: "GET"
+      });
+
+      clearTimeout(timeout);
+
+      responseText = await response.text();
+      if (!response.ok || !responseText) {
+        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to get access input metadata`);
+        throw Error("Failed to get access input metadata");
       }
-    );
+    } catch (error) {
+      const errorMessage: string = getErrorMessage(error);
+      NotificationConsoleUtils.logConsoleMessage(
+        ConsoleDataType.Error,
+        `Error while fetching access input metadata: ${errorMessage}`
+      );
+      throw error;
+    }
 
-    return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
+    try {
+      const metadata: DataModels.AccessInputMetadata = JSON.parse(JSON.parse(responseText));
+      return metadata; // TODO: update to a single JSON parse once backend response is stringified exactly once
+    } catch (error) {
+      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, "Failed to parse access input metadata");
+      throw error;
+    }
   }
 
-  public static generateEncryptedToken(): Q.Promise<DataModels.GenerateTokenResponse> {
+  public static async generateEncryptedToken(): Promise<DataModels.GenerateTokenResponse> {
     const url = configContext.BACKEND_ENDPOINT + "/api/tokens/generateToken" + AuthHeadersUtil._generateResourceUrl();
     const explorer = window.dataExplorer;
     const headers: any = { authorization: userContext.authorizationToken };
     headers[Constants.HttpHeaders.getReadOnlyKey] = !explorer.hasWriteAccess();
+    headers[Constants.HttpHeaders.contentType] = "application/json";
 
-    return AuthHeadersUtil._initiateGenerateTokenRequest({
-      url: url,
-      type: "POST",
-      headers: headers,
-      contentType: "application/json",
-      cache: false
-    });
+    return await AuthHeadersUtil._initiateGenerateTokenRequest(url, "POST", headers);
   }
 
-  public static generateUnauthenticatedEncryptedTokenForConnectionString(
+  public static async generateUnauthenticatedEncryptedTokenForConnectionString(
     connectionString: string
-  ): Q.Promise<DataModels.GenerateTokenResponse> {
+  ): Promise<DataModels.GenerateTokenResponse> {
     if (!connectionString) {
       return Q.reject("None or empty connection string specified");
     }
@@ -108,14 +105,9 @@ export default class AuthHeadersUtil {
     const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
     const headers: any = {};
     headers[Constants.HttpHeaders.connectionString] = connectionString;
+    headers[Constants.HttpHeaders.contentType] = "application/json";
 
-    return AuthHeadersUtil._initiateGenerateTokenRequest({
-      url: url,
-      type: "POST",
-      headers: headers,
-      contentType: "application/json",
-      cache: false
-    });
+    return await AuthHeadersUtil._initiateGenerateTokenRequest(url, "POST", headers);
   }
 
   public static isUserSignedIn(): boolean {
@@ -282,24 +274,27 @@ export default class AuthHeadersUtil {
     return `?resourceUrl=${resourceUrl}&rid=${rid}&rtype=${rtype}&sid=${sid}&rg=${rg}&dba=${dba}&api=${apiKind}`;
   }
 
-  private static _initiateGenerateTokenRequest(
-    requestSettings: JQueryAjaxSettings<any>
-  ): Q.Promise<DataModels.GenerateTokenResponse> {
-    const deferred: Q.Deferred<DataModels.GenerateTokenResponse> = Q.defer<DataModels.GenerateTokenResponse>();
+  private static async _initiateGenerateTokenRequest(
+    url: string,
+    method: string,
+    headers: any
+  ): Promise<DataModels.GenerateTokenResponse> {
+    const timeout = setTimeout(() => {
+      throw Error("Request timed out while generating token");
+    }, Constants.ClientDefaults.requestTimeoutMs);
 
-    $.ajax(requestSettings).then(
-      (data: string, textStatus: string, xhr: JQueryXHR<any>) => {
-        if (!data) {
-          deferred.reject("No token generated");
-        }
+    const response = await fetch(url, {
+      headers,
+      method
+    });
 
-        deferred.resolve(JSON.parse(data));
-      },
-      (xhr: JQueryXHR<any>, textStatus: string, error: any) => {
-        deferred.reject(xhr.responseText);
-      }
-    );
+    clearTimeout(timeout);
 
-    return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
+    const token: string = await response.json();
+    if (response.ok && token) {
+      return JSON.parse(token);
+    }
+
+    throw Error("No token generated");
   }
 }
