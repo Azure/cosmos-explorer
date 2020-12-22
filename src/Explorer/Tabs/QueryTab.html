@@ -103,7 +103,7 @@
         </div>
         <json-editor
           params="{ content: queryResults, isReadOnly: true, ariaLabel: 'Query results' }"
-          data-bind="visible: queryResults().length > 0 && isResultToggled() && allResultsMetadata().length > 0 && !error()"
+          data-bind="visible: queryResults() && queryResults().length > 0 && isResultToggled() && allResultsMetadata().length > 0 && !error()"
         >
         </json-editor>
         <div

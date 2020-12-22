@@ -17,9 +17,7 @@ export class TabRouteHandler {
   ): void {
     this._initRouter();
     const parseHash = (newHash: string, oldHash: string) => this._tabRouter.parse(newHash);
-    const defaultRoutedCallback = (request: string, data: { route: any; params: string[]; isFirst: boolean }) => {
-      console.log(request);
-    };
+    const defaultRoutedCallback = (request: string, data: { route: any; params: string[]; isFirst: boolean }) => {};
     this._tabRouter.routed.add(onMatch || defaultRoutedCallback);
     hasher.initialized.add(parseHash);
     hasher.changed.add(parseHash);

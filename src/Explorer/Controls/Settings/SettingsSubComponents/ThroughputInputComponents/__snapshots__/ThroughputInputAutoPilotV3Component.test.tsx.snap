@@ -8,6 +8,21 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     }
   }
 >
+  <StyledMessageBarBase
+    messageBarType={5}
+  >
+    <Text
+      styles={
+        Object {
+          "root": Object {
+            "fontSize": 12,
+          },
+        }
+      }
+    >
+      Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes
+    </Text>
+  </StyledMessageBarBase>
   <Stack>
     <StyledLabelBase
       id="settingsV2RadioButtonLabelId"
@@ -223,6 +238,19 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       }
     }
   >
+    <Text>
+      Estimate your required throughput with
+      <StyledLinkBase
+        href="https://cosmos.azure.com/capacitycalculator/"
+        target="_blank"
+      >
+         capacity calculator
+         
+        <Component
+          iconName="NavigateExternalInline"
+        />
+      </StyledLinkBase>
+    </Text>
     <StyledTextFieldBase
       disabled={false}
       id="throughputInput"
@@ -248,38 +276,142 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       type="number"
       value="100"
     />
-    <Text
-      id="throughputSpendElement"
+    <Stack
+      styles={
+        Object {
+          "root": Object {
+            "width": 600,
+          },
+        }
+      }
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
     >
-      Estimated cost (
-      USD
-      ):
-       
-      <b>
-        $
-        0.0080
-         hourly 
-         / 
-        $
-        0.19
-         daily 
-         / 
-        $
-        5.84
-         monthly
+      <StyledWithViewportComponent
+        columns={
+          Array [
+            Object {
+              "fieldName": "costType",
+              "isResizable": true,
+              "key": "costType",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+            Object {
+              "fieldName": "hourly",
+              "isResizable": true,
+              "key": "hourly",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Hourly",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+            Object {
+              "fieldName": "daily",
+              "isResizable": true,
+              "key": "daily",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Daily",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+            Object {
+              "fieldName": "monthly",
+              "isResizable": true,
+              "key": "monthly",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Monthly",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+          ]
+        }
+        disableSelectionZone={true}
+        items={
+          Array [
+            Object {
+              "costType": <Text>
+                Current Cost
+              </Text>,
+              "daily": <Text>
+                $
+                 
+                0.19
+              </Text>,
+              "hourly": <Text>
+                $
+                 
+                0.0080
+              </Text>,
+              "monthly": <Text>
+                $
+                 
+                5.84
+              </Text>,
+            },
+          ]
+        }
+        layoutMode={1}
+        onRenderRow={[Function]}
+        selectionMode={0}
+      />
+      <Text
+        id="throughputSpendElement"
+      >
+        (
+        regions: 
          
-      </b>
-      (
-      regions: 
-       
-      1
-      , 
-      100
-      RU/s, 
-      $
-      0.00008
-      /RU)
-    </Text>
+        1
+        , 
+        100
+         RU/s, 
+        $
+        0.00008
+        /RU)
+      </Text>
+      <Text>
+        <em>
+          *This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+        </em>
+      </Text>
+    </Stack>
     <StyledCheckboxBase
       checked={false}
       id="spendAckCheckBox"
@@ -297,6 +429,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       }
     />
+    <br />
   </Stack>
 </Stack>
 `;
@@ -378,6 +511,19 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       }
     }
   >
+    <Text>
+      Estimate your required throughput with
+      <StyledLinkBase
+        href="https://cosmos.azure.com/capacitycalculator/"
+        target="_blank"
+      >
+         capacity calculator
+         
+        <Component
+          iconName="NavigateExternalInline"
+        />
+      </StyledLinkBase>
+    </Text>
     <StyledTextFieldBase
       disabled={false}
       id="throughputInput"
@@ -403,38 +549,143 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       type="number"
       value="100"
     />
-    <Text
-      id="throughputSpendElement"
+    <Stack
+      styles={
+        Object {
+          "root": Object {
+            "width": 600,
+          },
+        }
+      }
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
     >
-      Estimated cost (
-      USD
-      ):
-       
-      <b>
-        $
-        0.0080
-         hourly 
-         / 
-        $
-        0.19
-         daily 
-         / 
-        $
-        5.84
-         monthly
+      <StyledWithViewportComponent
+        columns={
+          Array [
+            Object {
+              "fieldName": "costType",
+              "isResizable": true,
+              "key": "costType",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+            Object {
+              "fieldName": "hourly",
+              "isResizable": true,
+              "key": "hourly",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Hourly",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+            Object {
+              "fieldName": "daily",
+              "isResizable": true,
+              "key": "daily",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Daily",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+            Object {
+              "fieldName": "monthly",
+              "isResizable": true,
+              "key": "monthly",
+              "maxWidth": 200,
+              "minWidth": 100,
+              "name": "Monthly",
+              "styles": Object {
+                "root": Object {
+                  "selectors": Object {
+                    ":hover": Object {
+                      "background": "transparent",
+                    },
+                  },
+                },
+              },
+            },
+          ]
+        }
+        disableSelectionZone={true}
+        items={
+          Array [
+            Object {
+              "costType": <Text>
+                Current Cost
+              </Text>,
+              "daily": <Text>
+                $
+                 
+                0.19
+              </Text>,
+              "hourly": <Text>
+                $
+                 
+                0.0080
+              </Text>,
+              "monthly": <Text>
+                $
+                 
+                5.84
+              </Text>,
+            },
+          ]
+        }
+        layoutMode={1}
+        onRenderRow={[Function]}
+        selectionMode={0}
+      />
+      <Text
+        id="throughputSpendElement"
+      >
+        (
+        regions: 
          
-      </b>
-      (
-      regions: 
-       
-      1
-      , 
-      100
-      RU/s, 
-      $
-      0.00008
-      /RU)
-    </Text>
+        1
+        , 
+        100
+         RU/s, 
+        $
+        0.00008
+        /RU)
+      </Text>
+      <Text>
+        <em>
+          *This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+        </em>
+      </Text>
+    </Stack>
+    <br />
   </Stack>
 </Stack>
 `;

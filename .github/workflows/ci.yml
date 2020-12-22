@@ -101,6 +101,7 @@ jobs:
           PLATFORM: "Emulator"
           NODE_TLS_REJECT_UNAUTHORIZED: 0
       - uses: actions/upload-artifact@v2
+        if: failure()
         with:
           name: screenshots
           path: failed-*
@@ -159,6 +160,7 @@ jobs:
           TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
           DATA_EXPLORER_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
       - uses: actions/upload-artifact@v2
+        if: failure()
         with:
           name: screenshots
           path: failed-*
