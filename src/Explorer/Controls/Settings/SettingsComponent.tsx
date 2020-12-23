@@ -802,11 +802,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ autoPilotThroughput: newThroughput });
 
   private onThroughputChange = (newThroughput: number): void => {
-    if(newThroughput < 400) {
+    if (newThroughput < 400) {
       return alert("The value should not small than 400");
-    } 
+    }
     this.setState({ throughput: newThroughput });
-  }
+  };
 
   private onAutoPilotSelected = (isAutoPilotSelected: boolean): void =>
     this.setState({ isAutoPilotSelected: isAutoPilotSelected });

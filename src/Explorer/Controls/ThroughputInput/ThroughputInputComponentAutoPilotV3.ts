@@ -268,7 +268,7 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
   };
 
   public onThroughputCheck = (event: any) => {
-    if(event.value() < 400) {
+    if (event.value() < 400) {
       window.alert("The value should not small than 400");
     }
   };
