@@ -267,6 +267,10 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     return true;
   };
 
+  public onThroughputChange = (source: any) => {
+    window.alert("onThroughputChange");
+  };
+
   private _getSanitizedValue(): number {
     let throughput = this.value();
 
