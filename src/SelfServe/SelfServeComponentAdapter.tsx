@@ -32,7 +32,6 @@ export class SelfServeComponentAdapter implements ReactAdapter {
   
   public renderComponent(): JSX.Element {
     const selfServeType = this.container.selfServeType()
-    console.log("type:" + selfServeType)
     const smartUiDescriptor = this.getDescriptor(selfServeType)
 
   

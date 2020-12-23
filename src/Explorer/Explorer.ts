@@ -1861,14 +1861,21 @@ export default class Explorer {
     return false;
   }
 
-  public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): Q.Promise<void> {
-    if (inputs != null) {
-      inputs.selfServeType 
-      ? this.selfServeType(inputs.selfServeType) 
-      : this.selfServeType(SelfServeTypes.none);
+  public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
+    const selfServeTypeForTest = inputs.features[Constants.Features.selfServeTypeForTest]
+    if (selfServeTypeForTest) {
+      this.selfServeType(SelfServeTypes[selfServeTypeForTest?.toLowerCase() as keyof typeof SelfServeTypes])
+    } else if (inputs.selfServeType) {
+      this.selfServeType(inputs.selfServeType)
+    } else {
+      this.selfServeType(SelfServeTypes.none)
       this._setLoadingStatusText("Connecting...", "Welcome to Azure Cosmos DB")
       this._setConnectingImage()
-      
+    }
+  }
+
+  public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): Q.Promise<void> {
+    if (inputs != null) {
       const authorizationToken = inputs.authorizationToken || "";
       const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
@@ -1886,6 +1893,7 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
       this.setFeatureFlagsFromFlights(inputs.flights);
+      this.setSelfServeType(inputs)
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
