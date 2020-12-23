@@ -267,8 +267,10 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     return true;
   };
 
-  public onThroughputChange = (source: any) => {
-    window.alert("onThroughputChange");
+  public onThroughputCheck = (event: any) => {
+    if(event.value() < 400) {
+      window.alert("The value should not small than 400");
+    }
   };
 
   private _getSanitizedValue(): number {
