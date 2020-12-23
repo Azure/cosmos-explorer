@@ -1864,7 +1864,8 @@ export default class Explorer {
   public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
     const selfServeTypeForTest = inputs.features[Constants.Features.selfServeTypeForTest]
     if (selfServeTypeForTest) {
-      this.selfServeType(SelfServeTypes[selfServeTypeForTest?.toLowerCase() as keyof typeof SelfServeTypes])
+      const selfServeType = SelfServeTypes[selfServeTypeForTest?.toLowerCase() as keyof typeof SelfServeTypes]
+      this.selfServeType(selfServeType ? selfServeType : SelfServeTypes.invalid)
     } else if (inputs.selfServeType) {
       this.selfServeType(inputs.selfServeType)
     } else {

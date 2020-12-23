@@ -126,7 +126,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
-      <div id="divSelfServe" data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter">
+      <div id="divSelfServe" className="flexContainer" data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter">
       </div>
       <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
         {/* Main Command Bar - Start */}
@@ -375,7 +375,7 @@ const App: React.FunctionComponent = () => {
       {/* Global loader - Start */}
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
-          <div className="splashLoaderTitle" data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter">
+          <div data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter">
           </div>
           <p className="connectExplorerContent" id="explorerConnectingImage" data-bind="visible: selfServeType() === 'none'">
           </p>

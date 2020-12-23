@@ -517,7 +517,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         </Stack>
       </Stack>
     ) : (
-      <Spinner size={SpinnerSize.large} />
+      <Spinner size={SpinnerSize.large} styles={{root: {textAlign: "center", justifyContent: "center", width: "100%", height: "100%"}}}/>
     );
   }
 }

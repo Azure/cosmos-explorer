@@ -9,7 +9,7 @@ import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import Explorer from "../Explorer/Explorer";
 import { Descriptor, SmartUiComponent } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { SelfServeTypes } from "./SelfServeUtils";
-import { SqlX } from "./SqlX/SqlX";
+import { SelfServeExample } from "./Example/Example";
 
 export class SelfServeComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -23,8 +23,8 @@ export class SelfServeComponentAdapter implements ReactAdapter {
 
   private getDescriptor = (selfServeType : SelfServeTypes) : Descriptor => {
     switch (selfServeType) {
-      case SelfServeTypes.sqlx:
-        return SqlX.toSmartUiDescriptor()
+      case SelfServeTypes.example:
+        return SelfServeExample.toSmartUiDescriptor()
       default:
         return undefined;
     }
@@ -38,7 +38,6 @@ export class SelfServeComponentAdapter implements ReactAdapter {
     const element = smartUiDescriptor ?
       <SmartUiComponent descriptor={smartUiDescriptor} /> :
       <h1>Invalid self serve type!</h1>
-  
   
     return element
   }

@@ -13,26 +13,26 @@ import {
 import { SmartUi, ClassInfo, OnSubmit, Initialize } from "../ClassDescriptors";
 import {
   getPromise,
-  initializeSqlX,
+  initializeSelfServeExample,
   instanceSizeInfo,
   instanceSizeOptions,
   onInstanceCountChange,
   onSubmit,
   renderText,
   Sizes,
-  sqlXInfo
-} from "./SqlXApis";
+  selfServeExampleInfo
+} from "./ExampleApis";
 import { SelfServeBase } from "../SelfServeUtils";
 import { ChoiceItem } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 
 @SmartUi()
-@ClassInfo(getPromise(sqlXInfo))
-@Initialize(initializeSqlX)
+@ClassInfo(getPromise(selfServeExampleInfo))
+@Initialize(initializeSelfServeExample)
 @OnSubmit(onSubmit)
-export class SqlX extends SelfServeBase {
+export class SelfServeExample extends SelfServeBase {
 
   @Label(getPromise("Description"))
-  @CustomElement(renderText("This is the description part of SqlX"))
+  @CustomElement(renderText("This is the description."))
   static description: string;
 
   @Label(getPromise("Instance Size"))
@@ -42,7 +42,7 @@ export class SqlX extends SelfServeBase {
   static instanceSize: ChoiceItem;
 
   @Label(getPromise("About"))
-  @CustomElement(renderText("This is the about part of SqlX"))
+  @CustomElement(renderText("This is the about ."))
   static about: string;
 
   @Label("Feature Allowed")

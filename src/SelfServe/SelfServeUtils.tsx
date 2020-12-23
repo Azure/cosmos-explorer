@@ -198,7 +198,8 @@ const getInput = (value: CommonInputTypes): AnyInput => {
 
 export enum SelfServeTypes {
   none="none",
-  sqlx="sqlx"
+  invalid="invalid",
+  example="example"
 }
 
 export const getSelfServeType = (search: string): SelfServeTypes => {

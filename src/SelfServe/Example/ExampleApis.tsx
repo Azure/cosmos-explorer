@@ -1,7 +1,6 @@
-import { Text } from "office-ui-fabric-react";
 import React from "react";
 import { ChoiceItem, Info, InputType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
-import { TextComponent } from "./TextComponent";
+import { TextComponent } from "./CustomComponent";
 import {SessionStorageUtility} from "../../Shared/StorageUtility"
 
 export enum Sizes {
@@ -16,8 +15,8 @@ export const instanceSizeOptions: ChoiceItem[] = [
   { label: Sizes.FourCore16Gb, key: Sizes.FourCore16Gb, value: Sizes.FourCore16Gb }
 ];
 
-export const sqlXInfo: Info = {
-  message: "SqlX is a self serve class"
+export const selfServeExampleInfo: Info = {
+  message: "This is a self serve class"
 };
 
 export const instanceSizeInfo: Info = {
@@ -53,7 +52,7 @@ export const onSubmit = async (currentValues: Map<string, InputType>): Promise<v
   SessionStorageUtility.setEntry("isAllowed", currentValues.get("isAllowed")?.toString())
 };
 
-export const initializeSqlX = async () : Promise<Map<string, InputType>> => {
+export const initializeSelfServeExample = async () : Promise<Map<string, InputType>> => {
   let defaults = new Map<string, InputType>()
   defaults.set("instanceCount",  parseInt(SessionStorageUtility.getEntry("instanceCount")))
   defaults.set("instanceSize",  SessionStorageUtility.getEntry("instanceSize"))
