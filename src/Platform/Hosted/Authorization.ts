@@ -1,5 +1,3 @@
-import "expose-loader?AuthenticationContext!../../../externals/adal";
-
 import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";

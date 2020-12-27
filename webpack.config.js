@@ -182,7 +182,7 @@ module.exports = function(env = {}, argv = {}) {
       main: "./src/Main.tsx",
       index: "./src/Index.ts",
       quickstart: "./src/quickstart.ts",
-      hostedExplorer: "./src/HostedExplorer.ts",
+      hostedExplorer: "./src/HostedExplorer.tsx",
       testExplorer: "./test/notebooks/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",

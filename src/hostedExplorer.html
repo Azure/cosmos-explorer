@@ -7,59 +7,5 @@
   </head>
 
   <body>
-    <header>
-      <div class="items" role="menubar">
-        <div class="cosmosDBTitle">
-          <span
-            class="title"
-            data-bind="click: openAzurePortal, event: { keypress: onOpenAzurePortalKeyPress }"
-            tabindex="0"
-            title="Go to Azure Portal"
-            >Microsoft Azure</span
-          >
-          <span class="accontSplitter"></span> <span class="serviceTitle">Cosmos DB</span>
-          <img
-            class="chevronRight"
-            src="/chevron-right.svg"
-            alt="account separator"
-            data-bind="visible: isAccountActive"
-          />
-          <span
-            class="accountSwitchComponentContainer"
-            data-bind="react: accountSwitchComponentAdapter, visible: isAccountActive"
-          ></span>
-        </div>
-        <div class="feedbackConnectSettingIcons" data-bind="react: controlBarComponentAdapter"></div>
-        <div class="meControl" data-bind="react: meControlComponentAdapter"></div>
-      </div>
-    </header>
-
-    <!-- TODO display after introducing multiple account access -->
-    <nav class="fixedleftpane" style="display: none;">
-      <div class="fixedLeftPaneIcons"><img src="/Hamburger.svg" alt="Expand" /></div>
-      <div class="fixedLeftPaneIcons"><img src="/Connect.svg" alt="Connect to an account" /></div>
-      <div
-        class="fixedLeftPaneIcons"
-        data-bind="click: explorer_click, css:{ topSelected: navigationSelection() === 'explorer' }"
-      >
-        <img src="/HostedExplorer.svg" alt="Open Data Explorer" />
-      </div>
-    </nav>
-
-    <switch-directory-pane params="{data: switchDirectoryPane}"></switch-directory-pane>
-
-    <!-- TODO generate version number dynamically -->
-    <iframe
-      id="explorerMenu"
-      name="explorer"
-      class="iframe"
-      title="explorer"
-      src="explorer.html?v=1.0.1&platform=Hosted"
-      data-bind="visible: navigationSelection() === 'explorer'"
-    >
-    </iframe>
-
-    <div data-bind="react: firewallWarningComponentAdapter"></div>
-    <div data-bind="react: dialogComponentAdapter"></div>
   </body>
 </html>

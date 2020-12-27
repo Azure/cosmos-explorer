@@ -44,7 +44,6 @@ import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
 import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
-import "../externals/adal.js";
 import "promise-polyfill/src/polyfill";
 import "abort-controller/polyfill";
 import "whatwg-fetch";

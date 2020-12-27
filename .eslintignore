@@ -42,7 +42,6 @@ src/Contracts/ViewModels.ts
 src/Controls/Heatmap/Heatmap.test.ts
 src/Controls/Heatmap/Heatmap.ts
 src/Controls/Heatmap/HeatmapDatatypes.ts
-src/Definitions/adal.d.ts
 src/Definitions/datatables.d.ts
 src/Definitions/gif.d.ts
 src/Definitions/globals.d.ts

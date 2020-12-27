@@ -1,3 +1,4 @@
+import "./MeControlComponent.less";
 import * as React from "react";
 import { DefaultButton, BaseButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
 import { DirectionalHint, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
