@@ -20,20 +20,7 @@ export default class AuthHeadersUtil {
   private static readonly _graphEndpoint: string = configContext.GRAPH_ENDPOINT;
   private static readonly _graphApiVersion: string = configContext.GRAPH_API_VERSION;
 
-  private static _authContext: AuthenticationContext = new AuthenticationContext({
-    instance: AuthHeadersUtil._aadEndpoint,
-    clientId: AuthHeadersUtil._firstPartyAppId,
-    postLogoutRedirectUri: window.location.origin,
-    endpoints: {
-      aad: AuthHeadersUtil._aadEndpoint,
-      graph: AuthHeadersUtil._graphEndpoint,
-      armAuthArea: AuthHeadersUtil._armAuthArea,
-      armEndpoint: AuthHeadersUtil._armEndpoint,
-      arcadiaEndpoint: AuthHeadersUtil._arcadiaEndpoint
-    },
-    tenant: undefined,
-    cacheLocation: window.navigator.userAgent.indexOf("Edge") > -1 ? "localStorage" : undefined
-  });
+  private static _authContext: any = {};
 
   public static getAccessInputMetadata(accessInput: string): Q.Promise<DataModels.AccessInputMetadata> {
     const deferred: Q.Deferred<DataModels.AccessInputMetadata> = Q.defer<DataModels.AccessInputMetadata>();

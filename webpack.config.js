@@ -78,7 +78,7 @@ const ModulesRule = {
       loader: "babel-loader",
       options: {
         cacheDirectory: ".cache/babel",
-        presets: [["@babel/preset-env", { targets: { ie: "11" }, useBuiltIns: false }]]
+        presets: [["@babel/preset-env", { targets: { chrome: "80" }, useBuiltIns: false }]]
       }
     }
   ],

@@ -6,7 +6,7 @@ import { configContext } from "../../ConfigContext";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 // TODO: 421864 - add a fetch wrapper
-export abstract class ArmResourceUtils {
+export class ArmResourceUtils {
   private static readonly _armEndpoint: string = configContext.ARM_ENDPOINT;
   private static readonly _armApiVersion: string = configContext.ARM_API_VERSION;
   private static readonly _armAuthArea: string = configContext.ARM_AUTH_AREA;
