@@ -132,8 +132,8 @@ module.exports = function(env = {}, argv = {}) {
     }),
     new HtmlWebpackPlugin({
       filename: "index.html",
-      template: "src/index.html",
-      chunks: ["index"]
+      template: "src/hostedExplorer.html",
+      chunks: ["hostedExplorer"]
     }),
     new HtmlWebpackPlugin({
       filename: "hostedExplorer.html",

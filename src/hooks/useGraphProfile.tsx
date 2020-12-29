@@ -12,7 +12,7 @@ export async function fetchMe(accessToken: string): Promise<ProfileResponse> {
     headers: headers
   };
 
-  return fetch("https://graph.microsoft.com/v1.0/me", options)
+  return fetch("https://graph.windows.net/me?api-version=1.6", options)
     .then(response => response.json())
     .catch(error => console.log(error));
 }
