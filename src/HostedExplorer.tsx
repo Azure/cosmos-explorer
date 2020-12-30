@@ -1,5 +1,4 @@
-import { Configuration, PublicClientApplication } from "@azure/msal-browser";
-import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
+import "./Platform/Hosted/ConnectScreen.less";
 import { useBoolean } from "@uifabric/react-hooks";
 import {
   DefaultButton,
@@ -17,65 +16,19 @@ import FeedbackIcon from "../images/Feedback.svg";
 import ConnectIcon from "../images/HostedConnectwhite.svg";
 import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
-import { AccountSwitchComponent } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponent";
 import { CommandButtonComponent } from "./Explorer/Controls/CommandButton/CommandButtonComponent";
-import { DefaultDirectoryDropdownComponent } from "./Explorer/Controls/Directory/DefaultDirectoryDropdownComponent";
-import { DirectoryListComponent } from "./Explorer/Controls/Directory/DirectoryListComponent";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { useGraphPhoto } from "./hooks/useGraphPhoto";
-import { ConnectScreen } from "./Platform/Hosted/ConnectScreen";
 import "./Shared/appInsights";
-import { useAADAccount } from "./hooks/useAADAccount";
-import * as Msal from "msal";
-import { fetchMe } from "./hooks/useGraphProfile";
-import { fetchSubscriptions } from "./hooks/useSubscriptions";
+import { AccountSwitchComponent } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponent";
+import { AuthContext, AuthProvider } from "./contexts/authContext";
 
 initializeIcons();
 
-// MSAL configuration
-const configuration: Configuration = {
-  auth: {
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-    redirectUri: "https://localhost:1234/hostedExplorer.html",
-    authority: "https://login.windows-ppe.net/common"
-  },
-  cache: {
-    cacheLocation: "sessionStorage",
-    storeAuthStateInCookie: false
-  }
-};
-
-// const configuration: Configuration = {
-//   auth: {
-//     clientId: "b4d07291-7936-4c8e-b413-f58b6d1c67e8",
-//     redirectUri: "https://localhost:1234/hostedExplorer.html",
-//     authority: "https://login.microsoftonline.com/907765e9-1846-4d84-ad7f-a2f5030ef5ba"
-//   },
-//   cache: {
-//     cacheLocation: "sessionStorage"
-//   }
-// };
-
-// const application = new PublicClientApplication(configuration);
-
-const msal = new Msal.UserAgentApplication({
-  auth: {
-    authority: "https://login.microsoft.com/common",
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-    redirectUri: "https://dataexplorer-dev.azurewebsites.net"
-  }
-});
-
-// msal.handleRedirectCallback((error, response) => {
-//   console.log(error, response);
-//   debugger;
-//   // handle redirect response or error
-// });
-
 const App: React.FunctionComponent = () => {
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
-  const { instance } = useMsal();
-  const account = useAADAccount();
+  const { isLoggedIn, login, account, logout } = React.useContext(AuthContext);
+  const [isConnectionStringVisible, { setTrue: showConnectionString }] = useBoolean(false);
   const photo = useGraphPhoto();
 
   const menuProps = {
@@ -105,7 +58,7 @@ const App: React.FunctionComponent = () => {
           <div
             className="signOutLink"
             onClick={() => {
-              instance.logout();
+              logout();
             }}
           >
             Sign out
@@ -114,7 +67,6 @@ const App: React.FunctionComponent = () => {
       }
     ]
   };
-  const personaProps = {};
 
   // {
   //   id: "commandbutton-settings",
@@ -154,6 +106,7 @@ const App: React.FunctionComponent = () => {
       rootExpanded: { backgroundColor: "#393939" }
     }
   };
+
   return (
     <div>
       <header>
@@ -168,14 +121,16 @@ const App: React.FunctionComponent = () => {
               Microsoft Azure
             </span>
             <span className="accontSplitter" /> <span className="serviceTitle">Cosmos DB</span>
-            <img className="chevronRight" src={ChevronRight} alt="account separator" />
-            <span className="accountSwitchComponentContainer">
-              {/* <AccountSwitchComponent /> */}
-              <span className="accountNameHeader">REPLACE ME - Connection string mode</span>;
-            </span>
+            {isLoggedIn && <img className="chevronRight" src={ChevronRight} alt="account separator" />}
+            {isLoggedIn && (
+              <span className="accountSwitchComponentContainer">
+                <AccountSwitchComponent />
+                <span className="accountNameHeader">REPLACE ME - Connection string mode</span>;
+              </span>
+            )}
           </div>
           <div className="feedbackConnectSettingIcons">
-            <AuthenticatedTemplate>
+            {isLoggedIn && (
               <CommandButtonComponent
                 id="commandbutton-connect"
                 iconSrc={ConnectIcon}
@@ -186,32 +141,28 @@ const App: React.FunctionComponent = () => {
                 hasPopup={true}
                 disabled={false}
               />
-            </AuthenticatedTemplate>
-            <UnauthenticatedTemplate>
-              <CommandButtonComponent
-                id="commandbutton-feedback"
-                iconSrc={FeedbackIcon}
-                iconAlt="feeback button"
-                onCommandClick={() =>
-                  window.open(
-                    "https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Hosted%20Data%20Explorer%20Feedback"
-                  )
-                }
-                ariaLabel="feeback button"
-                tooltipText="Send feedback"
-                hasPopup={true}
-                disabled={false}
-              />
-            </UnauthenticatedTemplate>
+            )}
+            <CommandButtonComponent
+              id="commandbutton-feedback"
+              iconSrc={FeedbackIcon}
+              iconAlt="feeback button"
+              onCommandClick={() =>
+                window.open("https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Hosted%20Data%20Explorer%20Feedback")
+              }
+              ariaLabel="feeback button"
+              tooltipText="Send feedback"
+              hasPopup={true}
+              disabled={false}
+            />
           </div>
           <div className="meControl">
-            <AuthenticatedTemplate>
+            {isLoggedIn ? (
               <FocusZone>
                 <DefaultButton {...buttonProps}>
                   <Persona
                     imageUrl={photo}
                     text={account?.name}
-                    secondaryText={account?.username}
+                    secondaryText={account?.userName}
                     showSecondaryText={true}
                     showInitialsUntilImageLoads={true}
                     initialsColor={PersonaInitialsColor.teal}
@@ -220,50 +171,69 @@ const App: React.FunctionComponent = () => {
                   />
                 </DefaultButton>
               </FocusZone>
-            </AuthenticatedTemplate>
-            <UnauthenticatedTemplate>
+            ) : (
               <DefaultButton
                 className="mecontrolSigninButton"
                 text="Sign In"
-                onClick={() => {
-                  msal.loginPopup().then(foo => {
-                    msal.acquireTokenSilent({ scopes: ["https://graph.windows.net//.default"] }).then(bar => {
-                      debugger;
-                      // const token =
-                      //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjVPZjlQNUY5Z0NDd0NtRjJCT0hIeEREUS1EayIsImtpZCI6IjVPZjlQNUY5Z0NDd0NtRjJCT0hIeEREUS1EayJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuYXp1cmUuY29tLyIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0Ny8iLCJpYXQiOjE2MDkyMDYwNDQsIm5iZiI6MTYwOTIwNjA0NCwiZXhwIjoxNjA5MjA5OTQ0LCJhY3IiOiIxIiwiYWlvIjoiQVpRQWEvOFNBQUFBYzZ3RmNHOWRDYTRDS2tXL2YxdnM5b3Z2Y0tqN3NLazJqc3c5MG1MRlJkclJLelZ3cnJpS0hMNXBua0tFejVlQWlXYTRwd2JHNXdKY240dkpLVUpXb2JGdmdkVXhteWd4NGlxOXk1Z0l6TW9zM25DRGdodCtxa3lyVGlrVzJ0WTA0amRLeFA2Q2wzWm10UzYxMmhmdkFkQVRBZ3Arc0w1TUdzU05KcElUR1dBZ1RKZXZ4c1dHek5Sb2hPOXdWVUN4IiwiYW1yIjpbInB3ZCIsInJzYSIsIm1mYSJdLCJhcHBpZCI6IjIwM2YxMTQ1LTg1NmEtNDIzMi04M2Q0LWE0MzU2OGZiYTIzZCIsImFwcGlkYWNyIjoiMCIsImRldmljZWlkIjoiMzI3NjNiYjktMDNlNS00ZDBkLTliZmEtZmEyY2U5OGQ1ZGVlIiwiZmFtaWx5X25hbWUiOiJGYXVsa25lciIsImdpdmVuX25hbWUiOiJTdGV2ZSIsImhhc2dyb3VwcyI6InRydWUiLCJpcGFkZHIiOiI0NS4yMi4xMjIuMjIwIiwibmFtZSI6IlN0ZXZlIEZhdWxrbmVyIiwib2lkIjoiN2M4Yjk4ZGItOTA3OC00NGM3LWE5YWItYzJiOGYxOGRiZDM2Iiwib25wcmVtX3NpZCI6IlMtMS01LTIxLTIxMjc1MjExODQtMTYwNDAxMjkyMC0xODg3OTI3NTI3LTMyMjM1ODIxIiwicHVpZCI6IjEwMDM3RkZFQUJDNTk0QjYiLCJyaCI6IjAuQVJvQXY0ajVjdkdHcjBHUnF5MTgwQkhiUjBVUlB5QnFoVEpDZzlTa05XajdvajBhQUprLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6InNJV3JwSTFoQVNUWXJoUFVrYWp1NUtQb3Z6SHdzUkdnOTN3U2t1OEs0aW8iLCJ0aWQiOiI3MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDciLCJ1bmlxdWVfbmFtZSI6InN0ZmF1bEBtaWNyb3NvZnQuY29tIiwidXBuIjoic3RmYXVsQG1pY3Jvc29mdC5jb20iLCJ1dGkiOiJ2ME0xNVdjSWkwcVpwNTdEd1QwSUFnIiwidmVyIjoiMS4wIiwieG1zX3RjZHQiOjEyODkyNDE1NDd9.WD_NlNg2C9rOeES_zRDEIn9MQaNTElyd1NjmQ89dGg8PxCurhZpnuSNmv6J8KuAaiVtifppu64zP5nPDouAsdq5lWrJ5N6WZE9Aox0RuVMqoQRTYEYSeC0R-2wh_77G77zPHVq2qMTOHKz60_Que6_T5VTOFsNpfPzRQwqXmnIvUZnKqf6cBvxLyJYE2IsXSuOdB7jDNWfnsGv19Ew7IdScS4PoIrsVGX5E7rQ4B_bUoYm74ooiH8W0TmVXah21Z66fVAEzuWYlIX5G6ylmT9ncDefVon5JKKe5ksN5GrNjPpVVm3tyCwJeRO_zmtd7nqOZ6GLrn5hzR4CpKB63Fng";
-                      fetchMe(bar.accessToken).then(resp => {
-                        debugger;
-                      });
-                    });
-                    // msal.acquireTokenSilent({ scopes: ["https://graph.windows.net//.default"] }).then(bar => {
-                    //   debugger;
-                    // });
-                  });
-                }}
+                onClick={login}
                 styles={{
                   rootHovered: { backgroundColor: "#393939", color: "#fff" },
                   rootFocused: { backgroundColor: "#393939", color: "#fff" },
                   rootPressed: { backgroundColor: "#393939", color: "#fff" }
                 }}
               />
-            </UnauthenticatedTemplate>
+            )}
           </div>
         </div>
       </header>
-      <AuthenticatedTemplate>
+      {isLoggedIn ? (
         <p>LOGGED IN!</p>
-        {/* <iframe
+      ) : (
+        <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
+          <div className="connectExplorerFormContainer">
+            <div className="connectExplorer">
+              <p className="connectExplorerContent">
+                <img src="images/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" />
+              </p>
+              <p className="welcomeText">Welcome to Azure Cosmos DB</p>
+              {isConnectionStringVisible ? (
+                <form id="connectWithConnectionString">
+                  <p className="connectExplorerContent connectStringText">
+                    Connect to your account with connection string
+                  </p>
+                  <p className="connectExplorerContent">
+                    <input className="inputToken" type="text" required placeholder="Please enter a connection string" />
+                    <span className="errorDetailsInfoTooltip" style={{ display: "none" }}>
+                      <img className="errorImg" src="images/error.svg" alt="Error notification" />
+                      <span className="errorDetails" />
+                    </span>
+                  </p>
+                  <p className="connectExplorerContent">
+                    <input className="filterbtnstyle" type="submit" value="Connect" />
+                  </p>
+                  <p className="switchConnectTypeText" onClick={login}>
+                    Sign In with Azure Account
+                  </p>
+                </form>
+              ) : (
+                <div id="connectWithAad">
+                  <input className="filterbtnstyle" type="button" value="Sign In" onClick={login} />
+                  <p className="switchConnectTypeText" onClick={showConnectionString}>
+                    Connect to your account with connection string
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* <iframe
           id="explorerMenu"
           name="explorer"
           className="iframe"
           title="explorer"
           src="explorer.html?v=1.0.1&platform=Portal"
         ></iframe> */}
-      </AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
-        <ConnectScreen />
-      </UnauthenticatedTemplate>
-      <ConnectScreen />
       <div data-bind="react: firewallWarningComponentAdapter" />
       <div data-bind="react: dialogComponentAdapter" />
       <Panel headerText="Select Directory" isOpen={isOpen} onDismiss={dismissPanel} closeButtonAriaLabel="Close">
@@ -279,4 +249,9 @@ const App: React.FunctionComponent = () => {
   );
 };
 
-render(<App />, document.body);
+render(
+  <AuthProvider>
+    <App />
+  </AuthProvider>,
+  document.body
+);

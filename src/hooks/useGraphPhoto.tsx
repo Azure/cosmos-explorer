@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useAADToken } from "./useAADToken";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../contexts/authContext";
 
 export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
   const headers = new Headers();
@@ -13,19 +13,19 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
     headers: headers
   };
 
-  return fetch("https://graph.microsoft.com/v1.0/me/photo/$value", options)
+  return fetch("https://graph.windows.net/me/thumbnailPhoto?api-version=1.6", options)
     .then(response => response.blob())
     .catch(error => console.log(error));
 }
 
 export function useGraphPhoto(): string {
-  const token = useAADToken();
   const [photo, setPhoto] = useState<string>();
+  const { graphToken } = useContext(AuthContext);
 
   useEffect(() => {
-    if (token) {
-      fetchPhoto(token).then(response => setPhoto(URL.createObjectURL(response)));
+    if (graphToken) {
+      fetchPhoto(graphToken).then(response => setPhoto(URL.createObjectURL(response)));
     }
-  }, [token]);
+  }, [graphToken]);
   return photo;
 }

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../contexts/authContext";
 import { Subscription } from "../Contracts/DataModels";
-import { useAADToken } from "./useAADToken";
 
 interface SubscriptionListResult {
   nextLink: string;
@@ -33,43 +33,13 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
 }
 
 export function useSubscriptions(): Subscription[] {
-  const token = useAADToken();
+  const { armToken } = useContext(AuthContext);
   const [state, setState] = useState<Subscription[]>();
 
   useEffect(() => {
-    if (token) {
-      fetchSubscriptions(token).then(response => setState(response));
+    if (armToken) {
+      fetchSubscriptions(armToken).then(response => setState(response));
     }
-  }, [token]);
+  }, [armToken]);
   return state || [];
 }
-
-// const { accounts } = useMsal();
-// const account = useAccount(accounts[0] || {});
-// const { isLoading, isError, data, error } = useQuery(
-//   ["subscriptions", account.tenantId],
-//   async () => {
-//     let subscriptions: Array<Subscription> = [];
-
-//     const fetchHeaders = await ArmResourceUtils._getAuthHeader(ArmResourceUtils._armAuthArea, tenantId);
-//     let nextLink = `${ArmResourceUtils._armEndpoint}/subscriptions?api-version=${ArmResourceUtils._armApiVersion}`;
-
-//     while (nextLink) {
-//       const response: Response = await fetch(nextLink, { headers: fetchHeaders });
-//       const result: SubscriptionListResult =
-//         response.status === 204 || response.status === 304 ? null : await response.json();
-//       if (!response.ok) {
-//         throw result;
-//       }
-//       nextLink = result.nextLink;
-//       const validSubscriptions = result.value.filter(
-//         sub => sub.state === "Enabled" || sub.state === "Warned" || sub.state === "PastDue"
-//       );
-//       subscriptions = [...subscriptions, ...validSubscriptions];
-//     }
-//     return subscriptions;
-//   },
-//   { enabled: account.tenantId }
-// );
-
-// console.log(isLoading, isError, data, error);
