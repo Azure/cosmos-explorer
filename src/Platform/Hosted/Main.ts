@@ -43,84 +43,40 @@ export default class Main {
     return false;
   }
 
-  public static initializeExplorer(): Q.Promise<Explorer> {
+  public static initializeExplorer(): Explorer {
     window.addEventListener("message", this._handleMessage.bind(this), false);
     this._features = {};
-    const params = new URLSearchParams(window.parent.location.search);
-    const deferred: Q.Deferred<Explorer> = Q.defer<Explorer>();
-    let authType: string = null;
-
-    // Encrypted token flow
-    if (!!params && params.has("key")) {
-      Main._encryptedToken = encodeURIComponent(params.get("key"));
-      SessionStorageUtility.setEntryString(StorageKey.EncryptedKeyToken, Main._encryptedToken);
-      authType = AuthType.EncryptedToken;
-    } else if (Main._hasCachedEncryptedKey()) {
-      Main._encryptedToken = SessionStorageUtility.getEntryString(StorageKey.EncryptedKeyToken);
-      authType = AuthType.EncryptedToken;
-    }
-
-    // Aad flow
-    if (AuthHeadersUtil.isUserSignedIn()) {
-      authType = AuthType.AAD;
-    }
+    const params = new URLSearchParams(window.location.search);
+    let authType: string = params && params.get("authType");
 
     if (params) {
       this._features = Main.extractFeatures(params);
     }
 
+    // Encrypted token flow
+    if (params && params.has("key")) {
+      Main._encryptedToken = encodeURIComponent(params.get("key"));
+      Main._accessInputMetadata = JSON.parse(params.get("metadata"));
+      authType = AuthType.EncryptedToken;
+    }
+
     (<any>window).authType = authType;
     if (!authType) {
-      return Q.reject("Sign in needed");
+      throw new Error("Sign in needed");
     }
 
     const explorer: Explorer = this._instantiateExplorer();
     if (authType === AuthType.EncryptedToken) {
-      sendMessage({
-        type: MessageTypes.UpdateAccountSwitch,
-        props: {
-          authType: AuthType.EncryptedToken,
-          displayText: "Loading..."
-        }
-      });
       updateUserContext({
         accessToken: Main._encryptedToken
       });
-      Main._getAccessInputMetadata(Main._encryptedToken).then(
-        () => {
-          const expiryTimestamp: number =
-            Main._accessInputMetadata && parseInt(Main._accessInputMetadata.expiryTimestamp);
-          if (authType === AuthType.EncryptedToken && (isNaN(expiryTimestamp) || expiryTimestamp <= 0)) {
-            return deferred.reject("Token expired");
-          }
-
-          Main._initDataExplorerFrameInputs(explorer);
-          deferred.resolve(explorer);
-        },
-        (error: any) => {
-          console.error(error);
-          deferred.reject(error);
-        }
-      );
+      Main._initDataExplorerFrameInputs(explorer);
     } else if (authType === AuthType.AAD) {
-      sendMessage({
-        type: MessageTypes.GetAccessAadRequest
-      });
-      if (this._getAadAccessDeferred != null) {
-        // already request aad access, don't duplicate
-        return Q(null);
-      }
       this._explorer = explorer;
-      this._getAadAccessDeferred = Q.defer<Explorer>();
-      return this._getAadAccessDeferred.promise.finally(() => {
-        this._getAadAccessDeferred = null;
-      });
     } else {
       Main._initDataExplorerFrameInputs(explorer);
-      deferred.resolve(explorer);
     }
-
-    return deferred.promise;
+    return explorer;
   }
 
   public static extractFeatures(params: URLSearchParams): { [key: string]: string } {
@@ -135,21 +91,6 @@ export default class Main {
       }
     });
     return features;
-  }
-
-  public static configureTokenValidationDisplayPrompt(explorer: Explorer): void {
-    const authType: AuthType = (<any>window).authType;
-    if (
-      !explorer ||
-      !Main._encryptedToken ||
-      !Main._accessInputMetadata ||
-      Main._accessInputMetadata.expiryTimestamp == null ||
-      authType !== AuthType.EncryptedToken
-    ) {
-      return;
-    }
-
-    Main._showGuestAccessTokenRenewalPromptInMs(explorer, parseInt(Main._accessInputMetadata.expiryTimestamp));
   }
 
   public static parseResourceTokenConnectionString(connectionString: string): resourceTokenConnectionStringProperties {
@@ -234,7 +175,6 @@ export default class Main {
             }
 
             const masterKey: string = Main._getMasterKeyFromConnectionString(connectionString);
-            Main.configureTokenValidationDisplayPrompt(explorer);
             Main._setExplorerReady(explorer, masterKey);
 
             deferred.resolve();
@@ -396,14 +336,6 @@ export default class Main {
     }
 
     return explorer;
-  }
-
-  private static _showGuestAccessTokenRenewalPromptInMs(explorer: Explorer, interval: number): void {
-    if (interval != null && !isNaN(interval)) {
-      setTimeout(() => {
-        explorer.displayGuestAccessTokenRenewalPrompt();
-      }, interval);
-    }
   }
 
   private static _hasCachedEncryptedKey(): boolean {

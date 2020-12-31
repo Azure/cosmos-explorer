@@ -14,7 +14,6 @@ import * as React from "react";
 import { render } from "react-dom";
 import FeedbackIcon from "../images/Feedback.svg";
 import ConnectIcon from "../images/HostedConnectwhite.svg";
-import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { CommandButtonComponent } from "./Explorer/Controls/CommandButton/CommandButtonComponent";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
@@ -22,12 +21,17 @@ import { useGraphPhoto } from "./hooks/useGraphPhoto";
 import "./Shared/appInsights";
 import { AccountSwitchComponent } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponent";
 import { AuthContext, AuthProvider } from "./contexts/authContext";
+import { usePortalAccessToken } from "./hooks/usePortalAccessToken";
+import { AuthType } from "./AuthType";
 
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
+  const params = new URLSearchParams(window.location.search);
+  const encryptedToken = params && params.get("key");
+  const encryptedTokenMetadata = usePortalAccessToken(encryptedToken);
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
-  const { isLoggedIn, login, account, logout } = React.useContext(AuthContext);
+  const { isLoggedIn, aadlogin: login, account, aadlogout: logout } = React.useContext(AuthContext);
   const [isConnectionStringVisible, { setTrue: showConnectionString }] = useBoolean(false);
   const photo = useGraphPhoto();
 
@@ -121,11 +125,17 @@ const App: React.FunctionComponent = () => {
               Microsoft Azure
             </span>
             <span className="accontSplitter" /> <span className="serviceTitle">Cosmos DB</span>
-            {isLoggedIn && <img className="chevronRight" src={ChevronRight} alt="account separator" />}
+            {(isLoggedIn || encryptedTokenMetadata?.accountName) && (
+              <img className="chevronRight" src={ChevronRight} alt="account separator" />
+            )}
             {isLoggedIn && (
               <span className="accountSwitchComponentContainer">
                 <AccountSwitchComponent />
-                <span className="accountNameHeader">REPLACE ME - Connection string mode</span>;
+              </span>
+            )}
+            {!isLoggedIn && encryptedTokenMetadata?.accountName && (
+              <span className="accountSwitchComponentContainer">
+                <span className="accountNameHeader">{encryptedTokenMetadata?.accountName}</span>
               </span>
             )}
           </div>
@@ -186,9 +196,27 @@ const App: React.FunctionComponent = () => {
           </div>
         </div>
       </header>
-      {isLoggedIn ? (
-        <p>LOGGED IN!</p>
-      ) : (
+      {encryptedTokenMetadata && !isLoggedIn && (
+        <iframe
+          id="explorerMenu"
+          name="explorer"
+          className="iframe"
+          title="explorer"
+          src={`explorer.html?v=1.0.1&platform=Hosted&authType=${AuthType.EncryptedToken}&key=${encodeURIComponent(
+            encryptedToken
+          )}&metadata=${JSON.stringify(encryptedTokenMetadata)}`}
+        ></iframe>
+      )}
+      {!encryptedTokenMetadata && isLoggedIn && (
+        <iframe
+          id="explorerMenu"
+          name="explorer"
+          className="iframe"
+          title="explorer"
+          src={`explorer.html?v=1.0.1&platform=Hosted&authType=${AuthType.AAD}`}
+        ></iframe>
+      )}
+      {!isLoggedIn && !encryptedTokenMetadata && (
         <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
           <div className="connectExplorerFormContainer">
             <div className="connectExplorer">
@@ -227,13 +255,6 @@ const App: React.FunctionComponent = () => {
           </div>
         </div>
       )}
-      {/* <iframe
-          id="explorerMenu"
-          name="explorer"
-          className="iframe"
-          title="explorer"
-          src="explorer.html?v=1.0.1&platform=Portal"
-        ></iframe> */}
       <div data-bind="react: firewallWarningComponentAdapter" />
       <div data-bind="react: dialogComponentAdapter" />
       <Panel headerText="Select Directory" isOpen={isOpen} onDismiss={dismissPanel} closeButtonAriaLabel="Close">

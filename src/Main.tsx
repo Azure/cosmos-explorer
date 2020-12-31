@@ -84,42 +84,16 @@ window.authType = AuthType.AAD;
 const App: React.FunctionComponent = () => {
   useEffect(() => {
     initializeConfiguration().then(config => {
+      let explorer: Explorer;
       if (config.platform === Platform.Hosted) {
-        try {
-          Hosted.initializeExplorer().then(
-            (explorer: Explorer) => {
-              applyExplorerBindings(explorer);
-              Hosted.configureTokenValidationDisplayPrompt(explorer);
-            },
-            (error: unknown) => {
-              try {
-                const uninitializedExplorer: Explorer = Hosted.getUninitializedExplorerForGuestAccess();
-                window.dataExplorer = uninitializedExplorer;
-                ko.applyBindings(uninitializedExplorer);
-                BindingHandlersRegisterer.registerBindingHandlers();
-                if (window.authType !== AuthType.AAD) {
-                  uninitializedExplorer.isRefreshingExplorer(false);
-                  uninitializedExplorer.displayConnectExplorerForm();
-                }
-              } catch (e) {
-                console.log(e);
-              }
-              console.error(error);
-            }
-          );
-        } catch (e) {
-          console.log(e);
-        }
+        explorer = Hosted.initializeExplorer();
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
-        const explorer = Emulator.initializeExplorer();
-        applyExplorerBindings(explorer);
+        explorer = Emulator.initializeExplorer();
       } else if (config.platform === Platform.Portal) {
-        TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.Open, {});
-        const explorer = Portal.initializeExplorer();
-        TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.IFrameReady, {});
-        applyExplorerBindings(explorer);
+        explorer = Portal.initializeExplorer();
       }
+      applyExplorerBindings(explorer);
     });
   }, []);
 

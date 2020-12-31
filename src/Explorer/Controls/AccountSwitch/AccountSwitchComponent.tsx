@@ -1,10 +1,9 @@
 import { StyleConstants } from "../../../Common/Constants";
-import { DatabaseAccount, Subscription } from "../../../Contracts/DataModels";
 
 import * as React from "react";
 import { DefaultButton, IButtonStyles, IButtonProps } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
-import { Dropdown, IDropdownOption, IDropdownProps } from "office-ui-fabric-react/lib/Dropdown";
+import { Dropdown, IDropdownProps } from "office-ui-fabric-react/lib/Dropdown";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
 

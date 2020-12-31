@@ -9,7 +9,7 @@ const msal = new Msal.UserAgentApplication({
   auth: {
     authority: "https://login.microsoft.com/common",
     clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-    redirectUri: "https://dataexplorer-dev.azurewebsites.net"
+    redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set development
   }
 });
 
@@ -18,16 +18,16 @@ interface AuthContext {
   account?: Msal.Account;
   graphToken?: string;
   armToken?: string;
-  logout: () => unknown;
-  login: () => unknown;
+  aadlogout: () => unknown;
+  aadlogin: () => unknown;
 }
 
 export const AuthContext = createContext<AuthContext>({
   isLoggedIn: false,
-  login: () => {
+  aadlogin: () => {
     throw Error(defaultError);
   },
-  logout: () => {
+  aadlogout: () => {
     throw Error(defaultError);
   }
 });
@@ -38,36 +38,27 @@ export const AuthProvider: React.FunctionComponent = ({ children }) => {
   const [graphToken, setGraphToken] = useState<string>();
   const [armToken, setArmToken] = useState<string>();
 
-  const login = useCallback(() => {
-    msal.loginPopup().then(response => {
-      setLoggedIn();
-      setAccount(response.account);
-      msal
-        .acquireTokenSilent({ scopes: ["https://graph.windows.net//.default"] })
-        .then(resp => {
-          setGraphToken(resp.accessToken);
-        })
-        .catch(e => {
-          console.error(e);
-        });
-      msal
-        .acquireTokenSilent({ scopes: ["https://management.azure.com//.default"] })
-        .then(resp => {
-          setArmToken(resp.accessToken);
-        })
-        .catch(e => {
-          console.error(e);
-        });
-    });
+  const aadlogin = useCallback(async () => {
+    const response = await msal.loginPopup();
+    setLoggedIn();
+    setAccount(response.account);
+
+    const [graphTokenResponse, armTokenResponse] = await Promise.all([
+      msal.acquireTokenSilent({ scopes: ["https://graph.windows.net//.default"] }),
+      msal.acquireTokenSilent({ scopes: ["https://management.azure.com//.default"] })
+    ]);
+
+    setGraphToken(graphTokenResponse.accessToken);
+    setArmToken(armTokenResponse.accessToken);
   }, []);
 
-  const logout = useCallback(() => {
+  const aadlogout = useCallback(() => {
     msal.logout();
     setLoggedOut();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, account, login, logout, graphToken, armToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, account, aadlogin, aadlogout, graphToken, armToken }}>
       {children}
     </AuthContext.Provider>
   );
