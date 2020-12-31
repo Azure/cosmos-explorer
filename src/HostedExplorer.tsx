@@ -2,18 +2,24 @@ import "./Platform/Hosted/ConnectScreen.less";
 import { useBoolean } from "@uifabric/react-hooks";
 import {
   DefaultButton,
+  DetailsList,
   DirectionalHint,
   FocusZone,
+  IContextualMenuProps,
   initializeIcons,
   Panel,
+  PanelType,
   Persona,
   PersonaInitialsColor,
-  PersonaSize
+  PersonaSize,
+  SelectionMode,
+  Selection
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { render } from "react-dom";
 import FeedbackIcon from "../images/Feedback.svg";
 import ConnectIcon from "../images/HostedConnectwhite.svg";
+import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { CommandButtonComponent } from "./Explorer/Controls/CommandButton/CommandButtonComponent";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
@@ -22,6 +28,7 @@ import "./Shared/appInsights";
 import { AccountSwitchComponent } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponent";
 import { AuthContext, AuthProvider } from "./contexts/authContext";
 import { usePortalAccessToken } from "./hooks/usePortalAccessToken";
+import { useDirectories } from "./hooks/useDirectories";
 import { AuthType } from "./AuthType";
 
 initializeIcons();
@@ -31,11 +38,41 @@ const App: React.FunctionComponent = () => {
   const encryptedToken = params && params.get("key");
   const encryptedTokenMetadata = usePortalAccessToken(encryptedToken);
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
-  const { isLoggedIn, aadlogin: login, account, aadlogout: logout } = React.useContext(AuthContext);
+  const { isLoggedIn, aadlogin: login, account, aadlogout: logout, tenantId } = React.useContext(AuthContext);
   const [isConnectionStringVisible, { setTrue: showConnectionString }] = useBoolean(false);
   const photo = useGraphPhoto();
+  const directories = useDirectories();
+  // const [selectedItem, setSelectedItem] = React.useState<any>(undefined);
+  const selection = new Selection({
+    getKey: item => item.tenantId,
+    items: directories,
+    onSelectionChanged: () => {
+      const selected = selection.getSelection()[0];
+      if (selected.tenantId !== tenantId) {
+        console.log("new Tenant", selected.tenantId);
+      }
+    },
+    selectionMode: SelectionMode.single
+  });
+  selection.setKeySelected(tenantId, true, false);
 
-  const menuProps = {
+  // private _renderPersonaComponent = (): JSX.Element => {
+  //   const { user } = this.props;
+  //   const personaProps: IPersonaSharedProps = {
+  //     imageUrl: user.imageUrl,
+  //     text: user.name,
+  //     secondaryText: user.email,
+  //     showSecondaryText: true,
+  //     showInitialsUntilImageLoads: true,
+  //     initialsColor: PersonaInitialsColor.teal,
+  //     size: PersonaSize.size72,
+  //     className: "mecontrolContextualMenuPersona"
+  //   };
+
+  //   return <Persona {...personaProps} />;
+  // };
+
+  const menuProps: IContextualMenuProps = {
     className: "mecontrolContextualMenu",
     isBeakVisible: false,
     directionalHintFixed: true,
@@ -45,29 +82,14 @@ const App: React.FunctionComponent = () => {
     },
     items: [
       {
-        key: "Persona",
-        onRender: () => <Persona />
-      },
-      {
         key: "SwitchDirectory",
-        onRender: () => (
-          <div className="switchDirectoryLink" onClick={() => openPanel}>
-            Switch Directory
-          </div>
-        )
+        text: "Switch Directory",
+        onClick: openPanel
       },
       {
         key: "SignOut",
-        onRender: () => (
-          <div
-            className="signOutLink"
-            onClick={() => {
-              logout();
-            }}
-          >
-            Sign out
-          </div>
-        )
+        text: "Sign Out",
+        onClick: logout
       }
     ]
   };
@@ -101,8 +123,7 @@ const App: React.FunctionComponent = () => {
   const buttonProps = {
     id: "mecontrolHeader",
     className: "mecontrolHeaderButton",
-    menuProps: menuProps,
-    onRenderMenuIcon: () => <span />,
+    menuProps,
     styles: {
       rootHovered: { backgroundColor: "#393939" },
       rootFocused: { backgroundColor: "#393939" },
@@ -257,14 +278,34 @@ const App: React.FunctionComponent = () => {
       )}
       <div data-bind="react: firewallWarningComponentAdapter" />
       <div data-bind="react: dialogComponentAdapter" />
-      <Panel headerText="Select Directory" isOpen={isOpen} onDismiss={dismissPanel} closeButtonAriaLabel="Close">
-        {/* <div className="directoryDropdownContainer">
-          <DefaultDirectoryDropdownComponent />
-        </div>
-        <div className="directoryDivider" />
-        <div className="directoryListContainer">
-          <DirectoryListComponent />
-        </div> */}
+      <Panel
+        type={PanelType.medium}
+        headerText="Select Directory"
+        isOpen={isOpen}
+        onDismiss={dismissPanel}
+        closeButtonAriaLabel="Close"
+      >
+        <DetailsList
+          items={selection.getItems()}
+          columns={[
+            {
+              key: "name",
+              name: "Name",
+              minWidth: 200,
+              maxWidth: 200,
+              fieldName: "displayName"
+            },
+            {
+              key: "id",
+              name: "ID",
+              minWidth: 200,
+              maxWidth: 200,
+              fieldName: "tenantId"
+            }
+          ]}
+          selectionMode={SelectionMode.single}
+          selection={selection}
+        />
       </Panel>
     </div>
   );

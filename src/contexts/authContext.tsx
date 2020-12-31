@@ -18,6 +18,7 @@ interface AuthContext {
   account?: Msal.Account;
   graphToken?: string;
   armToken?: string;
+  tenantId?: string;
   aadlogout: () => unknown;
   aadlogin: () => unknown;
 }
@@ -37,15 +38,22 @@ export const AuthProvider: React.FunctionComponent = ({ children }) => {
   const [account, setAccount] = useState<Msal.Account>();
   const [graphToken, setGraphToken] = useState<string>();
   const [armToken, setArmToken] = useState<string>();
+  const [tenantId, setTenantId] = useState<string>();
 
   const aadlogin = useCallback(async () => {
     const response = await msal.loginPopup();
     setLoggedIn();
     setAccount(response.account);
+    setTenantId(response.tenantId);
+    msal.authority = "https://login.microsoftonline.com/481f23b0-3fb3-4e76-812d-15513d11dbfc";
 
     const [graphTokenResponse, armTokenResponse] = await Promise.all([
-      msal.acquireTokenSilent({ scopes: ["https://graph.windows.net//.default"] }),
-      msal.acquireTokenSilent({ scopes: ["https://management.azure.com//.default"] })
+      msal.acquireTokenSilent({
+        scopes: ["https://graph.windows.net//.default"]
+      }),
+      msal.acquireTokenSilent({
+        scopes: ["https://management.azure.com//.default"]
+      })
     ]);
 
     setGraphToken(graphTokenResponse.accessToken);
@@ -58,7 +66,7 @@ export const AuthProvider: React.FunctionComponent = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, account, aadlogin, aadlogout, graphToken, armToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, account, aadlogin, aadlogout, graphToken, armToken, tenantId }}>
       {children}
     </AuthContext.Provider>
   );
