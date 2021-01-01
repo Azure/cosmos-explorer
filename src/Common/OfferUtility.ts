@@ -2,8 +2,9 @@ import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
 import { OfferResponse } from "@azure/cosmos";
 import { HttpHeaders } from "./Constants";
 
-export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
-  const offerDefinition: SDKOfferDefinition = offerResponse?.resource;
+export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer | undefined => {
+  const offerDefinition: SDKOfferDefinition | undefined = offerResponse?.resource;
+  if (offerDefinition == undefined) return undefined;
   const offerContent = offerDefinition.content;
   if (!offerContent) {
     return undefined;
@@ -12,7 +13,7 @@ export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
   const minimumThroughput = offerContent.collectionThroughputInfo?.minimumRUForCollection;
   const autopilotSettings = offerContent.offerAutopilotSettings;
 
-  if (autopilotSettings) {
+  if (autopilotSettings && autopilotSettings.maxThroughput && minimumThroughput) {
     return {
       id: offerDefinition.id,
       autoscaleMaxThroughput: autopilotSettings.maxThroughput,
