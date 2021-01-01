@@ -4,7 +4,9 @@ import { HttpHeaders } from "./Constants";
 
 export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer | undefined => {
   const offerDefinition: SDKOfferDefinition | undefined = offerResponse?.resource;
-  if (offerDefinition == undefined) return undefined;
+  if (!offerDefinition) {
+    return undefined;
+  }
   const offerContent = offerDefinition.content;
   if (!offerContent) {
     return undefined;
