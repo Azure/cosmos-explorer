@@ -71,7 +71,7 @@ interface InputTypeaheadParams {
   /**
    * This function gets called when pressing ENTER on the input box
    */
-  submitFct?: (inputValue: string, selection: Item) => void;
+  submitFct?: (inputValue: string | null, selection: Item | null) => void;
 
   /**
    * Typehead comes with a Search button that we normally remove.
@@ -88,8 +88,8 @@ interface OnClickItem {
 }
 
 interface Cache {
-  inputValue: string;
-  selection: Item;
+  inputValue: string | null;
+  selection: Item | null;
 }
 
 class InputTypeaheadViewModel {
@@ -98,8 +98,8 @@ class InputTypeaheadViewModel {
   private params: InputTypeaheadParams;
 
   private cache: Cache;
-  private inputValue: string;
-  private selection: Item;
+  private _inputValue!: string;
+  private _selection!: Item;
 
   public constructor(params: InputTypeaheadParams) {
     this.instanceNumber = InputTypeaheadViewModel.instanceCount++;
@@ -161,7 +161,7 @@ class InputTypeaheadViewModel {
       }
     }
 
-    $.typeahead(options);
+    ($ as any)._typeahead(options);
   }
 
   /**
