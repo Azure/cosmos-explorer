@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/authContext";
+import { useEffect, useState } from "react";
 import { Subscription } from "../Contracts/DataModels";
 
 interface SubscriptionListResult {
@@ -32,8 +31,7 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
   return subscriptions;
 }
 
-export function useSubscriptions(): Subscription[] {
-  const { armToken } = useContext(AuthContext);
+export function useSubscriptions(armToken: string): Subscription[] {
   const [state, setState] = useState<Subscription[]>();
 
   useEffect(() => {

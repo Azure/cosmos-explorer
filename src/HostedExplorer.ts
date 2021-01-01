@@ -2,8 +2,6 @@ import "./Shared/appInsights";
 import * as _ from "underscore";
 import * as ko from "knockout";
 import hasher from "hasher";
-import { AccountSwitchComponentProps } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponent";
-import { AccountSwitchComponentAdapter } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponentAdapter";
 import { Action } from "./Shared/Telemetry/TelemetryConstants";
 import { ArmResourceUtils } from "./Platform/Hosted/ArmResourceUtils";
 import AuthHeadersUtil from "./Platform/Hosted/Authorization";
@@ -50,13 +48,11 @@ class HostedExplorer {
   public firewallWarningComponentAdapter: DialogComponentAdapter;
   public dialogComponentAdapter: DialogComponentAdapter;
   public meControlComponentAdapter: MeControlComponentAdapter;
-  public accountSwitchComponentAdapter: AccountSwitchComponentAdapter;
   public switchDirectoryPane: SwitchDirectoryPane;
 
   private _firewallWarningDialogProps: ko.Observable<DialogProps>;
   private _dialogProps: ko.Observable<DialogProps>;
   private _meControlProps: ko.Observable<MeControlComponentProps>;
-  private _accountSwitchProps: ko.Observable<AccountSwitchComponentProps>;
   private _controlbarCommands: ko.ObservableArray<CommandButtonComponentProps>;
   private _directoryDropdownProps: ko.Observable<DefaultDirectoryDropdownProps>;
   private _directoryListProps: ko.Observable<DirectoryListProps>;
@@ -161,35 +157,10 @@ class HostedExplorer {
     this.meControlComponentAdapter = new MeControlComponentAdapter();
     this.meControlComponentAdapter.parameters = this._meControlProps;
 
-    this._accountSwitchProps = ko.observable<AccountSwitchComponentProps>({
-      authType: AuthType.EncryptedToken,
-      selectedAccountName: "",
-      accounts: [],
-      isLoadingAccounts: false,
-      onAccountChange: this._onAccountChange,
-      selectedSubscriptionId: undefined,
-      subscriptions: [],
-      isLoadingSubscriptions: false,
-      onSubscriptionChange: this._onSubscriptionChange
-    });
-    this.accountSwitchComponentAdapter = new AccountSwitchComponentAdapter();
-    this.accountSwitchComponentAdapter.parameters = this._accountSwitchProps;
-
-    this.isAccountActive = ko.computed<boolean>(() => {
-      if (
-        this._accountSwitchProps() &&
-        (this._accountSwitchProps().displayText || this._accountSwitchProps().selectedAccountName)
-      ) {
-        return true;
-      }
-      return false;
-    });
-
     hasher.initialized.add(updateExplorerHash);
     hasher.changed.add(updateExplorerHash);
     hasher.init();
     window.addEventListener("message", this._handleMessage.bind(this), false);
-    this._handleAadLogin();
   }
 
   public explorer_click() {
@@ -348,43 +319,10 @@ class HostedExplorer {
     this._meControlProps(propsToUpdate);
   }
 
-  private _updateAccountSwitchProps(props: Partial<AccountSwitchComponentProps>) {
+  private _updateAccountSwitchProps(props: any) {
     if (!props) {
       return;
     }
-
-    const propsToUpdate = this._accountSwitchProps();
-    if (props.authType) {
-      if (props.selectedAccountName != null) {
-        propsToUpdate.selectedAccountName = props.selectedAccountName;
-      }
-      if (props.authType === AuthType.EncryptedToken) {
-        propsToUpdate.authType = AuthType.EncryptedToken;
-      } else if (props.authType === AuthType.AAD) {
-        propsToUpdate.authType = AuthType.AAD;
-        if (props.displayText != null) {
-          propsToUpdate.displayText = props.displayText;
-        }
-        if (props.isLoadingAccounts != null) {
-          propsToUpdate.isLoadingAccounts = props.isLoadingAccounts;
-        }
-        if (props.accounts) {
-          propsToUpdate.accounts = props.accounts.sort((a, b) => (a.name < b.name ? -1 : 1));
-        }
-
-        if (props.isLoadingSubscriptions != null) {
-          propsToUpdate.isLoadingSubscriptions = props.isLoadingSubscriptions;
-        }
-        if (props.subscriptions) {
-          propsToUpdate.subscriptions = props.subscriptions.sort((a, b) => (a.displayName < b.displayName ? -1 : 1));
-        }
-        if (props.selectedSubscriptionId != null) {
-          propsToUpdate.selectedSubscriptionId = props.selectedSubscriptionId;
-        }
-      }
-    }
-
-    this._accountSwitchProps(propsToUpdate);
   }
 
   private _onAccountChange = (newAccount: DatabaseAccount) => {
@@ -518,36 +456,6 @@ class HostedExplorer {
           id: message && message.id,
           error: errorMessage
         }
-      });
-    }
-  }
-
-  private _handleAadLogin() {
-    AuthHeadersUtil.processTokenResponse();
-    if (AuthHeadersUtil.isUserSignedIn()) {
-      window.authType = AuthType.AAD;
-      const user = AuthHeadersUtil.getCachedUser();
-      this._updateMeControlProps({
-        isUserSignedIn: true,
-        user: {
-          name: user.profile.name,
-          email: user.userName,
-          tenantName: undefined,
-          imageUrl: undefined
-        }
-      });
-
-      AuthHeadersUtil.getPhotoFromGraphAPI().then(blob => {
-        const imageUrl = URL.createObjectURL(blob);
-        this._updateMeControlProps({
-          isUserSignedIn: true,
-          user: {
-            name: undefined,
-            email: undefined,
-            tenantName: undefined,
-            imageUrl: imageUrl
-          }
-        });
       });
     }
   }

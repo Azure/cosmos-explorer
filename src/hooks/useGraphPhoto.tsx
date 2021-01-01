@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/authContext";
+import { useEffect, useState } from "react";
 
 export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
   const headers = new Headers();
@@ -18,9 +17,8 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
     .catch(error => console.log(error));
 }
 
-export function useGraphPhoto(): string {
+export function useGraphPhoto(graphToken: string): string {
   const [photo, setPhoto] = useState<string>();
-  const { graphToken } = useContext(AuthContext);
 
   useEffect(() => {
     if (graphToken) {

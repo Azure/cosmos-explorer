@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/authContext";
+import { useEffect, useState } from "react";
 import { Tenant } from "../Contracts/DataModels";
 
 interface TenantListResult {
@@ -29,8 +28,7 @@ export async function fetchDirectories(accessToken: string): Promise<Tenant[]> {
   return tenents;
 }
 
-export function useDirectories(): Tenant[] {
-  const { armToken } = useContext(AuthContext);
+export function useDirectories(armToken: string): Tenant[] {
   const [state, setState] = useState<Tenant[]>();
 
   useEffect(() => {

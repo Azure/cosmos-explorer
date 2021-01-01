@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/authContext";
+import { useEffect, useState } from "react";
 import { DatabaseAccount } from "../Contracts/DataModels";
 
 interface AccountListResult {
@@ -39,8 +38,7 @@ export async function fetchDatabaseAccounts(
   return accounts;
 }
 
-export function useDatabaseAccounts(subscriptionId: string): DatabaseAccount[] {
-  const { armToken } = useContext(AuthContext);
+export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] {
   const [state, setState] = useState<DatabaseAccount[]>();
 
   useEffect(() => {

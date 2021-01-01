@@ -55,11 +55,6 @@ import "url-polyfill/url-polyfill.min";
 
 initializeIcons();
 
-import * as ko from "knockout";
-import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "./Shared/Telemetry/TelemetryConstants";
-
-import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
 import * as Emulator from "./Platform/Emulator/Main";
 import Hosted from "./Platform/Hosted/Main";
 import * as Portal from "./Platform/Portal/Main";

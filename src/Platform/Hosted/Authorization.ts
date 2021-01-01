@@ -107,14 +107,6 @@ export default class AuthHeadersUtil {
     const user = AuthHeadersUtil._authContext.getCachedUser();
     return !!user;
   }
-
-  public static getCachedUser(): AuthenticationContext.UserInfo {
-    if (this.isUserSignedIn()) {
-      return AuthHeadersUtil._authContext.getCachedUser();
-    }
-    return undefined;
-  }
-
   public static signIn() {
     if (!AuthHeadersUtil.isUserSignedIn()) {
       AuthHeadersUtil._authContext.login();

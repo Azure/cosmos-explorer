@@ -1,5 +1,4 @@
 import { StyleConstants } from "../../../Common/Constants";
-
 import * as React from "react";
 import { DefaultButton, IButtonStyles, IButtonProps } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
@@ -38,10 +37,10 @@ const buttonStyles: IButtonStyles = {
   }
 };
 
-export const AccountSwitchComponent: React.FunctionComponent = () => {
-  const subscriptions = useSubscriptions();
+export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string }> = ({ armToken }) => {
+  const subscriptions = useSubscriptions(armToken);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = React.useState<string>();
-  const accounts = useDatabaseAccounts(selectedSubscriptionId);
+  const accounts = useDatabaseAccounts(selectedSubscriptionId, armToken);
   const [selectedAccountName, setSelectedAccoutName] = React.useState<string>();
 
   const menuProps: IContextualMenuProps = {
