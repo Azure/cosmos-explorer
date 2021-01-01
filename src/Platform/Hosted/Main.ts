@@ -3,7 +3,6 @@ import AuthHeadersUtil from "./Authorization";
 import Q from "q";
 import {
   AccessInputMetadata,
-  AccountKeys,
   ApiKind,
   DatabaseAccount,
   GenerateTokenResponse,
@@ -11,12 +10,10 @@ import {
 } from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
 import { CollectionCreation } from "../../Shared/Constants";
-import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import { DataExplorerInputsFrame } from "../../Contracts/ViewModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { HostedUtils } from "./HostedUtils";
 import { sendMessage } from "../../Common/MessageHandler";
-import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { SessionStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { SubscriptionUtilMappings } from "../../Shared/Constants";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
@@ -24,34 +21,16 @@ import Explorer from "../../Explorer/Explorer";
 import { updateUserContext } from "../../UserContext";
 import { configContext } from "../../ConfigContext";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { extractFeatures } from "./extractFeatures";
 
 export default class Main {
   private static _databaseAccountId: string;
   private static _encryptedToken: string;
   private static _accessInputMetadata: AccessInputMetadata;
-  private static _features: { [key: string]: string };
-  // For AAD, Need to post message to hosted frame to do the auth
-  // Use local deferred variable as work around until we find better solution
-  private static _getAadAccessDeferred: Q.Deferred<Explorer>;
-  private static _explorer: Explorer;
-
-  public static isUsingEncryptionToken(): boolean {
-    const params = new URLSearchParams(window.parent.location.search);
-    if ((!!params && params.has("key")) || Main._hasCachedEncryptedKey()) {
-      return true;
-    }
-    return false;
-  }
 
   public static initializeExplorer(): Explorer {
-    window.addEventListener("message", this._handleMessage.bind(this), false);
-    this._features = {};
     const params = new URLSearchParams(window.location.search);
     let authType: string = params && params.get("authType");
-
-    if (params) {
-      this._features = Main.extractFeatures(params);
-    }
 
     // Encrypted token flow
     if (params && params.has("key")) {
@@ -60,37 +39,20 @@ export default class Main {
       authType = AuthType.EncryptedToken;
     }
 
-    (<any>window).authType = authType;
-    if (!authType) {
-      throw new Error("Sign in needed");
-    }
-
-    const explorer: Explorer = this._instantiateExplorer();
+    const explorer = new Explorer();
+    // workaround to resolve cyclic refs with view // TODO. Is this even needed anymore?
+    explorer.renewExplorerShareAccess = Main.renewExplorerAccess;
+    window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
     if (authType === AuthType.EncryptedToken) {
       updateUserContext({
         accessToken: Main._encryptedToken
       });
       Main._initDataExplorerFrameInputs(explorer);
     } else if (authType === AuthType.AAD) {
-      this._explorer = explorer;
     } else {
       Main._initDataExplorerFrameInputs(explorer);
     }
     return explorer;
-  }
-
-  public static extractFeatures(params: URLSearchParams): { [key: string]: string } {
-    const featureParamRegex = /feature.(.*)/i;
-    const features: { [key: string]: string } = {};
-    params.forEach((value: string, param: string) => {
-      if (featureParamRegex.test(param)) {
-        const matches: string[] = param.match(featureParamRegex);
-        if (matches.length > 0) {
-          features[matches[1].toLowerCase()] = value;
-        }
-      }
-    });
-    return features;
   }
 
   public static parseResourceTokenConnectionString(connectionString: string): resourceTokenConnectionStringProperties {
@@ -193,16 +155,6 @@ export default class Main {
     return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
   };
 
-  public static getUninitializedExplorerForGuestAccess(): Explorer {
-    const explorer = Main._instantiateExplorer();
-    if (window.authType === AuthType.AAD) {
-      this._explorer = explorer;
-    }
-    (<any>window).dataExplorer = explorer;
-
-    return explorer;
-  }
-
   private static _initDataExplorerFrameInputs(
     explorer: Explorer,
     masterKey?: string /* master key extracted from connection string if available */,
@@ -230,13 +182,6 @@ export default class Main {
       const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
         Main._accessInputMetadata.apiKind
       );
-      sendMessage({
-        type: MessageTypes.UpdateAccountSwitch,
-        props: {
-          authType: AuthType.EncryptedToken,
-          selectedAccountName: Main._accessInputMetadata.accountName
-        }
-      });
       return explorer.initDataExplorerWithFrameInputs({
         databaseAccount: {
           id: Main._databaseAccountId,
@@ -250,7 +195,7 @@ export default class Main {
         masterKey,
         hasWriteAccess: true, // TODO: we should embed this information in the token ideally
         authorizationToken: undefined,
-        features: this._features,
+        features: extractFeatures(),
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
@@ -270,7 +215,7 @@ export default class Main {
         masterKey,
         hasWriteAccess: true, //TODO: 425017 - support read access
         authorizationToken,
-        features: this._features,
+        features: extractFeatures(),
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
@@ -300,7 +245,7 @@ export default class Main {
         masterKey,
         hasWriteAccess: true, // TODO: we should embed this information in the token ideally
         authorizationToken: undefined,
-        features: this._features,
+        features: extractFeatures(),
         csmEndpoint: undefined,
         dnsSuffix: null,
         serverId: serverId,
@@ -316,32 +261,6 @@ export default class Main {
     throw new Error(`Unsupported AuthType ${authType}`);
   }
 
-  private static _instantiateExplorer(): Explorer {
-    const explorer = new Explorer();
-    // workaround to resolve cyclic refs with view
-    explorer.renewExplorerShareAccess = Main.renewExplorerAccess;
-    window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
-
-    // Hosted needs click to dismiss any menu
-    if (window.authType === AuthType.AAD) {
-      window.addEventListener(
-        "click",
-        () => {
-          sendMessage({
-            type: MessageTypes.ExplorerClickEvent
-          });
-        },
-        true
-      );
-    }
-
-    return explorer;
-  }
-
-  private static _hasCachedEncryptedKey(): boolean {
-    return SessionStorageUtility.hasItem(StorageKey.EncryptedKeyToken);
-  }
-
   private static _getDatabaseAccountKindFromExperience(apiExperience: string): string {
     if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
       return Constants.AccountKind.MongoDB;
@@ -354,19 +273,9 @@ export default class Main {
     return Constants.AccountKind.GlobalDocumentDB;
   }
 
-  private static _getAccessInputMetadata(accessInput: string): Q.Promise<void> {
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    AuthHeadersUtil.getAccessInputMetadata(accessInput).then(
-      (metadata: any) => {
-        Main._accessInputMetadata = metadata;
-        deferred.resolve();
-      },
-      (error: any) => {
-        deferred.reject(error);
-      }
-    );
-
-    return deferred.promise.timeout(Constants.ClientDefaults.requestTimeoutMs);
+  private static async _getAccessInputMetadata(accessInput: string): Promise<void> {
+    const metadata = await AuthHeadersUtil.getAccessInputMetadata(accessInput);
+    Main._accessInputMetadata = metadata;
   }
 
   private static _getMasterKeyFromConnectionString(connectionString: string): string {
@@ -446,85 +355,5 @@ export default class Main {
     Main._initDataExplorerFrameInputs(explorer, masterKey, account, authorizationToken);
     explorer.isAccountReady.valueHasMutated();
     sendMessage("ready");
-  }
-
-  private static _shouldProcessMessage(event: MessageEvent): boolean {
-    if (typeof event.data !== "object") {
-      return false;
-    }
-    if (event.data["signature"] !== "pcIframe") {
-      return false;
-    }
-    if (!("data" in event.data)) {
-      return false;
-    }
-    if (typeof event.data["data"] !== "object") {
-      return false;
-    }
-    return true;
-  }
-
-  private static _handleMessage(event: MessageEvent) {
-    if (isInvalidParentFrameOrigin(event)) {
-      return;
-    }
-
-    if (!this._shouldProcessMessage(event)) {
-      return;
-    }
-
-    const message: any = event.data.data;
-    if (message.type) {
-      if (message.type === MessageTypes.GetAccessAadResponse && (message.response || message.error)) {
-        if (message.response) {
-          Main._handleGetAccessAadSucceed(message.response);
-        }
-        if (message.error) {
-          Main._handleGetAccessAadFailed(message.error);
-        }
-        return;
-      }
-      if (message.type === MessageTypes.SwitchAccount && message.account && message.keys) {
-        Main._handleSwitchAccountSucceed(message.account, message.keys, message.authorizationToken);
-        return;
-      }
-    }
-  }
-
-  private static _handleSwitchAccountSucceed(account: DatabaseAccount, keys: AccountKeys, authorizationToken: string) {
-    if (!this._explorer) {
-      console.error("no explorer found");
-      return;
-    }
-
-    this._explorer.hideConnectExplorerForm();
-
-    const masterKey = Main._getMasterKey(keys);
-    this._explorer.notificationConsoleData([]);
-    Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
-  }
-
-  private static _handleGetAccessAadSucceed(response: [DatabaseAccount, AccountKeys, string]) {
-    if (!response || response.length < 1) {
-      return;
-    }
-    const account = response[0];
-    const masterKey = Main._getMasterKey(response[1]);
-    const authorizationToken = response[2];
-    Main._setExplorerReady(this._explorer, masterKey, account, authorizationToken);
-    this._getAadAccessDeferred.resolve(this._explorer);
-  }
-
-  private static _getMasterKey(keys: AccountKeys): string {
-    return (
-      keys?.primaryMasterKey ??
-      keys?.secondaryMasterKey ??
-      keys?.primaryReadonlyMasterKey ??
-      keys?.secondaryReadonlyMasterKey
-    );
-  }
-
-  private static _handleGetAccessAadFailed(error: any) {
-    this._getAadAccessDeferred.reject(error);
   }
 }

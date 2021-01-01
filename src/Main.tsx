@@ -55,9 +55,7 @@ import "url-polyfill/url-polyfill.min";
 
 initializeIcons();
 
-import * as Emulator from "./Platform/Emulator/Main";
 import Hosted from "./Platform/Hosted/Main";
-import * as Portal from "./Platform/Portal/Main";
 import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
@@ -72,9 +70,27 @@ import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
+import { AccountKind, DefaultAccountExperience, TagNames } from "./Common/Constants";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
+
+const emulatorAccount = {
+  name: "",
+  id: "",
+  location: "",
+  type: "",
+  kind: AccountKind.DocumentDB,
+  tags: {
+    [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB
+  },
+  properties: {
+    documentEndpoint: "",
+    tableEndpoint: "",
+    gremlinEndpoint: "",
+    cassandraEndpoint: ""
+  }
+};
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
@@ -84,9 +100,25 @@ const App: React.FunctionComponent = () => {
         explorer = Hosted.initializeExplorer();
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
-        explorer = Emulator.initializeExplorer();
+        const explorer = new Explorer();
+        explorer.databaseAccount(emulatorAccount);
+        explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
-        explorer = Portal.initializeExplorer();
+        explorer = new Explorer();
+
+        // In development mode, try to load the iframe message from session storage.
+        // This allows webpack hot reload to funciton properly
+        if (process.env.NODE_ENV === "development") {
+          const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
+          if (initMessage) {
+            const message = JSON.parse(initMessage);
+            console.warn("Loaded cached portal iframe message from session storage");
+            console.dir(message);
+            explorer.initDataExplorerWithFrameInputs(message);
+          }
+        }
+
+        window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
       }
       applyExplorerBindings(explorer);
     });

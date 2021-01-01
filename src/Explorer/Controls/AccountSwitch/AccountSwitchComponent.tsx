@@ -1,6 +1,6 @@
 import { StyleConstants } from "../../../Common/Constants";
 import * as React from "react";
-import { DefaultButton, IButtonStyles, IButtonProps } from "office-ui-fabric-react/lib/Button";
+import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
 import { Dropdown, IDropdownProps } from "office-ui-fabric-react/lib/Dropdown";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
@@ -39,7 +39,8 @@ const buttonStyles: IButtonStyles = {
 
 export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string }> = ({ armToken }) => {
   const subscriptions = useSubscriptions(armToken);
-  const [selectedSubscriptionId, setSelectedSubscriptionId] = React.useState<string>();
+  const cachedSubscriptionId = localStorage.getItem("cachedSubscriptionId");
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = React.useState<string>(cachedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscriptionId, armToken);
   const [selectedAccountName, setSelectedAccoutName] = React.useState<string>();
 
@@ -67,7 +68,9 @@ export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string 
               };
             }),
             onChange: (event, option) => {
-              setSelectedSubscriptionId(String(option.key));
+              const subscriptionId = String(option.key);
+              setSelectedSubscriptionId(subscriptionId);
+              localStorage.setItem("cachedSubscriptionId", subscriptionId);
             },
             defaultSelectedKey: selectedSubscriptionId,
             placeholder: "Select subscription from list",
@@ -81,7 +84,7 @@ export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string 
       },
       {
         key: "switchAccount",
-        onRender: () => {
+        onRender: (item, dismissMenu) => {
           const isLoadingAccounts = false;
 
           const options = accounts.map(account => ({
@@ -102,6 +105,7 @@ export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string 
             options,
             onChange: (event, option) => {
               setSelectedAccoutName(String(option.key));
+              dismissMenu();
             },
             defaultSelectedKey: selectedAccountName,
             placeholder: placeHolderText,
@@ -116,13 +120,13 @@ export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string 
     ]
   };
 
-  const buttonProps: IButtonProps = {
-    text: selectedAccountName || "Select Database Account",
-    menuProps: menuProps,
-    styles: buttonStyles,
-    className: "accountSwitchButton",
-    id: "accountSwitchButton"
-  };
-
-  return <DefaultButton {...buttonProps} />;
+  return (
+    <DefaultButton
+      text={selectedAccountName || "Select Database Account"}
+      menuProps={menuProps}
+      styles={buttonStyles}
+      className="accountSwitchButton"
+      id="accountSwitchButton"
+    />
+  );
 };

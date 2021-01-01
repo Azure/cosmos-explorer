@@ -33,12 +33,18 @@ import { AuthType } from "./AuthType";
 initializeIcons();
 
 const msal = new Msal.UserAgentApplication({
+  cache: {
+    cacheLocation: "localStorage"
+  },
   auth: {
     authority: "https://login.microsoft.com/common",
     clientId: "203f1145-856a-4232-83d4-a43568fba23d",
     redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
   }
 });
+
+const cachedAccount = msal.getAllAccounts()?.[0];
+const cachedTenantId = localStorage.getItem("cachedTenantId");
 
 const App: React.FunctionComponent = () => {
   // Hooks for handling encrypted portal tokens
@@ -51,11 +57,13 @@ const App: React.FunctionComponent = () => {
   const [isConnectionStringVisible, { setTrue: showConnectionString }] = useBoolean(false);
 
   // Hooks for AAD authentication
-  const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(false);
-  const [account, setAccount] = React.useState<Msal.Account>();
+  const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(
+    Boolean(cachedAccount && cachedTenantId) || false
+  );
+  const [account, setAccount] = React.useState<Msal.Account>(cachedAccount);
+  const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
-  const [tenantId, setTenantId] = React.useState<string>();
   const [connectionString, setConnectionString] = React.useState<string>("");
 
   const login = React.useCallback(async () => {
@@ -63,17 +71,17 @@ const App: React.FunctionComponent = () => {
     setLoggedIn();
     setAccount(response.account);
     setTenantId(response.tenantId);
+    localStorage.setItem("cachedTenantId", response.tenantId);
   }, []);
 
   const logout = React.useCallback(() => {
-    msal.logout();
     setLoggedOut();
+    localStorage.removeItem("cachedTenantId");
+    msal.logout();
   }, []);
 
   React.useEffect(() => {
     if (account && tenantId) {
-      console.log(msal.authority);
-      console.log("Getting tokens for", tenantId);
       Promise.all([
         msal.acquireTokenSilent({
           scopes: ["https://graph.windows.net//.default"]
@@ -227,7 +235,6 @@ const App: React.FunctionComponent = () => {
                   id="connectWithConnectionString"
                   onSubmit={async event => {
                     event.preventDefault();
-                    // const foo = parseConnectionString(connectionString);
                     const headers = new Headers();
                     headers.append(HttpHeaders.connectionString, connectionString);
                     const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
@@ -239,7 +246,6 @@ const App: React.FunctionComponent = () => {
                     const result: GenerateTokenResponse = JSON.parse(await response.json());
                     console.log(result.readWrite || result.read);
                     setEncryptedToken(decodeURIComponent(result.readWrite || result.read));
-                    event.preventDefault();
                   }}
                 >
                   <p className="connectExplorerContent connectStringText">
@@ -315,4 +321,4 @@ const App: React.FunctionComponent = () => {
   );
 };
 
-render(<App />, document.body);
+render(<App />, document.getElementById("App"));
