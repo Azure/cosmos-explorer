@@ -210,9 +210,9 @@ export interface QueryMetrics {
 
 export interface Offer {
   id: string;
-  autoscaleMaxThroughput: number | undefined;
-  manualThroughput: number | undefined;
-  minimumThroughput: number | undefined;
+  autoscaleMaxThroughput: number;
+  manualThroughput: number;
+  minimumThroughput: number;
   offerDefinition?: SDKOfferDefinition;
   offerReplacePending: boolean;
 }
@@ -231,7 +231,7 @@ export interface SDKOfferDefinition extends Resource {
 }
 
 export interface OfferThroughputInfo {
-  minimumRUForCollection: number | undefined;
+  minimumRUForCollection: number;
   numPhysicalPartitions: number;
 }
 

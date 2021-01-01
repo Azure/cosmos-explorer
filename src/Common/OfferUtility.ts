@@ -2,10 +2,9 @@ import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
 import { OfferResponse } from "@azure/cosmos";
 import { HttpHeaders } from "./Constants";
 
-export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer | undefined => {
-  const offerDefinition: SDKOfferDefinition | undefined = offerResponse.resource;
-  if (offerDefinition == undefined) return undefined;
-  const offerContent = offerDefinition.content ? offerDefinition.content : undefined;
+export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer => {
+  const offerDefinition: SDKOfferDefinition = offerResponse?.resource;
+  const offerContent = offerDefinition.content;
   if (!offerContent) {
     return undefined;
   }
