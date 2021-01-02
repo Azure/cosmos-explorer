@@ -60,7 +60,7 @@ import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { applyExplorerBindings } from "./applyExplorerBindings";
-import { initializeConfiguration, Platform } from "./ConfigContext";
+import { configContext, initializeConfiguration, Platform } from "./ConfigContext";
 import Explorer from "./Explorer/Explorer";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
@@ -71,6 +71,10 @@ import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import { AccountKind, DefaultAccountExperience, TagNames } from "./Common/Constants";
+import { updateUserContext } from "./UserContext";
+import AuthHeadersUtil from "./Platform/Hosted/Authorization";
+import { CollectionCreation } from "./Shared/Constants";
+import { extractFeatures } from "./Platform/Hosted/extractFeatures";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
@@ -97,7 +101,39 @@ const App: React.FunctionComponent = () => {
     initializeConfiguration().then(config => {
       let explorer: Explorer;
       if (config.platform === Platform.Hosted) {
-        explorer = Hosted.initializeExplorer();
+        const authType: AuthType = window.authType;
+        explorer = new Explorer();
+        if (window.authType === AuthType.EncryptedToken) {
+          updateUserContext({
+            accessToken: window.encryptedToken
+          });
+          Hosted.initDataExplorerFrameInputs(explorer);
+        } else if (window.authType === AuthType.AAD) {
+          const account = window.databaseAccount;
+          const serverId = AuthHeadersUtil.serverId;
+          const accountResourceId = account.id;
+          const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
+          const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
+          const inputs: DataExplorerInputsFrame = {
+            databaseAccount: account,
+            subscriptionId,
+            resourceGroup,
+            masterKey: "",
+            hasWriteAccess: true, //TODO: 425017 - support read access
+            authorizationToken: `Bearer ${window.authorizationToken}`,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: serverId,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+          };
+          explorer.initDataExplorerWithFrameInputs(inputs);
+          explorer.isAccountReady(true);
+        }
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
         const explorer = new Explorer();
@@ -118,7 +154,7 @@ const App: React.FunctionComponent = () => {
           }
         }
 
-        window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
+        window.addEventListener("message", message => explorer.handleMessage(message), false);
       }
       applyExplorerBindings(explorer);
     });
@@ -177,7 +213,7 @@ const App: React.FunctionComponent = () => {
                   aria-label="Share url link"
                   className="shareLink"
                   type="text"
-                  read-only
+                  read-only={true}
                   data-bind="value: shareAccessUrl"
                 />
                 <span

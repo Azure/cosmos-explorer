@@ -1843,7 +1843,7 @@ export default class Explorer {
     if (inputs != null) {
       // In development mode, save the iframe message from the portal in session storage.
       // This allows webpack hot reload to funciton properly
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === "development" && configContext.platform === Platform.Portal) {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
 

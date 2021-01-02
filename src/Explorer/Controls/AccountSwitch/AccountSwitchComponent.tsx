@@ -5,6 +5,7 @@ import { IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu"
 import { Dropdown, IDropdownProps } from "office-ui-fabric-react/lib/Dropdown";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
+import { DatabaseAccount } from "../../../Contracts/DataModels";
 
 const buttonStyles: IButtonStyles = {
   root: {
@@ -37,12 +38,27 @@ const buttonStyles: IButtonStyles = {
   }
 };
 
-export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string }> = ({ armToken }) => {
+const cachedSubscriptionId = localStorage.getItem("cachedSubscriptionId");
+const cachedDatabaseAccountName = localStorage.getItem("cachedDatabaseAccountName");
+
+export const AccountSwitchComponent: React.FunctionComponent<{
+  armToken: string;
+  setDatabaseAccount: (account: DatabaseAccount) => void;
+}> = ({ armToken, setDatabaseAccount }) => {
   const subscriptions = useSubscriptions(armToken);
-  const cachedSubscriptionId = localStorage.getItem("cachedSubscriptionId");
   const [selectedSubscriptionId, setSelectedSubscriptionId] = React.useState<string>(cachedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscriptionId, armToken);
-  const [selectedAccountName, setSelectedAccoutName] = React.useState<string>();
+  const [selectedAccountName, setSelectedAccoutName] = React.useState<string>(cachedDatabaseAccountName);
+
+  React.useEffect(() => {
+    if (accounts && selectedAccountName) {
+      const account = accounts.find(account => account.name == selectedAccountName);
+      // Only set a new account if one is found
+      if (account) {
+        setDatabaseAccount(account);
+      }
+    }
+  }, [accounts, selectedAccountName]);
 
   const menuProps: IContextualMenuProps = {
     directionalHintFixed: true,
@@ -85,30 +101,28 @@ export const AccountSwitchComponent: React.FunctionComponent<{ armToken: string 
       {
         key: "switchAccount",
         onRender: (item, dismissMenu) => {
-          const isLoadingAccounts = false;
-
-          const options = accounts.map(account => ({
-            key: account.name,
-            text: account.name,
-            data: account
-          }));
-
-          const placeHolderText = isLoadingAccounts
-            ? "Loading Cosmos DB accounts"
-            : !options || !options.length
-            ? "No Cosmos DB accounts found"
-            : "Select Cosmos DB account from list";
+          // const placeHolderText = isLoadingAccounts
+          //   ? "Loading Cosmos DB accounts"
+          //   : !options || !options.length
+          //   ? "No Cosmos DB accounts found"
+          //   : "Select Cosmos DB account from list";
 
           const dropdownProps: IDropdownProps = {
             label: "Cosmos DB Account Name",
             className: "accountSwitchAccountDropdown",
-            options,
+            options: accounts.map(account => ({
+              key: account.name,
+              text: account.name,
+              data: account
+            })),
             onChange: (event, option) => {
+              const accountName = String(option.key);
               setSelectedAccoutName(String(option.key));
+              localStorage.setItem("cachedDatabaseAccountName", accountName);
               dismissMenu();
             },
             defaultSelectedKey: selectedAccountName,
-            placeholder: placeHolderText,
+            placeholder: "No Cosmos DB accounts found",
             styles: {
               callout: "accountSwitchAccountDropdownMenu"
             }

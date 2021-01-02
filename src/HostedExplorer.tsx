@@ -27,7 +27,7 @@ import { useDirectories } from "./hooks/useDirectories";
 import * as Msal from "msal";
 import { configContext } from "./ConfigContext";
 import { HttpHeaders } from "./Common/Constants";
-import { GenerateTokenResponse } from "./Contracts/DataModels";
+import { GenerateTokenResponse, DatabaseAccount } from "./Contracts/DataModels";
 import { AuthType } from "./AuthType";
 
 initializeIcons();
@@ -42,6 +42,12 @@ const msal = new Msal.UserAgentApplication({
     redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
   }
 });
+
+interface HostedExplorerChildFrame extends Window {
+  authType: AuthType;
+  databaseAccount: DatabaseAccount;
+  authorizationToken: string;
+}
 
 const cachedAccount = msal.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
@@ -65,6 +71,9 @@ const App: React.FunctionComponent = () => {
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
   const [connectionString, setConnectionString] = React.useState<string>("");
+  const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
+
+  const ref = React.useRef<HTMLIFrameElement>();
 
   const login = React.useCallback(async () => {
     const response = await msal.loginPopup();
@@ -96,6 +105,21 @@ const App: React.FunctionComponent = () => {
     }
   }, [account, tenantId]);
 
+  React.useEffect(() => {
+    // If ref.current is undefined no iframe has been rendered
+    if (ref.current) {
+      const frameWindow = ref.current.contentWindow as HostedExplorerChildFrame;
+      frameWindow.authType = AuthType.AAD;
+      frameWindow.databaseAccount = databaseAccount;
+      frameWindow.authorizationToken = armToken;
+      // const frameWindow = ref.current.contentWindow;
+      // frameWindow.authType = AuthType.EncryptedToken;
+      // frameWindow.encryptedToken = encryptedToken;
+      // frameWindow.encryptedTokenMetadata = encryptedTokenMetadata;
+      // frameWindow.parsedConnectionString = "foo";
+    }
+  }, [ref, encryptedToken, encryptedTokenMetadata, isLoggedIn, databaseAccount]);
+
   const photo = useGraphPhoto(graphToken);
   const directories = useDirectories(armToken);
 
@@ -118,7 +142,7 @@ const App: React.FunctionComponent = () => {
             )}
             {isLoggedIn && (
               <span className="accountSwitchComponentContainer">
-                <AccountSwitchComponent armToken={armToken} />
+                <AccountSwitchComponent armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
               </span>
             )}
             {!isLoggedIn && encryptedTokenMetadata?.accountName && (
@@ -202,26 +226,22 @@ const App: React.FunctionComponent = () => {
           </div>
         </div>
       </header>
-      {encryptedTokenMetadata && !isLoggedIn && (
+      {databaseAccount && (
+        // Ideally we would import and render data explorer like any other React component, however
+        // because it still has a significant amount of Knockout code, this would lead to memory leaks.
+        // Knockout does not have a way to tear down all of its binding and listeners with a single method.
+        // It's possible this can be changed once all knockout code has been removed.
         <iframe
+          // Setting key is needed so React will re-render this element on any account change
+          key={databaseAccount.id}
+          ref={ref}
           id="explorerMenu"
           name="explorer"
           className="iframe"
           title="explorer"
-          src={`explorer.html?v=1.0.1&platform=Hosted&authType=${AuthType.EncryptedToken}&key=${encodeURIComponent(
-            encryptedToken
-          )}&metadata=${JSON.stringify(encryptedTokenMetadata)}`}
+          src="explorer.html?v=1.0.1&platform=Hosted"
         ></iframe>
       )}
-      {/* {!encryptedTokenMetadata && isLoggedIn && (
-        <iframe
-          id="explorerMenu"
-          name="explorer"
-          className="iframe"
-          title="explorer"
-          src={`explorer.html?v=1.0.1&platform=Hosted&authType=${AuthType.AAD}`}
-        ></iframe>
-      )} */}
       {!isLoggedIn && !encryptedTokenMetadata && (
         <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
           <div className="connectExplorerFormContainer">
