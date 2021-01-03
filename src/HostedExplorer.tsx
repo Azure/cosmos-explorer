@@ -10,13 +10,13 @@ import { DatabaseAccount } from "./Contracts/DataModels";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
-import { FeedbackCommandButton } from "./FeedbackCommandButton";
 import { usePortalAccessToken } from "./hooks/usePortalAccessToken";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import "./Platform/Hosted/ConnectScreen.less";
 import "./Shared/appInsights";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import { useAADAuth } from "./hooks/useAADAuth";
+import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 
 initializeIcons();
 
