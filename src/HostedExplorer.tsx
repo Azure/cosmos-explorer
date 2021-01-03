@@ -43,6 +43,8 @@ const App: React.FunctionComponent = () => {
   React.useEffect(() => {
     // If ref.current is undefined no iframe has been rendered
     if (ref.current) {
+      // In hosted mode, we can set global properties directly on the child iframe.
+      // This is not possible in the portal where the iframes have different origins
       const frameWindow = ref.current.contentWindow as HostedExplorerChildFrame;
       frameWindow.authType = AuthType.AAD;
       frameWindow.databaseAccount = databaseAccount;
@@ -110,7 +112,7 @@ const App: React.FunctionComponent = () => {
         ></iframe>
       )}
       {!isLoggedIn && !encryptedTokenMetadata && <ConnectExplorer {...{ login, setEncryptedToken }} />}
-      <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId }} />
+      {isLoggedIn && <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId }} />}
     </>
   );
 };
