@@ -29,7 +29,7 @@ export const DirectoryPickerPanel: React.FunctionComponent<Props> = ({
         selectedKey={tenantId}
         onChange={async () => {
           dismissPanel();
-          // TODO!!! This does not work. Still not sure why. Tried lots of stuff.
+          // TODO!!! Switching directories does not work. Still not sure why. Tried lots of stuff.
           // const response = await msal.loginPopup({
           //   authority: `https://login.microsoftonline.com/${option.key}`
           // });

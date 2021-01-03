@@ -1,5 +1,4 @@
 import { useBoolean } from "@uifabric/react-hooks";
-import * as Msal from "msal";
 import { initializeIcons } from "office-ui-fabric-react";
 import * as React from "react";
 import { render } from "react-dom";
@@ -17,19 +16,9 @@ import { MeControl } from "./MeControl";
 import "./Platform/Hosted/ConnectScreen.less";
 import "./Shared/appInsights";
 import { SignInButton } from "./SignInButton";
+import { useAADAuth } from "./hooks/useAADAuth";
 
 initializeIcons();
-
-const msal = new Msal.UserAgentApplication({
-  cache: {
-    cacheLocation: "localStorage"
-  },
-  auth: {
-    authority: "https://login.microsoft.com/common",
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-    redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
-  }
-});
 
 interface HostedExplorerChildFrame extends Window {
   authType: AuthType;
@@ -37,59 +26,19 @@ interface HostedExplorerChildFrame extends Window {
   authorizationToken: string;
 }
 
-const cachedAccount = msal.getAllAccounts()?.[0];
-const cachedTenantId = localStorage.getItem("cachedTenantId");
-
 const App: React.FunctionComponent = () => {
-  // Hooks for handling encrypted portal tokens
+  // For handling encrypted portal tokens sent via query paramter
   const params = new URLSearchParams(window.location.search);
   const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
   const encryptedTokenMetadata = usePortalAccessToken(encryptedToken);
 
-  // Hooks for showing/hiding panel
+  // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
 
-  // Hooks for AAD authentication
-  const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(
-    Boolean(cachedAccount && cachedTenantId) || false
-  );
-  const [account, setAccount] = React.useState<Msal.Account>(cachedAccount);
-  const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
-  const [graphToken, setGraphToken] = React.useState<string>();
-  const [armToken, setArmToken] = React.useState<string>();
+  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
 
-  const login = React.useCallback(async () => {
-    const response = await msal.loginPopup();
-    setLoggedIn();
-    setAccount(response.account);
-    setTenantId(response.tenantId);
-    localStorage.setItem("cachedTenantId", response.tenantId);
-  }, []);
-
-  const logout = React.useCallback(() => {
-    setLoggedOut();
-    localStorage.removeItem("cachedTenantId");
-    msal.logout();
-  }, []);
-
   const ref = React.useRef<HTMLIFrameElement>();
-
-  React.useEffect(() => {
-    if (account && tenantId) {
-      Promise.all([
-        msal.acquireTokenSilent({
-          scopes: ["https://graph.windows.net//.default"]
-        }),
-        msal.acquireTokenSilent({
-          scopes: ["https://management.azure.com//.default"]
-        })
-      ]).then(([graphTokenResponse, armTokenResponse]) => {
-        setGraphToken(graphTokenResponse.accessToken);
-        setArmToken(armTokenResponse.accessToken);
-      });
-    }
-  }, [account, tenantId]);
 
   React.useEffect(() => {
     // If ref.current is undefined no iframe has been rendered
