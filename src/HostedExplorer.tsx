@@ -5,17 +5,17 @@ import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
-import { ConnectExplorer } from "./ConnectExplorer";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
 import { DatabaseAccount } from "./Contracts/DataModels";
-import { DirectoryPickerPanel } from "./DirectoryPickerPanel";
-import { AccountSwitchComponent } from "./Explorer/Controls/AccountSwitch/AccountSwitchComponent";
+import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
+import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { FeedbackCommandButton } from "./FeedbackCommandButton";
 import { usePortalAccessToken } from "./hooks/usePortalAccessToken";
-import { MeControl } from "./MeControl";
+import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import "./Platform/Hosted/ConnectScreen.less";
 import "./Shared/appInsights";
-import { SignInButton } from "./SignInButton";
+import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import { useAADAuth } from "./hooks/useAADAuth";
 
 initializeIcons();
@@ -76,7 +76,7 @@ const App: React.FunctionComponent = () => {
             )}
             {isLoggedIn && (
               <span className="accountSwitchComponentContainer">
-                <AccountSwitchComponent armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
+                <AccountSwitcher armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
               </span>
             )}
             {!isLoggedIn && encryptedTokenMetadata?.accountName && (

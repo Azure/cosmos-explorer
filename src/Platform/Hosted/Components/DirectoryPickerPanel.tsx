@@ -1,6 +1,6 @@
 import { Panel, PanelType, ChoiceGroup } from "office-ui-fabric-react";
 import * as React from "react";
-import { useDirectories } from "./hooks/useDirectories";
+import { useDirectories } from "../../../hooks/useDirectories";
 
 interface Props {
   isOpen: boolean;

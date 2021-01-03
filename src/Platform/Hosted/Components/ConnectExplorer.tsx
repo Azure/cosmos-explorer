@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
-import { HttpHeaders } from "./Common/Constants";
-import { GenerateTokenResponse } from "./Contracts/DataModels";
-import { configContext } from "./ConfigContext";
+import { HttpHeaders } from "../../../Common/Constants";
+import { GenerateTokenResponse } from "../../../Contracts/DataModels";
+import { configContext } from "../../../ConfigContext";
 
 interface Props {
   login: () => void;

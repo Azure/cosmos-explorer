@@ -41,10 +41,12 @@ const buttonStyles: IButtonStyles = {
 const cachedSubscriptionId = localStorage.getItem("cachedSubscriptionId");
 const cachedDatabaseAccountName = localStorage.getItem("cachedDatabaseAccountName");
 
-export const AccountSwitchComponent: React.FunctionComponent<{
+interface Props {
   armToken: string;
   setDatabaseAccount: (account: DatabaseAccount) => void;
-}> = ({ armToken, setDatabaseAccount }) => {
+}
+
+export const AccountSwitcher: React.FunctionComponent<Props> = ({ armToken, setDatabaseAccount }: Props) => {
   const subscriptions = useSubscriptions(armToken);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = React.useState<string>(cachedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscriptionId, armToken);
@@ -52,7 +54,7 @@ export const AccountSwitchComponent: React.FunctionComponent<{
 
   React.useEffect(() => {
     if (accounts && selectedAccountName) {
-      const account = accounts.find(account => account.name == selectedAccountName);
+      const account = accounts.find(account => account.name === selectedAccountName);
       // Only set a new account if one is found
       if (account) {
         setDatabaseAccount(account);

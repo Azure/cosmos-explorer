@@ -8,7 +8,7 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { Account } from "msal";
-import { useGraphPhoto } from "./hooks/useGraphPhoto";
+import { useGraphPhoto } from "../../../hooks/useGraphPhoto";
 
 interface Props {
   graphToken: string;
