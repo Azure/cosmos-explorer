@@ -4,7 +4,7 @@
     "noEmit": true,
     "strictNullChecks": true,
     "strict": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": false
   },
   "files": [
     "./src/AuthType.ts",
@@ -57,6 +57,8 @@
     "./src/Explorer/Tables/CqlUtilities.ts",
     "./src/Explorer/Tables/QueryBuilder/DateTimeUtilities.ts",
     "./src/Explorer/Tabs/TabComponents.ts",
+    "./src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts",
+    "./src/Explorer/Notebook/NotebookContentClient.ts",
     "./src/GitHub/GitHubConnector.ts",
     "./src/Index.ts",
     "./src/NotebookWorkspaceManager/NotebookWorkspaceResourceProviderMockClients.ts",

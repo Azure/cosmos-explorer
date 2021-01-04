@@ -117,8 +117,11 @@ export class NotebookContentClient {
 
   private async checkIfFilepathExists(filepath: string): Promise<boolean> {
     const parentDirPath = NotebookUtil.getParentPath(filepath);
-    const items = await this.fetchNotebookFiles(parentDirPath);
-    return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
+    if (parentDirPath) {
+      const items = await this.fetchNotebookFiles(parentDirPath);
+      return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
+    }
+    return undefined as any;
   }
 
   /**
@@ -189,7 +192,7 @@ export class NotebookContentClient {
         const dir = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(dir.name, dir.path, dir.type);
         item.parent = parent;
-        parent.children.push(item);
+        parent.children!.push(item);
         return item;
       });
   }

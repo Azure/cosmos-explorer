@@ -1,6 +1,6 @@
 import { Observable, of } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
-import { ServerConfig } from "rx-jupyter";
+import { ServerConfig } from "@nteract/types";
 
 let fakeAjaxResponse: AjaxResponse = {
   originalEvent: undefined,
