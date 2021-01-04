@@ -324,21 +324,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
         queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`;
       this.showingDocumentsDisplayText(resultsDisplay);
       this.requestChargeDisplayText(`${queryResults.requestCharge} RUs`);
-
-      if (!this.queryResults() && !results) {
-        const errorMessage: string = JSON.stringify({
-          error: `Returned no results after query execution`,
-          accountName: this.collection && this.collection.container.databaseAccount(),
-          databaseName: this.collection && this.collection.databaseId,
-          collectionName: this.collection && this.collection.id(),
-          sqlQuery: this.sqlStatementToExecute(),
-          hasMoreResults: resultsMetadata.hasMoreResults,
-          itemCount: resultsMetadata.itemCount,
-          responseHeaders: queryResults && queryResults.headers
-        });
-        Logger.logError(errorMessage, "QueryTab");
-      }
-
       this.queryResults(results);
 
       TelemetryProcessor.traceSuccess(
