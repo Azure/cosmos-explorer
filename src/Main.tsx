@@ -80,9 +80,7 @@ import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata
 } from "./Platform/Hosted/HostedUtils";
-
-// TODO: Encapsulate and reuse all global variables as environment variables
-window.authType = AuthType.AAD;
+import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
 
 // const accountResourceId =
 // authType === AuthType.EncryptedToken
@@ -111,16 +109,15 @@ const App: React.FunctionComponent = () => {
             accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
           });
 
-          // const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
-          //   Main._accessInputMetadata.apiKind
-          // );
+          const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
+            win.hostedConfig.encryptedTokenMetadata.apiKind
+          );
           explorer.initDataExplorerWithFrameInputs({
             databaseAccount: {
               id: "",
               // id: Main._databaseAccountId,
               name: win.hostedConfig.encryptedTokenMetadata.accountName,
-              kind: "",
-              kind: getDatabaseAccountKindFromExperience(win.hostedConfig.encryptedTokenMetadata.apiKind),
+              kind: getDatabaseAccountKindFromExperience(apiExperience),
               properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
               tags: []
             },
@@ -140,11 +137,14 @@ const App: React.FunctionComponent = () => {
             isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
           });
           explorer.isAccountReady(true);
-        } else if (window.authType === AuthType.ResourceToken) {
-        } else if (window.authType === AuthType.ConnectionString) {
-        } else if (window.authType === AuthType.AAD) {
-          const account = window.databaseAccount;
-          const serverId = AuthHeadersUtil.serverId;
+        } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
+          window.authType = AuthType.EncryptedToken;
+        } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
+          // This might seem weird, but for legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
+          window.authType = AuthType.EncryptedToken;
+        } else if (win.hostedConfig.authType === AuthType.AAD) {
+          window.authType = AuthType.AAD;
+          const account = win.hostedConfig.databaseAccount;
           const accountResourceId = account.id;
           const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
           const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
@@ -154,11 +154,11 @@ const App: React.FunctionComponent = () => {
             resourceGroup,
             masterKey: "",
             hasWriteAccess: true, //TODO: 425017 - support read access
-            authorizationToken: `Bearer ${window.authorizationToken}`,
+            authorizationToken: `Bearer ${win.hostedConfig.authorizationToken}`,
             features: extractFeatures(),
             csmEndpoint: undefined,
             dnsSuffix: undefined,
-            serverId: serverId,
+            serverId: AuthHeadersUtil.serverId,
             extensionEndpoint: configContext.BACKEND_ENDPOINT,
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,

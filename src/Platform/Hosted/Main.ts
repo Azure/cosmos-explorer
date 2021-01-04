@@ -119,9 +119,4 @@ export default class Main {
 
     throw new Error(`Unsupported AuthType ${authType}`);
   }
-
-  private static _getMasterKeyFromConnectionString(connectionString: string): string {
-    const matchedParts: string[] = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
-    return (matchedParts.length > 1 && matchedParts[1]) || undefined;
-  }
 }

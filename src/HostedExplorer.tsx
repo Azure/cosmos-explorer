@@ -18,6 +18,7 @@ import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
+import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
 
 initializeIcons();
 
@@ -60,7 +61,8 @@ const App: React.FunctionComponent = () => {
         frameWindow.hostedConfig = {
           authType: AuthType.ConnectionString,
           encryptedToken,
-          encryptedTokenMetadata
+          encryptedTokenMetadata,
+          masterKey: extractMasterKeyfromConnectionString(connectionString)
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {
