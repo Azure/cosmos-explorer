@@ -56,6 +56,8 @@
     "./src/Explorer/Tables/Constants.ts",
     "./src/Explorer/Tables/CqlUtilities.ts",
     "./src/Explorer/Tables/QueryBuilder/DateTimeUtilities.ts",
+    "./src/Explorer/Tables/DataTable/CacheBase.ts",
+    "./src/Explorer/Tables/Entities.ts",
     "./src/Explorer/Tabs/TabComponents.ts",
     "./src/GitHub/GitHubConnector.ts",
     "./src/Index.ts",
