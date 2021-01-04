@@ -31,3 +31,15 @@ export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMe
   }
   return properties;
 }
+
+export function getDatabaseAccountKindFromExperience(apiExperience: string): string {
+  if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
+    return Constants.AccountKind.MongoDB;
+  }
+
+  if (apiExperience === Constants.DefaultAccountExperience.ApiForMongoDB) {
+    return Constants.AccountKind.MongoDB;
+  }
+
+  return Constants.AccountKind.GlobalDocumentDB;
+}

@@ -75,22 +75,73 @@ import AuthHeadersUtil from "./Platform/Hosted/Authorization";
 import { CollectionCreation } from "./Shared/Constants";
 import { extractFeatures } from "./Platform/Hosted/extractFeatures";
 import { emulatorAccount } from "./Platform/Emulator/emulatorAccount";
+import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
+import {
+  getDatabaseAccountKindFromExperience,
+  getDatabaseAccountPropertiesFromMetadata
+} from "./Platform/Hosted/HostedUtils";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
+
+// const accountResourceId =
+// authType === AuthType.EncryptedToken
+//   ? Main._databaseAccountId
+//   : authType === AuthType.AAD && account
+//   ? account.id
+//   : "";
+// const subscriptionId: string =
+// accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
+// const resourceGroup: string =
+// accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
     initializeConfiguration().then(config => {
       let explorer: Explorer;
       if (config.platform === Platform.Hosted) {
-        const authType: AuthType = window.authType;
+        const win = (window as unknown) as HostedExplorerChildFrame;
         explorer = new Explorer();
-        if (window.authType === AuthType.EncryptedToken) {
+        if (win.hostedConfig.authType === AuthType.EncryptedToken) {
+          // TODO: Remove window.authType
+          window.authType = AuthType.EncryptedToken;
+          // Impossible to tell if this is a try cosmos sub using an encrypted token
+          explorer.isTryCosmosDBSubscription(false);
           updateUserContext({
-            accessToken: window.encryptedToken
+            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
           });
-          Hosted.initDataExplorerFrameInputs(explorer);
+
+          // const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
+          //   Main._accessInputMetadata.apiKind
+          // );
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              // id: Main._databaseAccountId,
+              name: win.hostedConfig.encryptedTokenMetadata.accountName,
+              kind: "",
+              kind: getDatabaseAccountKindFromExperience(win.hostedConfig.encryptedTokenMetadata.apiKind),
+              properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
+              tags: []
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: undefined,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: AuthHeadersUtil.serverId,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+          });
+          explorer.isAccountReady(true);
+        } else if (window.authType === AuthType.ResourceToken) {
+        } else if (window.authType === AuthType.ConnectionString) {
         } else if (window.authType === AuthType.AAD) {
           const account = window.databaseAccount;
           const serverId = AuthHeadersUtil.serverId;
@@ -118,7 +169,7 @@ const App: React.FunctionComponent = () => {
         }
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
-        const explorer = new Explorer();
+        explorer = new Explorer();
         explorer.databaseAccount(emulatorAccount);
         explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {

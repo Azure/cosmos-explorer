@@ -17,14 +17,9 @@ import "./Shared/appInsights";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
+import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 
 initializeIcons();
-
-interface HostedExplorerChildFrame extends Window {
-  authType: AuthType;
-  databaseAccount: DatabaseAccount;
-  authorizationToken: string;
-}
 
 const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
@@ -37,6 +32,8 @@ const App: React.FunctionComponent = () => {
 
   const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
+  const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
+  const [connectionString, setConnectionString] = React.useState<string>();
 
   const ref = React.useRef<HTMLIFrameElement>();
 
@@ -46,14 +43,31 @@ const App: React.FunctionComponent = () => {
       // In hosted mode, we can set global properties directly on the child iframe.
       // This is not possible in the portal where the iframes have different origins
       const frameWindow = ref.current.contentWindow as HostedExplorerChildFrame;
-      frameWindow.authType = AuthType.AAD;
-      frameWindow.databaseAccount = databaseAccount;
-      frameWindow.authorizationToken = armToken;
-      // const frameWindow = ref.current.contentWindow;
-      // frameWindow.authType = AuthType.EncryptedToken;
-      // frameWindow.encryptedToken = encryptedToken;
-      // frameWindow.encryptedTokenMetadata = encryptedTokenMetadata;
-      // frameWindow.parsedConnectionString = "foo";
+      // AAD authenticated uses ALWAYS using AAD authType
+      if (isLoggedIn) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.AAD,
+          databaseAccount,
+          authorizationToken: armToken
+        };
+      } else if (authType === AuthType.EncryptedToken) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.EncryptedToken,
+          encryptedToken,
+          encryptedTokenMetadata
+        };
+      } else if (authType === AuthType.ConnectionString) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.ConnectionString,
+          encryptedToken,
+          encryptedTokenMetadata
+        };
+      } else if (authType === AuthType.ResourceToken) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.ResourceToken,
+          resourceToken: connectionString
+        };
+      }
     }
   }, [ref, encryptedToken, encryptedTokenMetadata, isLoggedIn, databaseAccount]);
 
@@ -95,23 +109,26 @@ const App: React.FunctionComponent = () => {
           </div>
         </div>
       </header>
-      {databaseAccount && (
-        // Ideally we would import and render data explorer like any other React component, however
-        // because it still has a significant amount of Knockout code, this would lead to memory leaks.
-        // Knockout does not have a way to tear down all of its binding and listeners with a single method.
-        // It's possible this can be changed once all knockout code has been removed.
-        <iframe
-          // Setting key is needed so React will re-render this element on any account change
-          key={databaseAccount.id}
-          ref={ref}
-          id="explorerMenu"
-          name="explorer"
-          className="iframe"
-          title="explorer"
-          src="explorer.html?v=1.0.1&platform=Hosted"
-        ></iframe>
+      {(isLoggedIn && databaseAccount) ||
+        (encryptedTokenMetadata && encryptedTokenMetadata && (
+          // Ideally we would import and render data explorer like any other React component, however
+          // because it still has a significant amount of Knockout code, this would lead to memory leaks.
+          // Knockout does not have a way to tear down all of its binding and listeners with a single method.
+          // It's possible this can be changed once all knockout code has been removed.
+          <iframe
+            // Setting key is needed so React will re-render this element on any account change
+            key={databaseAccount?.id || encryptedTokenMetadata?.accountName}
+            ref={ref}
+            id="explorerMenu"
+            name="explorer"
+            className="iframe"
+            title="explorer"
+            src="explorer.html?v=1.0.1&platform=Hosted"
+          ></iframe>
+        ))}
+      {!isLoggedIn && !encryptedTokenMetadata && (
+        <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
       )}
-      {!isLoggedIn && !encryptedTokenMetadata && <ConnectExplorer {...{ login, setEncryptedToken }} />}
       {isLoggedIn && <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId }} />}
     </>
   );

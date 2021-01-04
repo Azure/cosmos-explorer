@@ -1,7 +1,7 @@
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
-import { ApiKind, DatabaseAccount, resourceTokenConnectionStringProperties } from "../../Contracts/DataModels";
+import { ApiKind, DatabaseAccount } from "../../Contracts/DataModels";
 import { DataExplorerInputsFrame } from "../../Contracts/ViewModels";
 import Explorer from "../../Explorer/Explorer";
 import "../../Explorer/Tables/DataTable/DataTableBindingManager";
@@ -12,38 +12,6 @@ import { extractFeatures } from "./extractFeatures";
 import { getDatabaseAccountPropertiesFromMetadata } from "./HostedUtils";
 
 export default class Main {
-  public static parseResourceTokenConnectionString(connectionString: string): resourceTokenConnectionStringProperties {
-    let accountEndpoint: string;
-    let collectionId: string;
-    let databaseId: string;
-    let partitionKey: string;
-    let resourceToken: string;
-    const connectionStringParts = connectionString.split(";");
-    connectionStringParts.forEach((part: string) => {
-      if (part.startsWith("type=resource")) {
-        resourceToken = part + ";";
-      } else if (part.startsWith("AccountEndpoint=")) {
-        accountEndpoint = part.substring(16);
-      } else if (part.startsWith("DatabaseId=")) {
-        databaseId = part.substring(11);
-      } else if (part.startsWith("CollectionId=")) {
-        collectionId = part.substring(13);
-      } else if (part.startsWith("PartitionKey=")) {
-        partitionKey = part.substring(13);
-      } else if (part !== "") {
-        resourceToken += part + ";";
-      }
-    });
-
-    return {
-      accountEndpoint,
-      collectionId,
-      databaseId,
-      partitionKey,
-      resourceToken
-    };
-  }
-
   public static initDataExplorerFrameInputs(
     explorer: Explorer,
     masterKey?: string /* master key extracted from connection string if available */,
@@ -68,6 +36,8 @@ export default class Main {
     }
 
     if (authType === AuthType.EncryptedToken) {
+      // TODO: Remove window.authType
+      window.authType = AuthType.EncryptedToken;
       const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
         Main._accessInputMetadata.apiKind
       );
@@ -150,29 +120,8 @@ export default class Main {
     throw new Error(`Unsupported AuthType ${authType}`);
   }
 
-  private static _getDatabaseAccountKindFromExperience(apiExperience: string): string {
-    if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
-      return Constants.AccountKind.MongoDB;
-    }
-
-    if (apiExperience === Constants.DefaultAccountExperience.ApiForMongoDB) {
-      return Constants.AccountKind.MongoDB;
-    }
-
-    return Constants.AccountKind.GlobalDocumentDB;
-  }
-
   private static _getMasterKeyFromConnectionString(connectionString: string): string {
-    if (!connectionString || Main._accessInputMetadata == null || Main._accessInputMetadata.apiKind !== ApiKind.Graph) {
-      // client only needs master key for Graph API
-      return undefined;
-    }
-
     const matchedParts: string[] = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
     return (matchedParts.length > 1 && matchedParts[1]) || undefined;
-  }
-
-  private static _isResourceToken(connectionString: string): boolean {
-    return connectionString && connectionString.includes("type=resource");
   }
 }

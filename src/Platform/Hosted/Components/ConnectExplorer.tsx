@@ -3,15 +3,25 @@ import { useBoolean } from "@uifabric/react-hooks";
 import { HttpHeaders } from "../../../Common/Constants";
 import { GenerateTokenResponse } from "../../../Contracts/DataModels";
 import { configContext } from "../../../ConfigContext";
+import { AuthType } from "../../../AuthType";
+import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {
+  connectionString: string;
   login: () => void;
   setEncryptedToken: (token: string) => void;
+  setConnectionString: (connectionString: string) => void;
+  setAuthType: (authType: AuthType) => void;
 }
 
-export const ConnectExplorer: React.FunctionComponent<Props> = ({ setEncryptedToken, login }: Props) => {
-  const [connectionString, setConnectionString] = React.useState<string>("");
-  const [isConnectionStringVisible, { setTrue: showConnectionString }] = useBoolean(false);
+export const ConnectExplorer: React.FunctionComponent<Props> = ({
+  setEncryptedToken,
+  login,
+  setAuthType,
+  connectionString,
+  setConnectionString
+}: Props) => {
+  const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
 
   return (
     <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
@@ -21,11 +31,17 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({ setEncryptedTo
             <img src="images/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" />
           </p>
           <p className="welcomeText">Welcome to Azure Cosmos DB</p>
-          {isConnectionStringVisible ? (
+          {isFormVisible ? (
             <form
               id="connectWithConnectionString"
               onSubmit={async event => {
                 event.preventDefault();
+
+                if (isResourceTokenConnectionString(connectionString)) {
+                  setAuthType(AuthType.ResourceToken);
+                  return;
+                }
+
                 const headers = new Headers();
                 headers.append(HttpHeaders.connectionString, connectionString);
                 const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
@@ -37,6 +53,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({ setEncryptedTo
                 const result: GenerateTokenResponse = JSON.parse(await response.json());
                 console.log(result.readWrite || result.read);
                 setEncryptedToken(decodeURIComponent(result.readWrite || result.read));
+                setAuthType(AuthType.ConnectionString);
               }}
             >
               <p className="connectExplorerContent connectStringText">Connect to your account with connection string</p>
@@ -66,7 +83,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({ setEncryptedTo
           ) : (
             <div id="connectWithAad">
               <input className="filterbtnstyle" type="button" value="Sign In" onClick={login} />
-              <p className="switchConnectTypeText" onClick={showConnectionString}>
+              <p className="switchConnectTypeText" onClick={showForm}>
                 Connect to your account with connection string
               </p>
             </div>
