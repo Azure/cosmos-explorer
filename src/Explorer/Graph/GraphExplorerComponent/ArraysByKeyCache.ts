@@ -16,6 +16,12 @@ export class ArraysByKeyCache<T> {
     this.totalElements = 0;
   }
 
+
+  public clear(): void {
+    this.cache = {};
+    this.keyQueue = [];
+    this.totalElements = 0;
+  }
   /**
    * To simplify, the array of cached elements array for a given key is dense (there is no index at which an elemnt is missing).
    * Retrieving a page within the array is guaranteed to return a complete page.
