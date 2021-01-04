@@ -4,7 +4,7 @@
     "noEmit": true,
     "strictNullChecks": true,
     "strict": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": false
   },
   "files": [
     "./src/AuthType.ts",
@@ -42,6 +42,7 @@
     "./src/Explorer/Controls/GitHub/GitHubStyleConstants.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/__mocks__/GremlinClient.ts",
+    "./src/Explorer/Graph/GraphExplorerComponent/EdgeInfoCache.ts",
     "./src/Explorer/Notebook/FileSystemUtil.ts",
     "./src/Explorer/Notebook/NTeractUtil.ts",
     "./src/Explorer/Notebook/NotebookComponent/actions.ts",
