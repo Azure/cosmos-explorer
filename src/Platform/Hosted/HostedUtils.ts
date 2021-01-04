@@ -46,6 +46,6 @@ export function getDatabaseAccountKindFromExperience(apiExperience: string): str
 
 export function extractMasterKeyfromConnectionString(connectionString: string): string {
   // Only Gremlin uses the actual master key for connection to cosmos
-  const matchedParts: string[] = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
-  return (matchedParts.length > 1 && matchedParts[1]) || undefined;
+  const matchedParts = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
+  return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
 }
