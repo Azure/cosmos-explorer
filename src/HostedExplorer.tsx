@@ -73,6 +73,8 @@ const App: React.FunctionComponent = () => {
     }
   }, [ref, encryptedToken, encryptedTokenMetadata, isLoggedIn, databaseAccount]);
 
+  const showAccount = (isLoggedIn && databaseAccount) || (encryptedTokenMetadata && encryptedTokenMetadata);
+
   return (
     <>
       <header>
@@ -111,23 +113,22 @@ const App: React.FunctionComponent = () => {
           </div>
         </div>
       </header>
-      {(isLoggedIn && databaseAccount) ||
-        (encryptedTokenMetadata && encryptedTokenMetadata && (
-          // Ideally we would import and render data explorer like any other React component, however
-          // because it still has a significant amount of Knockout code, this would lead to memory leaks.
-          // Knockout does not have a way to tear down all of its binding and listeners with a single method.
-          // It's possible this can be changed once all knockout code has been removed.
-          <iframe
-            // Setting key is needed so React will re-render this element on any account change
-            key={databaseAccount?.id || encryptedTokenMetadata?.accountName}
-            ref={ref}
-            id="explorerMenu"
-            name="explorer"
-            className="iframe"
-            title="explorer"
-            src="explorer.html?v=1.0.1&platform=Hosted"
-          ></iframe>
-        ))}
+      {showAccount && (
+        // Ideally we would import and render data explorer like any other React component, however
+        // because it still has a significant amount of Knockout code, this would lead to memory leaks.
+        // Knockout does not have a way to tear down all of its binding and listeners with a single method.
+        // It's possible this can be changed once all knockout code has been removed.
+        <iframe
+          // Setting key is needed so React will re-render this element on any account change
+          key={databaseAccount?.id || encryptedTokenMetadata?.accountName}
+          ref={ref}
+          id="explorerMenu"
+          name="explorer"
+          className="iframe"
+          title="explorer"
+          src="explorer.html?v=1.0.1&platform=Hosted"
+        ></iframe>
+      )}
       {!isLoggedIn && !encryptedTokenMetadata && (
         <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
       )}

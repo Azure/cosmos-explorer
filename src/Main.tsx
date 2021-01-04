@@ -213,6 +213,9 @@ const App: React.FunctionComponent = () => {
           const accountResourceId = account.id;
           const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
           const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
+          updateUserContext({
+            databaseAccount: win.hostedConfig.databaseAccount
+          });
           explorer.initDataExplorerWithFrameInputs({
             databaseAccount: account,
             subscriptionId,
