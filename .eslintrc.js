@@ -43,6 +43,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "error",
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
     eqeqeq: "error",
+    "react/display-name": "off",
     "no-restricted-syntax": [
       "error",
       {

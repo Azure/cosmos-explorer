@@ -1,3 +1,6 @@
+// TODO: Renable this rule for the file or turn it off everywhere
+/* eslint-disable react/display-name */
+
 import { StyleConstants } from "../../../Common/Constants";
 import * as React from "react";
 import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
@@ -69,12 +72,6 @@ export const AccountSwitcher: React.FunctionComponent<Props> = ({ armToken, setD
       {
         key: "switchSubscription",
         onRender: () => {
-          // const placeHolderText = isLoadingSubscriptions
-          //   ? "Loading subscriptions"
-          //   : !options || !options.length
-          //   ? "No subscriptions found in current directory"
-          //   : "Select subscription from list";
-
           const dropdownProps: IDropdownProps = {
             label: "Subscription",
             className: "accountSwitchSubscriptionDropdown",
@@ -103,12 +100,6 @@ export const AccountSwitcher: React.FunctionComponent<Props> = ({ armToken, setD
       {
         key: "switchAccount",
         onRender: (item, dismissMenu) => {
-          // const placeHolderText = isLoadingAccounts
-          //   ? "Loading Cosmos DB accounts"
-          //   : !options || !options.length
-          //   ? "No Cosmos DB accounts found"
-          //   : "Select Cosmos DB account from list";
-
           const dropdownProps: IDropdownProps = {
             label: "Cosmos DB Account Name",
             className: "accountSwitchAccountDropdown",

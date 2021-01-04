@@ -55,7 +55,6 @@ import "url-polyfill/url-polyfill.min";
 
 initializeIcons();
 
-import Hosted from "./Platform/Hosted/Main";
 import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
@@ -81,6 +80,8 @@ import {
   getDatabaseAccountPropertiesFromMetadata
 } from "./Platform/Hosted/HostedUtils";
 import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
+import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
+import { AccountKind, DefaultAccountExperience } from "./Common/Constants";
 
 // const accountResourceId =
 // authType === AuthType.EncryptedToken
@@ -138,10 +139,74 @@ const App: React.FunctionComponent = () => {
           });
           explorer.isAccountReady(true);
         } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
-          window.authType = AuthType.EncryptedToken;
+          window.authType = AuthType.ResourceToken;
+          // Resource tokens can only be used with SQL API
+          const apiExperience: string = DefaultAccountExperience.DocumentDB;
+          const parsedResourceToken = parseResourceTokenConnectionString(win.hostedConfig.resourceToken);
+          updateUserContext({
+            resourceToken: parsedResourceToken.resourceToken
+          });
+          return explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              name: parsedResourceToken.accountEndpoint,
+              kind: AccountKind.GlobalDocumentDB,
+              properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
+              tags: { defaultExperience: apiExperience }
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: undefined,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: AuthHeadersUtil.serverId,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
+            isAuthWithresourceToken: true
+          });
         } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
-          // This might seem weird, but for legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
+          // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
           window.authType = AuthType.EncryptedToken;
+          // Impossible to tell if this is a try cosmos sub using an encrypted token
+          explorer.isTryCosmosDBSubscription(false);
+          updateUserContext({
+            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
+          });
+
+          const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
+            win.hostedConfig.encryptedTokenMetadata.apiKind
+          );
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              // id: Main._databaseAccountId,
+              name: win.hostedConfig.encryptedTokenMetadata.accountName,
+              kind: getDatabaseAccountKindFromExperience(apiExperience),
+              properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
+              tags: []
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: win.hostedConfig.masterKey,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: AuthHeadersUtil.serverId,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+          });
+          explorer.isAccountReady(true);
         } else if (win.hostedConfig.authType === AuthType.AAD) {
           window.authType = AuthType.AAD;
           const account = win.hostedConfig.databaseAccount;
