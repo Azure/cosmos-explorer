@@ -70,31 +70,14 @@ import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
-import { AccountKind, DefaultAccountExperience, TagNames } from "./Common/Constants";
 import { updateUserContext } from "./UserContext";
 import AuthHeadersUtil from "./Platform/Hosted/Authorization";
 import { CollectionCreation } from "./Shared/Constants";
 import { extractFeatures } from "./Platform/Hosted/extractFeatures";
+import { emulatorAccount } from "./Platform/Emulator/emulatorAccount";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
-
-const emulatorAccount = {
-  name: "",
-  id: "",
-  location: "",
-  type: "",
-  kind: AccountKind.DocumentDB,
-  tags: {
-    [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB
-  },
-  properties: {
-    documentEndpoint: "",
-    tableEndpoint: "",
-    gremlinEndpoint: "",
-    cassandraEndpoint: ""
-  }
-};
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
@@ -114,7 +97,7 @@ const App: React.FunctionComponent = () => {
           const accountResourceId = account.id;
           const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
           const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
-          const inputs: DataExplorerInputsFrame = {
+          explorer.initDataExplorerWithFrameInputs({
             databaseAccount: account,
             subscriptionId,
             resourceGroup,
@@ -130,8 +113,7 @@ const App: React.FunctionComponent = () => {
             quotaId: undefined,
             addCollectionDefaultFlight: explorer.flight(),
             isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
-          };
-          explorer.initDataExplorerWithFrameInputs(inputs);
+          });
           explorer.isAccountReady(true);
         }
       } else if (config.platform === Platform.Emulator) {
@@ -154,7 +136,7 @@ const App: React.FunctionComponent = () => {
           }
         }
 
-        window.addEventListener("message", message => explorer.handleMessage(message), false);
+        window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
       }
       applyExplorerBindings(explorer);
     });

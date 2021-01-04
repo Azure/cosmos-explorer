@@ -1260,16 +1260,6 @@ export default class Explorer {
     $("#contextSwitchPrompt").dialog("open");
   }
 
-  public displayConnectExplorerForm(): void {
-    $("#divExplorer").hide();
-    $("#connectExplorer").css("display", "flex");
-  }
-
-  public hideConnectExplorerForm(): void {
-    $("#connectExplorer").hide();
-    $("#divExplorer").show();
-  }
-
   public isReadWriteToggled: () => boolean = (): boolean => {
     return this.shareAccessToggleState() === ShareAccessToggleState.ReadWrite;
   };
@@ -1878,16 +1868,6 @@ export default class Explorer {
         subscriptionType: inputs.subscriptionType,
         quotaId: inputs.quotaId
       });
-      TelemetryProcessor.traceSuccess(
-        Action.LoadDatabaseAccount,
-        {
-          resourceId: this.databaseAccount && this.databaseAccount().id,
-          dataExplorerArea: Constants.Areas.ResourceTree,
-          databaseAccount: this.databaseAccount && this.databaseAccount()
-        },
-        inputs.loadDatabaseAccountTimestamp
-      );
-
       this.isAccountReady(true);
     }
   }
