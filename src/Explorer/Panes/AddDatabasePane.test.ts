@@ -77,7 +77,7 @@ describe("Add Database Pane", () => {
       explorer.databaseAccount(mockFreeTierDatabaseAccount);
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.isFreeTierAccount()).toBe(true);
-      expect(addDatabasePane.upsellMessage()).toContain("With free tier discount");
+      expect(addDatabasePane.upsellMessage()).toContain("With free tier");
       expect(addDatabasePane.upsellAnchorUrl()).toBe(Constants.Urls.freeTierInformation);
       expect(addDatabasePane.upsellAnchorText()).toBe("Learn more");
     });
