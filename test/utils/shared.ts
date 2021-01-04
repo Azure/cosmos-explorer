@@ -9,13 +9,13 @@ export async function login(connectionString: string): Promise<Frame> {
     return page.mainFrame();
   }
   // log in with connection string
+  await page.waitFor("div > p.switchConnectTypeText", { visible: true });
+  await page.click("div > p.switchConnectTypeText");
+  const connStr = connectionString;
+  await page.type("input[class='inputToken']", connStr);
+  await page.click("input[value='Connect']");
   const handle = await page.waitForSelector("iframe");
   const frame = await handle.contentFrame();
-  await frame.waitFor("div > p.switchConnectTypeText", { visible: true });
-  await frame.click("div > p.switchConnectTypeText");
-  const connStr = connectionString;
-  await frame.type("input[class='inputToken']", connStr);
-  await frame.click("input[value='Connect']");
   return frame;
 }
 
