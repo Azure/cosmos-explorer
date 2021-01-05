@@ -18,28 +18,31 @@ export class SelfServeComponentAdapter implements ReactAdapter {
   constructor(container: Explorer) {
     this.container = container;
     this.parameters = ko.observable(Date.now());
-    this.container.selfServeType.subscribe(() => {this.triggerRender()})
+    this.container.selfServeType.subscribe(() => {
+      this.triggerRender();
+    });
   }
 
-  private getDescriptor = (selfServeType : SelfServeTypes) : Descriptor => {
+  private getDescriptor = (selfServeType: SelfServeTypes): Descriptor => {
     switch (selfServeType) {
       case SelfServeTypes.example:
-        return SelfServeExample.toSmartUiDescriptor()
+        return SelfServeExample.toSmartUiDescriptor();
       default:
         return undefined;
     }
-  }
-  
-  public renderComponent(): JSX.Element {
-    const selfServeType = this.container.selfServeType()
-    const smartUiDescriptor = this.getDescriptor(selfServeType)
+  };
 
-  
-    const element = smartUiDescriptor ?
-      <SmartUiComponent descriptor={smartUiDescriptor} /> :
+  public renderComponent(): JSX.Element {
+    const selfServeType = this.container.selfServeType();
+    const smartUiDescriptor = this.getDescriptor(selfServeType);
+
+    const element = smartUiDescriptor ? (
+      <SmartUiComponent descriptor={smartUiDescriptor} />
+    ) : (
       <h1>Invalid self serve type!</h1>
-  
-    return element
+    );
+
+    return element;
   }
 
   private triggerRender() {

@@ -13,7 +13,7 @@ import {
   InputType
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
-const SelfServeType = "selfServeType"
+const SelfServeType = "selfServeType";
 
 export class SelfServeBase {
   public static toSmartUiDescriptor(): Descriptor {
@@ -32,11 +32,9 @@ export interface CommonInputTypes {
   min?: (() => Promise<number>) | number;
   max?: (() => Promise<number>) | number;
   step?: (() => Promise<number>) | number;
-  defaultValue?: any;
   trueLabel?: (() => Promise<string>) | string;
   falseLabel?: (() => Promise<string>) | string;
   choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
-  defaultKey?: (() => Promise<string>) | string;
   inputType?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
@@ -52,10 +50,7 @@ const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T
   fieldObject[name] = value;
 };
 
-const getValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
-  name: T,
-  fieldObject: CommonInputTypes
-): K => {
+const getValue = <T extends keyof CommonInputTypes>(name: T, fieldObject: CommonInputTypes): unknown => {
   return fieldObject[name];
 };
 
@@ -67,10 +62,10 @@ export const addPropertyToMap = (
   descriptorValue: any
 ): void => {
   const descriptorKey = descriptorName.toString() as keyof CommonInputTypes;
-  let context = Reflect.getMetadata(metadataKey, target) as Map<String, CommonInputTypes>;
+  let context = Reflect.getMetadata(metadataKey, target) as Map<string, CommonInputTypes>;
 
   if (!context) {
-    context = new Map<String, CommonInputTypes>();
+    context = new Map<string, CommonInputTypes>();
   }
 
   if (!(context instanceof Map)) {
@@ -93,7 +88,7 @@ export const addPropertyToMap = (
 };
 
 export const toSmartUiDescriptor = (metadataKey: string, target: Object): void => {
-  const context = Reflect.getMetadata(metadataKey, target) as Map<String, CommonInputTypes>;
+  const context = Reflect.getMetadata(metadataKey, target) as Map<string, CommonInputTypes>;
   Reflect.defineMetadata(metadataKey, context, target);
 
   const root = context.get("root");
@@ -105,7 +100,13 @@ export const toSmartUiDescriptor = (metadataKey: string, target: Object): void =
     );
   }
 
-  let smartUiDescriptor = {
+  if (!root?.initialize) {
+    throw new Error(
+      "@Initialize decorator not declared for the class. Please ensure @SmartUi is the first decorator used for the class."
+    );
+  }
+
+  const smartUiDescriptor = {
     onSubmit: root.onSubmit,
     initialize: root.initialize,
     root: {
@@ -124,12 +125,12 @@ export const toSmartUiDescriptor = (metadataKey: string, target: Object): void =
 };
 
 const addToDescriptor = (
-  context: Map<String, CommonInputTypes>,
+  context: Map<string, CommonInputTypes>,
   smartUiDescriptor: Descriptor,
   root: Node,
-  key: String
+  key: string
 ): void => {
-  let value = context.get(key);
+  const value = context.get(key);
   if (!value) {
     // should already be added to root
     const childNode = getChildFromRoot(key, smartUiDescriptor);
@@ -149,13 +150,13 @@ const addToDescriptor = (
     children: []
   } as Node;
   context.delete(key);
-  for (let childKey in childrenKeys) {
+  for (const childKey in childrenKeys) {
     addToDescriptor(context, smartUiDescriptor, element, childrenKeys[childKey]);
   }
   root.children.push(element);
 };
 
-const getChildFromRoot = (key: String, smartUiDescriptor: Descriptor): Node => {
+const getChildFromRoot = (key: string, smartUiDescriptor: Descriptor): Node => {
   let i = 0;
   const children = smartUiDescriptor.root.children;
   while (i < children.length) {
@@ -171,8 +172,8 @@ const getChildFromRoot = (key: String, smartUiDescriptor: Descriptor): Node => {
 };
 
 const getInput = (value: CommonInputTypes): AnyInput => {
-  if (!value.label || !value.type || !value.dataFieldName) {
-    throw new Error("label, onChange, type and dataFieldName are required.");
+  if (!value.label && !value.customElement) {
+    throw new Error("label is required.");
   }
 
   switch (value.type) {
@@ -197,13 +198,13 @@ const getInput = (value: CommonInputTypes): AnyInput => {
 };
 
 export enum SelfServeTypes {
-  none="none",
-  invalid="invalid",
-  example="example"
+  none = "none",
+  invalid = "invalid",
+  example = "example"
 }
 
 export const getSelfServeType = (search: string): SelfServeTypes => {
   const params = new URLSearchParams(search);
-  const selfServeTypeParam = params.get(SelfServeType)?.toLowerCase()
-  return SelfServeTypes[selfServeTypeParam as keyof typeof SelfServeTypes]
-}
+  const selfServeTypeParam = params.get(SelfServeType)?.toLowerCase();
+  return SelfServeTypes[selfServeTypeParam as keyof typeof SelfServeTypes];
+};

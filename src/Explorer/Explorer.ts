@@ -163,7 +163,7 @@ export default class Explorer {
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
-  private selfServeComponentAdapter: SelfServeComponentAdapter
+  private selfServeComponentAdapter: SelfServeComponentAdapter;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -260,7 +260,7 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private selfServeLoadingComponentAdapter : SelfServeLoadingComponentAdapter;
+  private selfServeLoadingComponentAdapter: SelfServeLoadingComponentAdapter;
   private splashScreenAdapter: SplashScreenComponentAdapter;
   private notificationConsoleComponentAdapter: NotificationConsoleComponentAdapter;
   private dialogComponentAdapter: DialogComponentAdapter;
@@ -1862,16 +1862,16 @@ export default class Explorer {
   }
 
   public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
-    const selfServeTypeForTest = inputs.features[Constants.Features.selfServeTypeForTest]
+    const selfServeTypeForTest = inputs.features[Constants.Features.selfServeTypeForTest];
     if (selfServeTypeForTest) {
-      const selfServeType = SelfServeTypes[selfServeTypeForTest?.toLowerCase() as keyof typeof SelfServeTypes]
-      this.selfServeType(selfServeType ? selfServeType : SelfServeTypes.invalid)
+      const selfServeType = SelfServeTypes[selfServeTypeForTest?.toLowerCase() as keyof typeof SelfServeTypes];
+      this.selfServeType(selfServeType ? selfServeType : SelfServeTypes.invalid);
     } else if (inputs.selfServeType) {
-      this.selfServeType(inputs.selfServeType)
+      this.selfServeType(inputs.selfServeType);
     } else {
-      this.selfServeType(SelfServeTypes.none)
-      this._setLoadingStatusText("Connecting...", "Welcome to Azure Cosmos DB")
-      this._setConnectingImage()
+      this.selfServeType(SelfServeTypes.none);
+      this._setLoadingStatusText("Connecting...", "Welcome to Azure Cosmos DB");
+      this._setConnectingImage();
     }
   }
 
@@ -1894,7 +1894,7 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      this.setSelfServeType(inputs)
+      this.setSelfServeType(inputs);
 
       if (!!inputs.dataExplorerVersion) {
         this.parentFrameDataExplorerVersion(inputs.dataExplorerVersion);
@@ -3011,7 +3011,7 @@ export default class Explorer {
 
   private _setConnectingImage() {
     const connectingImage = document.getElementById("explorerConnectingImage");
-    connectingImage.innerHTML="<img src=\"../images/HdeConnectCosmosDB.svg\" >";
+    connectingImage.innerHTML = '<img src="../images/HdeConnectCosmosDB.svg" >';
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {

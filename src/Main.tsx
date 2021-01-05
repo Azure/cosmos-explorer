@@ -126,8 +126,11 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
-      <div id="divSelfServe" className="flexContainer" data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter">
-      </div>
+      <div
+        id="divSelfServe"
+        className="flexContainer"
+        data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter"
+      ></div>
       <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
         {/* Main Command Bar - Start */}
         <div data-bind="visible: selfServeType() === 'none', react: commandBarComponentAdapter" />
@@ -305,7 +308,10 @@ const App: React.FunctionComponent = () => {
             data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
           >
             <form className="connectExplorerFormContainer">
-              <div className="connectExplorer" data-bind="visible: selfServeType() === 'none', react: splashScreenAdapter" />
+              <div
+                className="connectExplorer"
+                data-bind="visible: selfServeType() === 'none', react: splashScreenAdapter"
+              />
             </form>
           </div>
           <div
@@ -375,14 +381,23 @@ const App: React.FunctionComponent = () => {
       {/* Global loader - Start */}
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
-          <div data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter">
-          </div>
-          <p className="connectExplorerContent" id="explorerConnectingImage" data-bind="visible: selfServeType() === 'none'">
-          </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle" data-bind="visible: selfServeType() === 'none'">
-          </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert" data-bind="visible: selfServeType() === 'none'">
-          </p>
+          <div data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter"></div>
+          <p
+            className="connectExplorerContent"
+            id="explorerConnectingImage"
+            data-bind="visible: selfServeType() === 'none'"
+          ></p>
+          <p
+            className="splashLoaderTitle"
+            id="explorerLoadingStatusTitle"
+            data-bind="visible: selfServeType() === 'none'"
+          ></p>
+          <p
+            className="splashLoaderText"
+            id="explorerLoadingStatusText"
+            role="alert"
+            data-bind="visible: selfServeType() === 'none'"
+          ></p>
         </div>
       </div>
       {/* Global loader - End */}

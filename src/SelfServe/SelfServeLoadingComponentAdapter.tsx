@@ -16,7 +16,7 @@ export class SelfServeLoadingComponentAdapter implements ReactAdapter {
   }
 
   public renderComponent(): JSX.Element {
-    return <Spinner size={SpinnerSize.large} />
+    return <Spinner size={SpinnerSize.large} />;
   }
 
   private triggerRender() {

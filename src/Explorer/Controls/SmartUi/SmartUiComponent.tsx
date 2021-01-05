@@ -9,10 +9,8 @@ import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
 import { Link, MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize } from "office-ui-fabric-react";
-
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
-import { Widget } from "@phosphor/widgets";
 
 /**
  * Generic UX renderer
@@ -24,10 +22,12 @@ import { Widget } from "@phosphor/widgets";
 
 export type InputTypeValue = "number" | "string" | "boolean" | "object";
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type ChoiceItem = { label: string; key: string; value: any };
+export type NumberInputType = "spinner" | "slider";
 
-export type InputType = Number | String | Boolean | ChoiceItem | JSX.Element;
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export type ChoiceItem = { label: string; key: string };
+
+export type InputType = number | string | boolean | ChoiceItem | JSX.Element;
 
 export interface BaseInput {
   label: (() => Promise<string>) | string;
@@ -45,23 +45,23 @@ export interface NumberInput extends BaseInput {
   min: (() => Promise<number>) | number;
   max: (() => Promise<number>) | number;
   step: (() => Promise<number>) | number;
-  defaultValue?: (() => Promise<number>) | number;
-  inputType: "spin" | "slider";
+  defaultValue?: number;
+  inputType: NumberInputType;
 }
 
 export interface BooleanInput extends BaseInput {
   trueLabel: (() => Promise<string>) | string;
   falseLabel: (() => Promise<string>) | string;
-  defaultValue?: (() => Promise<boolean>) | boolean;
+  defaultValue?: boolean;
 }
 
 export interface StringInput extends BaseInput {
-  defaultValue?: (() => Promise<string>) | string;
+  defaultValue?: string;
 }
 
 export interface ChoiceInput extends BaseInput {
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
-  defaultKey?: (() => Promise<string>) | string;
+  defaultKey?: string;
 }
 
 export interface Info {
@@ -83,7 +83,7 @@ export interface Node {
 
 export interface Descriptor {
   root: Node;
-  initialize?: () => Promise<Map<string, InputType>>;
+  initialize: () => Promise<Map<string, InputType>>;
   onSubmit: (currentValues: Map<string, InputType>) => Promise<void>;
 }
 
@@ -95,13 +95,15 @@ export interface SmartUiComponentProps {
 
 interface SmartUiComponentState {
   currentValues: Map<string, InputType>;
+  baselineValues: Map<string, InputType>;
   errors: Map<string, string>;
-  customInputIndex: number
+  customInputIndex: number;
+  isRefreshing: boolean;
 }
 
 export class SmartUiComponent extends React.Component<SmartUiComponentProps, SmartUiComponentState> {
-  private customInputs : AnyInput[] = []
-  private shouldRenderCustomComponents = true
+  private customInputs: AnyInput[] = [];
+  private shouldRenderCustomComponents = true;
 
   private static readonly labelStyle = {
     color: "#393939",
@@ -112,17 +114,19 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   constructor(props: SmartUiComponentProps) {
     super(props);
     this.state = {
-      currentValues: undefined,
+      baselineValues: new Map(),
+      currentValues: new Map(),
       errors: new Map(),
-      customInputIndex: 0
+      customInputIndex: 0,
+      isRefreshing: false
     };
 
     this.setDefaultValues();
   }
 
-  componentDidUpdate = async () : Promise<void> => {
+  componentDidUpdate = async (): Promise<void> => {
     if (!this.customInputs.length) {
-      return
+      return;
     }
     if (!this.shouldRenderCustomComponents) {
       this.shouldRenderCustomComponents = true;
@@ -130,43 +134,56 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
 
     if (this.state.customInputIndex === this.customInputs.length) {
-      this.shouldRenderCustomComponents = false
-      this.setState({customInputIndex: 0})
-      return
+      this.shouldRenderCustomComponents = false;
+      this.setState({ customInputIndex: 0 });
+      return;
     }
 
-    const input = this.customInputs[this.state.customInputIndex]
+    const input = this.customInputs[this.state.customInputIndex];
     const dataFieldName = input.dataFieldName;
-    const element = await (input.customElement as Function)(this.state.currentValues)
+    const element = await (input.customElement as Function)(this.state.currentValues);
     const { currentValues } = this.state;
     currentValues.set(dataFieldName, element);
-    this.setState({ currentValues: currentValues, customInputIndex: this.state.customInputIndex + 1});
-  }
-
-  private setDefaultValues = async (): Promise<void> => {
-    let defaults = new Map<string, InputType>()
-    
-    if (this.props.descriptor.initialize) {
-      defaults = await this.props.descriptor.initialize()
-    }
-
-    await this.setDefaults(this.props.descriptor.root, defaults);
-    this.setState({ currentValues: defaults });
+    this.setState({ currentValues: currentValues, customInputIndex: this.state.customInputIndex + 1 });
   };
 
-  private setDefaults = async (currentNode: Node, defaults: Map<string, InputType>): Promise<void> => {
+  private setDefaultValues = async (): Promise<void> => {
+    this.setState({ isRefreshing: true });
+    await this.setDefaults(this.props.descriptor.root);
+    this.setState({ isRefreshing: false });
+    await this.initialize();
+  };
+
+  private initialize = async (): Promise<void> => {
+    this.setState({ isRefreshing: true });
+    let { currentValues, baselineValues } = this.state;
+    const initialValues = await this.props.descriptor.initialize();
+    for (const key of initialValues.keys()) {
+      currentValues = currentValues.set(key, initialValues.get(key));
+      baselineValues = baselineValues.set(key, initialValues.get(key));
+    }
+    this.setState({ currentValues: currentValues, baselineValues: baselineValues, isRefreshing: false });
+  };
+
+  private discard = (): void => {
+    let { currentValues } = this.state;
+    const { baselineValues } = this.state;
+    for (const key of baselineValues.keys()) {
+      currentValues = currentValues.set(key, baselineValues.get(key));
+    }
+    this.setState({ currentValues: currentValues });
+  };
+
+  private setDefaults = async (currentNode: Node): Promise<void> => {
     if (currentNode.info && currentNode.info instanceof Function) {
       currentNode.info = await (currentNode.info as Function)();
     }
 
     if (currentNode.input) {
       currentNode.input = await this.getModifiedInput(currentNode.input);
-      if (!defaults.get(currentNode.input.dataFieldName)) {
-        defaults.set(currentNode.input.dataFieldName, this.getDefaultValue(currentNode.input));
-      }
     }
 
-    await Promise.all(currentNode.children?.map(async (child: Node) => await this.setDefaults(child, defaults)));
+    await Promise.all(currentNode.children?.map(async (child: Node) => await this.setDefaults(child)));
   };
 
   private getModifiedInput = async (input: AnyInput): Promise<AnyInput> => {
@@ -180,23 +197,17 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
     if (input.customElement) {
       if (input.customElement instanceof Function) {
-        this.customInputs.push(input)
+        this.customInputs.push(input);
       }
       return input;
     }
 
     switch (input.type) {
-      case "string":
-        const stringInput = input as StringInput;
-        if (stringInput.defaultValue instanceof Function) {
-          stringInput.defaultValue = await (stringInput.defaultValue as Function)();
-        }
-        return stringInput;
-      case "number":
+      case "string": {
+        return input as StringInput;
+      }
+      case "number": {
         const numberInput = input as NumberInput;
-        if (numberInput.defaultValue instanceof Function) {
-          numberInput.defaultValue = await (numberInput.defaultValue as Function)();
-        }
         if (numberInput.min instanceof Function) {
           numberInput.min = await (numberInput.min as Function)();
         }
@@ -207,11 +218,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           numberInput.step = await (numberInput.step as Function)();
         }
         return numberInput;
-      case "boolean":
+      }
+      case "boolean": {
         const booleanInput = input as BooleanInput;
-        if (booleanInput.defaultValue instanceof Function) {
-          booleanInput.defaultValue = await (booleanInput.defaultValue as Function)();
-        }
         if (booleanInput.trueLabel instanceof Function) {
           booleanInput.trueLabel = await (booleanInput.trueLabel as Function)();
         }
@@ -219,29 +228,32 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           booleanInput.falseLabel = await (booleanInput.falseLabel as Function)();
         }
         return booleanInput;
-      default:
+      }
+      default: {
         const enumInput = input as ChoiceInput;
-        if (enumInput.defaultKey instanceof Function) {
-          enumInput.defaultKey = await (enumInput.defaultKey as Function)();
-        }
         if (enumInput.choices instanceof Function) {
           enumInput.choices = await (enumInput.choices as Function)();
         }
         return enumInput;
+      }
     }
   };
 
   private getDefaultValue = (input: AnyInput): InputType => {
     switch (input.type) {
-      case "string":
-        const stringInput = input as StringInput 
+      case "string": {
+        const stringInput = input as StringInput;
         return stringInput.defaultValue ? (stringInput.defaultValue as string) : "";
-      case "number":
+      }
+      case "number": {
         return (input as NumberInput).defaultValue as number;
-      case "boolean":
+      }
+      case "boolean": {
         return (input as BooleanInput).defaultValue as boolean;
-      default:
+      }
+      default: {
         return (input as ChoiceInput).defaultKey as string;
+      }
     }
   };
 
@@ -271,7 +283,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   };
 
   private renderStringInput(input: StringInput): JSX.Element {
-    const value = this.state.currentValues.get(input.dataFieldName) as string
+    const value = this.state.currentValues.get(input.dataFieldName) as string;
     return (
       <div className="stringInputContainer">
         <div>
@@ -342,7 +354,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   };
 
   private renderNumberInput(input: NumberInput): JSX.Element {
-    const { label, min, max, defaultValue, dataFieldName, step } = input;
+    const { label, min, max, dataFieldName, step } = input;
     const props = {
       label: label as string,
       min: min as number,
@@ -351,13 +363,13 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       step: step as number
     };
 
-    const value = this.state.currentValues.get(dataFieldName) as number
-    if (input.inputType === "spin") {
+    const value = this.state.currentValues.get(dataFieldName) as number;
+    if (input.inputType === "spinner") {
       return (
         <div>
           <SpinButton
             {...props}
-            value={value.toString()}
+            value={value?.toString()}
             onValidate={newValue => this.onValidate(input, newValue, props.min, props.max)}
             onIncrement={newValue => this.onIncrement(input, newValue, props.step, props.max)}
             onDecrement={newValue => this.onDecrement(input, newValue, props.step, props.min)}
@@ -377,8 +389,6 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     } else if (input.inputType === "slider") {
       return (
         <Slider
-          // showValue={true}
-          // valueFormat={}
           {...props}
           value={value}
           onChange={newValue => this.onInputChange(input, newValue)}
@@ -444,7 +454,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         placeholder={placeholder as string}
         options={(choices as ChoiceItem[]).map(c => ({
           key: c.key,
-          text: c.value
+          text: c.label
         }))}
         styles={{
           label: {
@@ -457,11 +467,11 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private renderCustomInput(input: AnyInput) : JSX.Element {
+  private renderCustomInput(input: AnyInput): JSX.Element {
     if (input.customElement instanceof Function) {
       const dataFieldName = input.dataFieldName;
-      const element = this.state.currentValues.get(dataFieldName) as JSX.Element
-      return element ? element : <></>
+      const element = this.state.currentValues.get(dataFieldName) as JSX.Element;
+      return element ? element : <></>;
     } else {
       return input.customElement as JSX.Element;
     }
@@ -469,7 +479,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private renderInput(input: AnyInput): JSX.Element {
     if (input.customElement) {
-      return this.renderCustomInput(input)
+      return this.renderCustomInput(input);
     }
     switch (input.type) {
       case "string":
@@ -484,12 +494,14 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderNode(node: Node): JSX.Element {
-    const containerStackTokens: IStackTokens = { childrenGap: 10 };
+    const containerStackTokens: IStackTokens = { childrenGap: 15 };
 
     return (
       <Stack tokens={containerStackTokens} className="widgetRendererContainer">
-        {node.info && this.renderInfo(node.info as Info)}
-        {node.input && this.renderInput(node.input)}
+        <Stack.Item>
+          {node.info && this.renderInfo(node.info as Info)}
+          {node.input && this.renderInput(node.input)}
+        </Stack.Item>
         {node.children && node.children.map(child => <div key={child.id}>{this.renderNode(child)}</div>)}
       </Stack>
     );
@@ -497,27 +509,28 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 20 };
-    return this.state.currentValues && this.state.currentValues.size ? (
-      <Stack tokens={containerStackTokens} styles={{root: {width: 400, padding: 10}}}>
-        {this.renderNode(this.props.descriptor.root)}
-        <Stack horizontal tokens={{childrenGap: 10}}>
-        <PrimaryButton
-          styles={{ root: { width: 100 } }}
-          text="submit"
-          onClick={async () => {
-            await this.props.descriptor.onSubmit(this.state.currentValues)
-            this.setDefaultValues()
-          }}
-        />
-        <PrimaryButton
-          styles={{ root: { width: 100 } }}
-          text="discard"
-          onClick={async () => await this.setDefaultValues()}
-        />
+    return this.state.currentValues && this.state.currentValues.size && !this.state.isRefreshing ? (
+      <div style={{ overflowX: "auto" }}>
+        <Stack tokens={containerStackTokens} styles={{ root: { width: 400, padding: 10 } }}>
+          {this.renderNode(this.props.descriptor.root)}
+          <Stack horizontal tokens={{ childrenGap: 10 }}>
+            <PrimaryButton
+              styles={{ root: { width: 100 } }}
+              text="submit"
+              onClick={async () => {
+                await this.props.descriptor.onSubmit(this.state.currentValues);
+                this.initialize();
+              }}
+            />
+            <PrimaryButton styles={{ root: { width: 100 } }} text="discard" onClick={() => this.discard()} />
+          </Stack>
         </Stack>
-      </Stack>
+      </div>
     ) : (
-      <Spinner size={SpinnerSize.large} styles={{root: {textAlign: "center", justifyContent: "center", width: "100%", height: "100%"}}}/>
+      <Spinner
+        size={SpinnerSize.large}
+        styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
+      />
     );
   }
 }

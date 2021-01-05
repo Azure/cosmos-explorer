@@ -1,83 +1,70 @@
 import React from "react";
 import { ChoiceItem, Info, InputType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import { TextComponent } from "./CustomComponent";
-import {SessionStorageUtility} from "../../Shared/StorageUtility"
+import { SessionStorageUtility } from "../../Shared/StorageUtility";
+import { Text } from "office-ui-fabric-react";
 
-export enum Sizes {
-  OneCore4Gb = "OneCore4Gb",
-  TwoCore8Gb = "TwoCore8Gb",
-  FourCore16Gb = "FourCore16Gb"
+export enum Choices {
+  Choice1 = "Choice1",
+  Choice2 = "Choice2",
+  Choice3 = "Choice3"
 }
 
-export const instanceSizeOptions: ChoiceItem[] = [
-  { label: Sizes.OneCore4Gb, key: Sizes.OneCore4Gb, value: Sizes.OneCore4Gb },
-  { label: Sizes.TwoCore8Gb, key: Sizes.TwoCore8Gb, value: Sizes.TwoCore8Gb },
-  { label: Sizes.FourCore16Gb, key: Sizes.FourCore16Gb, value: Sizes.FourCore16Gb }
+export const choiceOptions: ChoiceItem[] = [
+  { label: "Choice 1", key: Choices.Choice1 },
+  { label: "Choice 2", key: Choices.Choice2 },
+  { label: "Choice 3", key: Choices.Choice3 }
 ];
 
 export const selfServeExampleInfo: Info = {
   message: "This is a self serve class"
 };
 
-export const instanceSizeInfo: Info = {
-  message: "instance size will be updated in the future"
+export const choiceInfo: Info = {
+  message: "More choices can be added in the future."
 };
 
-export const onInstanceCountChange = (
-  currentState: Map<string, InputType>,
-  newValue: InputType
-): Map<string, InputType> => {
-  currentState.set("instanceCount", newValue);
-  if ((newValue as number) === 1) {
-    currentState.set("instanceSize", Sizes.OneCore4Gb);
-  }
+export const onSliderChange = (currentState: Map<string, InputType>, newValue: InputType): Map<string, InputType> => {
+  currentState.set("numberSliderInput", newValue);
+  currentState.set("numberSpinnerInput", newValue);
   return currentState;
 };
 
 export const onSubmit = async (currentValues: Map<string, InputType>): Promise<void> => {
-  console.log(
-    "instanceCount:" +
-      currentValues.get("instanceCount") +
-      ", instanceSize:" +
-      currentValues.get("instanceSize") +
-      ", instanceName:" +
-      currentValues.get("instanceName") +
-      ", isAllowed:" +
-      currentValues.get("isAllowed")
-  );
-
-  SessionStorageUtility.setEntry("instanceCount", currentValues.get("instanceCount")?.toString())
-  SessionStorageUtility.setEntry("instanceSize", currentValues.get("instanceSize")?.toString())
-  SessionStorageUtility.setEntry("instanceName", currentValues.get("instanceName")?.toString())
-  SessionStorageUtility.setEntry("isAllowed", currentValues.get("isAllowed")?.toString())
+  SessionStorageUtility.setEntry("choiceInput", currentValues.get("choiceInput")?.toString());
+  SessionStorageUtility.setEntry("booleanInput", currentValues.get("booleanInput")?.toString());
+  SessionStorageUtility.setEntry("stringInput", currentValues.get("stringInput")?.toString());
+  SessionStorageUtility.setEntry("numberSliderInput", currentValues.get("numberSliderInput")?.toString());
+  SessionStorageUtility.setEntry("numberSpinnerInput", currentValues.get("numberSpinnerInput")?.toString());
 };
 
-export const initializeSelfServeExample = async () : Promise<Map<string, InputType>> => {
-  let defaults = new Map<string, InputType>()
-  defaults.set("instanceCount",  parseInt(SessionStorageUtility.getEntry("instanceCount")))
-  defaults.set("instanceSize",  SessionStorageUtility.getEntry("instanceSize"))
-  defaults.set("instanceName",  SessionStorageUtility.getEntry("instanceName"))
-  defaults.set("isAllowed",  SessionStorageUtility.getEntry("isAllowed") === "true")
-  return defaults
-};
-
-export const delay = (ms: number): Promise<void> => {
+const delay = (ms: number): Promise<void> => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export const getPromise = <T extends number | string | boolean | ChoiceItem[] | Info>(value: T): (() => Promise<T>) => {
-  const f = async (): Promise<T> => {
-    console.log("delay start");
-    await delay(100);
-    console.log("delay end");
-    return value;
-  };
-  return f;
+export const initializeSelfServeExample = async (): Promise<Map<string, InputType>> => {
+  await delay(1000);
+  const defaults = new Map<string, InputType>();
+  defaults.set("choiceInput", SessionStorageUtility.getEntry("choiceInput"));
+  defaults.set("booleanInput", SessionStorageUtility.getEntry("booleanInput") === "true");
+  defaults.set("stringInput", SessionStorageUtility.getEntry("stringInput"));
+  const numberSliderInput = parseInt(SessionStorageUtility.getEntry("numberSliderInput"));
+  defaults.set("numberSliderInput", !isNaN(numberSliderInput) ? numberSliderInput : 1);
+  const numberSpinnerInput = parseInt(SessionStorageUtility.getEntry("numberSpinnerInput"));
+  defaults.set("numberSpinnerInput", !isNaN(numberSpinnerInput) ? numberSpinnerInput : 1);
+  return defaults;
 };
 
-export const renderText = (text: string) : (currentValues: Map<string, InputType>) => Promise<JSX.Element> => {
-  const f = async (currentValues: Map<string, InputType>): Promise<JSX.Element> => {
-    return <TextComponent text={text} currentValues={currentValues}/>
+export const initializeNumberMaxValue = async (): Promise<number> => {
+  await delay(2000);
+  return 5;
+};
+
+export const descriptionElement = <Text>This is an example of Self serve class.</Text>;
+
+export const renderText = (text: string): ((currentValues: Map<string, InputType>) => Promise<JSX.Element>) => {
+  const elementPromiseFunction = async (currentValues: Map<string, InputType>): Promise<JSX.Element> => {
+    return <TextComponent text={text} currentValues={currentValues} />;
   };
-  return f
-}
+  return elementPromiseFunction;
+};

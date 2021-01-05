@@ -1,10 +1,15 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { SmartUiComponent, Descriptor, InputType } from "./SmartUiComponent";
+import { SmartUiComponent, Descriptor } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
   const exampleData: Descriptor = {
-    onSubmit: async () => {},
+    onSubmit: async () => {
+      return;
+    },
+    initialize: async () => {
+      return undefined;
+    },
     root: {
       id: "root",
       info: {
@@ -25,7 +30,7 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "spin",
+            inputType: "spinner",
             onChange: undefined
           }
         },
@@ -71,9 +76,9 @@ describe("SmartUiComponent", () => {
             dataFieldName: "database",
             type: "object",
             choices: [
-              { label: "Database 1", key: "db1", value: "database1" },
-              { label: "Database 2", key: "db2", value: "database2" },
-              { label: "Database 3", key: "db3", value: "database3" }
+              { label: "Database 1", key: "db1" },
+              { label: "Database 2", key: "db2" },
+              { label: "Database 3", key: "db3" }
             ],
             onChange: undefined,
             defaultKey: "db2"

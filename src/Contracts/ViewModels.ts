@@ -396,7 +396,7 @@ export interface DataExplorerInputsFrame {
   isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
-  selfServeType?: SelfServeTypes
+  selfServeType?: SelfServeTypes;
 }
 
 export interface CollectionCreationDefaults {
