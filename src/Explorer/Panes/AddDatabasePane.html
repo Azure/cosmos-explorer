@@ -114,7 +114,8 @@
                                               maxAutoPilotThroughputSet: maxAutoPilotThroughputSet,
                                               autoPilotUsageCost: autoPilotUsageCost,
                                               canExceedMaximumValue: canExceedMaximumValue,
-                                              showAutoPilot: !isFreeTierAccount()
+                                              showAutoPilot: !isFreeTierAccount(),
+                                              freeTierExceedThroughputTooltip: freeTierExceedThroughputTooltip
                                           }">
               </throughput-input-autopilot-v3>
               <p data-bind="visible: canRequestSupport">

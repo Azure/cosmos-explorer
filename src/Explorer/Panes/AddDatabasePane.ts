@@ -44,6 +44,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public autoPilotUsageCost: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
+  public freeTierExceedThroughputTooltip: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
@@ -54,7 +55,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseId = ko.observable<string>();
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
-    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -182,6 +182,18 @@ export default class AddDatabasePane extends ContextualPaneBase {
       return isFreeTierAccount;
     });
 
+    this.showUpsellMessage = ko.pureComputed(() => {
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
+      if (this.isFreeTierAccount()) {
+        return this.databaseCreateNewShared();
+      }
+
+      return true;
+    });
+
     this.maxThroughputRUText = ko.pureComputed(() => {
       return this.maxThroughputRU().toLocaleString();
     });
@@ -219,8 +231,20 @@ export default class AddDatabasePane extends ContextualPaneBase {
       this.resetData();
     });
 
+    this.freeTierExceedThroughputTooltip = ko.pureComputed<string>(() =>
+      this.isFreeTierAccount() && !this.container.isFirstResourceCreated()
+        ? "The first 400 RU/s in this account are free. Billing will apply to any throughput beyond 400 RU/s."
+        : ""
+    );
+
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
+      return PricingUtils.getUpsellMessage(
+        this.container.serverId(),
+        this.isFreeTierAccount(),
+        this.container.isFirstResourceCreated(),
+        this.container.defaultExperience(),
+        false
+      );
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
