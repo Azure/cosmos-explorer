@@ -2,12 +2,12 @@ import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
 import { UserAgentApplication, Account } from "msal";
 
-const msal = new UserAgentApplication({
+let msal = new UserAgentApplication({
   cache: {
     cacheLocation: "localStorage"
   },
   auth: {
-    authority: "https://login.microsoft.com/common",
+    authority: "https://login.microsoftonline.com/common",
     clientId: "203f1145-856a-4232-83d4-a43568fba23d",
     redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
   }
@@ -24,6 +24,7 @@ interface ReturnType {
   logout: () => void;
   tenantId: string;
   account: Account;
+  switchTenant: (tenantId: string) => void;
 }
 
 export function useAADAuth(): ReturnType {
@@ -49,13 +50,38 @@ export function useAADAuth(): ReturnType {
     msal.logout();
   }, []);
 
+  const switchTenant = React.useCallback(
+    async id => {
+      msal = new UserAgentApplication({
+        cache: {
+          cacheLocation: "localStorage"
+        },
+        auth: {
+          authority: `https://login.microsoftonline.com/${id}`,
+          clientId: "203f1145-856a-4232-83d4-a43568fba23d",
+          redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
+        }
+      });
+      const response = await msal.loginPopup({
+        authority: `https://login.microsoftonline.com/${id}`
+      });
+      setTenantId(response.tenantId);
+      setAccount(response.account);
+      console.log(response);
+    },
+    [account, tenantId]
+  );
+
   React.useEffect(() => {
     if (account && tenantId) {
+      console.log("Getting tokens for", tenantId);
       Promise.all([
         msal.acquireTokenSilent({
+          authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://graph.windows.net//.default"]
         }),
         msal.acquireTokenSilent({
+          authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"]
         })
       ]).then(([graphTokenResponse, armTokenResponse]) => {
@@ -72,6 +98,7 @@ export function useAADAuth(): ReturnType {
     graphToken,
     armToken,
     login,
-    logout
+    logout,
+    switchTenant
   };
 }

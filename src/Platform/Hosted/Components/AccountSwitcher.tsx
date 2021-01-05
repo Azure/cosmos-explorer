@@ -55,6 +55,8 @@ export const AccountSwitcher: React.FunctionComponent<Props> = ({ armToken, setD
   const accounts = useDatabaseAccounts(selectedSubscriptionId, armToken);
   const [selectedAccountName, setSelectedAccoutName] = React.useState<string>(cachedDatabaseAccountName);
 
+  console.log(subscriptions, accounts);
+
   React.useEffect(() => {
     if (accounts && selectedAccountName) {
       const account = accounts.find(account => account.name === selectedAccountName);
