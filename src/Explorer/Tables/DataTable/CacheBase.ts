@@ -1,10 +1,10 @@
 abstract class CacheBase<T> {
-  public data: T[];
+  public data: T[] | null;
   public sortOrder: any;
   public serverCallInProgress: boolean;
 
   constructor() {
-    this.data = null as any;
+    this.data = null;
     this.sortOrder = null;
     this.serverCallInProgress = false;
   }
@@ -15,7 +15,7 @@ abstract class CacheBase<T> {
 
   public clear() {
     this.preClear();
-    this.data = null as any;
+    this.data = null;
     this.sortOrder = null;
     this.serverCallInProgress = false;
   }
