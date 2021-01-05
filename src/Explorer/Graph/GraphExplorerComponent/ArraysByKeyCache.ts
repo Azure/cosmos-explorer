@@ -16,7 +16,6 @@ export class ArraysByKeyCache<T> {
     this.totalElements = 0;
   }
 
-
   public clear(): void {
     this.cache = {};
     this.keyQueue = [];
