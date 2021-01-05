@@ -4,7 +4,7 @@
     "noEmit": true,
     "strictNullChecks": true,
     "strict": true,
-    "noUnusedLocals": false
+    "noUnusedLocals": true
   },
   "files": [
     "./src/AuthType.ts",
