@@ -419,7 +419,7 @@ export class GraphData<V extends GremlinVertex, E extends GremlinEdge> {
     }
 
     // This is DocDB specific
-    if (node && node.properties && node.properties.prop && node.properties.prop[0]["value"]) {
+    if (node.properties && node.properties.hasOwnProperty(prop)) {
       return node.properties[prop][0]["value"];
     }
 

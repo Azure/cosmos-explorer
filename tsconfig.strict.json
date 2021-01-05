@@ -44,6 +44,7 @@
     "./src/Explorer/Graph/GraphExplorerComponent/__mocks__/GremlinClient.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/EdgeInfoCache.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/GraphData.ts",
+    "./src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts",
     "./src/Explorer/Notebook/FileSystemUtil.ts",
     "./src/Explorer/Notebook/NTeractUtil.ts",
     "./src/Explorer/Notebook/NotebookComponent/actions.ts",
