@@ -21,6 +21,7 @@ export class ArraysByKeyCache<T> {
     this.keyQueue = [];
     this.totalElements = 0;
   }
+
   /**
    * To simplify, the array of cached elements array for a given key is dense (there is no index at which an elemnt is missing).
    * Retrieving a page within the array is guaranteed to return a complete page.
@@ -59,13 +60,13 @@ export class ArraysByKeyCache<T> {
    * @param startIndex
    * @param pageSize
    */
-  public retrieve(key: string, startIndex: number, pageSize: number): T[] {
+  public retrieve(key: string, startIndex: number, pageSize: number): T[] | null {
     if (!this.cache.hasOwnProperty(key)) {
-      return null as any;
+      return null;
     }
     const elements = this.cache[key];
     if (startIndex + pageSize > elements.length) {
-      return null as any;
+      return null;
     }
 
     return elements.slice(startIndex, startIndex + pageSize);
