@@ -98,14 +98,16 @@ class InputTypeaheadViewModel {
   private params: InputTypeaheadParams;
 
   private cache: Cache;
-  private _inputValue!: string;
-  private _selection!: Item;
+  private inputValue: string;
+  private selection: Item;
 
   public constructor(params: InputTypeaheadParams) {
     this.instanceNumber = InputTypeaheadViewModel.instanceCount++;
     this.params = params;
 
     this.params.choices.subscribe(this.initializeTypeahead.bind(this));
+    this.inputValue = "";
+    this.selection = null as any;
 
     this.cache = {
       inputValue: null,
