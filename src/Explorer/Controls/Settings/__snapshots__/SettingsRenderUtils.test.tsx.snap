@@ -159,7 +159,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -176,7 +176,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -195,7 +195,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -207,7 +207,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -219,7 +219,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -230,7 +230,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -249,7 +249,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -268,7 +268,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -286,7 +286,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -299,7 +299,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -310,7 +310,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -329,7 +329,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -371,7 +371,7 @@ exports[`SettingsUtils functions render 1`] = `
       styles={
         Object {
           "root": Object {
-            "fontSize": 12,
+            "fontSize": 14,
           },
         }
       }
@@ -386,7 +386,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }
@@ -402,7 +402,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       Object {
         "root": Object {
-          "fontSize": 12,
+          "fontSize": 14,
         },
       }
     }

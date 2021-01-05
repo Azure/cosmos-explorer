@@ -57,6 +57,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public canThroughputExceedMaximumValue: ko.Computed<boolean>;
   public costsVisible: ko.Computed<boolean>;
   public displayedError: ko.Observable<string>;
+  public isFreeTierAccount: ko.Computed<boolean>;
   public isTemplateReady: ko.Observable<boolean>;
   public minRUAnotationVisible: ko.Computed<boolean>;
   public minRUs: ko.Observable<number>;
@@ -82,6 +83,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public throughputAutoPilotRadioId: string;
   public throughputProvisionedRadioId: string;
   public throughputModeRadioName: string;
+  public freeTierExceedThroughputWarning: ko.Computed<string>;
 
   private _hasProvisioningTypeChanged: ko.Computed<boolean>;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
@@ -358,6 +360,17 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     };
 
     this.isTemplateReady = ko.observable<boolean>(false);
+
+    this.isFreeTierAccount = ko.computed<boolean>(() => {
+      const databaseAccount = this.container?.databaseAccount();
+      return databaseAccount?.properties?.enableFreeTier;
+    });
+
+    this.freeTierExceedThroughputWarning = ko.computed<string>(() =>
+      this.isFreeTierAccount()
+        ? "Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale."
+        : ""
+    );
 
     this._buildCommandBarOptions();
   }
