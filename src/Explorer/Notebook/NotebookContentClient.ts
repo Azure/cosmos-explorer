@@ -11,7 +11,7 @@ import { stringifyNotebook } from "@nteract/commutable";
 export class NotebookContentClient {
   constructor(
     private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    private notebookBasePath: ko.Observable<string>,
+    public notebookBasePath: ko.Observable<string>,
     private contentProvider: IContentProvider
   ) {}
 
@@ -228,7 +228,7 @@ export class NotebookContentClient {
    * Convert rx-jupyter type to our type
    * @param type
    */
-  private static getType(type: FileType): NotebookContentItemType {
+  public static getType(type: FileType): NotebookContentItemType {
     switch (type) {
       case "directory":
         return NotebookContentItemType.Directory;
