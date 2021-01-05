@@ -899,7 +899,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     const tabs: SettingsV2TabInfo[] = [];
-
     if (!hasDatabaseSharedThroughput(this.collection) && this.collection.offer()) {
       tabs.push({
         tab: SettingsV2TabTypes.ScaleTab,
