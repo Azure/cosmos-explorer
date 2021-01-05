@@ -295,7 +295,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     !!this.collection.conflictResolutionPolicy();
 
   public isOfferReplacePending = (): boolean => {
-    return !!this.collection?.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending];
+    return this.collection?.offer()?.offerReplacePending;
   };
 
   public onSaveClick = async (): Promise<void> => {

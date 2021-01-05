@@ -53,10 +53,9 @@ export default class MongoShellTab extends TabsBase {
     // }
   }
 
-  public onTabClick(): Q.Promise<any> {
-    return super.onTabClick().then(() => {
-      this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
-    });
+  public onTabClick(): void {
+    super.onTabClick();
+    this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
   public handleMessage(event: MessageEvent) {

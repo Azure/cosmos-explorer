@@ -57,6 +57,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public canThroughputExceedMaximumValue: ko.Computed<boolean>;
   public costsVisible: ko.Computed<boolean>;
   public displayedError: ko.Observable<string>;
+  public isFreeTierAccount: ko.Computed<boolean>;
   public isTemplateReady: ko.Observable<boolean>;
   public minRUAnotationVisible: ko.Computed<boolean>;
   public minRUs: ko.Observable<number>;
@@ -82,6 +83,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public throughputAutoPilotRadioId: string;
   public throughputProvisionedRadioId: string;
   public throughputModeRadioName: string;
+  public freeTierExceedThroughputWarning: ko.Computed<string>;
 
   private _hasProvisioningTypeChanged: ko.Computed<boolean>;
   private _wasAutopilotOriginallySet: ko.Observable<boolean>;
@@ -155,8 +157,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
           this.overrideWithAutoPilotSettings() ? this.autoPilotThroughput() : this.throughput(),
           serverId,
           regions,
-          multimaster,
-          false /*rupmEnabled*/
+          multimaster
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
@@ -231,9 +232,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       return this.throughputTitle() + this.requestUnitsUsageCost();
     });
     this.pendingNotification = ko.observable<DataModels.Notification>();
-    this._offerReplacePending = ko.observable<boolean>(
-      !!this.database.offer()?.headers?.[Constants.HttpHeaders.offerReplacePending]
-    );
+    this._offerReplacePending = ko.observable<boolean>(!!this.database.offer()?.offerReplacePending);
     this.notificationStatusInfo = ko.observable<string>("");
     this.shouldShowNotificationStatusPrompt = ko.computed<boolean>(() => this.notificationStatusInfo().length > 0);
     this.warningMessage = ko.computed<string>(() => {
@@ -242,7 +241,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       }
 
       const offer = this.database.offer();
-      if (offer?.headers?.[Constants.HttpHeaders.offerReplacePending]) {
+      if (offer?.offerReplacePending) {
         const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
         return throughputApplyShortDelayMessage(this.isAutoPilotSelected(), throughput, this.database.id());
       }
@@ -362,6 +361,17 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
 
     this.isTemplateReady = ko.observable<boolean>(false);
 
+    this.isFreeTierAccount = ko.computed<boolean>(() => {
+      const databaseAccount = this.container?.databaseAccount();
+      return databaseAccount?.properties?.enableFreeTier;
+    });
+
+    this.freeTierExceedThroughputWarning = ko.computed<string>(() =>
+      this.isFreeTierAccount()
+        ? "Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale."
+        : ""
+    );
+
     this._buildCommandBarOptions();
   }
 
@@ -432,11 +442,10 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     return Q();
   };
 
-  public onActivate(): Q.Promise<any> {
-    return super.onActivate().then(async () => {
-      this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
-      await this.database.loadOffer();
-    });
+  public async onActivate(): Promise<void> {
+    super.onActivate();
+    this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
+    await this.database.loadOffer();
   }
 
   private _setBaseline() {

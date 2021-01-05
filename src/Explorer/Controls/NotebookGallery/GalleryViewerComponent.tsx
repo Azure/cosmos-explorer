@@ -1,6 +1,7 @@
 import {
   Dropdown,
   FocusZone,
+  FontIcon,
   FontWeights,
   IDropdownOption,
   IPageSpecification,
@@ -16,7 +17,7 @@ import {
   Text
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { IGalleryItem, JunoClient, IJunoResponse, IPublicGalleryData } from "../../../Juno/JunoClient";
+import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
@@ -136,7 +137,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   public render(): JSX.Element {
-    const tabs: GalleryTabInfo[] = [this.createTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
+    const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
     if (this.props.container?.isGalleryPublishEnabled()) {
       tabs.push(
@@ -146,7 +147,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           this.state.isCodeOfConductAccepted
         )
       );
-      tabs.push(this.createTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
+      tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
 
       // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
       // Displaying code of conduct component on gallery load should not be the default behavior.
@@ -183,6 +184,27 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   }
 
+  private isEmptyData = (data: IGalleryItem[]): boolean => {
+    return !data || data.length === 0;
+  };
+
+  private createEmptyTabContent = (iconName: string, line1: string, line2: string): JSX.Element => {
+    return (
+      <Stack horizontalAlign="center" tokens={{ childrenGap: 10 }}>
+        <FontIcon iconName={iconName} style={{ fontSize: 100, color: "lightgray", marginTop: 20 }} />
+        <Text styles={{ root: { fontWeight: FontWeights.semibold } }}>{line1}</Text>
+        <Text>{line2}</Text>
+      </Stack>
+    );
+  };
+
+  private createSamplesTab = (tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo => {
+    return {
+      tab,
+      content: this.createSearchBarHeader(this.createCardsTabContent(data))
+    };
+  };
+
   private createPublicGalleryTab(
     tab: GalleryTab,
     data: IGalleryItem[],
@@ -194,17 +216,29 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
   }
 
-  private createTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
+  private createFavoritesTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
     return {
       tab,
-      content: this.createSearchBarHeader(this.createCardsTabContent(data))
+      content: this.isEmptyData(data)
+        ? this.createEmptyTabContent(
+            "ContactHeart",
+            "You have not liked anything",
+            "Like any notebook from Official Samples or Public gallery"
+          )
+        : this.createSearchBarHeader(this.createCardsTabContent(data))
     };
   }
 
   private createPublishedNotebooksTab = (tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo => {
     return {
       tab,
-      content: this.createPublishedNotebooksTabContent(data)
+      content: this.isEmptyData(data)
+        ? this.createEmptyTabContent(
+            "Contact",
+            "You have not published anything",
+            "Publish your sample notebooks to share your published work with others"
+          )
+        : this.createPublishedNotebooksTabContent(data)
     };
   };
 
@@ -364,9 +398,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublicNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
-        let response: IJunoResponse<IPublicGalleryData> | IJunoResponse<IGalleryItem[]>;
-        if (this.props.container.isCodeOfConductEnabled()) {
-          response = await this.props.junoClient.fetchPublicNotebooks();
+        let response: IJunoResponse<IGalleryItem[]> | IJunoResponse<IPublicGalleryData>;
+        if (this.props.container) {
+          response = await this.props.junoClient.getPublicGalleryData();
           this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
           this.publicNotebooks = response.data?.notebooksData;
         } else {
@@ -568,7 +602,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private deleteItem = async (data: IGalleryItem): Promise<void> => {
     GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, item => {
-      this.publishedNotebooks = this.publishedNotebooks.filter(notebook => item.id !== notebook.id);
+      this.publishedNotebooks = this.publishedNotebooks?.filter(notebook => item.id !== notebook.id);
       this.refreshSelectedTab(item);
     });
   };

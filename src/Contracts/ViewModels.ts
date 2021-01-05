@@ -363,7 +363,7 @@ export enum CollectionTabKind {
   Gallery = 17,
   NotebookViewer = 18,
   Schema = 19,
-  SettingsV2 = 19
+  SettingsV2 = 20
 }
 
 export enum TerminalKind {

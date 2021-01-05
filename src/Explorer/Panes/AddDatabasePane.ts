@@ -13,6 +13,7 @@ import { createDatabase } from "../../Common/dataAccess/createDatabase";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import { userContext } from "../../UserContext";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -43,6 +44,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public autoPilotUsageCost: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
   public ruToolTipText: ko.Computed<string>;
+  public freeTierExceedThroughputTooltip: ko.Computed<string>;
   public isFreeTierAccount: ko.Computed<boolean>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
@@ -53,7 +55,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseId = ko.observable<string>();
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
-    this.showUpsellMessage = ko.pureComputed(() => !this.container.isServerlessEnabled());
 
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
@@ -133,19 +134,12 @@ export default class AddDatabasePane extends ContextualPaneBase {
       let estimatedSpendAcknowledge: string;
       let estimatedSpend: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
-          offerThroughput,
-          serverId,
-          regions,
-          multimaster,
-          false /*rupmEnabled*/
-        );
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
         estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isAutoPilotSelected()
         );
       } else {
@@ -160,7 +154,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isAutoPilotSelected()
         );
       }
@@ -187,6 +180,18 @@ export default class AddDatabasePane extends ContextualPaneBase {
       const isFreeTierAccount =
         databaseAccount && databaseAccount.properties && databaseAccount.properties.enableFreeTier;
       return isFreeTierAccount;
+    });
+
+    this.showUpsellMessage = ko.pureComputed(() => {
+      if (this.container.isServerlessEnabled()) {
+        return false;
+      }
+
+      if (this.isFreeTierAccount()) {
+        return this.databaseCreateNewShared();
+      }
+
+      return true;
     });
 
     this.maxThroughputRUText = ko.pureComputed(() => {
@@ -226,8 +231,20 @@ export default class AddDatabasePane extends ContextualPaneBase {
       this.resetData();
     });
 
+    this.freeTierExceedThroughputTooltip = ko.pureComputed<string>(() =>
+      this.isFreeTierAccount() && !this.container.isFirstResourceCreated()
+        ? "The first 400 RU/s in this account are free. Billing will apply to any throughput beyond 400 RU/s."
+        : ""
+    );
+
     this.upsellMessage = ko.pureComputed<string>(() => {
-      return PricingUtils.getUpsellMessage(this.container.serverId(), this.isFreeTierAccount());
+      return PricingUtils.getUpsellMessage(
+        this.container.serverId(),
+        this.isFreeTierAccount(),
+        this.container.isFirstResourceCreated(),
+        this.container.defaultExperience(),
+        false
+      );
     });
 
     this.upsellMessageAriaLabel = ko.pureComputed<string>(() => {
@@ -258,7 +275,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: this.throughput(),
         flight: this.container.flight()
@@ -286,7 +303,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       }),
       offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: this.container.flight()
       },
@@ -350,7 +367,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       }),
       offerThroughput: offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: this.container.flight()
       },
@@ -374,7 +391,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       }),
       offerThroughput: offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: this.container.flight()
       },

@@ -26,6 +26,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     spendAckVisible: false,
     showAsMandatory: true,
     isFixed: false,
+    isFreeTierAccount: false,
     label: "label",
     infoBubbleText: "infoBubbleText",
     canExceedMaximumValue: true,
@@ -54,7 +55,6 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     expect(wrapper.exists("#throughputInput")).toEqual(true);
     expect(wrapper.exists("#autopilotInput")).toEqual(false);
     expect(wrapper.exists("#throughputSpendElement")).toEqual(true);
-    expect(wrapper.exists("#autoscaleSpendElement")).toEqual(false);
   });
 
   it("autopilot input visible", () => {
@@ -72,8 +72,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
 
     wrapper.setProps({ wasAutopilotOriginallySet: true });
     wrapper.update();
-    expect(wrapper.exists("#autoscaleSpendElement")).toEqual(true);
-    expect(wrapper.exists("#throughputSpendElement")).toEqual(false);
+    expect(wrapper.exists("#throughputSpendElement")).toEqual(true);
   });
 
   it("spendAck checkbox visible", () => {

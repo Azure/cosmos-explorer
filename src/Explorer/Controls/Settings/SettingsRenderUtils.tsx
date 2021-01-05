@@ -3,14 +3,13 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
 import { Urls, StyleConstants } from "../../../Common/Constants";
 import {
-  computeAutoscaleUsagePriceHourly,
   getPriceCurrency,
   getCurrencySign,
   getAutoscalePricePerRu,
   getMultimasterMultiplier,
   computeRUUsagePriceHourly,
   getPricePerRu,
-  calculateEstimateNumber
+  estimatedCostDisclaimer
 } from "../../../Utils/PricingUtils";
 import {
   ITextFieldStyles,
@@ -32,11 +31,42 @@ import {
   MessageBarType,
   Stack,
   Spinner,
-  SpinnerSize
+  SpinnerSize,
+  DetailsList,
+  IColumn,
+  SelectionMode,
+  DetailsListLayoutMode,
+  IDetailsRowProps,
+  DetailsRow,
+  IDetailsColumnStyles
 } from "office-ui-fabric-react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
-export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 12 } };
+export interface EstimatedSpendingDisplayProps {
+  costType: JSX.Element;
+}
+
+export interface ManualEstimatedSpendingDisplayProps extends EstimatedSpendingDisplayProps {
+  hourly: JSX.Element;
+  daily: JSX.Element;
+  monthly: JSX.Element;
+}
+
+export interface AutoscaleEstimatedSpendingDisplayProps extends EstimatedSpendingDisplayProps {
+  minPerMonth: JSX.Element;
+  maxPerMonth: JSX.Element;
+}
+
+export interface PriceBreakdown {
+  hourlyPrice: number;
+  dailyPrice: number;
+  monthlyPrice: number;
+  pricePerRu: number;
+  currency: string;
+  currencySign: string;
+}
+
+export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14 } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
@@ -104,6 +134,16 @@ export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   }
 };
 
+export const transparentDetailsHeaderStyle: Partial<IDetailsColumnStyles> = {
+  root: {
+    selectors: {
+      ":hover": {
+        background: "transparent"
+      }
+    }
+  }
+};
+
 export const customDetailsListStyles: Partial<IDetailsListStyles> = {
   root: {
     selectors: {
@@ -126,9 +166,16 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
   ]
 };
 
-export const messageBarStyles: Partial<IMessageBarStyles> = { root: { marginTop: "5px" } };
+export const messageBarStyles: Partial<IMessageBarStyles> = {
+  root: { marginTop: "5px", backgroundColor: "white" },
+  text: { fontSize: 14 }
+};
 
 export const throughputUnit = "RU/s";
+
+export function onRenderRow(props: IDetailsRowProps): JSX.Element {
+  return <DetailsRow {...props} styles={transparentDetailsRowStyles} />;
+}
 
 export const getAutoPilotV3SpendElement = (
   maxAutoPilotThroughputSet: number,
@@ -165,64 +212,61 @@ export const getAutoPilotV3SpendElement = (
   );
 };
 
-export const getEstimatedAutoscaleSpendElement = (
+export const getRuPriceBreakdown = (
   throughput: number,
   serverId: string,
-  regions: number,
-  multimaster: boolean
-): JSX.Element => {
-  const hourlyPrice: number = computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster);
-  const monthlyPrice: number = hourlyPrice * hoursInAMonth;
-  const currency: string = getPriceCurrency(serverId);
-  const currencySign: string = getCurrencySign(serverId);
-  const pricePerRu =
-    getAutoscalePricePerRu(serverId, getMultimasterMultiplier(regions, multimaster)) *
-    getMultimasterMultiplier(regions, multimaster);
-
-  return (
-    <Text id="autoscaleSpendElement">
-      Estimated monthly cost ({currency}) is{" "}
-      <b>
-        {currencySign}
-        {calculateEstimateNumber(monthlyPrice / 10)}
-        {` - `}
-        {currencySign}
-        {calculateEstimateNumber(monthlyPrice)}{" "}
-      </b>
-      ({"regions: "} {regions}, {throughput / 10} - {throughput} RU/s, {currencySign}
-      {pricePerRu}/RU)
-    </Text>
-  );
+  numberOfRegions: number,
+  isMultimaster: boolean,
+  isAutoscale: boolean
+): PriceBreakdown => {
+  const hourlyPrice: number = computeRUUsagePriceHourly({
+    serverId: serverId,
+    requestUnits: throughput,
+    numberOfRegions: numberOfRegions,
+    multimasterEnabled: isMultimaster,
+    isAutoscale: isAutoscale
+  });
+  const basePricePerRu: number = isAutoscale
+    ? getAutoscalePricePerRu(serverId, getMultimasterMultiplier(numberOfRegions, isMultimaster))
+    : getPricePerRu(serverId);
+  return {
+    hourlyPrice: hourlyPrice,
+    dailyPrice: hourlyPrice * 24,
+    monthlyPrice: hourlyPrice * hoursInAMonth,
+    pricePerRu: basePricePerRu * getMultimasterMultiplier(numberOfRegions, isMultimaster),
+    currency: getPriceCurrency(serverId),
+    currencySign: getCurrencySign(serverId)
+  };
 };
 
-export const getEstimatedSpendElement = (
+export const getEstimatedSpendingElement = (
+  estimatedSpendingColumns: IColumn[],
+  estimatedSpendingItems: EstimatedSpendingDisplayProps[],
   throughput: number,
-  serverId: string,
-  regions: number,
-  multimaster: boolean,
-  rupmEnabled: boolean
+  numberOfRegions: number,
+  priceBreakdown: PriceBreakdown,
+  isAutoscale: boolean
 ): JSX.Element => {
-  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
-  const dailyPrice: number = hourlyPrice * 24;
-  const monthlyPrice: number = hourlyPrice * hoursInAMonth;
-  const currency: string = getPriceCurrency(serverId);
-  const currencySign: string = getCurrencySign(serverId);
-  const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
-
+  const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
-    <Text id="throughputSpendElement">
-      Estimated cost ({currency}):{" "}
-      <b>
-        {currencySign}
-        {calculateEstimateNumber(hourlyPrice)} hourly {` / `}
-        {currencySign}
-        {calculateEstimateNumber(dailyPrice)} daily {` / `}
-        {currencySign}
-        {calculateEstimateNumber(monthlyPrice)} monthly{" "}
-      </b>
-      ({"regions: "} {regions}, {throughput}RU/s, {currencySign}
-      {pricePerRu}/RU)
-    </Text>
+    <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
+      <DetailsList
+        disableSelectionZone
+        items={estimatedSpendingItems}
+        columns={estimatedSpendingColumns}
+        selectionMode={SelectionMode.none}
+        layoutMode={DetailsListLayoutMode.justified}
+        onRenderRow={onRenderRow}
+      />
+      <Text id="throughputSpendElement">
+        ({"regions: "} {numberOfRegions}, {ruRange}
+        {throughput} RU/s, {priceBreakdown.currencySign}
+        {priceBreakdown.pricePerRu}/RU)
+      </Text>
+      <Text>
+        <em>{estimatedCostDisclaimer}</em>
+      </Text>
+    </Stack>
   );
 };
 
@@ -263,6 +307,13 @@ export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
     You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some
     time to complete.
+  </Text>
+);
+
+export const saveThroughputWarningMessage: JSX.Element = (
+  <Text styles={infoAndToolTipTextStyle}>
+    Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below
+    before saving your changes
   </Text>
 );
 

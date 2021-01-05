@@ -126,7 +126,6 @@ export class OfferPricing {
       Standard: {
         StartingPrice: 24 / hoursInAMonth, // per hour
         PricePerRU: 0.00008,
-        PricePerRUPM: (10 * 2) / 1000 / hoursInAMonth, // preview price: $2 per 1000 RU/m per month -> 100 RU/s
         PricePerGB: 0.25 / hoursInAMonth
       }
     },
@@ -139,15 +138,10 @@ export class OfferPricing {
       Standard: {
         StartingPrice: OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice / hoursInAMonth, // per hour
         PricePerRU: 0.00051,
-        PricePerRUPM: (10 * 20) / 1000 / hoursInAMonth, // preview price: 20rmb per 1000 RU/m per month -> 100 RU/s
         PricePerGB: OfferPricing.MonthlyPricing.mooncake.Standard.PricePerGB / hoursInAMonth
       }
     }
   };
-}
-
-export class GeneralResources {
-  public static loadingText: string = "Loading...";
 }
 
 export class CollectionCreation {
@@ -156,7 +150,6 @@ export class CollectionCreation {
   public static readonly MinRU7PartitionsTo25Partitions: number = 2500;
   public static readonly MinRUPerPartitionAbove25Partitions: number = 100;
   public static readonly MaxRUPerPartition: number = 10000;
-  public static readonly MaxRUPMPerPartition: number = 5000;
   public static readonly MinPartitionedCollectionRUs: number = 2500;
 
   public static readonly NumberOfPartitionsInFixedCollection: number = 1;
@@ -231,32 +224,6 @@ export class IndexingPolicies {
 }
 
 export class SubscriptionUtilMappings {
-  // TODO: Expose this through a web API from the portal
-  public static SubscriptionTypeMap: { [key: string]: SubscriptionType } = {
-    "AAD_2015-09-01": SubscriptionType.Free,
-    "AzureDynamics_2014-09-01": SubscriptionType.Free,
-    "AzureInOpen_2014-09-01": SubscriptionType.EA,
-    "AzurePass_2014-09-01": SubscriptionType.Free,
-    "BackupStorage_2014-09-01": SubscriptionType.PAYG,
-    "BizSpark_2014-09-01": SubscriptionType.Benefits,
-    "BizSparkPlus_2014-09-01": SubscriptionType.Benefits,
-    "CSP_2015-05-01": SubscriptionType.EA,
-    "Default_2014-09-01": SubscriptionType.PAYG,
-    "DevEssentials_2016-01-01": SubscriptionType.Benefits,
-    "DreamSpark_2015-02-01": SubscriptionType.Benefits,
-    "EnterpriseAgreement_2014-09-01": SubscriptionType.EA,
-    "FreeTrial_2014-09-01": SubscriptionType.Free,
-    "Internal_2014-09-01": SubscriptionType.Internal,
-    "LegacyMonetaryCommitment_2014-09-01": SubscriptionType.EA,
-    "LightweightTrial_2016-09-01": SubscriptionType.Free,
-    "MonetaryCommitment_2015-05-01": SubscriptionType.EA,
-    "MPN_2014-09-01": SubscriptionType.Benefits,
-    "MSDN_2014-09-01": SubscriptionType.Benefits,
-    "MSDNDevTest_2014-09-01": SubscriptionType.Benefits,
-    "PayAsYouGo_2014-09-01": SubscriptionType.PAYG,
-    "Sponsored_2016-01-01": SubscriptionType.Benefits
-  };
-
   public static FreeTierSubscriptionIds: string[] = [
     "b8f2ff04-0a81-4cf9-95ef-5828d16981d2",
     "39b1fdff-e5b2-4f83-adb4-33cb3aabf5ea",
@@ -265,57 +232,6 @@ export class SubscriptionUtilMappings {
     "199d0919-60bd-448e-b64d-8461a0fe9747",
     "a57b6849-d443-44cf-a3b7-7dd07ead9401"
   ];
-}
-
-export class Offers {
-  public static offerTypeS1: string = "S1";
-  public static offerTypeS2: string = "S2";
-  public static offerTypeS3: string = "S3";
-  public static offerTypeStandard: string = "Standard";
-}
-
-export class OfferThoughput {
-  public static offerS1Throughput: number = 250;
-  public static offerS2Throughput: number = 1000;
-  public static offerS3Throughput: number = 2500;
-}
-
-export class OfferVersions {
-  public static offerV1: string = "V1";
-  public static offerV2: string = "V2";
-}
-
-export class InvalidOffers {
-  public static offerTypeInvalid: string = "Invalid";
-  public static offerTypeError: string = "Loading Error";
-}
-
-export class SpecTypes {
-  public static collection: string = "DocumentDbCollection";
-}
-
-export class CurrencyCodes {
-  public static usd: string = "USD";
-  public static rmb: string = "RMB";
-}
-
-export class ColorSchemes {
-  public static standard: string = "mediumBlue";
-  public static legacy: string = "yellowGreen";
-}
-
-export class FeatureIds {
-  public static storage: string = "storage";
-  public static sla: string = "sla";
-  public static partitioned: string = "partitioned";
-  public static singlePartitioned: string = "singlePartition";
-  public static legacySinglePartitioned: string = "legacySinglePartition";
-}
-
-export class FeatureIconNames {
-  public static storage: string = "SSD";
-  public static sla: string = "Monitoring";
-  public static productionReady: string = "ProductionReadyDb";
 }
 
 export class AutopilotDocumentation {

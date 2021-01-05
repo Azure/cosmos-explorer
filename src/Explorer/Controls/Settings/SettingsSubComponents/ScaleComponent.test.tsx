@@ -59,7 +59,7 @@ describe("ScaleComponent", () => {
       autoscaleMaxThroughput: maxThroughput,
       minimumThroughput: 400,
       id: "offer",
-      headers: { "x-ms-offer-replace-pending": true }
+      offerReplacePending: true
     });
     const newProps = {
       ...baseProps,

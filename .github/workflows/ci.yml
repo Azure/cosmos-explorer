@@ -101,6 +101,7 @@ jobs:
           PLATFORM: "Emulator"
           NODE_TLS_REJECT_UNAUTHORIZED: 0
       - uses: actions/upload-artifact@v2
+        if: failure()
         with:
           name: screenshots
           path: failed-*
@@ -159,13 +160,14 @@ jobs:
           TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
           DATA_EXPLORER_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
       - uses: actions/upload-artifact@v2
+        if: failure()
         with:
           name: screenshots
           path: failed-*
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted, accessibility]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -189,7 +191,7 @@ jobs:
   nugetmpac:
     name: Publish Nuget MPAC
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted]
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted, accessibility]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -204,6 +206,31 @@ jobs:
           name: dist
       - run: cp ./configs/mpac.json config.json
       - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
+      - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
+      - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
+      - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
+      - uses: actions/upload-artifact@v2
+        name: packages
+        with:
+          path: "*.nupkg"
+  nugetie:
+    name: Publish Nuget IE
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted, accessibility]
+    runs-on: ubuntu-latest
+    env:
+      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+    steps:
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      - name: Download Dist Folder
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+      - run: cp ./configs/prod.json config.json
+      - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.IE/g' DataExplorer.nuspec
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg

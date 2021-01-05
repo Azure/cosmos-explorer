@@ -1,4 +1,5 @@
-jest.mock("../../../Common/DocumentClientUtilityBase");
+jest.mock("../../../Common/dataAccess/queryDocuments");
+jest.mock("../../../Common/dataAccess/queryDocumentsPage");
 import React from "react";
 import * as sinon from "sinon";
 import { mount, ReactWrapper } from "enzyme";
@@ -12,7 +13,8 @@ import * as DataModels from "../../../Contracts/DataModels";
 import * as StorageUtility from "../../../Shared/StorageUtility";
 import GraphTab from "../../Tabs/GraphTab";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { queryDocuments, queryDocumentsPage } from "../../../Common/DocumentClientUtilityBase";
+import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
+import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 
 describe("Check whether query result is vertex array", () => {
   it("should reject null as vertex array", () => {
@@ -299,12 +301,12 @@ describe("GraphExplorer", () => {
       ignoreD3Update: boolean
     ): GraphExplorer => {
       (queryDocuments as jest.Mock).mockImplementation((container: any, query: string, options: any) => {
-        return Q.resolve({
+        return {
           _query: query,
           nextItem: (callback: (error: any, document: DataModels.DocumentId) => void): void => {},
           hasMoreResults: () => false,
           executeNext: (callback: (error: any, documents: DataModels.DocumentId[], headers: any) => void): void => {}
-        });
+        };
       });
       (queryDocumentsPage as jest.Mock).mockImplementation(
         (rid: string, iterator: any, firstItemIndex: number, options: any) => {

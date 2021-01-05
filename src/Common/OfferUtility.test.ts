@@ -24,7 +24,8 @@ describe("parseSDKOfferResponse", () => {
       autoscaleMaxThroughput: undefined,
       minimumThroughput: 400,
       id: "test",
-      offerDefinition: mockOfferDefinition
+      offerDefinition: mockOfferDefinition,
+      offerReplacePending: false
     };
 
     expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(expectedResult);
@@ -54,7 +55,8 @@ describe("parseSDKOfferResponse", () => {
       autoscaleMaxThroughput: 5000,
       minimumThroughput: 400,
       id: "test",
-      offerDefinition: mockOfferDefinition
+      offerDefinition: mockOfferDefinition,
+      offerReplacePending: false
     };
 
     expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(expectedResult);

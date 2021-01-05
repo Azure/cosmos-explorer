@@ -44,12 +44,10 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     onChange?: (_?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => void;
   }[] = [
     { key: "feature.enablechangefeedpolicy", label: "Enable change feed policy", value: "true" },
-    { key: "feature.enablerupm", label: "Enable RUPM", value: "true" },
     { key: "feature.dataexplorerexecutesproc", label: "Execute stored procedure", value: "true" },
     { key: "feature.hosteddataexplorerenabled", label: "Hosted Data Explorer (deprecated?)", value: "true" },
     { key: "feature.enablettl", label: "Enable TTL", value: "true" },
     { key: "feature.enablegallerypublish", label: "Enable Notebook Gallery Publishing", value: "true" },
-    { key: "feature.enablecodeofconduct", label: "Enable Code Of Conduct Acknowledgement", value: "true" },
     { key: "feature.selfServeTypeForTest", label: "self serve type passed on for testing", value: "sample" },
     {
       key: "feature.enableLinkInjection",

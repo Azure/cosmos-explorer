@@ -15,6 +15,7 @@ import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import { userContext } from "../../UserContext";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -138,19 +139,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       let estimatedSpend: string;
       let estimatedDedicatedSpendAcknowledge: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
-          offerThroughput,
-          serverId,
-          regions,
-          multimaster,
-          false /*rupmEnabled*/
-        );
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
         estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isAutoPilotSelected()
         );
       } else {
@@ -165,7 +159,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isAutoPilotSelected()
         );
       }
@@ -190,19 +183,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       let estimatedSpend: string;
       let estimatedSharedSpendAcknowledge: string;
       if (!this.isSharedAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
-          this.keyspaceThroughput(),
-          serverId,
-          regions,
-          multimaster,
-          false /*rupmEnabled*/
-        );
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(this.keyspaceThroughput(), serverId, regions, multimaster);
         estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.keyspaceThroughput(),
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isSharedAutoPilotSelected()
         );
       } else {
@@ -217,7 +203,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           serverId,
           regions,
           multimaster,
-          false /*rupmEnabled*/,
           this.isSharedAutoPilotSelected()
         );
       }
@@ -312,11 +297,10 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         storage: Constants.BackendDefaults.multiPartitionStorageInGb,
         offerThroughput: this.throughput(),
         partitionKey: "",
-        databaseId: this.keyspaceId(),
-        rupm: false
+        databaseId: this.keyspaceId()
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
@@ -366,12 +350,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         offerThroughput: this.throughput(),
         partitionKey: "",
         databaseId: this.keyspaceId(),
-        rupm: false,
         hasDedicatedThroughput: this.dedicateTableThroughput()
       }),
       keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
-      subscriptionQuotaId: this.container.quotaId(),
+      subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
@@ -413,12 +396,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             offerThroughput: this.throughput(),
             partitionKey: "",
             databaseId: this.keyspaceId(),
-            rupm: false,
             hasDedicatedThroughput: this.dedicateTableThroughput()
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
-          subscriptionQuotaId: this.container.quotaId(),
+          subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
@@ -444,12 +426,11 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             offerThroughput: this.throughput(),
             partitionKey: "",
             databaseId: this.keyspaceId(),
-            rupm: false,
             hasDedicatedThroughput: this.dedicateTableThroughput()
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
-          subscriptionQuotaId: this.container.quotaId(),
+          subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),

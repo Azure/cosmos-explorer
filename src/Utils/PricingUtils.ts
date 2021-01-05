@@ -1,5 +1,17 @@
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
+import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+
+interface ComputeRUUsagePriceHourlyArgs {
+  serverId: string;
+  requestUnits: number;
+  numberOfRegions: number;
+  multimasterEnabled: boolean;
+  isAutoscale: boolean;
+}
+
+export const estimatedCostDisclaimer =
+  "*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
 
 /**
  * Anything that is not a number should return 0
@@ -47,23 +59,19 @@ export function getMultimasterMultiplier(numberOfRegions: number, multimasterEna
   return multimasterMultiplier;
 }
 
-export function computeRUUsagePriceHourly(
-  serverId: string,
-  rupmEnabled: boolean,
-  requestUnits: number,
-  numberOfRegions: number,
-  multimasterEnabled: boolean
-): number {
+export function computeRUUsagePriceHourly({
+  serverId,
+  requestUnits,
+  numberOfRegions,
+  multimasterEnabled,
+  isAutoscale
+}: ComputeRUUsagePriceHourlyArgs): number {
   const regionMultiplier: number = getRegionMultiplier(numberOfRegions, multimasterEnabled);
   const multimasterMultiplier: number = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
-
-  const pricePerRu = getPricePerRu(serverId);
-  const pricePerRuPm = getPricePerRuPm(serverId);
-
+  const pricePerRu = isAutoscale ? getAutoscalePricePerRu(serverId, multimasterMultiplier) : getPricePerRu(serverId);
   const ruCharge = requestUnits * pricePerRu * multimasterMultiplier * regionMultiplier;
-  const rupmCharge = rupmEnabled ? requestUnits * pricePerRuPm : 0;
 
-  return Number((ruCharge + rupmCharge).toFixed(5));
+  return Number(ruCharge.toFixed(5));
 }
 
 export function getPriceCurrency(serverId: string): string {
@@ -149,14 +157,6 @@ export function getPricePerRu(serverId: string): number {
   return Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRU;
 }
 
-export function getPricePerRuPm(serverId: string): number {
-  if (serverId === "mooncake") {
-    return Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRUPM;
-  }
-
-  return Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRUPM;
-}
-
 export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDatabaseThroughput: boolean): string {
   if (!maxAutoPilotThroughputSet) {
     return "";
@@ -172,28 +172,19 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
   }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
 }
 
-export function computeAutoscaleUsagePriceHourly(
-  serverId: string,
-  requestUnits: number,
-  numberOfRegions: number,
-  multimasterEnabled: boolean
-): number {
-  const regionMultiplier: number = getRegionMultiplier(numberOfRegions, multimasterEnabled);
-  const multimasterMultiplier: number = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
-
-  const pricePerRu = getAutoscalePricePerRu(serverId, multimasterMultiplier);
-  const ruCharge = requestUnits * pricePerRu * multimasterMultiplier * regionMultiplier;
-
-  return Number(ruCharge.toFixed(5));
-}
-
 export function getEstimatedAutoscaleSpendHtml(
   throughput: number,
   serverId: string,
   regions: number,
   multimaster: boolean
 ): string {
-  const hourlyPrice: number = computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster);
+  const hourlyPrice: number = computeRUUsagePriceHourly({
+    serverId: serverId,
+    requestUnits: throughput,
+    numberOfRegions: regions,
+    multimasterEnabled: multimaster,
+    isAutoscale: true
+  });
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
@@ -214,10 +205,15 @@ export function getEstimatedSpendHtml(
   throughput: number,
   serverId: string,
   regions: number,
-  multimaster: boolean,
-  rupmEnabled: boolean
+  multimaster: boolean
 ): string {
-  const hourlyPrice: number = computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
+  const hourlyPrice: number = computeRUUsagePriceHourly({
+    serverId: serverId,
+    requestUnits: throughput,
+    numberOfRegions: regions,
+    multimasterEnabled: multimaster,
+    isAutoscale: false
+  });
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
@@ -225,11 +221,13 @@ export function getEstimatedSpendHtml(
   const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
 
   return (
-    `Estimated cost (${currency}): <b>` +
+    `Cost (${currency}): <b>` +
     `${currencySign}${calculateEstimateNumber(hourlyPrice)} hourly / ` +
     `${currencySign}${calculateEstimateNumber(dailyPrice)} daily / ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
-    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)`
+    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)` +
+    `<p style='padding: 10px 0px 0px 0px;'>` +
+    `<em>${estimatedCostDisclaimer}</em></p>`
   );
 }
 
@@ -238,12 +236,15 @@ export function getEstimatedSpendAcknowledgeString(
   serverId: string,
   regions: number,
   multimaster: boolean,
-  rupmEnabled: boolean,
   isAutoscale: boolean
 ): string {
-  const hourlyPrice: number = isAutoscale
-    ? computeAutoscaleUsagePriceHourly(serverId, throughput, regions, multimaster)
-    : computeRUUsagePriceHourly(serverId, rupmEnabled, throughput, regions, multimaster);
+  const hourlyPrice: number = computeRUUsagePriceHourly({
+    serverId: serverId,
+    requestUnits: throughput,
+    numberOfRegions: regions,
+    multimasterEnabled: multimaster,
+    isAutoscale: isAutoscale
+  });
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currencySign: string = getCurrencySign(serverId);
@@ -256,9 +257,19 @@ export function getEstimatedSpendAcknowledgeString(
       )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
-export function getUpsellMessage(serverId = "default", isFreeTier = false): string {
+export function getUpsellMessage(
+  serverId = "default",
+  isFreeTier = false,
+  isFirstResourceCreated = false,
+  defaultExperience: string,
+  isCollection: boolean
+): string {
   if (isFreeTier) {
-    return "With free tier discount, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Charges will apply if your resource throughput exceeds 400 RU/s.";
+    const collectionName = getCollectionName(defaultExperience);
+    const resourceType = isCollection ? collectionName : "database";
+    return isFirstResourceCreated
+      ? `The free tier discount of 400 RU/s has already been applied to a database or ${collectionName} in this account. Billing will apply to this ${resourceType} after it is created.`
+      : `With free tier, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Billing will apply if you provision more than 400 RU/s of manual throughput, or if the ${resourceType} scales beyond 400 RU/s with autoscale.`;
   } else {
     let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
 
@@ -267,5 +278,21 @@ export function getUpsellMessage(serverId = "default", isFreeTier = false): stri
     }
 
     return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
+  }
+}
+
+function getCollectionName(defaultExperience: string): string {
+  switch (defaultExperience) {
+    case DefaultAccountExperienceType.DocumentDB:
+      return "container";
+    case DefaultAccountExperienceType.MongoDB:
+      return "collection";
+    case DefaultAccountExperienceType.Table:
+    case DefaultAccountExperienceType.Cassandra:
+      return "table";
+    case DefaultAccountExperienceType.Graph:
+      return "graph";
+    default:
+      throw Error("unknown API type");
   }
 }

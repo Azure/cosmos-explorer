@@ -59,9 +59,8 @@ const main = async (): Promise<void> => {
 
   const serverSettings = createServerSettings(urlVars);
 
-  const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, {
-    baseUrl: serverSettings.baseUrl
-  });
+  const data = { baseUrl: serverSettings.baseUrl };
+  const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
     if (urlVars.hasOwnProperty(TerminalQueryParams.Terminal)) {
@@ -70,9 +69,9 @@ const main = async (): Promise<void> => {
       throw new Error("Only terminal is supported");
     }
 
-    TelemetryProcessor.traceSuccess(Action.OpenTerminal, startTime);
+    TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
   } catch (error) {
-    TelemetryProcessor.traceFailure(Action.OpenTerminal, startTime);
+    TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);
   }
 };
 

@@ -214,7 +214,7 @@ export interface Offer {
   manualThroughput: number;
   minimumThroughput: number;
   offerDefinition?: SDKOfferDefinition;
-  headers?: any;
+  offerReplacePending: boolean;
 }
 
 export interface SDKOfferDefinition extends Resource {
@@ -248,7 +248,6 @@ export interface CreateDatabaseAndCollectionRequest {
   collectionId: string;
   offerThroughput: number;
   databaseLevelThroughput: boolean;
-  rupmEnabled?: boolean;
   partitionKey?: PartitionKey;
   indexingPolicy?: IndexingPolicy;
   uniqueKeyPolicy?: UniqueKeyPolicy;
