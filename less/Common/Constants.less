@@ -3,8 +3,8 @@
 /******************************************************************************/
 
 @font-face {
-    font-family: wf_segoe-ui_normal;
-    src: url('../../fonts/segoe-ui/west-european/normal/latest.woff');
+  font-family: wf_segoe-ui_normal;
+  src: url("../../fonts/segoe-ui/west-european/normal/latest.woff");
 }
 
 @DataExplorerFont: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
@@ -20,26 +20,26 @@
                                 COLORS
 /******************************************************************************/
 
-@AccentMediumHigh: #0058AD;
-@AccentMedium: #004E87;
-@AccentHigh: #1EBAED;
-@AccentExtraHigh: #55B3FF;
-@AccentLow: #EDF6FF;
-@AccentMediumLow: #DDEEFE;
-@AccentLight: #EEF7FF;
-@AccentExtra: #DDF0FF;
+@AccentMediumHigh: #0058ad;
+@AccentMedium: #004e87;
+@AccentHigh: #1ebaed;
+@AccentExtraHigh: #55b3ff;
+@AccentLow: #edf6ff;
+@AccentMediumLow: #ddeefe;
+@AccentLight: #eef7ff;
+@AccentExtra: #ddf0ff;
 
-@SelectionHigh: #B91F26;
-@BaseLight: #FFFFFF;
+@SelectionHigh: #b91f26;
+@BaseLight: #ffffff;
 @BaseDark: #000000;
-@NotificationLow: #FFF4CE;
-@NotificationHigh: #F9E9B0;
-@Purple1: #8A2DA5;
+@NotificationLow: #fff4ce;
+@NotificationHigh: #f9e9b0;
+@Purple1: #8a2da5;
 @Dirty: #9b4f96;
 
-@BaseLow: #F2F2F2;
-@BaseMediumLow: #E6E6E6;
-@BaseMedium: #CCCCCC;
+@BaseLow: #f2f2f2;
+@BaseMediumLow: #e6e6e6;
+@BaseMedium: #cccccc;
 @BaseMediumHigh: #767676;
 @BaseHigh: #393939;
 
@@ -53,7 +53,7 @@
 
 @ErrorColor: @SelectionHigh;
 
-@SelectionColor: #3074B0;
+@SelectionColor: #3074b0;
 
 @FocusColor: #605e5c;
 
@@ -80,7 +80,7 @@
 @ImgWidth: 14px;
 @ImgHeight: 14px;
 
-@toggleFontWeight:700;
+@toggleFontWeight: 700;
 
 //Resource Tree
 @TreeLineHeight: 17px;
@@ -144,16 +144,16 @@
 /**********************************************************************************/
 
 .flex-display(@display: flex) {
-	display: ~"-webkit-@{display}";
-	display: ~"-ms-@{display}box"; // IE10 uses -ms-flexbox
-	display: ~"-ms-@{display}"; // IE11
-	display: @display;
+  display: ~"-webkit-@{display}";
+  display: ~"-ms-@{display}box"; // IE10 uses -ms-flexbox
+  display: ~"-ms-@{display}"; // IE11
+  display: @display;
 }
 
 .flex-direction(@direction: column) {
   -webkit-flex-direction: @direction;
-      -ms-flex-direction: @direction;
-          flex-direction: @direction;
+  -ms-flex-direction: @direction;
+  flex-direction: @direction;
 }
 
 /*************************************************************************************
@@ -161,32 +161,31 @@
 **************************************************************************************/
 
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    .selectedRadio,
-    .selectedRadio:hover,
-    .selectedRadio:active,
-    .selectedRadio.dirty,
-    .tab [type=radio]:checked ~ label,
-    .tab [type=radio]:checked ~ label:hover {
-        -ms-high-contrast-adjust: none;
-        -webkit-text-fill-color: HighlightText;
-        color: HighlightText;
-        border-color: HighlightText;
-        background-color: Highlight;
+  .selectedRadio,
+  .selectedRadio:hover,
+  .selectedRadio:active,
+  .selectedRadio.dirty,
+  .tab [type="radio"]:checked ~ label,
+  .tab [type="radio"]:checked ~ label:hover {
+    -ms-high-contrast-adjust: none;
+    -webkit-text-fill-color: HighlightText;
+    color: HighlightText;
+    border-color: HighlightText;
+    background-color: Highlight;
+  }
+
+  .queryMetricsSummaryTuple {
+    th,
+    td {
+      &:nth-child(2) {
+        width: @IETableDataWidth;
+      }
+
+      &:nth-child(3) {
+        width: 50%;
+      }
     }
-
-    .queryMetricsSummaryTuple {
-
-        th, td {
-
-            &:nth-child(2) {
-                width: @IETableDataWidth;
-            }
-
-            &:nth-child(3) {
-                width: 50%;
-            }
-        }
-    }
+  }
 }
 
 /********************************************************************************************
@@ -194,15 +193,15 @@
 *********************************************************************************************/
 
 .hover() {
-    background-color: @AccentLight;
+  background-color: @AccentLight;
 }
 
 .active() {
-    background-color: @AccentExtra;
+  background-color: @AccentExtra;
 }
 
 .focus() {
-    outline: 1px dashed @FocusColor;
+  outline: 1px dashed @FocusColor;
 }
 
 /************************************************************************************************
@@ -212,63 +211,87 @@
 @ToggleWidth: 180px;
 
 .toggleSwitch() {
-    max-width: 100%;
-    margin-bottom: @SmallSpace;
-    padding: @SmallSpace;
-    cursor: pointer;
-    color: @BaseHigh;
-    font-weight: 400;
-    font-size: @mediumFontSize;
-    font-family: @DataExplorerFont;
+  max-width: 100%;
+  margin-bottom: @SmallSpace;
+  padding: @SmallSpace;
+  cursor: pointer;
+  color: @BaseHigh;
+  font-weight: 400;
+  font-size: @mediumFontSize;
+  font-family: @DataExplorerFont;
 }
 
 .selectedToggle() {
-    border-bottom: 2px solid @BaseHigh;
+  border-bottom: 2px solid @BaseHigh;
 }
 
 .unselectedToggle() {
-    color: @AccentMediumHigh;
+  color: @AccentMediumHigh;
 }
 
 /********************************************************************************************************
                              Common Data Explorer Icons
 *********************************************************************************************************/
 .dataExplorerIcons() {
-    cursor: pointer;
-    width: @ImgWidth;
-    height: @ImgHeight;
+  cursor: pointer;
+  width: @ImgWidth;
+  height: @ImgHeight;
 }
 
 /*********************************************************************************************************
                             Info Tooltip
 **********************************************************************************************************/
 .infoTooltip() {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .tooltipText(@textColor: @BaseLight, @backgroundColor: @BaseHigh) {
-    visibility: hidden;
-    background-color: @backgroundColor;
-    color: @textColor;
-    position: absolute;
-    z-index: 1;
-    left: @MediumSpace;
-    padding: @MediumSpace;
+  visibility: hidden;
+  background-color: @backgroundColor;
+  color: @textColor;
+  position: absolute;
+  z-index: 1;
+  left: @MediumSpace;
+  padding: @MediumSpace;
 }
 
 .tooltipTextAfter(@color: @BaseDark) {
-    content: "";
-    position: absolute;
-    right: 100%;
-    border-style: solid;
-    border-color: transparent @color transparent transparent;
-    left: 0px;
-    width: 0;
-    height: 0;
-    border-color: @InfoPointerColor transparent;
+  content: "";
+  position: absolute;
+  right: 100%;
+  border-style: solid;
+  border-color: transparent @color transparent transparent;
+  left: 0px;
+  width: 0;
+  height: 0;
+  border-color: @InfoPointerColor transparent;
 }
 
 .tooltipVisible() {
-    visibility: visible;
+  visibility: visible;
+}
+
+.inputTooltip() {
+  position: relative;
+}
+
+.inputTooltipText(@textColor: @BaseLight, @backgroundColor: @BaseHigh) {
+  background-color: @backgroundColor;
+  color: @textColor;
+  position: absolute;
+  z-index: 1;
+  padding: @MediumSpace;
+}
+
+.inputTooltipTextAfter(@color: @BaseDark) {
+  content: "";
+  position: absolute;
+  right: 100%;
+  border-style: solid;
+  border-color: transparent @color transparent transparent;
+  left: 10px;
+  width: 0;
+  height: 0;
+  border-color: @InfoPointerColor transparent;
 }
