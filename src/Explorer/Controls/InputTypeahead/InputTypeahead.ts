@@ -98,17 +98,12 @@ class InputTypeaheadViewModel {
   private params: InputTypeaheadParams;
 
   private cache: Cache;
-  private inputValue: string;
-  private selection: Item;
 
   public constructor(params: InputTypeaheadParams) {
     this.instanceNumber = InputTypeaheadViewModel.instanceCount++;
     this.params = params;
 
     this.params.choices.subscribe(this.initializeTypeahead.bind(this));
-    this.inputValue = "";
-    this.selection = null as any;
-
     this.cache = {
       inputValue: null,
       selection: null
@@ -163,7 +158,7 @@ class InputTypeaheadViewModel {
       }
     }
 
-    ($ as any)._typeahead(options);
+    ($ as any).typeahead(options);
   }
 
   /**
@@ -179,11 +174,11 @@ class InputTypeaheadViewModel {
    * Use ko's "template: afterRender" callback to do that without actually using any template.
    * Another way is to call it within setTimeout() in constructor.
    */
-  private afterRender(): void {
+  public afterRender(): void {
     this.initializeTypeahead();
   }
 
-  private submit(): void {
+  public submit(): void {
     if (this.params.submitFct) {
       this.params.submitFct(this.cache.inputValue, this.cache.selection);
     }

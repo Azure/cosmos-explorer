@@ -23,7 +23,7 @@ interface JQueryTypeaheadParam {
  * For use with: $.typeahead()
  */
 interface JQueryStatic {
-  _typeahead(arg: JQueryTypeaheadParam): void;
+  typeahead(arg: JQueryTypeaheadParam): void;
 }
 
 /**
