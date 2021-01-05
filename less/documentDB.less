@@ -1,1681 +1,1696 @@
 @import "./Common/Constants";
 
 html {
-    font-family: @DataExplorerFont;
-    padding: 0px;
-    margin: 0px;
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
+  font-family: @DataExplorerFont;
+  padding: 0px;
+  margin: 0px;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
 
 body {
-    font-family: @DataExplorerFont;
-    font-size: 12px;
-    height: 100%;
+  font-family: @DataExplorerFont;
+  font-size: 12px;
+  height: 100%;
 
-    :focus {
-        .focus()
-    }
+  :focus {
+    .focus();
+  }
 }
 
 .float-right {
-    float: right;
+  float: right;
 }
 
 .fixedleftpane {
-    background: #2f2d2d;
-    height: 100vh;
-    width: 80px;
-    float: left;
+  background: #2f2d2d;
+  height: 100vh;
+  width: 80px;
+  float: left;
 }
 
 .ui-dialog.ui-corner-all.ui-widget.ui-front.ui-widget-content.shareUrlDialog.no-close {
-    box-shadow: 0 0 @DefaultSpace @BoxShadow;
-    display: inline-block;
+  box-shadow: 0 0 @DefaultSpace @BoxShadow;
+  display: inline-block;
+  position: absolute;
+  background: #fff;
+  border: 1px solid @BaseMedium;
+  margin: 42px 20px;
+  border-radius: 3px;
+
+  &:before {
+    content: "";
     position: absolute;
-    background: #fff;
-    border: 1px solid @BaseMedium;
-    margin: 42px 20px;
-    border-radius: 3px;
+    top: -10px;
+    right: 13px;
+    border-width: 0 10px 10px;
+    border-style: solid;
+    border-color: @BaseMedium rgba(0, 0, 0, 0);
+    display: block;
+    width: 0;
+  }
 
-    &:before {
-        content:"";
-        position: absolute;
-        top: -10px;
-        right: 13px;
-        border-width: 0 10px 10px;
-        border-style: solid;
-        border-color: @BaseMedium rgba(0, 0, 0, 0);
-        display: block;
-        width: 0;
+  &:after {
+    content: "";
+    position: absolute;
+    top: -9px;
+    right: 14px;
+    border-width: 0 9px 9px;
+    border-style: solid;
+    border-color: #fff rgba(0, 0, 0, 0);
+    display: block;
+    width: 0;
+  }
+
+  .ui-dialog-titlebar.ui-corner-all.ui-helper-clearfix.ui-widget-header.shareUrlTitle {
+    border: none;
+    background-color: @BaseLight;
+    color: @BaseHigh;
+    font-size: @largeFontSize;
+    font-family: @DataExplorerFont;
+    padding: @MediumSpace;
+    margin: 0px @DefaultSpace 0px @MediumSpace;
+    font-weight: normal;
+
+    .ui-dialog-titlebar-close.shareClose {
+      display: none;
     }
+  }
 
-    &:after {
-        content:"";
-        position: absolute;
-        top: -9px;
-        right: 14px;
-        border-width: 0 9px 9px;
-        border-style: solid;
-        border-color: #FFF rgba(0, 0, 0, 0);
-        display: block;
-        width: 0;
-    }
+  .shareDataAccessFlyout {
+    overflow: visible;
+    margin-bottom: @LargeSpace;
+    padding: @DefaultSpace @LargeSpace;
 
-    .ui-dialog-titlebar.ui-corner-all.ui-helper-clearfix.ui-widget-header.shareUrlTitle {
-        border: none;
-        background-color: @BaseLight;
-        color: @BaseHigh;
-        font-size: @largeFontSize;
-        font-family: @DataExplorerFont;
-        padding: @MediumSpace;
-        margin: 0px @DefaultSpace 0px @MediumSpace;
-        font-weight: normal;
+    .shareDataAccessFlyoutContent {
+      height: 100%;
+      width: 100%;
 
-        .ui-dialog-titlebar-close.shareClose {
-            display: none;
+      .urlContainer {
+        margin-left: @DefaultSpace;
+
+        .urlContentText {
+          color: @BaseHigh;
+          font-size: @mediumFontSize;
+          font-family: @DataExplorerFont;
         }
-    }
 
-    .shareDataAccessFlyout {
-        overflow: visible;
-        margin-bottom: @LargeSpace;
-        padding: @DefaultSpace @LargeSpace;
+        .toggles {
+          height: @ToggleHeight;
+          width: @ToggleWidth;
+          margin: 24px 0px @LargeSpace 0px;
 
-        .shareDataAccessFlyoutContent {
-            height: 100%;
-            width: 100%;
+          &:focus {
+            .focus();
+          }
 
+          .tab {
+            margin-right: @MediumSpace;
+          }
 
-            .urlContainer {
-                margin-left: @DefaultSpace;
+          .toggleSwitch {
+            .toggleSwitch();
+          }
 
-                .urlContentText {
-                    color: @BaseHigh;
-                    font-size: @mediumFontSize;
-                    font-family: @DataExplorerFont;
-                }
+          .selectedToggle {
+            .selectedToggle();
+          }
 
-                .toggles {
-                    height: @ToggleHeight;
-                    width: @ToggleWidth;
-                    margin: 24px 0px @LargeSpace 0px;
+          .unselectedToggle {
+            .unselectedToggle();
+          }
+        }
 
-                    &:focus {
-                        .focus();
-                    }
+        .shareLabels {
+          color: @BaseHigh;
+          font-size: @mediumFontSize;
+          font-family: @DataExplorerFont;
+          margin-left: @DefaultSpace;
+        }
 
-                    .tab {
-                        margin-right: @MediumSpace;
-                    }
+        .urlSpace {
+          margin: @LargeSpace 0px @DefaultSpace 0px;
 
-                    .toggleSwitch {
-                        .toggleSwitch();
-                    }
+          img {
+            cursor: pointer;
+          }
+        }
 
-                    .selectedToggle {
-                        .selectedToggle();
-                    }
+        .tokenSpace {
+          margin-bottom: (2 * @MediumSpace);
 
-                    .unselectedToggle {
-                        .unselectedToggle();
-                    }
-                }
+          img {
+            cursor: pointer;
+          }
+        }
 
-                .shareLabels {
-                    color: @BaseHigh;
-                    font-size: @mediumFontSize;
-                    font-family: @DataExplorerFont;
-                    margin-left: @DefaultSpace;
-                }
+        .urlTokenInfoTooltip {
+          .infoTooltip();
 
-                .urlSpace {
-                    margin: @LargeSpace 0px @DefaultSpace 0px;
+          &:hover .urlTokenTooltiptext {
+            .tooltipVisible();
+          }
 
-                    img {
-                        cursor: pointer;
-                    }
-                }
+          .urlTokenTooltiptext {
+            bottom: 28px;
+            width: 250px;
+            .tooltipText();
 
-                .tokenSpace {
-                    margin-bottom: (2 * @MediumSpace);
-
-                    img {
-                        cursor: pointer;
-                    }
-                }
-
-                .urlTokenInfoTooltip {
-                    .infoTooltip();
-
-                    &:hover .urlTokenTooltiptext {
-                        .tooltipVisible();
-                    }
-
-                    .urlTokenTooltiptext {
-                        bottom:28px;
-                        width: 250px;
-                        .tooltipText();
-
-                        &:after {
-                            border-width: (2 * @MediumSpace) (2 * @MediumSpace) 0px 0px;
-                            bottom: -15px;
-                            .tooltipTextAfter();
-                        }
-                    }
-                }
-
-                .urlTokenCopyInfoTooltip {
-                    .infoTooltip();
-                    padding: @SmallSpace;
-
-                    &:hover {
-                        .hover();
-                    }
-
-                    &:active {
-                        .active();
-                    }
-
-                    &:focus .urlTokenCopyTooltiptext, &:focus .urlTokenCopyTooltiptext {
-                        .tooltipVisible();
-                    }
-
-                    &:focus .urlTokenCopyTooltiptext {
-                        .tooltipVisible();
-                    }
-
-                    .urlTokenCopyTooltiptext {
-                        visibility: hidden;
-                        text-align: center;
-                        background-color: @BaseHigh;
-                        color: @BaseLight;
-                        top: (2 * @LargeSpace);
-                        width: 80px;
-                        left: -26px;
-                        position: absolute;
-                        z-index: 1;
-                        padding: @SmallSpace;
-                        border-radius: 3px;
-
-                        &:after {
-                            content: "";
-                            position: absolute;
-                            border-style: solid;
-                            border-color: transparent @BaseDark transparent transparent;
-                            border-width: 0px @DefaultSpace 6px @DefaultSpace;
-                            top: -5px;
-                            left: 30px;
-                            width: 0;
-                            height: 0;
-                            border-color: @InfoPointerColor transparent;
-                        }
-                    }
-                }
-
-                .shareLink {
-                    width: 300px;
-                    background-color: #FFFFFF;
-                    border: 1px solid @BaseMedium;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    padding: 2px @SmallSpace 2px @SmallSpace;
-                    margin: @SmallSpace @DefaultSpace 0px 0px;
-                    font-family: @DataExplorerFont;
-                }
+            &:after {
+              border-width: (2 * @MediumSpace) (2 * @MediumSpace) 0px 0px;
+              bottom: -15px;
+              .tooltipTextAfter();
             }
+          }
         }
+
+        .urlTokenCopyInfoTooltip {
+          .infoTooltip();
+          padding: @SmallSpace;
+
+          &:hover {
+            .hover();
+          }
+
+          &:active {
+            .active();
+          }
+
+          &:focus .urlTokenCopyTooltiptext,
+          &:focus .urlTokenCopyTooltiptext {
+            .tooltipVisible();
+          }
+
+          &:focus .urlTokenCopyTooltiptext {
+            .tooltipVisible();
+          }
+
+          .urlTokenCopyTooltiptext {
+            visibility: hidden;
+            text-align: center;
+            background-color: @BaseHigh;
+            color: @BaseLight;
+            top: (2 * @LargeSpace);
+            width: 80px;
+            left: -26px;
+            position: absolute;
+            z-index: 1;
+            padding: @SmallSpace;
+            border-radius: 3px;
+
+            &:after {
+              content: "";
+              position: absolute;
+              border-style: solid;
+              border-color: transparent @BaseDark transparent transparent;
+              border-width: 0px @DefaultSpace 6px @DefaultSpace;
+              top: -5px;
+              left: 30px;
+              width: 0;
+              height: 0;
+              border-color: @InfoPointerColor transparent;
+            }
+          }
+        }
+
+        .shareLink {
+          width: 300px;
+          background-color: #ffffff;
+          border: 1px solid @BaseMedium;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding: 2px @SmallSpace 2px @SmallSpace;
+          margin: @SmallSpace @DefaultSpace 0px 0px;
+          font-family: @DataExplorerFont;
+        }
+      }
+    }
+  }
+
+  .openFullScreenBtn {
+    background-color: @AccentMediumHigh;
+    color: @BaseLight;
+    padding: @SmallSpace 28px;
+  }
+
+  .shareCancelButton {
+    background-color: @BaseLight;
+    color: @AccentMediumHigh;
+    padding: @SmallSpace 24px;
+  }
+
+  .openFullScreenCancelBtn {
+    margin: @SmallSpace @DefaultSpace @SmallSpace @SmallSpace;
+    border: 1px solid @AccentMediumHigh;
+    cursor: pointer;
+    font-size: @mediumFontSize;
+    border-radius: 0px;
+    font-family: @DataExplorerFont;
+  }
+}
+
+.connectExplorerContainer {
+  height: 100%;
+  width: 100%;
+
+  .connectExplorerFormContainer {
+    .flex-display();
+    .flex-direction();
+    height: 100%;
+    width: 100%;
+  }
+
+  .connectExplorer {
+    text-align: center;
+    .flex-display();
+    .flex-direction();
+    justify-content: center;
+    height: 100%;
+    margin-bottom: 60px; // this is to align the water mark in center between the top command bar and the notification console
+
+    .welcomeText {
+      font-size: @DefaultFontSize;
+      color: @BaseHigh;
+      margin: @DefaultSpace @DefaultSpace @LargeSpace @DefaultSpace;
     }
 
-    .openFullScreenBtn {
-        background-color: @AccentMediumHigh;
-        color: @BaseLight;
-        padding: @SmallSpace 28px;
+    .switchConnectTypeText {
+      margin: @DefaultSpace;
+      font-size: @mediumFontSize;
+      color: @AccentMediumHigh;
+      cursor: pointer;
     }
 
-    .shareCancelButton {
-        background-color: @BaseLight;
-        color: @AccentMediumHigh;
-        padding: @SmallSpace 24px;
+    .connectStringText {
+      font-size: @mediumFontSize;
+      color: @BaseHigh;
     }
 
-    .openFullScreenCancelBtn {
-        margin: @SmallSpace @DefaultSpace @SmallSpace @SmallSpace;
-        border: 1px solid @AccentMediumHigh;
+    .connectExplorerContent {
+      margin: @DefaultSpace;
+      color: @BaseHigh;
+
+      .inputToken {
+        width: 300px;
+        padding: 0px @SmallSpace;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+
+        &::placeholder {
+          font-style: italic;
+        }
+      }
+
+      .errorDetailsInfoTooltip {
+        .infoTooltip();
+        padding-left: @SmallSpace;
+        vertical-align: top;
+
+        &:hover .errorDetails {
+          .tooltipVisible();
+        }
+
+        .errorDetails {
+          bottom: (2 * @MediumSpace);
+          width: @ErrorDetailsInfowidth;
+          visibility: hidden;
+          background-color: @BaseHigh;
+          color: @BaseLight;
+          position: absolute;
+          z-index: 1;
+          left: -10px;
+          padding: 6px;
+
+          &:after {
+            border-width: 10px 10px 0px 10px;
+            bottom: -8px;
+            content: "";
+            position: absolute;
+            right: 100%;
+            border-style: solid;
+            left: @MediumSpace;
+            width: 0;
+            height: 0;
+            border-color: @InfoPointerColor transparent;
+          }
+        }
+
+        .errorImg {
+          height: @ImgWidth;
+          width: @ImgHeight;
+        }
+      }
+    }
+  }
+}
+
+.dataExplorerLoaderContainer {
+  /* this should have more z-index value than the splitter to disable it */
+  z-index: 5;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: @BaseLight;
+  opacity: @GreyOutOpacity;
+
+  .dataExplorerLoader {
+    height: 8px;
+    margin-top: 50vh;
+    margin-left: 50%;
+  }
+}
+
+.splashLoaderContainer {
+  z-index: 5;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: @BaseLight;
+  opacity: @GreyOutOpacity;
+
+  .splashLoaderContentContainer {
+    .flex-display();
+    .flex-direction();
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+
+    .splashLoaderText {
+      margin-top: @LargeSpace;
+    }
+
+    .splashLoaderTitle {
+      font-size: @DefaultFontSize;
+      color: @BaseHigh;
+      margin: @DefaultSpace @DefaultSpace @LargeSpace @DefaultSpace;
+    }
+
+    .splashLoader {
+      display: block;
+      margin: @DefaultSpace auto;
+      width: @LoaderWidth;
+      height: @LoaderHeight;
+    }
+  }
+}
+
+.dataExplorerPaneLoaderContainer {
+  right: 0;
+  width: 440px;
+  min-height: 565px;
+}
+
+.dataExplorerTabLoaderContainer {
+  left: initial;
+  top: initial;
+  z-index: 0;
+}
+
+.dataExplorerErrorConsoleContainer {
+  /* z-index should be greater than that of the splitter so it always overlaps the splitter */
+  z-index: 2;
+  align-self: flex-end;
+  width: 100%;
+  .flex-display();
+}
+
+.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.no-close.ui-dialog-buttons {
+  border: 1px solid @BaseMedium;
+  box-shadow: 0 0 @DefaultSpace @BoxShadow;
+  padding: 0px;
+
+  .ui-widget-header.ui-helper-clearfix.ui-dialog-titlebar.connectTitlebar {
+    background-color: @BaseLight;
+    font-size: @largeFontSize;
+    color: @BaseHigh;
+    font-family: @DataExplorerFont;
+    border: none;
+    font-weight: normal;
+    padding: @SmallSpace;
+    margin: @DefaultSpace @LargeSpace @MediumSpace (2 * @MediumSpace);
+
+    .ui-button.ui-corner-all.ui-widget.ui-button-icon-only.ui-dialog-titlebar-close {
+      visibility: hidden;
+    }
+  }
+
+  .dataAccessTokenModal {
+    margin: @LargeSpace 24px 24px;
+    padding: @SmallSpace;
+    overflow: visible;
+    .dataAccessTokenModalContent .dataAccessTokenExpireText {
+      margin-bottom: @LargeSpace;
+      color: @BaseHigh;
+      font-size: @DefaultFontSize;
+      font-family: @DataExplorerFont;
+    }
+  }
+
+  .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix {
+    border-top: @ButtonBorderWidth solid @BaseMediumLow;
+    padding: @LargeSpace 20px;
+
+    .ui-dialog-buttonset {
+      float: none;
+
+      .connectDialogButtons {
+        margin: @SmallSpace 0px @SmallSpace @MediumSpace;
+        border: @ButtonBorderWidth solid @AccentMediumHigh;
         cursor: pointer;
         font-size: @mediumFontSize;
         border-radius: 0px;
         font-family: @DataExplorerFont;
-    }
-}
+      }
 
-.connectExplorerContainer {
-    height: 100%;
-    width: 100%;
+      .connectButton {
+        padding: @SmallSpace @LargeSpace;
+      }
 
-    .connectExplorerFormContainer {
-        .flex-display();
-        .flex-direction();
-        height: 100%;
-        width: 100%;
-    }
+      .okBtn {
+        padding: @SmallSpace 30px;
+      }
 
-    .connectExplorer {
-        text-align: center;
-        .flex-display();
-        .flex-direction();
-        justify-content: center;
-        height: 100%;
-        margin-bottom: 60px; // this is to align the water mark in center between the top command bar and the notification console
+      .connectOkBtns {
+        background-color: @AccentMediumHigh;
+        color: @BaseLight;
+      }
 
-        .welcomeText {
-            font-size: @DefaultFontSize;
-            color: @BaseHigh;
-            margin: @DefaultSpace @DefaultSpace @LargeSpace @DefaultSpace;
-        }
-
-        .switchConnectTypeText {
-            margin: @DefaultSpace;
-            font-size: @mediumFontSize;
-            color: @AccentMediumHigh;
-            cursor: pointer;
-        }
-
-        .connectStringText {
-            font-size: @mediumFontSize;
-            color: @BaseHigh;
-        }
-
-        .connectExplorerContent {
-            margin: @DefaultSpace;
-            color: @BaseHigh;
-
-            .inputToken {
-                width: 300px;
-                padding: 0px @SmallSpace;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-
-                &::placeholder {
-                    font-style: italic;
-                }
-            }
-
-            .errorDetailsInfoTooltip {
-                .infoTooltip();
-                padding-left: @SmallSpace;
-                vertical-align: top;
-
-                &:hover .errorDetails {
-                    .tooltipVisible();
-                }
-
-                .errorDetails {
-                    bottom: (2 * @MediumSpace);
-                    width: @ErrorDetailsInfowidth;
-                    visibility: hidden;
-                    background-color: @BaseHigh;
-                    color: @BaseLight;
-                    position: absolute;
-                    z-index: 1;
-                    left: -10px;
-                    padding: 6px;
-
-                    &:after {
-                        border-width: 10px 10px 0px 10px;
-                        bottom: -8px;
-                        content: "";
-                        position: absolute;
-                        right: 100%;
-                        border-style: solid;
-                        left: @MediumSpace;
-                        width: 0;
-                        height: 0;
-                        border-color: @InfoPointerColor transparent;
-                    }
-                }
-
-                .errorImg {
-                    height: @ImgWidth;
-                    width: @ImgHeight;
-                }
-            }
-        }
-    }
-}
-
-.dataExplorerLoaderContainer {
-    /* this should have more z-index value than the splitter to disable it */
-    z-index: 5;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: @BaseLight;
-    opacity: @GreyOutOpacity;
-
-    .dataExplorerLoader {
-        height: 8px;
-        margin-top: 50vh;
-        margin-left: 50%;
-    }
-}
-
-.splashLoaderContainer {
-    z-index: 5;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: @BaseLight;
-    opacity: @GreyOutOpacity;
-
-    .splashLoaderContentContainer {
-        .flex-display();
-        .flex-direction();
-        height: 100%;
-        text-align: center;
-        justify-content: center;
-
-        .splashLoaderText {
-            margin-top: @LargeSpace;
-        }
-
-        .splashLoaderTitle {
-            font-size: @DefaultFontSize;
-            color: @BaseHigh;
-            margin: @DefaultSpace @DefaultSpace @LargeSpace @DefaultSpace;
-        }
-
-        .splashLoader {
-            display: block;
-            margin: @DefaultSpace auto;
-            width: @LoaderWidth;
-            height: @LoaderHeight;
-        }
-    }
-}
-
-.dataExplorerPaneLoaderContainer {
-    right: 0;
-    width: 440px;
-    min-height: 565px;
-}
-
-.dataExplorerTabLoaderContainer {
-    left: initial;
-    top: initial;
-    z-index: 0;
-}
-
-.dataExplorerErrorConsoleContainer {
-    /* z-index should be greater than that of the splitter so it always overlaps the splitter */
-    z-index: 2;
-    align-self: flex-end;
-    width: 100%;
-    .flex-display();
-}
-
-.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.no-close.ui-dialog-buttons {
-    border: 1px solid @BaseMedium;
-    box-shadow:0 0 @DefaultSpace @BoxShadow;
-    padding: 0px;
-
-    .ui-widget-header.ui-helper-clearfix.ui-dialog-titlebar.connectTitlebar {
+      .cancelBtn {
         background-color: @BaseLight;
-        font-size: @largeFontSize;
-        color: @BaseHigh;
-        font-family: @DataExplorerFont;
-        border: none;
-        font-weight: normal;
-        padding: @SmallSpace;
-        margin: @DefaultSpace @LargeSpace @MediumSpace (2 * @MediumSpace);
-
-        .ui-button.ui-corner-all.ui-widget.ui-button-icon-only.ui-dialog-titlebar-close {
-            visibility: hidden;
-        }
+        color: @AccentMediumHigh;
+        margin-left: @DefaultSpace;
+        padding: @SmallSpace 20px;
+      }
     }
-
-    .dataAccessTokenModal {
-        margin: @LargeSpace 24px 24px;
-        padding: @SmallSpace;
-        overflow: visible;
-        .dataAccessTokenModalContent .dataAccessTokenExpireText {
-            margin-bottom: @LargeSpace;
-            color: @BaseHigh;
-            font-size: @DefaultFontSize;
-            font-family: @DataExplorerFont;
-        }
-    }
-
-    .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix {
-        border-top: @ButtonBorderWidth solid @BaseMediumLow;
-        padding: @LargeSpace 20px;
-
-        .ui-dialog-buttonset {
-            float: none;
-
-            .connectDialogButtons {
-                margin: @SmallSpace 0px @SmallSpace @MediumSpace;
-                border: @ButtonBorderWidth solid @AccentMediumHigh;
-                cursor: pointer;
-                font-size: @mediumFontSize;
-                border-radius: 0px;
-                font-family: @DataExplorerFont;
-            }
-
-            .connectButton {
-                padding: @SmallSpace @LargeSpace;
-            }
-
-            .okBtn {
-                padding: @SmallSpace 30px;
-            }
-
-            .connectOkBtns {
-                background-color: @AccentMediumHigh;
-                color: @BaseLight;
-            }
-
-            .cancelBtn {
-                background-color: @BaseLight;
-                color: @AccentMediumHigh;
-                margin-left: @DefaultSpace;
-                padding: @SmallSpace 20px;
-            }
-        }
-    }
+  }
 }
 
 .ui-widget-overlay.ui-front {
-    background-color: @BaseLight;
-    opacity: @GreyOutOpacity;
+  background-color: @BaseLight;
+  opacity: @GreyOutOpacity;
 }
 
 .renewAccessInfo {
-    color: @BaseHigh;
-    padding-right: (2 * @LargeSpace);
-    margin-bottom: (2 * @MediumSpace);
+  color: @BaseHigh;
+  padding-right: (2 * @LargeSpace);
+  margin-bottom: (2 * @MediumSpace);
 }
 
 .renewUploadItemsHeader {
-    margin-bottom: @DefaultSpace;
-    color: @BaseHigh;
+  margin-bottom: @DefaultSpace;
+  color: @BaseHigh;
 }
 
 .accessKeyInput {
-    width: @AccessKeyInputWidth;
-    padding: 0px @SmallSpace;
+  width: @AccessKeyInputWidth;
+  padding: 0px @SmallSpace;
 
-    &::placeholder {
-        font-style: italic;
-    }
+  &::placeholder {
+    font-style: italic;
+  }
 }
 
 .renewAccessExpandCollapse {
-    margin-top: 24px;
-    cursor: pointer;
+  margin-top: 24px;
+  cursor: pointer;
 
-    img {
-        width: @AccountNavigationExpandCollapseSize;
-        height: @AccountNavigationExpandCollapseSize;
-        margin-bottom: @SmallSpace;
-    }
+  img {
+    width: @AccountNavigationExpandCollapseSize;
+    height: @AccountNavigationExpandCollapseSize;
+    margin-bottom: @SmallSpace;
+  }
 }
 
 .AccountNavigationText {
-    font-size: @mediumFontSize;
-    font-family: @DataExplorerFont;
+  font-size: @mediumFontSize;
+  font-family: @DataExplorerFont;
 }
 
 .renewAccessImg {
-    margin: @DefaultSpace @MediumSpace 0px @LargeSpace;
+  margin: @DefaultSpace @MediumSpace 0px @LargeSpace;
 
-    img {
-        margin-top: @DefaultSpace;
-        width: @AccountNavigationImgWidth;
-        height: @AccountNavigationImgHeight;
-    }
+  img {
+    margin-top: @DefaultSpace;
+    width: @AccountNavigationImgWidth;
+    height: @AccountNavigationImgHeight;
+  }
 }
 
 .importFilesTitle {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background-color: @BaseLight;
-    border: 1px solid @BaseMedium;
-    height: 24px;
-    width: 300px;
-    padding: 0px @DefaultSpace 0px @DefaultSpace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: @BaseLight;
+  border: 1px solid @BaseMedium;
+  height: 24px;
+  width: 300px;
+  padding: 0px @DefaultSpace 0px @DefaultSpace;
 }
 
 .sparkWorkerCountInput {
-    margin-top: 5px;
-    width: 100%;
-    padding: 1px;
+  margin-top: 5px;
+  width: 100%;
+  padding: 1px;
 }
 
 .fileImportImg {
-    padding: @SmallSpace;
-    vertical-align: top;
-    border: @ButtonBorderWidth solid transparent;
-    &:hover {
-        background-color: @BaseMediumLow;
-    }
-    &:active {
-        background-color: @BaseMediumLow;
-    }
-    &:focus {
-        .focus();
-    }
+  padding: @SmallSpace;
+  vertical-align: top;
+  border: @ButtonBorderWidth solid transparent;
+  &:hover {
+    background-color: @BaseMediumLow;
+  }
+  &:active {
+    background-color: @BaseMediumLow;
+  }
+  &:focus {
+    .focus();
+  }
 }
 
 .fileImportButton {
-    height: 24px;
-    border: @ButtonBorderWidth solid transparent;
-    vertical-align: top;
+  height: 24px;
+  border: @ButtonBorderWidth solid transparent;
+  vertical-align: top;
 }
 
 .fileUploadSummaryContainer {
-    margin-top: 40px;
+  margin-top: 40px;
 
-    .fileUploadSummary {
-        margin-top: @DefaultSpace;
-        width: calc(~"100% - 25px");
-        table-layout: fixed;
+  .fileUploadSummary {
+    margin-top: @DefaultSpace;
+    width: calc(~"100% - 25px");
+    table-layout: fixed;
 
-        .fileUploadSummaryHeader {
-            font-size: 10px;
-        }
-
-        .fileUploadSummaryTuple {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            border-bottom: 1px solid @BaseMedium;
-            height: 28px;
-
-            td {
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
+    .fileUploadSummaryHeader {
+      font-size: 10px;
     }
+
+    .fileUploadSummaryTuple {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      border-bottom: 1px solid @BaseMedium;
+      height: 28px;
+
+      td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
 
 execute-sproc-params-pane {
-    @textInputWidth: 200px;
-    @textInputHeight: 24px;
-    @dataTypeSelectorWidth: 100px;
-    @paramTableTypeWidth: 110px;
+  @textInputWidth: 200px;
+  @textInputHeight: 24px;
+  @dataTypeSelectorWidth: 100px;
+  @paramTableTypeWidth: 110px;
 
-    .partitionKeyContainer,
-    .paramsTable {
-        padding-bottom: @DefaultSpace;
+  .partitionKeyContainer,
+  .paramsTable {
+    padding-bottom: @DefaultSpace;
 
-        .inputHeader,
-        .enterInputParams {
-            margin-bottom: @SmallSpace;
-            font-size: @DefaultFontSize;
-        }
-
-        .scrollBox {
-            width: 100%;
-            overflow: auto;
-            overflow-x: hidden;
-            padding-bottom: @SmallSpace;
-
-            .paramsClauseTable {
-                border-spacing: 0px;
-                display: table;
-                width: 100%;
-                margin-top: 8px;
-
-                .paramTableTypeHead {
-                    width: @paramTableTypeWidth;
-                }
-
-                .paramTemplateRow {
-                    padding-top: @MediumSpace;
-                }
-
-                .dataTypeSelector {
-                    width: @dataTypeSelectorWidth;
-                    height: @textInputHeight;
-                    border: @ButtonBorderWidth solid @BaseMedium;
-                    color: @BaseHigh;
-                    padding-left: @SmallSpace;
-                }
-
-                .partitionKeyValue,
-                .valueTextBox {
-                    width: @textInputWidth;
-                    height: @textInputHeight;
-                    border: @ButtonBorderWidth solid @BaseMedium;
-                    padding: @SmallSpace @DefaultSpace;
-                }
-
-                .partitionKeyValue {
-                    margin-right: 30px;
-                }
-
-                .spEntityAddCancel {
-                    margin-right: 1px;
-                    cursor: pointer;
-
-                    &:hover {
-                        .hover();
-                    }
-
-                    &:active {
-                        .active();
-                    }
-
-                    &:focus {
-                        .focus();
-                    }
-
-                    img {
-                        width: @ImgWidth;
-                        height: @ImgHeight;
-                        margin: 0px 0px @SmallSpace @SmallSpace;
-                    }
-                }
-            }
-        }
-
-        .addNewParam {
-            padding: @DefaultSpace 0px 5px @SmallSpace;
-            margin-top: @MediumSpace;
-            width: 125px;
-            cursor: pointer;
-
-            &:hover {
-                .hover();
-            }
-
-            &:active {
-                .active();
-            }
-
-            &:focus {
-                .focus();
-            }
-
-            img {
-                width: @ImgWidth;
-                height: @ImgHeight;
-                margin-bottom: @SmallSpace;
-            }
-
-            .addNewParamLabel {
-                margin-left: @SmallSpace;
-            }
-        }
+    .inputHeader,
+    .enterInputParams {
+      margin-bottom: @SmallSpace;
+      font-size: @DefaultFontSize;
     }
+
+    .scrollBox {
+      width: 100%;
+      overflow: auto;
+      overflow-x: hidden;
+      padding-bottom: @SmallSpace;
+
+      .paramsClauseTable {
+        border-spacing: 0px;
+        display: table;
+        width: 100%;
+        margin-top: 8px;
+
+        .paramTableTypeHead {
+          width: @paramTableTypeWidth;
+        }
+
+        .paramTemplateRow {
+          padding-top: @MediumSpace;
+        }
+
+        .dataTypeSelector {
+          width: @dataTypeSelectorWidth;
+          height: @textInputHeight;
+          border: @ButtonBorderWidth solid @BaseMedium;
+          color: @BaseHigh;
+          padding-left: @SmallSpace;
+        }
+
+        .partitionKeyValue,
+        .valueTextBox {
+          width: @textInputWidth;
+          height: @textInputHeight;
+          border: @ButtonBorderWidth solid @BaseMedium;
+          padding: @SmallSpace @DefaultSpace;
+        }
+
+        .partitionKeyValue {
+          margin-right: 30px;
+        }
+
+        .spEntityAddCancel {
+          margin-right: 1px;
+          cursor: pointer;
+
+          &:hover {
+            .hover();
+          }
+
+          &:active {
+            .active();
+          }
+
+          &:focus {
+            .focus();
+          }
+
+          img {
+            width: @ImgWidth;
+            height: @ImgHeight;
+            margin: 0px 0px @SmallSpace @SmallSpace;
+          }
+        }
+      }
+    }
+
+    .addNewParam {
+      padding: @DefaultSpace 0px 5px @SmallSpace;
+      margin-top: @MediumSpace;
+      width: 125px;
+      cursor: pointer;
+
+      &:hover {
+        .hover();
+      }
+
+      &:active {
+        .active();
+      }
+
+      &:focus {
+        .focus();
+      }
+
+      img {
+        width: @ImgWidth;
+        height: @ImgHeight;
+        margin-bottom: @SmallSpace;
+      }
+
+      .addNewParamLabel {
+        margin-left: @SmallSpace;
+      }
+    }
+  }
 }
 
 stored-procedure-tab {
-    @ToggleHeight: 30px;
-    @ToggleWidth: 180px;
+  @ToggleHeight: 30px;
+  @ToggleWidth: 180px;
 
-    .results-container, .errors-container {
-        padding: @MediumSpace 0px 0px @MediumSpace;
-        height: 100%;
-        .flex-display();
-        .flex-direction();
+  .results-container,
+  .errors-container {
+    padding: @MediumSpace 0px 0px @MediumSpace;
+    height: 100%;
+    .flex-display();
+    .flex-direction();
+    overflow: hidden;
+
+    .toggles {
+      height: @ToggleHeight;
+      width: @ToggleWidth;
+      margin-left: @MediumSpace;
+
+      &:focus {
+        .focus();
+      }
+
+      .tab {
+        margin-right: @MediumSpace;
+      }
+
+      .toggleSwitch {
+        .toggleSwitch();
+      }
+
+      .selectedToggle {
+        .selectedToggle();
+      }
+
+      .unselectedToggle {
+        .unselectedToggle();
+      }
+    }
+
+    .enterInputParameters {
+      padding: @LargeSpace @MediumSpace;
+    }
+  }
+
+  .errors-container {
+    padding-left: (2 * @MediumSpace);
+    .errors-header {
+      font-weight: 700;
+      font-size: @DefaultFontSize;
+      padding-bottom: @DefaultSpace;
+    }
+
+    .errorContent {
+      .flex-display();
+      width: 60%;
+      white-space: nowrap;
+      font-size: @mediumFontSize;
+
+      .errorMessage {
+        padding: @SmallSpace;
         overflow: hidden;
-
-        .toggles {
-            height: @ToggleHeight;
-            width: @ToggleWidth;
-            margin-left: @MediumSpace;
-
-            &:focus {
-                .focus();
-            }
-
-            .tab {
-                margin-right: @MediumSpace;
-            }
-
-            .toggleSwitch {
-                .toggleSwitch();
-            }
-
-            .selectedToggle {
-                .selectedToggle();
-            }
-
-            .unselectedToggle {
-                .unselectedToggle();
-            }
-        }
-
-        .enterInputParameters {
-            padding: @LargeSpace @MediumSpace;
-        }
+        text-overflow: ellipsis;
+      }
     }
 
-    .errors-container {
-        padding-left: (2 * @MediumSpace);
-        .errors-header {
-            font-weight: 700;
-            font-size: @DefaultFontSize;
-            padding-bottom: @DefaultSpace;
-        }
-
-        .errorContent {
-            .flex-display();
-            width: 60%;
-            white-space: nowrap;
-            font-size: @mediumFontSize;
-
-            .errorMessage {
-                padding: @SmallSpace;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
-
-        .errorDetailsLink {
-            cursor: pointer;
-            padding: @SmallSpace;
-        }
+    .errorDetailsLink {
+      cursor: pointer;
+      padding: @SmallSpace;
     }
+  }
 
-    editor {
-        .flex-display();
-        .flex-direction();
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-        padding-left: 22px;
-    }
+  editor {
+    .flex-display();
+    .flex-direction();
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    padding-left: 22px;
+  }
 
-    json-editor {
-        .flex-display();
-        .flex-direction();
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-        padding: @SmallSpace 0px @SmallSpace 10px;
-    }
+  json-editor {
+    .flex-display();
+    .flex-direction();
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    padding: @SmallSpace 0px @SmallSpace 10px;
+  }
 }
 
 notification-console {
-    width: 100%;
+  width: 100%;
 }
 
 #divQuickStart {
-    display: inline-block;
-    width: 100%;
+  display: inline-block;
+  width: 100%;
 }
 
 #imgiconwidth1 {
-    width: 72%;
+  width: 72%;
 }
 
 #Quickstart {
-    text-align: center;
-    width: 80px;
-    height: 60px;
-    margin: 0 auto;
-    padding-top: 5px;
-    position: relative;
+  text-align: center;
+  width: 80px;
+  height: 60px;
+  margin: 0 auto;
+  padding-top: 5px;
+  position: relative;
 }
 
 .flexContainer {
-    height:100%;
-    width:100%;
-    .flex-display();
-    .flex-direction();
+  height: 100%;
+  width: 100%;
+  .flex-display();
+  .flex-direction();
 }
 
 .hideOverflows {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .explorerContent {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .collectionheading {
-    text-transform: uppercase;
-    font-size: 10px;
+  text-transform: uppercase;
+  font-size: 10px;
 }
 
 #Quickstart #imgiconwidth1 {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    right: 27px;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 27px;
 }
 
 .topSelected {
-    border-left: 4px solid @AccentMediumHigh;
-    background: #666666;
+  border-left: 4px solid @AccentMediumHigh;
+  background: #666666;
 }
 
 .topSelected:hover {
-    border-left: 4px solid @AccentMediumHigh;
-    background: #666666!important;
-    cursor: default!important;
+  border-left: 4px solid @AccentMediumHigh;
+  background: #666666 !important;
+  cursor: default !important;
 }
 
 #Quickstart:hover span.activemenu,
 #Quickstart:active span.activemenu {
-    color: #fff;
+  color: #fff;
 }
 
 #Explorer:hover span.menuExplorer,
 #Explorer:active span.menuExplorer {
-    color: #fff;
+  color: #fff;
 }
 
 menuQuickStart {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 12px;
-    top: 30px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 12px;
+  top: 30px;
+  position: absolute;
 }
 
 #Explorer {
-    text-align: center;
-    display: inline-block;
-    width: 80px;
-    height: 60px;
-    margin: 0 auto;
-    padding-top: 9px;
-    position: relative;
+  text-align: center;
+  display: inline-block;
+  width: 80px;
+  height: 60px;
+  margin: 0 auto;
+  padding-top: 9px;
+  position: relative;
 }
 
 #Explorer #imgiconwidth1,
 .feedbackstyle #imgiconwidth1,
 .settingstyle #imgiconwidth1 {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    right: 30px;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 30px;
 }
 
 #Explorer span.menuExplorer {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 19px;
-    top: 33px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 19px;
+  top: 33px;
+  position: absolute;
 }
 
 .feedbackstyle span.menuExplorer {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 19px;
-    top: 33px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 19px;
+  top: 33px;
+  position: absolute;
 }
 
 .settingstyle span.menuExplorer {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 19px;
-    top: 33px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 19px;
+  top: 33px;
+  position: absolute;
 }
 
 .content {
-    display: inline-block;
-    width: 100%;
-    transition: all .4s ease-in-out;
-    -ms-transition: all .4s ease-in-out;
-    -webkit-transition: all .4s ease-in-out;
-    -moz-transition: all .4s ease-in-out;
-    height: 100vh;
+  display: inline-block;
+  width: 100%;
+  transition: all 0.4s ease-in-out;
+  -ms-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  height: 100vh;
 }
 
 .mini {
-    width: 0%;
-    float: left;
-    transition: all .4s ease-in-out;
-    -webkit-transition: all .4s ease-in-out;
-    -moz-transition: all .4s ease-in-out;
-    height: 100vh;
-    background-color: white;
+  width: 0%;
+  float: left;
+  transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  height: 100vh;
+  background-color: white;
 }
 
 #sidebar-wrapper {
-    z-index: 1000;
-    position: fixed;
-    left: 250px;
-    width: 0;
-    height: 100%;
-    margin-left: -250px;
-    overflow-y: auto;
-    background: white;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
+  z-index: 1000;
+  position: fixed;
+  left: 250px;
+  width: 0;
+  height: 100%;
+  margin-left: -250px;
+  overflow-y: auto;
+  background: white;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
 }
 
 .toggle-left {
-    width: 0%;
-    overflow: hidden;
+  width: 0%;
+  overflow: hidden;
 }
 
 .toggle-minicontent {
-    width: 100%;
+  width: 100%;
 }
 
 .toggle-maincontent {
-    width: 100%;
+  width: 100%;
 }
 
 .toggle-mini {
-    width: 36px;
+  width: 36px;
 }
 
 .toggle-main {
-    width: 100%;
+  width: 100%;
 }
 
 .activepartitionmode {
-    background-color: @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
 }
 
 .paddingpartition {
-    color: white;
-    padding-left: 15px;
-    padding-top: 25px;
+  color: white;
+  padding-left: 15px;
+  padding-top: 25px;
 }
 
 .paddingspan2 {
-    padding-top: 20px;
-    color: #000;
-    padding-left: 15px;
+  padding-top: 20px;
+  color: #000;
+  padding-left: 15px;
 }
 
 .paddingspan4 {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    color: white;
-    padding-left: 15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: white;
+  padding-left: 15px;
 }
 
 .whitegroove {
-    width: 344px;
-    border: groove;
+  width: 344px;
+  border: groove;
 }
 
 .dropdownbtn {
-    color: white;
-    width: 340px;
-    background: #262626;
+  color: white;
+  width: 340px;
+  background: #262626;
 }
 
 .queryclr {
-    color: white;
-    background: #262626;
+  color: white;
+  background: #262626;
 }
 
 .panelContent {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .panelContentWrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .contextual-pane {
-    top: 0px;
-    right: 0 !important;
-    left: auto;
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 auto;
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto;
-    right: auto;
-    z-index: 1000 !important;
-    -webkit-align-self: auto !important;
-    -ms-flex-item-align: auto !important;
-    align-self: auto !important;
-    height: 100%;
-    position: absolute;
-    width: 440px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-    outline: none;
-    background-color: #fff;
-    /* border-left: 1px solid #cbcbcb; */
-    -webkit-animation: mymove 0.2s;
-    -webkit-animation-timing-function: cubic-bezier(0.47, 0, 0.75, 0.72);
-    animation: mymove 0.2s;
-    animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
-    box-shadow: -5px 0px 7px 0px #cbcbcb;
+  top: 0px;
+  right: 0 !important;
+  left: auto;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  right: auto;
+  z-index: 1000 !important;
+  -webkit-align-self: auto !important;
+  -ms-flex-item-align: auto !important;
+  align-self: auto !important;
+  height: 100%;
+  position: absolute;
+  width: 440px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  outline: none;
+  background-color: #fff;
+  /* border-left: 1px solid #cbcbcb; */
+  -webkit-animation: mymove 0.2s;
+  -webkit-animation-timing-function: cubic-bezier(0.47, 0, 0.75, 0.72);
+  animation: mymove 0.2s;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  box-shadow: -5px 0px 7px 0px #cbcbcb;
 }
 
 @keyframes mymove {
-    from {
-        right: -1000px;
-    }
-    to {
-        right: 0px;
-    }
+  from {
+    right: -1000px;
+  }
+  to {
+    right: 0px;
+  }
 }
 
 .contextual-pane-out {
-    width: 100%;
-    height: 100vh;
-    z-index: 1;
-    position: absolute;
-    top: 0px;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  position: absolute;
+  top: 0px;
 }
 
 .contextual-pane-in {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-#tbodycontent>tr>td {
-    border-bottom: 1px solid #CCCCCC;
-    border-top: none;
-    padding: 6px;
+#tbodycontent > tr > td {
+  border-bottom: 1px solid #cccccc;
+  border-top: none;
+  padding: 6px;
 }
 
-#tbodycontent>tr:last-child>td {
-    border-bottom: 1px solid #ddd;
+#tbodycontent > tr:last-child > td {
+  border-bottom: 1px solid #ddd;
 }
 
 .documentsTabGridAndEditor {
+  height: 100%;
+  overflow: hidden;
+  .flex-display();
+
+  &.documentsTabGridAndEditorUpperPadding {
+    padding-top: 16px;
+  }
+
+  .documentsContainerWithSplitter {
+    height: 100% !important;
+    width: 200px;
+    padding-left: 8px;
+    flex-shrink: 0;
+  }
+
+  .documentWaterMark {
+    margin: auto;
+    height: 35vh; // this is to align the water mark in center of the layout
+    text-align: center;
+
+    p {
+      margin-bottom: @LargeSpace;
+    }
+
+    .documentWaterMarkText {
+      color: @BaseHigh;
+      font-size: @DefaultFontSize;
+      font-family: @DataExplorerFont;
+    }
+
+    .loadErrorIcon {
+      width: 128px;
+      height: 128px;
+    }
+
+    .loadErrorDetailsLink {
+      cursor: pointer;
+    }
+  }
+
+  json-editor {
+    padding-top: 28px;
+    padding-left: @MediumSpace;
     height: 100%;
+    width: 100%;
     overflow: hidden;
     .flex-display();
 
-    &.documentsTabGridAndEditorUpperPadding {
-        padding-top: 16px;
+    .jsonEditor {
+      border: none;
     }
+  }
 
-    .documentsContainerWithSplitter {
-        height: 100% !important;
-        width: 200px;
-        padding-left: 8px;
-        flex-shrink: 0;
+  diff-editor {
+    padding-top: 28px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    .flex-display();
+
+    .jsonEditor {
+      border: none;
     }
+  }
 
-    .documentWaterMark {
-        margin: auto;
-        height: 35vh; // this is to align the water mark in center of the layout
-        text-align: center;
+  .conflictEditorContainer {
+    width: 100%;
 
-        p {
-            margin-bottom: @LargeSpace;
-        }
+    .conflictEditorHeader {
+      padding: 6px 12px;
+      width: 100%;
+      overflow: hidden;
 
-        .documentWaterMarkText {
-            color: @BaseHigh;
-            font-size: @DefaultFontSize;
-            font-family: @DataExplorerFont;
-        }
-
-        .loadErrorIcon {
-            width:128px;
-            height:128px;
-        }
-
-        .loadErrorDetailsLink {
-            cursor: pointer;
-        }
+      .conflictEditorHeaderLabel {
+        width: 50%;
+        float: left;
+        color: @BaseDark;
+        font-weight: bold;
+      }
     }
 
     json-editor {
-        padding-top: 28px;
-        padding-left: @MediumSpace;
-        height: 100%;
-        width:100%;
-        overflow: hidden;
-        .flex-display();
-
-        .jsonEditor {
-            border: none;
-        }
+      padding-top: 0;
     }
 
     diff-editor {
-        padding-top: 28px;
-        height: 100%;
-        width:100%;
-        overflow: hidden;
-        .flex-display();
-
-        .jsonEditor {
-            border: none;
-        }
+      padding-top: 0;
+      height: calc(~"100% - 30px");
     }
-
-    .conflictEditorContainer {
-        width: 100%;
-
-        .conflictEditorHeader {
-            padding: 6px 12px;
-            width: 100%;
-            overflow: hidden;
-
-            .conflictEditorHeaderLabel {
-                width: 50%;
-                float: left;
-                color: @BaseDark;
-                font-weight: bold;
-            }
-        }
-
-        json-editor {
-            padding-top: 0;
-        }
-
-        diff-editor {
-            padding-top: 0;
-            height: calc(~"100% - 30px");
-        }
-    }
+  }
 }
 
 .gridRowSelected {
-    .active();
+  .active();
 }
 
 .gridRowSelected:hover {
-    cursor: default;
-    .hover()
+  cursor: default;
+  .hover();
 }
 
 .gridRowHighlighted {
-    border-style: dotted;
-    border-width: 2px;
+  border-style: dotted;
+  border-width: 2px;
 }
 
-.table-hover>tbody>tr:hover {
-    .hover();
+.table-hover > tbody > tr:hover {
+  .hover();
 }
 
 .collectionNodeSelected {
-    .active();
+  .active();
 }
 
 .collectionNodeSelected:hover {
-    cursor: default;
-    .hover();
+  cursor: default;
+  .hover();
 }
 
 .databaseNodeSelected {
-   .active();
+  .active();
 }
 
 .databaseNodeSelected:hover {
-    cursor: default;
-    .hover();
+  cursor: default;
+  .hover();
 }
 
 .leftsidepanle-hr {
-    margin: 16px 0px;
-    border-top: 1px solid #eee;
-    margin-left: -17px;
-    width: 100%;
-    color: 1px solid #53575B;
+  margin: 16px 0px;
+  border-top: 1px solid #eee;
+  margin-left: -17px;
+  width: 100%;
+  color: 1px solid #53575b;
 }
 
 .partitioning-btn {
-    padding-bottom: 16px;
+  padding-bottom: 16px;
 }
 
 .btncreatecoll1 {
-    border: 1px solid @AccentMediumHigh;
-    background-color: @AccentMediumHigh;
-    color: #fff;
-    padding: 2px 30px;
-    cursor: pointer;
-    font-size: 12px;
+  border: 1px solid @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
+  color: #fff;
+  padding: 2px 30px;
+  cursor: pointer;
+  font-size: 12px;
 
-    &:active {
-        border-color: #0072c6;
-        background-color: #0072c6;
-    }
+  &:active {
+    border-color: #0072c6;
+    background-color: #0072c6;
+  }
 }
 
 .leftpanel-okbut .genericPaneSubmitBtn {
-    border: 1px solid @AccentMediumHigh;
-    background-color: @AccentMediumHigh;
-    color: #fff;
-    cursor: pointer;
-    font-size: 12px;
-    height: 24px;
+  border: 1px solid @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  height: 24px;
 
-    &:active {
-        border-color: #0072c6;
-        background-color: #0072c6;
-    }
+  &:active {
+    border-color: #0072c6;
+    background-color: #0072c6;
+  }
 }
 
 .btncreatecoll1-off {
-    border: 1px solid #969696;
-    background-color: #000;
-    color: white;
-    padding: 2px 30px;
-    cursor: pointer;
-    font-size: 12px;
-    margin-left: -5px;
+  border: 1px solid #969696;
+  background-color: #000;
+  color: white;
+  padding: 2px 30px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: -5px;
 }
 
 .leftpanel-okbut {
-    padding: 20px 0px 24px 30px;
+  padding: 20px 0px 24px 30px;
 }
 
 .btnpricepad {
-    margin-left: 24px;
+  margin-left: 24px;
 }
 
 .btnSetupQueries {
-    margin-top: @LargeSpace;
+  margin-top: @LargeSpace;
 }
 
 .collid {
-    background: #fff;
-    width: @newCollectionPaneInputWidth;
+  background: #fff;
+  width: @newCollectionPaneInputWidth;
 }
 
 .textfontclr {
-    color: #000;
+  color: #000;
 }
 
 .collid-white {
-    width: 100%;
-    border: solid 1px #DDD;
+  width: 100%;
+  border: solid 1px #ddd;
 }
 
 .plusimg-but {
-    background-image: url(../images/plus_normal.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_normal.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .plusimg-but:hover {
-    background-image: url(../images/plus_hover.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_hover.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .plusimg-but:active {
-    background-image: url(../images/plus_pressed.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_pressed.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .plusimg-but:disabled {
-    background-image: url(../images/plus_disabled.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_disabled.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but {
-    background-image: url(../images/minus_normal.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_normal.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but:hover {
-    background-image: url(../images/minus_hover.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_hover.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but:active {
-    background-image: url(../images/minus_pressed.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_pressed.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but:disabled {
-    background-image: url(../images/minus_disabled.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_disabled.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .firstdivbg {
-    padding: @MediumSpace 0px @DefaultSpace (2 * @LargeSpace);
-    background-color: @BaseLight;
+  padding: @MediumSpace 0px @DefaultSpace (2 * @LargeSpace);
+  background-color: @BaseLight;
 }
 
 p {
-    margin: 0 0 4px;
-    color: #000;
+  margin: 0 0 4px;
+  color: #000;
 }
 
 .headerline .closePaneBtn {
-    float: right;
-    cursor: pointer;
-    width: 16px;
-    height: 100%;
-    margin-right: 4px;
-    color: #000;
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 100%;
+  margin-right: 4px;
+  color: #000;
 }
 
 .closeImg {
-    float: right;
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
 
-    img {
-        height: 25px;
-        width: 25px;
-    }
+  img {
+    height: 25px;
+    width: 25px;
+  }
 }
 
 .closeImg[tabindex]:active {
-    outline: none;
+  outline: none;
 }
 
 .seconddivpadding {
-    padding-top: 16px;
+  padding-top: 16px;
 }
 
 .seconddivbg {
-    height: 100vh;
-    padding-left: 32px;
-    padding-top: 16px;
+  height: 100vh;
+  padding-left: 32px;
+  padding-top: 16px;
 }
 
 .pkPadding {
-    padding-top: 12px;
+  padding-top: 12px;
 }
 
 .mandatoryStar {
-    color: #ff0707;
-    font-size: 14px;
-    font-weight: bold;
+  color: #ff0707;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .createNewDatabaseOrUseExisting {
-    margin-bottom: @SmallSpace;
+  margin-bottom: @SmallSpace;
 
-    .createNewDatabaseOrUseExistingRadio {
-        vertical-align: text-bottom;
-    }
+  .createNewDatabaseOrUseExistingRadio {
+    vertical-align: text-bottom;
+  }
 
-    .createNewDatabaseOrUseExistingRadio:nth-child(n+2) {
-        margin-left: @LargeSpace;
-    }
+  .createNewDatabaseOrUseExistingRadio:nth-child(n + 2) {
+    margin-left: @LargeSpace;
+  }
 
-    .createNewDatabaseOrUseExistingSpace {
-        padding-left: @SmallSpace;
-    }
+  .createNewDatabaseOrUseExistingSpace {
+    padding-left: @SmallSpace;
+  }
 }
 
 .throughputModeContainer {
-    margin-bottom: @SmallSpace;
+  margin-bottom: @SmallSpace;
 
-    .throughputModeRadio {
-        vertical-align: text-bottom;
-    }
+  .throughputModeRadio {
+    vertical-align: text-bottom;
+  }
 
-    .nonFirstRadio {
-        margin-left: @LargeSpace;
-    }
+  .nonFirstRadio {
+    margin-left: @LargeSpace;
+  }
 
-    .throughputModeSpace {
-        padding-left: @SmallSpace;
-    }
+  .throughputModeSpace {
+    padding-left: @SmallSpace;
+  }
 }
 
 .databaseProvision {
-    margin-top: @SmallSpace;
+  margin-top: @SmallSpace;
 
-    input {
-        vertical-align: text-bottom;
-    }
+  input {
+    vertical-align: text-bottom;
+  }
 
-    .databaseProvisionText {
-        padding-left: @SmallSpace;
-    }
+  .databaseProvisionText {
+    padding-left: @SmallSpace;
+  }
 }
 
 .infoImg {
-    margin: 0px 0px 2px 2px;
+  margin: 0px 0px 2px 2px;
 }
 
 .largePartitionKey {
-    margin: @SmallSpace 0px;
+  margin: @SmallSpace 0px;
 
-    input {
-        vertical-align: text-bottom;
-    }
+  input {
+    vertical-align: text-bottom;
+  }
 
-    .largePartitionKeyDescription {
-        margin: @DefaultSpace 0px 0px;
-    }
+  .largePartitionKeyDescription {
+    margin: @DefaultSpace 0px 0px;
+  }
 }
 
 .enableAnalyticalStorage {
-    margin: @SmallSpace 0px;
+  margin: @SmallSpace 0px;
 
-    input {
-        vertical-align: text-bottom;
-    }
+  input {
+    vertical-align: text-bottom;
+  }
 }
 
 .infoTooltip {
-    .infoTooltip();
+  .infoTooltip();
 }
 
 .infoTooltip .tooltiptext {
-    top: 30px;
-    .tooltipText();
+  top: 30px;
+  .tooltipText();
 }
 
 .infoTooltip .tooltiptext::after {
-    border-width: 0px (2 * @MediumSpace) (2 * @MediumSpace) 0px;
-    top: -15px;
-    .tooltipTextAfter();
+  border-width: 0px (2 * @MediumSpace) (2 * @MediumSpace) 0px;
+  top: -15px;
+  .tooltipTextAfter();
 }
 
 .infoTooltip:hover .tooltiptext {
-    .tooltipVisible();
+  .tooltipVisible();
 }
 
 .infoTooltip:focus .tooltiptext {
-    .tooltipVisible();
+  .tooltipVisible();
 }
 
 .infoTooltip a {
-    color: @AccentHigh;
+  color: @AccentHigh;
+}
+
+.inputTooltip {
+  .inputTooltip();
+}
+
+.inputTooltip .inputTooltipText {
+  top: -68px;
+  .inputTooltipText();
+}
+
+.inputTooltip .inputTooltipText::after {
+  border-width: @MediumSpace @MediumSpace 0 @MediumSpace;
+  top: 55px;
+  .inputTooltipTextAfter();
 }
 
 .nowrap {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .leftAlignInfoTooltip {
-    .infoTooltip();
-    white-space: normal;
+  .infoTooltip();
+  white-space: normal;
 
-    .tooltiptext {
-        .tooltipText();
-        top: 30px;
-        visibility: hidden;
-        left: -300px;
+  .tooltiptext {
+    .tooltipText();
+    top: 30px;
+    visibility: hidden;
+    left: -300px;
 
-        &::after {
-            .tooltipTextAfter();
-            border-width: 0px 0px (2 * @MediumSpace) (2 * @MediumSpace);
-            top: -15px;
-            left: 287px;
-        }
+    &::after {
+      .tooltipTextAfter();
+      border-width: 0px 0px (2 * @MediumSpace) (2 * @MediumSpace);
+      top: -15px;
+      left: 287px;
     }
+  }
 
-    &:hover .tooltiptext {
-        .tooltipVisible();
-    }
+  &:hover .tooltiptext {
+    .tooltipVisible();
+  }
 }
 
 .pageOptionTooltipWidth {
-    min-width: @optionsInfoWidth;
+  min-width: @optionsInfoWidth;
 }
 
 .noFixedCollectionsTooltipWidth {
-    min-width: @noFixedCollectionsTooltipWidth;
+  min-width: @noFixedCollectionsTooltipWidth;
 }
 
 .infoTooltipWidth {
-    min-width: @tooltipTextWidth;
+  min-width: @tooltipTextWidth;
 }
 
 .mongoWildcardIndexTooltipWidth {
-    min-width: @mongoWildcardIndexTooltipWidth;
+  min-width: @mongoWildcardIndexTooltipWidth;
 }
 
 .sharedCollectionThroughputTooltipWidth {
-    min-width: @sharedCollectionThroughputTooltipTextWidth;
+  min-width: @sharedCollectionThroughputTooltipTextWidth;
 }
 
 .addContainerThroughputInput {
-    min-width: @addContainerPaneThroughputInfoWidth;
+  min-width: @addContainerPaneThroughputInfoWidth;
 }
 
 .renewInfoTooltipWidth {
-    width: @RenewAccessInfoWidth;
+  width: @RenewAccessInfoWidth;
 }
 
 .throughputInfo {
-    min-width: @ThroughputInfoWidth;
+  min-width: @ThroughputInfoWidth;
 }
 
 .throughputRuInfo {
-    min-width: @ThroughputRuInfoWidth;
+  min-width: @ThroughputRuInfoWidth;
 }
 
 .provisionDatabaseThroughput {
-    width: @provisionDatabaseThroughputInfo;
+  width: @provisionDatabaseThroughputInfo;
 }
 
 .pricingtierimg {
-    padding-left: 20px;
-    padding-top: 10px;
-    padding-bottom: 20px;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 
 .headerline {
-    color: @BaseDark;
-    font-size: 16px;
-    border-bottom: 1px solid @BaseMedium;
-    height: 41px;
+  color: @BaseDark;
+  font-size: 16px;
+  border-bottom: 1px solid @BaseMedium;
+  height: 41px;
 }
 
 .partitionkeystyle {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 .arrowprice {
-    margin-left: 230px;
+  margin-left: 230px;
 }
 
 .paddingspan {
-    padding: 20px;
-    color: white;
-    font-size: 14px;
+  padding: 20px;
+  color: white;
+  font-size: 14px;
 }
 
 .contextual-pane .paddingspan3 {
-    padding-left: 0px;
-    position: absolute;
-    width: 100%;
-    height: 100px;
-    bottom: -40px;
-    margin: 0 -15px;
-    border-top: solid 1px #bbbbbb;
-    margin-left: -32px;
+  padding-left: 0px;
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  bottom: -40px;
+  margin: 0 -15px;
+  border-top: solid 1px #bbbbbb;
+  margin-left: -32px;
 }
-
 
 /* Variant of paddingspan3 without the margins */
 
 .contextual-pane .paddingspan3b {
-    padding-left: 0px;
-    position: absolute;
-    width: 100%;
-    height: 100px;
-    bottom: -40px;
-    border-top: solid 1px #bbbbbb;
+  padding-left: 0px;
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  bottom: -40px;
+  border-top: solid 1px #bbbbbb;
 }
 
 .contextual-pane hr {
-    border: 1px solid #53575B;
-    margin-right: 20px;
+  border: 1px solid #53575b;
+  margin-right: 20px;
 }
 
 .contextual-pane .tabs .tab label {
-    padding: 5px 20px;
-    margin-bottom: 0px;
+  padding: 5px 20px;
+  margin-bottom: 0px;
 }
 
 .contextual-pane .collid {
-    border: 1px solid #605e5c;
-    font-size: 10px;
-    padding: 5px 10px;
-    color: #000;
+  border: 1px solid #605e5c;
+  font-size: 10px;
+  padding: 5px 10px;
+  color: #000;
 }
 
 .contextual-pane .select-font-size {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 input::-webkit-calendar-picker-indicator {
-    opacity: 100;
+  opacity: 100;
 }
 
 .contextual-pane input.collid[type="text"] {
-    font-size: 12px;
-    /* color: #000; */
-    padding: 4px 10px;
+  font-size: 12px;
+  /* color: #000; */
+  padding: 4px 10px;
 }
 
 .contextual-pane textarea.collid {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 /* Start -- Contextual pane components
@@ -1691,650 +1706,650 @@ input::-webkit-calendar-picker-indicator {
 */
 
 .contextual-pane .paneContentContainer {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .contextual-pane .paneErrorDetailsContainer {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .contextual-pane .paneErrorDetails {
-    padding: 16px 32px;
-    color: #000;
-    overflow-x: hidden;
-    overflow-y: auto;
-    flex: 1;
+  padding: 16px 32px;
+  color: #000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .contextual-pane .paneErrorDetailsHeader {
-    display: flex;
-    padding-top: 7px;
-    padding-bottom: 12px;
-    height: 46px;
-    background-color: #000;
+  display: flex;
+  padding-top: 7px;
+  padding-bottom: 12px;
+  height: 46px;
+  background-color: #000;
 }
 
 .contextual-pane .backBtn {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .contextual-pane .backBtn img {
-    width: 18px;
-    height: 18px;
-    margin-bottom: @SmallSpace;
+  width: 18px;
+  height: 18px;
+  margin-bottom: @SmallSpace;
 }
 
 .contextual-pane .moreDetails {
-    padding-left: @DefaultSpace;
+  padding-left: @DefaultSpace;
 }
 
 .contextual-pane .paneErrorDetailsHeader .errorDetailsTitle {
-    flex: 1;
-    padding-left: @DefaultSpace;
+  flex: 1;
+  padding-left: @DefaultSpace;
 }
 
 .contextual-pane .paneErrors a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .contextual-pane .paneMainContent {
-    flex: 1;
-    padding-left: 34px;
-    padding-right: 34px;
-    color: @BaseDark;
-    overflow-y: auto;
-    overflow-x: auto;
-    margin: (2 * @MediumSpace) 0px;
+  flex: 1;
+  padding-left: 34px;
+  padding-right: 34px;
+  color: @BaseDark;
+  overflow-y: auto;
+  overflow-x: auto;
+  margin: (2 * @MediumSpace) 0px;
 }
 
 .contextual-pane .panelMainContent {
-    padding-left: 34px;
-    padding-right: 34px;
-    color: @BaseDark;
-    margin: (2 * @MediumSpace) 0px;
+  padding-left: 34px;
+  padding-right: 34px;
+  color: @BaseDark;
+  margin: (2 * @MediumSpace) 0px;
 }
 
 .contextual-pane .paneFooter {
-    width: 100%;
-    height: 60px;
-    border-top: solid 1px #bbbbbb;
+  width: 100%;
+  height: 60px;
+  border-top: solid 1px #bbbbbb;
 }
 
 /* End -- Contextual pane components */
 
 .paddingspan3 {
-    color: white;
-    font-size: 14px;
-    position: absolute;
-    width: 100%;
-    height: 100px;
-    bottom: 150px;
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  bottom: 150px;
 }
 
 .paddingspan4 {
-    padding-top: 20px;
-    padding-left: 20px;
-    color: white;
-    font-size: 14px;
+  padding-top: 20px;
+  padding-left: 20px;
+  color: white;
+  font-size: 14px;
 }
 
 .closebtnn {
-    float: right;
-    padding: 0 10px;
-    cursor: pointer;
+  float: right;
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 label {
-    white-space: nowrap;
-    font: 12px "Segoe UI";
-    padding: 5px 25px;
+  white-space: nowrap;
+  font: 12px "Segoe UI";
+  padding: 5px 25px;
 }
 
 .Introlines {
-    padding-top: 27px;
-    padding-left: 40px;
+  padding-top: 27px;
+  padding-left: 40px;
 }
 
 .Introline1 {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .Introline2 {
-    font-size: 14px;
-    padding-top: 10px;
+  font-size: 14px;
+  padding-top: 10px;
 }
 
 .datalist-arrow {
-    position: relative;
+  position: relative;
 }
 
 .datalist-arrow:hover:after {
-    background: #969696;
+  background: #969696;
 }
 
 .datalist-arrow:focus:after,
 .datalist-arrow:active:after {
-    background: #1EBBEE;
+  background: #1ebbee;
 }
 
 input::-webkit-calendar-picker-indicator::after {
-    content: '\276F';
-    right: 0;
-    top: -8%;
-    display: block;
-    width: 27px;
-    height: 25px;
-    line-height: 25px;
-    color: #fff;
-    text-align: center;
-    pointer-events: none;
-    transform: rotate(90deg);
+  content: "\276F";
+  right: 0;
+  top: -8%;
+  display: block;
+  width: 27px;
+  height: 25px;
+  line-height: 25px;
+  color: #fff;
+  text-align: center;
+  pointer-events: none;
+  transform: rotate(90deg);
 }
 
 .datalist-arrow:after:hover {
-    content: '\276F';
-    position: absolute;
-    right: 1px;
-    top: 6%;
-    transform: rotate(90deg);
-    display: block;
-    width: 27px;
-    height: 25px;
-    line-height: 25px;
-    color: #fff;
-    text-align: center;
-    pointer-events: none;
-    background-color: #1EBBEE;
+  content: "\276F";
+  position: absolute;
+  right: 1px;
+  top: 6%;
+  transform: rotate(90deg);
+  display: block;
+  width: 27px;
+  height: 25px;
+  line-height: 25px;
+  color: #fff;
+  text-align: center;
+  pointer-events: none;
+  background-color: #1ebbee;
 }
 
 .Introline3 {
-    padding-top: 10px;
-    font-size: 14px;
-    font-weight: 1000;
+  padding-top: 10px;
+  font-size: 14px;
+  font-weight: 1000;
 }
 
 .collectionsTreeWithSplitter {
-    height: 100%;
+  height: 100%;
 }
 
 .collectionCollapsed {
-    color: black;
-    font-weight: 400;
-    font-size: 14px;
-    position: relative;
-    display: block;
-    padding: 0px 8px 4px 4px;
-    cursor: pointer;
-    float: right;
+  color: black;
+  font-weight: 400;
+  font-size: 14px;
+  position: relative;
+  display: block;
+  padding: 0px 8px 4px 4px;
+  cursor: pointer;
+  float: right;
 }
 
 .resourceTreeCollapse {
-    margin-right: 2px;
-    padding: 2px 5px 0px 5px;
-    border: 1px solid #fff;
+  margin-right: 2px;
+  padding: 2px 5px 0px 5px;
+  border: 1px solid #fff;
 }
 
 .resourceTreeCollapse:hover {
-    background-color: @BaseLow;
+  background-color: @BaseLow;
 }
 
 .resourceTreeCollapse:active {
-    background-color: @AccentMediumLow;
-    outline: none;
+  background-color: @AccentMediumLow;
+  outline: none;
 }
 
 .arrowCollapsed {
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    transform: rotate(-90deg) translateX(-50%);
-    -webkit-transform: rotate(-90deg) translateX(-50%);
-    -ms-transform: rotate(-90deg) translateX(-50%);
-    float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  transform: rotate(-90deg) translateX(-50%);
+  -webkit-transform: rotate(-90deg) translateX(-50%);
+  -ms-transform: rotate(-90deg) translateX(-50%);
+  float: right;
 }
 
 .qslevel {
-    padding-top: 10px;
-    border: none;
+  padding-top: 10px;
+  border: none;
 }
 
-.qslevel>li>a {
-    border: none !important;
+.qslevel > li > a {
+  border: none !important;
 }
 
-.qslevel>li.active {
-    border-bottom: 4px solid #767676;
+.qslevel > li.active {
+  border-bottom: 4px solid #767676;
 }
 
 .nav-tabs-margin {
-    padding-top: 8px;
-    background-color: #F2F2F2;
+  padding-top: 8px;
+  background-color: #f2f2f2;
 }
 
 .navTabHeight {
-    height: 31px;
+  height: 31px;
 }
 
-.qslevel>li.active>a,
-.qslevel>li>a:focus,
-.nav.nav-tabs.qslevel>li>a:hover {
-    border: none;
-    border-radius: 0;
-    background-color: transparent !important;
-    border-color: transparent;
+.qslevel > li.active > a,
+.qslevel > li > a:focus,
+.nav.nav-tabs.qslevel > li > a:hover {
+  border: none;
+  border-radius: 0;
+  background-color: transparent !important;
+  border-color: transparent;
 }
 
 .numbersize {
-    font-size: 60px;
-    display: inline;
+  font-size: 60px;
+  display: inline;
 }
 
 .numberheading {
-    display: inline;
-    position: absolute;
-    padding-top: 20px;
-    font-size: 16px;
-    padding-left: 20px;
+  display: inline;
+  position: absolute;
+  padding-top: 20px;
+  font-size: 16px;
+  padding-left: 20px;
 }
 
-.numberheading>p {
-    padding-top: 10px;
-    font-size: 12px !important;
+.numberheading > p {
+  padding-top: 10px;
+  font-size: 12px !important;
 }
 
-.numberheading>ul {
-    padding-top: 10px;
+.numberheading > ul {
+  padding-top: 10px;
 }
 
-.numberheading>ul>li>a {
-    font-size: 12px !important;
+.numberheading > ul > li > a {
+  font-size: 12px !important;
 }
 
 .step1 {
-    padding-bottom: 60px;
+  padding-bottom: 60px;
 }
 
-.step1>input {
-    font-size: 12px;
+.step1 > input {
+  font-size: 12px;
 }
 
 .btncreatecoll {
-    background: @AccentMediumHigh;
-    color: #fff;
-    padding: 0 20px;
-    cursor: pointer;
-    font-size: 12px;
-    border: 1px solid @AccentMediumHigh;
+  background: @AccentMediumHigh;
+  color: #fff;
+  padding: 0 20px;
+  cursor: pointer;
+  font-size: 12px;
+  border: 1px solid @AccentMediumHigh;
 }
 
 .atags:focus {
-    color: @AccentMediumHigh;
+  color: @AccentMediumHigh;
 }
 
 .atags {
-    color: @AccentMediumHigh;
-    font-weight: 400;
-    cursor: pointer
+  color: @AccentMediumHigh;
+  font-weight: 400;
+  cursor: pointer;
 }
 
 .qsmenuicons {
-    width: 25px;
-    height: 25px;
-    margin-right: 5px;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
 }
 
 .HeaderBg {
-    background-color: #202428;
-    height: 60px;
+  background-color: #202428;
+  height: 60px;
 }
 
 .title {
-    color: @AccentMediumHigh;
-    font-size: 20px;
-    padding-left: 10px;
+  color: @AccentMediumHigh;
+  font-size: 20px;
+  padding-left: 10px;
 }
 
 .items {
-    padding-left: 24px;
-    padding-top: 15px;
+  padding-left: 24px;
+  padding-top: 15px;
 }
 
 .divmenuquickstartpadding {
-    padding-left: 24px;
-    padding-bottom: 8px;
+  padding-left: 24px;
+  padding-bottom: 8px;
 }
 
 .menuQuickStart {
-    font-size: 12px;
-    color: white;
-    padding-left: 10px;
+  font-size: 12px;
+  color: white;
+  padding-left: 10px;
 }
 
 .menuExplorer {
-    font-size: 12px;
-    color: white;
-    padding-left: 20px;
+  font-size: 12px;
+  color: white;
+  padding-left: 20px;
 }
 
 .activemenu {
-    color: #fff;
+  color: #fff;
 }
 
 .rightarrowimg {
-    padding-left: 5px;
-    padding-bottom: 2px;
+  padding-left: 5px;
+  padding-bottom: 2px;
 }
 
 .underlinedLink {
-    text-decoration: underline !important;
-    color: @SelectionColor;
+  text-decoration: underline !important;
+  color: @SelectionColor;
 }
 
 a:hover,
 a:visited,
 a:active,
 a:link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
-.nav>li>a:focus {
-    background-color: white;
-    outline: none;
+.nav > li > a:focus {
+  background-color: white;
+  outline: none;
 }
 
 .iconpadclick {
-    background-color: #e6e6e6;
-    cursor: pointer;
-    border: 1px solid #1ebbee;
-    padding: 5px;
+  background-color: #e6e6e6;
+  cursor: pointer;
+  border: 1px solid #1ebbee;
+  padding: 5px;
 }
 
 .divimgleftarrow {
-    display: inline-block;
-    margin-top: 16px;
-    margin-right: 10px;
+  display: inline-block;
+  margin-top: 16px;
+  margin-right: 10px;
 }
 
 .divimgleftarrow:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-    border: 1px solid #1ebbee;
+  background-color: #e6e6e6;
+  cursor: pointer;
+  border: 1px solid #1ebbee;
 }
 
 .adddeliconspan {
-    display: none;
-    float: right;
-    padding: 5px;
+  display: none;
+  float: right;
+  padding: 5px;
 }
 
 .spanparent:hover .adddeliconspan {
-    display: inline;
+  display: inline;
 }
 
 .spanchild:hover .adddeliconspan {
-    display: inline;
+  display: inline;
 }
 
 .resourceTreeAndTabs {
-    display: flex;
-    flex: 1 1 auto;
-    overflow-x: auto;
-    overflow-y: hidden;
-    height: 100%;
+  display: flex;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100%;
 }
 
 .collectiontitle {
-    font-size: 14px;
-    text-transform: uppercase;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
 .coltitle {
-    background: white;
-    text-align: justify;
-    padding: @SmallSpace 0px @DefaultSpace 0px;
+  background: white;
+  text-align: justify;
+  padding: @SmallSpace 0px @DefaultSpace 0px;
 }
 
 .titlepadcol {
-    padding-left: 20px;
-    font-weight: 500;
-    height: 28px;
-    display: inline-block;
-    padding-top: 5px;
+  padding-left: 20px;
+  font-weight: 500;
+  height: 28px;
+  display: inline-block;
+  padding-top: 5px;
 }
 
 .padimgcolrefresh {
-    padding: 0px 0px 4px 4px;
+  padding: 0px 0px 4px 4px;
 }
 
 .padimgcolrefresh:hover {
-    background: @BaseLow;
+  background: @BaseLow;
 }
 
 .padimgcolrefresh:active {
-    background: @AccentMediumLow;
-    outline: none;
+  background: @AccentMediumLow;
+  outline: none;
 }
 
 .refreshcol {
-    cursor: pointer;
-    width: 14px;
-    height: 14px;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
 }
 
 .refreshcol:focus {
-    border: Solid 1px @AccentMediumHigh;
+  border: Solid 1px @AccentMediumHigh;
 }
 
 .refreshcol1 {
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 
 .padimgcolrefresh1 {
-    padding: 0px 4px 4px 4px;
+  padding: 0px 4px 4px 4px;
 }
 
 .padimgcolrefresh1:hover {
-    background-color: @BaseLow;
+  background-color: @BaseLow;
 }
 
 .padimgcolrefresh1:active {
-    background-color: @AccentMediumLow;
-    outline: none;
+  background-color: @AccentMediumLow;
+  outline: none;
 }
 
 .btnmainslide {
-    height: 14px;
-    margin-top: 14px;
-    cursor: pointer;
+  height: 14px;
+  margin-top: 14px;
+  cursor: pointer;
 }
 
 .well {
-    padding: 19px 0px;
-    padding-top: 0px;
-    margin-bottom: 20px;
-    border: 0px;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0);
-    background: white;
+  padding: 19px 0px;
+  padding-top: 0px;
+  margin-bottom: 20px;
+  border: 0px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0);
+  background: white;
 }
 
 .splitter,
 .ui-resizable-handle.ui-resizable-e {
-    z-index: 1;
-    width: 5px;
-    border-right: 1px solid @BaseMedium;
-    border-bottom: none;
-    padding: 0px;
-    background-color: @BaseLight;
+  z-index: 1;
+  width: 5px;
+  border-right: 1px solid @BaseMedium;
+  border-bottom: none;
+  padding: 0px;
+  background-color: @BaseLight;
 }
 
 .splitter,
 .ui-resizable-handle.ui-resizable-s {
-    z-index: 1;
-    height: 5px;
-    border-bottom: 1px solid @BaseMedium;
-    border-right: none;
-    padding: 0px;
-    background-color: transparent;
+  z-index: 1;
+  height: 5px;
+  border-bottom: 1px solid @BaseMedium;
+  border-right: none;
+  padding: 0px;
+  background-color: transparent;
 }
 
 .ui-resizable-helper {
-    border: 1px dotted;
+  border: 1px dotted;
 }
 
 .testClass {
-    padding-left: 30px;
+  padding-left: 30px;
 }
 
 .level {
-    padding-left: 16px;
-    padding-top: 0px;
+  padding-left: 16px;
+  padding-top: 0px;
 }
 
 .tabCommandButton {
-    border-bottom: 1px solid #ddd;
-    box-sizing: border-box;
-    padding-left: @DefaultSpace;
-    .flex-display();
-    flex: 0 0 auto;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  padding-left: @DefaultSpace;
+  .flex-display();
+  flex: 0 0 auto;
 }
 
 .imgiconwidth {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .id {
-    padding-left: 8px;
-    color: #000;
-    font-weight: bold;
-    margin-left: 6px;
+  padding-left: 8px;
+  color: #000;
+  font-weight: bold;
+  margin-left: 6px;
 }
 
 .documentsGridHeaderContainer {
-    padding-left: 5px;
-    width: 100%;
-    border-bottom: 1px solid #CCCCCC;
+  padding-left: 5px;
+  width: 100%;
+  border-bottom: 1px solid #cccccc;
 }
 
-.documentsGridHeaderContainer>table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: unset;
+.documentsGridHeaderContainer > table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: unset;
 }
 
 .documentsGridHeaderContainer table thead tr {
+  position: sticky;
+  top: 0;
+  th {
     position: sticky;
     top: 0;
-    th {
-        position: sticky;
-        top: 0;
-        background-color: #fff !important;
-        border-bottom: 1px solid #CCCCCC !important;
-    }
+    background-color: #fff !important;
+    border-bottom: 1px solid #cccccc !important;
+  }
 }
 
 .documentsGridHeader {
-    padding-left: 8px;
-    color: #000;
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: default;
-    width: 45%;
+  padding-left: 8px;
+  color: #000;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  width: 45%;
 }
 
 .refreshColHeader {
-    padding: 3px 6px 6px 6px;
+  padding: 3px 6px 6px 6px;
 }
 
 .refreshColHeader:hover {
-    background-color: @BaseLow;
+  background-color: @BaseLow;
 }
 
 .refreshColHeader:active {
-    background-color: @AccentMediumLow;
+  background-color: @AccentMediumLow;
 }
 
 .refreshColHeader .refreshcol {
-    float: right;
+  float: right;
 }
 
 .fixedWidthHeader {
-    width: 82px;
+  width: 82px;
 }
 
 .tabdocuments .scrollable {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-left: 5px;
-    padding-right: 5px;
-    width:100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 100%;
 }
 
-.tabdocuments>.tabdocumentsGridElement {
-    width: 50%;
+.tabdocuments > .tabdocumentsGridElement {
+  width: 50%;
 }
 
-.tabdocuments>.evenlySpacedHeader {
-    width: 30%;
+.tabdocuments > .evenlySpacedHeader {
+  width: 30%;
 }
 
 .tabdocuments.scrollable:focus,
 .tabdocuments.scrollable:active {
-    outline: 1px dotted;
+  outline: 1px dotted;
 }
 
 .tabdocuments .scrollable table td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mongoDocumentEditor .monaco-editor.vs .redsquiggly {
-    display: none !important;
+  display: none !important;
 }
 
 td a {
-    color: #393939;
+  color: #393939;
 }
 
 td a:hover {
-    color: #393939;
+  color: #393939;
 }
 
 .loadMore {
-    width: 100%;
-    padding-left: 30%;
-    padding-top: 2px;
-    cursor: pointer;
+  width: 100%;
+  padding-left: 30%;
+  padding-top: 2px;
+  cursor: pointer;
 }
 
-.loadMore>a:focus {
-    outline: 1px dotted;
+.loadMore > a:focus {
+  outline: 1px dotted;
 }
 
 #content.active .tabdocuments .scrollable {
-    height: 100%;
-    overflow-y: auto;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .table-fixed thead {
-    width: 97%;
-    padding-left: 18px;
+  width: 97%;
+  padding-left: 18px;
 }
 
 .table-fixed tbody {
-    height: 510px;
-    overflow-y: auto;
-    width: 100%;
-    overflow-x: hidden;
+  height: 510px;
+  overflow-y: auto;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .table-fixed thead,
@@ -2342,560 +2357,560 @@ td a:hover {
 .table-fixed tr,
 .table-fixed td,
 .table-fixed th {
-    display: block;
+  display: block;
 }
 
 .table-fixed tbody td,
-.table-fixed thead>tr>th {
-    float: left;
-    border-bottom-width: 0;
+.table-fixed thead > tr > th {
+  float: left;
+  border-bottom-width: 0;
 }
 
 a:hover,
 a:visited,
 a:active,
 a:link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .tabsManagerContainer {
-    height: 100%;
-    flex-grow: 1;
-    overflow: hidden;
+  height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 .tabs {
-    position: relative;
-    margin: 15px 0 25px 0;
-    display: table;
-    width: 100%;
+  position: relative;
+  margin: 15px 0 25px 0;
+  display: table;
+  width: 100%;
 }
 
 .tab {
-    float: left;
+  float: left;
 }
 
 .tab label {
-    border: 1px solid #bbbbbb;
-    margin-left: -1px;
-    position: inherit;
-    left: 1px;
-    color: #393939;
+  border: 1px solid #bbbbbb;
+  margin-left: -1px;
+  position: inherit;
+  left: 1px;
+  color: #393939;
 }
 
-.tab [type=radio] {
-    display: none;
+.tab [type="radio"] {
+  display: none;
 }
 
 .tabcontent {
-    clear:both;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: @MediumSpace 0px;
+  clear: both;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: @MediumSpace 0px;
 }
 
-.tab [type=radio]:checked~label {
-    border: 1px solid #0072c6;
-    background-color: @AccentMediumHigh;
-    color: white;
-    z-index: 2;
+.tab [type="radio"]:checked ~ label {
+  border: 1px solid #0072c6;
+  background-color: @AccentMediumHigh;
+  color: white;
+  z-index: 2;
 }
 
-.tab [type=radio]:checked~label:hover {
-    border: 1px solid @AccentMediumHigh;
-    background-color: @AccentMediumHigh;
-    color: white;
-    z-index: 2;
+.tab [type="radio"]:checked ~ label:hover {
+  border: 1px solid @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
+  color: white;
+  z-index: 2;
 }
 
-.tab [type=radio]:checked~label:active {
-    border: 1px solid #0072c6;
-    background-color: #0072c6;
-    color: white;
-    z-index: 2;
+.tab [type="radio"]:checked ~ label:active {
+  border: 1px solid #0072c6;
+  background-color: #0072c6;
+  color: white;
+  z-index: 2;
 }
 
-.tab [type=radio]:checked~label~.tabcontent {
-    z-index: 1;
-    display: initial;
+.tab [type="radio"]:checked ~ label ~ .tabcontent {
+  z-index: 1;
+  display: initial;
 }
 
-.tab [type=radio]:not(:checked)~label:hover {
-    border: 1px solid #969696;
-    background-color: #969696;
-    color: white;
-    cursor: pointer;
+.tab [type="radio"]:not(:checked) ~ label:hover {
+  border: 1px solid #969696;
+  background-color: #969696;
+  color: white;
+  cursor: pointer;
 }
 
-.tab [type=radio]:not(:checked)~label~.tabcontent {
-    display: none;
+.tab [type="radio"]:not(:checked) ~ label ~ .tabcontent {
+  display: none;
 }
 
 ::-ms-expand {
-    color: #969696;
+  color: #969696;
 }
 
 .atagdetails {
-    padding-left: 55px!important;
+  padding-left: 55px !important;
 }
 
-.contextual-pane-in .form-errors+img {
-    display: block;
-    position: absolute;
-    top: 92px;
-    left: 12px;
+.contextual-pane-in .form-errors + img {
+  display: block;
+  position: absolute;
+  top: 92px;
+  left: 12px;
 }
 
 .path {
-    color: lightgray;
-    font-style: italic;
-    padding-top: 12px;
-    padding-left: 20px;
+  color: lightgray;
+  font-style: italic;
+  padding-top: 12px;
+  padding-left: 20px;
 }
 
 .queryPath {
-    line-height: 16px;
-    padding-left: 33px;
-    padding-bottom: 12px;
+  line-height: 16px;
+  padding-left: 33px;
+  padding-bottom: 12px;
 }
 
 .filterDocCollapsed {
-    .flex-display();
-    padding: 0px 36px 0px 20px;
+  .flex-display();
+  padding: 0px 36px 0px 20px;
 }
 
 .filterDocCollapsed.active {
-    display: block;
+  display: block;
 }
 
 .selectQuery {
-    padding: @SmallSpace @SmallSpace 0px 0px;
+  padding: @SmallSpace @SmallSpace 0px 0px;
 }
 
 .noFilterApplied {
-    padding-top: @SmallSpace;
+  padding-top: @SmallSpace;
 }
 
 .appliedQuery {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-top: @SmallSpace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: @SmallSpace;
 }
 
 .filterDocExpanded {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 .filterDocExpanded.active {
-    display: block;
+  display: block;
 }
 
 .filterbtnstyle {
-    background: @AccentMediumHigh;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: solid 1px;
+  background: @AccentMediumHigh;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: solid 1px;
 }
 
 .filterbtnstyle:hover {
-    background: @AccentMediumHigh;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
+  background: @AccentMediumHigh;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
 }
 
 .filterbtnstyle:active {
-    background: #0072c6;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
+  background: #0072c6;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
 }
 
 .filterbtnstyle:focus {
-    background: #0072c6;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
-    border: 1px solid #0072c6;
+  background: #0072c6;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
+  border: 1px solid #0072c6;
 }
 
 .filterbtnstyle:not(:enabled) {
-    background: lightgray;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
+  background: lightgray;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
 }
 
-.queryButton{
-    margin-left:@LargeSpace;
+.queryButton {
+  margin-left: @LargeSpace;
 }
 
 .hrline1 {
-    color: #d6d7d8;
-    margin-left: -20px;
+  color: #d6d7d8;
+  margin-left: -20px;
 }
 
 .filtdocheader {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .editFilter {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .filterdivs {
-    padding-top: 15px;
-    height: 45px;
-    margin-bottom: 8px;
-    white-space: nowrap;
+  padding-top: 15px;
+  height: 45px;
+  margin-bottom: 8px;
+  white-space: nowrap;
 }
 
 .editFilterContainer {
-    display: flex;
+  display: flex;
 }
 
 .filterspan {
-    margin-top: @SmallSpace;
-    padding: 0px @LargeSpace 0px 0px;
+  margin-top: @SmallSpace;
+  padding: 0px @LargeSpace 0px 0px;
 }
 
 .filterclose {
-    padding: @SmallSpace 10px;
-    cursor: pointer;
+  padding: @SmallSpace 10px;
+  cursor: pointer;
 }
 
 .querydropdown {
-    border: 1px solid @BaseMedium;
-    font-style: normal;
-    width: 100%;
+  border: 1px solid @BaseMedium;
+  font-style: normal;
+  width: 100%;
 }
 
 .querydropdown.placeholderVisible {
-    font-style: italic;
+  font-style: italic;
 }
 
 .querydropdown:hover {
-    background-color: @AccentLow;
+  background-color: @AccentLow;
 }
 
 .querydropdown::-webkit-input-placeholder {
-    color: lightgray;
-    padding-left: 3px;
+  color: lightgray;
+  padding-left: 3px;
 }
 
 .querydropdown:-moz-placeholder {
-    /* Firefox 18- */
-    color: lightgray;
+  /* Firefox 18- */
+  color: lightgray;
 }
 
 .querydropdown::-moz-placeholder {
-    /* Firefox 19+ */
-    color: lightgray;
+  /* Firefox 19+ */
+  color: lightgray;
 }
 
 .querydropdown:-ms-input-placeholder {
-    color: lightgray;
-    padding-left: 7px;
+  color: lightgray;
+  padding-left: 7px;
 }
 
 .rowoverride {
-    margin-left: 7px;
-    margin-top: 20px;
+  margin-left: 7px;
+  margin-top: 20px;
 }
 
 .tabPanesContainer {
-    display: flex;
-    height: 100%;
-    overflow: hidden;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
 }
 
 .tabs-container {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .paddingspan4 {
-    padding-top: 20px;
-    color: white;
-    padding-left: 25px;
-    padding-right: 25px;
+  padding-top: 20px;
+  color: white;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 .colResizePointer {
-    cursor: col-resize;
+  cursor: col-resize;
 }
 
-.nav-tabs>li.active>.tabNavContentContainer,
-.nav-tabs>li.active>.tabNavContentContainer:focus,
-.nav-tabs>li.active>.tabNavContentContainer:hover {
-    color: #555;
-    cursor: default;
-    background-color: @BaseLight;
-    border-color: @BaseMedium;
-    border-bottom-color: @BaseLight;
-    border-style: solid;
-    border-width: 1px;
-    height: @ActiveTabHeight;
-    width: @ActiveTabWidth;
+.nav-tabs > li.active > .tabNavContentContainer,
+.nav-tabs > li.active > .tabNavContentContainer:focus,
+.nav-tabs > li.active > .tabNavContentContainer:hover {
+  color: #555;
+  cursor: default;
+  background-color: @BaseLight;
+  border-color: @BaseMedium;
+  border-bottom-color: @BaseLight;
+  border-style: solid;
+  border-width: 1px;
+  height: @ActiveTabHeight;
+  width: @ActiveTabWidth;
 }
 
-.nav-tabs>li.active:focus>.tabNavContentContainer {
-    .focus();
+.nav-tabs > li.active:focus > .tabNavContentContainer {
+  .focus();
 }
 
 .tabNavContentContainer {
+  .flex-display();
+  height: @TabsHeight;
+  justify-content: space-between;
+  border-radius: 2px 2px 0 0;
+  padding: @DefaultSpace 0px @SmallSpace 0px;
+  color: @BaseHigh;
+  width: @TabsWidth;
+  text-align: center;
+  position: relative;
+  border: @ButtonBorderWidth solid transparent;
+
+  &:hover {
+    text-decoration: none;
+    background-color: @BaseMediumLow;
+    border-color: @BaseMediumLow;
+  }
+
+  &:active {
+    background-color: @BaseMediumLow;
+  }
+
+  .tab_Content {
     .flex-display();
-    height: @TabsHeight;
-    justify-content: space-between;
-    border-radius: 2px 2px 0 0;
-    padding: @DefaultSpace 0px @SmallSpace 0px;
-    color: @BaseHigh;
     width: @TabsWidth;
-    text-align: center;
-    position: relative;
-    border: @ButtonBorderWidth solid transparent;
+    border-right: @ButtonBorderWidth solid @BaseMedium;
+    white-space: nowrap;
 
-    &:hover {
-        text-decoration: none;
-        background-color: @BaseMediumLow;
-        border-color: @BaseMediumLow;
-    }
+    .statusIconContainer {
+      width: @StatusIconContainerSize;
+      height: @StatusIconContainerSize;
+      margin-left: @SmallSpace;
+      display: inline-flex;
 
-    &:active {
-        background-color: @BaseMediumLow;
-    }
+      .errorIconContainer {
+        width: @ErrorIconContainer;
+        height: @ErrorIconContainer;
+        margin-top: 1px;
 
-    .tab_Content {
-        .flex-display();
-        width: @TabsWidth;
-        border-right: @ButtonBorderWidth solid @BaseMedium;
-        white-space: nowrap;
+        .errorIcon {
+          width: @ErrorIconWidth;
+          height: @LoadingErrorIconSize;
+          background-image: url(../images/error_no_outline.svg);
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 3px;
+          display: block;
+          margin: 1px 0px 0px 6px;
+        }
+      }
 
-        .statusIconContainer {
-            width: @StatusIconContainerSize;
-            height: @StatusIconContainerSize;
-            margin-left: @SmallSpace;
-            display: inline-flex;
-
-            .errorIconContainer {
-                width: @ErrorIconContainer;
-                height: @ErrorIconContainer;
-                margin-top: 1px;
-
-                .errorIcon {
-                    width: @ErrorIconWidth;
-                    height: @LoadingErrorIconSize;
-                    background-image: url(../images/error_no_outline.svg);
-                    background-repeat: no-repeat;
-                    background-position: center;
-                    background-size: 3px;
-                    display: block;
-                    margin: 1px 0px 0px 6px;
-                }
-            }
-
-            .errorIconContainer.actionsEnabled {
-                &:hover {
-                    .hover();
-                }
-
-                &:focus {
-                    .focus();
-                }
-
-                &:active {
-                    .active();
-                }
-            }
-
-            .errorIconContainer[tabindex]:active {
-                outline: none;
-            }
-
-            .loadingIcon {
-                width: @LoadingErrorIconSize;
-                height: @LoadingErrorIconSize;
-                margin: 0px 0px @SmallSpace @SmallSpace;
-            }
+      .errorIconContainer.actionsEnabled {
+        &:hover {
+          .hover();
         }
 
-        .tabNavText {
-            margin-left: @SmallSpace;
-            margin-right: 2px;
-            color: @BaseDark;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-            flex-grow: 1
+        &:focus {
+          .focus();
         }
 
-        .tabIconSection {
-            width: 30px;
-            position: relative;
-            padding-top: 2px;
-
-            .cancelButton {
-                padding: 0px @SmallSpace 0px @SmallSpace;
-
-                &:hover {
-                    .hover();
-                }
-
-                &:focus {
-                    .focus();
-                }
-
-                &:active {
-                    .active();
-                }
-            }
+        &:active {
+          .active();
         }
+      }
+
+      .errorIconContainer[tabindex]:active {
+        outline: none;
+      }
+
+      .loadingIcon {
+        width: @LoadingErrorIconSize;
+        height: @LoadingErrorIconSize;
+        margin: 0px 0px @SmallSpace @SmallSpace;
+      }
     }
+
+    .tabNavText {
+      margin-left: @SmallSpace;
+      margin-right: 2px;
+      color: @BaseDark;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      flex-grow: 1;
+    }
+
+    .tabIconSection {
+      width: 30px;
+      position: relative;
+      padding-top: 2px;
+
+      .cancelButton {
+        padding: 0px @SmallSpace 0px @SmallSpace;
+
+        &:hover {
+          .hover();
+        }
+
+        &:focus {
+          .focus();
+        }
+
+        &:active {
+          .active();
+        }
+      }
+    }
+  }
 }
 
 .cancelButton[tabindex]:active {
-    outline: none;
+  outline: none;
 }
 
 .clickableLink {
-    color: @AccentMediumHigh;
-    font-family: @DataExplorerFont;
-    font-size: 12px;
-    cursor: pointer;
+  color: @AccentMediumHigh;
+  font-family: @DataExplorerFont;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .clickableLink:hover {
-    background-color: #e7f6fc;
+  background-color: #e7f6fc;
 }
 
 .clickableLink:active {
-    background-color: #e6f8fe;
+  background-color: #e6f8fe;
 }
 
 .clickableLink:focus {
-    outline: 1px dashed #000000;
-    outline-offset: 0px;
+  outline: 1px dashed #000000;
+  outline-offset: 0px;
 }
 
 .paneselect {
-    height: 23px;
+  height: 23px;
 }
 
 @media @screen {
-    .commandBar-ie {
-        padding-top: 7px;
-    }
-    .filterspan {
-        margin: 0px;
-        padding-top: 2px;
-    }
-    .tabdocuments .scrollable {
-        height: 100%;
-    }
+  .commandBar-ie {
+    padding-top: 7px;
+  }
+  .filterspan {
+    margin: 0px;
+    padding-top: 2px;
+  }
+  .tabdocuments .scrollable {
+    height: 100%;
+  }
 
-    .nav-tabs>li>a:active {
-        background-color: #e0e0e0;
-        width: 100%;
-        border: 1px solid @AccentMediumHigh;
-        cursor: pointer;
-    }
+  .nav-tabs > li > a:active {
+    background-color: #e0e0e0;
+    width: 100%;
+    border: 1px solid @AccentMediumHigh;
+    cursor: pointer;
+  }
 }
 
 .headerWithoutPartitionKey {
-    width: 172px;
+  width: 172px;
 }
 
 .headerWithPartitionKey {
-    width: 86px;
+  width: 86px;
 }
 
 .nodeIconSet {
-    color: black;
-    margin-left: 7px;
-    padding-left: 5px;
+  color: black;
+  margin-left: 7px;
+  padding-left: 5px;
 }
 
 .tabCommandDisabled {
-    color: #CCCCCC;
-    cursor: default;
-    background-color: #FFFFFF;
+  color: #cccccc;
+  cursor: default;
+  background-color: #ffffff;
 }
 
 .tabCommandDisabled:active {
-    border: 1px solid #FFFFFF;
+  border: 1px solid #ffffff;
 }
 
 .tabCommandDisabled:hover {
-    background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 #explorerNotificationConsole {
-    z-index: 1000;
+  z-index: 1000;
 }
 
 .uniqueIndexesContainer {
-    width: 100%;
+  width: 100%;
 
-    .uniqueKeys {
-        padding-bottom: @SmallSpace;
+  .uniqueKeys {
+    padding-bottom: @SmallSpace;
 
-        .uniqueInfoTooltip {
-            .infoTooltip();
+    .uniqueInfoTooltip {
+      .infoTooltip();
 
-            &:hover .uniqueTooltiptext {
-                .tooltipVisible();
-            }
+      &:hover .uniqueTooltiptext {
+        .tooltipVisible();
+      }
 
-            &:focus .uniqueTooltiptext {
-                .tooltipVisible();
-            }
+      &:focus .uniqueTooltiptext {
+        .tooltipVisible();
+      }
 
-            .uniqueTooltiptext {
-                bottom:28px;
-                .tooltipText();
-            }
+      .uniqueTooltiptext {
+        bottom: 28px;
+        .tooltipText();
+      }
 
-            .uniqueTooltiptext::after {
-                border-width: (2 * @MediumSpace) (2 * @MediumSpace) 0px 0px;
-                bottom: -15px;
-                .tooltipTextAfter();
-            }
-        }
+      .uniqueTooltiptext::after {
+        border-width: (2 * @MediumSpace) (2 * @MediumSpace) 0px 0px;
+        bottom: -15px;
+        .tooltipTextAfter();
+      }
     }
+  }
 }
 
 settings-pane {
-    .settingsSection {
-        border-bottom: 1px solid @BaseMedium;
-        margin-right: 24px;
-        padding: @MediumSpace 0px;
+  .settingsSection {
+    border-bottom: 1px solid @BaseMedium;
+    margin-right: 24px;
+    padding: @MediumSpace 0px;
 
-        &:first-child {
-            padding-top: 0px;
-        }
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        .settingsSectionPart {
-            padding-left: 8px;
-        }
-
-        .settingsSectionLabel {
-            margin-bottom: @DefaultSpace;
-        }
-
-        .pageOptionsPart {
-            padding-bottom: @MediumSpace;
-        }
+    &:first-child {
+      padding-top: 0px;
     }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .settingsSectionPart {
+      padding-left: 8px;
+    }
+
+    .settingsSectionLabel {
+      margin-bottom: @DefaultSpace;
+    }
+
+    .pageOptionsPart {
+      padding-bottom: @MediumSpace;
+    }
+  }
 }
 
 // TODO: Remove these styles once we refactor all buttons to use the command button component
@@ -2903,127 +2918,169 @@ settings-pane {
 @ButtonBorderWidth: 1px;
 
 .commandButton {
-    padding: 6px @DefaultSpace @DefaultSpace;
-    border: @ButtonBorderWidth solid transparent;
-    color: @BaseHigh;
-    background-color: transparent;
+  padding: 6px @DefaultSpace @DefaultSpace;
+  border: @ButtonBorderWidth solid transparent;
+  color: @BaseHigh;
+  background-color: transparent;
 
-    &:hover:not(.commandDisabled) {
-        background-color: @AccentLight;
-        cursor: pointer;
-    }
+  &:hover:not(.commandDisabled) {
+    background-color: @AccentLight;
+    cursor: pointer;
+  }
 
-    &:active:not(.commandDisabled) {
-        background-color: @AccentExtra;
-        border: @ButtonBorderWidth dashed @AccentMedium;
-    }
+  &:active:not(.commandDisabled) {
+    background-color: @AccentExtra;
+    border: @ButtonBorderWidth dashed @AccentMedium;
+  }
 
-    &:focus:not(.commandDisabled) {
-        border: @ButtonBorderWidth dashed @AccentMedium;
-    }
+  &:focus:not(.commandDisabled) {
+    border: @ButtonBorderWidth dashed @AccentMedium;
+  }
 
-    .commandIcon {
-        margin: 0 @SmallSpace 0 0;
-        vertical-align: text-top;
-        width: @ButtonIconSize;
-        height: @ButtonIconSize;
-    }
+  .commandIcon {
+    margin: 0 @SmallSpace 0 0;
+    vertical-align: text-top;
+    width: @ButtonIconSize;
+    height: @ButtonIconSize;
+  }
 }
 
 .commandButton.commandDisabled {
-    color: @BaseMediumHigh;
-    opacity: 0.5;
+  color: @BaseMediumHigh;
+  opacity: 0.5;
 }
 
 .commandButton[tabindex]:focus {
-    outline: none;
+  outline: none;
 }
 
 .linkDarkBackground {
-    color: @AccentExtraHigh
+  color: @AccentExtraHigh;
 }
 
 .linkDarkBackground:hover,
 .linkDarkBackground:active,
 .linkDarkBackground:focus {
-    color: @AccentHigh
+  color: @AccentHigh;
 }
 
 .library-add-button {
-    margin-top: @LargeSpace;
+  margin-top: @LargeSpace;
 }
 
 .library-grid-container {
-    margin-top: 24px;
+  margin-top: 24px;
 }
 
 .library-delete {
-    cursor: pointer;
-    margin-left: 1em;
+  cursor: pointer;
+  margin-left: 1em;
 }
 
-#deletecollectionconfirmationpane .paneMainContent > div:not(:first-child){
-    margin-top: 12px;
+#deletecollectionconfirmationpane .paneMainContent > div:not(:first-child) {
+  margin-top: 12px;
 }
 
-#deletedatabaseconfirmationpane .paneMainContent > div:not(:first-child){
-    margin-top: 12px;
+#deletedatabaseconfirmationpane .paneMainContent > div:not(:first-child) {
+  margin-top: 12px;
 }
 
 .enableAnalyticalStorage {
-    margin-bottom: @SmallSpace;
+  margin-bottom: @SmallSpace;
 
-    .enableAnalyticalStorageRadio {
-        vertical-align: text-bottom;
-        margin-top: @SmallSpace;
-    }
+  .enableAnalyticalStorageRadio {
+    vertical-align: text-bottom;
+    margin-top: @SmallSpace;
+  }
 
-    .enableAnalyticalStorageRadio:nth-child(n+2) {
-        margin-left: @LargeSpace;
-    }
+  .enableAnalyticalStorageRadio:nth-child(n + 2) {
+    margin-left: @LargeSpace;
+  }
 
-    .enableAnalyticalStorageRadioLabel {
-        padding: 0px
-    }
+  .enableAnalyticalStorageRadioLabel {
+    padding: 0px;
+  }
 }
 
 .addCollectionLabel {
-    color: #393939;
-    font-weight: 600;
+  color: #393939;
+  font-weight: 600;
 }
 
-.button.enabled{
-    background: #FFF;
-    border-radius: 2px;
-    color: #323130;
-    padding: 3px 20px;
-    border: 1px solid #8A8886;
+.button.enabled {
+  background: #fff;
+  border-radius: 2px;
+  color: #323130;
+  padding: 3px 20px;
+  border: 1px solid #8a8886;
 }
 
-.button.disabled{
-    background: #F3F2F1;
-    border: 0px solid #8A8886;
-    border-radius: 2px;
-    color: #A19F9D;
-    padding: 3px 20px;
+.button.disabled {
+  background: #f3f2f1;
+  border: 0px solid #8a8886;
+  border-radius: 2px;
+  color: #a19f9d;
+  padding: 3px 20px;
 }
 
 .paragraph {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 .italic {
-    font-style: italic;
+  font-style: italic;
 }
 
 .warningErrorContent a {
-    color: @AccentMediumHigh
+  color: @AccentMediumHigh;
 }
 
 .infoBoxContent a {
-    color: @AccentMediumHigh
+  color: @AccentMediumHigh;
 }
 
-.collapsibleSection :hover{
-    cursor: pointer;
+.collapsibleSection :hover {
+  cursor: pointer;
+}
+
+.messageBarInfoIcon {
+  color: #0072c6;
+}
+
+.messageBarWarningIcon {
+  color: #db7500;
+}
+
+.freeTierInfoBanner {
+  background-color: @BaseLow;
+  display: inline-flex;
+  padding: @DefaultSpace;
+  width: 100%;
+
+  .freeTierInfoIcon img {
+    height: 28px;
+    width: 28px;
+    margin-left: 4px;
+  }
+
+  .freeTierInfoMessage {
+    margin: auto 0;
+    padding-left: @MediumSpace;
+  }
+}
+
+.freeTierInlineWarning {
+  display: inline-flex;
+  padding: 8px 8px 8px 0;
+  width: 100%;
+
+  .freeTierWarningIcon img {
+    height: 20px;
+    width: 20px;
+  }
+
+  .freeTierWarningMessage {
+    margin: auto 0;
+    padding-left: @SmallSpace;
+  }
 }
