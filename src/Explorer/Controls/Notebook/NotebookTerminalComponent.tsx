@@ -39,6 +39,10 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       params.set(TerminalQueryParams.TerminalEndpoint, terminalEndpoint);
     }
 
+    params.set("account","contoso-retail-mongodb");
+    params.set("port","10255");
+    //tofill
+    params.set("token","");
     return params;
   }
 

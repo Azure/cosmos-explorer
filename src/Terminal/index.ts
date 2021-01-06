@@ -23,10 +23,14 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
   let headers: HeadersInit;
   if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
     body = JSON.stringify({
-      endpoint: urlVars[TerminalQueryParams.TerminalEndpoint]
+      endpoint: urlVars[TerminalQueryParams.TerminalEndpoint],
+      account:"contoso-retail-mongodb",
+      port: "10255",
+      token:"" //tofill
     });
     headers = {
       [HttpHeaders.contentType]: "application/json"
+      //"Access-Control-Allow-Origin": "https://localhost:5001"
     };
   }
 

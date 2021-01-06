@@ -92,7 +92,7 @@ module.exports = function(env = {}, argv = {}) {
   const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
   const envVars = {
     GIT_SHA: gitSha,
-    PORT: process.env.PORT || "1234"
+    PORT: process.env.PORT || "2223"
   };
 
   if (mode === "production") {

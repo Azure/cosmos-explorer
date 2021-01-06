@@ -350,7 +350,9 @@ export const launchWebSocketKernelEpic = (
         } as any,
         name: "",
         path: content.filepath.replace(/^\/+/g, ""),
-        type: "notebook"
+        type: "notebook",
+        endpoint:"https://dech-notebooks-demo-7.documents.azure.com:443/",
+        token:"" //to fill
       };
 
       return sessions.create(serverConfig, sessionPayload).pipe(
