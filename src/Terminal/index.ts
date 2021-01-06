@@ -19,8 +19,8 @@ const getUrlVars = (): { [key: string]: string } => {
 };
 
 const createServerSettings = (urlVars: { [key: string]: string }): ServerConnection.ISettings => {
-  let body: BodyInit;
-  let headers: HeadersInit;
+  let body: BodyInit | undefined;
+  let headers: HeadersInit | undefined;
   if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
     body = JSON.stringify({
       endpoint: urlVars[TerminalQueryParams.TerminalEndpoint]

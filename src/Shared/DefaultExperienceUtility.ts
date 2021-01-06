@@ -4,7 +4,7 @@ import * as DataModels from "../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 
 export class DefaultExperienceUtility {
-  public static getDefaultExperienceFromDatabaseAccount(databaseAccount: DataModels.DatabaseAccount): string {
+  public static getDefaultExperienceFromDatabaseAccount(databaseAccount: DataModels.DatabaseAccount): string | null {
     if (!databaseAccount) {
       return null;
     }
@@ -81,10 +81,12 @@ export class DefaultExperienceUtility {
 
   private static _getDefaultExperience(kind: string, capabilities: DataModels.Capability[]): string {
     const defaultDefaultExperience: string = Constants.DefaultAccountExperience.DocumentDB;
-    const defaultExperienceFromKind: string = DefaultExperienceUtility._getDefaultExperienceFromAccountKind(kind);
-    const defaultExperienceFromCapabilities: string = DefaultExperienceUtility._getDefaultExperienceFromAccountCapabilities(
+    const defaultExperienceFromKindCheck = DefaultExperienceUtility._getDefaultExperienceFromAccountKind(kind);
+    const defaultExperienceFromKind: string = !defaultExperienceFromKindCheck ? "" : defaultExperienceFromKindCheck;
+    const defaultCheckforCapabilities = DefaultExperienceUtility._getDefaultExperienceFromAccountCapabilities(
       capabilities
     );
+    const defaultExperienceFromCapabilities: string = !defaultCheckforCapabilities ? "" : defaultCheckforCapabilities;
 
     if (!!defaultExperienceFromKind) {
       return defaultExperienceFromKind;
@@ -97,7 +99,7 @@ export class DefaultExperienceUtility {
     return defaultDefaultExperience;
   }
 
-  private static _getDefaultExperienceFromAccountKind(kind: string): string {
+  private static _getDefaultExperienceFromAccountKind(kind: string): string | null {
     if (!kind) {
       return null;
     }
@@ -113,7 +115,7 @@ export class DefaultExperienceUtility {
     return null;
   }
 
-  private static _getDefaultExperienceFromAccountCapabilities(capabilities: DataModels.Capability[]): string {
+  private static _getDefaultExperienceFromAccountCapabilities(capabilities: DataModels.Capability[]): string | null {
     if (!capabilities) {
       return null;
     }
