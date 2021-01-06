@@ -1,12 +1,10 @@
 import * as _ from "underscore";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-
 declare global {
   interface Window {
     dataExplorer: any;
   }
 }
-
 const _global = typeof self === "undefined" ? window : self;
 
 /**
