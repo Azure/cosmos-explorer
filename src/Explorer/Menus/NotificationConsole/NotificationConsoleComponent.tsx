@@ -11,10 +11,10 @@ import ErrorBlackIcon from "../../../../images/error_black.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
 import InfoIcon from "../../../../images/info_color.svg";
 import ErrorRedIcon from "../../../../images/error_red.svg";
-import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
 import ClearIcon from "../../../../images/Clear.svg";
-import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
-import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
+const LoaderIcon = require("../../../../images/circular_loader_black_16x16.gif");
+const ChevronUpIcon = require("../../../../images/QueryBuilder/CollapseChevronUp_16x.png");
+const ChevronDownIcon = require("../../../../images/QueryBuilder/CollapseChevronDown_16x.png");
 
 /**
  * Log levels
@@ -59,9 +59,9 @@ export class NotificationConsoleComponent extends React.Component<
     { key: "Info", text: "Info" },
     { key: "Error", text: "Error" }
   ];
-  private headerTimeoutId: number;
-  private prevHeaderStatus: string;
-  private consoleHeaderElement: HTMLElement;
+  private headerTimeoutId?: number;
+  private prevHeaderStatus: string | null;
+  private consoleHeaderElement?: HTMLElement;
 
   constructor(props: NotificationConsoleComponentProps) {
     super(props);
@@ -99,6 +99,10 @@ export class NotificationConsoleComponent extends React.Component<
     }
   }
 
+  public setElememntRef = (element: HTMLDivElement) => {
+    this.consoleHeaderElement = element;
+  };
+
   public render(): JSX.Element {
     const numInProgress = this.props.consoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.InProgress)
       .length;
@@ -110,7 +114,7 @@ export class NotificationConsoleComponent extends React.Component<
       <div className="notificationConsoleContainer">
         <div
           className="notificationConsoleHeader"
-          ref={(element: HTMLElement) => (this.consoleHeaderElement = element)}
+          ref={this.setElememntRef}
           onClick={(event: React.MouseEvent<HTMLDivElement>) => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           tabIndex={0}
@@ -160,7 +164,7 @@ export class NotificationConsoleComponent extends React.Component<
                 role="combobox"
                 selectedKey={this.state.selectedFilter}
                 options={NotificationConsoleComponent.FilterOptions}
-                onChange={this.onFilterSelected.bind(this)}
+                onChange={() => this.onFilterSelected}
                 aria-labelledby="consoleFilterLabel"
                 aria-label={this.state.selectedFilter}
               />
@@ -220,12 +224,12 @@ export class NotificationConsoleComponent extends React.Component<
     ));
   }
 
-  private onFilterSelected(event: React.ChangeEvent<HTMLSelectElement>, option: IDropdownOption): void {
+  private onFilterSelected = (event: React.ChangeEvent<HTMLSelectElement>, option: IDropdownOption): void => {
     this.setState({ selectedFilter: String(option.key) });
-  }
+  };
 
   private getFilteredConsoleData(): ConsoleData[] {
-    let filterType: ConsoleDataType = null;
+    let filterType: Number | null = null;
 
     switch (this.state.selectedFilter) {
       case "All":
@@ -272,7 +276,7 @@ export class NotificationConsoleComponent extends React.Component<
 
   private onConsoleWasExpanded = (): void => {
     this.props.onConsoleExpandedChange(this.state.isExpanded);
-    if (this.state.isExpanded) {
+    if (this.state.isExpanded && this.consoleHeaderElement) {
       this.consoleHeaderElement.focus();
     }
   };

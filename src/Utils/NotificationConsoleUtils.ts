@@ -1,6 +1,12 @@
 import * as _ from "underscore";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 
+declare global {
+  interface Window {
+    dataExplorer: any;
+  }
+}
+
 const _global = typeof self === "undefined" ? window : self;
 
 /**
@@ -21,7 +27,7 @@ export function logConsoleMessage(type: ConsoleDataType, message: string, id?: s
     }
     dataExplorer.logConsoleData({ type: type, date: formattedDate, message: message, id: id });
   }
-  return id;
+  return !id ? "" : id;
 }
 
 export function clearInProgressMessageWithId(id: string): void {
