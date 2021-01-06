@@ -61,6 +61,8 @@
     "./src/GitHub/GitHubConnector.ts",
     "./src/Index.ts",
     "./src/NotebookWorkspaceManager/NotebookWorkspaceResourceProviderMockClients.ts",
+    "./src/Platform/Hosted/Helpers/ConnectionStringParser.ts",
+    "./src/Platform/Hosted/HostedUtils.ts",
     "./src/ReactDevTools.ts",
     "./src/ResourceProvider/IResourceProviderClient.ts",
     "./src/Shared/Constants.ts",
