@@ -81,6 +81,7 @@
     "./src/Utils/StringUtils.ts",
     "./src/Utils/WindowUtils.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/types.ts",
+    "./src/Utils/arm/request.ts",
     "./src/quickstart.ts",
     "./src/setupTests.ts",
     "./src/workers/upload/definitions.ts"

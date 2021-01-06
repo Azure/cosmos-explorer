@@ -30,7 +30,7 @@ export class ARMError extends Error {
     Object.setPrototypeOf(this, ARMError.prototype);
   }
 
-  public code: string | number;
+  public code?: string | number;
 }
 
 interface ARMQueryParams {
@@ -66,7 +66,7 @@ export async function armRequest<T>({
   const response = await window.fetch(url.href, {
     method,
     headers: {
-      Authorization: userContext.authorizationToken
+      Authorization: !userContext.authorizationToken ? "" : userContext.authorizationToken
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined
   });
@@ -100,7 +100,7 @@ export async function armRequest<T>({
 async function getOperationStatus(operationStatusUrl: string) {
   const response = await window.fetch(operationStatusUrl, {
     headers: {
-      Authorization: userContext.authorizationToken
+      Authorization: !userContext.authorizationToken ? "" : userContext.authorizationToken
     }
   });
 
