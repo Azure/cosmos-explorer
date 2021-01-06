@@ -207,6 +207,7 @@ export default class Explorer {
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
+  public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
@@ -402,6 +403,7 @@ export default class Explorer {
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
+    this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
@@ -1876,6 +1878,9 @@ export default class Explorer {
     if (!flights) {
       return;
     }
+    if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
+      this.isMongoIndexingEnabled(true);
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
@@ -2993,5 +2998,26 @@ export default class Explorer {
         await database.loadOffer();
       })
     );
+  }
+
+  public isFirstResourceCreated(): boolean {
+    const databases: ViewModels.Database[] = this.databases();
+
+    if (!databases || databases.length === 0) {
+      return false;
+    }
+
+    return databases.some(database => {
+      // user has created at least one collection
+      if (database.collections()?.length > 0) {
+        return true;
+      }
+      // user has created a database with shared throughput
+      if (database.offer()) {
+        return true;
+      }
+      // use has created an empty database without shared throughput
+      return false;
+    });
   }
 }
