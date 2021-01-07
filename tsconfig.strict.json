@@ -82,7 +82,6 @@
     "./src/Utils/WindowUtils.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/types.ts",
     "./src/Utils/AutoPilotUtils.ts",
-    "./src/Utils/NotificationConsoleUtils.ts",
     "./src/Utils/PricingUtils.ts",
     "./src/quickstart.ts",
     "./src/setupTests.ts",
