@@ -2,7 +2,7 @@ import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
 import { UserAgentApplication, Account } from "msal";
 
-let msal = new UserAgentApplication({
+const msal = new UserAgentApplication({
   cache: {
     cacheLocation: "localStorage"
   },
@@ -52,35 +52,27 @@ export function useAADAuth(): ReturnType {
 
   const switchTenant = React.useCallback(
     async id => {
-      msal = new UserAgentApplication({
-        cache: {
-          cacheLocation: "localStorage"
-        },
-        auth: {
-          authority: `https://login.microsoftonline.com/${id}`,
-          clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-          redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
-        }
-      });
       const response = await msal.loginPopup({
         authority: `https://login.microsoftonline.com/${id}`
       });
       setTenantId(response.tenantId);
       setAccount(response.account);
-      console.log(response);
     },
     [account, tenantId]
   );
 
   React.useEffect(() => {
     if (account && tenantId) {
-      console.log("Getting tokens for", tenantId);
       Promise.all([
         msal.acquireTokenSilent({
+          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+          forceRefresh: true,
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://graph.windows.net//.default"]
         }),
         msal.acquireTokenSilent({
+          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+          forceRefresh: true,
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"]
         })
