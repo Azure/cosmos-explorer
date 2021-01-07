@@ -101,13 +101,13 @@ export const parseConflictResolutionProcedure = (procedureFromBackEnd: string): 
   return procedureFromBackEnd;
 };
 
-export const getSanitizedInputValue = (newValueString: string, max: number): number => {
+export const getSanitizedInputValue = (newValueString: string, max?: number): number => {
   const newValue = parseInt(newValueString);
   if (isNaN(newValue)) {
     return zeroValue;
   }
   // make sure new value does not exceed the maximum throughput
-  return Math.min(newValue, max);
+  return max ? Math.min(newValue, max) : newValue;
 };
 
 export const isDirty = (current: isDirtyTypes, baseline: isDirtyTypes): boolean => {
