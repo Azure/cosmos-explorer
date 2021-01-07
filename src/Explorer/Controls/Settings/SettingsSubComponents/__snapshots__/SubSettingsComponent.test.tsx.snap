@@ -136,7 +136,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }
@@ -412,7 +412,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }
@@ -952,7 +952,7 @@ exports[`SubSettingsComponent renders 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }
@@ -1228,7 +1228,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }

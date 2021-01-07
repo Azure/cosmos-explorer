@@ -9,13 +9,18 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
   }
 >
   <StyledMessageBarBase
-    messageBarType={5}
+    messageBarIconProps={
+      Object {
+        "className": "messageBarWarningIcon",
+        "iconName": "WarningSolid",
+      }
+    }
   >
     <Text
       styles={
         Object {
           "root": Object {
-            "fontSize": 12,
+            "fontSize": 14,
           },
         }
       }
@@ -34,7 +39,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }
@@ -45,11 +50,20 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       />
     </StyledLabelBase>
     <StyledMessageBarBase
-      messageBarType={5}
+      messageBarIconProps={
+        Object {
+          "className": "messageBarInfoIcon",
+          "iconName": "InfoSolid",
+        }
+      }
       styles={
         Object {
           "root": Object {
+            "backgroundColor": "white",
             "marginTop": "5px",
+          },
+          "text": Object {
+            "fontSize": 14,
           },
         }
       }
@@ -59,7 +73,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         styles={
           Object {
             "root": Object {
-              "fontSize": 12,
+              "fontSize": 14,
             },
           }
         }
@@ -171,7 +185,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }
@@ -444,7 +458,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             styles={
               Object {
                 "root": Object {
-                  "fontSize": 12,
+                  "fontSize": 14,
                 },
               }
             }

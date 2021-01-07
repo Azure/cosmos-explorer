@@ -28,7 +28,6 @@ import {
   Label,
   Link,
   MessageBar,
-  MessageBarType,
   FontIcon,
   IColumn
 } from "office-ui-fabric-react";
@@ -58,6 +57,7 @@ export interface ThroughputInputAutoPilotV3Props {
   spendAckVisible?: boolean;
   showAsMandatory?: boolean;
   isFixed: boolean;
+  isFreeTierAccount: boolean;
   isEmulator: boolean;
   label: string;
   infoBubbleText?: string;
@@ -76,6 +76,7 @@ export interface ThroughputInputAutoPilotV3Props {
 
 interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
+  exceedFreeTierThroughput: boolean;
 }
 
 export class ThroughputInputAutoPilotV3Component extends React.Component<
@@ -149,7 +150,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   public constructor(props: ThroughputInputAutoPilotV3Props) {
     super(props);
     this.state = {
-      spendAckChecked: this.props.spendAckChecked
+      spendAckChecked: this.props.spendAckChecked,
+      exceedFreeTierThroughput:
+        this.props.isFreeTierAccount && !this.props.isAutoPilotSelected && this.props.throughput > 400
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
@@ -424,7 +427,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    const newThroughput = getSanitizedInputValue(newValue, this.autoPilotInputMaxValue);
+    const newThroughput = getSanitizedInputValue(newValue);
     this.props.onMaxAutoPilotThroughputChange(newThroughput);
   };
 
@@ -432,10 +435,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    const newThroughput = getSanitizedInputValue(newValue, this.throughputInputMaxValue);
+    const newThroughput = getSanitizedInputValue(newValue);
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
+      this.setState({ exceedFreeTierThroughput: this.props.isFreeTierAccount && newThroughput > 400 });
       this.props.onThroughputChange(newThroughput);
     }
   };
@@ -479,7 +483,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           />
         </Label>
         {this.overrideWithProvisionedThroughputSettings() && (
-          <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={messageBarStyles}
+          >
             {manualToAutoscaleDisclaimerElement}
           </MessageBar>
         )}
@@ -556,8 +563,21 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
         onChange={this.onThroughputChange}
       />
+      {this.state.exceedFreeTierThroughput && (
+        <MessageBar
+          messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+          styles={messageBarStyles}
+        >
+          {
+            "Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale."
+          }
+        </MessageBar>
+      )}
       {this.props.getThroughputWarningMessage() && (
-        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+        <MessageBar
+          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+          styles={messageBarStyles}
+        >
           {this.props.getThroughputWarningMessage()}
         </MessageBar>
       )}
@@ -583,7 +603,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       warningMessage = saveThroughputWarningMessage;
     }
 
-    return <>{warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}</>;
+    return (
+      <>
+        {warningMessage && (
+          <MessageBar messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}>
+            {warningMessage}
+          </MessageBar>
+        )}
+      </>
+    );
   };
 
   public render(): JSX.Element {
