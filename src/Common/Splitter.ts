@@ -23,10 +23,10 @@ export class Splitter {
   public splitterId: string;
   public leftSideId: string;
 
-  public splitter: HTMLElement;
-  public leftSide: HTMLElement;
-  public lastX: number;
-  public lastWidth: number;
+  public splitter!: HTMLElement;
+  public leftSide!: HTMLElement;
+  public lastX!: number;
+  public lastWidth!: number;
 
   private isCollapsed: ko.Observable<boolean>;
   private bounds: SplitterBounds;
@@ -42,9 +42,10 @@ export class Splitter {
   }
 
   public initialize() {
-    this.splitter = document.getElementById(this.splitterId);
-    this.leftSide = document.getElementById(this.leftSideId);
-
+    if (document.getElementById(this.splitterId) !== null && document.getElementById(this.leftSideId) != null) {
+      this.splitter = <HTMLElement>document.getElementById(this.splitterId);
+      this.leftSide = <HTMLElement>document.getElementById(this.leftSideId);
+    }
     const isVerticalSplitter: boolean = this.direction === SplitterDirection.Vertical;
     const splitterOptions: JQueryUI.ResizableOptions = {
       animate: true,
