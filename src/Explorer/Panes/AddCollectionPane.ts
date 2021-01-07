@@ -92,7 +92,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public freeTierExceedThroughputTooltip: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
-  public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
+  public shouldCreateMongoWildcardIndex: ko.Computed<boolean>;
 
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
 
@@ -654,7 +654,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
       });
     });
 
-    this.shouldCreateMongoWildcardIndex = ko.observable(false);
+    this.shouldCreateMongoWildcardIndex = ko.computed(function() {
+      return this.container.isMongoIndexingEnabled();
+    }, this);
   }
 
   public getSharedThroughputDefault(): boolean {
