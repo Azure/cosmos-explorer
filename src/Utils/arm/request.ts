@@ -63,10 +63,14 @@ export async function armRequest<T>({
     queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
   }
 
+  if (!userContext.authorizationToken) {
+    throw new Error("No authority token provided");
+  }
+
   const response = await window.fetch(url.href, {
     method,
     headers: {
-      Authorization: !userContext.authorizationToken ? "" : userContext.authorizationToken
+      Authorization: userContext.authorizationToken
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined
   });
@@ -98,9 +102,13 @@ export async function armRequest<T>({
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
+  if (!userContext.authorizationToken) {
+    throw new Error("No authority token provided");
+  }
+
   const response = await window.fetch(operationStatusUrl, {
     headers: {
-      Authorization: !userContext.authorizationToken ? "" : userContext.authorizationToken
+      Authorization: userContext.authorizationToken
     }
   });
 
