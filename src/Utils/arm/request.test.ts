@@ -1,6 +1,6 @@
 import { armRequest } from "./request";
 import fetch from "node-fetch";
-import { userContext, updateUserContext } from "../../UserContext";
+import { updateUserContext } from "../../UserContext";
 import { AuthType } from "../../AuthType";
 
 interface Global {
@@ -59,7 +59,7 @@ describe("ARM request", () => {
   it("should throw token error", async () => {
     window.authType = AuthType.AAD;
     updateUserContext({
-      authorizationToken: null
+      authorizationToken: undefined
     });
     const headers = new Headers();
     headers.set("location", "https://foo.com/operationStatus");
