@@ -11,6 +11,15 @@
       Start by writing a Mongo query, for example: <strong>{'id':'foo'}</strong> or <strong>{ }</strong> to get all the
       documents.
     </div>
+    <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: maybeSubQuery">
+      <div class="warningErrorContent">
+          <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"></span>
+          <span class="warningErrorDetailsLinkContainer">
+              We have detecetd you may be using a subquery. Non-correlated subqueries are not supported. 
+              <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">Please see Cosmos sub query documentation for further information</a>
+          </span>
+      </div>
+  </div>
     <div class="queryEditorWithSplitter" data-bind="attr: { id: queryEditorId }">
       <editor
         class="queryEditor"
