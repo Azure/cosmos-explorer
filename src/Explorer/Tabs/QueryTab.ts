@@ -121,8 +121,8 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
 
     this.maybeSubQuery = ko.computed<boolean>(function() {
       const sql = this.sqlQueryEditorContent();
-      console.log(sql, /.*\(.*SELECT.*\)/.test(sql));
-      return sql && /.*\(.*SELECT.*\)/.test(sql);
+      console.log(sql, /.*\(.*SELECT.*\)/i.test(sql));
+      return sql && /.*\(.*SELECT.*\)/i.test(sql);
     }, this);
 
     this.saveQueryButton = {
