@@ -427,7 +427,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    const newThroughput = getSanitizedInputValue(newValue, this.autoPilotInputMaxValue);
+    const newThroughput = getSanitizedInputValue(newValue);
     this.props.onMaxAutoPilotThroughputChange(newThroughput);
   };
 
@@ -435,7 +435,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    const newThroughput = getSanitizedInputValue(newValue, this.throughputInputMaxValue);
+    const newThroughput = getSanitizedInputValue(newValue);
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
