@@ -20,7 +20,7 @@ export function logConsoleMessage(type: ConsoleDataType, message: string, id?: s
     }
     dataExplorer.logConsoleData({ type: type, date: formattedDate, message: message, id: id });
   }
-  return !id ? "" : id;
+  return id || "";
 }
 
 export function clearInProgressMessageWithId(id: string): void {

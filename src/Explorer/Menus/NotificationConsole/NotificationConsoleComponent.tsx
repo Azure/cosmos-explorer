@@ -229,7 +229,7 @@ export class NotificationConsoleComponent extends React.Component<
   };
 
   private getFilteredConsoleData(): ConsoleData[] {
-    let filterType: Number | null = null;
+    let filterType: ConsoleDataType | null = null;
 
     switch (this.state.selectedFilter) {
       case "All":
