@@ -413,13 +413,13 @@ export class GraphData<V extends GremlinVertex, E extends GremlinEdge> {
    * @param node
    * @param prop
    */
-  public static getNodePropValue(node: D3Node, prop: string): string | number | boolean {
+  public static getNodePropValue(node: D3Node, prop: string): undefined | string | number | boolean {
     if (node.hasOwnProperty(prop)) {
       return (node as any)[prop];
     }
 
     // This is DocDB specific
-    if (node.hasOwnProperty("properties") && node.properties.hasOwnProperty(prop)) {
+    if (node.properties && node.properties.hasOwnProperty(prop)) {
       return node.properties[prop][0]["value"];
     }
 
@@ -496,7 +496,7 @@ export class GraphData<V extends GremlinVertex, E extends GremlinEdge> {
    * Get list of children ids of a given vertex
    * @param vertex
    */
-  private static getChildrenId(vertex: GremlinVertex): string[] {
+  public static getChildrenId(vertex: GremlinVertex): string[] {
     const ids = <any>{}; // HashSet
     if (vertex.hasOwnProperty("outE")) {
       let outE = vertex.outE;

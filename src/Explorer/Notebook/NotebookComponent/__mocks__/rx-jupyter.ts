@@ -1,14 +1,14 @@
 import { Observable, of } from "rxjs";
-import { AjaxResponse } from "rxjs/ajax";
-import { ServerConfig } from "rx-jupyter";
+import { AjaxRequest, AjaxResponse } from "rxjs/ajax";
+import { ServerConfig } from "@nteract/types";
 
 let fakeAjaxResponse: AjaxResponse = {
-  originalEvent: undefined,
+  originalEvent: <Event>(<unknown>undefined),
   xhr: new XMLHttpRequest(),
-  request: null,
+  request: <AjaxRequest>(<unknown>null),
   status: 200,
   response: {},
-  responseText: null,
+  responseText: "",
   responseType: "json"
 };
 export const sessions = {
