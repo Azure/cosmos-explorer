@@ -1,5 +1,5 @@
 abstract class CacheBase<T> {
-  public data: T[];
+  public data: T[] | null;
   public sortOrder: any;
   public serverCallInProgress: boolean;
 
