@@ -42,7 +42,7 @@ interface CollapsiblePanelParams {
  * Use the optional "collapseToLeft" parameter to collapse to the left.
  */
 class CollapsiblePanelViewModel {
-  private params: CollapsiblePanelParams;
+  public params: CollapsiblePanelParams;
   private isCollapsed: ko.Observable<boolean>;
 
   public constructor(params: CollapsiblePanelParams) {
@@ -50,7 +50,7 @@ class CollapsiblePanelViewModel {
     this.isCollapsed = params.isCollapsed || ko.observable(false);
   }
 
-  private toggleCollapse(): void {
+  public toggleCollapse(): void {
     this.isCollapsed(!this.isCollapsed());
   }
 }
