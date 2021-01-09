@@ -71,7 +71,7 @@ interface InputTypeaheadParams {
   /**
    * This function gets called when pressing ENTER on the input box
    */
-  submitFct?: (inputValue: string, selection: Item) => void;
+  submitFct?: (inputValue: string | null, selection: Item | null) => void;
 
   /**
    * Typehead comes with a Search button that we normally remove.
@@ -88,8 +88,8 @@ interface OnClickItem {
 }
 
 interface Cache {
-  inputValue: string;
-  selection: Item;
+  inputValue: string | null;
+  selection: Item | null;
 }
 
 class InputTypeaheadViewModel {
@@ -98,15 +98,12 @@ class InputTypeaheadViewModel {
   private params: InputTypeaheadParams;
 
   private cache: Cache;
-  private inputValue: string;
-  private selection: Item;
 
   public constructor(params: InputTypeaheadParams) {
     this.instanceNumber = InputTypeaheadViewModel.instanceCount++;
     this.params = params;
 
     this.params.choices.subscribe(this.initializeTypeahead.bind(this));
-
     this.cache = {
       inputValue: null,
       selection: null
@@ -161,7 +158,7 @@ class InputTypeaheadViewModel {
       }
     }
 
-    $.typeahead(options);
+    ($ as any).typeahead(options);
   }
 
   /**
@@ -177,11 +174,11 @@ class InputTypeaheadViewModel {
    * Use ko's "template: afterRender" callback to do that without actually using any template.
    * Another way is to call it within setTimeout() in constructor.
    */
-  private afterRender(): void {
+  public afterRender(): void {
     this.initializeTypeahead();
   }
 
-  private submit(): void {
+  public submit(): void {
     if (this.params.submitFct) {
       this.params.submitFct(this.cache.inputValue, this.cache.selection);
     }
