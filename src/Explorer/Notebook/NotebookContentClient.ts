@@ -121,7 +121,7 @@ export class NotebookContentClient {
       const items = await this.fetchNotebookFiles(parentDirPath);
       return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
     }
-    return undefined as any;
+    return false;
   }
 
   /**
