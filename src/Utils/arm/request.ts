@@ -30,7 +30,7 @@ export class ARMError extends Error {
     Object.setPrototypeOf(this, ARMError.prototype);
   }
 
-  public code: string | number;
+  public code?: string | number;
 }
 
 interface ARMQueryParams {
@@ -61,6 +61,10 @@ export async function armRequest<T>({
   if (queryParams) {
     queryParams.filter && url.searchParams.append("$filter", queryParams.filter);
     queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
+  }
+
+  if (!userContext.authorizationToken) {
+    throw new Error("No authority token provided");
   }
 
   const response = await window.fetch(url.href, {
@@ -98,6 +102,10 @@ export async function armRequest<T>({
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
+  if (!userContext.authorizationToken) {
+    throw new Error("No authority token provided");
+  }
+
   const response = await window.fetch(operationStatusUrl, {
     headers: {
       Authorization: userContext.authorizationToken
