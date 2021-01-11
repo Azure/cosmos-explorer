@@ -16,12 +16,73 @@ import * as Entities from "../Entities";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as TableEntityProcessor from "../TableEntityProcessor";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 
 interface IListTableEntitiesSegmentedResult extends Entities.IListTableEntitiesResult {
   ExceedMaximumRetries?: boolean;
+}
+
+export interface ErrorDataModel {
+  message: string;
+  severity?: string;
+  location?: {
+    start: string;
+    end: string;
+  };
+  code?: string;
+}
+
+function parseError(err: any): ErrorDataModel[] {
+  try {
+    return _parse(err);
+  } catch (e) {
+    return [<ErrorDataModel>{ message: JSON.stringify(err) }];
+  }
+}
+
+function _parse(err: any): ErrorDataModel[] {
+  var normalizedErrors: ErrorDataModel[] = [];
+  if (err.message && !err.code) {
+    normalizedErrors.push(err);
+  } else {
+    const innerErrors: any[] = _getInnerErrors(err.message);
+    normalizedErrors = innerErrors.map(innerError =>
+      typeof innerError === "string" ? { message: innerError } : innerError
+    );
+  }
+
+  return normalizedErrors;
+}
+
+function _getInnerErrors(message: string): any[] {
+  /*
+            The backend error message has an inner-message which is a stringified object. 
+            For SQL errors, the "errors" property is an array of SqlErrorDataModel.
+            Example:
+                "Message: {"Errors":["Resource with specified id or name already exists"]}\r\nActivityId: 80005000008d40b6a, Request URI: /apps/19000c000c0a0005/services/mctestdocdbprod-MasterService-0-00066ab9937/partitions/900005f9000e676fb8/replicas/13000000000955p"
+            For non-SQL errors the "Errors" propery is an array of string.
+            Example:
+                "Message: {"errors":[{"severity":"Error","location":{"start":7,"end":8},"code":"SC1001","message":"Syntax error, incorrect syntax near '.'."}]}\r\nActivityId: d3300016d4084e310a, Request URI: /apps/12401f9e1df77/services/dc100232b1f44545/partitions/f86f3bc0001a2f78/replicas/13085003638s"
+        */
+
+  let innerMessage: any = null;
+
+  const singleLineMessage = message.replace(/[\r\n]|\r|\n/g, "");
+  try {
+    // Multi-Partition error flavor
+    const regExp = /^(.*)ActivityId: (.*)/g;
+    const regString = regExp.exec(singleLineMessage);
+    const innerMessageString = regString[1];
+    innerMessage = JSON.parse(innerMessageString);
+  } catch (e) {
+    // Single-partition error flavor
+    const regExp = /^Message: (.*)ActivityId: (.*), Request URI: (.*)/g;
+    const regString = regExp.exec(singleLineMessage);
+    const innerMessageString = regString[1];
+    innerMessage = JSON.parse(innerMessageString);
+  }
+
+  return innerMessage.errors ? innerMessage.errors : innerMessage.Errors;
 }
 
 /**
@@ -387,8 +448,17 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
       })
       .catch((error: any) => {
-        const errorMessage = getErrorMessage(error);
-        this.queryErrorMessage(errorMessage);
+        const parsedErrors = parseError(error);
+        var errors = parsedErrors.map(error => {
+          return <ViewModels.QueryError>{
+            message: error.message,
+            start: error.location ? error.location.start : undefined,
+            end: error.location ? error.location.end : undefined,
+            code: error.code,
+            severity: error.severity
+          };
+        });
+        this.queryErrorMessage(errors[0].message);
         if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
           TelemetryProcessor.traceFailure(
             Action.Tab,
@@ -399,8 +469,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
               dataExplorerArea: Areas.Tab,
               tabTitle: this.queryTablesTab.tabTitle(),
-              error: errorMessage,
-              errorStack: getErrorStack(error)
+              error: error
             },
             this.queryTablesTab.onLoadStartKey
           );
@@ -421,47 +490,53 @@ export default class TableEntityListViewModel extends DataTableViewModel {
    * Note that this also means that we can get less entities than the requested download size in a successful call.
    * See Microsoft Azure API Documentation at: https://msdn.microsoft.com/en-us/library/azure/dd135718.aspx
    */
-  private async prefetchData(
+  private prefetchData(
     tableQuery: Entities.ITableQuery,
     downloadSize: number,
     currentRetry: number = 0
-  ): Promise<IListTableEntitiesSegmentedResult> {
+  ): Q.Promise<any> {
     if (!this.cache.serverCallInProgress) {
       this.cache.serverCallInProgress = true;
       this.allDownloaded = false;
       this.lastPrefetchTime = new Date().getTime();
-      const time = this.lastPrefetchTime;
+      var time = this.lastPrefetchTime;
 
+      var promise: Q.Promise<IListTableEntitiesSegmentedResult>;
       if (this._documentIterator && this.continuationToken) {
         // TODO handle Cassandra case
-        const response = await this._documentIterator.fetchNext();
-        const entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(response?.resources);
 
-        return {
-          Results: entities,
-          ContinuationToken: this._documentIterator.hasMoreResults()
-        };
-      }
-
-      try {
-        let documents: IListTableEntitiesSegmentedResult;
-        if (this.continuationToken && this.queryTablesTab.container.isPreferredApiCassandra()) {
-          documents = await this.queryTablesTab.container.tableDataClient.queryDocuments(
+        promise = Q(this._documentIterator.fetchNext().then(response => response.resources)).then(
+          (documents: any[]) => {
+            let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
+            let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
+              Results: entities,
+              ContinuationToken: this._documentIterator.hasMoreResults()
+            };
+            return Q.resolve(finalEntities);
+          }
+        );
+      } else if (this.continuationToken && this.queryTablesTab.container.isPreferredApiCassandra()) {
+        promise = Q(
+          this.queryTablesTab.container.tableDataClient.queryDocuments(
             this.queryTablesTab.collection,
             this.cqlQuery(),
             true,
             this.continuationToken
-          );
-        } else {
-          const query = this.queryTablesTab.container.isPreferredApiCassandra() ? this.cqlQuery() : this.sqlQuery();
-          documents = await this.queryTablesTab.container.tableDataClient.queryDocuments(
-            this.queryTablesTab.collection,
-            query,
-            true
-          );
-
+          )
+        );
+      } else {
+        let query = this.sqlQuery();
+        if (this.queryTablesTab.container.isPreferredApiCassandra()) {
+          query = this.cqlQuery();
+        }
+        promise = Q(
+          this.queryTablesTab.container.tableDataClient.queryDocuments(this.queryTablesTab.collection, query, true)
+        );
+      }
+      return promise
+        .then((result: IListTableEntitiesSegmentedResult) => {
           if (!this._documentIterator) {
-            this._documentIterator = documents.iterator;
+            this._documentIterator = result.iterator;
           }
           var actualDownloadSize: number = 0;
 
@@ -472,11 +547,11 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             return Q.resolve(null);
           }
 
-          var entities = documents.Results;
+          var entities = result.Results;
           actualDownloadSize = entities.length;
 
           // Queries can fetch no results and still return a continuation header. See prefetchAndRender() method.
-          this.continuationToken = this.isCancelled ? null : documents.ContinuationToken;
+          this.continuationToken = this.isCancelled ? null : result.ContinuationToken;
 
           if (!this.continuationToken) {
             this.allDownloaded = true;
@@ -508,22 +583,20 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           // For #2.1, set prefetch exceeds maximum retry number and end prefetch.
           // For #2.2, go to next round prefetch.
           if (this.allDownloaded || nextDownloadSize === 0) {
-            return documents;
+            return Q.resolve(result);
           }
 
           if (currentRetry >= TableEntityListViewModel._maximumNumberOfPrefetchRetries) {
-            documents.ExceedMaximumRetries = true;
-            return documents;
+            result.ExceedMaximumRetries = true;
+            return Q.resolve(result);
           }
-
-          return await this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
-        }
-      } catch (error) {
-        this.cache.serverCallInProgress = false;
-        throw error;
-      }
+          return this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
+        })
+        .catch((error: Error) => {
+          this.cache.serverCallInProgress = false;
+          return Q.reject(error);
+        });
     }
-
-    return undefined;
+    return null;
   }
 }
