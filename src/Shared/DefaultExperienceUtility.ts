@@ -81,13 +81,9 @@ export class DefaultExperienceUtility {
 
   private static _getDefaultExperience(kind: string, capabilities: DataModels.Capability[]): string {
     const defaultDefaultExperience: string = Constants.DefaultAccountExperience.DocumentDB;
-    const defaultExperienceFromKindCheck = DefaultExperienceUtility._getDefaultExperienceFromAccountKind(kind);
-    const defaultExperienceFromKind: string = !defaultExperienceFromKindCheck ? "" : defaultExperienceFromKindCheck;
-    const defaultCheckforCapabilities = DefaultExperienceUtility._getDefaultExperienceFromAccountCapabilities(
-      capabilities
-    );
-    const defaultExperienceFromCapabilities: string = !defaultCheckforCapabilities ? "" : defaultCheckforCapabilities;
-
+    const defaultExperienceFromKind: string = DefaultExperienceUtility._getDefaultExperienceFromAccountKind(kind) || "";
+    const defaultExperienceFromCapabilities: string =
+      DefaultExperienceUtility._getDefaultExperienceFromAccountCapabilities(capabilities) || "";
     if (!!defaultExperienceFromKind) {
       return defaultExperienceFromKind;
     }
