@@ -210,9 +210,9 @@ export interface QueryMetrics {
 
 export interface Offer {
   id: string;
-  autoscaleMaxThroughput: number;
-  manualThroughput: number;
-  minimumThroughput: number;
+  autoscaleMaxThroughput: number | undefined;
+  manualThroughput: number | undefined;
+  minimumThroughput: number | undefined;
   offerDefinition?: SDKOfferDefinition;
   offerReplacePending: boolean;
 }

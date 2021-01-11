@@ -59,10 +59,12 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
     this.params = params;
 
     this.params.content.subscribe((newValue: string) => {
-      if (!!this.editor) {
-        this.editor.getModel().setValue(newValue);
-      } else {
-        this.createEditor(newValue, this.configureEditor.bind(this));
+      if (newValue) {
+        if (!!this.editor) {
+          this.editor.getModel().setValue(newValue);
+        } else {
+          this.createEditor(newValue, this.configureEditor.bind(this));
+        }
       }
     });
 
