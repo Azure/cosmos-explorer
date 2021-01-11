@@ -82,17 +82,6 @@ import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
 import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import { AccountKind, DefaultAccountExperience } from "./Common/Constants";
 
-// const accountResourceId =
-// authType === AuthType.EncryptedToken
-//   ? Main._databaseAccountId
-//   : authType === AuthType.AAD && account
-//   ? account.id
-//   : "";
-// const subscriptionId: string =
-// accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
-// const resourceGroup: string =
-// accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
-
 const App: React.FunctionComponent = () => {
   useEffect(() => {
     initializeConfiguration().then(config => {

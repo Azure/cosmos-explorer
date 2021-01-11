@@ -78,7 +78,7 @@ const ModulesRule = {
       loader: "babel-loader",
       options: {
         cacheDirectory: ".cache/babel",
-        presets: [["@babel/preset-env", { targets: { chrome: "80" }, useBuiltIns: false }]]
+        presets: [["@babel/preset-env", { targets: { ie: "11" }, useBuiltIns: false }]]
       }
     }
   ],
@@ -132,8 +132,8 @@ module.exports = function(env = {}, argv = {}) {
     }),
     new HtmlWebpackPlugin({
       filename: "index.html",
-      template: "src/hostedExplorer.html",
-      chunks: ["hostedExplorer"]
+      template: "src/index.html",
+      chunks: ["index"]
     }),
     new HtmlWebpackPlugin({
       filename: "hostedExplorer.html",
