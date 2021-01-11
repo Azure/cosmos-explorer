@@ -213,8 +213,6 @@ export default class Explorer {
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
   public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
-  public renewTokenError: ko.Observable<string>;
-  public tokenForRenewal: ko.Observable<string>;
   public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
   public shareAccessUrl: ko.Observable<string>;
   public shareUrlCopyHelperText: ko.Observable<string>;
@@ -380,8 +378,6 @@ export default class Explorer {
       readWriteUrl: undefined,
       readUrl: undefined
     });
-    this.tokenForRenewal = ko.observable<string>("");
-    this.renewTokenError = ko.observable<string>("");
     this.shareAccessUrl = ko.observable<string>();
     this.shareUrlCopyHelperText = ko.observable<string>("Click to copy");
     this.shareTokenCopyHelperText = ko.observable<string>("Click to copy");
@@ -1091,25 +1087,6 @@ export default class Explorer {
 
     return true;
   }
-
-  public renewToken = (): void => {
-    TelemetryProcessor.trace(Action.ConnectEncryptionToken);
-    this.renewTokenError("");
-    const id: string = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Initiating connection to account"
-    );
-    this.renewExplorerShareAccess(this, this.tokenForRenewal())
-      .fail((error: any) => {
-        const stringifiedError: string = getErrorMessage(error);
-        this.renewTokenError("Invalid connection string specified");
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to initiate connection to account: ${stringifiedError}`
-        );
-      })
-      .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-  };
 
   public generateSharedAccessData(): void {
     const id: string = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Generating share url");
@@ -1947,18 +1924,6 @@ export default class Explorer {
   public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
-
-  public signInAad = () => {
-    TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    sendMessage({
-      type: MessageTypes.AadSignIn
-    });
-  };
-
-  public onSwitchToConnectionString = () => {
-    $("#connectWithAad").hide();
-    $("#connectWithConnectionString").show();
-  };
 
   public clickHostedAccountSwitch = () => {
     sendMessage({

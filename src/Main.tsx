@@ -63,7 +63,6 @@ import { configContext, initializeConfiguration, Platform } from "./ConfigContex
 import Explorer from "./Explorer/Explorer";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import errorImage from "../images/error.svg";
 import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
@@ -457,56 +456,6 @@ const App: React.FunctionComponent = () => {
           data-bind="react: notificationConsoleComponentAdapter"
         />
       </div>
-      {/* Explorer Connection - Encryption Token / AAD - Start */}
-      <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "none" }}>
-        <div className="connectExplorerFormContainer">
-          <div className="connectExplorer">
-            <p className="connectExplorerContent">
-              <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-            </p>
-            <p className="welcomeText">Welcome to Azure Cosmos DB</p>
-            <div id="connectWithAad">
-              <input
-                className="filterbtnstyle"
-                data-test="cosmosdb-signinBtn"
-                type="button"
-                defaultValue="Sign In"
-                data-bind="click: $data.signInAad"
-              />
-              <p
-                className="switchConnectTypeText"
-                data-test="cosmosdb-connectionString"
-                data-bind="click: $data.onSwitchToConnectionString"
-              >
-                Connect to your account with connection string
-              </p>
-            </div>
-            <form id="connectWithConnectionString" data-bind="submit: renewToken" style={{ display: "none" }}>
-              <p className="connectExplorerContent connectStringText">Connect to your account with connection string</p>
-              <p className="connectExplorerContent">
-                <input
-                  className="inputToken"
-                  type="text"
-                  required
-                  placeholder="Please enter a connection string"
-                  data-bind="value: tokenForRenewal"
-                />
-                <span className="errorDetailsInfoTooltip" data-bind="visible: renewTokenError().length > 0">
-                  <img className="errorImg" src={errorImage} alt="Error notification" />
-                  <span className="errorDetails" data-bind="text: renewTokenError" />
-                </span>
-              </p>
-              <p className="connectExplorerContent">
-                <input className="filterbtnstyle" type="submit" value="Connect" />
-              </p>
-              <p className="switchConnectTypeText" data-bind="click: $data.signInAad">
-                Sign In with Azure Account
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* Explorer Connection - Encryption Token / AAD - End */}
       {/* Global loader - Start */}
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
