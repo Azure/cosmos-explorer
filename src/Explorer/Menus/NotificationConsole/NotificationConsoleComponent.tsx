@@ -99,7 +99,7 @@ export class NotificationConsoleComponent extends React.Component<
     }
   }
 
-  public setElememntRef = (element: HTMLDivElement) => {
+  public setElememntRef = (element: HTMLElement) => {
     this.consoleHeaderElement = element;
   };
 
