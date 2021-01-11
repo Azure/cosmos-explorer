@@ -7,7 +7,7 @@ export interface ITableEntity {
 export interface ITableEntityForTablesAPI extends ITableEntity {
   PartitionKey: ITableEntityAttribute;
   RowKey: ITableEntityAttribute;
-  Timestamp?: ITableEntityAttribute;
+  Timestamp: ITableEntityAttribute;
 }
 
 export interface ITableEntityAttribute {
