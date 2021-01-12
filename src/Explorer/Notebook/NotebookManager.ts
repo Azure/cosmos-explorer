@@ -89,9 +89,7 @@ export default class NotebookManager {
       this.notebookContentProvider
     );
 
-    if (this.params.container.isGalleryPublishEnabled()) {
-      this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
-    }
+    this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
 
     this.copyNotebookPaneAdapter = new CopyNotebookPaneAdapter(
       this.params.container,

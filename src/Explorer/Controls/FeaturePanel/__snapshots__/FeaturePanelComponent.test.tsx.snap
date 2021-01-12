@@ -151,12 +151,6 @@ exports[`Feature panel renders all flags 1`] = `
         />
         <StyledCheckboxBase
           checked={false}
-          key="feature.enablegallerypublish"
-          label="Enable Notebook Gallery Publishing"
-          onChange={[Function]}
-        />
-        <StyledCheckboxBase
-          checked={false}
           key="feature.selfServeType"
           label="Self serve feature"
           onChange={[Function]}

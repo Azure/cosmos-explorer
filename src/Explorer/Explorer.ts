@@ -206,7 +206,6 @@ export default class Explorer {
   public copyNotebookPaneAdapter: ReactAdapter;
 
   // features
-  public isGalleryPublishEnabled: ko.Computed<boolean>;
   public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
@@ -414,9 +413,6 @@ export default class Explorer {
     this.shouldShowShareDialogContents = ko.observable<boolean>(false);
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
-    this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
-    );
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
     );

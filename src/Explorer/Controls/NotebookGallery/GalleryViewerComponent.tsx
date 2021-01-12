@@ -93,6 +93,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private isCodeOfConductAccepted: boolean;
   private columnCount: number;
   private rowCount: number;
+  private isAuthenticatedExperience: boolean;
 
   constructor(props: GalleryViewerComponentProps) {
     super(props);
@@ -109,6 +110,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       isCodeOfConductAccepted: undefined,
     };
 
+    this.isAuthenticatedExperience = !!this.props.container;
+
     this.sortingOptions = [
       {
         key: SortBy.MostViewed,
@@ -123,7 +126,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         text: GalleryViewerComponent.mostRecentText,
       },
     ];
-    if (this.props.container?.isGalleryPublishEnabled()) {
+    if (this.isAuthenticatedExperience) {
       this.sortingOptions.push({
         key: SortBy.MostFavorited,
         text: GalleryViewerComponent.mostFavoritedText,
@@ -131,22 +134,22 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
-    if (this.props.container?.isGalleryPublishEnabled()) {
+    if (this.isAuthenticatedExperience) {
       this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
     }
   }
 
   public render(): JSX.Element {
-    const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
+    const tabs: GalleryTabInfo[] = [
+      this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks),
+      this.createPublicGalleryTab(
+        GalleryTab.PublicGallery,
+        this.state.publicNotebooks,
+        this.state.isCodeOfConductAccepted
+      ),
+    ];
 
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      tabs.push(
-        this.createPublicGalleryTab(
-          GalleryTab.PublicGallery,
-          this.state.publicNotebooks,
-          this.state.isCodeOfConductAccepted
-        )
-      );
+    if (this.isAuthenticatedExperience) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
 
       // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
@@ -310,11 +313,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
-          {(!this.props.container || this.props.container.isGalleryPublishEnabled()) && (
-            <Stack.Item>
-              <InfoComponent />
-            </Stack.Item>
-          )}
+          <Stack.Item>
+            <InfoComponent />
+          </Stack.Item>
         </Stack>
         <Stack.Item>{content}</Stack.Item>
       </Stack>
@@ -399,7 +400,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     if (!offline) {
       try {
         let response: IJunoResponse<IGalleryItem[]> | IJunoResponse<IPublicGalleryData>;
-        if (this.props.container) {
+        if (this.isAuthenticatedExperience) {
           response = await this.props.junoClient.getPublicGalleryData();
           this.isCodeOfConductAccepted = response.data?.metadata.acceptedCodeOfConduct;
           this.publicNotebooks = response.data?.notebooksData;
@@ -545,13 +546,13 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
     let isFavorite: boolean;
-    if (this.props.container?.isGalleryPublishEnabled()) {
+    if (this.isAuthenticatedExperience) {
       isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
     }
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,
-      showDownload: !!this.props.container,
+      showDownload: this.isAuthenticatedExperience,
       showDelete: this.state.selectedTab === GalleryTab.Published,
       onClick: () => this.props.openNotebook(data, isFavorite),
       onTagClick: this.loadTaggedItems,

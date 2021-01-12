@@ -13,7 +13,6 @@ import PasteIcon from "../../../images/notebook/Notebook-paste.svg";
 import RunIcon from "../../../images/notebook/Notebook-run.svg";
 import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
 import RestartIcon from "../../../images/notebook/Notebook-restart.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import InterruptKernelIcon from "../../../images/notebook/Notebook-stop.svg";
 import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
@@ -162,27 +161,15 @@ export default class NotebookTabV2 extends TabsBase {
       });
     }
 
-    if (this.container.isGalleryPublishEnabled()) {
-      saveButtonChildren.push({
-        iconName: "PublishContent",
-        onCommandClick: async () => await this.publishToGallery(),
-        commandButtonLabel: publishLabel,
-        hasPopup: false,
-        disabled: false,
-        ariaLabel: publishLabel,
-      });
-    }
-
     let buttons: CommandButtonComponentProps[] = [
       {
-        iconSrc: SaveIcon,
-        iconAlt: saveLabel,
+        iconName: "Save",
         onCommandClick: () => this.notebookComponentAdapter.notebookSave(),
         commandButtonLabel: saveLabel,
         hasPopup: false,
         disabled: false,
         ariaLabel: saveLabel,
-        children: saveButtonChildren.length && [
+        children: [
           {
             iconName: "Save",
             onCommandClick: () => this.notebookComponentAdapter.notebookSave(),
@@ -190,6 +177,14 @@ export default class NotebookTabV2 extends TabsBase {
             hasPopup: false,
             disabled: false,
             ariaLabel: saveLabel,
+          },
+          {
+            iconName: "PublishContent",
+            onCommandClick: async () => await this.publishToGallery(),
+            commandButtonLabel: publishLabel,
+            hasPopup: false,
+            disabled: false,
+            ariaLabel: publishLabel,
           },
           ...saveButtonChildren,
         ],
