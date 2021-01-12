@@ -1,6 +1,5 @@
 import { Observable, of } from "rxjs";
 import { AjaxRequest, AjaxResponse } from "rxjs/ajax";
-import { ServerConfig } from "@nteract/types";
 
 let fakeAjaxResponse: AjaxResponse = {
   originalEvent: <Event>(<unknown>undefined),
@@ -12,7 +11,7 @@ let fakeAjaxResponse: AjaxResponse = {
   responseType: "json"
 };
 export const sessions = {
-  create: (serverConfig: ServerConfig, body: object): Observable<AjaxResponse> => of(fakeAjaxResponse),
+  create: (serverConfig: unknown, body: object): Observable<AjaxResponse> => of(fakeAjaxResponse),
   __setResponse: (response: AjaxResponse) => {
     fakeAjaxResponse = response;
   },
