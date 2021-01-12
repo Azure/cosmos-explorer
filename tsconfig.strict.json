@@ -59,6 +59,7 @@
     "./src/Explorer/Notebook/NotebookComponent/types.ts",
     "./src/Explorer/Notebook/NotebookContentItem.ts",
     "./src/Explorer/Notebook/NotebookUtil.ts",
+    "./src/Explorer/Tree/AccessibleVerticalList.ts",
     "./src/Explorer/Panes/PaneComponents.ts",
     "./src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts",
     "./src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts",
