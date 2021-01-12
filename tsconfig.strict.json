@@ -83,6 +83,8 @@
     "./src/Shared/Telemetry/TelemetryConstants.ts",
     "./src/Shared/Telemetry/TelemetryProcessor.ts",
     "./src/Shared/appInsights.ts",
+    "./src/Shared/DefaultExperienceUtility.ts",
+    "./src/Terminal/index.ts",
     "./src/Terminal/JupyterLabAppFactory.ts",
     "./src/UserContext.ts",
     "./src/Utils/Base64Utils.ts",
