@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -7,7 +6,6 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import TabsBase from "./TabsBase";
 import { HashMap } from "../../Common/HashMap";
 import * as HeadersUtility from "../../Common/HeadersUtility";
-import * as Logger from "../../Common/Logger";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
@@ -31,6 +29,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   public fetchNextPageButton: ViewModels.Button;
   public saveQueryButton: ViewModels.Button;
   public initialEditorContent: ko.Observable<string>;
+  public maybeSubQuery: ko.Computed<boolean>;
   public sqlQueryEditorContent: ko.Observable<string>;
   public selectedContent: ko.Observable<string>;
   public sqlStatementToExecute: ko.Observable<string>;
@@ -119,6 +118,11 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       const container = this.collection && this.collection.container;
       return (container && (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph())) || false;
     });
+
+    this.maybeSubQuery = ko.computed<boolean>(function() {
+      const sql = this.sqlQueryEditorContent();
+      return sql && /.*\(.*SELECT.*\)/i.test(sql);
+    }, this);
 
     this.saveQueryButton = {
       enabled: this._isSaveQueriesEnabled,

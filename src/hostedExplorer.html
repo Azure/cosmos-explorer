@@ -7,6 +7,7 @@
   </head>
 
   <body>
+    <a class="skip-link" href="#data-explorer-content">Skip to content</a>
     <header>
       <div class="items" role="menubar">
         <div class="cosmosDBTitle">
@@ -48,16 +49,18 @@
 
     <switch-directory-pane params="{data: switchDirectoryPane}"></switch-directory-pane>
 
-    <!-- TODO generate version number dynamically -->
-    <iframe
-      id="explorerMenu"
-      name="explorer"
-      class="iframe"
-      title="explorer"
-      src="explorer.html?v=1.0.1&platform=Hosted"
-      data-bind="visible: navigationSelection() === 'explorer'"
-    >
-    </iframe>
+    <div id="data-explorer-content">
+      <!-- TODO generate version number dynamically -->
+      <iframe
+        id="explorerMenu"
+        name="explorer"
+        class="iframe"
+        title="explorer"
+        src="explorer.html?v=1.0.1&platform=Hosted"
+        data-bind="visible: navigationSelection() === 'explorer'"
+      >
+      </iframe>
+    </div>
 
     <div data-bind="react: firewallWarningComponentAdapter"></div>
     <div data-bind="react: dialogComponentAdapter"></div>

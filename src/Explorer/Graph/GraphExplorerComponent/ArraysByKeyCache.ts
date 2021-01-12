@@ -11,7 +11,9 @@ export class ArraysByKeyCache<T> {
 
   public constructor(maxNbElements: number) {
     this.maxNbElements = maxNbElements;
-    this.clear();
+    this.keyQueue = [];
+    this.cache = {};
+    this.totalElements = 0;
   }
 
   public clear(): void {
@@ -58,7 +60,7 @@ export class ArraysByKeyCache<T> {
    * @param startIndex
    * @param pageSize
    */
-  public retrieve(key: string, startIndex: number, pageSize: number): T[] {
+  public retrieve(key: string, startIndex: number, pageSize: number): T[] | null {
     if (!this.cache.hasOwnProperty(key)) {
       return null;
     }
@@ -77,8 +79,10 @@ export class ArraysByKeyCache<T> {
   private reduceCacheSize(): void {
     // remove an key and its array
     const oldKey = this.keyQueue.shift();
-    this.totalElements -= this.cache[oldKey].length;
-    delete this.cache[oldKey];
+    if (oldKey) {
+      this.totalElements -= this.cache[oldKey].length;
+      delete this.cache[oldKey];
+    }
   }
 
   /**
