@@ -92,7 +92,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public freeTierExceedThroughputTooltip: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
   public showUpsellMessage: ko.PureComputed<boolean>;
-  public shouldCreateMongoWildcardIndex: ko.Computed<boolean>;
+  public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
 
@@ -654,9 +654,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       });
     });
 
-    this.shouldCreateMongoWildcardIndex = ko.computed(function() {
-      return this.container.isMongoIndexingEnabled();
-    }, this);
+    this.shouldCreateMongoWildcardIndex = ko.observable(this.container.isMongoIndexingEnabled());
   }
 
   public getSharedThroughputDefault(): boolean {
@@ -681,6 +679,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     // TODO: Figure out if a database level partition split is about to happen once shared throughput read is available
     this.formWarnings("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
+    this.shouldCreateMongoWildcardIndex(this.container.isMongoIndexingEnabled());
     if (this.isPreferredApiTable() && !databaseId) {
       databaseId = SharedConstants.CollectionCreation.TablesAPIDefaultDatabase;
     }
@@ -934,6 +933,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.isSharedAutoPilotSelected(false);
     this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
+
+    this.shouldCreateMongoWildcardIndex = ko.observable(this.container.isMongoIndexingEnabled());
 
     this.uniqueKeys([]);
     this.useIndexingForSharedThroughput(true);
