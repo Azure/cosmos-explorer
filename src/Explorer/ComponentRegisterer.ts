@@ -31,7 +31,7 @@ ko.components.register("mongo-documents-tab", new TabComponents.MongoDocumentsTa
 ko.components.register("stored-procedure-tab", new TabComponents.StoredProcedureTab());
 ko.components.register("trigger-tab", new TabComponents.TriggerTab());
 ko.components.register("user-defined-function-tab", new TabComponents.UserDefinedFunctionTab());
-ko.components.register("settings-tab-v2", new TabComponents.SettingsTabV2());
+ko.components.register("collection-settings-tab-v2", new TabComponents.SettingsTabV2());
 ko.components.register("query-tab", new TabComponents.QueryTab());
 ko.components.register("tables-query-tab", new TabComponents.QueryTablesTab());
 ko.components.register("graph-tab", new TabComponents.GraphTab());
@@ -45,6 +45,7 @@ ko.components.register("notebook-viewer-tab", new TabComponents.NotebookViewerTa
 
 // Database Tabs
 ko.components.register("database-settings-tab", new TabComponents.DatabaseSettingsTab());
+ko.components.register("database-settings-tab-v2", new TabComponents.SettingsTabV2());
 
 // Panes
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());

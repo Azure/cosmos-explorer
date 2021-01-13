@@ -387,8 +387,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       tabTitle: this.tabTitle()
     });
 
-    const headerOptions: RequestOptions = { initialHeaders: {} };
-
     try {
       const updateOfferParams: DataModels.UpdateOfferParams = {
         databaseId: this.database.id(),

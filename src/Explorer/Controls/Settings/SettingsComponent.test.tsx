@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { SettingsComponentProps, SettingsComponent, SettingsComponentState } from "./SettingsComponent";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import SettingsTabV2 from "../../Tabs/SettingsTabV2";
+import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { collection } from "./TestUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
@@ -31,25 +31,21 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
 }));
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import Q from "q";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer)
 }));
 
 describe("SettingsComponent", () => {
   const baseProps: SettingsComponentProps = {
-    settingsTab: new SettingsTabV2({
+    settingsTab: new CollectionSettingsTabV2({
       collection: collection,
-      tabKind: ViewModels.CollectionTabKind.SettingsV2,
+      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
       hashLocation: "settings",
       isActive: ko.observable(false),
-      onUpdateTabsButtons: undefined,
-      getPendingNotification: Q.Promise<DataModels.Notification>(() => {
-        return;
-      })
+      onUpdateTabsButtons: undefined
     })
   };
 
@@ -141,7 +137,8 @@ describe("SettingsComponent", () => {
       onDeleteDatabaseContextMenuClick: undefined,
       readSettings: undefined,
       onSettingsClick: undefined,
-      loadOffer: undefined
+      loadOffer: undefined,
+      getPendingThroughputSplitNotification: undefined
     } as ViewModels.Database;
     newCollection.getDatabase = () => newDatabase;
     newCollection.offer = ko.observable(undefined);

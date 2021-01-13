@@ -1,11 +1,11 @@
 import * as _ from "underscore";
 import * as ko from "knockout";
-import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
+import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import Collection from "./Collection";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
@@ -16,7 +16,6 @@ import { readCollections } from "../../Common/dataAccess/readCollections";
 import { JunoClient, IJunoResponse } from "../../Juno/JunoClient";
 import { userContext } from "../../UserContext";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
@@ -59,12 +58,17 @@ export default class Database implements ViewModels.Database {
       dataExplorerArea: Constants.Areas.ResourceTree
     });
 
-    const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
-    const matchingTabs = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.DatabaseSettings,
-      tab => tab.node?.id() === this.id()
+    const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
+    const useDatabaseSettingsTabV1: boolean = this.container.isFeatureEnabled(
+      Constants.Features.enableDatabaseSettingsTabV1
     );
-    let settingsTab: DatabaseSettingsTab = matchingTabs && (matchingTabs[0] as DatabaseSettingsTab);
+    const tabKind: ViewModels.CollectionTabKind = useDatabaseSettingsTabV1
+      ? ViewModels.CollectionTabKind.DatabaseSettings
+      : ViewModels.CollectionTabKind.DatabaseSettingsV2;
+    const matchingTabs = this.container.tabsManager.getTabs(tabKind, tab => tab.node?.id() === this.id());
+    let settingsTab: DatabaseSettingsTab | DatabaseSettingsTabV2 = useDatabaseSettingsTabV1
+      ? (matchingTabs?.[0] as DatabaseSettingsTab)
+      : (matchingTabs?.[0] as DatabaseSettingsTabV2);
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseAccountName: this.container.databaseAccount().name,
@@ -75,9 +79,11 @@ export default class Database implements ViewModels.Database {
       });
       pendingNotificationsPromise.then(
         (data: any) => {
-          const pendingNotification: DataModels.Notification = data && data[0];
-          settingsTab = new DatabaseSettingsTab({
-            tabKind: ViewModels.CollectionTabKind.DatabaseSettings,
+          const pendingNotification: DataModels.Notification = data?.[0];
+          const tabOptions: ViewModels.TabOptions = {
+            tabKind: useDatabaseSettingsTabV1
+              ? ViewModels.CollectionTabKind.DatabaseSettings
+              : ViewModels.CollectionTabKind.DatabaseSettingsV2,
             title: "Scale",
             tabPath: "",
             node: this,
@@ -87,8 +93,10 @@ export default class Database implements ViewModels.Database {
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons
-          });
-
+          };
+          settingsTab = useDatabaseSettingsTabV1
+            ? new DatabaseSettingsTab(tabOptions)
+            : new DatabaseSettingsTabV2(tabOptions);
           settingsTab.pendingNotification(pendingNotification);
           this.container.tabsManager.activateNewTab(settingsTab);
         },
@@ -221,47 +229,40 @@ export default class Database implements ViewModels.Database {
     }
   }
 
-  private _getPendingThroughputSplitNotification(): Q.Promise<DataModels.Notification> {
+  public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
     if (!this.container) {
-      return Q.resolve(undefined);
+      return undefined;
     }
 
-    const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    fetchPortalNotifications().then(
-      notifications => {
-        if (!notifications || notifications.length === 0) {
-          deferred.resolve(undefined);
-          return;
-        }
-
-        const pendingNotification = _.find(notifications, (notification: DataModels.Notification) => {
-          const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
-          return (
-            notification.kind === "message" &&
-            !notification.collectionName &&
-            notification.databaseName === this.id() &&
-            notification.description &&
-            throughputUpdateRegExp.test(notification.description)
-          );
-        });
-
-        deferred.resolve(pendingNotification);
-      },
-      (error: any) => {
-        Logger.logError(
-          JSON.stringify({
-            error: getErrorMessage(error),
-            accountName: this.container && this.container.databaseAccount(),
-            databaseName: this.id(),
-            collectionName: this.id()
-          }),
-          "Settings tree node"
-        );
-        deferred.resolve(undefined);
+    try {
+      const notifications: DataModels.Notification[] = await fetchPortalNotifications();
+      if (!notifications || notifications.length === 0) {
+        return undefined;
       }
-    );
 
-    return deferred.promise;
+      return _.find(notifications, (notification: DataModels.Notification) => {
+        const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
+        return (
+          notification.kind === "message" &&
+          !notification.collectionName &&
+          notification.databaseName === this.id() &&
+          notification.description &&
+          throughputUpdateRegExp.test(notification.description)
+        );
+      });
+    } catch (error) {
+      Logger.logError(
+        JSON.stringify({
+          error: getErrorMessage(error),
+          accountName: this.container && this.container.databaseAccount(),
+          databaseName: this.id(),
+          collectionName: this.id()
+        }),
+        "Settings tree node"
+      );
+
+      return undefined;
+    }
   }
 
   private getDeltaCollections(

@@ -3,7 +3,6 @@ import * as DataModels from "../../Contracts/DataModels";
 import TabsBase from "./TabsBase";
 import { SettingsComponentAdapter } from "../Controls/Settings/SettingsComponentAdapter";
 import { SettingsComponentProps } from "../Controls/Settings/SettingsComponent";
-import Explorer from "../Explorer";
 import { traceFailure } from "../../Shared/Telemetry/TelemetryProcessor";
 import ko from "knockout";
 import * as Constants from "../../Common/Constants";
@@ -11,23 +10,27 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
-export default class SettingsTabV2 extends TabsBase {
+export class SettingsTabV2 extends TabsBase {
   public settingsComponentAdapter: SettingsComponentAdapter;
-  private notificationRead: ko.Observable<boolean>;
-  private notification: DataModels.Notification;
-  private offerRead: ko.Observable<boolean>;
-  private currentCollection: ViewModels.Collection;
-  private options: ViewModels.SettingsTabV2Options;
 
-  constructor(options: ViewModels.SettingsTabV2Options) {
+  constructor(options: ViewModels.TabOptions) {
     super(options);
-    this.options = options;
-    this.tabId = "SettingsV2-" + this.tabId;
     const props: SettingsComponentProps = {
       settingsTab: this
     };
     this.settingsComponentAdapter = new SettingsComponentAdapter(props);
-    this.currentCollection = this.collection as ViewModels.Collection;
+  }
+}
+
+export class CollectionSettingsTabV2 extends SettingsTabV2 {
+  private notificationRead: ko.Observable<boolean>;
+  private notification: DataModels.Notification;
+  private offerRead: ko.Observable<boolean>;
+
+  constructor(options: ViewModels.TabOptions) {
+    super(options);
+
+    this.tabId = "SettingsV2-" + this.tabId;
     this.notificationRead = ko.observable(false);
     this.offerRead = ko.observable(false);
     this.settingsComponentAdapter.parameters = ko.computed<boolean>(() => {
@@ -45,49 +48,95 @@ export default class SettingsTabV2 extends TabsBase {
   public async onActivate(): Promise<void> {
     try {
       this.isExecuting(true);
-      await this.currentCollection.loadOffer();
-      // passed in options and set by parent as "Settings" by default
-      this.tabTitle(this.currentCollection.offer() ? "Settings" : "Scale & Settings");
 
-      this.options.getPendingNotification.then(
-        (data: DataModels.Notification) => {
-          this.notification = data;
-          this.notificationRead(true);
+      const collection: ViewModels.Collection = this.collection as ViewModels.Collection;
+      await collection.loadOffer();
+      // passed in options and set by parent as "Settings" by default
+      this.tabTitle(collection.offer() ? "Settings" : "Scale & Settings");
+
+      const data: DataModels.Notification = await collection.getPendingThroughputSplitNotification();
+      this.notification = data;
+      this.notificationRead(true);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      this.notification = undefined;
+      this.notificationRead(true);
+      traceFailure(
+        Action.Tab,
+        {
+          databaseAccountName: this.collection.container.databaseAccount().name,
+          databaseName: this.collection.databaseId,
+          collectionName: this.collection.id(),
+          defaultExperience: this.collection.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle,
+          error: errorMessage,
+          errorStack: getErrorStack(error)
         },
-        error => {
-          const errorMessage = getErrorMessage(error);
-          this.notification = undefined;
-          this.notificationRead(true);
-          traceFailure(
-            Action.Tab,
-            {
-              databaseAccountName: this.options.collection.container.databaseAccount().name,
-              databaseName: this.options.collection.databaseId,
-              collectionName: this.options.collection.id(),
-              defaultExperience: this.options.collection.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle,
-              error: errorMessage,
-              errorStack: getErrorStack(error)
-            },
-            this.options.onLoadStartKey
-          );
-          logConsoleError(
-            `Error while fetching container settings for container ${this.options.collection.id()}: ${errorMessage}`
-          );
-          throw error;
-        }
+        this.onLoadStartKey
       );
+      logConsoleError(`Error while fetching container settings for container ${this.collection.id()}: ${errorMessage}`);
+      throw error;
     } finally {
       this.offerRead(true);
       this.isExecuting(false);
     }
 
     super.onActivate();
-    this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.SettingsV2);
+    this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.CollectionSettingsV2);
+  }
+}
+
+export class DatabaseSettingsTabV2 extends SettingsTabV2 {
+  private notificationRead: ko.Observable<boolean>;
+  private notification: DataModels.Notification;
+
+  constructor(options: ViewModels.TabOptions) {
+    super(options);
+    this.tabId = "DatabaseSettingsV2-" + this.tabId;
+    this.notificationRead = ko.observable(false);
+    this.settingsComponentAdapter.parameters = ko.computed<boolean>(() => {
+      if (this.notificationRead()) {
+        this.pendingNotification(this.notification);
+        this.notification = undefined;
+        this.notificationRead(false);
+        return true;
+      }
+      return false;
+    });
   }
 
-  public getSettingsTabContainer(): Explorer {
-    return this.getContainer();
+  public async onActivate(): Promise<void> {
+    try {
+      this.isExecuting(true);
+
+      const data: DataModels.Notification = await this.database.getPendingThroughputSplitNotification();
+      this.notification = data;
+      this.notificationRead(true);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      this.notification = undefined;
+      this.notificationRead(true);
+      traceFailure(
+        Action.Tab,
+        {
+          databaseAccountName: this.database?.container.databaseAccount().name,
+          databaseName: this.database.id(),
+          defaultExperience: this.database?.container.defaultExperience(),
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.tabTitle,
+          error: errorMessage,
+          errorStack: getErrorStack(error)
+        },
+        this.onLoadStartKey
+      );
+      logConsoleError(`Error while fetching database settings for database ${this.database.id()}: ${errorMessage}`);
+      throw error;
+    } finally {
+      this.isExecuting(false);
+    }
+
+    super.onActivate();
+    this.database.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettingsV2);
   }
 }

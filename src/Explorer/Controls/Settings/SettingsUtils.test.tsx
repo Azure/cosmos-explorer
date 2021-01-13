@@ -46,7 +46,8 @@ describe("SettingsUtils", () => {
         onDeleteDatabaseContextMenuClick: undefined,
         readSettings: undefined,
         onSettingsClick: undefined,
-        loadOffer: undefined
+        loadOffer: undefined,
+        getPendingThroughputSplitNotification: undefined
       } as ViewModels.Database;
     };
     newCollection.offer(undefined);

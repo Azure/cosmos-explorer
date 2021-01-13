@@ -375,7 +375,7 @@ export const getThroughputApplyShortDelayMessage = (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyShortDelayMessage">
     A request to increase the throughput is currently in progress. This operation will take some time to complete.
     <br />
-    Database: {databaseName}, Container: {collectionName}{" "}
+    {collectionName ? `Database: ${databaseName}, Container: ${collectionName} ` : `Database: ${databaseName} `}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit)}
   </Text>
 );
@@ -392,7 +392,7 @@ export const getThroughputApplyLongDelayMessage = (
     A request to increase the throughput is currently in progress. This operation will take 1-3 business days to
     complete. View the latest status in Notifications.
     <br />
-    Database: {databaseName}, Container: {collectionName}{" "}
+    {collectionName ? `Database: ${databaseName}, Container: ${collectionName} ` : `Database: ${databaseName} `}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
   </Text>
 );

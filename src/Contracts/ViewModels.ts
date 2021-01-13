@@ -91,6 +91,7 @@ export interface Database extends TreeNode {
   onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
   onSettingsClick: () => void;
   loadOffer(): Promise<void>;
+  getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
 }
 
 export interface CollectionBase extends TreeNode {
@@ -178,6 +179,7 @@ export interface Collection extends CollectionBase {
   uploadFiles(fileList: FileList): Q.Promise<UploadDetails>;
 
   getLabel(): string;
+  getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
 }
 
 /**
@@ -292,10 +294,6 @@ export interface DocumentsTabOptions extends TabOptions {
   resourceTokenPartitionKey?: string;
 }
 
-export interface SettingsTabV2Options extends TabOptions {
-  getPendingNotification: Q.Promise<DataModels.Notification>;
-}
-
 export interface ConflictsTabOptions extends TabOptions {
   partitionKey: DataModels.PartitionKey;
   conflictIds: ko.ObservableArray<ConflictId>;
@@ -362,7 +360,8 @@ export enum CollectionTabKind {
   Gallery = 17,
   NotebookViewer = 18,
   Schema = 19,
-  SettingsV2 = 20
+  CollectionSettingsV2 = 20,
+  DatabaseSettingsV2 = 21
 }
 
 export enum TerminalKind {

@@ -126,6 +126,7 @@ export class Features {
   public static readonly enableSchema = "enableschema";
   public static readonly enableSDKoperations = "enablesdkoperations";
   public static readonly showMinRUSurvey = "showminrusurvey";
+  public static readonly enableDatabaseSettingsTabV1 = "enabledbsettingsv1";
 }
 
 // flight names returned from the portal are always lowercase
