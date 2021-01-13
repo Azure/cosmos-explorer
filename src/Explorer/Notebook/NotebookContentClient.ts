@@ -11,7 +11,7 @@ import { stringifyNotebook } from "@nteract/commutable";
 export class NotebookContentClient {
   constructor(
     private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    private notebookBasePath: ko.Observable<string>,
+    public notebookBasePath: ko.Observable<string>,
     private contentProvider: IContentProvider
   ) {}
 
@@ -117,8 +117,11 @@ export class NotebookContentClient {
 
   private async checkIfFilepathExists(filepath: string): Promise<boolean> {
     const parentDirPath = NotebookUtil.getParentPath(filepath);
-    const items = await this.fetchNotebookFiles(parentDirPath);
-    return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
+    if (parentDirPath) {
+      const items = await this.fetchNotebookFiles(parentDirPath);
+      return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
+    }
+    return false;
   }
 
   /**
@@ -189,7 +192,7 @@ export class NotebookContentClient {
         const dir = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(dir.name, dir.path, dir.type);
         item.parent = parent;
-        parent.children.push(item);
+        parent.children!.push(item);
         return item;
       });
   }
@@ -225,7 +228,7 @@ export class NotebookContentClient {
    * Convert rx-jupyter type to our type
    * @param type
    */
-  private static getType(type: FileType): NotebookContentItemType {
+  public static getType(type: FileType): NotebookContentItemType {
     switch (type) {
       case "directory":
         return NotebookContentItemType.Directory;

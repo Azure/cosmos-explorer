@@ -138,8 +138,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     // Mongo container with system partition key still treat as "Fixed"
     this.isFixedContainer =
-      !this.collection.partitionKey ||
-      (this.container.isPreferredApiMongoDB() && this.collection.partitionKey.systemKey);
+      this.container.isPreferredApiMongoDB() &&
+      (!this.collection.partitionKey || this.collection.partitionKey.systemKey);
 
     this.state = {
       throughput: undefined,
@@ -684,7 +684,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     if (policy.mode === DataModels.ConflictResolutionMode.LastWriterWins) {
       policy.conflictResolutionPath = this.state.conflictResolutionPolicyPath;
-      if (policy.conflictResolutionPath?.startsWith("/")) {
+      if (!policy.conflictResolutionPath?.startsWith("/")) {
         policy.conflictResolutionPath = "/" + policy.conflictResolutionPath;
       }
     }
