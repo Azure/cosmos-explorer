@@ -12,9 +12,9 @@ import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
 import InfoIcon from "../../../../images/info_color.svg";
 import ErrorRedIcon from "../../../../images/error_red.svg";
 import ClearIcon from "../../../../images/Clear.svg";
-const LoaderIcon = require("../../../../images/circular_loader_black_16x16.gif");
-const ChevronUpIcon = require("../../../../images/QueryBuilder/CollapseChevronUp_16x.png");
-const ChevronDownIcon = require("../../../../images/QueryBuilder/CollapseChevronDown_16x.png");
+import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
+import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 
 /**
  * Log levels
@@ -164,7 +164,7 @@ export class NotificationConsoleComponent extends React.Component<
                 role="combobox"
                 selectedKey={this.state.selectedFilter}
                 options={NotificationConsoleComponent.FilterOptions}
-                onChange={() => this.onFilterSelected}
+                onChange={this.onFilterSelected.bind(this)}
                 aria-labelledby="consoleFilterLabel"
                 aria-label={this.state.selectedFilter}
               />

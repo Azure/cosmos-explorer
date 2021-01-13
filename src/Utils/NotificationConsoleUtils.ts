@@ -1,5 +1,6 @@
 import * as _ from "underscore";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+
 const _global = typeof self === "undefined" ? window : self;
 
 /**
