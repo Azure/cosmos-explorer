@@ -8,7 +8,7 @@ enum ScrollPosition {
 
 export class AccessibleVerticalList {
   private items: any[] = [];
-  private onSelect: (item: any) => void;
+  private onSelect?: (item: any) => void;
 
   public currentItemIndex: ko.Observable<number>;
   public currentItem: ko.Computed<any>;
@@ -42,7 +42,9 @@ export class AccessibleVerticalList {
       const targetElement = targetContainer
         .getElementsByClassName("accessibleListElement")
         .item(this.currentItemIndex());
-      this.scrollElementIntoContainerViewIfNeeded(targetElement, targetContainer, ScrollPosition.Top);
+      if (targetElement) {
+        this.scrollElementIntoContainerViewIfNeeded(targetElement, targetContainer, ScrollPosition.Top);
+      }
       return false;
     }
     if (event.keyCode === 40) {
@@ -52,7 +54,9 @@ export class AccessibleVerticalList {
       const targetElement = targetContainer
         .getElementsByClassName("accessibleListElement")
         .item(this.currentItemIndex());
-      this.scrollElementIntoContainerViewIfNeeded(targetElement, targetContainer, ScrollPosition.Bottom);
+      if (targetElement) {
+        this.scrollElementIntoContainerViewIfNeeded(targetElement, targetContainer, ScrollPosition.Top);
+      }
       return false;
     }
     return true;
