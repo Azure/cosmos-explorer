@@ -21,6 +21,6 @@
     "noEmit": true,
     "types": ["jest"]
   },
-  "include": ["./src/**/*", "test/testExplorer/**/*"],
+  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts"],
   "exclude": ["./src/**/__mocks__/**/*"]
 }
