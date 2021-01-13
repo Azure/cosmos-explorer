@@ -95,6 +95,8 @@
     "./src/Utils/StringUtils.ts",
     "./src/Utils/WindowUtils.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/types.ts",
+    "./src/Utils/AutoPilotUtils.ts",
+    "./src/Utils/PricingUtils.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/cassandraResources.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/collection.ts",
     "./src/Utils/arm/generatedClients/2020-04-01/collectionPartition.ts",

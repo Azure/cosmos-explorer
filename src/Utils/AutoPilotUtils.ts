@@ -1,5 +1,4 @@
 import * as Constants from "../Common/Constants";
-import { AutoPilotOfferSettings, Offer } from "../Contracts/DataModels";
 
 export const manualToAutoscaleDisclaimer = `The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s. <a href="${Constants.Urls.autoscaleMigration}">Learn more</a>.`;
 
