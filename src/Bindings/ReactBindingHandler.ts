@@ -15,7 +15,7 @@ import * as ReactDOM from "react-dom";
 
 export interface ReactAdapter {
   parameters: any;
-  renderComponent: () => JSX.Element;
+  renderComponent: (() => Promise<JSX.Element>) | (() => JSX.Element);
   setElement?: (elt: Element) => void;
 }
 
@@ -36,12 +36,12 @@ export class Registerer {
         }
 
         // If any of the ko observable change inside parameters, trigger a new render.
-        ko.computed(() => ko.toJSON(adapter.parameters)).subscribe(() =>
-          ReactDOM.render(adapter.renderComponent(), element)
+        ko.computed(() => ko.toJSON(adapter.parameters)).subscribe(async () =>
+          ReactDOM.render(await adapter.renderComponent(), element)
         );
 
         // Initial rendering at mount point
-        ReactDOM.render(adapter.renderComponent(), element);
+        Promise.resolve(adapter.renderComponent()).then(component => ReactDOM.render(component, element));
       }
     } as ko.BindingHandler;
   }

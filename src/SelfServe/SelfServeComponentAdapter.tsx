@@ -9,7 +9,6 @@ import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import Explorer from "../Explorer/Explorer";
 import { Descriptor, SmartUiComponent } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { SelfServeTypes } from "./SelfServeUtils";
-import { SelfServeExample } from "./Example/Example";
 
 export class SelfServeComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -23,18 +22,20 @@ export class SelfServeComponentAdapter implements ReactAdapter {
     });
   }
 
-  private getDescriptor = (selfServeType: SelfServeTypes): Descriptor => {
+  public static getDescriptor = async (selfServeType: SelfServeTypes): Promise<Descriptor> => {
     switch (selfServeType) {
-      case SelfServeTypes.example:
-        return SelfServeExample.toSmartUiDescriptor();
+      case SelfServeTypes.example: {
+        const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
+        return new SelfServeExample.default().toSmartUiDescriptor();
+      }
       default:
         return undefined;
     }
   };
 
-  public renderComponent(): JSX.Element {
+  public async renderComponent(): Promise<JSX.Element> {
     const selfServeType = this.container.selfServeType();
-    const smartUiDescriptor = this.getDescriptor(selfServeType);
+    const smartUiDescriptor = await SelfServeComponentAdapter.getDescriptor(selfServeType);
 
     const element = smartUiDescriptor ? (
       <SmartUiComponent descriptor={smartUiDescriptor} />

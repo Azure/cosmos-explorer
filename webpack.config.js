@@ -142,7 +142,7 @@ module.exports = function(env = {}, argv = {}) {
     }),
     new HtmlWebpackPlugin({
       filename: "testExplorer.html",
-      template: "test/notebooks/testExplorer/testExplorer.html",
+      template: "test/testExplorer/testExplorer.html",
       chunks: ["testExplorer"]
     }),
     new HtmlWebpackPlugin({
@@ -183,7 +183,7 @@ module.exports = function(env = {}, argv = {}) {
       index: "./src/Index.ts",
       quickstart: "./src/quickstart.ts",
       hostedExplorer: "./src/HostedExplorer.ts",
-      testExplorer: "./test/notebooks/testExplorer/TestExplorer.ts",
+      testExplorer: "./test/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",

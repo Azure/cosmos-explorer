@@ -78,6 +78,7 @@ import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
@@ -131,9 +132,14 @@ const App: React.FunctionComponent = () => {
         className="flexContainer"
         data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter"
       ></div>
-      <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
+      <div
+        id="divExplorer"
+        data-bind="if: selfServeType() === 'none'"
+        className="flexContainer hideOverflows"
+        style={{ display: "none" }}
+      >
         {/* Main Command Bar - Start */}
-        <div data-bind="visible: selfServeType() === 'none', react: commandBarComponentAdapter" />
+        <div data-bind="react: commandBarComponentAdapter" />
         {/* Main Command Bar - End */}
         {/* Share url flyout - Start */}
         <div
@@ -201,7 +207,7 @@ const App: React.FunctionComponent = () => {
         </div>
         {/* Share url flyout - End */}
         {/* Collections Tree and Tabs - Begin */}
-        <div className="resourceTreeAndTabs" data-bind="visible: selfServeType() === 'none'">
+        <div className="resourceTreeAndTabs">
           {/* Collections Tree - Start */}
           <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
             <div className="collectionsTreeWithSplitter">
@@ -308,10 +314,7 @@ const App: React.FunctionComponent = () => {
             data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
           >
             <form className="connectExplorerFormContainer">
-              <div
-                className="connectExplorer"
-                data-bind="visible: selfServeType() === 'none', react: splashScreenAdapter"
-              />
+              <div className="connectExplorer" data-bind="react: splashScreenAdapter" />
             </form>
           </div>
           <div
@@ -325,7 +328,7 @@ const App: React.FunctionComponent = () => {
           role="contentinfo"
           aria-label="Notification console"
           id="explorerNotificationConsole"
-          data-bind="react: notificationConsoleComponentAdapter, visible: selfServeType() === 'none'"
+          data-bind="react: notificationConsoleComponentAdapter"
         />
       </div>
       {/* Explorer Connection - Encryption Token / AAD - Start */}
@@ -379,25 +382,20 @@ const App: React.FunctionComponent = () => {
       </div>
       {/* Explorer Connection - Encryption Token / AAD - End */}
       {/* Global loader - Start */}
+      {window.dataExplorer && <Spinner size={SpinnerSize.large} />}
+
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
           <div data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter"></div>
-          <p
-            className="connectExplorerContent"
-            id="explorerConnectingImage"
-            data-bind="visible: selfServeType() === 'none'"
-          ></p>
-          <p
-            className="splashLoaderTitle"
-            id="explorerLoadingStatusTitle"
-            data-bind="visible: selfServeType() === 'none'"
-          ></p>
-          <p
-            className="splashLoaderText"
-            id="explorerLoadingStatusText"
-            role="alert"
-            data-bind="visible: selfServeType() === 'none'"
-          ></p>
+          <div data-bind="if: selfServeType() === 'none'" style={{ display: "none" }}>
+            <p className="connectExplorerContent">
+              <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+            </p>
+            <p className="splashLoaderTitle">Welcome to Azure Cosmos DB</p>
+            <p className="splashLoaderText" role="alert">
+              Connecting...
+            </p>
+          </div>
         </div>
       </div>
       {/* Global loader - End */}

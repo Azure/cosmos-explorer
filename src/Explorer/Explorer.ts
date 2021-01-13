@@ -1857,8 +1857,6 @@ export default class Explorer {
       this.selfServeType(inputs.selfServeType);
     } else {
       this.selfServeType(SelfServeTypes.none);
-      this._setLoadingStatusText("Connecting...", "Welcome to Azure Cosmos DB");
-      this._setConnectingImage();
     }
   }
 
@@ -2992,11 +2990,6 @@ export default class Explorer {
     } else {
       loadingTitle.innerHTML = title;
     }
-  }
-
-  private _setConnectingImage() {
-    const connectingImage = document.getElementById("explorerConnectingImage");
-    connectingImage.innerHTML = '<img src="../images/HdeConnectCosmosDB.svg" >';
   }
 
   private _openSetupNotebooksPaneForQuickstart(): void {

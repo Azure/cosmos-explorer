@@ -1118,6 +1118,14 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
+                "selfServeComponentAdapter": SelfServeComponentAdapter {
+                  "container": [Circular],
+                  "parameters": [Function],
+                },
+                "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
+                  "parameters": [Function],
+                },
+                "selfServeType": [Function],
                 "serverId": [Function],
                 "settingsPane": SettingsPane {
                   "container": [Circular],
@@ -2393,6 +2401,14 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
+              "selfServeComponentAdapter": SelfServeComponentAdapter {
+                "container": [Circular],
+                "parameters": [Function],
+              },
+              "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
+                "parameters": [Function],
+              },
+              "selfServeType": [Function],
               "serverId": [Function],
               "settingsPane": SettingsPane {
                 "container": [Circular],
@@ -3681,6 +3697,14 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
+                "selfServeComponentAdapter": SelfServeComponentAdapter {
+                  "container": [Circular],
+                  "parameters": [Function],
+                },
+                "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
+                  "parameters": [Function],
+                },
+                "selfServeType": [Function],
                 "serverId": [Function],
                 "settingsPane": SettingsPane {
                   "container": [Circular],
@@ -4956,6 +4980,14 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
+              "selfServeComponentAdapter": SelfServeComponentAdapter {
+                "container": [Circular],
+                "parameters": [Function],
+              },
+              "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
+                "parameters": [Function],
+              },
+              "selfServeType": [Function],
               "serverId": [Function],
               "settingsPane": SettingsPane {
                 "container": [Circular],

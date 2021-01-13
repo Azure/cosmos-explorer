@@ -1,15 +1,25 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { SmartUiComponent, Descriptor } from "./SmartUiComponent";
+import { SmartUiComponent, Descriptor, UiType } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
+  let initializeCalled = false;
+  let fetchMaxCalled = false;
+
+  const initializeMock = async () => {
+    initializeCalled = true;
+    return new Map();
+  };
+  const fetchMaxvalue = async () => {
+    fetchMaxCalled = true;
+    return 500;
+  };
+
   const exampleData: Descriptor = {
     onSubmit: async () => {
       return;
     },
-    initialize: async () => {
-      return undefined;
-    },
+    initialize: initializeMock,
     root: {
       id: "root",
       info: {
@@ -27,11 +37,10 @@ describe("SmartUiComponent", () => {
             dataFieldName: "throughput",
             type: "number",
             min: 400,
-            max: 500,
+            max: fetchMaxvalue,
             step: 10,
             defaultValue: 400,
-            inputType: "spinner",
-            onChange: undefined
+            uiType: UiType.Spinner
           }
         },
         {
@@ -44,8 +53,21 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "slider",
-            onChange: undefined
+            uiType: UiType.Slider
+          }
+        },
+        {
+          id: "throughput3",
+          input: {
+            label: "Throughput (invalid)",
+            dataFieldName: "throughput3",
+            type: "boolean",
+            min: 400,
+            max: 500,
+            step: 10,
+            defaultValue: 400,
+            uiType: UiType.Spinner,
+            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'"
           }
         },
         {
@@ -53,8 +75,7 @@ describe("SmartUiComponent", () => {
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string",
-            onChange: undefined
+            type: "string"
           }
         },
         {
@@ -65,8 +86,7 @@ describe("SmartUiComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean",
-            onChange: undefined
+            type: "boolean"
           }
         },
         {
@@ -80,7 +100,6 @@ describe("SmartUiComponent", () => {
               { label: "Database 2", key: "db2" },
               { label: "Database 3", key: "db3" }
             ],
-            onChange: undefined,
             defaultKey: "db2"
           }
         }
@@ -88,8 +107,17 @@ describe("SmartUiComponent", () => {
     }
   };
 
-  it("should render", () => {
+  it("should render", done => {
     const wrapper = shallow(<SmartUiComponent descriptor={exampleData} />);
-    expect(wrapper).toMatchSnapshot();
+    setImmediate(() => {
+      expect(wrapper).toMatchSnapshot();
+      expect(initializeCalled).toBeTruthy();
+      expect(fetchMaxCalled).toBeTruthy();
+
+      wrapper.setState({ isRefreshing: true });
+      wrapper.update();
+      expect(wrapper).toMatchSnapshot();
+      done();
+    });
   });
 });

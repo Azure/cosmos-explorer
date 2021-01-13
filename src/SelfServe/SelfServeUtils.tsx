@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {
-  ChoiceItem,
+  DropdownItem,
   Node,
   Info,
   InputTypeValue,
@@ -9,22 +9,43 @@ import {
   NumberInput,
   StringInput,
   BooleanInput,
-  ChoiceInput,
+  DropdownInput,
   InputType
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
-const SelfServeType = "selfServeType";
+export enum SelfServeTypes {
+  none = "none",
+  invalid = "invalid",
+  example = "example"
+}
 
-export class SelfServeBase {
-  public static toSmartUiDescriptor(): Descriptor {
-    return Reflect.getMetadata(this.name, this) as Descriptor;
+export abstract class SelfServeBaseClass {
+  public abstract onSubmit: (currentValues: Map<string, InputType>) => Promise<void>;
+  public abstract initialize: () => Promise<Map<string, InputType>>;
+
+  public toSmartUiDescriptor(): Descriptor {
+    const className = this.constructor.name;
+    const smartUiDescriptor = Reflect.getMetadata(className, this) as Descriptor;
+
+    if (!this.initialize) {
+      throw new Error(`initialize() was not declared for the class '${className}'`);
+    }
+    if (!this.onSubmit) {
+      throw new Error(`onSubmit() was not declared for the class '${className}'`);
+    }
+    if (!smartUiDescriptor?.root) {
+      throw new Error(`@SmartUi decorator was not declared for the class '${className}'`);
+    }
+
+    smartUiDescriptor.initialize = this.initialize;
+    smartUiDescriptor.onSubmit = this.onSubmit;
+    return smartUiDescriptor;
   }
 }
 
 export interface CommonInputTypes {
   id: string;
   info?: (() => Promise<Info>) | Info;
-  parentOf?: string[];
   type?: InputTypeValue;
   label?: (() => Promise<string>) | string;
   placeholder?: (() => Promise<string>) | string;
@@ -34,12 +55,12 @@ export interface CommonInputTypes {
   step?: (() => Promise<number>) | number;
   trueLabel?: (() => Promise<string>) | string;
   falseLabel?: (() => Promise<string>) | string;
-  choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
-  inputType?: string;
+  choices?: (() => Promise<DropdownItem[]>) | DropdownItem[];
+  uiType?: string;
+  errorMessage?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
   onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
   initialize?: () => Promise<Map<string, InputType>>;
-  customElement?: ((currentValues: Map<string, InputType>) => Promise<JSX.Element>) | JSX.Element;
 }
 
 const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
@@ -54,95 +75,86 @@ const getValue = <T extends keyof CommonInputTypes>(name: T, fieldObject: Common
   return fieldObject[name];
 };
 
-export const addPropertyToMap = (
-  target: Object,
-  propertyKey: string,
-  metadataKey: string,
+export const addPropertyToMap = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
+  target: unknown,
+  propertyName: string,
+  className: string,
   descriptorName: string,
-  descriptorValue: any
+  descriptorValue: K
 ): void => {
-  const descriptorKey = descriptorName.toString() as keyof CommonInputTypes;
-  let context = Reflect.getMetadata(metadataKey, target) as Map<string, CommonInputTypes>;
-
+  let context = Reflect.getMetadata(className, target) as Map<string, CommonInputTypes>;
   if (!context) {
     context = new Map<string, CommonInputTypes>();
   }
+  updateContextWithDecorator(context, propertyName, className, descriptorName, descriptorValue);
+  Reflect.defineMetadata(className, context, target);
+};
+
+export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
+  context: Map<string, CommonInputTypes>,
+  propertyName: string,
+  className: string,
+  descriptorName: string,
+  descriptorValue: K
+): void => {
+  const descriptorKey = descriptorName as keyof CommonInputTypes;
 
   if (!(context instanceof Map)) {
-    throw new Error("@SmartUi should be the first decorator for the class.");
+    console.log(context);
+    throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
   }
 
-  let propertyObject = context.get(propertyKey);
+  let propertyObject = context.get(propertyName);
   if (!propertyObject) {
-    propertyObject = { id: propertyKey };
+    propertyObject = { id: propertyName };
   }
 
   if (getValue(descriptorKey, propertyObject) && descriptorKey !== "type" && descriptorKey !== "dataFieldName") {
-    throw new Error("duplicate descriptor");
+    throw new Error(
+      `Duplicate value passed for '${descriptorKey}' on property '${propertyName}' of class '${className}'`
+    );
   }
 
   setValue(descriptorKey, descriptorValue, propertyObject);
-  context.set(propertyKey, propertyObject);
-
-  Reflect.defineMetadata(metadataKey, context, target);
+  context.set(propertyName, propertyObject);
 };
 
-export const toSmartUiDescriptor = (metadataKey: string, target: Object): void => {
-  const context = Reflect.getMetadata(metadataKey, target) as Map<string, CommonInputTypes>;
-  Reflect.defineMetadata(metadataKey, context, target);
+export const buildSmartUiDescriptor = (className: string, target: unknown): void => {
+  const context = Reflect.getMetadata(className, target) as Map<string, CommonInputTypes>;
+  const smartUiDescriptor = mapToSmartUiDescriptor(context);
+  Reflect.defineMetadata(className, smartUiDescriptor, target);
+};
 
+export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): Descriptor => {
   const root = context.get("root");
   context.delete("root");
+  const inputNames: string[] = [];
 
-  if (!root?.onSubmit) {
-    throw new Error(
-      "@OnSubmit decorator not declared for the class. Please ensure @SmartUi is the first decorator used for the class."
-    );
-  }
-
-  if (!root?.initialize) {
-    throw new Error(
-      "@Initialize decorator not declared for the class. Please ensure @SmartUi is the first decorator used for the class."
-    );
-  }
-
-  const smartUiDescriptor = {
-    onSubmit: root.onSubmit,
-    initialize: root.initialize,
+  const smartUiDescriptor: Descriptor = {
     root: {
       id: "root",
-      info: root.info,
+      info: root?.info,
       children: []
-    } as Node
-  } as Descriptor;
+    }
+  };
 
   while (context.size > 0) {
     const key = context.keys().next().value;
-    addToDescriptor(context, smartUiDescriptor, smartUiDescriptor.root, key);
+    addToDescriptor(context, smartUiDescriptor.root, key, inputNames);
   }
+  smartUiDescriptor.inputNames = inputNames;
 
-  Reflect.defineMetadata(metadataKey, smartUiDescriptor, target);
+  return smartUiDescriptor;
 };
 
 const addToDescriptor = (
   context: Map<string, CommonInputTypes>,
-  smartUiDescriptor: Descriptor,
   root: Node,
-  key: string
+  key: string,
+  inputNames: string[]
 ): void => {
   const value = context.get(key);
-  if (!value) {
-    // should already be added to root
-    const childNode = getChildFromRoot(key, smartUiDescriptor);
-    if (!childNode) {
-      // if not found at root level, error out
-      throw new Error("Either child does not exist or child has been assigned to more than one parent");
-    }
-    root.children.push(childNode);
-    return;
-  }
-
-  const childrenKeys = value.parentOf;
+  inputNames.push(value.id);
   const element = {
     id: value.id,
     info: value.info,
@@ -150,61 +162,30 @@ const addToDescriptor = (
     children: []
   } as Node;
   context.delete(key);
-  for (const childKey in childrenKeys) {
-    addToDescriptor(context, smartUiDescriptor, element, childrenKeys[childKey]);
-  }
   root.children.push(element);
 };
 
-const getChildFromRoot = (key: string, smartUiDescriptor: Descriptor): Node => {
-  let i = 0;
-  const children = smartUiDescriptor.root.children;
-  while (i < children.length) {
-    if (children[i]?.id === key) {
-      const value = children[i];
-      delete children[i];
-      return value;
-    } else {
-      i++;
-    }
-  }
-  return undefined;
-};
-
 const getInput = (value: CommonInputTypes): AnyInput => {
-  if (!value.label && !value.customElement) {
-    throw new Error("label is required.");
-  }
-
   switch (value.type) {
     case "number":
-      if (!value.step || !value.inputType || !value.min || !value.max) {
-        throw new Error("step, min, miax and inputType are needed for number type");
+      if (!value.label || !value.step || !value.uiType || !value.min || !value.max) {
+        value.errorMessage = `label, step, min, max and uiType are required for number input '${value.id}'.`;
       }
       return value as NumberInput;
     case "string":
+      if (!value.label) {
+        value.errorMessage = `label is required for string input '${value.id}'.`;
+      }
       return value as StringInput;
     case "boolean":
-      if (!value.trueLabel || !value.falseLabel) {
-        throw new Error("truelabel and falselabel are needed for boolean type");
+      if (!value.label || !value.trueLabel || !value.falseLabel) {
+        value.errorMessage = `label, truelabel and falselabel are required for boolean input '${value.id}'.`;
       }
       return value as BooleanInput;
     default:
-      if (!value.choices) {
-        throw new Error("choices are needed for enum type");
+      if (!value.label || !value.choices) {
+        value.errorMessage = `label and choices are required for Dropdown input '${value.id}'.`;
       }
-      return value as ChoiceInput;
+      return value as DropdownInput;
   }
-};
-
-export enum SelfServeTypes {
-  none = "none",
-  invalid = "invalid",
-  example = "example"
-}
-
-export const getSelfServeType = (search: string): SelfServeTypes => {
-  const params = new URLSearchParams(search);
-  const selfServeTypeParam = params.get(SelfServeType)?.toLowerCase();
-  return SelfServeTypes[selfServeTypeParam as keyof typeof SelfServeTypes];
 };
