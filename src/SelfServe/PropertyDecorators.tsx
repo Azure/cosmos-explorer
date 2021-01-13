@@ -50,6 +50,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     let className = target.constructor.name;
     const propertyName = property.toString();
     if (className === "Function") {
+      //eslint-disable-next-line @typescript-eslint/ban-types
       className = (target as Function).name;
       throw new Error(`Property '${propertyName}' in class '${className}'should be not be static.`);
     }

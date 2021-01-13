@@ -107,17 +107,15 @@ describe("SmartUiComponent", () => {
     }
   };
 
-  it("should render", done => {
+  it("should render", async () => {
     const wrapper = shallow(<SmartUiComponent descriptor={exampleData} />);
-    setImmediate(() => {
-      expect(wrapper).toMatchSnapshot();
-      expect(initializeCalled).toBeTruthy();
-      expect(fetchMaxCalled).toBeTruthy();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    expect(wrapper).toMatchSnapshot();
+    expect(initializeCalled).toBeTruthy();
+    expect(fetchMaxCalled).toBeTruthy();
 
-      wrapper.setState({ isRefreshing: true });
-      wrapper.update();
-      expect(wrapper).toMatchSnapshot();
-      done();
-    });
+    wrapper.setState({ isRefreshing: true });
+    wrapper.update();
+    expect(wrapper).toMatchSnapshot();
   });
 });

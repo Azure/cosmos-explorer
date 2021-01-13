@@ -27,6 +27,11 @@ export enum UiType {
   Slider = "Slider"
 }
 
+type numberPromise = () => Promise<number>;
+type stringPromise = () => Promise<string>;
+type dropdownItemPromise = () => Promise<DropdownItem[]>;
+type infoPromise = () => Promise<Info>;
+
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type DropdownItem = { label: string; key: string };
 
@@ -159,7 +164,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private setDefaults = async (currentNode: Node): Promise<void> => {
     if (currentNode.info && currentNode.info instanceof Function) {
-      currentNode.info = await (currentNode.info as Function)();
+      currentNode.info = await (currentNode.info as infoPromise)();
     }
 
     if (currentNode.input) {
@@ -173,11 +178,11 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private getModifiedInput = async (input: AnyInput): Promise<AnyInput> => {
     if (input.label instanceof Function) {
-      input.label = await (input.label as Function)();
+      input.label = await (input.label as stringPromise)();
     }
 
     if (input.placeholder instanceof Function) {
-      input.placeholder = await (input.placeholder as Function)();
+      input.placeholder = await (input.placeholder as stringPromise)();
     }
 
     switch (input.type) {
@@ -187,30 +192,30 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       case "number": {
         const numberInput = input as NumberInput;
         if (numberInput.min instanceof Function) {
-          numberInput.min = await (numberInput.min as Function)();
+          numberInput.min = await (numberInput.min as numberPromise)();
         }
         if (numberInput.max instanceof Function) {
-          numberInput.max = await (numberInput.max as Function)();
+          numberInput.max = await (numberInput.max as numberPromise)();
         }
         if (numberInput.step instanceof Function) {
-          numberInput.step = await (numberInput.step as Function)();
+          numberInput.step = await (numberInput.step as numberPromise)();
         }
         return numberInput;
       }
       case "boolean": {
         const booleanInput = input as BooleanInput;
         if (booleanInput.trueLabel instanceof Function) {
-          booleanInput.trueLabel = await (booleanInput.trueLabel as Function)();
+          booleanInput.trueLabel = await (booleanInput.trueLabel as stringPromise)();
         }
         if (booleanInput.falseLabel instanceof Function) {
-          booleanInput.falseLabel = await (booleanInput.falseLabel as Function)();
+          booleanInput.falseLabel = await (booleanInput.falseLabel as stringPromise)();
         }
         return booleanInput;
       }
       default: {
         const enumInput = input as DropdownInput;
         if (enumInput.choices instanceof Function) {
-          enumInput.choices = await (enumInput.choices as Function)();
+          enumInput.choices = await (enumInput.choices as dropdownItemPromise)();
         }
         return enumInput;
       }
