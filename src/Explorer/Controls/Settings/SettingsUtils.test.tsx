@@ -71,17 +71,17 @@ describe("SettingsUtils", () => {
     } as DataModels.IndexingPolicy;
 
     it("works on all types", () => {
-      expect(isDirty("baseline", "baseline")).toEqual(true);
-      expect(isDirty(0, 0)).toEqual(true);
-      expect(isDirty(true, true)).toEqual(true);
-      expect(isDirty(undefined, undefined)).toEqual(true);
-      expect(isDirty(indexingPolicy, indexingPolicy)).toEqual(true);
+      expect(isDirty("baseline", "baseline")).toEqual(false);
+      expect(isDirty(0, 0)).toEqual(false);
+      expect(isDirty(true, true)).toEqual(false);
+      expect(isDirty(undefined, undefined)).toEqual(false);
+      expect(isDirty(indexingPolicy, indexingPolicy)).toEqual(false);
 
-      expect(isDirty("baseline", "current")).toEqual(false);
-      expect(isDirty(0, 1)).toEqual(false);
+      expect(isDirty("baseline", "current")).toEqual(true);
+      expect(isDirty(0, 1)).toEqual(true);
       expect(isDirty(true, false)).toEqual(true);
       expect(isDirty(undefined, indexingPolicy)).toEqual(true);
-      expect(isDirty(indexingPolicy, { ...indexingPolicy, automatic: false })).toEqual(false);
+      expect(isDirty(indexingPolicy, { ...indexingPolicy, automatic: false })).toEqual(true);
     });
   });
 
