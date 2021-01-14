@@ -94,7 +94,7 @@ jobs:
           npm ci
           npm start &
           npm run wait-for-server
-          npx jest -c ./jest.config.e2e.js --detectOpenHandles sql
+          npx jest -c ./jest.config.e2e.js --detectOpenHandles sql/container
         shell: bash
         env:
           DATA_EXPLORER_ENDPOINT: "https://localhost:1234/explorer.html?platform=Emulator"
