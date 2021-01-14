@@ -20,7 +20,7 @@ export async function fetchAccessData(portalToken: string): Promise<AccessInputM
       .then(response => response.json())
       // Portal encrypted token API quirk: The response is double JSON encoded
       .then(json => JSON.parse(json))
-      .catch(error => console.log(error))
+      .catch(error => console.error(error))
   );
 }
 

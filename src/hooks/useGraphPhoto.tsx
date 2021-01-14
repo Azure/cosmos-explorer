@@ -12,9 +12,9 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
     headers: headers
   };
 
-  return fetch("https://graph.windows.net/me/thumbnailPhoto?api-version=1.6", options)
-    .then(response => response.blob())
-    .catch(error => console.log(error));
+  return fetch("https://graph.windows.net/me/thumbnailPhoto?api-version=1.6", options).then(response =>
+    response.blob()
+  );
 }
 
 export function useGraphPhoto(graphToken: string): string {

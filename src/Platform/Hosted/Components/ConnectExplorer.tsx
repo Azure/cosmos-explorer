@@ -51,7 +51,6 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 }
                 // This API has a quirk where it must be parsed twice
                 const result: GenerateTokenResponse = JSON.parse(await response.json());
-                console.log(result.readWrite || result.read);
                 setEncryptedToken(decodeURIComponent(result.readWrite || result.read));
                 setAuthType(AuthType.ConnectionString);
               }}

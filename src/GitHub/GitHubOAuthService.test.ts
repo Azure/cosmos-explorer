@@ -35,7 +35,7 @@ describe("GitHubOAuthService", () => {
     window.dataExplorer = {
       ...originalDataExplorer,
       logConsoleData: (data): void =>
-        data.type === ConsoleDataType.Error ? console.error(data.message) : console.log(data.message)
+        data.type === ConsoleDataType.Error ? console.error(data.message) : console.error(data.message)
     } as Explorer;
     window.dataExplorer.notebookManager = new NotebookManager();
     window.dataExplorer.notebookManager.junoClient = junoClient;

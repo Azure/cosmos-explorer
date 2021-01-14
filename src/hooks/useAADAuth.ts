@@ -12,7 +12,7 @@ const config: Configuration = {
   }
 };
 
-if (process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV === "development") {
   config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
 }
 

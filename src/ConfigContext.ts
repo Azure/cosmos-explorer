@@ -104,7 +104,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
       const platform = params.get("platform");
       switch (platform) {
         default:
-          console.log("Invalid platform query parameter given, ignoring");
+          console.error(`Invalid platform query parameter: ${platform}`);
           break;
         case Platform.Portal:
         case Platform.Hosted:
@@ -113,7 +113,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
       }
     }
   } catch (error) {
-    console.log("No configuration file found using defaults");
+    console.error("No configuration file found using defaults");
   }
   return configContext;
 }

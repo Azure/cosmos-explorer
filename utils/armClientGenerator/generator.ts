@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /// <reference types="node" />
 import { writeFileSync } from "fs";
 import mkdirp from "mkdirp";

@@ -14,7 +14,6 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
   setSelectedSubscriptionId,
   selectedSubscription
 }: Props) => {
-  console.log(subscriptions);
   return (
     <Dropdown
       label="Subscription"
