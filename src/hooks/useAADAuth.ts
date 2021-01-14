@@ -1,17 +1,22 @@
 import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
-import { UserAgentApplication, Account } from "msal";
+import { UserAgentApplication, Account, Configuration } from "msal";
 
-const msal = new UserAgentApplication({
+const config: Configuration = {
   cache: {
     cacheLocation: "localStorage"
   },
   auth: {
     authority: "https://login.microsoftonline.com/common",
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-    redirectUri: "https://dataexplorer-dev.azurewebsites.net" // TODO! This should only be set in development
+    clientId: "203f1145-856a-4232-83d4-a43568fba23d"
   }
-});
+};
+
+if (process.env.NODE_ENV !== "development") {
+  config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
+}
+
+const msal = new UserAgentApplication(config);
 
 const cachedAccount = msal.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
