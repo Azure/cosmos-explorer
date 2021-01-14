@@ -1,39 +1,41 @@
+/* eslint-disable jest/expect-expect */
 import "expect-puppeteer";
-import { Frame } from "puppeteer";
+// import { Frame } from "puppeteer";
 import { generateUniqueName } from "../utils/shared";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
 
 jest.setTimeout(300000);
-const LOADING_STATE_DELAY = 2500;
-const RETRY_DELAY = 5000;
-const CREATE_DELAY = 10000;
-const RENDER_DELAY = 1000;
+// const LOADING_STATE_DELAY = 2500;
+// const RETRY_DELAY = 5000;
+// const CREATE_DELAY = 10000;
+// const RENDER_DELAY = 1000;
 
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
-    try {
-      const dbId = generateUniqueName("db");
-      const collectionId = generateUniqueName("col");
-      const sharedKey = `/skey${generateUniqueName()}`;
+    // try {
+    const dbId = generateUniqueName("db");
+    const collectionId = generateUniqueName("col");
+    // const sharedKey = `/skey${generateUniqueName()}`;
 
-      const connectionString = process.env.PORTAL_RUNNER_CONNECTION_STRING
+    const connectionString = process.env.PORTAL_RUNNER_CONNECTION_STRING;
 
-      const client = new CosmosClient(connectionString);
-      const endpoint = /AccountEndpoint=(.*);/.exec(connectionString)[1];
+    const client = new CosmosClient(connectionString);
+    const endpoint = /AccountEndpoint=(.*);/.exec(connectionString)[1];
 
-      const { database } = await client.databases.createIfNotExists({ id: dbId });
-      const { container } = await database.containers.createIfNotExists({ id: collectionId });
+    const { database } = await client.databases.createIfNotExists({ id: dbId });
+    const { container } = await database.containers.createIfNotExists({ id: collectionId });
 
-      const { user } = await database.users.upsert({ id: "testUser" });
+    const { user } = await database.users.upsert({ id: "testUser" });
 
-      const { resource: containerPermission } = await user.permissions.upsert({
-        id: "partitionLevelPermission",
-        permissionMode: PermissionMode.All,
-        resource: container.url
-      });
+    const { resource: containerPermission } = await user.permissions.upsert({
+      id: "partitionLevelPermission",
+      permissionMode: PermissionMode.All,
+      resource: container.url
+    });
 
-      const resourceTokenConnectionString = `AccountEndpoint=${endpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
-      console.log(resourceTokenConnectionString)
+    const resourceTokenConnectionString = `AccountEndpoint=${endpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
+    // eslint-disable-next-line no-console
+    console.log(resourceTokenConnectionString);
 
     //   await page.goto(process.env.DATA_EXPLORER_ENDPOINT);
     //   await page.waitFor("div > p.switchConnectTypeText", { visible: true });
@@ -172,23 +174,23 @@ describe("Collection Add and Delete SQL spec", () => {
   });
 });
 
-async function clickDBMenu(dbId: string, frame: Frame, retries = 0) {
-  const button = await frame.$(`div[data-test="${dbId}"]`);
-  await button.focus();
-  const handler = await button.asElement();
-  await handler.click();
-  await ensureMenuIsOpen(dbId, frame, retries);
-  return button;
-}
+// async function clickDBMenu(dbId: string, frame: Frame, retries = 0) {
+//   const button = await frame.$(`div[data-test="${dbId}"]`);
+//   await button.focus();
+//   const handler = await button.asElement();
+//   await handler.click();
+//   await ensureMenuIsOpen(dbId, frame, retries);
+//   return button;
+// }
 
-async function ensureMenuIsOpen(dbId: string, frame: Frame, retries: number) {
-  await frame.waitFor(RETRY_DELAY);
-  const button = await frame.$(`div[data-test="${dbId}"]`);
-  const classList = await frame.evaluate(button => {
-    return button.parentElement.classList;
-  }, button);
-  if (!Object.values(classList).includes("selected") && retries < 5) {
-    retries = retries + 1;
-    await clickDBMenu(dbId, frame, retries);
-  }
-}
+// async function ensureMenuIsOpen(dbId: string, frame: Frame, retries: number) {
+//   await frame.waitFor(RETRY_DELAY);
+//   const button = await frame.$(`div[data-test="${dbId}"]`);
+//   const classList = await frame.evaluate(button => {
+//     return button.parentElement.classList;
+//   }, button);
+//   if (!Object.values(classList).includes("selected") && retries < 5) {
+//     retries = retries + 1;
+//     await clickDBMenu(dbId, frame, retries);
+//   }
+// }
