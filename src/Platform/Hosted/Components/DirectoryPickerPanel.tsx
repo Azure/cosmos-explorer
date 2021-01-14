@@ -29,7 +29,8 @@ export const DirectoryPickerPanel: React.FunctionComponent<Props> = ({
       <ChoiceGroup
         options={directories.map(dir => ({ key: dir.tenantId, text: `${dir.displayName} (${dir.tenantId})` }))}
         selectedKey={tenantId}
-        onChange={async (event, option) => {
+        onChange={(event, option) => {
+          console.log("here!!");
           switchTenant(option.key);
           dismissPanel();
         }}
