@@ -311,7 +311,7 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
+        this.isAuthWithResourceToken() ? await this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
@@ -1328,21 +1328,17 @@ export default class Explorer {
     }
   }
 
-  public refreshDatabaseForResourceToken(): Q.Promise<any> {
+  public async refreshDatabaseForResourceToken(): Promise<any> {
     const databaseId = this.resourceTokenDatabaseId();
     const collectionId = this.resourceTokenCollectionId();
     if (!databaseId || !collectionId) {
-      return Q.reject();
+      throw new Error("No collection ID or database ID for resource token");
     }
 
-    const deferred: Q.Deferred<void> = Q.defer();
-    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
-      deferred.resolve();
     });
-
-    return deferred.promise;
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {

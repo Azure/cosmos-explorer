@@ -132,9 +132,10 @@ const App: React.FunctionComponent = () => {
           const apiExperience: string = DefaultAccountExperience.DocumentDB;
           const parsedResourceToken = parseResourceTokenConnectionString(win.hostedConfig.resourceToken);
           updateUserContext({
-            resourceToken: parsedResourceToken.resourceToken
+            resourceToken: parsedResourceToken.resourceToken,
+            endpoint: parsedResourceToken.accountEndpoint
           });
-          return explorer.initDataExplorerWithFrameInputs({
+          explorer.initDataExplorerWithFrameInputs({
             databaseAccount: {
               id: "",
               name: parsedResourceToken.accountEndpoint,
@@ -158,6 +159,13 @@ const App: React.FunctionComponent = () => {
             isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
             isAuthWithresourceToken: true
           });
+          explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
+          explorer.resourceTokenCollectionId(parsedResourceToken.collectionId);
+          if (parsedResourceToken.partitionKey) {
+            explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
+          }
+          explorer.isAccountReady(true);
+          explorer.isRefreshingExplorer(false);
         } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
           // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
           window.authType = AuthType.EncryptedToken;
@@ -369,13 +377,12 @@ const App: React.FunctionComponent = () => {
                     </div>
                   </div>
                   {/* Collections Window Title/Command Bar - End  */}
-
-                  {!window.dataExplorer?.isAuthWithResourceToken() && (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
-                  )}
-                  {window.dataExplorer?.isAuthWithResourceToken() && (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
-                  )}
+                  <KOCommentIfStart if="!isAuthWithResourceToken" />
+                  <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
+                  <KOCommentEnd />
+                  <KOCommentIfStart if="isAuthWithResourceToken" />
+                  <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
+                  <KOCommentEnd />
                 </div>
                 {/*  Collections Window - End */}
               </div>
