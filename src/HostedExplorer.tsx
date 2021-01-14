@@ -10,7 +10,7 @@ import { DatabaseAccount } from "./Contracts/DataModels";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
-import { usePortalAccessToken } from "./hooks/usePortalAccessToken";
+import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import "./Platform/Hosted/ConnectScreen.less";
 import "./Shared/appInsights";
@@ -26,7 +26,7 @@ const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
   const params = new URLSearchParams(window.location.search);
   const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
-  const encryptedTokenMetadata = usePortalAccessToken(encryptedToken);
+  const encryptedTokenMetadata = useTokenMetadata(encryptedToken);
 
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);

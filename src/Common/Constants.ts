@@ -1,10 +1,3 @@
-import { HashMap } from "./HashMap";
-
-export class AuthorizationEndpoints {
-  public static arm: string = "https://management.core.windows.net/";
-  public static common: string = "https://login.windows.net/";
-}
-
 export class CodeOfConductEndpoints {
   public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
   public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
@@ -139,19 +132,6 @@ export class AfecFeatures {
   public static readonly Spark = "spark-public-preview";
   public static readonly Notebooks = "sparknotebooks-public-preview";
   public static readonly StorageAnalytics = "storageanalytics-public-preview";
-}
-
-export class Spark {
-  public static readonly MaxWorkerCount = 10;
-  public static readonly SKUs: HashMap<string> = new HashMap({
-    "Cosmos.Spark.D1s": "D1s / 1 core / 4GB RAM",
-    "Cosmos.Spark.D2s": "D2s / 2 cores / 8GB RAM",
-    "Cosmos.Spark.D4s": "D4s / 4 cores / 16GB RAM",
-    "Cosmos.Spark.D8s": "D8s / 8 cores / 32GB RAM",
-    "Cosmos.Spark.D16s": "D16s / 16 cores / 64GB RAM",
-    "Cosmos.Spark.D32s": "D32s / 32 cores / 128GB RAM",
-    "Cosmos.Spark.D64s": "D64s / 64 cores / 256GB RAM"
-  });
 }
 
 export class TagNames {

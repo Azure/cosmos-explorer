@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { Subscription } from "../Contracts/DataModels";
+import useSWR from "swr";
 
 interface SubscriptionListResult {
   nextLink: string;
@@ -31,13 +31,10 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
   return subscriptions;
 }
 
-export function useSubscriptions(armToken: string): Subscription[] {
-  const [state, setState] = useState<Subscription[]>();
-
-  useEffect(() => {
-    if (armToken) {
-      fetchSubscriptions(armToken).then(response => setState(response));
-    }
-  }, [armToken]);
-  return state || [];
+export function useSubscriptions(armToken: string): Subscription[] | undefined {
+  const { data } = useSWR(
+    () => (armToken ? ["subscriptions", armToken] : undefined),
+    (_, armToken) => fetchSubscriptions(armToken)
+  );
+  return data;
 }

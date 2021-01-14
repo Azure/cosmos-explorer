@@ -24,7 +24,7 @@ export async function fetchAccessData(portalToken: string): Promise<AccessInputM
   );
 }
 
-export function usePortalAccessToken(token: string): AccessInputMetadata {
+export function useTokenMetadata(token: string): AccessInputMetadata {
   const [state, setState] = useState<AccessInputMetadata>();
 
   useEffect(() => {

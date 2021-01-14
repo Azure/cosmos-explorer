@@ -2,14 +2,15 @@
 /* eslint-disable react/display-name */
 
 import { StyleConstants } from "../../../Common/Constants";
+import { FunctionComponent, useState, useEffect } from "react";
 import * as React from "react";
 import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
-import { fetchDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
-import { DatabaseAccount, Subscription } from "../../../Contracts/DataModels";
-import useSWR from "swr";
-import { fetchSubscriptions } from "../../../hooks/useSubscriptions";
+import { DatabaseAccount } from "../../../Contracts/DataModels";
+import { useSubscriptions } from "../../../hooks/useSubscriptions";
+import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
+import { SwitchSubscription } from "./SwitchSubscription";
+import { SwitchAccount } from "./SwitchAccount";
 
 const buttonStyles: IButtonStyles = {
   root: {
@@ -42,51 +43,36 @@ const buttonStyles: IButtonStyles = {
   }
 };
 
-const cachedSubscriptionId = localStorage.getItem("cachedSubscriptionId");
-const cachedDatabaseAccountName = localStorage.getItem("cachedDatabaseAccountName");
-
 interface Props {
   armToken: string;
   setDatabaseAccount: (account: DatabaseAccount) => void;
 }
 
-const useSubscriptions = (armToken: string): Subscription[] | undefined => {
-  const { data } = useSWR(
-    () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) => fetchSubscriptions(armToken)
-  );
-  return data;
-};
-
-const useDatabaseAccounts = (subscriptionId: string, armToken: string): DatabaseAccount[] | undefined => {
-  const { data } = useSWR(
-    () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
-    (_, subscriptionId, armToken) => fetchDatabaseAccounts([subscriptionId], armToken)
-  );
-  return data;
-};
-
-export const AccountSwitcher: React.FunctionComponent<Props> = ({ armToken, setDatabaseAccount }: Props) => {
+export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabaseAccount }: Props) => {
   const subscriptions = useSubscriptions(armToken);
-  const [selectedSubscriptionId, setSelectedSubscriptionId] = React.useState<string>(cachedSubscriptionId);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<string>(() =>
+    localStorage.getItem("cachedSubscriptionId")
+  );
   const selectedSubscription = subscriptions?.find(sub => sub.subscriptionId === selectedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscription?.subscriptionId, armToken);
-  const [selectedAccountName, setSelectedAccoutName] = React.useState<string>(cachedDatabaseAccountName);
+  const [selectedAccountName, setSelectedAccountName] = useState<string>(() =>
+    localStorage.getItem("cachedDatabaseAccountName")
+  );
   const selectedAccount = accounts?.find(account => account.name === selectedAccountName);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedAccountName) {
       localStorage.setItem("cachedDatabaseAccountName", selectedAccountName);
     }
   }, [selectedAccountName]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedSubscriptionId) {
       localStorage.setItem("cachedSubscriptionId", selectedSubscriptionId);
     }
   }, [selectedSubscriptionId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedAccount) {
       setDatabaseAccount(selectedAccount);
     }
@@ -97,49 +83,12 @@ export const AccountSwitcher: React.FunctionComponent<Props> = ({ armToken, setD
   const items: IContextualMenuItem[] = [
     {
       key: "switchSubscription",
-      onRender: () => (
-        <Dropdown
-          label="Subscription"
-          className="accountSwitchSubscriptionDropdown"
-          options={subscriptions?.map(sub => {
-            return {
-              key: sub.subscriptionId,
-              text: sub.displayName,
-              data: sub
-            };
-          })}
-          onChange={(_, option) => {
-            setSelectedSubscriptionId(String(option.key));
-          }}
-          defaultSelectedKey={selectedSubscription?.subscriptionId}
-          placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Loading ..."}
-          styles={{
-            callout: "accountSwitchSubscriptionDropdownMenu"
-          }}
-        />
-      )
+      onRender: () => <SwitchSubscription {...{ subscriptions, setSelectedSubscriptionId, selectedSubscription }} />
     },
     {
       key: "switchAccount",
       onRender: (_, dismissMenu) => (
-        <Dropdown
-          label="Cosmos DB Account Name"
-          className="accountSwitchAccountDropdown"
-          options={accounts?.map(account => ({
-            key: account.name,
-            text: account.name,
-            data: account
-          }))}
-          onChange={(_, option) => {
-            setSelectedAccoutName(String(option.key));
-            dismissMenu();
-          }}
-          defaultSelectedKey={selectedAccount?.name}
-          placeholder={accounts && accounts.length === 0 ? "No Accounts Found" : "Select an Account"}
-          styles={{
-            callout: "accountSwitchAccountDropdownMenu"
-          }}
-        />
+        <SwitchAccount {...{ accounts, dismissMenu, selectedAccount, setSelectedAccountName }} />
       )
     }
   ];

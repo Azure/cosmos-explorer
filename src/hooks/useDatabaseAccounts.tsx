@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { DatabaseAccount } from "../Contracts/DataModels";
 
 interface AccountListResult {
@@ -38,13 +38,10 @@ export async function fetchDatabaseAccounts(
   return accounts;
 }
 
-export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] {
-  const [state, setState] = useState<DatabaseAccount[]>();
-
-  useEffect(() => {
-    if (subscriptionId && armToken) {
-      fetchDatabaseAccounts([subscriptionId], armToken).then(response => setState(response));
-    }
-  }, [subscriptionId, armToken]);
-  return state || [];
+export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {
+  const { data } = useSWR(
+    () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
+    (_, subscriptionId, armToken) => fetchDatabaseAccounts([subscriptionId], armToken)
+  );
+  return data;
 }
