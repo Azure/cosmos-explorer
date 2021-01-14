@@ -1,29 +1,28 @@
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
-import { AccessInputMetadata } from "../../Contracts/DataModels";
+import { DefaultAccountExperience, CapabilityNames, AccountKind } from "../../Common/Constants";
+import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 
 export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMetadata): unknown {
   let properties = { documentEndpoint: metadata.documentEndpoint };
   const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(metadata.apiKind);
 
-  if (apiExperience === Constants.DefaultAccountExperience.Cassandra) {
+  if (apiExperience === DefaultAccountExperience.Cassandra) {
     properties = Object.assign(properties, {
       cassandraEndpoint: metadata.apiEndpoint,
-      capabilities: [{ name: Constants.CapabilityNames.EnableCassandra }]
+      capabilities: [{ name: CapabilityNames.EnableCassandra }]
     });
-  } else if (apiExperience === Constants.DefaultAccountExperience.Table) {
+  } else if (apiExperience === DefaultAccountExperience.Table) {
     properties = Object.assign(properties, {
       tableEndpoint: metadata.apiEndpoint,
-      capabilities: [{ name: Constants.CapabilityNames.EnableTable }]
+      capabilities: [{ name: CapabilityNames.EnableTable }]
     });
-  } else if (apiExperience === Constants.DefaultAccountExperience.Graph) {
+  } else if (apiExperience === DefaultAccountExperience.Graph) {
     properties = Object.assign(properties, {
       gremlinEndpoint: metadata.apiEndpoint,
-      capabilities: [{ name: Constants.CapabilityNames.EnableGremlin }]
+      capabilities: [{ name: CapabilityNames.EnableGremlin }]
     });
-  } else if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
-    if (metadata.apiKind === DataModels.ApiKind.MongoDBCompute) {
+  } else if (apiExperience === DefaultAccountExperience.MongoDB) {
+    if (metadata.apiKind === ApiKind.MongoDBCompute) {
       properties = Object.assign(properties, {
         mongoEndpoint: metadata.mongoEndpoint
       });
@@ -33,15 +32,15 @@ export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMe
 }
 
 export function getDatabaseAccountKindFromExperience(apiExperience: string): string {
-  if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
-    return Constants.AccountKind.MongoDB;
+  if (apiExperience === DefaultAccountExperience.MongoDB) {
+    return AccountKind.MongoDB;
   }
 
-  if (apiExperience === Constants.DefaultAccountExperience.ApiForMongoDB) {
-    return Constants.AccountKind.MongoDB;
+  if (apiExperience === DefaultAccountExperience.ApiForMongoDB) {
+    return AccountKind.MongoDB;
   }
 
-  return Constants.AccountKind.GlobalDocumentDB;
+  return AccountKind.GlobalDocumentDB;
 }
 
 export function extractMasterKeyfromConnectionString(connectionString: string): string {

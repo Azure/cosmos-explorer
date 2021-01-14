@@ -69,7 +69,6 @@ import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import { updateUserContext } from "./UserContext";
-import AuthHeadersUtil from "./Platform/Hosted/Authorization";
 import { CollectionCreation } from "./Shared/Constants";
 import { extractFeatures } from "./Platform/Hosted/extractFeatures";
 import { emulatorAccount } from "./Platform/Emulator/emulatorAccount";
@@ -80,7 +79,7 @@ import {
 } from "./Platform/Hosted/HostedUtils";
 import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
 import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
-import { AccountKind, DefaultAccountExperience } from "./Common/Constants";
+import { AccountKind, DefaultAccountExperience, ServerIds } from "./Common/Constants";
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
@@ -118,7 +117,7 @@ const App: React.FunctionComponent = () => {
             features: extractFeatures(),
             csmEndpoint: undefined,
             dnsSuffix: undefined,
-            serverId: AuthHeadersUtil.serverId,
+            serverId: ServerIds.productionPortal,
             extensionEndpoint: configContext.BACKEND_ENDPOINT,
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,
@@ -150,7 +149,7 @@ const App: React.FunctionComponent = () => {
             features: extractFeatures(),
             csmEndpoint: undefined,
             dnsSuffix: undefined,
-            serverId: AuthHeadersUtil.serverId,
+            serverId: ServerIds.productionPortal,
             extensionEndpoint: configContext.BACKEND_ENDPOINT,
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,
@@ -187,7 +186,7 @@ const App: React.FunctionComponent = () => {
             features: extractFeatures(),
             csmEndpoint: undefined,
             dnsSuffix: undefined,
-            serverId: AuthHeadersUtil.serverId,
+            serverId: ServerIds.productionPortal,
             extensionEndpoint: configContext.BACKEND_ENDPOINT,
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,
@@ -214,7 +213,7 @@ const App: React.FunctionComponent = () => {
             features: extractFeatures(),
             csmEndpoint: undefined,
             dnsSuffix: undefined,
-            serverId: AuthHeadersUtil.serverId,
+            serverId: ServerIds.productionPortal,
             extensionEndpoint: configContext.BACKEND_ENDPOINT,
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,
