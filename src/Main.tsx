@@ -80,10 +80,11 @@ import {
 import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
 import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import { AccountKind, DefaultAccountExperience, ServerIds } from "./Common/Constants";
+import { listKeys } from "./Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
-    initializeConfiguration().then(config => {
+    initializeConfiguration().then(async config => {
       let explorer: Explorer;
       if (config.platform === Platform.Hosted) {
         const win = (window as unknown) as HostedExplorerChildFrame;
@@ -201,13 +202,15 @@ const App: React.FunctionComponent = () => {
           const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
           const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
           updateUserContext({
+            authorizationToken: `Bearer ${win.hostedConfig.authorizationToken}`,
             databaseAccount: win.hostedConfig.databaseAccount
           });
+          const keys = await listKeys(subscriptionId, resourceGroup, account.name);
           explorer.initDataExplorerWithFrameInputs({
             databaseAccount: account,
             subscriptionId,
             resourceGroup,
-            masterKey: "",
+            masterKey: keys.primaryMasterKey,
             hasWriteAccess: true, //TODO: 425017 - support read access
             authorizationToken: `Bearer ${win.hostedConfig.authorizationToken}`,
             features: extractFeatures(),
