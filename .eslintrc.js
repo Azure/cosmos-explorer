@@ -31,7 +31,7 @@ module.exports = {
       env: {
         jest: true
       },
-      extends: ["plugin:jest/recommended", "react-hooks"],
+      extends: ["plugin:jest/recommended", "plugin:react-hooks/recommended"],
       plugins: ["jest"]
     }
   ],
@@ -44,8 +44,6 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "error",
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
     eqeqeq: "error",
-    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
-    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
     "react/display-name": "off",
     "no-restricted-syntax": [
       "error",
