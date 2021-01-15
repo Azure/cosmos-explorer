@@ -252,7 +252,7 @@ describe("SelfServeUtils", () => {
               type: "object",
               label: "Invalid Regions",
               placeholder: "placeholder text",
-              errorMessage: "label and choices are required for Dropdown input 'invalidRegions'."
+              errorMessage: "label and choices are required for Choice input 'invalidRegions'."
             },
             children: [] as Node[]
           }

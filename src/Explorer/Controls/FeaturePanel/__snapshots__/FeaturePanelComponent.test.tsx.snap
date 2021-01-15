@@ -157,8 +157,8 @@ exports[`Feature panel renders all flags 1`] = `
         />
         <StyledCheckboxBase
           checked={false}
-          key="feature.selfServeTypeForTest"
-          label="Self serve type passed on for testing"
+          key="feature.selfServeType"
+          label="Self serve feature"
           onChange={[Function]}
         />
         <StyledCheckboxBase

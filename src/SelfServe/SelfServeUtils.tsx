@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {
-  DropdownItem,
+  ChoiceItem,
   Node,
   Info,
   InputTypeValue,
@@ -9,7 +9,7 @@ import {
   NumberInput,
   StringInput,
   BooleanInput,
-  DropdownInput,
+  ChoiceInput,
   InputType
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
@@ -58,7 +58,7 @@ export interface CommonInputTypes {
   step?: (() => Promise<number>) | number;
   trueLabel?: (() => Promise<string>) | string;
   falseLabel?: (() => Promise<string>) | string;
-  choices?: (() => Promise<DropdownItem[]>) | DropdownItem[];
+  choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   uiType?: string;
   errorMessage?: string;
   onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
@@ -187,8 +187,8 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       return value as BooleanInput;
     default:
       if (!value.label || !value.choices) {
-        value.errorMessage = `label and choices are required for Dropdown input '${value.id}'.`;
+        value.errorMessage = `label and choices are required for Choice input '${value.id}'.`;
       }
-      return value as DropdownInput;
+      return value as ChoiceInput;
   }
 };

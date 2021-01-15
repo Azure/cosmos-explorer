@@ -28,13 +28,13 @@ export enum UiType {
 
 type numberPromise = () => Promise<number>;
 type stringPromise = () => Promise<string>;
-type dropdownItemPromise = () => Promise<DropdownItem[]>;
+type choiceItemPromise = () => Promise<ChoiceItem[]>;
 type infoPromise = () => Promise<Info>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type DropdownItem = { label: string; key: string };
+export type ChoiceItem = { label: string; key: string };
 
-export type InputType = number | string | boolean | DropdownItem;
+export type InputType = number | string | boolean | ChoiceItem;
 
 export interface BaseInput {
   label: (() => Promise<string>) | string;
@@ -66,8 +66,8 @@ export interface StringInput extends BaseInput {
   defaultValue?: string;
 }
 
-export interface DropdownInput extends BaseInput {
-  choices: (() => Promise<DropdownItem[]>) | DropdownItem[];
+export interface ChoiceInput extends BaseInput {
+  choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   defaultKey?: string;
 }
 
@@ -79,7 +79,7 @@ export interface Info {
   };
 }
 
-export type AnyInput = NumberInput | BooleanInput | StringInput | DropdownInput;
+export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput;
 
 export interface Node {
   id: string;
@@ -214,9 +214,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         return booleanInput;
       }
       default: {
-        const enumInput = input as DropdownInput;
+        const enumInput = input as ChoiceInput;
         if (enumInput.choices instanceof Function) {
-          enumInput.choices = await (enumInput.choices as dropdownItemPromise)();
+          enumInput.choices = await (enumInput.choices as choiceItemPromise)();
         }
         return enumInput;
       }
@@ -332,7 +332,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const value = this.state.currentValues.get(dataFieldName) as number;
     if (input.uiType === UiType.Spinner) {
       return (
-        <div>
+        <>
           <SpinButton
             {...props}
             value={value?.toString()}
@@ -350,7 +350,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           {this.state.errors.has(dataFieldName) && (
             <MessageBar messageBarType={MessageBarType.error}>Error: {this.state.errors.get(dataFieldName)}</MessageBar>
           )}
-        </div>
+        </>
       );
     } else if (input.uiType === UiType.Slider) {
       return (
@@ -406,7 +406,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private renderDropdownInput(input: DropdownInput): JSX.Element {
+  private renderChoiceInput(input: ChoiceInput): JSX.Element {
     const { label, defaultKey: defaultKey, dataFieldName, choices, placeholder } = input;
     return (
       <Dropdown
@@ -418,7 +418,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         }
         onChange={(_, item: IDropdownOption) => this.onInputChange(input, item.key.toString())}
         placeholder={placeholder as string}
-        options={(choices as DropdownItem[]).map(c => ({
+        options={(choices as ChoiceItem[]).map(c => ({
           key: c.key,
           text: c.label
         }))}
@@ -449,7 +449,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       case "boolean":
         return this.renderBooleanInput(input as BooleanInput);
       case "object":
-        return this.renderDropdownInput(input as DropdownInput);
+        return this.renderChoiceInput(input as ChoiceInput);
       default:
         throw new Error(`Unknown input type: ${input.type}`);
     }

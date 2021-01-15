@@ -1,4 +1,4 @@
-import { DropdownItem, Info, InputType, UiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { ChoiceItem, Info, InputType, UiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { addPropertyToMap } from "./SelfServeUtils";
 
 interface Decorator {
@@ -27,11 +27,11 @@ export interface BooleanInputOptions extends InputOptionsBase {
   falseLabel: (() => Promise<string>) | string;
 }
 
-export interface DropdownInputOptions extends InputOptionsBase {
-  choices: (() => Promise<DropdownItem[]>) | DropdownItem[];
+export interface ChoiceInputOptions extends InputOptionsBase {
+  choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
 }
 
-type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | DropdownInputOptions;
+type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions;
 
 function isNumberInputOptions(inputOptions: InputOptions): inputOptions is NumberInputOptions {
   return !!(inputOptions as NumberInputOptions).min;
@@ -41,8 +41,8 @@ function isBooleanInputOptions(inputOptions: InputOptions): inputOptions is Bool
   return !!(inputOptions as BooleanInputOptions).trueLabel;
 }
 
-function isDropdownInputOptions(inputOptions: InputOptions): inputOptions is DropdownInputOptions {
-  return !!(inputOptions as DropdownInputOptions).choices;
+function isChoiceInputOptions(inputOptions: InputOptions): inputOptions is ChoiceInputOptions {
+  return !!(inputOptions as ChoiceInputOptions).choices;
 }
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
@@ -92,11 +92,11 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "trueLabel", value: booleanInputOptions.trueLabel },
       { name: "falseLabel", value: booleanInputOptions.falseLabel }
     );
-  } else if (isDropdownInputOptions(inputOptions)) {
-    const dropdownInputOptions = inputOptions as DropdownInputOptions;
+  } else if (isChoiceInputOptions(inputOptions)) {
+    const choiceInputOptions = inputOptions as ChoiceInputOptions;
     return addToMap(
-      { name: "label", value: dropdownInputOptions.label },
-      { name: "choices", value: dropdownInputOptions.choices }
+      { name: "label", value: choiceInputOptions.label },
+      { name: "choices", value: choiceInputOptions.choices }
     );
   } else {
     const stringInputOptions = inputOptions as StringInputOptions;

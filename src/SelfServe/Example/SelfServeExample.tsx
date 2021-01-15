@@ -1,7 +1,7 @@
 import { PropertyInfo, OnChange, Values } from "../PropertyDecorators";
 import { ClassInfo, IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
-import { DropdownItem, Info, InputType, UiType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
+import { ChoiceItem, Info, InputType, UiType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
 
 export enum Regions {
@@ -10,7 +10,7 @@ export enum Regions {
   EastUS2 = "EUS2"
 }
 
-export const regionDropdownItems: DropdownItem[] = [
+export const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
   { label: "West US", key: Regions.WestUS },
   { label: "East US 2", key: Regions.EastUS2 }
@@ -123,11 +123,11 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   /*
   @Values() :
-    - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | DropdownInputOptions
+    - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions
     - role: Specifies the required options to display the property as TextBox, Number Spinner/Slider, Radio buton or Dropdown.
   */
   @Values({ label: "Regions", choices: regionDropdownItems })
-  regions: DropdownItem;
+  regions: ChoiceItem;
 
   @Values({
     label: "Enable Logging",
