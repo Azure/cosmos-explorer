@@ -14,7 +14,7 @@ describe("SelfServeUtils", () => {
       };
       public initialize: () => Promise<Map<string, InputType>>;
     }
-    expect(() => new Test().toSmartUiDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
+    expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
   });
 
   it("onSubmit should be declared for self serve classes", () => {
@@ -24,7 +24,7 @@ describe("SelfServeUtils", () => {
         return undefined;
       };
     }
-    expect(() => new Test().toSmartUiDescriptor()).toThrow("onSubmit() was not declared for the class 'Test'");
+    expect(() => new Test().toSelfServeDescriptor()).toThrow("onSubmit() was not declared for the class 'Test'");
   });
 
   it("@SmartUi decorator must be present for self serve classes", () => {
@@ -36,7 +36,9 @@ describe("SelfServeUtils", () => {
         return undefined;
       };
     }
-    expect(() => new Test().toSmartUiDescriptor()).toThrow("@SmartUi decorator was not declared for the class 'Test'");
+    expect(() => new Test().toSelfServeDescriptor()).toThrow(
+      "@SmartUi decorator was not declared for the class 'Test'"
+    );
   });
 
   it("updateContextWithDecorator", () => {

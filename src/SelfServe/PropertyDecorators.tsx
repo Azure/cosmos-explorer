@@ -34,15 +34,15 @@ export interface ChoiceInputOptions extends InputOptionsBase {
 type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions;
 
 function isNumberInputOptions(inputOptions: InputOptions): inputOptions is NumberInputOptions {
-  return !!(inputOptions as NumberInputOptions).min;
+  return "min" in inputOptions;
 }
 
 function isBooleanInputOptions(inputOptions: InputOptions): inputOptions is BooleanInputOptions {
-  return !!(inputOptions as BooleanInputOptions).trueLabel;
+  return "trueLabel" in inputOptions;
 }
 
 function isChoiceInputOptions(inputOptions: InputOptions): inputOptions is ChoiceInputOptions {
-  return !!(inputOptions as ChoiceInputOptions).choices;
+  return "choices" in inputOptions;
 }
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
@@ -77,32 +77,25 @@ export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecora
 
 export const Values = (inputOptions: InputOptions): PropertyDecorator => {
   if (isNumberInputOptions(inputOptions)) {
-    const numberInputOptions = inputOptions as NumberInputOptions;
     return addToMap(
-      { name: "label", value: numberInputOptions.label },
-      { name: "min", value: numberInputOptions.min },
-      { name: "max", value: numberInputOptions.max },
-      { name: "step", value: numberInputOptions.step },
-      { name: "uiType", value: numberInputOptions.uiType }
+      { name: "label", value: inputOptions.label },
+      { name: "min", value: inputOptions.min },
+      { name: "max", value: inputOptions.max },
+      { name: "step", value: inputOptions.step },
+      { name: "uiType", value: inputOptions.uiType }
     );
   } else if (isBooleanInputOptions(inputOptions)) {
-    const booleanInputOptions = inputOptions as BooleanInputOptions;
     return addToMap(
-      { name: "label", value: booleanInputOptions.label },
-      { name: "trueLabel", value: booleanInputOptions.trueLabel },
-      { name: "falseLabel", value: booleanInputOptions.falseLabel }
+      { name: "label", value: inputOptions.label },
+      { name: "trueLabel", value: inputOptions.trueLabel },
+      { name: "falseLabel", value: inputOptions.falseLabel }
     );
   } else if (isChoiceInputOptions(inputOptions)) {
-    const choiceInputOptions = inputOptions as ChoiceInputOptions;
-    return addToMap(
-      { name: "label", value: choiceInputOptions.label },
-      { name: "choices", value: choiceInputOptions.choices }
-    );
+    return addToMap({ name: "label", value: inputOptions.label }, { name: "choices", value: inputOptions.choices });
   } else {
-    const stringInputOptions = inputOptions as StringInputOptions;
     return addToMap(
-      { name: "label", value: stringInputOptions.label },
-      { name: "placeholder", value: stringInputOptions.placeholder }
+      { name: "label", value: inputOptions.label },
+      { name: "placeholder", value: inputOptions.placeholder }
     );
   }
 };

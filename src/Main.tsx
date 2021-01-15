@@ -78,8 +78,6 @@ import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
-import { Spinner, SpinnerSize } from "office-ui-fabric-react";
-import { SelfServeType } from "./SelfServe/SelfServeUtils";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;

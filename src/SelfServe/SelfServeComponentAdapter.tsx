@@ -7,26 +7,26 @@ import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import Explorer from "../Explorer/Explorer";
-import { Descriptor, SmartUiComponent } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { SelfServeDescriptor, SelfServeComponent } from "./SelfServeComponent";
 import { SelfServeType } from "./SelfServeUtils";
 
 export class SelfServeComponentAdapter implements ReactAdapter {
-  public parameters: ko.Observable<Descriptor>;
+  public parameters: ko.Observable<SelfServeDescriptor>;
   public container: Explorer;
 
   constructor(container: Explorer) {
     this.container = container;
-    this.parameters = ko.observable(undefined)
+    this.parameters = ko.observable(undefined);
     this.container.selfServeType.subscribe(() => {
       this.triggerRender();
     });
   }
 
-  public static getDescriptor = async (selfServeType: SelfServeType): Promise<Descriptor> => {
+  public static getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
     switch (selfServeType) {
       case SelfServeType.example: {
         const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-        return new SelfServeExample.default().toSmartUiDescriptor();
+        return new SelfServeExample.default().toSelfServeDescriptor();
       }
       default:
         return undefined;
@@ -35,21 +35,17 @@ export class SelfServeComponentAdapter implements ReactAdapter {
 
   public renderComponent(): JSX.Element {
     if (this.container.selfServeType() === SelfServeType.invalid) {
-      return <h1>Invalid self serve type!</h1>
+      return <h1>Invalid self serve type!</h1>;
     }
-    const smartUiDescriptor = this.parameters()
-    return smartUiDescriptor ? (
-      <SmartUiComponent descriptor={smartUiDescriptor} />
-    ) : (
-      <></>
-    );
+    const smartUiDescriptor = this.parameters();
+    return smartUiDescriptor ? <SelfServeComponent descriptor={smartUiDescriptor} /> : <></>;
   }
 
   private triggerRender() {
     window.requestAnimationFrame(async () => {
       const selfServeType = this.container.selfServeType();
       const smartUiDescriptor = await SelfServeComponentAdapter.getDescriptor(selfServeType);
-      this.parameters(smartUiDescriptor)
+      this.parameters(smartUiDescriptor);
     });
   }
 }

@@ -1,17 +1,14 @@
 import "reflect-metadata";
+import { ChoiceItem, Info, InputTypeValue, InputType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import {
-  ChoiceItem,
-  Node,
-  Info,
-  InputTypeValue,
-  Descriptor,
-  AnyInput,
-  NumberInput,
-  StringInput,
   BooleanInput,
   ChoiceInput,
-  InputType
-} from "../Explorer/Controls/SmartUi/SmartUiComponent";
+  SelfServeDescriptor,
+  NumberInput,
+  StringInput,
+  Node,
+  AnyInput
+} from "./SelfServeComponent";
 
 export enum SelfServeType {
   // No self serve type passed, launch explorer
@@ -26,9 +23,9 @@ export abstract class SelfServeBaseClass {
   public abstract onSubmit: (currentValues: Map<string, InputType>) => Promise<void>;
   public abstract initialize: () => Promise<Map<string, InputType>>;
 
-  public toSmartUiDescriptor(): Descriptor {
+  public toSelfServeDescriptor(): SelfServeDescriptor {
     const className = this.constructor.name;
-    const smartUiDescriptor = Reflect.getMetadata(className, this) as Descriptor;
+    const smartUiDescriptor = Reflect.getMetadata(className, this) as SelfServeDescriptor;
 
     if (!this.initialize) {
       throw new Error(`initialize() was not declared for the class '${className}'`);
@@ -128,12 +125,12 @@ export const buildSmartUiDescriptor = (className: string, target: unknown): void
   Reflect.defineMetadata(className, smartUiDescriptor, target);
 };
 
-export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): Descriptor => {
+export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): SelfServeDescriptor => {
   const root = context.get("root");
   context.delete("root");
   const inputNames: string[] = [];
 
-  const smartUiDescriptor: Descriptor = {
+  const smartUiDescriptor: SelfServeDescriptor = {
     root: {
       id: "root",
       info: root?.info,

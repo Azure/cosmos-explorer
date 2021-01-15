@@ -12,13 +12,11 @@ describe("Self Serve", () => {
       frame = await getTestExplorerFrame(
         new Map<string, string>([[TestExplorerParams.selfServeType, SelfServeType.example]])
       );
-      await frame.waitForSelector(".ms-Dropdown");
-      const dropdownLabel = await frame.$eval(".ms-Dropdown-label", element => element.textContent);
-      expect(dropdownLabel).toEqual("Regions");
-      await frame.waitForSelector(".radioSwitchComponent");
-      await frame.waitForSelector(".ms-TextField");
-      await frame.waitForSelector(".ms-Slider ");
-      await frame.waitForSelector(".ms-spinButton-input");
+      await frame.waitForSelector("#regions-dropown-input");
+      await frame.waitForSelector("#enableLogging-radioSwitch-input");
+      await frame.waitForSelector("#accountName-textBox-input");
+      await frame.waitForSelector("#dbThroughput-slider-input");
+      await frame.waitForSelector("#collectionThroughput-spinner-input");
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
