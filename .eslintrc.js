@@ -20,10 +20,7 @@ module.exports = {
   overrides: [
     {
       files: ["**/*.tsx"],
-      env: {
-        jest: true
-      },
-      extends: ["plugin:react/recommended"],
+      extends: ["plugin:react/recommended"], // TODO: Add react-hooks
       plugins: ["react"]
     },
     {
@@ -31,7 +28,7 @@ module.exports = {
       env: {
         jest: true
       },
-      extends: ["plugin:jest/recommended", "plugin:react-hooks/recommended"],
+      extends: ["plugin:jest/recommended"],
       plugins: ["jest"]
     }
   ],
