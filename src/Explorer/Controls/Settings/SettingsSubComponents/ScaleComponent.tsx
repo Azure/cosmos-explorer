@@ -16,7 +16,7 @@ import {
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
+import { Link, Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
 import { configContext, Platform } from "../../../../ConfigContext";
 
 export interface ScaleComponentProps {
@@ -178,6 +178,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       label={this.getThroughputTitle()}
       isEmulator={this.isEmulator}
       isFixed={this.props.isFixedContainer}
+      isFreeTierAccount={this.isFreeTierAccount()}
       isAutoPilotSelected={this.props.isAutoPilotSelected}
       onAutoPilotSelected={this.props.onAutoPilotSelected}
       wasAutopilotOriginallySet={this.props.wasAutopilotOriginallySet}
@@ -192,9 +193,37 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     />
   );
 
+  private isFreeTierAccount(): boolean {
+    const databaseAccount = this.props.container?.databaseAccount();
+    return databaseAccount?.properties?.enableFreeTier;
+  }
+
+  private getFreeTierInfoMessage(): JSX.Element {
+    return (
+      <Text>
+        With free tier, you will get the first 400 RU/s and 5 GB of storage in this account for free. To keep your
+        account free, keep the total RU/s across all resources in the account to 400 RU/s.
+        <Link
+          href="https://docs.microsoft.com/en-us/azure/cosmos-db/understand-your-bill#billing-examples-with-free-tier-accounts"
+          target="_blank"
+        >
+          Learn more.
+        </Link>
+      </Text>
+    );
+  }
+
   public render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
+        {this.isFreeTierAccount() && (
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={{ text: { fontSize: 14 } }}
+          >
+            {this.getFreeTierInfoMessage()}
+          </MessageBar>
+        )}
         {this.getInitialNotificationElement() && (
           <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
         )}

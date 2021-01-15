@@ -132,6 +132,8 @@ export interface ThroughputInputParams {
   showAutoPilot?: ko.Observable<boolean>;
   overrideWithAutoPilotSettings: ko.Observable<boolean>;
   overrideWithProvisionedThroughputSettings: ko.Observable<boolean>;
+  freeTierExceedThroughputTooltip?: ko.Observable<string>;
+  freeTierExceedThroughputWarning?: ko.Observable<string>;
 }
 
 export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
@@ -168,6 +170,10 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
   public overrideWithProvisionedThroughputSettings: ko.Observable<boolean>;
   public isManualThroughputInputFieldRequired: ko.Computed<boolean>;
   public isAutoscaleThroughputInputFieldRequired: ko.Computed<boolean>;
+  public freeTierExceedThroughputTooltip: ko.Observable<string>;
+  public freeTierExceedThroughputWarning: ko.Observable<string>;
+  public showFreeTierExceedThroughputTooltip: ko.Computed<boolean>;
+  public showFreeTierExceedThroughputWarning: ko.Computed<boolean>;
 
   public constructor(options: ThroughputInputParams) {
     super();
@@ -231,6 +237,16 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     this.isManualThroughputInputFieldRequired = ko.pureComputed(() => this.isEnabled() && !this.isAutoPilotSelected());
     this.isAutoscaleThroughputInputFieldRequired = ko.pureComputed(
       () => this.isEnabled() && this.isAutoPilotSelected()
+    );
+
+    this.freeTierExceedThroughputTooltip = options.freeTierExceedThroughputTooltip || ko.observable<string>();
+    this.freeTierExceedThroughputWarning = options.freeTierExceedThroughputWarning || ko.observable<string>();
+    this.showFreeTierExceedThroughputTooltip = ko.pureComputed<boolean>(
+      () => !!this.freeTierExceedThroughputTooltip() && this.value() > 400
+    );
+
+    this.showFreeTierExceedThroughputWarning = ko.pureComputed<boolean>(
+      () => !!this.freeTierExceedThroughputWarning() && this.value() > 400
     );
   }
 

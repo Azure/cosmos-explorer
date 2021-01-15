@@ -74,7 +74,7 @@ describe("Add Collection Pane", () => {
       explorer.databaseAccount(mockFreeTierDatabaseAccount);
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       expect(addCollectionPane.isFreeTierAccount()).toBe(true);
-      expect(addCollectionPane.upsellMessage()).toContain("With free tier discount");
+      expect(addCollectionPane.upsellMessage()).toContain("With free tier");
       expect(addCollectionPane.upsellAnchorUrl()).toBe(Constants.Urls.freeTierInformation);
       expect(addCollectionPane.upsellAnchorText()).toBe("Learn more");
     });

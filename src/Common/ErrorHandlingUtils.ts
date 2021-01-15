@@ -21,7 +21,7 @@ export const handleError = (error: string | ARMError | Error, area: string, cons
   sendNotificationForError(errorMessage, errorCode);
 };
 
-export const getErrorMessage = (error: string | Error): string => {
+export const getErrorMessage = (error: string | Error = ""): string => {
   const errorMessage = typeof error === "string" ? error : error.message;
   return replaceKnownError(errorMessage);
 };
@@ -45,10 +45,10 @@ const sendNotificationForError = (errorMessage: string, errorCode: number | stri
 const replaceKnownError = (errorMessage: string): string => {
   if (
     window.dataExplorer?.subscriptionType() === SubscriptionType.Internal &&
-    errorMessage.indexOf("SharedOffer is Disabled for your account") >= 0
+    errorMessage?.indexOf("SharedOffer is Disabled for your account") >= 0
   ) {
     return "Database throughput is not supported for internal subscriptions.";
-  } else if (errorMessage.indexOf("Partition key paths must contain only valid") >= 0) {
+  } else if (errorMessage?.indexOf("Partition key paths must contain only valid") >= 0) {
     return "Partition key paths must contain only valid characters and not contain a trailing slash or wildcard character.";
   }
 

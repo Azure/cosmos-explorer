@@ -13,16 +13,7 @@ import {
 } from "../SettingsUtils";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import {
-  Label,
-  Text,
-  TextField,
-  Stack,
-  IChoiceGroupOption,
-  ChoiceGroup,
-  MessageBar,
-  MessageBarType
-} from "office-ui-fabric-react";
+import { Label, Text, TextField, Stack, IChoiceGroupOption, ChoiceGroup, MessageBar } from "office-ui-fabric-react";
 import {
   getTextFieldStyles,
   changeFeedPolicyToolTip,
@@ -190,7 +181,10 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
       />
       {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
-        <MessageBar messageBarType={MessageBarType.warning} styles={messageBarStyles}>
+        <MessageBar
+          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+          styles={messageBarStyles}
+        >
           {ttlWarning}
         </MessageBar>
       )}

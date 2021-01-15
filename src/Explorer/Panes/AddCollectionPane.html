@@ -152,7 +152,8 @@
                                                                                                                   maxAutoPilotThroughputSet: sharedAutoPilotThroughput,
                                                                                                                   autoPilotUsageCost: autoPilotUsageCost,
                                                                                                                   canExceedMaximumValue: canExceedMaximumValue,
-                                                                                                                  showAutoPilot: !isFreeTierAccount()
+                                                                                                                  showAutoPilot: !isFreeTierAccount(),
+                                                                                                                  freeTierExceedThroughputTooltip: freeTierExceedThroughputTooltip
                                                                                                               }">
               </throughput-input-autopilot-v3>
           </div>
@@ -256,7 +257,7 @@
                               range of values and is likely to have evenly distributed access patterns.</span>
                       </span>
                   </p>
-                  <input type="text" id="partitionKeyValue" data-test="addCollection-partitionKeyValue" aria-required="true" size="40"
+                  <input type="text" id="addCollection-partitionKeyValue" data-test="addCollection-partitionKeyValue" aria-required="true" size="40"
                       class="textfontclr collid" data-bind="textInput: partitionKey,
                                                 attr: {
                                                     placeholder: partitionKeyPlaceholder,
@@ -333,7 +334,8 @@
                                               maxAutoPilotThroughputSet: autoPilotThroughput,
                                               autoPilotUsageCost: autoPilotUsageCost,
                                               canExceedMaximumValue: canExceedMaximumValue,
-                                              showAutoPilot: !isFixedStorageSelected()
+                                              showAutoPilot: !isFixedStorageSelected(),
+                                              freeTierExceedThroughputTooltip: freeTierExceedThroughputTooltip
                                             }">
                   </throughput-input-autopilot-v3>
               </div>

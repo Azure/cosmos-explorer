@@ -16,7 +16,7 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
       styles={
         Object {
           "root": Object {
-            "fontSize": 12,
+            "fontSize": 14,
           },
         }
       }
