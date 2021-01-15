@@ -15,7 +15,7 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
-import { SelfServeTypes } from "../SelfServe/SelfServeUtils";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
@@ -396,7 +396,7 @@ export interface DataExplorerInputsFrame {
   isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
-  selfServeType?: SelfServeTypes;
+  selfServeType?: SelfServeType;
 }
 
 export interface CollectionCreationDefaults {

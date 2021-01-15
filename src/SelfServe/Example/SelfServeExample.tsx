@@ -49,13 +49,13 @@ const initializeMaxThroughput = async (): Promise<number> => {
     - Needs to define an onSubmit() function, a callback for when the submit button is clicked.
     - Needs to define an initialize() function, to set default values for the inputs.
 
-  You can test this self serve UI by using the featureflag '?feature.selfServeTypeForTest=example'
+  You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
   and plumb in similar feature flags for your own self serve class.
 */
 
 /*
   @IsDisplayable()
-    - role: Generated the JSON required to convert this class into the required UI. This is done during compile time.
+    - role: Indicates to the compiler that UI should be generated from this class.
 */
 @IsDisplayable()
 /*

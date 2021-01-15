@@ -5,7 +5,6 @@ import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { TextField } from "office-ui-fabric-react/lib/TextField";
 import { Text } from "office-ui-fabric-react/lib/Text";
-import { InputType } from "../../Tables/Constants";
 import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
 import { Link, MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize } from "office-ui-fabric-react";
@@ -35,7 +34,7 @@ type infoPromise = () => Promise<Info>;
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type DropdownItem = { label: string; key: string };
 
-export type InputType = number | string | boolean | DropdownItem | JSX.Element;
+export type InputType = number | string | boolean | DropdownItem;
 
 export interface BaseInput {
   label: (() => Promise<string>) | string;
@@ -117,7 +116,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   };
 
   componentDidMount(): void {
-    this.setDefaultValues();
+    this.initializeSmartUiComponent();
   }
 
   constructor(props: SmartUiComponentProps) {
@@ -130,23 +129,25 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     };
   }
 
-  private setDefaultValues = async (): Promise<void> => {
+  private initializeSmartUiComponent = async (): Promise<void> => {
     this.setState({ isRefreshing: true });
-    await this.setDefaults(this.props.descriptor.root);
+    await this.initializeNode(this.props.descriptor.root);
+    await this.setDefaults();
     this.setState({ isRefreshing: false });
-    await this.initialize();
   };
 
-  private initialize = async (): Promise<void> => {
+  private setDefaults = async (): Promise<void> => {
     this.setState({ isRefreshing: true });
     let { currentValues, baselineValues } = this.state;
+
     const initialValues = await this.props.descriptor.initialize();
     for (const key of initialValues.keys()) {
+
       if (this.props.descriptor.inputNames.indexOf(key) === -1) {
-        console.log(this.props.descriptor.inputNames);
         this.setState({ isRefreshing: false });
         throw new Error(`${key} is not an input property of this class.`);
       }
+      
       currentValues = currentValues.set(key, initialValues.get(key));
       baselineValues = baselineValues.set(key, initialValues.get(key));
     }
@@ -162,7 +163,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     this.setState({ currentValues: currentValues });
   };
 
-  private setDefaults = async (currentNode: Node): Promise<void> => {
+  private initializeNode = async (currentNode: Node): Promise<void> => {
     if (currentNode.info && currentNode.info instanceof Function) {
       currentNode.info = await (currentNode.info as infoPromise)();
     }
@@ -170,7 +171,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     if (currentNode.input) {
       currentNode.input = await this.getModifiedInput(currentNode.input);
     }
-    const promises = currentNode.children?.map(async (child: Node) => await this.setDefaults(child));
+    const promises = currentNode.children?.map(async (child: Node) => await this.initializeNode(child));
     if (promises) {
       await Promise.all(promises);
     }
@@ -222,24 +223,6 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
   };
 
-  private getDefaultValue = (input: AnyInput): InputType => {
-    switch (input.type) {
-      case "string": {
-        const stringInput = input as StringInput;
-        return stringInput.defaultValue ? (stringInput.defaultValue as string) : "";
-      }
-      case "number": {
-        return (input as NumberInput).defaultValue as number;
-      }
-      case "boolean": {
-        return (input as BooleanInput).defaultValue as boolean;
-      }
-      default: {
-        return (input as DropdownInput).defaultKey as string;
-      }
-    }
-  };
-
   private renderInfo(info: Info): JSX.Element {
     return (
       <MessageBar>
@@ -265,7 +248,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
   };
 
-  private renderStringInput(input: StringInput): JSX.Element {
+  private renderTextInput(input: StringInput): JSX.Element {
     const value = this.state.currentValues.get(input.dataFieldName) as string;
     return (
       <div className="stringInputContainer">
@@ -423,7 +406,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private renderEnumInput(input: DropdownInput): JSX.Element {
+  private renderDropdownInput(input: DropdownInput): JSX.Element {
     const { label, defaultKey: defaultKey, dataFieldName, choices, placeholder } = input;
     return (
       <Dropdown
@@ -460,13 +443,15 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
     switch (input.type) {
       case "string":
-        return this.renderStringInput(input as StringInput);
+        return this.renderTextInput(input as StringInput);
       case "number":
         return this.renderNumberInput(input as NumberInput);
       case "boolean":
         return this.renderBooleanInput(input as BooleanInput);
+      case "object":
+        return this.renderDropdownInput(input as DropdownInput);
       default:
-        return this.renderEnumInput(input as DropdownInput);
+        throw new Error(`Unknown input type: ${input.type}`);
     }
   }
 
@@ -496,7 +481,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
               text="submit"
               onClick={async () => {
                 await this.props.descriptor.onSubmit(this.state.currentValues);
-                this.initialize();
+                this.setDefaults();
               }}
             />
             <PrimaryButton styles={{ root: { width: 100 } }} text="discard" onClick={() => this.discard()} />

@@ -79,6 +79,7 @@ import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
+import { SelfServeType } from "./SelfServe/SelfServeUtils";
 
 // TODO: Encapsulate and reuse all global variables as environment variables
 window.authType = AuthType.AAD;
@@ -382,7 +383,6 @@ const App: React.FunctionComponent = () => {
       </div>
       {/* Explorer Connection - Encryption Token / AAD - End */}
       {/* Global loader - Start */}
-      {window.dataExplorer && <Spinner size={SpinnerSize.large} />}
 
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
@@ -391,8 +391,10 @@ const App: React.FunctionComponent = () => {
             <p className="connectExplorerContent">
               <img src={hdeConnectImage} alt="Azure Cosmos DB" />
             </p>
-            <p className="splashLoaderTitle">Welcome to Azure Cosmos DB</p>
-            <p className="splashLoaderText" role="alert">
+            <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+              Welcome to Azure Cosmos DB
+            </p>
+            <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
               Connecting...
             </p>
           </div>

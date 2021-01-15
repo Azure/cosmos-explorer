@@ -89,7 +89,7 @@ import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
 import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
-import { SelfServeTypes } from "../SelfServe/SelfServeUtils";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 
 BindingHandlersRegisterer.registerBindingHandlers();
@@ -134,7 +134,7 @@ export default class Explorer {
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
-  public selfServeType: ko.Observable<SelfServeTypes>;
+  public selfServeType: ko.Observable<SelfServeType>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
@@ -299,7 +299,7 @@ export default class Explorer {
       }
     });
     this.isAccountReady = ko.observable<boolean>(false);
-    this.selfServeType = ko.observable<SelfServeTypes>(undefined);
+    this.selfServeType = ko.observable<SelfServeType>(undefined);
     this._isInitializingNotebooks = false;
     this._isInitializingSparkConnectionInfo = false;
     this.arcadiaToken = ko.observable<string>();
@@ -1851,14 +1851,16 @@ export default class Explorer {
   }
 
   public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
-    const selfServeTypeForTest = inputs.features[Constants.Features.selfServeTypeForTest];
-    if (selfServeTypeForTest) {
-      const selfServeType = SelfServeTypes[selfServeTypeForTest?.toLowerCase() as keyof typeof SelfServeTypes];
-      this.selfServeType(selfServeType ? selfServeType : SelfServeTypes.invalid);
+    const selfServeFeature = inputs.features[Constants.Features.selfServeType];
+    if (selfServeFeature) {
+      // self serve type received from query string
+      const selfServeType = SelfServeType[selfServeFeature?.toLowerCase() as keyof typeof SelfServeType];
+      this.selfServeType(selfServeType ? selfServeType : SelfServeType.invalid);
     } else if (inputs.selfServeType) {
+      // self serve type received from portal
       this.selfServeType(inputs.selfServeType);
     } else {
-      this.selfServeType(SelfServeTypes.none);
+      this.selfServeType(SelfServeType.none);
     }
   }
 

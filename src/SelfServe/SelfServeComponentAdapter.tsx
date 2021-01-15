@@ -8,23 +8,23 @@ import * as React from "react";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import Explorer from "../Explorer/Explorer";
 import { Descriptor, SmartUiComponent } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { SelfServeTypes } from "./SelfServeUtils";
+import { SelfServeType } from "./SelfServeUtils";
 
 export class SelfServeComponentAdapter implements ReactAdapter {
-  public parameters: ko.Observable<number>;
+  public parameters: ko.Observable<Descriptor>;
   public container: Explorer;
 
   constructor(container: Explorer) {
     this.container = container;
-    this.parameters = ko.observable(Date.now());
+    this.parameters = ko.observable(undefined)
     this.container.selfServeType.subscribe(() => {
       this.triggerRender();
     });
   }
 
-  public static getDescriptor = async (selfServeType: SelfServeTypes): Promise<Descriptor> => {
+  public static getDescriptor = async (selfServeType: SelfServeType): Promise<Descriptor> => {
     switch (selfServeType) {
-      case SelfServeTypes.example: {
+      case SelfServeType.example: {
         const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
         return new SelfServeExample.default().toSmartUiDescriptor();
       }
@@ -33,20 +33,23 @@ export class SelfServeComponentAdapter implements ReactAdapter {
     }
   };
 
-  public async renderComponent(): Promise<JSX.Element> {
-    const selfServeType = this.container.selfServeType();
-    const smartUiDescriptor = await SelfServeComponentAdapter.getDescriptor(selfServeType);
-
-    const element = smartUiDescriptor ? (
+  public renderComponent(): JSX.Element {
+    if (this.container.selfServeType() === SelfServeType.invalid) {
+      return <h1>Invalid self serve type!</h1>
+    }
+    const smartUiDescriptor = this.parameters()
+    return smartUiDescriptor ? (
       <SmartUiComponent descriptor={smartUiDescriptor} />
     ) : (
-      <h1>Invalid self serve type!</h1>
+      <></>
     );
-
-    return element;
   }
 
   private triggerRender() {
-    window.requestAnimationFrame(() => this.parameters(Date.now()));
+    window.requestAnimationFrame(async () => {
+      const selfServeType = this.container.selfServeType();
+      const smartUiDescriptor = await SelfServeComponentAdapter.getDescriptor(selfServeType);
+      this.parameters(smartUiDescriptor)
+    });
   }
 }

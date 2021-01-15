@@ -1,16 +1,16 @@
 import { Frame } from "puppeteer";
 import { TestExplorerParams } from "../testExplorer/TestExplorerParams";
 import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
-import { SelfServeTypes } from "../../src/SelfServe/SelfServeUtils";
+import { SelfServeType } from "../../src/SelfServe/SelfServeUtils";
 
 jest.setTimeout(300000);
 
 let frame: Frame;
-describe("Notebook UI tests", () => {
-  it("Upload, Open and Delete Notebook", async () => {
+describe("Self Serve", () => {
+  it("Launch Self Serve Example", async () => {
     try {
       frame = await getTestExplorerFrame(
-        new Map<string, string>([[TestExplorerParams.selfServeType, SelfServeTypes.example]])
+        new Map<string, string>([[TestExplorerParams.selfServeType, SelfServeType.example]])
       );
       await frame.waitForSelector(".ms-Dropdown");
       const dropdownLabel = await frame.$eval(".ms-Dropdown-label", element => element.textContent);

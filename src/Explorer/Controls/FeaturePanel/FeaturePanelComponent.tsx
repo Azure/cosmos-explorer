@@ -48,7 +48,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     { key: "feature.hosteddataexplorerenabled", label: "Hosted Data Explorer (deprecated?)", value: "true" },
     { key: "feature.enablettl", label: "Enable TTL", value: "true" },
     { key: "feature.enablegallerypublish", label: "Enable Notebook Gallery Publishing", value: "true" },
-    { key: "feature.selfServeTypeForTest", label: "Self serve type passed on for testing", value: "sample" },
+    { key: "feature.selfServeType", label: "Self serve feature", value: "sample" },
     {
       key: "feature.enableLinkInjection",
       label: "Enable Injecting Notebook Viewer Link into the first cell",
