@@ -8,7 +8,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
 
   describe("Enable Azure Synapse Link Button", () => {
-    const enableAzureSynapseLinkBtnLabel = "Enable Azure Synapse Link (Preview)";
+    const enableAzureSynapseLinkBtnLabel = "Enable Azure Synapse Link";
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
