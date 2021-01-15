@@ -209,6 +209,7 @@ export default class Explorer {
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
+  public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
 
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
@@ -413,6 +414,8 @@ export default class Explorer {
 
     this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
+
+    this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
     this.canSaveQueries = ko.computed<boolean>(() => {
@@ -1897,6 +1900,9 @@ export default class Explorer {
   public setFeatureFlagsFromFlights(flights: readonly string[]): void {
     if (!flights) {
       return;
+    }
+    if (flights.indexOf(Constants.Flights.AutoscaleTest) !== -1) {
+      this.isAutoscaleDefaultEnabled(true);
     }
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
