@@ -31,7 +31,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
 }));
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import Q from "q";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
 }));
@@ -47,10 +46,8 @@ describe("SettingsComponent", () => {
       hashLocation: "settings",
       isActive: ko.observable(false),
       onUpdateTabsButtons: undefined,
-      getPendingNotification: Q.Promise<DataModels.Notification>(() => {
-        return;
-      }),
-    }),
+      getPendingNotification: Promise.resolve(undefined)
+    })
   };
 
   it("renders", () => {
