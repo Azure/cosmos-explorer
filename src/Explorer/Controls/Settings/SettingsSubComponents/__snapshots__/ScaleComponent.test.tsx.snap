@@ -36,6 +36,8 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
   >
     <ThroughputInputAutoPilotV3Component
       canExceedMaximumValue={true}
+      collectionName="test"
+      databaseName="test"
       getThroughputWarningMessage={[Function]}
       isAutoPilotSelected={false}
       isEmulator={false}

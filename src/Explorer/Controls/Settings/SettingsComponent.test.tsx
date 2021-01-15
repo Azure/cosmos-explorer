@@ -228,7 +228,7 @@ describe("SettingsComponent", () => {
 
   it("getUpdatedConflictResolutionPolicy", () => {
     const wrapper = shallow(<SettingsComponent {...baseProps} />);
-    const conflictResolutionPolicyPath = "_ts";
+    const conflictResolutionPolicyPath = "/_ts";
     const conflictResolutionPolicyProcedure = "sample_sproc";
     const expectSprocPath =
       "/dbs/" + collection.databaseId + "/colls/" + collection.id() + "/sprocs/" + conflictResolutionPolicyProcedure;

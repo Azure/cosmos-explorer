@@ -312,9 +312,10 @@ export class CassandraAPIDataClient extends TableDataClient {
         const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Deleting row ${currEntityToDelete.RowKey._}`);
         const partitionKeyValue = currEntityToDelete[partitionKeyProperty];
         const currQuery =
-          query + this.isStringType(partitionKeyValue.$)
+          query +
+          (this.isStringType(partitionKeyValue.$)
             ? `${partitionKeyProperty} = '${partitionKeyValue._}'`
-            : `${partitionKeyProperty} = ${partitionKeyValue._}`;
+            : `${partitionKeyProperty} = ${partitionKeyValue._}`);
 
         try {
           await this.queryDocuments(collection, currQuery);

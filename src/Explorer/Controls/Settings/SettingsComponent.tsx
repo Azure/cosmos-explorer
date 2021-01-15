@@ -535,7 +535,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     if (policy.mode === DataModels.ConflictResolutionMode.LastWriterWins) {
       policy.conflictResolutionPath = this.state.conflictResolutionPolicyPath;
-      if (policy.conflictResolutionPath?.startsWith("/")) {
+      if (!policy.conflictResolutionPath?.startsWith("/")) {
         policy.conflictResolutionPath = "/" + policy.conflictResolutionPath;
       }
     }

@@ -42,8 +42,13 @@ import { usageInGB, calculateEstimateNumber } from "../../../../../Utils/Pricing
 import { Features } from "../../../../../Common/Constants";
 import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
 
+import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../../../../Shared/Telemetry/TelemetryConstants";
+
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;
+  databaseName: string;
+  collectionName: string;
   serverId: string;
   throughput: number;
   throughputBaseline: number;
@@ -448,7 +453,19 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private onChoiceGroupChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
     option?: IChoiceGroupOption
-  ): void => this.props.onAutoPilotSelected(option.key === "true");
+  ): void => {
+    this.props.onAutoPilotSelected(option.key === "true");
+    TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
+      changedSelectedValueTo:
+        option.key === "true" ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
+      subscriptionId: userContext.subscriptionId,
+      databaseAccountName: this.props.databaseAccount?.name,
+      databaseName: this.props.databaseName,
+      collectionName: this.props.collectionName,
+      apiKind: userContext.defaultExperience,
+      dataExplorerArea: "Scale Tab V2"
+    });
+  };
 
   private minRUperGBSurvey = (): JSX.Element => {
     const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={"AzureSubscriptionId":"${userContext.subscriptionId}","CosmosDBAccountName":"${userContext.databaseAccount?.name}"}`;
