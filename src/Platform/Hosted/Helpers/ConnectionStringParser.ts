@@ -2,33 +2,42 @@ import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 
 export class ConnectionStringParser {
-  public static parseConnectionString(connectionString: string): DataModels.AccessInputMetadata {
+  public static parseConnectionString(connectionString: string): DataModels.AccessInputMetadata | undefined {
     if (!!connectionString) {
       try {
         const accessInput: DataModels.AccessInputMetadata = {} as DataModels.AccessInputMetadata;
         const connectionStringParts = connectionString.split(";");
 
         connectionStringParts.forEach((connectionStringPart: string) => {
-          if (RegExp(Constants.EndpointsRegex.sql).test(connectionStringPart)) {
-            accessInput.accountName = connectionStringPart.match(Constants.EndpointsRegex.sql)[1];
+          const sqlMatchResult = connectionStringPart.match(Constants.EndpointsRegex.sql);
+          const mongoMatchResult = connectionStringPart.match(Constants.EndpointsRegex.mongo);
+          const mongoComputeMatchResult = connectionStringPart.match(Constants.EndpointsRegex.mongoCompute);
+          const tableMatchResult = connectionStringPart.match(Constants.EndpointsRegex.table);
+
+          if (sqlMatchResult && sqlMatchResult.length > 1) {
+            accessInput.accountName = sqlMatchResult[1];
             accessInput.apiKind = DataModels.ApiKind.SQL;
-          } else if (RegExp(Constants.EndpointsRegex.mongo).test(connectionStringPart)) {
-            const matches: string[] = connectionStringPart.match(Constants.EndpointsRegex.mongo);
-            accessInput.accountName = matches && matches.length > 1 && matches[2];
+          } else if (mongoMatchResult && mongoMatchResult.length > 2) {
+            accessInput.accountName = mongoMatchResult[2];
             accessInput.apiKind = DataModels.ApiKind.MongoDB;
-          } else if (RegExp(Constants.EndpointsRegex.mongoCompute).test(connectionStringPart)) {
-            const matches: string[] = connectionStringPart.match(Constants.EndpointsRegex.mongoCompute);
-            accessInput.accountName = matches && matches.length > 1 && matches[2];
+          } else if (mongoComputeMatchResult && mongoComputeMatchResult.length > 2) {
+            accessInput.accountName = mongoComputeMatchResult[2];
             accessInput.apiKind = DataModels.ApiKind.MongoDBCompute;
-          } else if (Constants.EndpointsRegex.cassandra.some(regex => RegExp(regex).test(connectionStringPart))) {
+          } else if (
+            Constants.EndpointsRegex.cassandra &&
+            Constants.EndpointsRegex.cassandra.some(regex => RegExp(regex).test(connectionStringPart))
+          ) {
             Constants.EndpointsRegex.cassandra.forEach(regex => {
               if (RegExp(regex).test(connectionStringPart)) {
-                accessInput.accountName = connectionStringPart.match(regex)[1];
-                accessInput.apiKind = DataModels.ApiKind.Cassandra;
+                const connectionMatch = connectionStringPart.match(regex);
+                if (connectionMatch && connectionMatch.length > 1) {
+                  accessInput.accountName = connectionMatch[1];
+                  accessInput.apiKind = DataModels.ApiKind.Cassandra;
+                }
               }
             });
-          } else if (RegExp(Constants.EndpointsRegex.table).test(connectionStringPart)) {
-            accessInput.accountName = connectionStringPart.match(Constants.EndpointsRegex.table)[1];
+          } else if (tableMatchResult && tableMatchResult.length > 1) {
+            accessInput.accountName = tableMatchResult[1];
             accessInput.apiKind = DataModels.ApiKind.Table;
           } else if (connectionStringPart.indexOf("ApiKind=Gremlin") >= 0) {
             accessInput.apiKind = DataModels.ApiKind.Graph;
