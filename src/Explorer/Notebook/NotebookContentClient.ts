@@ -192,7 +192,7 @@ export class NotebookContentClient {
         const dir = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(dir.name, dir.path, dir.type);
         item.parent = parent;
-        parent.children!.push(item);
+        parent.children?.push(item);
         return item;
       });
   }

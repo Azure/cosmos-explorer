@@ -269,7 +269,7 @@ export class CommandBarComponentButtonFactory {
       return null;
     }
 
-    const label = "Enable Azure Synapse Link (Preview)";
+    const label = "Enable Azure Synapse Link";
     return {
       iconSrc: SynapseIcon,
       iconAlt: label,

@@ -808,7 +808,7 @@ const closeUnsupportedMimetypesEpic = (
         const filepath = action.payload.filepath;
         // Close tab and show error message
         explorer.tabsManager.closeTabsByComparator(
-          tab => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
         );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         explorer.showOkModalDialog("File cannot be rendered", msg);
@@ -836,7 +836,7 @@ const closeContentFailedToFetchEpic = (
         const filepath = action.payload.filepath;
         // Close tab and show error message
         explorer.tabsManager.closeTabsByComparator(
-          tab => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
         );
         const msg = `Failed to load file: ${filepath}.`;
         explorer.showOkModalDialog("Failure to load", msg);

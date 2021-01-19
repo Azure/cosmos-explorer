@@ -5,6 +5,9 @@ import ThroughputInputComponentAutoscaleV3 from "./ThroughputInputComponentAutos
 import { KeyCodes } from "../../../Common/Constants";
 import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
 
+import { userContext } from "../../../UserContext";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 /**
  * Throughput Input:
  *
@@ -201,6 +204,16 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     this.label = options.label || ko.observable<string>();
     this.showAutoPilot = options.showAutoPilot !== undefined ? options.showAutoPilot : ko.observable<boolean>(true);
     this.isAutoPilotSelected = options.isAutoPilotSelected || ko.observable<boolean>(false);
+    this.isAutoPilotSelected.subscribe(value => {
+      TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
+        changedSelectedValueTo: value ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
+        databaseAccountName: userContext.databaseAccount?.name,
+        subscriptionId: userContext.subscriptionId,
+        apiKind: userContext.defaultExperience,
+        dataExplorerArea: "Scale Tab V1"
+      });
+    });
+
     this.throughputAutoPilotRadioId = options.throughputAutoPilotRadioId;
     this.throughputProvisionedRadioId = options.throughputProvisionedRadioId;
     this.throughputModeRadioName = options.throughputModeRadioName;
