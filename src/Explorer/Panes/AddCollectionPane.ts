@@ -929,8 +929,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseId("");
     this.partitionKey("");
     this.throughputSpendAck(false);
-    this.isAutoPilotSelected(false);
-    this.isSharedAutoPilotSelected(false);
+    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
     this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
 
