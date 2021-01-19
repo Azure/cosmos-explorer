@@ -1,35 +1,50 @@
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
-import { AccessInputMetadata } from "../../Contracts/DataModels";
+import { DefaultAccountExperience, CapabilityNames, AccountKind } from "../../Common/Constants";
+import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 
-export class HostedUtils {
-  static getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMetadata): any {
-    let properties = { documentEndpoint: metadata.documentEndpoint };
-    const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(metadata.apiKind);
+export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMetadata): unknown {
+  let properties = { documentEndpoint: metadata.documentEndpoint };
+  const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(metadata.apiKind);
 
-    if (apiExperience === Constants.DefaultAccountExperience.Cassandra) {
+  if (apiExperience === DefaultAccountExperience.Cassandra) {
+    properties = Object.assign(properties, {
+      cassandraEndpoint: metadata.apiEndpoint,
+      capabilities: [{ name: CapabilityNames.EnableCassandra }]
+    });
+  } else if (apiExperience === DefaultAccountExperience.Table) {
+    properties = Object.assign(properties, {
+      tableEndpoint: metadata.apiEndpoint,
+      capabilities: [{ name: CapabilityNames.EnableTable }]
+    });
+  } else if (apiExperience === DefaultAccountExperience.Graph) {
+    properties = Object.assign(properties, {
+      gremlinEndpoint: metadata.apiEndpoint,
+      capabilities: [{ name: CapabilityNames.EnableGremlin }]
+    });
+  } else if (apiExperience === DefaultAccountExperience.MongoDB) {
+    if (metadata.apiKind === ApiKind.MongoDBCompute) {
       properties = Object.assign(properties, {
-        cassandraEndpoint: metadata.apiEndpoint,
-        capabilities: [{ name: Constants.CapabilityNames.EnableCassandra }]
+        mongoEndpoint: metadata.mongoEndpoint
       });
-    } else if (apiExperience === Constants.DefaultAccountExperience.Table) {
-      properties = Object.assign(properties, {
-        tableEndpoint: metadata.apiEndpoint,
-        capabilities: [{ name: Constants.CapabilityNames.EnableTable }]
-      });
-    } else if (apiExperience === Constants.DefaultAccountExperience.Graph) {
-      properties = Object.assign(properties, {
-        gremlinEndpoint: metadata.apiEndpoint,
-        capabilities: [{ name: Constants.CapabilityNames.EnableGremlin }]
-      });
-    } else if (apiExperience === Constants.DefaultAccountExperience.MongoDB) {
-      if (metadata.apiKind === DataModels.ApiKind.MongoDBCompute) {
-        properties = Object.assign(properties, {
-          mongoEndpoint: metadata.mongoEndpoint
-        });
-      }
     }
-    return properties;
   }
+  return properties;
+}
+
+export function getDatabaseAccountKindFromExperience(apiExperience: string): string {
+  if (apiExperience === DefaultAccountExperience.MongoDB) {
+    return AccountKind.MongoDB;
+  }
+
+  if (apiExperience === DefaultAccountExperience.ApiForMongoDB) {
+    return AccountKind.MongoDB;
+  }
+
+  return AccountKind.GlobalDocumentDB;
+}
+
+export function extractMasterKeyfromConnectionString(connectionString: string): string {
+  // Only Gremlin uses the actual master key for connection to cosmos
+  const matchedParts = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
+  return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
 }

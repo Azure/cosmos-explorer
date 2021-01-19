@@ -1,6 +1,6 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { SmartUiComponent, Descriptor, InputType } from "./SmartUiComponent";
+import React from "react";
+import { Descriptor, SmartUiComponent } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
   const exampleData: Descriptor = {
@@ -77,9 +77,7 @@ describe("SmartUiComponent", () => {
     }
   };
 
-  const exampleCallbacks = (newValues: Map<string, InputType>): void => {
-    console.log("New values:", newValues);
-  };
+  const exampleCallbacks = (): void => undefined;
 
   it("should render", () => {
     const wrapper = shallow(<SmartUiComponent descriptor={exampleData} onChange={exampleCallbacks} />);

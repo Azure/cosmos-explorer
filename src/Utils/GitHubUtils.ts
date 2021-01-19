@@ -42,8 +42,6 @@ export function fromContentUri(
 
   matches = contentUri.match(LegacyContentUriPattern);
   if (matches && matches.length > 4) {
-    console.log(`Using legacy github content uri scheme ${contentUri}`);
-
     return {
       owner: matches[1],
       repo: matches[2],
