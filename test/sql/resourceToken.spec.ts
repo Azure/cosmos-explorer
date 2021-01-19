@@ -38,7 +38,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(CREATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
-      await expect(page).toMatchElement(`div[data-test="${dbId}"]`);
+      expect(await frame.$(`span[title="${collectionId}"]`)).toBeDefined();
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
