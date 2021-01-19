@@ -42,7 +42,7 @@ module.exports = {
       branches: 22,
       functions: 28,
       lines: 33,
-      statements: 32
+      statements: 31
     }
   },
 
