@@ -1,10 +1,10 @@
 import { ChoiceItem, Info, InputType, UiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { addPropertyToMap } from "./SelfServeUtils";
+import { addPropertyToMap, CommonInputTypes } from "./SelfServeUtils";
 
+type ValueOf<T> = T[keyof T];
 interface Decorator {
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  name: keyof CommonInputTypes;
+  value: ValueOf<CommonInputTypes>;
 }
 
 interface InputOptionsBase {
@@ -59,9 +59,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     addPropertyToMap(target, propertyName, className, "type", propertyType);
     addPropertyToMap(target, propertyName, className, "dataFieldName", propertyName);
 
-    decorators.map((decorator: Decorator) =>
-      addPropertyToMap(target, propertyName, className, decorator.name, decorator.value)
-    );
+    decorators.map(decorator => addPropertyToMap(target, propertyName, className, decorator.name, decorator.value));
   };
 };
 
