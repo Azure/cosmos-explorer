@@ -33,17 +33,17 @@ export interface ChoiceInputOptions extends InputOptionsBase {
 
 type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions;
 
-function isNumberInputOptions(inputOptions: InputOptions): inputOptions is NumberInputOptions {
+const isNumberInputOptions = (inputOptions: InputOptions): inputOptions is NumberInputOptions => {
   return "min" in inputOptions;
-}
+};
 
-function isBooleanInputOptions(inputOptions: InputOptions): inputOptions is BooleanInputOptions {
+const isBooleanInputOptions = (inputOptions: InputOptions): inputOptions is BooleanInputOptions => {
   return "trueLabel" in inputOptions;
-}
+};
 
-function isChoiceInputOptions(inputOptions: InputOptions): inputOptions is ChoiceInputOptions {
+const isChoiceInputOptions = (inputOptions: InputOptions): inputOptions is ChoiceInputOptions => {
   return "choices" in inputOptions;
-}
+};
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
   return (target, property) => {

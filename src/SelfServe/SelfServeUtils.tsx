@@ -82,10 +82,8 @@ export const addPropertyToMap = <T extends keyof CommonInputTypes, K extends Com
   descriptorName: string,
   descriptorValue: K
 ): void => {
-  let context = Reflect.getMetadata(className, target) as Map<string, CommonInputTypes>;
-  if (!context) {
-    context = new Map<string, CommonInputTypes>();
-  }
+  const context =
+    (Reflect.getMetadata(className, target) as Map<string, CommonInputTypes>) ?? new Map<string, CommonInputTypes>();
   updateContextWithDecorator(context, propertyName, className, descriptorName, descriptorValue);
   Reflect.defineMetadata(className, context, target);
 };
@@ -104,10 +102,7 @@ export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K e
     throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
   }
 
-  let propertyObject = context.get(propertyName);
-  if (!propertyObject) {
-    propertyObject = { id: propertyName };
-  }
+  const propertyObject = context.get(propertyName) ?? { id: propertyName };
 
   if (getValue(descriptorKey, propertyObject) && descriptorKey !== "type" && descriptorKey !== "dataFieldName") {
     throw new Error(

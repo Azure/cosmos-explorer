@@ -20,6 +20,6 @@ export class SelfServeLoadingComponentAdapter implements ReactAdapter {
   }
 
   private triggerRender() {
-    window.requestAnimationFrame(() => this.parameters(Date.now()));
+    window.requestAnimationFrame(() => this.renderComponent());
   }
 }

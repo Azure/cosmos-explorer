@@ -105,17 +105,16 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       currentValues = currentValues.set(key, initialValues.get(key));
       baselineValues = baselineValues.set(key, initialValues.get(key));
     }
-    this.setState({ currentValues: currentValues, baselineValues: baselineValues, isRefreshing: false });
+    this.setState({ currentValues, baselineValues, isRefreshing: false });
   };
 
   public discard = (): void => {
-    console.log("discarding");
     let { currentValues } = this.state;
     const { baselineValues } = this.state;
     for (const key of baselineValues.keys()) {
       currentValues = currentValues.set(key, baselineValues.get(key));
     }
-    this.setState({ currentValues: currentValues });
+    this.setState({ currentValues });
   };
 
   private initializeSmartUiNode = async (currentNode: Node): Promise<void> => {

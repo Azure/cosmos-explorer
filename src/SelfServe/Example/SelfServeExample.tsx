@@ -24,11 +24,6 @@ export const regionDropdownInfo: Info = {
   message: "More regions can be added in the future."
 };
 
-export const delay = (ms: number): Promise<void> => {
-  console.log("delay called");
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
-
 const onDbThroughputChange = (currentState: Map<string, InputType>, newValue: InputType): Map<string, InputType> => {
   currentState.set("dbThroughput", newValue);
   currentState.set("collectionThroughput", newValue);
@@ -36,7 +31,6 @@ const onDbThroughputChange = (currentState: Map<string, InputType>, newValue: In
 };
 
 const initializeMaxThroughput = async (): Promise<number> => {
-  await delay(2000);
   return 10000;
 };
 
@@ -76,7 +70,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
             in the SessionStorage.
   */
   public onSubmit = async (currentValues: Map<string, InputType>): Promise<void> => {
-    await delay(1000);
     SessionStorageUtility.setEntry("regions", currentValues.get("regions")?.toString());
     SessionStorageUtility.setEntry("enableLogging", currentValues.get("enableLogging")?.toString());
     SessionStorageUtility.setEntry("accountName", currentValues.get("accountName")?.toString());
@@ -100,7 +93,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
             for these fields. These are then set when the changes are submitted.
   */
   public initialize = async (): Promise<Map<string, InputType>> => {
-    await delay(1000);
     const defaults = new Map<string, InputType>();
     defaults.set("regions", SessionStorageUtility.getEntry("regions"));
     defaults.set("enableLogging", SessionStorageUtility.getEntry("enableLogging") === "true");
