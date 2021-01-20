@@ -90,7 +90,7 @@ const App: React.FunctionComponent = () => {
       if (config.platform === Platform.Hosted) {
         const win = (window as unknown) as HostedExplorerChildFrame;
         explorer = new Explorer();
-        explorer.selfServeType(SelfServeType.none)
+        explorer.selfServeType(SelfServeType.none);
         if (win.hostedConfig.authType === AuthType.EncryptedToken) {
           // TODO: Remove window.authType
           window.authType = AuthType.EncryptedToken;
@@ -238,7 +238,7 @@ const App: React.FunctionComponent = () => {
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
         explorer = new Explorer();
-        explorer.selfServeType(SelfServeType.none)
+        explorer.selfServeType(SelfServeType.none);
         explorer.databaseAccount(emulatorAccount);
         explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
