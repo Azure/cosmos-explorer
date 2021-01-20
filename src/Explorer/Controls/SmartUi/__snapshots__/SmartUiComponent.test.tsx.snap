@@ -1,24 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SmartUiComponent should render 1`] = `
-<Fragment>
+<Stack
+  styles={
+    Object {
+      "root": Object {
+        "padding": 10,
+        "width": 400,
+      },
+    }
+  }
+  tokens={
+    Object {
+      "childrenGap": 20,
+    }
+  }
+>
   <Stack
     className="widgetRendererContainer"
     tokens={
       Object {
-        "childrenGap": 10,
+        "childrenGap": 15,
       }
     }
   >
-    <StyledMessageBarBase>
-      Start at $24/mo per database
-      <StyledLinkBase
-        href="https://aka.ms/azure-cosmos-db-pricing"
-        target="_blank"
-      >
-        More Details
-      </StyledLinkBase>
-    </StyledMessageBarBase>
+    <StackItem>
+      <StyledMessageBarBase>
+        Start at $24/mo per database
+        <StyledLinkBase
+          href="https://aka.ms/azure-cosmos-db-pricing"
+          target="_blank"
+        >
+          More Details
+        </StyledLinkBase>
+      </StyledMessageBarBase>
+    </StackItem>
     <div
       key="throughput"
     >
@@ -26,11 +42,11 @@ exports[`SmartUiComponent should render 1`] = `
         className="widgetRendererContainer"
         tokens={
           Object {
-            "childrenGap": 10,
+            "childrenGap": 15,
           }
         }
       >
-        <div>
+        <StackItem>
           <CustomizedSpinButton
             ariaLabel="Throughput (input)"
             decrementButtonIcon={
@@ -38,8 +54,8 @@ exports[`SmartUiComponent should render 1`] = `
                 "iconName": "ChevronDownSmall",
               }
             }
-            defaultValue="400"
             disabled={false}
+            id="throughput-spinner-input"
             incrementButtonIcon={
               Object {
                 "iconName": "ChevronUpSmall",
@@ -64,7 +80,7 @@ exports[`SmartUiComponent should render 1`] = `
               }
             }
           />
-        </div>
+        </StackItem>
       </Stack>
     </div>
     <div
@@ -74,34 +90,60 @@ exports[`SmartUiComponent should render 1`] = `
         className="widgetRendererContainer"
         tokens={
           Object {
-            "childrenGap": 10,
+            "childrenGap": 15,
           }
         }
       >
-        <StyledSliderBase
-          ariaLabel="Throughput (Slider)"
-          defaultValue={400}
-          label="Throughput (Slider)"
-          max={500}
-          min={400}
-          onChange={[Function]}
-          step={10}
-          styles={
-            Object {
-              "titleLabel": Object {
-                "color": "#393939",
-                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                "fontSize": 12,
-                "fontWeight": 600,
-              },
-              "valueLabel": Object {
-                "color": "#393939",
-                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                "fontSize": 12,
-              },
-            }
+        <StackItem>
+          <div
+            id="throughput2-slider-input"
+          >
+            <StyledSliderBase
+              ariaLabel="Throughput (Slider)"
+              label="Throughput (Slider)"
+              max={500}
+              min={400}
+              onChange={[Function]}
+              step={10}
+              styles={
+                Object {
+                  "titleLabel": Object {
+                    "color": "#393939",
+                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                    "fontSize": 12,
+                    "fontWeight": 600,
+                  },
+                  "valueLabel": Object {
+                    "color": "#393939",
+                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                    "fontSize": 12,
+                  },
+                }
+              }
+            />
+          </div>
+        </StackItem>
+      </Stack>
+    </div>
+    <div
+      key="throughput3"
+    >
+      <Stack
+        className="widgetRendererContainer"
+        tokens={
+          Object {
+            "childrenGap": 15,
           }
-        />
+        }
+      >
+        <StackItem>
+          <StyledMessageBarBase
+            messageBarType={1}
+          >
+            Error: 
+            label, truelabel and falselabel are required for boolean input 'throughput3'
+          </StyledMessageBarBase>
+        </StackItem>
       </Stack>
     </div>
     <div
@@ -111,16 +153,16 @@ exports[`SmartUiComponent should render 1`] = `
         className="widgetRendererContainer"
         tokens={
           Object {
-            "childrenGap": 10,
+            "childrenGap": 15,
           }
         }
       >
-        <div
-          className="stringInputContainer"
-        >
-          <div>
+        <StackItem>
+          <div
+            className="stringInputContainer"
+          >
             <StyledTextFieldBase
-              id="containerId-input"
+              id="containerId-textBox-input"
               label="Container id"
               onChange={[Function]}
               styles={
@@ -140,7 +182,7 @@ exports[`SmartUiComponent should render 1`] = `
               type="text"
             />
           </div>
-        </div>
+        </StackItem>
       </Stack>
     </div>
     <div
@@ -150,40 +192,44 @@ exports[`SmartUiComponent should render 1`] = `
         className="widgetRendererContainer"
         tokens={
           Object {
-            "childrenGap": 10,
+            "childrenGap": 15,
           }
         }
       >
-        <div>
+        <StackItem>
           <div
-            className="inputLabelContainer"
+            id="analyticalStore-radioSwitch-input"
           >
-            <Text
-              className="inputLabel"
-              nowrap={true}
-              variant="small"
+            <div
+              className="inputLabelContainer"
             >
-              Analytical Store
-            </Text>
+              <Text
+                className="inputLabel"
+                nowrap={true}
+                variant="small"
+              >
+                Analytical Store
+              </Text>
+            </div>
+            <RadioSwitchComponent
+              choices={
+                Array [
+                  Object {
+                    "key": "false",
+                    "label": "Disabled",
+                    "onSelect": [Function],
+                  },
+                  Object {
+                    "key": "true",
+                    "label": "Enabled",
+                    "onSelect": [Function],
+                  },
+                ]
+              }
+              selectedKey="true"
+            />
           </div>
-          <RadioSwitchComponent
-            choices={
-              Array [
-                Object {
-                  "key": "false",
-                  "label": "Disabled",
-                  "onSelect": [Function],
-                },
-                Object {
-                  "key": "true",
-                  "label": "Enabled",
-                  "onSelect": [Function],
-                },
-              ]
-            }
-            selectedKey="true"
-          />
-        </div>
+        </StackItem>
       </Stack>
     </div>
     <div
@@ -193,48 +239,51 @@ exports[`SmartUiComponent should render 1`] = `
         className="widgetRendererContainer"
         tokens={
           Object {
-            "childrenGap": 10,
+            "childrenGap": 15,
           }
         }
       >
-        <StyledWithResponsiveMode
-          label="Database"
-          onChange={[Function]}
-          options={
-            Array [
-              Object {
-                "key": "db1",
-                "text": "database1",
-              },
-              Object {
-                "key": "db2",
-                "text": "database2",
-              },
-              Object {
-                "key": "db3",
-                "text": "database3",
-              },
-            ]
-          }
-          selectedKey="db2"
-          styles={
-            Object {
-              "dropdown": Object {
-                "color": "#393939",
-                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                "fontSize": 12,
-              },
-              "label": Object {
-                "color": "#393939",
-                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                "fontSize": 12,
-                "fontWeight": 600,
-              },
+        <StackItem>
+          <StyledWithResponsiveMode
+            id="database-dropown-input"
+            label="Database"
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "key": "db1",
+                  "text": "Database 1",
+                },
+                Object {
+                  "key": "db2",
+                  "text": "Database 2",
+                },
+                Object {
+                  "key": "db3",
+                  "text": "Database 3",
+                },
+              ]
             }
-          }
-        />
+            selectedKey="db2"
+            styles={
+              Object {
+                "dropdown": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
+                },
+                "label": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
+                  "fontWeight": 600,
+                },
+              }
+            }
+          />
+        </StackItem>
       </Stack>
     </div>
   </Stack>
-</Fragment>
+</Stack>
 `;

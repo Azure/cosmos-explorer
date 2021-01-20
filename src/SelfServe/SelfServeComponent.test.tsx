@@ -1,9 +1,23 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { SmartUiComponent, SmartUiDescriptor, UiType } from "./SmartUiComponent";
+import { SelfServeDescriptor, SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
+import { InputType, UiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
-describe("SmartUiComponent", () => {
-  const exampleData: SmartUiDescriptor = {
+describe("SelfServeComponent", () => {
+  const defaultValues = new Map<string, InputType>([
+    ["throughput", "450"],
+    ["analyticalStore", "false"],
+    ["database", "db2"]
+  ]);
+  const initializeMock = jest.fn(async () => defaultValues);
+  const onSubmitMock = jest.fn(async () => {
+    return;
+  });
+
+  const exampleData: SelfServeDescriptor = {
+    initialize: initializeMock,
+    onSubmit: onSubmitMock,
+    inputNames: ["throughput", "containerId", "analyticalStore", "database"],
     root: {
       id: "root",
       info: {
@@ -25,33 +39,6 @@ describe("SmartUiComponent", () => {
             step: 10,
             defaultValue: 400,
             uiType: UiType.Spinner
-          }
-        },
-        {
-          id: "throughput2",
-          input: {
-            label: "Throughput (Slider)",
-            dataFieldName: "throughput2",
-            type: "number",
-            min: 400,
-            max: 500,
-            step: 10,
-            defaultValue: 400,
-            uiType: UiType.Slider
-          }
-        },
-        {
-          id: "throughput3",
-          input: {
-            label: "Throughput (invalid)",
-            dataFieldName: "throughput3",
-            type: "boolean",
-            min: 400,
-            max: 500,
-            step: 10,
-            defaultValue: 400,
-            uiType: UiType.Spinner,
-            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'"
           }
         },
         {
@@ -91,11 +78,27 @@ describe("SmartUiComponent", () => {
     }
   };
 
+  const verifyDefaultsSet = (currentValues: Map<string, InputType>): void => {
+    for (const key of currentValues.keys()) {
+      if (defaultValues.has(key)) {
+        expect(defaultValues.get(key)).toEqual(currentValues.get(key));
+      }
+    }
+  };
+
   it("should render", async () => {
-    const wrapper = shallow(
-      <SmartUiComponent descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} />
-    );
+    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
     await new Promise(resolve => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
+
+    // initialize() should be called and defaults should be set when component is mounted
+    expect(initializeMock).toHaveBeenCalled();
+    const state = wrapper.state() as SelfServeComponentState;
+    verifyDefaultsSet(state.currentValues);
+
+    // onSubmit() must be called when submit button is clicked
+    const submitButton = wrapper.find("#submitButton");
+    submitButton.simulate("click");
+    expect(onSubmitMock).toHaveBeenCalled();
   });
 });

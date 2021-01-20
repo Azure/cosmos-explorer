@@ -12,6 +12,8 @@
     "downlevelIteration": true,
     "module": "esnext",
     "target": "es5",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "lib": ["es5", "es6", "dom", "webworker.importscripts"],
     "jsx": "react",
     "moduleResolution": "node",
@@ -19,6 +21,6 @@
     "noEmit": true,
     "types": ["jest"]
   },
-  "include": ["./src/**/*", "./test/notebooks/testExplorer/**/*"],
+  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts"],
   "exclude": ["./src/**/__mocks__/**/*"]
 }

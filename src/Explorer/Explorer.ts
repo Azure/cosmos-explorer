@@ -88,6 +88,9 @@ import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
+import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
+import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -131,6 +134,7 @@ export default class Explorer {
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
+  public selfServeType: ko.Observable<SelfServeType>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
@@ -156,6 +160,7 @@ export default class Explorer {
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
+  private selfServeComponentAdapter: SelfServeComponentAdapter;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -214,6 +219,8 @@ export default class Explorer {
   public shouldShowShareDialogContents: ko.Observable<boolean>;
   public shareAccessData: ko.Observable<AdHocAccessData>;
   public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
+  public renewTokenError: ko.Observable<string>;
+  public tokenForRenewal: ko.Observable<string>;
   public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
   public shareAccessUrl: ko.Observable<string>;
   public shareUrlCopyHelperText: ko.Observable<string>;
@@ -257,6 +264,7 @@ export default class Explorer {
   private _dialogProps: ko.Observable<DialogProps>;
   private addSynapseLinkDialog: DialogComponentAdapter;
   private _addSynapseLinkDialogProps: ko.Observable<DialogProps>;
+  private selfServeLoadingComponentAdapter: SelfServeLoadingComponentAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -292,6 +300,7 @@ export default class Explorer {
       }
     });
     this.isAccountReady = ko.observable<boolean>(false);
+    this.selfServeType = ko.observable<SelfServeType>(undefined);
     this._isInitializingNotebooks = false;
     this._isInitializingSparkConnectionInfo = false;
     this.arcadiaToken = ko.observable<string>();
@@ -312,7 +321,7 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        this.isAuthWithResourceToken() ? await this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
+        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
@@ -379,6 +388,8 @@ export default class Explorer {
       readWriteUrl: undefined,
       readUrl: undefined
     });
+    this.tokenForRenewal = ko.observable<string>("");
+    this.renewTokenError = ko.observable<string>("");
     this.shareAccessUrl = ko.observable<string>();
     this.shareUrlCopyHelperText = ko.observable<string>("Click to copy");
     this.shareTokenCopyHelperText = ko.observable<string>("Click to copy");
@@ -410,6 +421,7 @@ export default class Explorer {
 
     this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
     this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
+
     this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -693,6 +705,7 @@ export default class Explorer {
     });
 
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
+    this.selfServeComponentAdapter = new SelfServeComponentAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
@@ -868,6 +881,7 @@ export default class Explorer {
     });
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
+    this.selfServeLoadingComponentAdapter = new SelfServeLoadingComponentAdapter();
     this.notificationConsoleComponentAdapter = new NotificationConsoleComponentAdapter(this);
 
     this._initSettings();
@@ -1090,6 +1104,25 @@ export default class Explorer {
     return true;
   }
 
+  public renewToken = (): void => {
+    TelemetryProcessor.trace(Action.ConnectEncryptionToken);
+    this.renewTokenError("");
+    const id: string = NotificationConsoleUtils.logConsoleMessage(
+      ConsoleDataType.InProgress,
+      "Initiating connection to account"
+    );
+    this.renewExplorerShareAccess(this, this.tokenForRenewal())
+      .fail((error: any) => {
+        const stringifiedError: string = getErrorMessage(error);
+        this.renewTokenError("Invalid connection string specified");
+        NotificationConsoleUtils.logConsoleMessage(
+          ConsoleDataType.Error,
+          `Failed to initiate connection to account: ${stringifiedError}`
+        );
+      })
+      .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
+  };
+
   public generateSharedAccessData(): void {
     const id: string = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Generating share url");
     AuthHeadersUtil.generateEncryptedToken().then(
@@ -1241,6 +1274,16 @@ export default class Explorer {
     $("#contextSwitchPrompt").dialog("open");
   }
 
+  public displayConnectExplorerForm(): void {
+    $("#divExplorer").hide();
+    $("#connectExplorer").css("display", "flex");
+  }
+
+  public hideConnectExplorerForm(): void {
+    $("#connectExplorer").hide();
+    $("#divExplorer").show();
+  }
+
   public isReadWriteToggled: () => boolean = (): boolean => {
     return this.shareAccessToggleState() === ShareAccessToggleState.ReadWrite;
   };
@@ -1330,17 +1373,21 @@ export default class Explorer {
     }
   }
 
-  public async refreshDatabaseForResourceToken(): Promise<any> {
+  public refreshDatabaseForResourceToken(): Q.Promise<any> {
     const databaseId = this.resourceTokenDatabaseId();
     const collectionId = this.resourceTokenCollectionId();
     if (!databaseId || !collectionId) {
-      throw new Error("No collection ID or database ID for resource token");
+      return Q.reject();
     }
 
-    return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    const deferred: Q.Deferred<void> = Q.defer();
+    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
+      deferred.resolve();
     });
+
+    return deferred.promise;
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
@@ -1806,11 +1853,25 @@ export default class Explorer {
     return false;
   }
 
+  public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
+    const selfServeFeature = inputs.features[Constants.Features.selfServeType];
+    if (selfServeFeature) {
+      // self serve type received from query string
+      const selfServeType = SelfServeType[selfServeFeature?.toLowerCase() as keyof typeof SelfServeType];
+      this.selfServeType(selfServeType ? selfServeType : SelfServeType.invalid);
+    } else if (inputs.selfServeType) {
+      // self serve type received from portal
+      this.selfServeType(inputs.selfServeType);
+    } else {
+      this.selfServeType(SelfServeType.none);
+    }
+  }
+
   public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
       // In development mode, save the iframe message from the portal in session storage.
       // This allows webpack hot reload to funciton properly
-      if (process.env.NODE_ENV === "development" && configContext.platform === Platform.Portal) {
+      if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
 
@@ -1829,6 +1890,7 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
       this.setFeatureFlagsFromFlights(inputs.flights);
+      this.setSelfServeType(inputs);
       this._importExplorerConfigComplete = true;
 
       updateConfigContext({
@@ -1845,6 +1907,16 @@ export default class Explorer {
         subscriptionType: inputs.subscriptionType,
         quotaId: inputs.quotaId
       });
+      TelemetryProcessor.traceSuccess(
+        Action.LoadDatabaseAccount,
+        {
+          resourceId: this.databaseAccount && this.databaseAccount().id,
+          dataExplorerArea: Constants.Areas.ResourceTree,
+          databaseAccount: this.databaseAccount && this.databaseAccount()
+        },
+        inputs.loadDatabaseAccountTimestamp
+      );
+
       this.isAccountReady(true);
     }
   }
@@ -1925,6 +1997,18 @@ export default class Explorer {
   public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
+
+  public signInAad = () => {
+    TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
+    sendMessage({
+      type: MessageTypes.AadSignIn
+    });
+  };
+
+  public onSwitchToConnectionString = () => {
+    $("#connectWithAad").hide();
+    $("#connectWithConnectionString").show();
+  };
 
   public clickHostedAccountSwitch = () => {
     sendMessage({

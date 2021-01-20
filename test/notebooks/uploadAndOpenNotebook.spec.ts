@@ -1,6 +1,6 @@
-import "expect-puppeteer";
-import { getTestExplorerFrame, uploadNotebookIfNotExist } from "./notebookTestUtils";
+import { uploadNotebookIfNotExist } from "./notebookTestUtils";
 import { ElementHandle, Frame } from "puppeteer";
+import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
 
 jest.setTimeout(300000);
 
@@ -12,6 +12,7 @@ describe("Notebook UI tests", () => {
   it("Upload, Open and Delete Notebook", async () => {
     try {
       frame = await getTestExplorerFrame();
+      await frame.waitForSelector(".galleryHeader");
       uploadedNotebookNode = await uploadNotebookIfNotExist(frame, notebookName);
       await uploadedNotebookNode.click();
       await frame.waitForSelector(".tabNavText");
