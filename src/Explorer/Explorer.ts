@@ -1494,7 +1494,6 @@ export default class Explorer {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
       sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
         (token: string) => {
-          debugger;
           resolve(token);
         },
         (error: any) => {
@@ -2548,7 +2547,6 @@ export default class Explorer {
       // explorer is not aware of the database account yet
       return false;
     }
-    debugger;
 
     const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
     const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
