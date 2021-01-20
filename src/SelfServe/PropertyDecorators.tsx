@@ -1,4 +1,4 @@
-import { ChoiceItem, Info, InputType, UiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { BooleanUiType, ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { addPropertyToMap } from "./SelfServeUtils";
 
 interface Decorator {
@@ -15,7 +15,7 @@ export interface NumberInputOptions extends InputOptionsBase {
   min: (() => Promise<number>) | number;
   max: (() => Promise<number>) | number;
   step: (() => Promise<number>) | number;
-  uiType: UiType;
+  uiType: NumberUiType;
 }
 
 export interface StringInputOptions extends InputOptionsBase {
@@ -25,13 +25,19 @@ export interface StringInputOptions extends InputOptionsBase {
 export interface BooleanInputOptions extends InputOptionsBase {
   trueLabel: (() => Promise<string>) | string;
   falseLabel: (() => Promise<string>) | string;
+  uiType: BooleanUiType;
 }
 
 export interface ChoiceInputOptions extends InputOptionsBase {
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
+  placeholder?: (() => Promise<string>) | string;
 }
 
-type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions;
+export interface DescriptionDisplayOptions {
+  description?: (() => Promise<Description>) | Description;
+}
+
+type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions | DescriptionDisplayOptions;
 
 const isNumberInputOptions = (inputOptions: InputOptions): inputOptions is NumberInputOptions => {
   return "min" in inputOptions;
@@ -43,6 +49,10 @@ const isBooleanInputOptions = (inputOptions: InputOptions): inputOptions is Bool
 
 const isChoiceInputOptions = (inputOptions: InputOptions): inputOptions is ChoiceInputOptions => {
   return "choices" in inputOptions;
+};
+
+const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions is DescriptionDisplayOptions => {
+  return "description" in inputOptions;
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
@@ -66,7 +76,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
 };
 
 export const OnChange = (
-  onChange: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
+  onChange: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>
 ): PropertyDecorator => {
   return addToMap({ name: "onChange", value: onChange });
 };
@@ -88,10 +98,18 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
     return addToMap(
       { name: "label", value: inputOptions.label },
       { name: "trueLabel", value: inputOptions.trueLabel },
-      { name: "falseLabel", value: inputOptions.falseLabel }
+      { name: "falseLabel", value: inputOptions.falseLabel },
+      { name: "uiType", value: inputOptions.uiType }
     );
   } else if (isChoiceInputOptions(inputOptions)) {
-    return addToMap({ name: "label", value: inputOptions.label }, { name: "choices", value: inputOptions.choices });
+    return addToMap(
+      { name: "label", value: inputOptions.label },
+      { name: "placeholder", value: inputOptions.placeholder },
+      { name: "choices", value: inputOptions.choices });
+  } else if (isDescriptionDisplayOptions(inputOptions)) {
+    return addToMap(
+      { name: "description", value: inputOptions.description }
+    );
   } else {
     return addToMap(
       { name: "label", value: inputOptions.label },

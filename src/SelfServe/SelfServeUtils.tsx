@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ChoiceItem, Info, InputTypeValue, InputType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { ChoiceItem, Info, InputTypeValue, InputType, SmartUiInput, Description } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import {
   BooleanInput,
   ChoiceInput,
@@ -7,7 +7,8 @@ import {
   NumberInput,
   StringInput,
   Node,
-  AnyInput
+  AnyInput,
+  DescriptionDisplay
 } from "./SelfServeComponent";
 
 export enum SelfServeType {
@@ -20,8 +21,8 @@ export enum SelfServeType {
 }
 
 export abstract class SelfServeBaseClass {
-  public abstract onSubmit: (currentValues: Map<string, InputType>) => Promise<void>;
-  public abstract initialize: () => Promise<Map<string, InputType>>;
+  public abstract onSubmit: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
+  public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
     const className = this.constructor.name;
@@ -58,9 +59,10 @@ export interface CommonInputTypes {
   choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   uiType?: string;
   errorMessage?: string;
-  onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
-  onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
-  initialize?: () => Promise<Map<string, InputType>>;
+  description?: Description,
+  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
+  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
+  initialize?: () => Promise<Map<string, SmartUiInput>>;
 }
 
 const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
@@ -168,13 +170,19 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       }
       return value as NumberInput;
     case "string":
+      if (value.description) {
+        if (!value.description.text) {
+          value.errorMessage = `description is required for description display '${value.id}'.`;
+        }
+        return value as DescriptionDisplay
+      }
       if (!value.label) {
         value.errorMessage = `label is required for string input '${value.id}'.`;
       }
       return value as StringInput;
     case "boolean":
-      if (!value.label || !value.trueLabel || !value.falseLabel) {
-        value.errorMessage = `label, truelabel and falselabel are required for boolean input '${value.id}'.`;
+      if (!value.label || !value.trueLabel || !value.falseLabel || !value.uiType) {
+        value.errorMessage = `label, truelabel, falselabel and uiType are required for boolean input '${value.id}'.`;
       }
       return value as BooleanInput;
     default:

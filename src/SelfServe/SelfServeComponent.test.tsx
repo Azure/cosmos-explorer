@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { SelfServeDescriptor, SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
-import { InputType, UiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { InputType, NumberUiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, InputType>([
@@ -38,7 +38,7 @@ describe("SelfServeComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Spinner
+            uiType: NumberUiType.Spinner
           }
         },
         {

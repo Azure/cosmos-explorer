@@ -1,22 +1,24 @@
 import React from "react";
-import { IStackTokens, PrimaryButton, Spinner, SpinnerSize, Stack } from "office-ui-fabric-react";
+import { CommandBar, ICommandBarItemProps, IStackTokens, PrimaryButton, Spinner, SpinnerSize, Stack } from "office-ui-fabric-react";
 import {
   ChoiceItem,
   InputType,
   InputTypeValue,
   SmartUiComponent,
-  UiType,
+  NumberUiType,
   SmartUiDescriptor,
-  Info
+  Info,
+  SmartUiInput,
+  Description
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
 export interface BaseInput {
-  label: (() => Promise<string>) | string;
   dataFieldName: string;
-  type: InputTypeValue;
-  onChange?: (currentState: Map<string, InputType>, newValue: InputType) => Map<string, InputType>;
-  placeholder?: (() => Promise<string>) | string;
   errorMessage?: string;
+  type: InputTypeValue;
+  label?: (() => Promise<string>) | string;
+  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
+  placeholder?: (() => Promise<string>) | string;
 }
 
 export interface NumberInput extends BaseInput {
@@ -24,7 +26,7 @@ export interface NumberInput extends BaseInput {
   max: (() => Promise<number>) | number;
   step: (() => Promise<number>) | number;
   defaultValue?: number;
-  uiType: UiType;
+  uiType: NumberUiType;
 }
 
 export interface BooleanInput extends BaseInput {
@@ -42,6 +44,10 @@ export interface ChoiceInput extends BaseInput {
   defaultKey?: string;
 }
 
+export interface DescriptionDisplay extends BaseInput {
+  description: (() => Promise<Description>) | Description
+}
+
 export interface Node {
   id: string;
   info?: (() => Promise<Info>) | Info;
@@ -51,12 +57,12 @@ export interface Node {
 
 export interface SelfServeDescriptor {
   root: Node;
-  initialize?: () => Promise<Map<string, InputType>>;
-  onSubmit?: (currentValues: Map<string, InputType>) => Promise<void>;
+  initialize?: () => Promise<Map<string, SmartUiInput>>;
+  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
   inputNames?: string[];
 }
 
-export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput;
+export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
 
 export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
@@ -64,9 +70,10 @@ export interface SelfServeComponentProps {
 
 export interface SelfServeComponentState {
   root: SelfServeDescriptor;
-  currentValues: Map<string, InputType>;
-  baselineValues: Map<string, InputType>;
+  currentValues: Map<string, SmartUiInput>;
+  baselineValues: Map<string, SmartUiInput>;
   isRefreshing: boolean;
+  hasErrors: boolean,
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
@@ -80,8 +87,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       root: this.props.descriptor,
       currentValues: new Map(),
       baselineValues: new Map(),
-      isRefreshing: false
+      isRefreshing: true,
+      hasErrors: false
     };
+  }
+
+  private onError = (hasErrors: boolean) : void => {
+    this.setState({hasErrors})
   }
 
   private initializeSmartUiComponent = async (): Promise<void> => {
@@ -136,6 +148,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
     switch (input.type) {
       case "string": {
+        if ("description" in input) {
+          const descriptionDisplay = input as DescriptionDisplay
+          descriptionDisplay.description = await this.getResolvedValue(descriptionDisplay.description)
+        }    
         return input as StringInput;
       }
       case "number": {
@@ -173,39 +189,76 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     } else {
       const dataFieldName = input.dataFieldName;
       const { currentValues } = this.state;
-      currentValues.set(dataFieldName, newValue);
+      const currentInputValue = currentValues.get(dataFieldName)
+      currentValues.set(dataFieldName, {value: newValue, hidden: currentInputValue.hidden});
       this.setState({ currentValues });
     }
   };
+
+  
+  onSubmitButtonClick = () : void => {
+    this.setState({isRefreshing: true})
+    this.props.descriptor.onSubmit(this.state.currentValues)
+    .then(() => {
+      this.setState({isRefreshing: false})
+      this.setDefaults();
+    });
+  }
+
+  isDiscardButtonDisabled = () : boolean => {
+    for (const key of this.state.currentValues.keys()) {
+      if (this.state.currentValues.get(key) !== this.state.baselineValues.get(key)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  isSaveButtonDisabled = () : boolean => {
+    if (this.state.hasErrors) {
+      return true
+    }
+    for (const key of this.state.currentValues.keys()) {
+      if (this.state.currentValues.get(key) !== this.state.baselineValues.get(key)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  private getCommandBarItems = () : ICommandBarItemProps[] => {
+    return [
+      {
+        key: 'save',
+        text: 'Save',
+        iconProps: { iconName: 'Save' },
+        split: true,
+        disabled: this.isSaveButtonDisabled(),
+        onClick: this.onSubmitButtonClick
+      },
+      {
+        key: 'discard',
+        text: 'Discard',
+        iconProps: { iconName: 'Undo' },
+        split: true,
+        disabled: this.isDiscardButtonDisabled(),
+        onClick: () => {this.discard()}
+      }
+    ]
+  }
 
   public render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 20 };
     return !this.state.isRefreshing ? (
       <div style={{ overflowX: "auto" }}>
         <Stack tokens={containerStackTokens} styles={{ root: { width: 400, padding: 10 } }}>
+          <CommandBar items={this.getCommandBarItems()} />
           <SmartUiComponent
             descriptor={this.state.root as SmartUiDescriptor}
             currentValues={this.state.currentValues}
             onInputChange={this.onInputChange}
+            onError={this.onError}
           />
-
-          <Stack horizontal tokens={{ childrenGap: 10 }}>
-            <PrimaryButton
-              id="submitButton"
-              styles={{ root: { width: 100 } }}
-              text="submit"
-              onClick={async () => {
-                await this.props.descriptor.onSubmit(this.state.currentValues);
-                this.setDefaults();
-              }}
-            />
-            <PrimaryButton
-              id="discardButton"
-              styles={{ root: { width: 100 } }}
-              text="discard"
-              onClick={() => this.discard()}
-            />
-          </Stack>
         </Stack>
       </div>
     ) : (

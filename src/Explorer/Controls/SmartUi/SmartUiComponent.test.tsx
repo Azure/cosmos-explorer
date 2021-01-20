@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { SmartUiComponent, SmartUiDescriptor, UiType } from "./SmartUiComponent";
+import { SmartUiComponent, SmartUiDescriptor, NumberUiType, BooleanUiType } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
   const exampleData: SmartUiDescriptor = {
@@ -24,7 +24,7 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Spinner
+            uiType: NumberUiType.Spinner
           }
         },
         {
@@ -37,7 +37,7 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Slider
+            uiType: NumberUiType.Slider
           }
         },
         {
@@ -50,7 +50,7 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Spinner,
+            uiType: NumberUiType.Spinner,
             errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'"
           }
         },
@@ -70,7 +70,8 @@ describe("SmartUiComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
+            type: "boolean",
+            uiType: BooleanUiType.RadioButton
           }
         },
         {
@@ -93,7 +94,7 @@ describe("SmartUiComponent", () => {
 
   it("should render", async () => {
     const wrapper = shallow(
-      <SmartUiComponent descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} />
+      <SmartUiComponent descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} onError={undefined}/>
     );
     await new Promise(resolve => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();

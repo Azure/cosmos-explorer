@@ -1,7 +1,7 @@
 import { PropertyInfo, OnChange, Values } from "../PropertyDecorators";
 import { ClassInfo, IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
-import { ChoiceItem, Info, InputType, UiType } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
+import { BooleanUiType, ChoiceItem, Info, InputType, NumberUiType, SmartUiInput } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
 
 export enum Regions {
@@ -24,11 +24,23 @@ export const regionDropdownInfo: Info = {
   message: "More regions can be added in the future."
 };
 
-const onDbThroughputChange = (currentState: Map<string, InputType>, newValue: InputType): Map<string, InputType> => {
-  currentState.set("dbThroughput", newValue);
-  currentState.set("collectionThroughput", newValue);
+const onDbThroughputChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+  currentState.set("dbThroughput", { value: newValue, hidden: false});
+  currentState.set("collectionThroughput", {value: newValue, hidden: false});
   return currentState;
 };
+
+const enableDbLevelThroughput = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+  currentState.set("enableDbLevelThroughput", { value: newValue, hidden: false});
+  const currentDbThroughput = currentState.get("dbThroughput")
+  currentState.set("dbThroughput", {value: currentDbThroughput.value, hidden: !(newValue as boolean)});
+  return currentState;
+};
+
+export const delay = (ms: number): Promise<void> => {	
+  console.log("delay called");	
+  return new Promise(resolve => setTimeout(resolve, ms));	
+};	
 
 const initializeMaxThroughput = async (): Promise<number> => {
   return 10000;
@@ -69,12 +81,14 @@ export default class SelfServeExample extends SelfServeBaseClass {
             In this example, the onSubmit callback simply sets the value for keys corresponding to the field name
             in the SessionStorage.
   */
-  public onSubmit = async (currentValues: Map<string, InputType>): Promise<void> => {
-    SessionStorageUtility.setEntry("regions", currentValues.get("regions")?.toString());
-    SessionStorageUtility.setEntry("enableLogging", currentValues.get("enableLogging")?.toString());
-    SessionStorageUtility.setEntry("accountName", currentValues.get("accountName")?.toString());
-    SessionStorageUtility.setEntry("dbThroughput", currentValues.get("dbThroughput")?.toString());
-    SessionStorageUtility.setEntry("collectionThroughput", currentValues.get("collectionThroughput")?.toString());
+  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<void> => {
+    await delay(1000)
+    SessionStorageUtility.setEntry("regions", currentValues.get("regions")?.value?.toString());
+    SessionStorageUtility.setEntry("enableLogging", currentValues.get("enableLogging")?.value?.toString());
+    SessionStorageUtility.setEntry("accountName", currentValues.get("accountName")?.value?.toString());
+    SessionStorageUtility.setEntry("collectionThroughput", currentValues.get("collectionThroughput")?.value?.toString());
+    SessionStorageUtility.setEntry("enableDbLevelThroughput", currentValues.get("enableDbLevelThroughput")?.value?.toString());
+    SessionStorageUtility.setEntry("dbThroughput", currentValues.get("dbThroughput")?.value?.toString());
   };
 
   /*
@@ -92,19 +106,31 @@ export default class SelfServeExample extends SelfServeBaseClass {
             In this example, the initialize function simply reads the SessionStorage to fetch the default values
             for these fields. These are then set when the changes are submitted.
   */
-  public initialize = async (): Promise<Map<string, InputType>> => {
-    const defaults = new Map<string, InputType>();
-    defaults.set("regions", SessionStorageUtility.getEntry("regions"));
-    defaults.set("enableLogging", SessionStorageUtility.getEntry("enableLogging") === "true");
+  public initialize = async (): Promise<Map<string, SmartUiInput>> => {
+    const defaults = new Map<string, SmartUiInput>();
+    defaults.set("regions", { value: SessionStorageUtility.getEntry("regions"), hidden: false});
+    defaults.set("enableLogging", { value: SessionStorageUtility.getEntry("enableLogging") === "true", hidden: false});
     const stringInput = SessionStorageUtility.getEntry("accountName");
-    defaults.set("accountName", stringInput ? stringInput : "");
-    const numberSliderInput = parseInt(SessionStorageUtility.getEntry("dbThroughput"));
-    defaults.set("dbThroughput", isNaN(numberSliderInput) ? 1 : numberSliderInput);
-    const numberSpinnerInput = parseInt(SessionStorageUtility.getEntry("collectionThroughput"));
-    defaults.set("collectionThroughput", isNaN(numberSpinnerInput) ? 1 : numberSpinnerInput);
+    defaults.set("accountName", { value: stringInput ? stringInput : "", hidden: false});
+    const collectionThroughput = parseInt(SessionStorageUtility.getEntry("collectionThroughput"));
+    defaults.set("collectionThroughput", { value: isNaN(collectionThroughput) ? 1 : collectionThroughput, hidden: false});
+    const enableDbLevelThroughput = SessionStorageUtility.getEntry("enableDbLevelThroughput") === "true"
+    defaults.set("enableDbLevelThroughput", { value: enableDbLevelThroughput, hidden: false});
+    const dbThroughput = parseInt(SessionStorageUtility.getEntry("dbThroughput"));
+    defaults.set("dbThroughput", { value: isNaN(dbThroughput) ? 1 : dbThroughput, hidden: !enableDbLevelThroughput});
     return defaults;
   };
 
+  @Values({
+    description: {
+      text: "This class sets collection and database throughput.", 
+      link: {
+        href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+        text: "Click here for more information"
+      }
+    }
+  })
+  description: string
   /*
   @PropertyInfo()
     - optional
@@ -118,13 +144,14 @@ export default class SelfServeExample extends SelfServeBaseClass {
     - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions
     - role: Specifies the required options to display the property as TextBox, Number Spinner/Slider, Radio buton or Dropdown.
   */
-  @Values({ label: "Regions", choices: regionDropdownItems })
+  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
   regions: ChoiceItem;
 
   @Values({
     label: "Enable Logging",
     trueLabel: "Enable",
-    falseLabel: "Disable"
+    falseLabel: "Disable",
+    uiType: BooleanUiType.RadioButton
   })
   enableLogging: boolean;
 
@@ -134,6 +161,24 @@ export default class SelfServeExample extends SelfServeBaseClass {
   })
   accountName: string;
 
+  @Values({
+    label: "Collection Throughput",
+    min: 400,
+    max: initializeMaxThroughput,
+    step: 100,
+    uiType: NumberUiType.Spinner
+  })
+  collectionThroughput: number;
+
+  @OnChange(enableDbLevelThroughput)
+  @Values({
+    label: "Enable DB level throughput",
+    trueLabel: "Enable",
+    falseLabel: "Disable",
+    uiType: BooleanUiType.Toggle
+  })
+  enableDbLevelThroughput: boolean;
+  
   /*
   @OnChange()
     - optional
@@ -152,16 +197,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     min: 400,
     max: initializeMaxThroughput,
     step: 100,
-    uiType: UiType.Slider
+    uiType: NumberUiType.Slider
   })
   dbThroughput: number;
-
-  @Values({
-    label: "Collection Throughput",
-    min: 400,
-    max: initializeMaxThroughput,
-    step: 100,
-    uiType: UiType.Spinner
-  })
-  collectionThroughput: number;
 }

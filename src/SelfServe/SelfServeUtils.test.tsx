@@ -4,7 +4,7 @@ import {
   SelfServeBaseClass,
   updateContextWithDecorator
 } from "./SelfServeUtils";
-import { InputType, UiType } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
+import { InputType, NumberUiType } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
@@ -63,7 +63,7 @@ describe("SelfServeUtils", () => {
           min: 1,
           max: 5,
           step: 1,
-          uiType: UiType.Slider
+          uiType: NumberUiType.Slider
         }
       ],
       [
@@ -76,7 +76,7 @@ describe("SelfServeUtils", () => {
           min: 1,
           max: 5,
           step: 1,
-          uiType: UiType.Spinner
+          uiType: NumberUiType.Spinner
         }
       ],
       [
@@ -89,7 +89,7 @@ describe("SelfServeUtils", () => {
           min: 1,
           max: 5,
           step: 1,
-          uiType: UiType.Spinner,
+          uiType: NumberUiType.Spinner,
           errorMessage: "label, truelabel and falselabel are required for boolean input"
         }
       ],
