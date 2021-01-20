@@ -88,6 +88,7 @@ import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
+import { appInsights } from "../Shared/appInsights";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -352,8 +353,17 @@ export default class Explorer {
                 this.isFeatureEnabled(Constants.Features.enableSpark)
             );
             if (this.isSparkEnabled()) {
+              appInsights.trackEvent(
+                { name: "LoadedWithSparkEnabled" },
+                {
+                  subscriptionId: userContext.subscriptionId,
+                  accountName: userContext.databaseAccount?.name,
+                  accountId: userContext.databaseAccount?.id
+                }
+              );
               const pollArcadiaTokenRefresh = async () => {
                 this.arcadiaToken(await this.getArcadiaToken());
+                debugger;
                 setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
               };
               await pollArcadiaTokenRefresh();
@@ -1485,6 +1495,7 @@ export default class Explorer {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
       sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
         (token: string) => {
+          debugger;
           resolve(token);
         },
         (error: any) => {
@@ -2505,11 +2516,11 @@ export default class Explorer {
     const subscriptionId = userContext.subscriptionId;
     const armEndpoint = configContext.ARM_ENDPOINT;
     const authType = window.authType as AuthType;
-    if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-      // explorer is not aware of the database account yet
-      this.isSparkEnabledForAccount(false);
-      return;
-    }
+    // if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
+    // explorer is not aware of the database account yet
+    this.isSparkEnabledForAccount(true);
+    return;
+    // }
 
     const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
     const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
@@ -2538,6 +2549,7 @@ export default class Explorer {
       // explorer is not aware of the database account yet
       return false;
     }
+    debugger;
 
     const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
     const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);

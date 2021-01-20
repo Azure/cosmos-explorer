@@ -31,6 +31,8 @@ import Explorer from "../Explorer";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { toJS, stringifyNotebook } from "@nteract/commutable";
+import { appInsights } from "../../Shared/appInsights";
+import { userContext } from "../../UserContext";
 
 export interface NotebookTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -425,6 +427,15 @@ export default class NotebookTabV2 extends TabsBase {
       this.selectedSparkPool(null);
       return;
     }
+
+    appInsights.trackEvent(
+      { name: "SparkPoolSelected" },
+      {
+        subscriptionId: userContext.subscriptionId,
+        accountName: userContext.databaseAccount?.name,
+        accountId: userContext.databaseAccount?.id
+      }
+    );
 
     this.container &&
       this.container.arcadiaWorkspaces &&

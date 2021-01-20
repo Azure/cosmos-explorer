@@ -380,7 +380,6 @@ export interface DataExplorerInputsFrame {
   authorizationToken: string;
   features: any;
   csmEndpoint: string;
-  dnsSuffix: string;
   serverId: string;
   extensionEndpoint: string;
   subscriptionType: SubscriptionType;
