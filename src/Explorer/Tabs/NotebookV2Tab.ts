@@ -433,7 +433,7 @@ export default class NotebookTabV2 extends TabsBase {
       {
         subscriptionId: userContext.subscriptionId,
         accountName: userContext.databaseAccount?.name,
-        accountId: userContext.databaseAccount?.id
+        accountId: userContext.databaseAccount?.id,
       }
     );
 
