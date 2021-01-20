@@ -88,6 +88,7 @@ import { stringToBlob } from "../Utils/BlobUtils";
 import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
+import { appInsights } from "../Shared/appInsights";
 import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
@@ -361,6 +362,15 @@ export default class Explorer {
                 this.isFeatureEnabled(Constants.Features.enableSpark)
             );
             if (this.isSparkEnabled()) {
+              appInsights.trackEvent(
+                { name: "LoadedWithSparkEnabled" },
+                {
+                  subscriptionId: userContext.subscriptionId,
+                  accountName: userContext.databaseAccount?.name,
+                  accountId: userContext.databaseAccount?.id,
+                  platform: configContext.platform,
+                }
+              );
               const pollArcadiaTokenRefresh = async () => {
                 this.arcadiaToken(await this.getArcadiaToken());
                 setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
