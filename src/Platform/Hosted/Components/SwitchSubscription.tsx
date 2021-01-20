@@ -12,17 +12,17 @@ interface Props {
 export const SwitchSubscription: FunctionComponent<Props> = ({
   subscriptions,
   setSelectedSubscriptionId,
-  selectedSubscription
+  selectedSubscription,
 }: Props) => {
   return (
     <Dropdown
       label="Subscription"
       className="accountSwitchSubscriptionDropdown"
-      options={subscriptions?.map(sub => {
+      options={subscriptions?.map((sub) => {
         return {
           key: sub.subscriptionId,
           text: sub.displayName,
-          data: sub
+          data: sub,
         };
       })}
       onChange={(_, option) => {
@@ -31,7 +31,7 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
       defaultSelectedKey={selectedSubscription?.subscriptionId}
       placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}
       styles={{
-        callout: "accountSwitchSubscriptionDropdownMenu"
+        callout: "accountSwitchSubscriptionDropdownMenu",
       }}
     />
   );

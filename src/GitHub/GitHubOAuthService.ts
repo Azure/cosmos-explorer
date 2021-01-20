@@ -57,7 +57,7 @@ export class GitHubOAuthService {
       scope,
       client_id: configContext.GITHUB_CLIENT_ID,
       redirect_uri: new URL("./connectToGitHub.html", window.location.href).href,
-      state: this.resetState()
+      state: this.resetState(),
     };
 
     window.open(`${GitHubOAuthService.OAuthEndpoint}?${new URLSearchParams(params).toString()}`);

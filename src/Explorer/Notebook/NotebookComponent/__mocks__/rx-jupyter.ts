@@ -8,12 +8,12 @@ let fakeAjaxResponse: AjaxResponse = {
   status: 200,
   response: {},
   responseText: "",
-  responseType: "json"
+  responseType: "json",
 };
 export const sessions = {
   create: (serverConfig: unknown, body: object): Observable<AjaxResponse> => of(fakeAjaxResponse),
   __setResponse: (response: AjaxResponse) => {
     fakeAjaxResponse = response;
   },
-  createSpy: undefined as any
+  createSpy: undefined as any,
 };

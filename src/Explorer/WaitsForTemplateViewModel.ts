@@ -14,7 +14,7 @@ export abstract class WaitsForTemplateViewModel implements ViewModels.WaitsForTe
       callback(value);
     });
 
-    document.addEventListener("keydown", function(e: KeyboardEvent) {
+    document.addEventListener("keydown", function (e: KeyboardEvent) {
       // To trap keyboard focus in AddCollection pane
       let firstFocusableElement = document.getElementById("closeBtnAddCollection");
       let lastFocusableElement = document.getElementById("submitBtnAddCollection");

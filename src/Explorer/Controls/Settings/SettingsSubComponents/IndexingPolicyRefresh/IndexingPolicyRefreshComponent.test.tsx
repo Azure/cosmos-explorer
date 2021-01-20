@@ -6,7 +6,7 @@ describe("IndexingPolicyRefreshComponent", () => {
   it("renders", () => {
     const props: IndexingPolicyRefreshComponentProps = {
       indexTransformationProgress: 90,
-      refreshIndexTransformationProgress: () => new Promise(jest.fn())
+      refreshIndexTransformationProgress: () => new Promise(jest.fn()),
     };
 
     const wrapper = shallow(<IndexingPolicyRefreshComponent {...props} />);

@@ -60,7 +60,7 @@ export class HijackScroll extends React.Component<Props> {
       <div
         onClick={this.props.selectCell}
         role="presentation"
-        ref={el => {
+        ref={(el) => {
           this.el = el;
         }}
       >
@@ -81,7 +81,7 @@ const makeMapStateToProps = (initialState: AppState, ownProps: ComponentProps) =
     }
 
     return {
-      focused
+      focused,
     };
   };
   return mapStateToProps;
@@ -89,7 +89,7 @@ const makeMapStateToProps = (initialState: AppState, ownProps: ComponentProps) =
 
 const makeMapDispatchToProps = (initialDispatch: Dispatch, ownProps: ComponentProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => ({
-    selectCell: () => dispatch(actions.focusCell({ id: ownProps.id, contentRef: ownProps.contentRef }))
+    selectCell: () => dispatch(actions.focusCell({ id: ownProps.id, contentRef: ownProps.contentRef })),
   });
   return mapDispatchToProps;
 };

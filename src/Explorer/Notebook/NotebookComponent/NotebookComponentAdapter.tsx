@@ -25,9 +25,9 @@ export class NotebookComponentAdapter extends NotebookComponentBootstrapper impl
   constructor(options: NotebookComponentAdapterOptions) {
     super({
       contentRef: selectors.contentRefByFilepath(options.notebookClient.getStore().getState(), {
-        filepath: options.contentItem.path
+        filepath: options.contentItem.path,
       }),
-      notebookClient: options.notebookClient
+      notebookClient: options.notebookClient,
     });
 
     this.onUpdateKernelInfo = options.onUpdateKernelInfo;
@@ -42,7 +42,7 @@ export class NotebookComponentAdapter extends NotebookComponentBootstrapper impl
           filepath: options.contentItem.path,
           params: {},
           kernelRef,
-          contentRef: this.contentRef
+          contentRef: this.contentRef,
         })
       );
     }

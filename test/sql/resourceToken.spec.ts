@@ -21,7 +21,7 @@ describe("Collection Add and Delete SQL spec", () => {
     const { resource: containerPermission } = await user.permissions.upsert({
       id: "partitionLevelPermission",
       permissionMode: PermissionMode.All,
-      resource: container.url
+      resource: container.url,
     });
     const resourceTokenConnectionString = `AccountEndpoint=${endpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
     try {
@@ -60,7 +60,7 @@ async function clickDBMenu(dbId: string, frame: Frame, retries = 0) {
 async function ensureMenuIsOpen(dbId: string, frame: Frame, retries: number) {
   await frame.waitFor(RETRY_DELAY);
   const button = await frame.$(`div[data-test="${dbId}"]`);
-  const classList = await frame.evaluate(button => {
+  const classList = await frame.evaluate((button) => {
     return button.parentElement.classList;
   }, button);
   if (!Object.values(classList).includes("selected") && retries < 5) {

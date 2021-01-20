@@ -11,7 +11,7 @@ import {
   IDropdownOption,
   SelectableOptionMenuItemType,
   IRenderFunction,
-  ISelectableOption
+  ISelectableOption,
 } from "office-ui-fabric-react";
 
 interface Location {
@@ -40,7 +40,7 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
       onRenderTitle: this.onRenderDropDownTitle,
       onRenderOption: this.onRenderDropDownOption,
       options: this.getDropDownOptions(),
-      onChange: this.props.onDropDownChange
+      onChange: this.props.onDropDownChange,
     };
 
     return (
@@ -73,32 +73,32 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
       text: ResourceTreeAdapter.MyNotebooksTitle,
       title: ResourceTreeAdapter.MyNotebooksTitle,
       data: {
-        type: "MyNotebooks"
-      } as Location
+        type: "MyNotebooks",
+      } as Location,
     });
 
     if (this.props.pinnedRepos && this.props.pinnedRepos.length > 0) {
       options.push({
         key: "GitHub-Header-Divider",
         text: undefined,
-        itemType: SelectableOptionMenuItemType.Divider
+        itemType: SelectableOptionMenuItemType.Divider,
       });
 
       options.push({
         key: "GitHub-Header",
         text: ResourceTreeAdapter.GitHubReposTitle,
-        itemType: SelectableOptionMenuItemType.Header
+        itemType: SelectableOptionMenuItemType.Header,
       });
 
-      this.props.pinnedRepos.forEach(pinnedRepo => {
+      this.props.pinnedRepos.forEach((pinnedRepo) => {
         const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
         options.push({
           key: `GitHub-Repo-${repoFullName}`,
           text: repoFullName,
-          disabled: true
+          disabled: true,
         });
 
-        pinnedRepo.branches.forEach(branch =>
+        pinnedRepo.branches.forEach((branch) =>
           options.push({
             key: `GitHub-Repo-${repoFullName}-${branch.name}`,
             text: `${CopyNotebookPaneComponent.BranchNameWhiteSpace}${branch.name}`,
@@ -107,8 +107,8 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
               type: "GitHub",
               owner: pinnedRepo.owner,
               repo: pinnedRepo.name,
-              branch: branch.name
-            } as Location
+              branch: branch.name,
+            } as Location,
           })
         );
       });

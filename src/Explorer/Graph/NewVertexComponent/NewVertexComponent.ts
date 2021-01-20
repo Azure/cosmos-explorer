@@ -39,7 +39,7 @@ export class NewVertexViewModel extends WaitsForTemplateViewModel {
       params.newVertexData ||
       ko.observable({
         label: "",
-        properties: <InputProperty[]>[]
+        properties: <InputProperty[]>[],
       });
     this.firstFieldHasFocus = params.firstFieldHasFocus || ko.observable(false);
     this.propertyTypes = EditorNodePropertiesComponent.VERTEX_PROPERTY_TYPES;
@@ -95,5 +95,5 @@ export class NewVertexViewModel extends WaitsForTemplateViewModel {
  */
 export const NewVertexComponent = {
   viewModel: NewVertexViewModel,
-  template
+  template,
 };

@@ -7,7 +7,7 @@ import Explorer from "../Explorer";
 
 export enum Type {
   OpenCollection,
-  OpenNotebook
+  OpenNotebook,
 }
 
 export interface OpenNotebookItem {
@@ -77,7 +77,7 @@ export class MostRecentActivity {
   private static createEmptyData(): StoredData {
     return {
       schemaVersion: MostRecentActivity.schemaVersion,
-      itemsMap: {}
+      itemsMap: {},
     };
   }
 
@@ -194,7 +194,7 @@ export class MostRecentActivity {
     }
 
     const itemsArray = this.storedData.itemsMap[accountId]
-      .filter(item => item.type in Type)
+      .filter((item) => item.type in Type)
       .slice(0, MostRecentActivity.itemsMaxNumber);
     if (itemsArray.length === 0) {
       delete this.storedData.itemsMap[accountId];

@@ -17,7 +17,7 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 
 enum ToggleState {
   Result = "result",
-  Logs = "logs"
+  Logs = "logs",
 }
 
 export default class StoredProcedureTab extends ScriptTabBase {
@@ -58,7 +58,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
   public onSaveClick = (): Promise<StoredProcedureDefinition & Resource> => {
     return this._createStoredProcedure({
       id: this.id(),
-      body: this.editorContent()
+      body: this.editorContent(),
     });
   };
 
@@ -80,11 +80,11 @@ export default class StoredProcedureTab extends ScriptTabBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
     return updateStoredProcedure(this.collection.databaseId, this.collection.id(), data)
       .then(
-        updatedResource => {
+        (updatedResource) => {
           this.resource(updatedResource);
           this.tabTitle(updatedResource.id);
           this.node.id(updatedResource.id);
@@ -100,7 +100,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
@@ -115,7 +115,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             startKey
           );
@@ -217,14 +217,14 @@ export default class StoredProcedureTab extends ScriptTabBase {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled: this.isNew() || this.formIsDirty()
+      disabled: this.isNew() || this.formIsDirty(),
     });
   }
 
   private _getResource() {
     return {
       id: this.id(),
-      body: this.editorContent()
+      body: this.editorContent(),
     };
   }
 
@@ -235,12 +235,12 @@ export default class StoredProcedureTab extends ScriptTabBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     return createStoredProcedure(this.collection.databaseId, this.collection.id(), resource)
       .then(
-        createdResource => {
+        (createdResource) => {
           this.tabTitle(createdResource.id);
           this.isNew(false);
           this.resource(createdResource);
@@ -262,14 +262,14 @@ export default class StoredProcedureTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
           this.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
           return createdResource;
         },
-        createError => {
+        (createError) => {
           this.isExecutionError(true);
           TelemetryProcessor.traceFailure(
             Action.CreateStoredProcedure,
@@ -279,7 +279,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError)
+              errorStack: getErrorStack(createError),
             },
             startKey
           );

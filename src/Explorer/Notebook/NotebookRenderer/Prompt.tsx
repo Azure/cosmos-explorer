@@ -46,7 +46,7 @@ export class PromptPure extends React.Component<Props> {
           executionCount: this.props.executionCount,
           runCell: this.props.executeCell,
           stopCell: this.props.stopExecution,
-          isHovered: this.props.isHovered
+          isHovered: this.props.isHovered,
         })}
       </div>
     );
@@ -74,7 +74,7 @@ const makeMapStateToProps = (state: CdbAppState, ownProps: ComponentProps): ((st
     return {
       status,
       executionCount,
-      isHovered
+      isHovered,
     };
   };
   return mapStateToProps;
@@ -89,11 +89,11 @@ const mapDispatchToProps = (
     dispatch(
       cdbActions.traceNotebookTelemetry({
         action: Action.ExecuteCellPromptBtn,
-        actionModifier: ActionModifiers.Mark
+        actionModifier: ActionModifiers.Mark,
       })
     );
   },
-  stopExecution: () => dispatch(actions.interruptKernel({}))
+  stopExecution: () => dispatch(actions.interruptKernel({})),
 });
 
 export default connect(makeMapStateToProps, mapDispatchToProps)(PromptPure);

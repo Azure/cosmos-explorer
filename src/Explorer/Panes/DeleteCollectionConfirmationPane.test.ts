@@ -31,7 +31,7 @@ describe("Delete Collection Confirmation Pane", () => {
       let database = {} as ViewModels.Database;
       database.collections = ko.observableArray<ViewModels.Collection>([
         {} as ViewModels.Collection,
-        {} as ViewModels.Collection
+        {} as ViewModels.Collection,
       ]);
       explorer.databases = ko.observableArray<ViewModels.Database>([database]);
       expect(explorer.isLastCollection()).toBe(false);
@@ -63,7 +63,7 @@ describe("Delete Collection Confirmation Pane", () => {
       let pane = new DeleteCollectionConfirmationPane({
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer
+        container: fakeExplorer,
       });
 
       fakeExplorer.isLastCollection = () => true;
@@ -98,7 +98,7 @@ describe("Delete Collection Confirmation Pane", () => {
       fakeExplorer.findSelectedCollection = () => {
         return {
           id: ko.observable<string>(selectedCollectionId),
-          rid: "test"
+          rid: "test",
         } as ViewModels.Collection;
       };
       fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
@@ -108,7 +108,7 @@ describe("Delete Collection Confirmation Pane", () => {
       const AccountName = "testAccount";
       fakeExplorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
         id: SubscriptionId,
-        name: AccountName
+        name: AccountName,
       } as DataModels.DatabaseAccount);
 
       fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
@@ -124,7 +124,7 @@ describe("Delete Collection Confirmation Pane", () => {
       let pane = new DeleteCollectionConfirmationPane({
         id: "deletecollectionconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any
+        container: fakeExplorer as any,
       });
       pane.collectionIdConfirmation = ko.observable<string>(selectedCollectionId);
       const Feedback = "my feedback";
@@ -135,7 +135,7 @@ describe("Delete Collection Confirmation Pane", () => {
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
         expect(
           telemetryProcessorSpy.calledWith(Action.DeleteCollection, ActionModifiers.Mark, {
-            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
           })
         ).toBe(true);
       });

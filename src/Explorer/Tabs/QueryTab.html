@@ -13,7 +13,7 @@
     </div>
     <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: maybeSubQuery">
       <div class="warningErrorContent">
-        <span><img class="paneErrorIcon" src="/info_color.svg" alt="Error"/></span>
+        <span><img class="paneErrorIcon" src="/info_color.svg" alt="Error" /></span>
         <span class="warningErrorDetailsLinkContainer">
           We have detected you may be using a subquery. Non-correlated subqueries are not currently supported.
           <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery"
@@ -46,14 +46,14 @@
     <!-- Script for results metadata that is common to all APIs -->
     <script type="text/html" id="result-metadata-template">
       <span>
-      <span data-bind="text: showingDocumentsDisplayText"></span>
+        <span data-bind="text: showingDocumentsDisplayText"></span>
       </span>
       <span class="queryResultDivider" data-bind="visible: fetchNextPageButton.enabled"> | </span>
       <span class="queryResultNextEnable" data-bind="visible: fetchNextPageButton.enabled">
-          <a data-bind="click: onFetchNextPageClick">
-              <span>Load more</span>
-      <img class="queryResultnextImg" src="/Query-Editor-Next.svg" alt="Fetch next page">
-      </a>
+        <a data-bind="click: onFetchNextPageClick">
+          <span>Load more</span>
+          <img class="queryResultnextImg" src="/Query-Editor-Next.svg" alt="Fetch next page" />
+        </a>
       </span>
     </script>
 

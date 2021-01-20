@@ -12,7 +12,7 @@ import {
   Button,
   LinkBase,
   Separator,
-  TooltipHost
+  TooltipHost,
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
@@ -47,7 +47,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
-      day: "numeric"
+      day: "numeric",
     };
     const dateString = new Date(this.props.data.created).toLocaleString("default", options);
     const cardTitle = FileSystemUtil.stripExtension(this.props.data.name, "ipynb");
@@ -57,7 +57,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
         aria-label={cardTitle}
         data-is-focusable="true"
         tokens={{ width: GalleryCardComponent.CARD_WIDTH, childrenGap: 0 }}
-        onClick={event => this.onClick(event, this.props.onClick)}
+        onClick={(event) => this.onClick(event, this.props.onClick)}
       >
         <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
           <Persona
@@ -81,7 +81,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           <Text variant="small" nowrap>
             {this.props.data.tags?.map((tag, index, array) => (
               <span key={tag}>
-                <Link onClick={event => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
+                <Link onClick={(event) => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
                 {index === array.length - 1 ? <></> : ", "}
               </span>
             ))}
@@ -92,8 +92,8 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
               root: {
                 fontWeight: FontWeights.semibold,
                 paddingTop: GalleryCardComponent.cardItemGapSmall,
-                paddingBottom: GalleryCardComponent.cardItemGapSmall
-              }
+                paddingBottom: GalleryCardComponent.cardItemGapSmall,
+              },
             }}
             nowrap
           >
@@ -117,8 +117,8 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
             styles={{
               root: {
                 marginLeft: GalleryCardComponent.cardItemGapBig,
-                marginRight: GalleryCardComponent.cardItemGapBig
-              }
+                marginRight: GalleryCardComponent.cardItemGapBig,
+              },
             }}
           >
             <Separator styles={{ root: { padding: 0, height: 1 } }} />
@@ -176,7 +176,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           iconProps={{ iconName }}
           title={title}
           ariaLabel={title}
-          onClick={event => this.onClick(event, activate)}
+          onClick={(event) => this.onClick(event, activate)}
         />
       </TooltipHost>
     );

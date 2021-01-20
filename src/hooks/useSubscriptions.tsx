@@ -24,7 +24,7 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
     }
     nextLink = result.nextLink;
     const validSubscriptions = result.value.filter(
-      sub => sub.state === "Enabled" || sub.state === "Warned" || sub.state === "PastDue"
+      (sub) => sub.state === "Enabled" || sub.state === "Warned" || sub.state === "PastDue"
     );
     subscriptions = [...subscriptions, ...validSubscriptions];
   }

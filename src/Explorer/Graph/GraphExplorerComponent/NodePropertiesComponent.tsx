@@ -25,7 +25,7 @@ export enum Mode {
   READONLY_PROP,
   PROPERTY_EDITOR,
   EDIT_SOURCES,
-  EDIT_TARGETS
+  EDIT_TARGETS,
 }
 
 export interface NodePropertiesComponentProps {
@@ -71,25 +71,25 @@ export class NodePropertiesComponent extends React.Component<
         readOnlyProperties: [],
         existingProperties: [],
         addedProperties: [],
-        droppedKeys: []
+        droppedKeys: [],
       },
       editedSources: {
         vertexId: undefined,
         currentNeighbors: [],
         droppedIds: [],
-        addedEdges: []
+        addedEdges: [],
       },
       editedTargets: {
         vertexId: undefined,
         currentNeighbors: [],
         droppedIds: [],
-        addedEdges: []
+        addedEdges: [],
       },
       possibleVertices: [],
       isDeleteConfirm: false,
       isPropertiesExpanded: true,
       isSourcesExpanded: true,
-      isTargetsExpanded: true
+      isTargetsExpanded: true,
     };
   }
 
@@ -162,8 +162,8 @@ export class NodePropertiesComponent extends React.Component<
     const readOnlyProps: ViewModels.InputProperty[] = [
       {
         key: "label",
-        values: [{ value: this.props.node.label, type: "string" }]
-      }
+        values: [{ value: this.props.node.label, type: "string" }],
+      },
     ];
 
     const existingProps: ViewModels.InputProperty[] = [];
@@ -174,7 +174,10 @@ export class NodePropertiesComponent extends React.Component<
         const propValues = hProps[p];
         (p === partitionKeyProperty ? readOnlyProps : existingProps).push({
           key: p,
-          values: propValues.map(val => ({ value: val.toString(), type: NodePropertiesComponent.getTypeOption(val) }))
+          values: propValues.map((val) => ({
+            value: val.toString(),
+            type: NodePropertiesComponent.getTypeOption(val),
+          })),
         });
       }
     }
@@ -186,8 +189,8 @@ export class NodePropertiesComponent extends React.Component<
         readOnlyProperties: readOnlyProps,
         existingProperties: existingProps,
         addedProperties: [],
-        droppedKeys: []
-      }
+        droppedKeys: [],
+      },
     });
     this.props.onModeChanged(newMode);
   }
@@ -195,20 +198,20 @@ export class NodePropertiesComponent extends React.Component<
   private showSourcesEditor(): void {
     this.props.updatePossibleVertices().then((possibleVertices: PossibleVertex[]) => {
       this.setState({
-        possibleVertices: possibleVertices
+        possibleVertices: possibleVertices,
       });
 
       const editedSources: EditedEdges = {
         vertexId: this.props.node.id,
         currentNeighbors: this.props.node.sources.slice(),
         droppedIds: [],
-        addedEdges: []
+        addedEdges: [],
       };
 
       const newMode = Mode.EDIT_SOURCES;
       this.setState({
         editedProperties: this.state.editedProperties,
-        editedSources: editedSources
+        editedSources: editedSources,
       });
       this.props.onModeChanged(newMode);
     });
@@ -217,20 +220,20 @@ export class NodePropertiesComponent extends React.Component<
   private showTargetsEditor(): void {
     this.props.updatePossibleVertices().then((possibleVertices: PossibleVertex[]) => {
       this.setState({
-        possibleVertices: possibleVertices
+        possibleVertices: possibleVertices,
       });
 
       const editedTargets: EditedEdges = {
         vertexId: this.props.node.id,
         currentNeighbors: this.props.node.targets.slice(),
         droppedIds: [],
-        addedEdges: []
+        addedEdges: [],
       };
 
       const newMode = Mode.EDIT_TARGETS;
       this.setState({
         editedProperties: this.state.editedProperties,
-        editedTargets: editedTargets
+        editedTargets: editedTargets,
       });
       this.props.onModeChanged(newMode);
     });
@@ -250,7 +253,7 @@ export class NodePropertiesComponent extends React.Component<
 
   private onUpdateProperties(editedProperties: EditedProperties): void {
     this.setState({
-      editedProperties: editedProperties
+      editedProperties: editedProperties,
     });
   }
 
@@ -264,7 +267,7 @@ export class NodePropertiesComponent extends React.Component<
 
   private setIsDeleteConfirm(state: boolean): void {
     this.setState({
-      isDeleteConfirm: state
+      isDeleteConfirm: state,
     });
   }
 

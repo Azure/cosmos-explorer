@@ -16,7 +16,7 @@ import {
   AutoscaleEstimatedSpendingDisplayProps,
   PriceBreakdown,
   getRuPriceBreakdown,
-  transparentDetailsHeaderStyle
+  transparentDetailsHeaderStyle,
 } from "../../SettingsRenderUtils";
 import {
   Text,
@@ -29,7 +29,7 @@ import {
   Link,
   MessageBar,
   FontIcon,
-  IColumn
+  IColumn,
 } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
@@ -95,7 +95,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private autoPilotInputMaxValue: number;
   private options: IChoiceGroupOption[] = [
     { key: "true", text: "Autoscale" },
-    { key: "false", text: "Manual" }
+    { key: "false", text: "Manual" },
   ];
 
   componentDidMount(): void {
@@ -157,7 +157,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     this.state = {
       spendAckChecked: this.props.spendAckChecked,
       exceedFreeTierThroughput:
-        this.props.isFreeTierAccount && !this.props.isAutoPilotSelected && this.props.throughput > 400
+        this.props.isFreeTierAccount && !this.props.isAutoPilotSelected && this.props.throughput > 400,
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
@@ -224,7 +224,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
+        styles: transparentDetailsHeaderStyle,
       },
       {
         key: "minPerMonth",
@@ -233,7 +233,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
+        styles: transparentDetailsHeaderStyle,
       },
       {
         key: "maxPerMonth",
@@ -242,8 +242,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
-      }
+        styles: transparentDetailsHeaderStyle,
+      },
     ];
     const estimatedSpendingItems: AutoscaleEstimatedSpendingDisplayProps[] = [
       {
@@ -257,8 +257,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           <Text>
             {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}
           </Text>
-        )
-      }
+        ),
+      },
     ];
 
     if (newThroughput) {
@@ -288,7 +288,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}
             </b>
           </Text>
-        )
+        ),
       });
     }
 
@@ -318,7 +318,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
+        styles: transparentDetailsHeaderStyle,
       },
       {
         key: "hourly",
@@ -327,7 +327,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
+        styles: transparentDetailsHeaderStyle,
       },
       {
         key: "daily",
@@ -336,7 +336,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
+        styles: transparentDetailsHeaderStyle,
       },
       {
         key: "monthly",
@@ -345,8 +345,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle
-      }
+        styles: transparentDetailsHeaderStyle,
+      },
     ];
     const estimatedSpendingItems: ManualEstimatedSpendingDisplayProps[] = [
       {
@@ -365,8 +365,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           <Text>
             {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}
           </Text>
-        )
-      }
+        ),
+      },
     ];
 
     if (newThroughput) {
@@ -403,7 +403,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}
             </b>
           </Text>
-        )
+        ),
       });
     }
 
@@ -462,7 +462,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       databaseName: this.props.databaseName,
       collectionName: this.props.collectionName,
       apiKind: userContext.defaultExperience,
-      dataExplorerArea: "Scale Tab V2"
+      dataExplorerArea: "Scale Tab V2",
     });
   };
 

@@ -12,8 +12,8 @@ export class GitHubConnector {
         type: GitHubConnectorMsgType,
         data: {
           state: params.get("state"),
-          code: params.get("code")
-        } as IGitHubConnectorParams
+          code: params.get("code"),
+        } as IGitHubConnectorParams,
       },
       window.location.origin
     );
