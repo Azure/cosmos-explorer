@@ -20,10 +20,7 @@ module.exports = {
   overrides: [
     {
       files: ["**/*.tsx"],
-      env: {
-        jest: true
-      },
-      extends: ["plugin:react/recommended"],
+      extends: ["plugin:react/recommended"], // TODO: Add react-hooks
       plugins: ["react"]
     },
     {
@@ -36,6 +33,7 @@ module.exports = {
     }
   ],
   rules: {
+    "no-console": ["error", { allow: ["error", "warn", "dir"] }],
     curly: "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-extraneous-class": "error",
@@ -43,6 +41,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "error",
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
     eqeqeq: "error",
+    "react/display-name": "off",
     "no-restricted-syntax": [
       "error",
       {

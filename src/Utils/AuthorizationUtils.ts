@@ -1,11 +1,9 @@
-import * as Constants from "../Common/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
-import AuthHeadersUtil from "../Platform/Hosted/Authorization";
 import { AuthType } from "../AuthType";
+import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { configContext, Platform } from "../ConfigContext";
+import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
   if (window.authType === AuthType.EncryptedToken) {
@@ -18,19 +16,6 @@ export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMet
       header: Constants.HttpHeaders.authorization,
       token: userContext.authorizationToken || ""
     };
-  }
-}
-
-export async function getArcadiaAuthToken(
-  arcadiaEndpoint: string = configContext.ARCADIA_ENDPOINT,
-  tenantId?: string
-): Promise<string> {
-  try {
-    const token = await AuthHeadersUtil.getAccessToken(arcadiaEndpoint, tenantId);
-    return token;
-  } catch (error) {
-    Logger.logError(getErrorMessage(error), "AuthorizationUtils/getArcadiaAuthToken");
-    throw error;
   }
 }
 

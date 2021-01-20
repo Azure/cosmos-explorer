@@ -587,11 +587,3 @@ export interface MemoryUsageInfo {
   freeKB: number;
   totalKB: number;
 }
-
-export interface resourceTokenConnectionStringProperties {
-  accountEndpoint: string;
-  collectionId: string;
-  databaseId: string;
-  partitionKey?: string;
-  resourceToken: string;
-}

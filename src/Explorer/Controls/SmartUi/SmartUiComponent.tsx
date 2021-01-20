@@ -60,6 +60,7 @@ interface BaseDisplay {
 interface BaseInput extends BaseDisplay {
   label: string;
   placeholder?: string;
+  errorMessage?: string;
 }
 
 /**

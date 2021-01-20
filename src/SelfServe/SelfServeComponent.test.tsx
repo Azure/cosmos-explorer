@@ -1,13 +1,13 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { SelfServeDescriptor, SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
-import { InputType, NumberUiType } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { NumberUiType, SmartUiInput } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
 describe("SelfServeComponent", () => {
-  const defaultValues = new Map<string, InputType>([
-    ["throughput", "450"],
-    ["analyticalStore", "false"],
-    ["database", "db2"]
+  const defaultValues = new Map<string, SmartUiInput>([
+    ["throughput", {value: "450", hidden: false}],
+    ["analyticalStore", {value: "false", hidden: false}],
+    ["database", {value: "db2", hidden: false}]
   ]);
   const initializeMock = jest.fn(async () => defaultValues);
   const onSubmitMock = jest.fn(async () => {
@@ -78,7 +78,7 @@ describe("SelfServeComponent", () => {
     }
   };
 
-  const verifyDefaultsSet = (currentValues: Map<string, InputType>): void => {
+  const verifyDefaultsSet = (currentValues: Map<string, SmartUiInput>): void => {
     for (const key of currentValues.keys()) {
       if (defaultValues.has(key)) {
         expect(defaultValues.get(key)).toEqual(currentValues.get(key));

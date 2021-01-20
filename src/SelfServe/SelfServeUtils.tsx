@@ -59,7 +59,7 @@ export interface CommonInputTypes {
   choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   uiType?: string;
   errorMessage?: string;
-  description?: Description,
+  description?: (() => Promise<Description>) | Description,
   onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
   onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
@@ -81,7 +81,7 @@ export const addPropertyToMap = <T extends keyof CommonInputTypes, K extends Com
   target: unknown,
   propertyName: string,
   className: string,
-  descriptorName: string,
+  descriptorName: keyof CommonInputTypes,
   descriptorValue: K
 ): void => {
   const context =
@@ -94,11 +94,9 @@ export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K e
   context: Map<string, CommonInputTypes>,
   propertyName: string,
   className: string,
-  descriptorName: string,
+  descriptorName: keyof CommonInputTypes,
   descriptorValue: K
 ): void => {
-  const descriptorKey = descriptorName as keyof CommonInputTypes;
-
   if (!(context instanceof Map)) {
     console.log(context);
     throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
@@ -106,13 +104,13 @@ export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K e
 
   const propertyObject = context.get(propertyName) ?? { id: propertyName };
 
-  if (getValue(descriptorKey, propertyObject) && descriptorKey !== "type" && descriptorKey !== "dataFieldName") {
+  if (getValue(descriptorName, propertyObject) && descriptorName !== "type" && descriptorName !== "dataFieldName") {
     throw new Error(
-      `Duplicate value passed for '${descriptorKey}' on property '${propertyName}' of class '${className}'`
+      `Duplicate value passed for '${descriptorName}' on property '${propertyName}' of class '${className}'`
     );
   }
 
-  setValue(descriptorKey, descriptorValue, propertyObject);
+  setValue(descriptorName, descriptorValue, propertyObject);
   context.set(propertyName, propertyObject);
 };
 
@@ -171,9 +169,6 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       return value as NumberInput;
     case "string":
       if (value.description) {
-        if (!value.description.text) {
-          value.errorMessage = `description is required for description display '${value.id}'.`;
-        }
         return value as DescriptionDisplay
       }
       if (!value.label) {

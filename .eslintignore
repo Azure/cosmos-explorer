@@ -42,7 +42,6 @@ src/Contracts/ViewModels.ts
 src/Controls/Heatmap/Heatmap.test.ts
 src/Controls/Heatmap/Heatmap.ts
 src/Controls/Heatmap/HeatmapDatatypes.ts
-src/Definitions/adal.d.ts
 src/Definitions/datatables.d.ts
 src/Definitions/gif.d.ts
 src/Definitions/globals.d.ts
@@ -242,9 +241,6 @@ src/Platform/Hosted/Authorization.ts
 src/Platform/Hosted/DataAccessUtility.ts
 src/Platform/Hosted/ExplorerFactory.ts
 src/Platform/Hosted/Helpers/ConnectionStringParser.test.ts
-src/Platform/Hosted/Helpers/ConnectionStringParser.ts
-src/Platform/Hosted/HostedUtils.test.ts
-src/Platform/Hosted/HostedUtils.ts
 src/Platform/Hosted/Main.ts
 src/Platform/Hosted/Maint.test.ts
 src/Platform/Hosted/NotificationsClient.ts

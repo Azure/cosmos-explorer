@@ -4,7 +4,7 @@ import {
   SelfServeBaseClass,
   updateContextWithDecorator
 } from "./SelfServeUtils";
-import { InputType, NumberUiType } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
+import { InputType, NumberUiType, SmartUiInput } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
@@ -12,7 +12,7 @@ describe("SelfServeUtils", () => {
       public onSubmit = async (): Promise<void> => {
         return;
       };
-      public initialize: () => Promise<Map<string, InputType>>;
+      public initialize: () => Promise<Map<string, SmartUiInput>>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
   });
@@ -20,7 +20,7 @@ describe("SelfServeUtils", () => {
   it("onSubmit should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public onSubmit: () => Promise<void>;
-      public initialize = async (): Promise<Map<string, InputType>> => {
+      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
         return undefined;
       };
     }
@@ -32,7 +32,7 @@ describe("SelfServeUtils", () => {
       public onSubmit = async (): Promise<void> => {
         return;
       };
-      public initialize = async (): Promise<Map<string, InputType>> => {
+      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
         return undefined;
       };
     }

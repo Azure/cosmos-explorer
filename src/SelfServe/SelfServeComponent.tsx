@@ -151,7 +151,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         if ("description" in input) {
           const descriptionDisplay = input as DescriptionDisplay
           descriptionDisplay.description = await this.getResolvedValue(descriptionDisplay.description)
-        }    
+        }
         return input as StringInput;
       }
       case "number": {
@@ -195,7 +195,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     }
   };
 
-  
   onSubmitButtonClick = () : void => {
     this.setState({isRefreshing: true})
     this.props.descriptor.onSubmit(this.state.currentValues)
