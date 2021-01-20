@@ -98,7 +98,6 @@ export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K e
   const descriptorKey = descriptorName as keyof CommonInputTypes;
 
   if (!(context instanceof Map)) {
-    console.log(context);
     throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
   }
 
