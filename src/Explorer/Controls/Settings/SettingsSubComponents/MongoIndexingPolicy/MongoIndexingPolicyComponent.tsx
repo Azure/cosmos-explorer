@@ -282,6 +282,15 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     );
   };
 
+  private hasCompoundIndex = () : boolean => {
+    for (let i = 0; i < this.props.mongoIndexes.length; i++) {
+      if (this.props.mongoIndexes[i].key.keys.length > 1) {
+        return true
+      }
+    }
+    return false
+  } 
+
   private renderWarningMessage = (): JSX.Element => {
     let warningMessage: JSX.Element;
     if (this.getMongoWarningNotificationMessage()) {
@@ -303,6 +312,9 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   public render(): JSX.Element {
     if (this.props.mongoIndexes) {
+      if (this.hasCompoundIndex()) {
+        return <Text>Compound indexes not supported</Text>
+      }
       return (
         <Stack {...subComponentStackProps}>
           {this.renderWarningMessage()}
