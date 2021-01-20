@@ -81,6 +81,7 @@ import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
 import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import { AccountKind, DefaultAccountExperience, ServerIds } from "./Common/Constants";
 import { listKeys } from "./Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { SelfServeType } from "./SelfServe/SelfServeUtils";
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
@@ -89,6 +90,7 @@ const App: React.FunctionComponent = () => {
       if (config.platform === Platform.Hosted) {
         const win = (window as unknown) as HostedExplorerChildFrame;
         explorer = new Explorer();
+        explorer.selfServeType(SelfServeType.none)
         if (win.hostedConfig.authType === AuthType.EncryptedToken) {
           // TODO: Remove window.authType
           window.authType = AuthType.EncryptedToken;
@@ -236,6 +238,7 @@ const App: React.FunctionComponent = () => {
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
         explorer = new Explorer();
+        explorer.selfServeType(SelfServeType.none)
         explorer.databaseAccount(emulatorAccount);
         explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
