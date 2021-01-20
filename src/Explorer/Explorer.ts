@@ -358,7 +358,8 @@ export default class Explorer {
                 {
                   subscriptionId: userContext.subscriptionId,
                   accountName: userContext.databaseAccount?.name,
-                  accountId: userContext.databaseAccount?.id
+                  accountId: userContext.databaseAccount?.id,
+                  platform: configContext.platform
                 }
               );
               const pollArcadiaTokenRefresh = async () => {
