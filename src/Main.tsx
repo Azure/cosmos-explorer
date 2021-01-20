@@ -44,7 +44,6 @@ import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
 import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
-import "../externals/adal.js";
 import "promise-polyfill/src/polyfill";
 import "abort-controller/polyfill";
 import "whatwg-fetch";
@@ -56,71 +55,207 @@ import "url-polyfill/url-polyfill.min";
 
 initializeIcons();
 
-import * as ko from "knockout";
-import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "./Shared/Telemetry/TelemetryConstants";
-
-import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
-import * as Emulator from "./Platform/Emulator/Main";
-import Hosted from "./Platform/Hosted/Main";
-import * as Portal from "./Platform/Portal/Main";
 import { AuthType } from "./AuthType";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { applyExplorerBindings } from "./applyExplorerBindings";
-import { initializeConfiguration, Platform } from "./ConfigContext";
+import { configContext, initializeConfiguration, Platform } from "./ConfigContext";
 import Explorer from "./Explorer/Explorer";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import errorImage from "../images/error.svg";
 import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
-
-// TODO: Encapsulate and reuse all global variables as environment variables
-window.authType = AuthType.AAD;
+import { updateUserContext } from "./UserContext";
+import { CollectionCreation } from "./Shared/Constants";
+import { extractFeatures } from "./Platform/Hosted/extractFeatures";
+import { emulatorAccount } from "./Platform/Emulator/emulatorAccount";
+import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
+import {
+  getDatabaseAccountKindFromExperience,
+  getDatabaseAccountPropertiesFromMetadata
+} from "./Platform/Hosted/HostedUtils";
+import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
+import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
+import { AccountKind, DefaultAccountExperience, ServerIds } from "./Common/Constants";
+import { listKeys } from "./Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
-    initializeConfiguration().then(config => {
+    initializeConfiguration().then(async config => {
+      let explorer: Explorer;
       if (config.platform === Platform.Hosted) {
-        try {
-          Hosted.initializeExplorer().then(
-            (explorer: Explorer) => {
-              applyExplorerBindings(explorer);
-              Hosted.configureTokenValidationDisplayPrompt(explorer);
-            },
-            (error: unknown) => {
-              try {
-                const uninitializedExplorer: Explorer = Hosted.getUninitializedExplorerForGuestAccess();
-                window.dataExplorer = uninitializedExplorer;
-                ko.applyBindings(uninitializedExplorer);
-                BindingHandlersRegisterer.registerBindingHandlers();
-                if (window.authType !== AuthType.AAD) {
-                  uninitializedExplorer.isRefreshingExplorer(false);
-                  uninitializedExplorer.displayConnectExplorerForm();
-                }
-              } catch (e) {
-                console.log(e);
-              }
-              console.error(error);
-            }
+        const win = (window as unknown) as HostedExplorerChildFrame;
+        explorer = new Explorer();
+        if (win.hostedConfig.authType === AuthType.EncryptedToken) {
+          // TODO: Remove window.authType
+          window.authType = AuthType.EncryptedToken;
+          // Impossible to tell if this is a try cosmos sub using an encrypted token
+          explorer.isTryCosmosDBSubscription(false);
+          updateUserContext({
+            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
+          });
+
+          const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
+            win.hostedConfig.encryptedTokenMetadata.apiKind
           );
-        } catch (e) {
-          console.log(e);
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              // id: Main._databaseAccountId,
+              name: win.hostedConfig.encryptedTokenMetadata.accountName,
+              kind: getDatabaseAccountKindFromExperience(apiExperience),
+              properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
+              tags: []
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: undefined,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: ServerIds.productionPortal,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+          });
+          explorer.isAccountReady(true);
+        } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
+          window.authType = AuthType.ResourceToken;
+          // Resource tokens can only be used with SQL API
+          const apiExperience: string = DefaultAccountExperience.DocumentDB;
+          const parsedResourceToken = parseResourceTokenConnectionString(win.hostedConfig.resourceToken);
+          updateUserContext({
+            resourceToken: parsedResourceToken.resourceToken,
+            endpoint: parsedResourceToken.accountEndpoint
+          });
+          explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
+          explorer.resourceTokenCollectionId(parsedResourceToken.collectionId);
+          if (parsedResourceToken.partitionKey) {
+            explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
+          }
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              name: parsedResourceToken.accountEndpoint,
+              kind: AccountKind.GlobalDocumentDB,
+              properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
+              tags: { defaultExperience: apiExperience }
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: undefined,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: ServerIds.productionPortal,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
+            isAuthWithresourceToken: true
+          });
+          explorer.isAccountReady(true);
+          explorer.isRefreshingExplorer(false);
+        } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
+          // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
+          window.authType = AuthType.EncryptedToken;
+          // Impossible to tell if this is a try cosmos sub using an encrypted token
+          explorer.isTryCosmosDBSubscription(false);
+          updateUserContext({
+            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
+          });
+
+          const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
+            win.hostedConfig.encryptedTokenMetadata.apiKind
+          );
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              // id: Main._databaseAccountId,
+              name: win.hostedConfig.encryptedTokenMetadata.accountName,
+              kind: getDatabaseAccountKindFromExperience(apiExperience),
+              properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
+              tags: []
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: win.hostedConfig.masterKey,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: ServerIds.productionPortal,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+          });
+          explorer.isAccountReady(true);
+        } else if (win.hostedConfig.authType === AuthType.AAD) {
+          window.authType = AuthType.AAD;
+          const account = win.hostedConfig.databaseAccount;
+          const accountResourceId = account.id;
+          const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
+          const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
+          updateUserContext({
+            authorizationToken: `Bearer ${win.hostedConfig.authorizationToken}`,
+            databaseAccount: win.hostedConfig.databaseAccount
+          });
+          const keys = await listKeys(subscriptionId, resourceGroup, account.name);
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: account,
+            subscriptionId,
+            resourceGroup,
+            masterKey: keys.primaryMasterKey,
+            hasWriteAccess: true, //TODO: 425017 - support read access
+            authorizationToken: `Bearer ${win.hostedConfig.authorizationToken}`,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: ServerIds.productionPortal,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+          });
+          explorer.isAccountReady(true);
         }
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
-        const explorer = Emulator.initializeExplorer();
-        applyExplorerBindings(explorer);
+        explorer = new Explorer();
+        explorer.databaseAccount(emulatorAccount);
+        explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
-        TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.Open, {});
-        const explorer = Portal.initializeExplorer();
-        TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.IFrameReady, {});
-        applyExplorerBindings(explorer);
+        explorer = new Explorer();
+
+        // In development mode, try to load the iframe message from session storage.
+        // This allows webpack hot reload to funciton properly
+        if (process.env.NODE_ENV === "development") {
+          const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
+          if (initMessage) {
+            const message = JSON.parse(initMessage);
+            console.warn("Loaded cached portal iframe message from session storage");
+            console.dir(message);
+            explorer.initDataExplorerWithFrameInputs(message);
+          }
+        }
+
+        window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
       }
+      applyExplorerBindings(explorer);
     });
   }, []);
 
@@ -187,7 +322,7 @@ const App: React.FunctionComponent = () => {
                   aria-label="Share url link"
                   className="shareLink"
                   type="text"
-                  read-only
+                  read-only={true}
                   data-bind="value: shareAccessUrl"
                 />
                 <span
@@ -251,14 +386,11 @@ const App: React.FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                  {/* Collections Window Title/Command Bar - End  */}
-
-                  {!window.dataExplorer?.isAuthWithResourceToken() && (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
-                  )}
-                  {window.dataExplorer?.isAuthWithResourceToken() && (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
-                  )}
+                  <div
+                    style={{ overflowY: "auto" }}
+                    data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
+                  />
+                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
                 </div>
                 {/*  Collections Window - End */}
               </div>
@@ -330,56 +462,6 @@ const App: React.FunctionComponent = () => {
           data-bind="react: notificationConsoleComponentAdapter"
         />
       </div>
-      {/* Explorer Connection - Encryption Token / AAD - Start */}
-      <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "none" }}>
-        <div className="connectExplorerFormContainer">
-          <div className="connectExplorer">
-            <p className="connectExplorerContent">
-              <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-            </p>
-            <p className="welcomeText">Welcome to Azure Cosmos DB</p>
-            <div id="connectWithAad">
-              <input
-                className="filterbtnstyle"
-                data-test="cosmosdb-signinBtn"
-                type="button"
-                defaultValue="Sign In"
-                data-bind="click: $data.signInAad"
-              />
-              <p
-                className="switchConnectTypeText"
-                data-test="cosmosdb-connectionString"
-                data-bind="click: $data.onSwitchToConnectionString"
-              >
-                Connect to your account with connection string
-              </p>
-            </div>
-            <form id="connectWithConnectionString" data-bind="submit: renewToken" style={{ display: "none" }}>
-              <p className="connectExplorerContent connectStringText">Connect to your account with connection string</p>
-              <p className="connectExplorerContent">
-                <input
-                  className="inputToken"
-                  type="text"
-                  required
-                  placeholder="Please enter a connection string"
-                  data-bind="value: tokenForRenewal"
-                />
-                <span className="errorDetailsInfoTooltip" data-bind="visible: renewTokenError().length > 0">
-                  <img className="errorImg" src={errorImage} alt="Error notification" />
-                  <span className="errorDetails" data-bind="text: renewTokenError" />
-                </span>
-              </p>
-              <p className="connectExplorerContent">
-                <input className="filterbtnstyle" type="submit" value="Connect" />
-              </p>
-              <p className="switchConnectTypeText" data-bind="click: $data.signInAad">
-                Sign In with Azure Account
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* Explorer Connection - Encryption Token / AAD - End */}
       {/* Global loader - Start */}
 
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">

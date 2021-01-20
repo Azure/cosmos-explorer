@@ -1026,7 +1026,6 @@ exports[`SettingsComponent renders 1`] = `
                 "notificationConsoleData": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -1072,8 +1071,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "renewToken": [Function],
-                "renewTokenError": [Function],
                 "resourceTokenCollection": [Function],
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
@@ -1174,7 +1171,6 @@ exports[`SettingsComponent renders 1`] = `
                 "shouldShowContextSwitchPrompt": [Function],
                 "shouldShowDataAccessExpiryDialog": [Function],
                 "shouldShowShareDialogContents": [Function],
-                "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
                 "splashScreenAdapter": SplashScreenComponentAdapter {
                   "clearMostRecent": [Function],
@@ -1241,7 +1237,6 @@ exports[`SettingsComponent renders 1`] = `
                 "toggleLeftPaneExpandedKeyPress": [Function],
                 "toggleRead": [Function],
                 "toggleReadWrite": [Function],
-                "tokenForRenewal": [Function],
                 "uploadFilePane": UploadFilePane {
                   "container": [Circular],
                   "extensions": [Function],
@@ -2309,7 +2304,6 @@ exports[`SettingsComponent renders 1`] = `
               "notificationConsoleData": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
@@ -2355,8 +2349,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "renewToken": [Function],
-              "renewTokenError": [Function],
               "resourceTokenCollection": [Function],
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
@@ -2457,7 +2449,6 @@ exports[`SettingsComponent renders 1`] = `
               "shouldShowContextSwitchPrompt": [Function],
               "shouldShowDataAccessExpiryDialog": [Function],
               "shouldShowShareDialogContents": [Function],
-              "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
               "splashScreenAdapter": SplashScreenComponentAdapter {
                 "clearMostRecent": [Function],
@@ -2524,7 +2515,6 @@ exports[`SettingsComponent renders 1`] = `
               "toggleLeftPaneExpandedKeyPress": [Function],
               "toggleRead": [Function],
               "toggleReadWrite": [Function],
-              "tokenForRenewal": [Function],
               "uploadFilePane": UploadFilePane {
                 "container": [Circular],
                 "extensions": [Function],
@@ -3605,7 +3595,6 @@ exports[`SettingsComponent renders 1`] = `
                 "notificationConsoleData": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -3651,8 +3640,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "renewToken": [Function],
-                "renewTokenError": [Function],
                 "resourceTokenCollection": [Function],
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
@@ -3753,7 +3740,6 @@ exports[`SettingsComponent renders 1`] = `
                 "shouldShowContextSwitchPrompt": [Function],
                 "shouldShowDataAccessExpiryDialog": [Function],
                 "shouldShowShareDialogContents": [Function],
-                "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
                 "splashScreenAdapter": SplashScreenComponentAdapter {
                   "clearMostRecent": [Function],
@@ -3820,7 +3806,6 @@ exports[`SettingsComponent renders 1`] = `
                 "toggleLeftPaneExpandedKeyPress": [Function],
                 "toggleRead": [Function],
                 "toggleReadWrite": [Function],
-                "tokenForRenewal": [Function],
                 "uploadFilePane": UploadFilePane {
                   "container": [Circular],
                   "extensions": [Function],
@@ -4888,7 +4873,6 @@ exports[`SettingsComponent renders 1`] = `
               "notificationConsoleData": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
@@ -4934,8 +4918,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "renewToken": [Function],
-              "renewTokenError": [Function],
               "resourceTokenCollection": [Function],
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
@@ -5036,7 +5018,6 @@ exports[`SettingsComponent renders 1`] = `
               "shouldShowContextSwitchPrompt": [Function],
               "shouldShowDataAccessExpiryDialog": [Function],
               "shouldShowShareDialogContents": [Function],
-              "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
               "splashScreenAdapter": SplashScreenComponentAdapter {
                 "clearMostRecent": [Function],
@@ -5103,7 +5084,6 @@ exports[`SettingsComponent renders 1`] = `
               "toggleLeftPaneExpandedKeyPress": [Function],
               "toggleRead": [Function],
               "toggleReadWrite": [Function],
-              "tokenForRenewal": [Function],
               "uploadFilePane": UploadFilePane {
                 "container": [Circular],
                 "extensions": [Function],

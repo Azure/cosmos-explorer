@@ -77,7 +77,7 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
 
 export function client(): Cosmos.CosmosClient {
   const options: Cosmos.CosmosClientOptions = {
-    endpoint: endpoint() || " ", // CosmosClient gets upset if we pass a falsy value here
+    endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {

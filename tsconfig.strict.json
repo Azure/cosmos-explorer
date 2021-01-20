@@ -8,7 +8,6 @@
   },
   "files": [
     "./src/AuthType.ts",
-    "./src/Bindings/BindingHandlersRegisterer.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
     "./src/Common/Constants.ts",

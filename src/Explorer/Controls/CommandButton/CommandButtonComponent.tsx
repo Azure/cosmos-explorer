@@ -38,7 +38,7 @@ export interface CommandButtonComponentProps {
   /**
    * Label for the button
    */
-  commandButtonLabel: string;
+  commandButtonLabel?: string;
 
   /**
    * True if this button opens a tab or pane, false otherwise.

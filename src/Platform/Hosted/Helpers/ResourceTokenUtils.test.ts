@@ -1,24 +1,10 @@
-import Main from "./Main";
+import { isResourceTokenConnectionString, parseResourceTokenConnectionString } from "./ResourceTokenUtils";
 
-describe("Main", () => {
-  it("correctly detects feature flags", () => {
-    // Search containing non-features, with Camelcase keys and uri encoded values
-    const params = new URLSearchParams(
-      "?platform=Hosted&feature.notebookserverurl=https%3A%2F%2Flocalhost%3A10001%2F12345%2Fnotebook&feature.notebookServerToken=token&feature.enablenotebooks=true&key=mykey"
-    );
-    const features = Main.extractFeatures(params);
-
-    expect(features).toEqual({
-      notebookserverurl: "https://localhost:10001/12345/notebook",
-      notebookservertoken: "token",
-      enablenotebooks: "true"
-    });
-  });
-
+describe("parseResourceTokenConnectionString", () => {
   it("correctly parses resource token connection string", () => {
     const connectionString =
       "AccountEndpoint=fakeEndpoint;DatabaseId=fakeDatabaseId;CollectionId=fakeCollectionId;type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;";
-    const properties = Main.parseResourceTokenConnectionString(connectionString);
+    const properties = parseResourceTokenConnectionString(connectionString);
 
     expect(properties).toEqual({
       accountEndpoint: "fakeEndpoint",
@@ -32,7 +18,7 @@ describe("Main", () => {
   it("correctly parses resource token connection string with partition key", () => {
     const connectionString =
       "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;AccountEndpoint=fakeEndpoint;DatabaseId=fakeDatabaseId;CollectionId=fakeCollectionId;PartitionKey=fakePartitionKey;";
-    const properties = Main.parseResourceTokenConnectionString(connectionString);
+    const properties = parseResourceTokenConnectionString(connectionString);
 
     expect(properties).toEqual({
       accountEndpoint: "fakeEndpoint",
@@ -41,5 +27,18 @@ describe("Main", () => {
       partitionKey: "fakePartitionKey",
       resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;"
     });
+  });
+});
+
+describe("isResourceToken", () => {
+  it("valid resource connection string", () => {
+    const connectionString =
+      "AccountEndpoint=fakeEndpoint;DatabaseId=fakeDatabaseId;CollectionId=fakeCollectionId;type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;";
+    expect(isResourceTokenConnectionString(connectionString)).toBe(true);
+  });
+
+  it("non-resource connection string", () => {
+    const connectionString = "AccountEndpoint=https://stfaul-sql.documents.azure.com:443/;AccountKey=foo;";
+    expect(isResourceTokenConnectionString(connectionString)).toBe(false);
   });
 });

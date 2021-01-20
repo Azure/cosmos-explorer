@@ -1527,21 +1527,6 @@ p {
   color: @AccentHigh;
 }
 
-.inputTooltip {
-  .inputTooltip();
-}
-
-.inputTooltip .inputTooltipText {
-  top: -68px;
-  .inputTooltipText();
-}
-
-.inputTooltip .inputTooltipText::after {
-  border-width: @MediumSpace @MediumSpace 0 @MediumSpace;
-  top: 55px;
-  .inputTooltipTextAfter();
-}
-
 .nowrap {
   white-space: nowrap;
 }
@@ -3041,46 +3026,4 @@ settings-pane {
 
 .collapsibleSection :hover {
   cursor: pointer;
-}
-
-.messageBarInfoIcon {
-  color: #0072c6;
-}
-
-.messageBarWarningIcon {
-  color: #db7500;
-}
-
-.freeTierInfoBanner {
-  background-color: @BaseLow;
-  display: inline-flex;
-  padding: @DefaultSpace;
-  width: 100%;
-
-  .freeTierInfoIcon img {
-    height: 28px;
-    width: 28px;
-    margin-left: 4px;
-  }
-
-  .freeTierInfoMessage {
-    margin: auto 0;
-    padding-left: @MediumSpace;
-  }
-}
-
-.freeTierInlineWarning {
-  display: inline-flex;
-  padding: 8px 8px 8px 0;
-  width: 100%;
-
-  .freeTierWarningIcon img {
-    height: 20px;
-    width: 20px;
-  }
-
-  .freeTierWarningMessage {
-    margin: auto 0;
-    padding-left: @SmallSpace;
-  }
 }

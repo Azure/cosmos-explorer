@@ -1,12 +1,12 @@
 import * as DataModels from "../../../Contracts/DataModels";
-import { ConnectionStringParser } from "./ConnectionStringParser";
+import { parseConnectionString } from "./ConnectionStringParser";
 
 describe("ConnectionStringParser", () => {
   const mockAccountName: string = "Test";
   const mockMasterKey: string = "some-key";
 
   it("should parse a valid sql account connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
+    const metadata = parseConnectionString(
       `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};`
     );
 
@@ -15,7 +15,7 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should parse a valid mongo account connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
+    const metadata = parseConnectionString(
       `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com:10255`
     );
 
@@ -24,7 +24,7 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should parse a valid compute mongo account connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
+    const metadata = parseConnectionString(
       `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.mongo.cosmos.azure.com:10255`
     );
 
@@ -33,7 +33,7 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should parse a valid graph account connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
+    const metadata = parseConnectionString(
       `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`
     );
 
@@ -42,7 +42,7 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should parse a valid table account connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
+    const metadata = parseConnectionString(
       `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com:443/;`
     );
 
@@ -51,7 +51,7 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should parse a valid cassandra account connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
+    const metadata = parseConnectionString(
       `AccountEndpoint=${mockAccountName}.cassandra.cosmosdb.azure.com;AccountKey=${mockMasterKey};`
     );
 
@@ -60,15 +60,13 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should fail to parse an invalid connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
-      "some-rogue-connection-string"
-    );
+    const metadata = parseConnectionString("some-rogue-connection-string");
 
     expect(metadata).toBe(undefined);
   });
 
   it("should fail to parse an empty connection string", () => {
-    const metadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString("");
+    const metadata = parseConnectionString("");
 
     expect(metadata).toBe(undefined);
   });
