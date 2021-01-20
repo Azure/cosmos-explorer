@@ -20,7 +20,7 @@ describe("GalleryCardComponent", () => {
         views: 0,
         newCellId: undefined,
         policyViolations: undefined,
-        pendingScanJobIds: undefined
+        pendingScanJobIds: undefined,
       },
       isFavorite: false,
       showDownload: true,
@@ -30,7 +30,7 @@ describe("GalleryCardComponent", () => {
       onFavoriteClick: undefined,
       onUnfavoriteClick: undefined,
       onDownloadClick: undefined,
-      onDeleteClick: undefined
+      onDeleteClick: undefined,
     };
 
     const wrapper = shallow(<GalleryCardComponent {...props} />);

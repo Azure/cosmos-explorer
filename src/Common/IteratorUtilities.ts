@@ -14,7 +14,7 @@ export interface MinimalQueryIterator {
 // Pick<QueryIterator<any>, "fetchNext">;
 
 export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex: number): Promise<QueryResults> {
-  return documentsIterator.fetchNext().then(response => {
+  return documentsIterator.fetchNext().then((response) => {
     const documents = response.resources;
     const headers = (response as any).headers || {}; // TODO this is a private key. Remove any
     const itemCount = (documents && documents.length) || 0;
@@ -26,7 +26,7 @@ export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex
       lastItemIndex: Number(firstItemIndex) + Number(itemCount),
       headers,
       activityId: response.activityId,
-      requestCharge: response.requestCharge
+      requestCharge: response.requestCharge,
     };
   });
 }

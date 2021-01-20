@@ -69,8 +69,8 @@ describe("Graph Data", () => {
         id: "id",
         label: "label",
         properties: {
-          testString: [{ id: "123", value: stringValue }]
-        }
+          testString: [{ id: "123", value: stringValue }],
+        },
       },
       "testString"
     );
@@ -85,8 +85,8 @@ describe("Graph Data", () => {
         id: "id",
         label: "label",
         properties: {
-          testString: [{ id: "123", value: numberValue }]
-        }
+          testString: [{ id: "123", value: numberValue }],
+        },
       },
       "testString"
     );
@@ -101,8 +101,8 @@ describe("Graph Data", () => {
         id: "id",
         label: "label",
         properties: {
-          testString: [{ id: "123", value: booleanValue }]
-        }
+          testString: [{ id: "123", value: booleanValue }],
+        },
       },
       "testString"
     );

@@ -25,7 +25,7 @@ describe("Dynamic List Component", () => {
       placeholder: placeholder,
       listItems: items,
       buttonText: mockButton,
-      ariaLabel: mockAriaLabel
+      ariaLabel: mockAriaLabel,
     };
   }
 

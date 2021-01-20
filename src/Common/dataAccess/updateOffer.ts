@@ -17,7 +17,7 @@ import {
   migrateSqlDatabaseToManualThroughput,
   migrateSqlContainerToAutoscale,
   migrateSqlContainerToManualThroughput,
-  updateSqlContainerThroughput
+  updateSqlContainerThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   updateCassandraKeyspaceThroughput,
@@ -25,7 +25,7 @@ import {
   migrateCassandraKeyspaceToManualThroughput,
   migrateCassandraTableToAutoscale,
   migrateCassandraTableToManualThroughput,
-  updateCassandraTableThroughput
+  updateCassandraTableThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   updateMongoDBDatabaseThroughput,
@@ -33,7 +33,7 @@ import {
   migrateMongoDBDatabaseToManualThroughput,
   migrateMongoDBCollectionToAutoscale,
   migrateMongoDBCollectionToManualThroughput,
-  updateMongoDBCollectionThroughput
+  updateMongoDBCollectionThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
   updateGremlinDatabaseThroughput,
@@ -41,13 +41,13 @@ import {
   migrateGremlinDatabaseToManualThroughput,
   migrateGremlinGraphToAutoscale,
   migrateGremlinGraphToManualThroughput,
-  updateGremlinGraphThroughput
+  updateGremlinGraphThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { userContext } from "../../UserContext";
 import {
   migrateTableToAutoscale,
   migrateTableToManualThroughput,
-  updateTableThroughput
+  updateTableThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 
 export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => {
@@ -110,7 +110,7 @@ const updateCollectionOfferWithARM = async (params: UpdateOfferParams): Promise<
   return await readCollectionOffer({
     collectionId: params.collectionId,
     databaseId: params.databaseId,
-    offerId: params.currentOffer.id
+    offerId: params.currentOffer.id,
   });
 };
 
@@ -140,7 +140,7 @@ const updateDatabaseOfferWithARM = async (params: UpdateOfferParams): Promise<Of
 
   return await readDatabaseOffer({
     databaseId: params.databaseId,
-    offerId: params.currentOffer.id
+    offerId: params.currentOffer.id,
   });
 };
 
@@ -358,13 +358,13 @@ const updateGremlinDatabaseOffer = async (params: UpdateOfferParams): Promise<vo
 const createUpdateOfferBody = (params: UpdateOfferParams): ThroughputSettingsUpdateParameters => {
   const body: ThroughputSettingsUpdateParameters = {
     properties: {
-      resource: {}
-    }
+      resource: {},
+    },
   };
 
   if (params.autopilotThroughput) {
     body.properties.resource.autoscaleSettings = {
-      maxThroughput: params.autopilotThroughput
+      maxThroughput: params.autopilotThroughput,
     };
   } else {
     body.properties.resource.throughput = params.manualThroughput;
@@ -378,7 +378,7 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
   const newOffer: SDKOfferDefinition = {
     content: {
       offerThroughput: undefined,
-      offerIsRUPerMinuteThroughputEnabled: false
+      offerIsRUPerMinuteThroughputEnabled: false,
     },
     _etag: undefined,
     _ts: undefined,
@@ -388,12 +388,12 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
     offerResourceId: sdkOfferDefinition.offerResourceId,
     offerVersion: sdkOfferDefinition.offerVersion,
     offerType: sdkOfferDefinition.offerType,
-    resource: sdkOfferDefinition.resource
+    resource: sdkOfferDefinition.resource,
   };
 
   if (params.autopilotThroughput) {
     newOffer.content.offerAutopilotSettings = {
-      maxThroughput: params.autopilotThroughput
+      maxThroughput: params.autopilotThroughput,
     };
   } else {
     newOffer.content.offerThroughput = params.manualThroughput;
@@ -402,12 +402,12 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
   const options: RequestOptions = {};
   if (params.migrateToAutoPilot) {
     options.initialHeaders = {
-      [HttpHeaders.migrateOfferToAutopilot]: "true"
+      [HttpHeaders.migrateOfferToAutopilot]: "true",
     };
     delete newOffer.content.offerAutopilotSettings;
   } else if (params.migrateToManual) {
     options.initialHeaders = {
-      [HttpHeaders.migrateOfferToManualThroughput]: "true"
+      [HttpHeaders.migrateOfferToManualThroughput]: "true",
     };
     newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
   }

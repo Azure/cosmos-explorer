@@ -33,7 +33,7 @@ export enum MessageTypes {
   CreateWorkspace,
   CreateSparkPool,
   RefreshDatabaseAccount,
-  InitTestExplorer
+  InitTestExplorer,
 }
 
 export { Versions, ActionContracts, Diagnostics };

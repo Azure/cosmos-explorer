@@ -193,12 +193,12 @@ const mapStateToProps = (state: AppState, ownProps: ComponentProps) => {
 
   if (model && model.type === "notebook") {
     const cellOrder = selectors.notebook.cellOrder(model);
-    const cellIndex = cellOrder.findIndex(cellId => cellId === id);
+    const cellIndex = cellOrder.findIndex((cellId) => cellId === id);
     isFirstCell = cellIndex === 0;
   }
 
   return {
-    isFirstCell
+    isFirstCell,
   };
 };
 
@@ -208,7 +208,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   createCellAppend: (payload: { cellType: CellType; contentRef: ContentRef }) =>
     dispatch(actions.createCellAppend(payload)),
   createCellBelow: (payload: { cellType: CellType; id?: string; source: string; contentRef: ContentRef }) =>
-    dispatch(actions.createCellBelow(payload))
+    dispatch(actions.createCellBelow(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CellCreator);

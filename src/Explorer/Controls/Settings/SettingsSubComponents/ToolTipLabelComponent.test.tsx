@@ -5,7 +5,7 @@ import { ToolTipLabelComponent, ToolTipLabelComponentProps } from "./ToolTipLabe
 describe("ToolTipLabelComponent", () => {
   const props: ToolTipLabelComponentProps = {
     label: "sample tool tip label",
-    toolTipElement: <span>sample tool tip text</span>
+    toolTipElement: <span>sample tool tip text</span>,
   };
 
   it("renders", () => {

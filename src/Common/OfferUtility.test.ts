@@ -9,14 +9,14 @@ describe("parseSDKOfferResponse", () => {
         offerThroughput: 500,
         collectionThroughputInfo: {
           minimumRUForCollection: 400,
-          numPhysicalPartitions: 1
-        }
+          numPhysicalPartitions: 1,
+        },
       },
-      id: "test"
+      id: "test",
     } as SDKOfferDefinition;
 
     const mockResponse = {
-      resource: mockOfferDefinition
+      resource: mockOfferDefinition,
     } as OfferResponse;
 
     const expectedResult: Offer = {
@@ -25,7 +25,7 @@ describe("parseSDKOfferResponse", () => {
       minimumThroughput: 400,
       id: "test",
       offerDefinition: mockOfferDefinition,
-      offerReplacePending: false
+      offerReplacePending: false,
     };
 
     expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(expectedResult);
@@ -37,17 +37,17 @@ describe("parseSDKOfferResponse", () => {
         offerThroughput: 400,
         collectionThroughputInfo: {
           minimumRUForCollection: 400,
-          numPhysicalPartitions: 1
+          numPhysicalPartitions: 1,
         },
         offerAutopilotSettings: {
-          maxThroughput: 5000
-        }
+          maxThroughput: 5000,
+        },
       },
-      id: "test"
+      id: "test",
     } as SDKOfferDefinition;
 
     const mockResponse = {
-      resource: mockOfferDefinition
+      resource: mockOfferDefinition,
     } as OfferResponse;
 
     const expectedResult: Offer = {
@@ -56,7 +56,7 @@ describe("parseSDKOfferResponse", () => {
       minimumThroughput: 400,
       id: "test",
       offerDefinition: mockOfferDefinition,
-      offerReplacePending: false
+      offerReplacePending: false,
     };
 
     expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(expectedResult);

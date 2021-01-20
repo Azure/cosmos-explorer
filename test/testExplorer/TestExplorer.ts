@@ -1,11 +1,11 @@
-import { MessageTypes } from "../../../src/Contracts/ExplorerContracts";
-import "../../../less/hostedexplorer.less";
+import { MessageTypes } from "../../src/Contracts/ExplorerContracts";
+import "../../less/hostedexplorer.less";
 import { TestExplorerParams } from "./TestExplorerParams";
 import { ClientSecretCredential } from "@azure/identity";
 import { DatabaseAccountsGetResponse } from "@azure/arm-cosmosdb/esm/models";
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import * as msRest from "@azure/ms-rest-js";
-import * as ViewModels from "../../../src/Contracts/ViewModels";
+import * as ViewModels from "../../src/Contracts/ViewModels";
 
 class CustomSigner implements msRest.ServiceClientCredentials {
   private token: string;
@@ -58,7 +58,7 @@ const sendMessageToExplorerFrame = (data: unknown): void => {
     explorerFrame.contentWindow.postMessage(
       {
         signature: "pcIframe",
-        data: data
+        data: data,
       },
       explorerFrame.contentDocument.referrer || window.location.href
     );
@@ -87,6 +87,7 @@ const initTestExplorer = async (): Promise<void> => {
   const portalRunnerResourceGroup = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.portalRunnerResourceGroup)
   );
+  const selfServeType = urlSearchParams.get(TestExplorerParams.selfServeType);
 
   const token = await AADLogin(
     notebooksTestRunnerTenantId,
@@ -125,11 +126,12 @@ const initTestExplorer = async (): Promise<void> => {
       sharedThroughputDefault: 400,
       defaultCollectionThroughput: {
         storage: "100",
-        throughput: { fixed: 400, unlimited: 400, unlimitedmax: 100000, unlimitedmin: 400, shared: 400 }
+        throughput: { fixed: 400, unlimited: 400, unlimitedmax: 100000, unlimitedmin: 400, shared: 400 },
       },
       // add UI test only when feature is not dependent on flights anymore
-      flights: []
-    } as ViewModels.DataExplorerInputsFrame
+      flights: [],
+      selfServeType: selfServeType,
+    } as ViewModels.DataExplorerInputsFrame,
   };
 
   window.postMessage(initTestExplorerContent, window.location.href);

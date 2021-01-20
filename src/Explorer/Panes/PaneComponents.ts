@@ -31,7 +31,7 @@ export class AddDatabasePaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: AddDatabasePaneTemplate
+      template: AddDatabasePaneTemplate,
     };
   }
 }
@@ -40,7 +40,7 @@ export class AddCollectionPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: AddCollectionPaneTemplate
+      template: AddCollectionPaneTemplate,
     };
   }
 }
@@ -49,7 +49,7 @@ export class DeleteCollectionConfirmationPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: DeleteCollectionConfirmationPaneTemplate
+      template: DeleteCollectionConfirmationPaneTemplate,
     };
   }
 }
@@ -58,7 +58,7 @@ export class DeleteDatabaseConfirmationPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: DeleteDatabaseConfirmationPaneTemplate
+      template: DeleteDatabaseConfirmationPaneTemplate,
     };
   }
 }
@@ -67,7 +67,7 @@ export class GraphNewVertexPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: GraphNewVertexPaneTemplate
+      template: GraphNewVertexPaneTemplate,
     };
   }
 }
@@ -76,7 +76,7 @@ export class GraphStylingPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: GraphStylingPaneTemplate
+      template: GraphStylingPaneTemplate,
     };
   }
 }
@@ -85,7 +85,7 @@ export class TableAddEntityPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: TableAddEntityPaneTemplate
+      template: TableAddEntityPaneTemplate,
     };
   }
 }
@@ -94,7 +94,7 @@ export class TableEditEntityPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: TableEditEntityPaneTemplate
+      template: TableEditEntityPaneTemplate,
     };
   }
 }
@@ -103,7 +103,7 @@ export class TableColumnOptionsPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: TableColumnOptionsPaneTemplate
+      template: TableColumnOptionsPaneTemplate,
     };
   }
 }
@@ -112,7 +112,7 @@ export class TableQuerySelectPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: TableQuerySelectPaneTemplate
+      template: TableQuerySelectPaneTemplate,
     };
   }
 }
@@ -121,7 +121,7 @@ export class CassandraAddCollectionPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: CassandraAddCollectionPaneTemplate
+      template: CassandraAddCollectionPaneTemplate,
     };
   }
 }
@@ -130,7 +130,7 @@ export class SettingsPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: SettingsPaneTemplate
+      template: SettingsPaneTemplate,
     };
   }
 }
@@ -139,7 +139,7 @@ export class ExecuteSprocParamsComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: ExecuteSprocParamsPaneTemplate
+      template: ExecuteSprocParamsPaneTemplate,
     };
   }
 }
@@ -148,7 +148,7 @@ export class RenewAdHocAccessPane {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: RenewAdHocAccessPaneTemplate
+      template: RenewAdHocAccessPaneTemplate,
     };
   }
 }
@@ -157,7 +157,7 @@ export class UploadItemsPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: UploadItemsPaneTemplate
+      template: UploadItemsPaneTemplate,
     };
   }
 }
@@ -166,7 +166,7 @@ export class LoadQueryPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: LoadQueryPaneTemplate
+      template: LoadQueryPaneTemplate,
     };
   }
 }
@@ -175,7 +175,7 @@ export class SaveQueryPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: SaveQueryPaneTemplate
+      template: SaveQueryPaneTemplate,
     };
   }
 }
@@ -184,7 +184,7 @@ export class BrowseQueriesPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: BrowseQueriesPaneTemplate
+      template: BrowseQueriesPaneTemplate,
     };
   }
 }
@@ -193,7 +193,7 @@ export class UploadFilePaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: UploadFilePaneTemplate
+      template: UploadFilePaneTemplate,
     };
   }
 }
@@ -202,7 +202,7 @@ export class StringInputPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: StringInputPaneTemplate
+      template: StringInputPaneTemplate,
     };
   }
 }
@@ -211,7 +211,7 @@ export class SetupNotebooksPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: SetupNotebooksPaneTemplate
+      template: SetupNotebooksPaneTemplate,
     };
   }
 }
@@ -220,7 +220,7 @@ export class GitHubReposPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: GitHubReposPaneTemplate
+      template: GitHubReposPaneTemplate,
     };
   }
 }

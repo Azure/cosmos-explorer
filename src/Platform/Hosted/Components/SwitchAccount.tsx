@@ -14,16 +14,16 @@ export const SwitchAccount: FunctionComponent<Props> = ({
   accounts,
   setSelectedAccountName,
   selectedAccount,
-  dismissMenu
+  dismissMenu,
 }: Props) => {
   return (
     <Dropdown
       label="Cosmos DB Account Name"
       className="accountSwitchAccountDropdown"
-      options={accounts?.map(account => ({
+      options={accounts?.map((account) => ({
         key: account.name,
         text: account.name,
-        data: account
+        data: account,
       }))}
       onChange={(_, option) => {
         setSelectedAccountName(String(option.key));
@@ -32,7 +32,7 @@ export const SwitchAccount: FunctionComponent<Props> = ({
       defaultSelectedKey={selectedAccount?.name}
       placeholder={accounts && accounts.length === 0 ? "No Accounts Found" : "Select an Account"}
       styles={{
-        callout: "accountSwitchAccountDropdownMenu"
+        callout: "accountSwitchAccountDropdownMenu",
       }}
     />
   );

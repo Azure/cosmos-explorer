@@ -6,7 +6,7 @@ export var TableType = {
   Double: "Double",
   Guid: "Guid",
   Int32: "Int32",
-  Int64: "Int64"
+  Int64: "Int64",
 };
 
 export var CassandraType = {
@@ -24,12 +24,12 @@ export var CassandraType = {
   Varint: "Varint",
   Inet: "Inet",
   Smallint: "Smallint",
-  Tinyint: "Tinyint"
+  Tinyint: "Tinyint",
 };
 
 export var ClauseRule = {
   And: "And",
-  Or: "Or"
+  Or: "Or",
 };
 
 export var Operator = {
@@ -39,7 +39,7 @@ export var Operator = {
   LessThan: "<",
   LessThanOrEqualTo: "<=",
   NotEqualTo: "<>",
-  Equal: "="
+  Equal: "=",
 };
 
 export var ODataOperator = {
@@ -48,7 +48,7 @@ export var ODataOperator = {
   GreaterThanOrEqualTo: "ge",
   LessThan: "lt",
   LessThanOrEqualTo: "le",
-  NotEqualTo: "ne"
+  NotEqualTo: "ne",
 };
 
 export var timeOptions = {
@@ -59,7 +59,7 @@ export var timeOptions = {
   last365Days: "Last 365 days",
   currentMonth: "Current month",
   currentYear: "Current year",
-  custom: "Custom..."
+  custom: "Custom...",
 };
 
 export var htmlSelectors = {
@@ -81,7 +81,7 @@ export var htmlSelectors = {
   breadCrumbItemsSelector: ".breadcrumb li a",
   paginateSelector: "#storageTable_paginate",
   dataTablesInfoSelector: "#storageTable_info",
-  selectAllDropdownSelector: "#select-all-dropdown"
+  selectAllDropdownSelector: "#select-all-dropdown",
 };
 
 export var defaultHeader = " ";
@@ -91,7 +91,7 @@ export var EntityKeyNames = {
   RowKey: "RowKey",
   Timestamp: "Timestamp",
   Metadata: ".metadata",
-  Etag: "etag"
+  Etag: "etag",
 };
 
 export var htmlAttributeNames = {
@@ -100,11 +100,11 @@ export var htmlAttributeNames = {
   dataTableSnapshotAttr: "snapshot_attr",
   dataTableRowKeyAttr: "rowKey_attr",
   dataTableMessageIdAttr: "messageId_attr",
-  dataTableHeaderIndex: "data-column-index"
+  dataTableHeaderIndex: "data-column-index",
 };
 
 export var cssColors = {
-  commonControlsButtonActive: "#B4C7DC" /* A darker shade of [{common-controls-button-hover-background}] */
+  commonControlsButtonActive: "#B4C7DC" /* A darker shade of [{common-controls-button-hover-background}] */,
 };
 
 export var clauseGroupColors = ["#ffe1ff", "#fffacd", "#f0ffff", "#ffefd5", "#f0fff0"];
@@ -160,12 +160,12 @@ export var keyCodes = {
   F10: 121,
   F11: 122,
   F12: 123,
-  Dash: 189
+  Dash: 189,
 };
 
 export var InputType = {
   Text: "text",
   // Chrome doesn't support datetime, instead, datetime-local is supported.
   DateTime: "datetime-local",
-  Number: "number"
+  Number: "number",
 };

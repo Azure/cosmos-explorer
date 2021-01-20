@@ -20,7 +20,7 @@ describe("NotebookMetadataComponent", () => {
         views: 0,
         newCellId: undefined,
         policyViolations: undefined,
-        pendingScanJobIds: undefined
+        pendingScanJobIds: undefined,
       },
       isFavorite: false,
       downloadButtonText: "Download",
@@ -28,7 +28,7 @@ describe("NotebookMetadataComponent", () => {
       onDownloadClick: undefined,
       onFavoriteClick: undefined,
       onUnfavoriteClick: undefined,
-      onReportAbuseClick: undefined
+      onReportAbuseClick: undefined,
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);
@@ -52,7 +52,7 @@ describe("NotebookMetadataComponent", () => {
         views: 0,
         newCellId: undefined,
         policyViolations: undefined,
-        pendingScanJobIds: undefined
+        pendingScanJobIds: undefined,
       },
       isFavorite: true,
       downloadButtonText: "Download",
@@ -60,7 +60,7 @@ describe("NotebookMetadataComponent", () => {
       onDownloadClick: undefined,
       onFavoriteClick: undefined,
       onUnfavoriteClick: undefined,
-      onReportAbuseClick: undefined
+      onReportAbuseClick: undefined,
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);

@@ -10,10 +10,7 @@ export const queryDocuments = (
   options: FeedOptions
 ): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
-  return client()
-    .database(databaseId)
-    .container(containerId)
-    .items.query(query, options);
+  return client().database(databaseId).container(containerId).items.query(query, options);
 };
 
 export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {

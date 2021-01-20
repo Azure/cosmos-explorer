@@ -6,7 +6,7 @@ import * as TableEntityProcessor from "../TableEntityProcessor";
 export enum IconState {
   default,
   hoverState,
-  toggleOn
+  toggleOn,
 }
 
 /**

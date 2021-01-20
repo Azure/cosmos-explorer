@@ -23,5 +23,5 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   defaultExperience: undefined,
   kernelRestartDelayMs: Notebook.kernelRestartInitialDelayMs,
   hoveredCellId: undefined,
-  currentNotebookParentElements: new Map<ContentRef, HTMLElement>()
+  currentNotebookParentElements: new Map<ContentRef, HTMLElement>(),
 });

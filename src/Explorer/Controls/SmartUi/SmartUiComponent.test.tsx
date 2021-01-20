@@ -1,17 +1,17 @@
-import { shallow } from "enzyme";
 import React from "react";
-import { Descriptor, SmartUiComponent } from "./SmartUiComponent";
+import { shallow } from "enzyme";
+import { SmartUiComponent, SmartUiDescriptor, UiType } from "./SmartUiComponent";
 
 describe("SmartUiComponent", () => {
-  const exampleData: Descriptor = {
+  const exampleData: SmartUiDescriptor = {
     root: {
       id: "root",
       info: {
         message: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details"
-        }
+          text: "More Details",
+        },
       },
       children: [
         {
@@ -24,8 +24,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "spin"
-          }
+            uiType: UiType.Spinner,
+          },
         },
         {
           id: "throughput2",
@@ -37,16 +37,30 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            inputType: "slider"
-          }
+            uiType: UiType.Slider,
+          },
+        },
+        {
+          id: "throughput3",
+          input: {
+            label: "Throughput (invalid)",
+            dataFieldName: "throughput3",
+            type: "boolean",
+            min: 400,
+            max: 500,
+            step: 10,
+            defaultValue: 400,
+            uiType: UiType.Spinner,
+            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'",
+          },
         },
         {
           id: "containerId",
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
-          }
+            type: "string",
+          },
         },
         {
           id: "analyticalStore",
@@ -56,31 +70,32 @@ describe("SmartUiComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
-          }
+            type: "boolean",
+          },
         },
         {
           id: "database",
           input: {
             label: "Database",
             dataFieldName: "database",
-            type: "enum",
+            type: "object",
             choices: [
-              { label: "Database 1", key: "db1", value: "database1" },
-              { label: "Database 2", key: "db2", value: "database2" },
-              { label: "Database 3", key: "db3", value: "database3" }
+              { label: "Database 1", key: "db1" },
+              { label: "Database 2", key: "db2" },
+              { label: "Database 3", key: "db3" },
             ],
-            defaultKey: "db2"
-          }
-        }
-      ]
-    }
+            defaultKey: "db2",
+          },
+        },
+      ],
+    },
   };
 
-  const exampleCallbacks = (): void => undefined;
-
-  it("should render", () => {
-    const wrapper = shallow(<SmartUiComponent descriptor={exampleData} onChange={exampleCallbacks} />);
+  it("should render", async () => {
+    const wrapper = shallow(
+      <SmartUiComponent descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} />
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
   });
 });

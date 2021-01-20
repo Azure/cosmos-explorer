@@ -90,6 +90,6 @@ function TabsManagerWrapperViewModel(params: { data: TabsManager }) {
 export function TabsManagerKOComponent(): unknown {
   return {
     viewModel: TabsManagerWrapperViewModel,
-    template: TabsManagerTemplate
+    template: TabsManagerTemplate,
   };
 }

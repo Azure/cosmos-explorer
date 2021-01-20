@@ -1,0 +1,168 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelfServeComponent should render 1`] = `
+<div
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <Stack
+    styles={
+      Object {
+        "root": Object {
+          "padding": 10,
+          "width": 400,
+        },
+      }
+    }
+    tokens={
+      Object {
+        "childrenGap": 20,
+      }
+    }
+  >
+    <SmartUiComponent
+      currentValues={
+        Map {
+          "throughput" => "450",
+          "analyticalStore" => "false",
+          "database" => "db2",
+        }
+      }
+      descriptor={
+        Object {
+          "initialize": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "inputNames": Array [
+            "throughput",
+            "containerId",
+            "analyticalStore",
+            "database",
+          ],
+          "onSubmit": [MockFunction],
+          "root": Object {
+            "children": Array [
+              Object {
+                "id": "throughput",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "throughput",
+                  "defaultValue": 400,
+                  "label": "Throughput (input)",
+                  "max": 500,
+                  "min": 400,
+                  "placeholder": undefined,
+                  "step": 10,
+                  "type": "number",
+                  "uiType": "Spinner",
+                },
+              },
+              Object {
+                "id": "containerId",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "containerId",
+                  "label": "Container id",
+                  "placeholder": undefined,
+                  "type": "string",
+                },
+              },
+              Object {
+                "id": "analyticalStore",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "analyticalStore",
+                  "defaultValue": true,
+                  "falseLabel": "Disabled",
+                  "label": "Analytical Store",
+                  "placeholder": undefined,
+                  "trueLabel": "Enabled",
+                  "type": "boolean",
+                },
+              },
+              Object {
+                "id": "database",
+                "info": undefined,
+                "input": Object {
+                  "choices": Array [
+                    Object {
+                      "key": "db1",
+                      "label": "Database 1",
+                    },
+                    Object {
+                      "key": "db2",
+                      "label": "Database 2",
+                    },
+                    Object {
+                      "key": "db3",
+                      "label": "Database 3",
+                    },
+                  ],
+                  "dataFieldName": "database",
+                  "defaultKey": "db2",
+                  "label": "Database",
+                  "placeholder": undefined,
+                  "type": "object",
+                },
+              },
+            ],
+            "id": "root",
+            "info": Object {
+              "link": Object {
+                "href": "https://aka.ms/azure-cosmos-db-pricing",
+                "text": "More Details",
+              },
+              "message": "Start at $24/mo per database",
+            },
+          },
+        }
+      }
+      onInputChange={[Function]}
+    />
+    <Stack
+      horizontal={true}
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <CustomizedPrimaryButton
+        id="submitButton"
+        onClick={[Function]}
+        styles={
+          Object {
+            "root": Object {
+              "width": 100,
+            },
+          }
+        }
+        text="submit"
+      />
+      <CustomizedPrimaryButton
+        id="discardButton"
+        onClick={[Function]}
+        styles={
+          Object {
+            "root": Object {
+              "width": 100,
+            },
+          }
+        }
+        text="discard"
+      />
+    </Stack>
+  </Stack>
+</div>
+`;

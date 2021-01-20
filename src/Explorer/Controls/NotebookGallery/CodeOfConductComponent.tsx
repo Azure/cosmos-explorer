@@ -24,7 +24,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
     super(props);
 
     this.state = {
-      readCodeOfConduct: false
+      readCodeOfConduct: false,
     };
 
     this.descriptionPara1 = "Azure CosmosDB Notebook Gallery - Code of Conduct and Privacy Statement";
@@ -81,11 +81,11 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
             styles={{
               label: {
                 margin: 0,
-                padding: "2 0 2 0"
+                padding: "2 0 2 0",
               },
               text: {
-                fontSize: 12
-              }
+                fontSize: 12,
+              },
             }}
             label="I have read and accepted the code of conduct and privacy statement"
             onChange={this.onChangeCheckbox}

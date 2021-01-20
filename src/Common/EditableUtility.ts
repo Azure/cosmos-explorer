@@ -73,7 +73,7 @@ export default class EditableUtility {
       return false;
     });
 
-    observable.subscribe(edit => {
+    observable.subscribe((edit) => {
       var edits = observable.edits && observable.edits();
       if (!edits) {
         return;
@@ -83,9 +83,9 @@ export default class EditableUtility {
     });
 
     observable.editableIsValid = ko.observable<boolean>(true);
-    observable.subscribe(value => {
+    observable.subscribe((value) => {
       const validations: ((value: T) => boolean)[] = (observable.validations && observable.validations()) || [];
-      const isValid = validations.every(validate => validate(value));
+      const isValid = validations.every((validate) => validate(value));
       observable.editableIsValid(isValid);
     });
 
