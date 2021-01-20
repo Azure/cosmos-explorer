@@ -69,7 +69,7 @@ export interface KernelSpecs {
 }
 export declare enum ActionTypes {
   Update = 0,
-  Response = 1
+  Response = 1,
 }
 /**
  * Messages Data Explorer -> JupyterLabApp
@@ -99,7 +99,7 @@ export declare enum MessageTypes {
   Status = 21,
   KernelList = 22,
   IsDirty = 23,
-  Shutdown = 24
+  Shutdown = 24,
 }
 export declare enum NotebookUpdateTypes {
   Ready = 0,
@@ -107,5 +107,5 @@ export declare enum NotebookUpdateTypes {
   ActiveCellType = 2,
   KernelChange = 3,
   FileSaved = 4,
-  SessionStatusChange = 5
+  SessionStatusChange = 5,
 }

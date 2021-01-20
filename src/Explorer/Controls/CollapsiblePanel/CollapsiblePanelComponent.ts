@@ -8,7 +8,7 @@ export class CollapsiblePanelComponent {
   constructor() {
     return {
       viewModel: CollapsiblePanelViewModel,
-      template
+      template,
     };
   }
 }

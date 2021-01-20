@@ -28,7 +28,7 @@ export class InputTypeaheadComponent {
   constructor() {
     return {
       viewModel: InputTypeaheadViewModel,
-      template
+      template,
     };
   }
 }
@@ -106,7 +106,7 @@ class InputTypeaheadViewModel {
     this.params.choices.subscribe(this.initializeTypeahead.bind(this));
     this.cache = {
       inputValue: null,
-      selection: null
+      selection: null,
     };
   }
 
@@ -125,7 +125,7 @@ class InputTypeaheadViewModel {
         display: "caption",
         data: () => {
           return this.params.choices();
-        }
+        },
       },
       callback: {
         onClick: (node: any, a: any, item: OnClickItem, event: any) => {
@@ -140,7 +140,7 @@ class InputTypeaheadViewModel {
           if (params.inputValue) {
             params.inputValue(query);
           }
-        }
+        },
       },
       template: (query: string, item: any) => {
         // Don't display id if caption *IS* the id
@@ -148,7 +148,7 @@ class InputTypeaheadViewModel {
           ? "<span>{{caption}}</span>"
           : "<span><div>{{caption}}</div><div><small>{{value}}</small></div></span>";
       },
-      dynamic: true
+      dynamic: true,
     };
 
     // Override options

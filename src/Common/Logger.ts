@@ -29,7 +29,7 @@ export function logError(errorMessage: string, area: string, code?: number | str
 function _logEntry(entry: Diagnostics.LogEntry): void {
   sendMessage({
     type: MessageTypes.LogInfo,
-    data: JSON.stringify(entry)
+    data: JSON.stringify(entry),
   });
 
   const severityLevel = ((level: Diagnostics.LogEntryLevel): SeverityLevel => {
@@ -60,6 +60,6 @@ function _generateLogEntry(
     level,
     message,
     area,
-    code
+    code,
   };
 }

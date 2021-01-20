@@ -18,8 +18,8 @@ export function trace(action: Action, actionModifier: string = ActionModifiers.M
     data: {
       action: Action[action],
       actionModifier: actionModifier,
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.trackEvent({ name: Action[action] }, getData(actionModifier, data));
@@ -33,8 +33,8 @@ export function traceStart(action: Action, data?: TelemetryData): number {
       action: Action[action],
       actionModifier: ActionModifiers.Start,
       timestamp: timestamp,
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.startTrackEvent(Action[action]);
@@ -48,8 +48,8 @@ export function traceSuccess(action: Action, data?: TelemetryData, timestamp?: n
       action: Action[action],
       actionModifier: ActionModifiers.Success,
       timestamp: timestamp || Date.now(),
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Success, data));
@@ -62,8 +62,8 @@ export function traceFailure(action: Action, data?: TelemetryData, timestamp?: n
       action: Action[action],
       actionModifier: ActionModifiers.Failed,
       timestamp: timestamp || Date.now(),
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Failed, data));
@@ -76,8 +76,8 @@ export function traceCancel(action: Action, data?: TelemetryData, timestamp?: nu
       action: Action[action],
       actionModifier: ActionModifiers.Cancel,
       timestamp: timestamp || Date.now(),
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.stopTrackEvent(Action[action], getData(ActionModifiers.Cancel, data));
@@ -91,8 +91,8 @@ export function traceOpen(action: Action, data?: TelemetryData, timestamp?: numb
       action: Action[action],
       actionModifier: ActionModifiers.Open,
       timestamp: validTimestamp,
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.startTrackEvent(Action[action]);
@@ -107,8 +107,8 @@ export function traceMark(action: Action, data?: TelemetryData, timestamp?: numb
       action: Action[action],
       actionModifier: ActionModifiers.Mark,
       timestamp: validTimestamp,
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
 
   appInsights.startTrackEvent(Action[action]);
@@ -125,6 +125,6 @@ function getData(actionModifier: string, data: TelemetryData = {}): { [key: stri
     platform: configContext.platform,
     env: process.env.NODE_ENV as string,
     actionModifier,
-    ...data
+    ...data,
   };
 }

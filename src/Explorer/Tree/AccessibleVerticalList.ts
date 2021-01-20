@@ -3,7 +3,7 @@ import * as ko from "knockout";
 
 enum ScrollPosition {
   Top,
-  Bottom
+  Bottom,
 }
 
 export class AccessibleVerticalList {

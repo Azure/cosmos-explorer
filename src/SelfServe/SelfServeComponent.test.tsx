@@ -7,7 +7,7 @@ describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, InputType>([
     ["throughput", "450"],
     ["analyticalStore", "false"],
-    ["database", "db2"]
+    ["database", "db2"],
   ]);
   const initializeMock = jest.fn(async () => defaultValues);
   const onSubmitMock = jest.fn(async () => {
@@ -24,8 +24,8 @@ describe("SelfServeComponent", () => {
         message: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details"
-        }
+          text: "More Details",
+        },
       },
       children: [
         {
@@ -38,16 +38,16 @@ describe("SelfServeComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Spinner
-          }
+            uiType: UiType.Spinner,
+          },
         },
         {
           id: "containerId",
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
-          }
+            type: "string",
+          },
         },
         {
           id: "analyticalStore",
@@ -57,8 +57,8 @@ describe("SelfServeComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
-          }
+            type: "boolean",
+          },
         },
         {
           id: "database",
@@ -69,13 +69,13 @@ describe("SelfServeComponent", () => {
             choices: [
               { label: "Database 1", key: "db1" },
               { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" }
+              { label: "Database 3", key: "db3" },
             ],
-            defaultKey: "db2"
-          }
-        }
-      ]
-    }
+            defaultKey: "db2",
+          },
+        },
+      ],
+    },
   };
 
   const verifyDefaultsSet = (currentValues: Map<string, InputType>): void => {
@@ -88,7 +88,7 @@ describe("SelfServeComponent", () => {
 
   it("should render", async () => {
     const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 
     // initialize() should be called and defaults should be set when component is mounted

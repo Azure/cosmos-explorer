@@ -13,7 +13,7 @@ it("calls setAccount from parent component", () => {
   const setDatabaseAccount = jest.fn();
   const subscriptions = [
     { subscriptionId: "testSub1", displayName: "Test Sub 1" },
-    { subscriptionId: "testSub2", displayName: "Test Sub 2" }
+    { subscriptionId: "testSub2", displayName: "Test Sub 2" },
   ] as Subscription[];
   (useSubscriptions as jest.Mock).mockReturnValue(subscriptions);
   const accounts = [{ name: "testAccount1" }, { name: "testAccount2" }] as DatabaseAccount[];

@@ -60,13 +60,13 @@ export class SaveQueryPane extends ContextualPaneBase {
       id: queryName,
       resourceId: this.container.queriesClient.getResourceId(),
       queryName: queryName,
-      query: query
+      query: query,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.SaveQuery, {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     this.isExecuting(true);
     this.container.queriesClient.saveQuery(queryParam).then(
@@ -80,7 +80,7 @@ export class SaveQueryPane extends ContextualPaneBase {
             databaseAccountName: this.container.databaseAccount().name,
             defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );
@@ -99,7 +99,7 @@ export class SaveQueryPane extends ContextualPaneBase {
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
             error: errorMessage,
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );
@@ -116,7 +116,7 @@ export class SaveQueryPane extends ContextualPaneBase {
       databaseAccountName: this.container && this.container.databaseAccount().name,
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     try {
       this.isExecuting(true);
@@ -128,7 +128,7 @@ export class SaveQueryPane extends ContextualPaneBase {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
         },
         startKey
       );
@@ -142,7 +142,7 @@ export class SaveQueryPane extends ContextualPaneBase {
           dataExplorerArea: Constants.Areas.ContextualPane,
           paneTitle: this.title(),
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         startKey
       );

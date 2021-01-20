@@ -7,7 +7,7 @@ import {
   SmartUiComponent,
   UiType,
   SmartUiDescriptor,
-  Info
+  Info,
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
 export interface BaseInput {
@@ -80,7 +80,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       root: this.props.descriptor,
       currentValues: new Map(),
       baselineValues: new Map(),
-      isRefreshing: false
+      isRefreshing: false,
     };
   }
 

@@ -9,7 +9,7 @@ export class DiffEditorComponent {
   constructor() {
     return {
       viewModel: DiffEditorViewModel,
-      template
+      template,
     };
   }
 }
@@ -103,7 +103,7 @@ export class DiffEditorViewModel {
       lineNumbers: this.params.lineNumbers || "off",
       fontSize: 12,
       ariaLabel: this.params.ariaLabel,
-      theme: this.params.theme
+      theme: this.params.theme,
     };
 
     if (this.params.renderSideBySide !== undefined) {
@@ -120,7 +120,7 @@ export class DiffEditorViewModel {
     );
     diffEditor.setModel({
       original: originalModel,
-      modified: modifiedModel
+      modified: modifiedModel,
     });
 
     createCallback(diffEditor);
@@ -147,7 +147,7 @@ export class DiffEditorViewModel {
     this.observer.observe(document.body, {
       attributes: true,
       subtree: true,
-      childList: true
+      childList: true,
     });
     this.editor.focus();
   }

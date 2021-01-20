@@ -70,7 +70,7 @@ export class EditorReact extends React.Component<EditorReactProps> {
       fontSize: 12,
       ariaLabel: this.props.ariaLabel,
       theme: this.props.theme,
-      automaticLayout: true
+      automaticLayout: true,
     };
 
     this.rootNode.innerHTML = "";

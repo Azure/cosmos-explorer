@@ -48,7 +48,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
       defaultExperience: this.container.defaultExperience(),
       collectionId: selectedCollection.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     let promise: Promise<any>;
     if (this.container.isPreferredApiCassandra()) {
@@ -67,7 +67,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         this.close();
         this.container.selectedNode(selectedCollection.database);
         this.container.tabsManager?.closeTabsByComparator(
-          tab =>
+          (tab) =>
             tab.node?.id() === selectedCollection.id() &&
             (tab.node as ViewModels.Collection).databaseId === selectedCollection.databaseId
         );
@@ -80,7 +80,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );
@@ -93,7 +93,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
           );
 
           TelemetryProcessor.trace(Action.DeleteCollection, ActionModifiers.Mark, {
-            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
           });
 
           this.containerDeleteFeedback("");
@@ -113,7 +113,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
             error: errorMessage,
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );

@@ -16,7 +16,7 @@
     <!-- Tables Query Tab Errors - Start-->
     <div class="error-bar">
       <div class="error-message" aria-label="Error Message" data-bind="visible: hasQueryError">
-        <span><img class="entity-error-Img" src="/error_red.svg"/></span>
+        <span><img class="entity-error-Img" src="/error_red.svg" /></span>
         <span class="error-text" role="alert" data-bind="text: queryErrorMessage"></span>
       </div>
     </div>
@@ -37,7 +37,7 @@
     </div>
     <!-- Tables Query Tab Query Text - End-->
     <!-- Tables Query Tab Query Helper - Start-->
-    <div data-bind="visible: isHelperActive" style="padding-left:13px">
+    <div data-bind="visible: isHelperActive" style="padding-left: 13px">
       <div class="clause-table" data-bind="with: queryBuilderViewModel ">
         <div class="scroll-box scrollable" id="scroll">
           <table class="clause-table">
@@ -85,11 +85,11 @@
             <span class="clause-table addClause-title">
               <img
                 class="addclauseProperty-Img"
-                style="margin-bottom:5px;"
+                style="margin-bottom: 5px"
                 src="/Add-property.svg"
                 alt="Add new clause"
               />
-              <span style="margin-left:5px;" data-bind="text: addNewClauseLine"></span>
+              <span style="margin-left: 5px" data-bind="text: addNewClauseLine"></span>
             </span>
           </div>
         </div>
@@ -107,7 +107,7 @@
         >
           <!-- ko template: { ifnot: isExpanded} -->
           <div class="themed-images" type="text/html" id="ExpandChevronRight" data-bind="hasFocus: focusExpandIcon">
-            <img class="imgiconwidth expand-triangle expand-triangle-right " src="/Triangle-right.svg" alt="toggle" />
+            <img class="imgiconwidth expand-triangle expand-triangle-right" src="/Triangle-right.svg" alt="toggle" />
           </div>
           <!-- /ko -->
           <!-- ko template: { if: isExpanded} -->
@@ -172,78 +172,107 @@
 <!-- Script for each clause in the tables query builder -->
 <script type="text/html" id="queryClause-template">
   <tr class="clause-table-row">
-      <td class="clause-table-cell action-column">
-          <span class="entity-Add-Cancel" role="button" tabindex="0" data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}">
-                  <img class="querybuilder-addpropertyImg" src="/Add-property.svg" alt="Add clause">
-              </span>
-          <span class="entity-Add-Cancel" role="button" tabindex="0" data-bind="hasFocus: isDeleteButtonFocused, click: $parent.deleteClause.bind($data, $index()), event: { keydown: $parent.onDeleteClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.removeThisFilterLine}">
-                  <img class="querybuilder-cancelImg" src="/Entity_cancel.svg" alt="Delete clause">
-              </span>
-      </td>
-      <td class="clause-table-cell group-control-column">
-          <input type="checkbox" aria-label="And/Or" data-bind="checked: checkedForGrouping"/>
-      </td>
-      <td>
-          <table class="group-indicator-table">
-              <tbody>
-                  <tr data-bind="template: { name: 'groupIndicator-template', foreach: $parent.getClauseGroupViewModels($data), as: 'gi' }">
-                  </tr>
-              </tbody>
-          </table>
-      </td>
-      <td class="clause-table-cell and-or-column">
-          <select class="clause-table-field and-or-column" data-bind="hasFocus: isAndOrFocused, options: $parent.clauseRules, value: and_or, visible: canAnd, attr:{ 'aria-label': and_or }">
-              </select>
-      </td>
-      <td class="clause-table-cell field-column" data-bind="click: $parent.updateColumnOptions">
-          <select class="clause-table-field field-column" data-bind="options: $parent.columnOptions, value: field, attr:{ 'aria-label': field }">
-              </select>
-      </td>
-      <td class="clause-table-cell type-column">
-          <select class="clause-table-field type-column" data-bind="
+    <td class="clause-table-cell action-column">
+      <span
+        class="entity-Add-Cancel"
+        role="button"
+        tabindex="0"
+        data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}"
+      >
+        <img class="querybuilder-addpropertyImg" src="/Add-property.svg" alt="Add clause" />
+      </span>
+      <span
+        class="entity-Add-Cancel"
+        role="button"
+        tabindex="0"
+        data-bind="hasFocus: isDeleteButtonFocused, click: $parent.deleteClause.bind($data, $index()), event: { keydown: $parent.onDeleteClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.removeThisFilterLine}"
+      >
+        <img class="querybuilder-cancelImg" src="/Entity_cancel.svg" alt="Delete clause" />
+      </span>
+    </td>
+    <td class="clause-table-cell group-control-column">
+      <input type="checkbox" aria-label="And/Or" data-bind="checked: checkedForGrouping" />
+    </td>
+    <td>
+      <table class="group-indicator-table">
+        <tbody>
+          <tr
+            data-bind="template: { name: 'groupIndicator-template', foreach: $parent.getClauseGroupViewModels($data), as: 'gi' }"
+          ></tr>
+        </tbody>
+      </table>
+    </td>
+    <td class="clause-table-cell and-or-column">
+      <select
+        class="clause-table-field and-or-column"
+        data-bind="hasFocus: isAndOrFocused, options: $parent.clauseRules, value: and_or, visible: canAnd, attr:{ 'aria-label': and_or }"
+      ></select>
+    </td>
+    <td class="clause-table-cell field-column" data-bind="click: $parent.updateColumnOptions">
+      <select
+        class="clause-table-field field-column"
+        data-bind="options: $parent.columnOptions, value: field, attr:{ 'aria-label': field }"
+      ></select>
+    </td>
+    <td class="clause-table-cell type-column">
+      <select
+        class="clause-table-field type-column"
+        data-bind="
                   options: $parent.edmTypes,
                   enable: isTypeEditable,
                   value: type,
                   css: {'query-builder-isDisabled': !isTypeEditable()},
-                  attr: { 'aria-label': type }">
-              </select>
-      </td>
-      <td class="clause-table-cell operator-column">
-          <select class="clause-table-field operator-column" data-bind="
+                  attr: { 'aria-label': type }"
+      ></select>
+    </td>
+    <td class="clause-table-cell operator-column">
+      <select
+        class="clause-table-field operator-column"
+        data-bind="
                   options: $parent.operators,
                   enable: isOperaterEditable,
                   value: operator,
                   css: {'query-builder-isDisabled': !isOperaterEditable()},
-                  attr: { 'aria-label': operator }">
-              </select>
-      </td>
-      <td class="clause-table-cell value-column">
-          <!-- ko template: {if: isValue} -->
-          <input type="text" class="clause-table-field value-column" type="search" data-bind="textInput: value, attr: {'aria-label': $parent.valueLabel}" />
-          <!-- /ko -->
+                  attr: { 'aria-label': operator }"
+      ></select>
+    </td>
+    <td class="clause-table-cell value-column">
+      <!-- ko template: {if: isValue} -->
+      <input
+        type="text"
+        class="clause-table-field value-column"
+        type="search"
+        data-bind="textInput: value, attr: {'aria-label': $parent.valueLabel}"
+      />
+      <!-- /ko -->
 
-          <!-- ko template: {if: isTimestamp} -->
-          <select class="clause-table-field time-column" data-bind="options: $parent.timeOptions, value: timeValue">
-                  </select>
-          <!-- /ko -->
+      <!-- ko template: {if: isTimestamp} -->
+      <select
+        class="clause-table-field time-column"
+        data-bind="options: $parent.timeOptions, value: timeValue"
+      ></select>
+      <!-- /ko -->
 
-          <!-- ko template: {if: isCustomLastTimestamp} -->
-          <input class="clause-table-field time-column" data-bind="value: customTimeValue, click: customTimestampDialog" />
-          <!-- /ko -->
-          <!-- ko template: {if: isCustomRangeTimestamp} -->
-          <input class="clause-table-field time-column" type="datetime-local" step=1 data-bind="value: customTimeValue" />
-          <!-- /ko -->
-      </td>
+      <!-- ko template: {if: isCustomLastTimestamp} -->
+      <input class="clause-table-field time-column" data-bind="value: customTimeValue, click: customTimestampDialog" />
+      <!-- /ko -->
+      <!-- ko template: {if: isCustomRangeTimestamp} -->
+      <input class="clause-table-field time-column" type="datetime-local" step="1" data-bind="value: customTimeValue" />
+      <!-- /ko -->
+    </td>
   </tr>
 </script>
 
 <!-- Script for each clause group in the tables query builder -->
 <script type="text/html" id="groupIndicator-template">
-  <td class="group-indicator-column" data-bind="style: {backgroundColor: gi.backgroundColor, borderTop: gi.showTopBorder.peek() ? 'solid thin #CCCCCC' : 'none', borderLeft: gi.showLeftBorder.peek() ? 'solid thin #CCCCCC' : 'none', borderBottom: gi.showBottomBorder.peek() ? 'solid thin #CCCCCC' : gi.borderBackgroundColor}">
-      <!-- ko template: {if: gi.canUngroup} -->
-      <button type="button" data-bind="click: ungroupClauses, attr: {title: ungroupClausesLabel}">
-                  <img src="/QueryBuilder/UngroupClause_16x.png" alt="Ungroup clauses"/>
-              </button>
-      <!-- /ko -->
+  <td
+    class="group-indicator-column"
+    data-bind="style: {backgroundColor: gi.backgroundColor, borderTop: gi.showTopBorder.peek() ? 'solid thin #CCCCCC' : 'none', borderLeft: gi.showLeftBorder.peek() ? 'solid thin #CCCCCC' : 'none', borderBottom: gi.showBottomBorder.peek() ? 'solid thin #CCCCCC' : gi.borderBackgroundColor}"
+  >
+    <!-- ko template: {if: gi.canUngroup} -->
+    <button type="button" data-bind="click: ungroupClauses, attr: {title: ungroupClausesLabel}">
+      <img src="/QueryBuilder/UngroupClause_16x.png" alt="Ungroup clauses" />
+    </button>
+    <!-- /ko -->
   </td>
 </script>

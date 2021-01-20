@@ -28,7 +28,7 @@ export class ReadOnlyNodePropertiesComponent extends React.Component<ReadOnlyNod
               <span className="vertexLabel">{this.props.node.label}</span>
             </td>
           </tr>
-          {Object.keys(this.props.node.properties).map(_propkey => {
+          {Object.keys(this.props.node.properties).map((_propkey) => {
             const gremlinValues = this.props.node.properties[_propkey];
             return ReadOnlyNodePropertiesComponent.renderReadOnlyPropertyKeyPair(_propkey, gremlinValues);
           })}
@@ -41,11 +41,11 @@ export class ReadOnlyNodePropertiesComponent extends React.Component<ReadOnlyNod
     key: string,
     propertyValues: ViewModels.GremlinPropertyValueType[]
   ): JSX.Element {
-    const renderedValues = propertyValues.map(value =>
+    const renderedValues = propertyValues.map((value) =>
       ReadOnlyNodePropertiesComponent.renderSinglePropertyValue(value)
     );
     const stringifiedValues = propertyValues
-      .map(value => ReadOnlyNodePropertiesComponent.singlePropertyValueToString(value))
+      .map((value) => ReadOnlyNodePropertiesComponent.singlePropertyValueToString(value))
       .join(", ");
     return (
       <tr key={key}>

@@ -15,7 +15,7 @@ export const DirectoryPickerPanel: React.FunctionComponent<Props> = ({
   dismissPanel,
   armToken,
   tenantId,
-  switchTenant
+  switchTenant,
 }: Props) => {
   const directories = useDirectories(armToken);
   return (
@@ -27,7 +27,7 @@ export const DirectoryPickerPanel: React.FunctionComponent<Props> = ({
       closeButtonAriaLabel="Close"
     >
       <ChoiceGroup
-        options={directories.map(dir => ({ key: dir.tenantId, text: `${dir.displayName} (${dir.tenantId})` }))}
+        options={directories.map((dir) => ({ key: dir.tenantId, text: `${dir.displayName} (${dir.tenantId})` }))}
         selectedKey={tenantId}
         onChange={(event, option) => {
           switchTenant(option.key);

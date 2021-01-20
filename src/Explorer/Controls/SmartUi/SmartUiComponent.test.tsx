@@ -10,8 +10,8 @@ describe("SmartUiComponent", () => {
         message: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details"
-        }
+          text: "More Details",
+        },
       },
       children: [
         {
@@ -24,8 +24,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Spinner
-          }
+            uiType: UiType.Spinner,
+          },
         },
         {
           id: "throughput2",
@@ -37,8 +37,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: UiType.Slider
-          }
+            uiType: UiType.Slider,
+          },
         },
         {
           id: "throughput3",
@@ -51,16 +51,16 @@ describe("SmartUiComponent", () => {
             step: 10,
             defaultValue: 400,
             uiType: UiType.Spinner,
-            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'"
-          }
+            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'",
+          },
         },
         {
           id: "containerId",
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
-          }
+            type: "string",
+          },
         },
         {
           id: "analyticalStore",
@@ -70,8 +70,8 @@ describe("SmartUiComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
-          }
+            type: "boolean",
+          },
         },
         {
           id: "database",
@@ -82,20 +82,20 @@ describe("SmartUiComponent", () => {
             choices: [
               { label: "Database 1", key: "db1" },
               { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" }
+              { label: "Database 3", key: "db3" },
             ],
-            defaultKey: "db2"
-          }
-        }
-      ]
-    }
+            defaultKey: "db2",
+          },
+        },
+      ],
+    },
   };
 
   it("should render", async () => {
     const wrapper = shallow(
       <SmartUiComponent descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} />
     );
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
   });
 });

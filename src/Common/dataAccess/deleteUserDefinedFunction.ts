@@ -23,11 +23,7 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
         id
       );
     } else {
-      await client()
-        .database(databaseId)
-        .container(collectionId)
-        .scripts.userDefinedFunction(id)
-        .delete();
+      await client().database(databaseId).container(collectionId).scripts.userDefinedFunction(id).delete();
     }
   } catch (error) {
     handleError(error, "DeleteUserDefinedFunction", `Error while deleting user defined function ${id}`);

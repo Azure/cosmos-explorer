@@ -19,7 +19,7 @@ const galleryItem: IGalleryItem = {
   views: 0,
   newCellId: undefined,
   policyViolations: undefined,
-  pendingScanJobIds: undefined
+  pendingScanJobIds: undefined,
 };
 
 describe("GalleryUtils", () => {
@@ -85,7 +85,7 @@ describe("GalleryUtils", () => {
     expect(response).toEqual({
       selectedTab,
       sortBy,
-      searchText: decodeURIComponent(searchText)
+      searchText: decodeURIComponent(searchText),
     } as GalleryUtils.GalleryViewerProps);
   });
 
@@ -101,7 +101,7 @@ describe("GalleryUtils", () => {
     expect(response).toEqual({
       notebookUrl: decodeURIComponent(notebookUrl),
       galleryItemId,
-      hideInputs: true
+      hideInputs: true,
     } as GalleryUtils.NotebookViewerProps);
   });
 

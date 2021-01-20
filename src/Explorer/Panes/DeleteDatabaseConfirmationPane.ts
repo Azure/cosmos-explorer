@@ -50,7 +50,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
       defaultExperience: this.container.defaultExperience(),
       databaseId: selectedDatabase.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     // TODO: Should not be a Q promise anymore, but the Cassandra code requires it
     let promise: Q.Promise<any>;
@@ -69,13 +69,13 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
         this.isExecuting(false);
         this.close();
         this.container.refreshAllDatabases();
-        this.container.tabsManager.closeTabsByComparator(tab => tab.node?.id() === selectedDatabase.id());
+        this.container.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
         this.container.selectedNode(null);
         selectedDatabase
           .collections()
           .forEach((collection: ViewModels.Collection) =>
             this.container.tabsManager.closeTabsByComparator(
-              tab =>
+              (tab) =>
                 tab.node?.id() === collection.id() &&
                 (tab.node as ViewModels.Collection).databaseId === collection.databaseId
             )
@@ -88,7 +88,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             defaultExperience: this.container.defaultExperience(),
             databaseId: selectedDatabase.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );
@@ -102,7 +102,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
           );
 
           TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
-            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
           });
 
           this.databaseDeleteFeedback("");
@@ -122,7 +122,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
             error: errorMessage,
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );

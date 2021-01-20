@@ -30,7 +30,7 @@ export const fetchPortalNotifications = async (): Promise<DataModels.Notificatio
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
   const response = await window.fetch(url, {
-    headers
+    headers,
   });
 
   if (!response.ok) {

@@ -141,35 +141,45 @@
   <script type="text/html" id="toolbarItemTemplate">
     <!-- ko if: type === "action" -->
     <div class="toolbar-group" data-bind="visible: visible">
-        <button class="toolbar-group-button" data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
-                <div class="toolbar-group-button-icon">
-                    <div class="toolbar_icon" data-bind="icon: icon"></div>
-                </div>
-                <span data-bind="text: displayName"></span>
-            </button>
+      <button
+        class="toolbar-group-button"
+        data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled"
+      >
+        <div class="toolbar-group-button-icon">
+          <div class="toolbar_icon" data-bind="icon: icon"></div>
+        </div>
+        <span data-bind="text: displayName"></span>
+      </button>
     </div>
     <!-- /ko -->
 
     <!-- ko if: type === "toggle" -->
     <div class="toolbar-group" data-bind="visible: visible">
-        <button class="toolbar-group-button toggle-button" data-bind="hasFocus: focused, attr: {id: id, title: title}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
-                <div class="toolbar-group-button-icon" data-bind="css: { 'toggle-checked': checked }">
-                    <div class="toolbar_icon"  data-bind="icon: icon"></div>
-                </div>
-                <span data-bind="text: displayName"></span>
-            </button>
+      <button
+        class="toolbar-group-button toggle-button"
+        data-bind="hasFocus: focused, attr: {id: id, title: title}, event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled"
+      >
+        <div class="toolbar-group-button-icon" data-bind="css: { 'toggle-checked': checked }">
+          <div class="toolbar_icon" data-bind="icon: icon"></div>
+        </div>
+        <span data-bind="text: displayName"></span>
+      </button>
     </div>
     <!-- /ko -->
     <!-- ko if: type === "dropdown" -->
     <div class="toolbar-group" data-bind="visible: visible">
-        <div class="dropdown" data-bind="attr: {id: (id + '-dropdown')}">
-            <button role="menu" class="toolbar-group-button" data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName},  event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled">
-                    <div class="toolbar-group-button-icon">
-                        <div class="toolbar_icon" data-bind="icon: icon"></div>
-                    </div>
-                    <span data-bind="text: displayName"></span>
-                </button>
-        </div>
+      <div class="dropdown" data-bind="attr: {id: (id + '-dropdown')}">
+        <button
+          role="menu"
+          class="toolbar-group-button"
+          data-bind="hasFocus: focused, attr: {id: id, title: title, 'aria-label': displayName},  event: { mousedown: mouseDown, keydown: keyDown, keyup: keyUp }, enable: enabled"
+        >
+          <div class="toolbar-group-button-icon">
+            <div class="toolbar_icon" data-bind="icon: icon"></div>
+          </div>
+          <span data-bind="text: displayName"></span>
+        </button>
+      </div>
     </div>
     <!-- /ko -->
 
@@ -281,8 +291,7 @@
             <option
               data-bind="
                                 value: $data"
-            >
-            </option>
+            ></option>
           </datalist>
 
           <span class="filterbuttonpad">
@@ -300,7 +309,7 @@
             data-bind="
                             click: onHideFilterClick"
           >
-            <img src="/close-black.svg" style="height: 14px; width: 14px;" />
+            <img src="/close-black.svg" style="height: 14px; width: 14px" />
           </span>
         </div>
       </div>
@@ -375,7 +384,7 @@
                                     gridRowHighlighted: $parent.accessibleDocumentList.currentItem() && $parent.accessibleDocumentList.currentItem().rid === $data.rid
                                 }"
             >
-              <td style="width:82px;">
+              <td style="width: 82px">
                 <a
                   data-bind="
                                     text: $data.id, attr: { title: $data.id }"
@@ -398,9 +407,9 @@
       <!-- Document Ids - End -->
 
       <!-- Editor - Start -->
-      <div id="divcontent" style="float: left; width: calc(100% - 200px);">
+      <div id="divcontent" style="float: left; width: calc(100% - 200px)">
         <div
-          style="height:100vh;border-left :1px solid #d6d7d8; float: initial; display: flow-root!important;"
+          style="height: 100vh; border-left: 1px solid #d6d7d8; float: initial; display: flow-root !important"
           data-bind="
                     attr: {
                         id: documentEditorId

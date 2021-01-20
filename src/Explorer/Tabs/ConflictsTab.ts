@@ -74,10 +74,7 @@ export default class ConflictsTab extends TabsBase {
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
     this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
-      ? this.partitionKeyPropertyHeader
-          .replace(/[/]+/g, ".")
-          .substr(1)
-          .replace(/[']+/g, "")
+      ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
       : null;
 
     this.dataContentsGridScrollHeight = ko.observable<string>(null);
@@ -88,13 +85,13 @@ export default class ConflictsTab extends TabsBase {
         const tabContainer: HTMLElement = document.getElementById("content");
         const splitterBounds: SplitterBounds = {
           min: Constants.DocumentsGridMetrics.DocumentEditorMinWidthRatio * tabContainer.clientWidth,
-          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth
+          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth,
         };
         this.splitter = new Splitter({
           splitterId: "h_splitter2",
           leftId: this.documentContentsContainerId,
           bounds: splitterBounds,
-          direction: SplitterDirection.Vertical
+          direction: SplitterDirection.Vertical,
         });
       }
     });
@@ -150,7 +147,7 @@ export default class ConflictsTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return this.conflictOperation() !== Constants.ConflictOperationType.Delete || !!this.selectedConflictContent();
-      })
+      }),
     };
 
     this.discardButton = {
@@ -166,7 +163,7 @@ export default class ConflictsTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return this.conflictOperation() !== Constants.ConflictOperationType.Delete || !!this.selectedConflictContent();
-      })
+      }),
     };
 
     this.deleteButton = {
@@ -182,7 +179,7 @@ export default class ConflictsTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      })
+      }),
     };
 
     this.buildCommandBarOptions();
@@ -270,7 +267,7 @@ export default class ConflictsTab extends TabsBase {
       tabTitle: this.tabTitle(),
       conflictResourceType: selectedConflict.resourceType,
       conflictOperationType: selectedConflict.operationType,
-      conflictResourceId: selectedConflict.resourceId
+      conflictResourceId: selectedConflict.resourceId,
     });
 
     try {
@@ -317,7 +314,7 @@ export default class ConflictsTab extends TabsBase {
           tabTitle: this.tabTitle(),
           conflictResourceType: selectedConflict.resourceType,
           conflictOperationType: selectedConflict.operationType,
-          conflictResourceId: selectedConflict.resourceId
+          conflictResourceId: selectedConflict.resourceId,
         },
         startKey
       );
@@ -336,7 +333,7 @@ export default class ConflictsTab extends TabsBase {
           conflictOperationType: selectedConflict.operationType,
           conflictResourceId: selectedConflict.resourceId,
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         startKey
       );
@@ -358,7 +355,7 @@ export default class ConflictsTab extends TabsBase {
       tabTitle: this.tabTitle(),
       conflictResourceType: selectedConflict.resourceType,
       conflictOperationType: selectedConflict.operationType,
-      conflictResourceId: selectedConflict.resourceId
+      conflictResourceId: selectedConflict.resourceId,
     });
 
     try {
@@ -377,7 +374,7 @@ export default class ConflictsTab extends TabsBase {
           tabTitle: this.tabTitle(),
           conflictResourceType: selectedConflict.resourceType,
           conflictOperationType: selectedConflict.operationType,
-          conflictResourceId: selectedConflict.resourceId
+          conflictResourceId: selectedConflict.resourceId,
         },
         startKey
       );
@@ -396,7 +393,7 @@ export default class ConflictsTab extends TabsBase {
           conflictOperationType: selectedConflict.operationType,
           conflictResourceId: selectedConflict.resourceId,
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         startKey
       );
@@ -453,7 +450,7 @@ export default class ConflictsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             this.onLoadStartKey
           );
@@ -467,7 +464,7 @@ export default class ConflictsTab extends TabsBase {
     // TODO: Conflict Feed does not allow filtering atm
     const query: string = undefined;
     const options = {
-      enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey()
+      enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
     };
     return queryConflicts(this.collection.databaseId, this.collection.id(), query, options as FeedOptions);
   }
@@ -479,7 +476,7 @@ export default class ConflictsTab extends TabsBase {
       .then(
         (conflictIdsResponse: DataModels.ConflictId[]) => {
           const currentConflicts = this.conflictIds();
-          const currentDocumentsRids = currentConflicts.map(currentConflict => currentConflict.rid);
+          const currentDocumentsRids = currentConflicts.map((currentConflict) => currentConflict.rid);
           const nextConflictIds = conflictIdsResponse
             // filter documents already loaded in observable
             .filter((d: any) => {
@@ -501,14 +498,14 @@ export default class ConflictsTab extends TabsBase {
                 collectionName: this.collection.id(),
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle()
+                tabTitle: this.tabTitle(),
               },
               this.onLoadStartKey
             );
             this.onLoadStartKey = null;
           }
         },
-        error => {
+        (error) => {
           this.isExecutionError(true);
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
@@ -521,7 +518,7 @@ export default class ConflictsTab extends TabsBase {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
                 error: getErrorMessage(error),
-                errorStack: getErrorStack(error)
+                errorStack: getErrorStack(error),
               },
               this.onLoadStartKey
             );
@@ -541,7 +538,7 @@ export default class ConflictsTab extends TabsBase {
   };
 
   protected _loadNextPageInternal(): Q.Promise<DataModels.ConflictId[]> {
-    return Q(this._documentsIterator.fetchNext().then(response => response.resources));
+    return Q(this._documentsIterator.fetchNext().then((response) => response.resources));
   }
 
   protected _onEditorContentChange(newContent: string) {
@@ -615,7 +612,7 @@ export default class ConflictsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.acceptChangesButton.enabled()
+        disabled: !this.acceptChangesButton.enabled(),
       });
     }
 
@@ -628,7 +625,7 @@ export default class ConflictsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardButton.enabled()
+        disabled: !this.discardButton.enabled(),
       });
     }
 
@@ -641,7 +638,7 @@ export default class ConflictsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.deleteButton.enabled()
+        disabled: !this.deleteButton.enabled(),
       });
     }
     return buttons;
@@ -656,7 +653,7 @@ export default class ConflictsTab extends TabsBase {
         this.discardButton.visible,
         this.discardButton.enabled,
         this.deleteButton.visible,
-        this.deleteButton.enabled
+        this.deleteButton.enabled,
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();

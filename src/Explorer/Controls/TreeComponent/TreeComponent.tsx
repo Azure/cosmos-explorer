@@ -12,7 +12,7 @@ import { IconButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import {
   DirectionalHint,
   IContextualMenuItemProps,
-  IContextualMenuProps
+  IContextualMenuProps,
 } from "office-ui-fabric-react/lib/ContextualMenu";
 
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
@@ -89,7 +89,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     this.isExpanded = props.node.isExpanded;
     this.state = {
       isExpanded: props.node.isExpanded,
-      isMenuShowing: false
+      isMenuShowing: false,
     };
   }
 
@@ -105,7 +105,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     if (this.props.node.isExpanded !== this.isExpanded) {
       this.isExpanded = this.props.node.isExpanded;
       this.setState({
-        isExpanded: this.props.node.isExpanded
+        isExpanded: this.props.node.isExpanded,
       });
     }
   }
@@ -124,8 +124,8 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     let unsortedChildren;
     if (treeNode.isLeavesParentsSeparate) {
       // Separate parents and leave
-      const parents: TreeNode[] = treeNode.children.filter(node => node.children);
-      const leaves: TreeNode[] = treeNode.children.filter(node => !node.children);
+      const parents: TreeNode[] = treeNode.children.filter((node) => node.children);
+      const leaves: TreeNode[] = treeNode.children.filter((node) => !node.children);
 
       if (treeNode.isAlphaSorted) {
         parents.sort(compareFct);
@@ -235,7 +235,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   private renderContextMenuButton(node: TreeNode): JSX.Element {
     const menuItemLabel = "More";
     const buttonStyles: Partial<IButtonStyles> = {
-      rootFocused: { outline: `1px dashed ${Constants.StyleConstants.FocusColor}` }
+      rootFocused: { outline: `1px dashed ${Constants.StyleConstants.FocusColor}` },
     };
 
     return (
@@ -246,7 +246,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
           ariaLabel={menuItemLabel}
           menuIconProps={{
             iconName: menuItemLabel,
-            styles: { root: { fontSize: "18px", fontWeight: "bold" } }
+            styles: { root: { fontSize: "18px", fontWeight: "bold" } },
           }}
           menuProps={{
             coverTarget: true,
@@ -261,7 +261,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               <div
                 data-test={`treeComponentMenuItemContainer`}
                 className="treeComponentMenuItemContainer"
-                onContextMenu={e => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
+                onContextMenu={(e) => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
               >
                 {props.item.onRenderIcon()}
                 <span
@@ -281,11 +281,11 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               onClick: () => {
                 menuItem.onClick();
                 TelemetryProcessor.trace(Action.ClickResourceTreeNodeContextMenuItem, ActionModifiers.Mark, {
-                  label: menuItem.label
+                  label: menuItem.label,
                 });
               },
-              onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />
-            }))
+              onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />,
+            })),
           }}
           styles={buttonStyles}
         />

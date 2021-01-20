@@ -28,7 +28,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     super(props);
 
     this.state = {
-      filterText: ""
+      filterText: "",
     };
   }
 
@@ -38,12 +38,12 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     const filteredItems =
       originalItems && originalItems.length && filterText
         ? originalItems.filter(
-            directory =>
+            (directory) =>
               directory.displayName &&
               directory.displayName.toLowerCase().indexOf(filterText && filterText.toLowerCase()) >= 0
           )
         : originalItems;
-    const filteredItemsSelected = filteredItems.map(t => {
+    const filteredItemsSelected = filteredItems.map((t) => {
       let tenant: ListTenant = t;
       tenant.selected = t.tenantId === selectedDirectoryId;
       return tenant;
@@ -53,7 +53,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
       className: "directoryListFilterTextBox",
       placeholder: "Filter by directory name",
       onChange: this._onFilterChanged,
-      ariaLabel: "Directory filter text box"
+      ariaLabel: "Directory filter text box",
     };
 
     // TODO: add magnify glass to search bar with onRenderSuffix
@@ -69,7 +69,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
 
   private _onFilterChanged = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text?: string): void => {
     this.setState({
-      filterText: text
+      filterText: text,
     });
   };
 
@@ -84,19 +84,19 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
           height: "auto",
           borderBottom: "1px solid #ccc",
           padding: "1px 0",
-          width: "100%"
+          width: "100%",
         },
         rootDisabled: {
-          backgroundColor: "#f1f1f8"
+          backgroundColor: "#f1f1f8",
         },
         rootHovered: {
-          backgroundColor: "rgba(85,179,255,.1)"
+          backgroundColor: "rgba(85,179,255,.1)",
         },
         flexContainer: {
           height: "auto",
-          justifyContent: "flex-start"
-        }
-      }
+          justifyContent: "flex-start",
+        },
+      },
     };
 
     return (
@@ -115,7 +115,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     }
     const buttonElement = e.currentTarget;
     const selectedDirectoryId = buttonElement.getElementsByClassName("directoryListItemId")[0].textContent;
-    const selectedDirectory = _.find(this.props.directories, d => d.tenantId === selectedDirectoryId);
+    const selectedDirectory = _.find(this.props.directories, (d) => d.tenantId === selectedDirectoryId);
 
     this.props.onNewDirectorySelected(selectedDirectory);
   };

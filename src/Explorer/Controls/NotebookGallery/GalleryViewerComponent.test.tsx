@@ -12,7 +12,7 @@ describe("GalleryViewerComponent", () => {
       openNotebook: undefined,
       onSelectedTabChange: undefined,
       onSortByChange: undefined,
-      onSearchTextChange: undefined
+      onSearchTextChange: undefined,
     };
 
     const wrapper = shallow(<GalleryViewerComponent {...props} />);
