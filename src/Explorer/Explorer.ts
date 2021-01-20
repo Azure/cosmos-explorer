@@ -363,7 +363,6 @@ export default class Explorer {
               );
               const pollArcadiaTokenRefresh = async () => {
                 this.arcadiaToken(await this.getArcadiaToken());
-                debugger;
                 setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
               };
               await pollArcadiaTokenRefresh();
@@ -2516,11 +2515,11 @@ export default class Explorer {
     const subscriptionId = userContext.subscriptionId;
     const armEndpoint = configContext.ARM_ENDPOINT;
     const authType = window.authType as AuthType;
-    // if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-    // explorer is not aware of the database account yet
-    this.isSparkEnabledForAccount(true);
-    return;
-    // }
+    if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
+      // explorer is not aware of the database account yet
+      this.isSparkEnabledForAccount(false);
+      return;
+    }
 
     const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
     const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
