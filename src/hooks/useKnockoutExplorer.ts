@@ -21,7 +21,6 @@ import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccou
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // It should *only* ever run once
 // If it runs more than once it can cause memory leaks or handlers bound to DOM nodes that do not exist anymore.
-
 let bindingsApplied = false;
 export function useKnockoutExplorer(config: ConfigContext): void {
   useEffect(() => {
@@ -203,7 +202,7 @@ function configureEmulator(explorer: Explorer) {
 }
 
 function configurePortal(explorer: Explorer) {
-  explorer = new Explorer();
+  window.authType = AuthType.AAD;
 
   // In development mode, try to load the iframe message from session storage.
   // This allows webpack hot reload to funciton properly
