@@ -191,7 +191,6 @@ function configureHostedWithEncryptedToken(explorer: Explorer, config: Encrypted
   explorer.initDataExplorerWithFrameInputs({
     databaseAccount: {
       id: "",
-      // id: Main._databaseAccountId,
       name: config.encryptedTokenMetadata.accountName,
       kind: getDatabaseAccountKindFromExperience(apiExperience),
       properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
