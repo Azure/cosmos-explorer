@@ -36,6 +36,14 @@ describe("MongoIndexingPolicyComponent", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it("error shown for collection with compound indexes", () => {
+    const props = { ...baseProps, mongoIndexes: [{ key: { keys: ["prop1", "prop2"] } }] };
+    const wrapper = shallow(<MongoIndexingPolicyComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
+    const mongoIndexingPolicyComponent = wrapper.instance() as MongoIndexingPolicyComponent;
+    expect(mongoIndexingPolicyComponent.hasCompoundIndex()).toBeTruthy();
+  });
+
   describe("AddMongoIndexProps test", () => {
     const wrapper = shallow(<MongoIndexingPolicyComponent {...baseProps} />);
     const mongoIndexingPolicyComponent = wrapper.instance() as MongoIndexingPolicyComponent;

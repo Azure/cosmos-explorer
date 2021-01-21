@@ -23,7 +23,8 @@ import {
   separatorStyles,
   indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle,
-  onRenderRow
+  onRenderRow,
+  mongoCompoundIndexNotSupportedMessage
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -282,14 +283,14 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     );
   };
 
-  private hasCompoundIndex = () : boolean => {
-    for (let i = 0; i < this.props.mongoIndexes.length; i++) {
-      if (this.props.mongoIndexes[i].key.keys.length > 1) {
-        return true
+  public hasCompoundIndex = (): boolean => {
+    for (let index = 0; index < this.props.mongoIndexes.length; index++) {
+      if (this.props.mongoIndexes[index].key.keys.length > 1) {
+        return true;
       }
     }
-    return false
-  } 
+    return false;
+  };
 
   private renderWarningMessage = (): JSX.Element => {
     let warningMessage: JSX.Element;
@@ -313,7 +314,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
   public render(): JSX.Element {
     if (this.props.mongoIndexes) {
       if (this.hasCompoundIndex()) {
-        return <Text>Compound indexes not supported</Text>
+        return mongoCompoundIndexNotSupportedMessage;
       }
       return (
         <Stack {...subComponentStackProps}>

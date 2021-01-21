@@ -441,6 +441,13 @@ export const mongoIndexingPolicyDisclaimer: JSX.Element = (
   </Text>
 );
 
+export const mongoCompoundIndexNotSupportedMessage: JSX.Element = (
+  <Text>
+    Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this
+    collection, use the Mongo Shell.
+  </Text>
+);
+
 export const mongoIndexingPolicyAADError: JSX.Element = (
   <MessageBar messageBarType={MessageBarType.error}>
     <Text>
