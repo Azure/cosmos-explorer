@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MongoIndexingPolicyComponent error shown for collection with compound indexes 1`] = `
+<Text>
+  Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this collection, use the Mongo Shell.
+</Text>
+`;
+
 exports[`MongoIndexingPolicyComponent renders 1`] = `
 <Stack
   tokens={

@@ -24,6 +24,7 @@ import {
   indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle,
   onRenderRow,
+  mongoCompoundIndexNotSupportedMessage,
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -282,6 +283,15 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     );
   };
 
+  public hasCompoundIndex = (): boolean => {
+    for (let index = 0; index < this.props.mongoIndexes.length; index++) {
+      if (this.props.mongoIndexes[index].key?.keys?.length > 1) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   private renderWarningMessage = (): JSX.Element => {
     let warningMessage: JSX.Element;
     if (this.getMongoWarningNotificationMessage()) {
@@ -303,6 +313,9 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   public render(): JSX.Element {
     if (this.props.mongoIndexes) {
+      if (this.hasCompoundIndex()) {
+        return mongoCompoundIndexNotSupportedMessage;
+      }
       return (
         <Stack {...subComponentStackProps}>
           {this.renderWarningMessage()}
