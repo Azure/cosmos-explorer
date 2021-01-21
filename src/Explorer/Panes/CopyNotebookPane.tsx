@@ -60,13 +60,13 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       title: "Copy notebook",
       submitButtonText: "OK",
       onClose: () => this.close(),
-      onSubmit: () => this.submit()
+      onSubmit: () => this.submit(),
     };
 
     const copyNotebookPaneProps: CopyNotebookPaneProps = {
       name: this.name,
       pinnedRepos: this.pinnedRepos,
-      onDropDownChange: this.onDropDownChange
+      onDropDownChange: this.onDropDownChange,
     };
 
     return (
@@ -153,7 +153,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
         parent = {
           name: ResourceTreeAdapter.MyNotebooksTitle,
           path: this.container.getNotebookBasePath(),
-          type: NotebookContentItemType.Directory
+          type: NotebookContentItemType.Directory,
         };
         break;
 
@@ -166,7 +166,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
             this.selectedLocation.branch,
             ""
           ),
-          type: NotebookContentItemType.Directory
+          type: NotebookContentItemType.Directory,
         };
         break;
 

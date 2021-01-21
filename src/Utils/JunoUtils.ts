@@ -8,7 +8,7 @@ export class JunoUtils {
       owner: item.repo.owner,
       name: item.repo.name,
       private: item.repo.private,
-      branches: item.branches.map(element => ({ name: element.name }))
+      branches: item.branches.map((element) => ({ name: element.name })),
     };
   }
 
@@ -16,7 +16,7 @@ export class JunoUtils {
     return {
       owner: pinnedRepo.owner,
       name: pinnedRepo.name,
-      private: pinnedRepo.private
+      private: pinnedRepo.private,
     };
   }
 }

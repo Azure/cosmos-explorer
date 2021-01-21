@@ -71,7 +71,7 @@ export default class QueryClauseViewModel {
       const isPreferredApiCassandra = this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.container.isPreferredApiCassandra();
       const cassandraKeys = isPreferredApiCassandra
         ? this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys.map(
-            key => key.property
+            (key) => key.property
           )
         : [];
       return (
@@ -87,30 +87,30 @@ export default class QueryClauseViewModel {
         !this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.container.isPreferredApiCassandra()
     );
 
-    this.and_or.subscribe(value => {
+    this.and_or.subscribe((value) => {
       this._queryBuilderViewModel.checkIfClauseChanged(this);
     });
-    this.field.subscribe(value => {
+    this.field.subscribe((value) => {
       this.changeField();
     });
-    this.type.subscribe(value => {
+    this.type.subscribe((value) => {
       this.changeType();
     });
-    this.timeValue.subscribe(value => {
+    this.timeValue.subscribe((value) => {
       // if (this.timeValue() === QueryBuilderConstants.timeOptions.custom) {
       //     this.customTimestampDialog();
       // }
     });
-    this.customTimeValue.subscribe(value => {
+    this.customTimeValue.subscribe((value) => {
       this._queryBuilderViewModel.checkIfClauseChanged(this);
     });
-    this.value.subscribe(value => {
+    this.value.subscribe((value) => {
       this._queryBuilderViewModel.checkIfClauseChanged(this);
     });
-    this.operator.subscribe(value => {
+    this.operator.subscribe((value) => {
       this._queryBuilderViewModel.checkIfClauseChanged(this);
     });
-    this._groupCheckSubscription = this.checkedForGrouping.subscribe(value => {
+    this._groupCheckSubscription = this.checkedForGrouping.subscribe((value) => {
       this._queryBuilderViewModel.updateCanGroupClauses();
     });
     this.isAndOrFocused = ko.observable<boolean>(false);

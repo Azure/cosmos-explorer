@@ -51,7 +51,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       submitButtonText: "Publish",
       onClose: () => this.close(),
       onSubmit: () => this.submit(),
-      isSubmitButtonHidden: !this.isCodeOfConductAccepted
+      isSubmitButtonHidden: !this.isCodeOfConductAccepted,
     };
 
     const publishNotebookPaneProps: PublishNotebookPaneProps = {
@@ -67,7 +67,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       onChangeTags: (newValue: string) => (this.tags = newValue),
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
       onError: this.createFormErrorForLargeImageSelection,
-      clearFormError: this.clearFormError
+      clearFormError: this.clearFormError,
     };
 
     return (

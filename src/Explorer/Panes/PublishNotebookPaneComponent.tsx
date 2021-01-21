@@ -35,7 +35,7 @@ enum ImageTypes {
   Url = "URL",
   CustomImage = "Custom Image",
   TakeScreenshot = "Take Screenshot",
-  UseFirstDisplayOutput = "Use First Display Output"
+  UseFirstDisplayOutput = "Use First Display Output",
 }
 
 export class PublishNotebookPaneComponent extends React.Component<PublishNotebookPaneProps, PublishNotebookPaneState> {
@@ -58,7 +58,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       notebookName: props.notebookName,
       notebookDescription: "",
       notebookTags: "",
-      imageSrc: undefined
+      imageSrc: undefined,
     };
 
     this.imageToBase64 = (file: File, updateImageSrc: (result: string) => void) => {
@@ -69,7 +69,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       };
 
       const onError = this.props.onError;
-      reader.onerror = error => {
+      reader.onerror = (error) => {
         const formError = `Failed to convert ${file.name} to base64 format`;
         const formErrorDetail = `${error}`;
         const area = "PublishNotebookPaneComponent/selectImageFile";
@@ -88,9 +88,9 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         useCORS: true,
         allowTaint: true,
         scale: 1,
-        logging: true
+        logging: true,
       })
-        .then(canvas => {
+        .then((canvas) => {
           //redraw canvas to fit Card Cover Image dimensions
           const originalImageData = canvas.toDataURL();
           const requiredHeight =
@@ -104,7 +104,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
             updateImageSrcWithScreenshot(canvas.toDataURL());
           };
         })
-        .catch(error => {
+        .catch((error) => {
           onError(error);
         });
     };
@@ -123,7 +123,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       onChange: (event, newValue) => {
         this.props.onChangeImageSrc(newValue);
         this.setState({ imageSrc: newValue });
-      }
+      },
     };
 
     const screenshotErrorHandler = (error: Error) => {
@@ -148,7 +148,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         ImageTypes.Url,
         ImageTypes.CustomImage,
         ImageTypes.TakeScreenshot,
-        ImageTypes.UseFirstDisplayOutput
+        ImageTypes.UseFirstDisplayOutput,
       ].map((value: string) => ({ text: value, key: value })),
       onChange: async (event, options) => {
         this.props.clearFormError();
@@ -166,7 +166,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
           }
         }
         this.setState({ type: options.text });
-      }
+      },
     };
 
     this.nameProps = {
@@ -177,7 +177,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       onChange: (event, newValue) => {
         this.props.onChangeName(newValue);
         this.setState({ notebookName: newValue });
-      }
+      },
     };
 
     this.descriptionProps = {
@@ -189,7 +189,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       onChange: (event, newValue) => {
         this.props.onChangeDescription(newValue);
         this.setState({ notebookDescription: newValue });
-      }
+      },
     };
 
     this.tagsProps = {
@@ -199,7 +199,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       onChange: (event, newValue) => {
         this.props.onChangeTags(newValue);
         this.setState({ notebookTags: newValue });
-      }
+      },
     };
   }
 
@@ -213,7 +213,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
             id="selectImageFile"
             type="file"
             accept="image/*"
-            onChange={event => {
+            onChange={(event) => {
               const file = event.target.files[0];
               if (file.size / 1024 ** 2 > PublishNotebookPaneComponent.maxImageSizeInMib) {
                 event.target.value = "";
@@ -298,7 +298,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 views: 0,
                 newCellId: undefined,
                 policyViolations: undefined,
-                pendingScanJobIds: undefined
+                pendingScanJobIds: undefined,
               }}
               isFavorite={false}
               showDownload={true}

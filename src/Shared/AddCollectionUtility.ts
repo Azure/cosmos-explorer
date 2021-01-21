@@ -17,7 +17,7 @@ const _exceedsThreshold = (unlimitedThreshold: number, container: Explorer): boo
   const databases = (container && container.databases && container.databases()) || [];
   return any(
     databases,
-    database =>
+    (database) =>
       database && database.collections && database.collections() && database.collections().length > unlimitedThreshold
   );
 };

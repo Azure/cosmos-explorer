@@ -7,21 +7,21 @@ import { SessionStorageUtility } from "../../Shared/StorageUtility";
 export enum Regions {
   NorthCentralUS = "NCUS",
   WestUS = "WUS",
-  EastUS2 = "EUS2"
+  EastUS2 = "EUS2",
 }
 
 export const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
   { label: "West US", key: Regions.WestUS },
-  { label: "East US 2", key: Regions.EastUS2 }
+  { label: "East US 2", key: Regions.EastUS2 },
 ];
 
 export const selfServeExampleInfo: Info = {
-  message: "This is a self serve class"
+  message: "This is a self serve class",
 };
 
 export const regionDropdownInfo: Info = {
-  message: "More regions can be added in the future."
+  message: "More regions can be added in the future.",
 };
 
 const onDbThroughputChange = (currentState: Map<string, InputType>, newValue: InputType): Map<string, InputType> => {
@@ -124,13 +124,13 @@ export default class SelfServeExample extends SelfServeBaseClass {
   @Values({
     label: "Enable Logging",
     trueLabel: "Enable",
-    falseLabel: "Disable"
+    falseLabel: "Disable",
   })
   enableLogging: boolean;
 
   @Values({
     label: "Account Name",
-    placeholder: "Enter the account name"
+    placeholder: "Enter the account name",
   })
   accountName: string;
 
@@ -152,7 +152,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     min: 400,
     max: initializeMaxThroughput,
     step: 100,
-    uiType: UiType.Slider
+    uiType: UiType.Slider,
   })
   dbThroughput: number;
 
@@ -161,7 +161,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     min: 400,
     max: initializeMaxThroughput,
     step: 100,
-    uiType: UiType.Spinner
+    uiType: UiType.Spinner,
   })
   collectionThroughput: number;
 }

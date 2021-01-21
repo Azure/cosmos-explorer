@@ -14,7 +14,7 @@ describe("<EditorNodePropertiesComponent />", () => {
         readOnlyProperties: [
           {
             key: "singlevalueprop",
-            values: [{ value: "abcd", type: "string" }]
+            values: [{ value: "abcd", type: "string" }],
           },
           {
             key: "multivaluesprop",
@@ -24,14 +24,14 @@ describe("<EditorNodePropertiesComponent />", () => {
               { value: true, type: "boolean" },
               { value: false, type: "boolean" },
               { value: undefined, type: "null" },
-              { value: null, type: "null" }
-            ]
-          }
+              { value: null, type: "null" },
+            ],
+          },
         ],
         existingProperties: [
           {
             key: "singlevalueprop2",
-            values: [{ value: "ijkl", type: "string" }]
+            values: [{ value: "ijkl", type: "string" }],
           },
           {
             key: "multivaluesprop2",
@@ -41,14 +41,14 @@ describe("<EditorNodePropertiesComponent />", () => {
               { value: true, type: "boolean" },
               { value: false, type: "boolean" },
               { value: undefined, type: "null" },
-              { value: null, type: "null" }
-            ]
-          }
+              { value: null, type: "null" },
+            ],
+          },
         ],
         addedProperties: [],
-        droppedKeys: []
+        droppedKeys: [],
       },
-      onUpdateProperties: (editedProperties: EditedProperties): void => {}
+      onUpdateProperties: (editedProperties: EditedProperties): void => {},
     };
     const wrapper = shallow(<EditorNodePropertiesComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
@@ -61,27 +61,27 @@ describe("<EditorNodePropertiesComponent />", () => {
         readOnlyProperties: [
           {
             key: "unicode1",
-            values: [{ value: "Véronique", type: "string" }]
+            values: [{ value: "Véronique", type: "string" }],
           },
           {
             key: "unicode2",
-            values: [{ value: "亜妃子", type: "string" }]
-          }
+            values: [{ value: "亜妃子", type: "string" }],
+          },
         ],
         existingProperties: [
           {
             key: "unicode1",
-            values: [{ value: "André", type: "string" }]
+            values: [{ value: "André", type: "string" }],
           },
           {
             key: "unicode2",
-            values: [{ value: "あきら, アキラ,安喜良", type: "string" }]
-          }
+            values: [{ value: "あきら, アキラ,安喜良", type: "string" }],
+          },
         ],
         addedProperties: [],
-        droppedKeys: []
+        droppedKeys: [],
       },
-      onUpdateProperties: (editedProperties: EditedProperties): void => {}
+      onUpdateProperties: (editedProperties: EditedProperties): void => {},
     };
     const wrapper = shallow(<EditorNodePropertiesComponent {...props} />);
     expect(wrapper).toMatchSnapshot();

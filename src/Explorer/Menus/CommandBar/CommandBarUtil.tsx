@@ -22,7 +22,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
   const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
 
   return btns
-    .filter(btn => btn)
+    .filter((btn) => btn)
     .map(
       (btn: CommandButtonComponentProps, index: number): ICommandBarItemProps => {
         if (btn.isDivider) {
@@ -35,10 +35,10 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           iconProps: {
             style: {
               width: StyleConstants.CommandBarIconWidth, // 16
-              alignSelf: btn.iconName ? "baseline" : undefined
+              alignSelf: btn.iconName ? "baseline" : undefined,
             },
             imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
-            iconName: btn.iconName
+            iconName: btn.iconName,
           },
           onClick: (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
             btn.onCommandClick(ev);
@@ -59,18 +59,18 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               paddingLeft: 0,
               minWidth: 24,
               marginLeft: isSplit ? 0 : 5,
-              marginRight: isSplit ? 0 : 5
+              marginRight: isSplit ? 0 : 5,
             },
             rootDisabled: {
               backgroundColor: backgroundColor,
-              pointerEvents: "auto"
+              pointerEvents: "auto",
             },
             splitButtonMenuButton: {
               backgroundColor: backgroundColor,
               selectors: {
-                ":hover": { backgroundColor: StyleConstants.AccentLight }
+                ":hover": { backgroundColor: StyleConstants.AccentLight },
               },
-              width: 16
+              width: 16,
             },
             label: { fontSize: StyleConstants.mediumFontSize },
             rootHovered: { backgroundColor: StyleConstants.AccentLight },
@@ -78,23 +78,23 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             splitButtonMenuButtonExpanded: {
               backgroundColor: StyleConstants.AccentExtra,
               selectors: {
-                ":hover": { backgroundColor: StyleConstants.AccentLight }
-              }
+                ":hover": { backgroundColor: StyleConstants.AccentLight },
+              },
             },
             splitButtonDivider: {
-              display: "none"
+              display: "none",
             },
             icon: {
               paddingLeft: 0,
-              paddingRight: 0
+              paddingRight: 0,
             },
             splitButtonContainer: {
               marginLeft: 5,
-              marginRight: 5
-            }
+              marginRight: 5,
+            },
           },
           className: btn.className,
-          id: btn.id
+          id: btn.id,
         };
 
         if (isSplit) {
@@ -110,10 +110,10 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
                 selectors: {
                   ".ms-ContextualMenu-itemText": { fontSize: StyleConstants.mediumFontSize },
                   ".ms-ContextualMenu-link:hover": { backgroundColor: StyleConstants.AccentLight },
-                  ".ms-ContextualMenu-icon": { width: 16, height: 16 }
-                }
-              }
-            }
+                  ".ms-ContextualMenu-icon": { width: 16, height: 16 },
+                },
+              },
+            },
           };
 
           result.menuIconProps = {
@@ -121,14 +121,14 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             style: {
               width: 12,
               paddingLeft: 1,
-              paddingTop: 6
+              paddingTop: 6,
             },
-            imageProps: { src: ChevronDownIcon, alt: btn.iconAlt }
+            imageProps: { src: ChevronDownIcon, alt: btn.iconAlt },
           };
         }
 
         if (btn.isDropdown) {
-          const selectedChild = _.find(btn.children, child => child.dropdownItemKey === btn.dropdownSelectedKey);
+          const selectedChild = _.find(btn.children, (child) => child.dropdownItemKey === btn.dropdownSelectedKey);
           result.name = selectedChild?.commandButtonLabel || btn.dropdownPlaceholder;
 
           const dropdownStyles: Partial<IDropdownStyles> = {
@@ -136,7 +136,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             dropdown: { width: btn.dropdownWidth },
             title: { fontSize: 12, height: 30, lineHeight: 28 },
             dropdownItem: { fontSize: 12, lineHeight: 28, minHeight: 30 },
-            dropdownItemSelected: { fontSize: 12, lineHeight: 28, minHeight: 30 }
+            dropdownItemSelected: { fontSize: 12, lineHeight: 28, minHeight: 30 },
           };
 
           const onDropdownChange = (
@@ -156,7 +156,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
                 onChange={onDropdownChange}
                 options={btn.children.map((child: CommandButtonComponentProps) => ({
                   key: child.dropdownItemKey,
-                  text: child.commandButtonLabel
+                  text: child.commandButtonLabel,
                 }))}
                 styles={dropdownStyles}
               />
@@ -182,7 +182,7 @@ export const createDivider = (key: string): ICommandBarItemProps => {
     ),
     iconOnly: true,
     disabled: true,
-    key: key
+    key: key,
   };
 };
 
@@ -192,6 +192,6 @@ export const createMemoryTracker = (
 ): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />
+    onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />,
   };
 };

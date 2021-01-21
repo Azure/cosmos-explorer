@@ -4,7 +4,7 @@ import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/Notificat
 import {
   GalleryTab,
   SortBy,
-  GalleryViewerComponent
+  GalleryViewerComponent,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
@@ -16,50 +16,50 @@ const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
   {
     key: "ChildEndangermentExploitation",
-    text: "Child endangerment or exploitation"
+    text: "Child endangerment or exploitation",
   },
   {
     key: "ContentInfringement",
-    text: "Content infringement"
+    text: "Content infringement",
   },
   {
     key: "OffensiveContent",
-    text: "Offensive content"
+    text: "Offensive content",
   },
   {
     key: "Terrorism",
-    text: "Terrorism"
+    text: "Terrorism",
   },
   {
     key: "ThreatsCyberbullyingHarassment",
-    text: "Threats, cyber bullying or harassment"
+    text: "Threats, cyber bullying or harassment",
   },
   {
     key: "VirusSpywareMalware",
-    text: "Virus, spyware or malware"
+    text: "Virus, spyware or malware",
   },
   {
     key: "Fraud",
-    text: "Fraud"
+    text: "Fraud",
   },
   {
     key: "HateSpeech",
-    text: "Hate speech"
+    text: "Hate speech",
   },
   {
     key: "ImminentHarmToPersonsOrProperty",
-    text: "Imminent harm to persons or property"
+    text: "Imminent harm to persons or property",
   },
   {
     key: "Other",
-    text: "Other"
-  }
+    text: "Other",
+  },
 ];
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
   GalleryItemId = "galleryItemId",
-  HideInputs = "hideInputs"
+  HideInputs = "hideInputs",
 }
 
 export interface NotebookViewerProps {
@@ -71,7 +71,7 @@ export interface NotebookViewerProps {
 export enum GalleryViewerParams {
   SelectedTab = "tab",
   SortBy = "sort",
-  SearchText = "q"
+  SearchText = "q",
 }
 
 export interface GalleryViewerProps {
@@ -140,7 +140,7 @@ export function reportAbuse(
       defaultSelectedKey: defaultSelectedAbuseCategory,
       onChange: (_event?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => {
         abuseCategory = option?.key;
-      }
+      },
     },
     {
       label: "You can also include additional relevant details on the offensive content",
@@ -149,7 +149,7 @@ export function reportAbuse(
       autoAdjustHeight: false,
       onChange: (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         additionalDetails = newValue;
-      }
+      },
     }
   );
 }
@@ -291,7 +291,7 @@ export function getGalleryViewerProps(search: string): GalleryViewerProps {
   return {
     selectedTab,
     sortBy,
-    searchText: params.get(GalleryViewerParams.SearchText)
+    searchText: params.get(GalleryViewerParams.SearchText),
   };
 }
 
@@ -300,7 +300,7 @@ export function getNotebookViewerProps(search: string): NotebookViewerProps {
   return {
     notebookUrl: params.get(NotebookViewerParams.NotebookUrl),
     galleryItemId: params.get(NotebookViewerParams.GalleryItemId),
-    hideInputs: JSON.parse(params.get(NotebookViewerParams.HideInputs))
+    hideInputs: JSON.parse(params.get(NotebookViewerParams.HideInputs)),
   };
 }
 
@@ -330,7 +330,7 @@ export function filterPublishedNotebooks(
   const removed: IGalleryItem[] = [];
   const published: IGalleryItem[] = [];
 
-  items?.forEach(item => {
+  items?.forEach((item) => {
     if (item.policyViolations?.length > 0) {
       removed.push(item);
     } else if (item.pendingScanJobIds?.length > 0) {

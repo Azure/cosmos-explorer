@@ -12,7 +12,7 @@ describe("New Vertex Component", () => {
     partitionKeyProperty = ko.observable(null);
     vm = new component.viewModel({
       newVertexData: null,
-      partitionKeyProperty
+      partitionKeyProperty,
     });
     ko.applyBindings(vm);
   });

@@ -41,7 +41,7 @@ export const coreReducer = (state: CoreRecord, action: Action) => {
         "model",
         "notebook",
         "metadata",
-        "kernelspec"
+        "kernelspec",
       ];
       // Update metadata
       return state

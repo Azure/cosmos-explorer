@@ -4,7 +4,7 @@ import * as Logger from "../Common/Logger";
 import {
   NotebookWorkspace,
   NotebookWorkspaceConnectionInfo,
-  NotebookWorkspaceFeedResponse
+  NotebookWorkspaceFeedResponse,
 } from "../Contracts/DataModels";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
@@ -84,7 +84,7 @@ export class NotebookWorkspaceManager {
     const uri = `${cosmosdbResourceId}/notebookWorkspaces/${notebookWorkspaceId}/start`;
     try {
       return await this.rpClient(uri).postAsync(uri, ArmApiVersions.documentDB, undefined, {
-        skipResourceValidation: true
+        skipResourceValidation: true,
       });
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookWorkspaceManager/startNotebookWorkspaceAsync");

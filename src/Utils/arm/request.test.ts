@@ -12,7 +12,7 @@ interface Global {
 describe("ARM request", () => {
   window.authType = AuthType.AAD;
   updateUserContext({
-    authorizationToken: "some-token"
+    authorizationToken: "some-token",
   });
 
   it("should call window.fetch", async () => {
@@ -20,7 +20,7 @@ describe("ARM request", () => {
       ok: true,
       json: async () => {
         return {};
-      }
+      },
     });
     await armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" });
     expect(window.fetch).toHaveBeenCalled();
@@ -33,7 +33,7 @@ describe("ARM request", () => {
       ok: true,
       headers,
       status: 200,
-      json: async () => ({})
+      json: async () => ({}),
     });
     await armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" });
     expect(window.fetch).toHaveBeenCalledTimes(2);
@@ -48,7 +48,7 @@ describe("ARM request", () => {
       status: 200,
       json: async () => {
         return { status: "Failed" };
-      }
+      },
     });
     await expect(() =>
       armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" })
@@ -59,7 +59,7 @@ describe("ARM request", () => {
   it("should throw token error", async () => {
     window.authType = AuthType.AAD;
     updateUserContext({
-      authorizationToken: undefined
+      authorizationToken: undefined,
     });
     const headers = new Headers();
     headers.set("location", "https://foo.com/operationStatus");
@@ -69,7 +69,7 @@ describe("ARM request", () => {
       status: 200,
       json: async () => {
         return { status: "Failed" };
-      }
+      },
     });
     await expect(() =>
       armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" })

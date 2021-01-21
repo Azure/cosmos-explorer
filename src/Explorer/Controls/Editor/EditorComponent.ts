@@ -10,7 +10,7 @@ export class EditorComponent {
   constructor() {
     return {
       viewModel: EditorViewModel,
-      template
+      template,
     };
   }
 }

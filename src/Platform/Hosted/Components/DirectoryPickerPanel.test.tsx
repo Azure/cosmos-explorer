@@ -12,7 +12,7 @@ it("switches tenant for user", () => {
   const dismissPanel = jest.fn();
   const directories = [
     { displayName: "test1", tenantId: "test1-id" },
-    { displayName: "test2", tenantId: "test2-id" }
+    { displayName: "test2", tenantId: "test2-id" },
   ] as Tenant[];
   (useDirectories as jest.Mock).mockReturnValue(directories);
 

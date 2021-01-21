@@ -20,17 +20,17 @@ describe("Property pane", () => {
         name: "sourceName",
         id: "sourceId",
         edgeId: "edgeId",
-        edgeLabel: "sourceEdgeLabel"
-      }
+        edgeLabel: "sourceEdgeLabel",
+      },
     ],
     targets: [
       {
         name: "targetName",
         id: "targetId",
         edgeId: "edgeId",
-        edgeLabel: "targetEdgeLabel"
-      }
-    ]
+        edgeLabel: "targetEdgeLabel",
+      },
+    ],
   };
 
   const createMockProps = (): NodePropertiesComponentProps => {
@@ -48,7 +48,7 @@ describe("Property pane", () => {
       editGraphEdges: (editedEdges: EditedEdges): Q.Promise<any> => Q.resolve(),
       deleteHighlightedNode: (): void => {},
       onModeChanged: (newMode: Mode): void => {},
-      viewMode: Mode.READONLY_PROP
+      viewMode: Mode.READONLY_PROP,
     };
   };
   let wrapper: ReactWrapper;

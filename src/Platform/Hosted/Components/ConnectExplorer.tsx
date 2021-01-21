@@ -19,7 +19,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   login,
   setAuthType,
   connectionString,
-  setConnectionString
+  setConnectionString,
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
 
@@ -34,7 +34,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
           {isFormVisible ? (
             <form
               id="connectWithConnectionString"
-              onSubmit={async event => {
+              onSubmit={async (event) => {
                 event.preventDefault();
 
                 if (isResourceTokenConnectionString(connectionString)) {
@@ -63,7 +63,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   required
                   placeholder="Please enter a connection string"
                   value={connectionString}
-                  onChange={event => {
+                  onChange={(event) => {
                     setConnectionString(event.target.value);
                   }}
                 />

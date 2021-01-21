@@ -58,7 +58,7 @@ const sendMessageToExplorerFrame = (data: unknown): void => {
     explorerFrame.contentWindow.postMessage(
       {
         signature: "pcIframe",
-        data: data
+        data: data,
       },
       explorerFrame.contentDocument.referrer || window.location.href
     );
@@ -126,12 +126,12 @@ const initTestExplorer = async (): Promise<void> => {
       sharedThroughputDefault: 400,
       defaultCollectionThroughput: {
         storage: "100",
-        throughput: { fixed: 400, unlimited: 400, unlimitedmax: 100000, unlimitedmin: 400, shared: 400 }
+        throughput: { fixed: 400, unlimited: 400, unlimitedmax: 100000, unlimitedmin: 400, shared: 400 },
       },
       // add UI test only when feature is not dependent on flights anymore
       flights: [],
-      selfServeType: selfServeType
-    } as ViewModels.DataExplorerInputsFrame
+      selfServeType: selfServeType,
+    } as ViewModels.DataExplorerInputsFrame,
   };
 
   window.postMessage(initTestExplorerContent, window.location.href);

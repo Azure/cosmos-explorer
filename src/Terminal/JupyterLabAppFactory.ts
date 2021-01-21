@@ -8,7 +8,7 @@ import { Panel, Widget } from "@phosphor/widgets";
 export class JupyterLabAppFactory {
   public static async createTerminalApp(serverSettings: ServerConnection.ISettings) {
     const manager = new TerminalManager({
-      serverSettings: serverSettings
+      serverSettings: serverSettings,
     });
     const session = await manager.startNew();
     const term = new Terminal(session, { theme: "dark", shutdownOnClose: true });

@@ -15,7 +15,7 @@ describe("CommandBarUtil tests", () => {
       disabled: true,
       tooltipText: "tooltipText",
       children: [],
-      className: "className"
+      className: "className",
     };
   };
 

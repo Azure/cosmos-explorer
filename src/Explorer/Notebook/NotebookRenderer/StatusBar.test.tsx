@@ -26,7 +26,7 @@ describe("StatusBar", () => {
       {
         lastSaved,
         kernelSpecDisplayName: "javascript",
-        kernelStatus: "kernelStatus"
+        kernelStatus: "kernelStatus",
       },
       null,
       null
@@ -45,7 +45,7 @@ describe("StatusBar", () => {
       {
         lastSaved: new Date(),
         kernelSpecDisplayName: "python3",
-        kernelStatus: "kernelStatus"
+        kernelStatus: "kernelStatus",
       },
       null,
       null

@@ -16,196 +16,196 @@ const schema: DataModels.ISchema = {
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "_rid",
       path: "_rid",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 11,
-        name: "Int64"
+        name: "Int64",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "_ts",
       path: "_ts",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "id",
       path: "id",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "pk",
       path: "pk",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "other",
       path: "other",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "name",
       path: "nested.name",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 11,
-        name: "Int64"
+        name: "Int64",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "someNumber",
       path: "nested.someNumber",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 17,
-        name: "Double"
+        name: "Double",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "anotherNumber",
       path: "nested.anotherNumber",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
+      maxDefinitionLevel: 1,
     },
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "name",
       path: "items.list.items.name",
       maxRepetitionLevel: 1,
-      maxDefinitionLevel: 3
+      maxDefinitionLevel: 3,
     },
     {
       dataType: {
         code: 11,
-        name: "Int64"
+        name: "Int64",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "someNumber",
       path: "items.list.items.someNumber",
       maxRepetitionLevel: 1,
-      maxDefinitionLevel: 3
+      maxDefinitionLevel: 3,
     },
     {
       dataType: {
         code: 17,
-        name: "Double"
+        name: "Double",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "anotherNumber",
       path: "items.list.items.anotherNumber",
       maxRepetitionLevel: 1,
-      maxDefinitionLevel: 3
+      maxDefinitionLevel: 3,
     },
     {
       dataType: {
         code: 15,
-        name: "String"
+        name: "String",
       },
       hasNulls: true,
       isArray: false,
       schemaType: {
         code: 0,
-        name: "Data"
+        name: "Data",
       },
       name: "_etag",
       path: "_etag",
       maxRepetitionLevel: 0,
-      maxDefinitionLevel: 1
-    }
-  ]
+      maxDefinitionLevel: 1,
+    },
+  ],
 };
 
 const createMockContainer = (): Explorer => {
@@ -243,7 +243,7 @@ describe("Resource tree for schema", () => {
     const rootNode: TreeNode = resourceTree.buildSchemaNode(createMockCollection());
     const props: TreeComponentProps = {
       rootNode,
-      className: "dataResourceTree"
+      className: "dataResourceTree",
     };
     const wrapper = shallow(<TreeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();

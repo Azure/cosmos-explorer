@@ -55,13 +55,13 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
     const okProps: IButtonProps = {
       text: GitHubReposComponent.OKButtonText,
       ariaLabel: GitHubReposComponent.OKButtonText,
-      onClick: this.props.onOkClick
+      onClick: this.props.onOkClick,
     };
 
     const cancelProps: IButtonProps = {
       text: GitHubReposComponent.CancelButtonText,
       ariaLabel: GitHubReposComponent.CancelButtonText,
-      onClick: this.props.onCancelClick
+      onClick: this.props.onCancelClick,
     };
 
     return (
