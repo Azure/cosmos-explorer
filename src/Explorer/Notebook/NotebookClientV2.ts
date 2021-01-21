@@ -23,7 +23,7 @@ import {
   HostRecord,
   HostRef,
   KernelspecsRef,
-  IContentProvider
+  IContentProvider,
 } from "@nteract/core";
 import { Media } from "@nteract/outputs";
 import TransformVDOM from "@nteract/transform-vdom";
@@ -73,7 +73,7 @@ export class NotebookClientV2 {
       this.getStore().dispatch(
         actions.fetchKernelspecs({
           hostRef: this.contentHostRef,
-          kernelspecsRef: this.kernelSpecsRef
+          kernelspecsRef: this.kernelSpecsRef,
         })
       );
     }
@@ -101,7 +101,7 @@ export class NotebookClientV2 {
       basePath: "/", // Jupyter server base URL
       bookstoreEnabled: false, //!!config.bookstore.version,
       showHeaderEditor: true,
-      crossDomain: true
+      crossDomain: true,
     });
 
     this.contentHostRef = createHostRef();
@@ -111,7 +111,7 @@ export class NotebookClientV2 {
     const initialState: CdbAppState = {
       app: makeAppRecord({
         version: "dataExplorer 1.0",
-        host: jupyterHostRecord
+        host: jupyterHostRecord,
         // TODO: tamitta: notificationSystem.addNotification was removed, do we need a substitute?
       }),
       core: makeStateRecord({
@@ -119,11 +119,11 @@ export class NotebookClientV2 {
         entities: makeEntitiesRecord({
           editors: makeEditorsRecord({}),
           hosts: makeHostsRecord({
-            byRef: Immutable.Map<string, HostRecord>().set(this.contentHostRef, jupyterHostRecord)
+            byRef: Immutable.Map<string, HostRecord>().set(this.contentHostRef, jupyterHostRecord),
           }),
           comms: makeCommsRecord(),
           contents: makeContentsRecord({
-            byRef: Immutable.Map<string, ContentRecord>()
+            byRef: Immutable.Map<string, ContentRecord>(),
           }),
           transforms: makeTransformsRecord({
             displayOrder: Immutable.List([
@@ -150,7 +150,7 @@ export class NotebookClientV2 {
               "image/gif",
               "image/png",
               "image/jpeg",
-              "text/plain"
+              "text/plain",
             ]),
             byId: Immutable.Map({
               "text/vnd.plotly.v1+html": NullTransform,
@@ -176,15 +176,15 @@ export class NotebookClientV2 {
               "image/gif": Media.Image,
               "image/png": Media.Image,
               "image/jpeg": Media.Image,
-              "text/plain": Media.Plain
-            })
-          })
-        })
+              "text/plain": Media.Plain,
+            }),
+          }),
+        }),
       }),
       cdb: makeCdbRecord({
         databaseAccountName: params.databaseAccountName,
-        defaultExperience: params.defaultExperience
-      })
+        defaultExperience: params.defaultExperience,
+      }),
     };
 
     /**
@@ -194,16 +194,16 @@ export class NotebookClientV2 {
      */
     const cacheKernelSpecsMiddleware: Middleware = <D extends Dispatch<AnyAction>, S extends AppState>({
       dispatch,
-      getState
+      getState,
     }: MiddlewareAPI<D, S>) => (next: Dispatch<AnyAction>) => <A extends AnyAction>(action: A): A => {
       switch (action.type) {
         case actions.FETCH_KERNELSPECS_FULFILLED: {
           const payload = ((action as unknown) as actions.FetchKernelspecsFulfilled).payload;
           const defaultKernelName = payload.defaultKernelName;
           this.kernelSpecsForDisplay = Object.keys(payload.kernelspecs)
-            .map(name => ({
+            .map((name) => ({
               name,
-              displayName: payload.kernelspecs[name].displayName
+              displayName: payload.kernelspecs[name].displayName,
             }))
             .sort((a: KernelSpecsDisplay, b: KernelSpecsDisplay) => {
               // Put default at the top, otherwise lexicographically compare
@@ -229,7 +229,7 @@ export class NotebookClientV2 {
         dataExplorerArea: Constants.Areas.Notebook,
         title,
         message,
-        level: "Error"
+        level: "Error",
       });
       console.error(`${title}: ${message}`);
     };
@@ -248,16 +248,16 @@ export class NotebookClientV2 {
       configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
     );
     createConfigCollection({
-      key: "monaco"
+      key: "monaco",
     });
     defineConfigOption({
       label: "Show Line numbers",
       key: "monaco.lineNumbers",
       values: [
         { label: "Yes", value: true },
-        { label: "No", value: false }
+        { label: "No", value: false },
       ],
-      defaultValue: true
+      defaultValue: true,
     });
   }
 
@@ -275,7 +275,7 @@ export class NotebookClientV2 {
         dataExplorerArea: Constants.Areas.Notebook,
         title: msg.title,
         message: msg.message,
-        level: msg.level
+        level: msg.level,
       });
       console.error(`${msg.title}: ${msg.message}`);
     } else {

@@ -16,29 +16,29 @@ const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
 const cssRule = {
   test: /\.css$/,
-  use: [MiniCssExtractPlugin.loader, "css-loader"]
+  use: [MiniCssExtractPlugin.loader, "css-loader"],
 };
 
 const lessRule = {
   test: /\.less$/,
   use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
-  exclude: [path.resolve(__dirname, "less/Common/Constants.less")]
+  exclude: [path.resolve(__dirname, "less/Common/Constants.less")],
 };
 
 const imagesRule = {
   test: /\.(jpg|jpeg|png|gif|svg|pdf|ico)$/,
   loader: "file-loader",
   options: {
-    name: "images/[name].[ext]"
-  }
+    name: "images/[name].[ext]",
+  },
 };
 
 const fontRule = {
   test: /\.(woff|woff2|ttf|eot)$/,
   loader: "file-loader",
   options: {
-    name: "[name].[ext]"
-  }
+    name: "[name].[ext]",
+  },
 };
 
 const htmlRule = {
@@ -50,10 +50,10 @@ const htmlRule = {
         minify: false,
         removeComments: false,
         collapseWhitespace: false,
-        root: path.resolve(__dirname, "images")
-      }
-    }
-  ]
+        root: path.resolve(__dirname, "images"),
+      },
+    },
+  ],
 };
 
 // We compile our own code with ts-loader
@@ -63,11 +63,11 @@ const typescriptRule = {
     {
       loader: "ts-loader",
       options: {
-        transpileOnly: true
-      }
-    }
+        transpileOnly: true,
+      },
+    },
   ],
-  exclude: /node_modules/
+  exclude: /node_modules/,
 };
 
 // Third party modules are compiled with babel since using ts-loader that much causes webpack to run out of memory
@@ -78,21 +78,21 @@ const ModulesRule = {
       loader: "babel-loader",
       options: {
         cacheDirectory: ".cache/babel",
-        presets: [["@babel/preset-env", { targets: { ie: "11" }, useBuiltIns: false }]]
-      }
-    }
+        presets: [["@babel/preset-env", { targets: { ie: "11" }, useBuiltIns: false }]],
+      },
+    },
   ],
   include: /node_modules/,
   // Exclude large modules we know don't need transpiling
-  exclude: /vega|monaco|plotly/
+  exclude: /vega|monaco|plotly/,
 };
 
-module.exports = function(env = {}, argv = {}) {
+module.exports = function (env = {}, argv = {}) {
   const mode = argv.mode || "development";
   const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
   const envVars = {
     GIT_SHA: gitSha,
-    PORT: process.env.PORT || "1234"
+    PORT: process.env.PORT || "1234",
   };
 
   if (mode === "production") {
@@ -110,67 +110,67 @@ module.exports = function(env = {}, argv = {}) {
     new CreateFileWebpack({
       path: "./dist",
       fileName: "version.txt",
-      content: `${gitSha.trim()} ${new Date().toUTCString()}`
+      content: `${gitSha.trim()} ${new Date().toUTCString()}`,
     }),
     new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css"
+      filename: "[name].[contenthash].css",
     }),
     new HtmlWebpackPlugin({
       filename: "explorer.html",
       template: "src/explorer.html",
-      chunks: ["main"]
+      chunks: ["main"],
     }),
     new HtmlWebpackPlugin({
       filename: "terminal.html",
       template: "src/Terminal/index.html",
-      chunks: ["terminal"]
+      chunks: ["terminal"],
     }),
     new HtmlWebpackPlugin({
       filename: "quickstart.html",
       template: "src/quickstart.html",
-      chunks: ["quickstart"]
+      chunks: ["quickstart"],
     }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "src/index.html",
-      chunks: ["index"]
+      chunks: ["index"],
     }),
     new HtmlWebpackPlugin({
       filename: "hostedExplorer.html",
       template: "src/hostedExplorer.html",
-      chunks: ["hostedExplorer"]
+      chunks: ["hostedExplorer"],
     }),
     new HtmlWebpackPlugin({
       filename: "testExplorer.html",
-      template: "test/notebooks/testExplorer/testExplorer.html",
-      chunks: ["testExplorer"]
+      template: "test/testExplorer/testExplorer.html",
+      chunks: ["testExplorer"],
     }),
     new HtmlWebpackPlugin({
       filename: "Heatmap.html",
       template: "src/Controls/Heatmap/Heatmap.html",
-      chunks: ["heatmap"]
+      chunks: ["heatmap"],
     }),
     new HtmlWebpackPlugin({
       filename: "notebookViewer.html",
       template: "src/NotebookViewer/notebookViewer.html",
-      chunks: ["notebookViewer"]
+      chunks: ["notebookViewer"],
     }),
     new HtmlWebpackPlugin({
       filename: "gallery.html",
       template: "src/GalleryViewer/galleryViewer.html",
-      chunks: ["galleryViewer"]
+      chunks: ["galleryViewer"],
     }),
     new HtmlWebpackPlugin({
       filename: "connectToGitHub.html",
       template: "src/connectToGitHub.html",
-      chunks: ["connectToGitHub"]
+      chunks: ["connectToGitHub"],
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
-      patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }]
+      patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }],
     }),
-    new EnvironmentPlugin(envVars)
+    new EnvironmentPlugin(envVars),
   ];
 
   if (argv.analyze) {
@@ -184,30 +184,30 @@ module.exports = function(env = {}, argv = {}) {
       index: "./src/Index.ts",
       quickstart: "./src/quickstart.ts",
       hostedExplorer: "./src/HostedExplorer.tsx",
-      testExplorer: "./test/notebooks/testExplorer/TestExplorer.ts",
+      testExplorer: "./test/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
-      connectToGitHub: "./src/GitHub/GitHubConnector.ts"
+      connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     },
     node: {
       util: true,
       tls: "empty",
-      net: "empty"
+      net: "empty",
     },
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
       filename: "[name].[chunkhash:6].js",
-      path: path.resolve(__dirname, "dist")
+      path: path.resolve(__dirname, "dist"),
     },
     devtool: mode === "development" ? "cheap-eval-source-map" : "source-map",
     plugins,
     module: {
-      rules
+      rules,
     },
     resolve: {
-      extensions: [".tsx", ".ts", ".js"]
+      extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
       minimize: mode === "production" ? true : false,
@@ -217,10 +217,10 @@ module.exports = function(env = {}, argv = {}) {
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
             compress: false,
-            mangle: true
-          }
-        })
-      ]
+            mangle: true,
+          },
+        }),
+      ],
     },
     watch: isCI || mode === "production" ? false : true,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
@@ -238,19 +238,19 @@ module.exports = function(env = {}, argv = {}) {
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Max-Age": "3600",
         "Access-Control-Allow-Headers": "*",
-        "Access-Control-Allow-Methods": "*"
+        "Access-Control-Allow-Methods": "*",
       },
       proxy: {
         "/api": {
           target: "https://main.documentdb.ext.azure.com",
           changeOrigin: true,
           logLevel: "debug",
-          bypass: function(req, res, proxyOptions) {
+          bypass: function (req, res, proxyOptions) {
             if (req.method === "OPTIONS") {
               res.statusCode = 200;
               res.send();
             }
-          }
+          },
         },
         "/proxy": {
           target: "https://main.documentdb.ext.azure.com",
@@ -258,29 +258,29 @@ module.exports = function(env = {}, argv = {}) {
           secure: false,
           logLevel: "debug",
           pathRewrite: { "^/proxy": "" },
-          router: req => {
+          router: (req) => {
             let newTarget = req.headers["x-ms-proxy-target"];
             return newTarget;
-          }
+          },
         },
         "/_explorer": {
           target: process.env.EMULATOR_ENDPOINT || "https://localhost:8081/",
           changeOrigin: true,
           secure: false,
-          logLevel: "debug"
+          logLevel: "debug",
         },
         "/explorerProxy": {
           target: process.env.EMULATOR_ENDPOINT || "https://localhost:8081/",
           pathRewrite: { "^/explorerProxy": "" },
           changeOrigin: true,
           secure: false,
-          logLevel: "debug"
-        }
-      }
+          logLevel: "debug",
+        },
+      },
     },
     stats: "minimal",
     node: {
-      fs: "empty"
-    }
+      fs: "empty",
+    },
   };
 };

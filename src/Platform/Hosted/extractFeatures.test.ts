@@ -11,7 +11,7 @@ describe("extractFeatures", () => {
     expect(features).toEqual({
       notebookserverurl: "https://localhost:10001/12345/notebook",
       notebookservertoken: "token",
-      enablenotebooks: "true"
+      enablenotebooks: "true",
     });
   });
 });

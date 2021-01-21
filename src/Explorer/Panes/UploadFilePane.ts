@@ -131,11 +131,7 @@ export class UploadFilePane extends ContextualPaneBase {
 
   private resetFileInput(): void {
     const inputElement = $("#importFileInput");
-    inputElement
-      .wrap("<form>")
-      .closest("form")
-      .get(0)
-      .reset();
+    inputElement.wrap("<form>").closest("form").get(0).reset();
     inputElement.unwrap();
   }
 }

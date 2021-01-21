@@ -17,7 +17,7 @@ export default class AuthHeadersUtil {
       type: "POST",
       headers: headers,
       contentType: "application/json",
-      cache: false
+      cache: false,
     });
   }
 
@@ -37,7 +37,7 @@ export default class AuthHeadersUtil {
       type: "POST",
       headers: headers,
       contentType: "application/json",
-      cache: false
+      cache: false,
     });
   }
 

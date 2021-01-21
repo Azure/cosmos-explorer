@@ -103,7 +103,7 @@ export class InputTypeaheadComponent extends React.Component<
     super(props);
     this.cache = {
       inputValue: null,
-      selection: null
+      selection: null,
     };
   }
 
@@ -138,7 +138,7 @@ export class InputTypeaheadComponent extends React.Component<
           className="input-typehead"
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onKeyDown(event)}
         >
-          <div className="typeahead__container" ref={input => (this.containerElt = input)}>
+          <div className="typeahead__container" ref={(input) => (this.containerElt = input)}>
             <div className="typeahead__field">
               <span className="typeahead__query">
                 {this.props.useTextarea ? (
@@ -147,7 +147,7 @@ export class InputTypeaheadComponent extends React.Component<
                     name="q"
                     autoComplete="off"
                     aria-label="Input query"
-                    ref={input => (this.inputElt = input)}
+                    ref={(input) => (this.inputElt = input)}
                     defaultValue={this.props.defaultValue}
                   />
                 ) : (
@@ -156,7 +156,7 @@ export class InputTypeaheadComponent extends React.Component<
                     type="search"
                     autoComplete="off"
                     aria-label="Input query"
-                    ref={input => (this.inputElt = input)}
+                    ref={(input) => (this.inputElt = input)}
                     defaultValue={this.props.defaultValue}
                   />
                 )}
@@ -181,9 +181,7 @@ export class InputTypeaheadComponent extends React.Component<
         event.preventDefault();
         event.stopPropagation();
         this.props.submitFct(this.cache.inputValue, this.cache.selection);
-        $(this.containerElt)
-          .children(".typeahead__result")
-          .hide();
+        $(this.containerElt).children(".typeahead__result").hide();
       }
     }
   }
@@ -203,7 +201,7 @@ export class InputTypeaheadComponent extends React.Component<
         display: "caption",
         data: () => {
           return props.choices;
-        }
+        },
       },
       callback: {
         onClick: (node: any, a: any, item: OnClickItem, event: any) => {
@@ -218,7 +216,7 @@ export class InputTypeaheadComponent extends React.Component<
           if (props.onNewValue) {
             props.onNewValue(query);
           }
-        }
+        },
       },
       template: (query: string, item: any) => {
         // Don't display id if caption *IS* the id
@@ -226,7 +224,7 @@ export class InputTypeaheadComponent extends React.Component<
           ? "<span>{{caption}}</span>"
           : "<span><div>{{caption}}</div><div><small>{{value}}</small></div></span>";
       },
-      dynamic: true
+      dynamic: true,
     };
 
     // Override options

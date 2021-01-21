@@ -3,7 +3,7 @@ import {
   Resource,
   StoredProcedureDefinition,
   TriggerDefinition,
-  UserDefinedFunctionDefinition
+  UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
 import Q from "q";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
@@ -15,6 +15,7 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
@@ -195,7 +196,7 @@ export interface PaneOptions {
 export enum NeighborType {
   SOURCES_ONLY,
   TARGETS_ONLY,
-  BOTH
+  BOTH,
 }
 
 /**
@@ -325,14 +326,14 @@ export enum DocumentExplorerState {
   newDocumentInvalid,
   exisitingDocumentNoEdits,
   exisitingDocumentDirtyValid,
-  exisitingDocumentDirtyInvalid
+  exisitingDocumentDirtyInvalid,
 }
 
 export enum IndexingPolicyEditorState {
   noCollectionSelected,
   noEdits,
   dirtyValid,
-  dirtyInvalid
+  dirtyInvalid,
 }
 
 export enum ScriptEditorState {
@@ -340,7 +341,7 @@ export enum ScriptEditorState {
   newValid,
   exisitingNoEdits,
   exisitingDirtyValid,
-  exisitingDirtyInvalid
+  exisitingDirtyInvalid,
 }
 
 export enum CollectionTabKind {
@@ -362,13 +363,13 @@ export enum CollectionTabKind {
   Gallery = 17,
   NotebookViewer = 18,
   Schema = 19,
-  SettingsV2 = 20
+  SettingsV2 = 20,
 }
 
 export enum TerminalKind {
   Default = 0,
   Mongo = 1,
-  Cassandra = 2
+  Cassandra = 2,
 }
 
 export interface DataExplorerInputsFrame {
@@ -395,6 +396,7 @@ export interface DataExplorerInputsFrame {
   isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
+  selfServeType?: SelfServeType;
 }
 
 export interface CollectionCreationDefaults {

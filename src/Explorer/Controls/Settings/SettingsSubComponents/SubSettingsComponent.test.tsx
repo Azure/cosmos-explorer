@@ -54,7 +54,7 @@ describe("SubSettingsComponent", () => {
     },
     onSubSettingsDiscardableChange: () => {
       return;
-    }
+    },
   };
 
   it("renders", () => {

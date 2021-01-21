@@ -10,7 +10,7 @@ import {
   DirectoryContentRecordProps,
   DummyContentRecordProps,
   FileContentRecordProps,
-  NotebookContentRecordProps
+  NotebookContentRecordProps,
 } from "@nteract/core";
 import { RecordOf } from "immutable";
 import * as React from "react";
@@ -51,7 +51,7 @@ class Contents extends React.PureComponent<ContentsProps> {
     OPEN: ["ctrl+o", "meta+o"],
     PASTE_CELL: ["ctrl+shift+v"],
     RESTART_KERNEL: ["alt+r r", "alt+r c", "alt+r a"],
-    SAVE: ["ctrl+s", "ctrl+shift+s", "meta+s", "meta+shift+s"]
+    SAVE: ["ctrl+s", "ctrl+shift+s", "meta+s", "meta+shift+s"],
   };
 
   render(): JSX.Element {
@@ -96,7 +96,7 @@ const makeMapStateToProps: any = (initialState: AppState, initialProps: { conten
       return {
         contentRef: undefined,
         error: undefined,
-        headerData: undefined
+        headerData: undefined,
       };
     }
 
@@ -104,7 +104,7 @@ const makeMapStateToProps: any = (initialState: AppState, initialProps: { conten
       authors: [],
       description: "",
       tags: [],
-      title: ""
+      title: "",
     };
 
     // If a notebook, we need to read in the headerData if available
@@ -118,14 +118,14 @@ const makeMapStateToProps: any = (initialState: AppState, initialProps: { conten
         authors,
         description,
         tags,
-        title
+        title,
       });
     }
 
     return {
       contentRef,
       error: content.error,
-      headerData
+      headerData,
     };
   };
 
@@ -140,7 +140,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: ContentsProps): object
       return dispatch(
         actions.overwriteMetadataFields({
           ...props,
-          contentRef: ownProps.contentRef
+          contentRef: ownProps.contentRef,
         })
       );
     },
@@ -165,8 +165,8 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: ContentsProps): object
           event.key === "r" ? "None" : event.key === "a" ? "Run All" : "Clear All";
         return dispatch(actions.restartKernel({ outputHandling, contentRef }));
       },
-      SAVE: () => dispatch(actions.save({ contentRef }))
-    }
+      SAVE: () => dispatch(actions.save({ contentRef })),
+    },
   };
 };
 

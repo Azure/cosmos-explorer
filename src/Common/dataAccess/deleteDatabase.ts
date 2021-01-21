@@ -19,9 +19,7 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
     if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
       await deleteDatabaseWithARM(databaseId);
     } else {
-      await client()
-        .database(databaseId)
-        .delete();
+      await client().database(databaseId).delete();
     }
     logConsoleInfo(`Successfully deleted database ${databaseId}`);
   } catch (error) {

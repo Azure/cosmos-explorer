@@ -10,5 +10,5 @@ export interface NotebookContentItem {
 export enum NotebookContentItemType {
   Notebook,
   File,
-  Directory
+  Directory,
 }

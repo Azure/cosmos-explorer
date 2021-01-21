@@ -37,7 +37,7 @@ const sendNotificationForError = (errorMessage: string, errorCode: number | stri
     }
     sendMessage({
       type: MessageTypes.ForbiddenError,
-      reason: errorMessage
+      reason: errorMessage,
     });
   }
 };

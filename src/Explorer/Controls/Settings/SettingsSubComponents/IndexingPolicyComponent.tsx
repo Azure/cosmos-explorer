@@ -33,7 +33,7 @@ export class IndexingPolicyComponent extends React.Component<
   constructor(props: IndexingPolicyComponentProps) {
     super(props);
     this.state = {
-      indexingPolicyContentIsValid: true
+      indexingPolicyContentIsValid: true,
     };
   }
 
@@ -55,7 +55,7 @@ export class IndexingPolicyComponent extends React.Component<
       this.createIndexingPolicyEditor();
     } else {
       this.indexingPolicyEditor.updateOptions({
-        readOnly: isIndexTransforming(this.props.indexTransformationProgress)
+        readOnly: isIndexTransforming(this.props.indexTransformationProgress),
       });
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
       const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
@@ -91,7 +91,7 @@ export class IndexingPolicyComponent extends React.Component<
       value: value,
       language: "json",
       readOnly: isIndexTransforming(this.props.indexTransformationProgress),
-      ariaLabel: "Indexing Policy"
+      ariaLabel: "Indexing Policy",
     });
     if (this.indexingPolicyEditor) {
       const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();

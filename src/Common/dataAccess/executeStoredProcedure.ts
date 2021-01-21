@@ -33,7 +33,7 @@ export const executeStoredProcedure = async (
     );
     return {
       result: response.resource,
-      scriptLogs: response.headers[HttpHeaders.scriptLogResults] as string
+      scriptLogs: response.headers[HttpHeaders.scriptLogResults] as string,
     };
   } catch (error) {
     handleError(

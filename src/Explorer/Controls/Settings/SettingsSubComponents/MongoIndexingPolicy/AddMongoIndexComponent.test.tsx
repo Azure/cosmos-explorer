@@ -15,7 +15,7 @@ describe("AddMongoIndexComponent", () => {
       },
       onDiscard: () => {
         return;
-      }
+      },
     };
 
     const wrapper = shallow(<AddMongoIndexComponent {...props} />);

@@ -13,9 +13,9 @@ describe("deleteDatabase", () => {
   beforeAll(() => {
     updateUserContext({
       databaseAccount: {
-        name: "test"
+        name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB
+      defaultExperience: DefaultAccountExperienceType.DocumentDB,
     });
   });
 
@@ -30,9 +30,9 @@ describe("deleteDatabase", () => {
     (client as jest.Mock).mockReturnValue({
       database: () => {
         return {
-          delete: (): unknown => undefined
+          delete: (): unknown => undefined,
         };
-      }
+      },
     });
     await deleteDatabase("database");
     expect(client).toHaveBeenCalled();

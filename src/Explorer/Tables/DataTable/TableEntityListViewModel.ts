@@ -46,7 +46,7 @@ function _parse(err: any): ErrorDataModel[] {
     normalizedErrors.push(err);
   } else {
     const innerErrors: any[] = _getInnerErrors(err.message);
-    normalizedErrors = innerErrors.map(innerError =>
+    normalizedErrors = innerErrors.map((innerError) =>
       typeof innerError === "string" ? { message: innerError } : innerError
     );
   }
@@ -421,7 +421,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             .getTableSchema(this.queryTablesTab.collection)
             .then((headers: CassandraTableKey[]) => {
               this.updateHeaders(
-                headers.map(header => header.property),
+                headers.map((header) => header.property),
                 true
               );
             });
@@ -449,13 +449,13 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       })
       .catch((error: any) => {
         const parsedErrors = parseError(error);
-        var errors = parsedErrors.map(error => {
+        var errors = parsedErrors.map((error) => {
           return <ViewModels.QueryError>{
             message: error.message,
             start: error.location ? error.location.start : undefined,
             end: error.location ? error.location.end : undefined,
             code: error.code,
-            severity: error.severity
+            severity: error.severity,
           };
         });
         this.queryErrorMessage(errors[0].message);
@@ -469,7 +469,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
               dataExplorerArea: Areas.Tab,
               tabTitle: this.queryTablesTab.tabTitle(),
-              error: error
+              error: error,
             },
             this.queryTablesTab.onLoadStartKey
           );
@@ -505,12 +505,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       if (this._documentIterator && this.continuationToken) {
         // TODO handle Cassandra case
 
-        promise = Q(this._documentIterator.fetchNext().then(response => response.resources)).then(
+        promise = Q(this._documentIterator.fetchNext().then((response) => response.resources)).then(
           (documents: any[]) => {
             let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
             let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
               Results: entities,
-              ContinuationToken: this._documentIterator.hasMoreResults()
+              ContinuationToken: this._documentIterator.hasMoreResults(),
             };
             return Q.resolve(finalEntities);
           }

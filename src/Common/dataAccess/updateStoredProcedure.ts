@@ -3,12 +3,12 @@ import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import {
   SqlStoredProcedureCreateUpdateParameters,
-  SqlStoredProcedureResource
+  SqlStoredProcedureResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
 import {
   createUpdateSqlStoredProcedure,
-  getSqlStoredProcedure
+  getSqlStoredProcedure,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -39,8 +39,8 @@ export async function updateStoredProcedure(
         const createSprocParams: SqlStoredProcedureCreateUpdateParameters = {
           properties: {
             resource: storedProcedure as SqlStoredProcedureResource,
-            options: {}
-          }
+            options: {},
+          },
         };
         const rpResponse = await createUpdateSqlStoredProcedure(
           userContext.subscriptionId,

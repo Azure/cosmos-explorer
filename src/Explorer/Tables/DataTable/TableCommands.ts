@@ -111,7 +111,7 @@ export default class TableCommands {
     let parameters: TableColumnOptionsPane.IColumnSetting = <TableColumnOptionsPane.IColumnSetting>{
       columnNames: displayedColumnNames,
       order: currentOrder,
-      visible: currentSettings
+      visible: currentSettings,
     };
 
     this._container.tableColumnOptionsPane.tableViewModel = viewModel;

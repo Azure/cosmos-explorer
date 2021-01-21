@@ -37,7 +37,7 @@
           data-bind="visible: formErrors() && formErrors() !== ''"
         >
           <div class="warningErrorContent">
-            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"/></span>
+            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
             <span class="warningErrorDetailsLinkContainer">
               <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
             </span>
@@ -115,7 +115,7 @@
             />
 
             <datalist id="keyspacesList" data-bind="foreach: container.nonSystemDatabases">
-              <option data-bind="value: $data.id"> </option>
+              <option data-bind="value: $data.id"></option>
             </datalist>
 
             <!-- Database provisioned throughput - Start -->
@@ -179,7 +179,7 @@
               <span class="mandatoryStar">*</span> Enter CQL command to create the table.
               <a href="https://aka.ms/cassandra-create-table" target="_blank">Learn More</a>
             </p>
-            <div data-bind="text: createTableQuery" style="float:left; padding-top:3px; padding-right:3px;"></div>
+            <div data-bind="text: createTableQuery" style="float: left; padding-top: 3px; padding-right: 3px"></div>
             <input
               type="text"
               data-test="addCollection-tableId"
@@ -192,14 +192,14 @@
               size="20"
               class="textfontclr"
               data-bind="value: tableId"
-              style="margin-bottom: 5px;"
+              style="margin-bottom: 5px"
             />
             <textarea
               id="editor-area"
               rows="15"
               aria-label="Table Schema"
               data-bind="value: userTableQuery"
-              style="height:125px; width: calc(100% - 80px); resize: vertical;"
+              style="height: 125px; width: calc(100% - 80px); resize: vertical"
             ></textarea>
           </div>
 
