@@ -95,10 +95,5 @@ describe("SelfServeComponent", () => {
     expect(initializeMock).toHaveBeenCalled();
     const state = wrapper.state() as SelfServeComponentState;
     verifyDefaultsSet(state.currentValues);
-
-    // onSubmit() must be called when submit button is clicked
-    const submitButton = wrapper.find("#submitButton");
-    submitButton.simulate("click");
-    expect(onSubmitMock).toHaveBeenCalled();
   });
 });

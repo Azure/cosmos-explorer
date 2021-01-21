@@ -150,7 +150,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private renderInfo(info: Info): JSX.Element {
     return (
-      <MessageBar>
+      <MessageBar styles={{root: {width: 400}}}>
         {info.message}
         {info.link && (
           <Link href={info.link.href} target="_blank">
@@ -162,17 +162,18 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderTextInput(input: StringInput): JSX.Element {
-    const value = this.props.currentValues.get(input.dataFieldName).value as string;
+    const value = this.props.currentValues.get(input.dataFieldName)?.value as string;
     return (
       <div className="stringInputContainer">
         <TextField
-          id={`${input.dataFieldName}-textBox-input`}
+          id={`${input.dataFieldName}-textField-input`}
           label={input.label}
           type="text"
-          value={value}
+          value={value ? value : ""}
           placeholder={input.placeholder}
           onChange={(_, newValue) => this.props.onInputChange(input, newValue)}
           styles={{
+            root: {width: 400},
             subComponentStyles: {
               label: {
                 root: {
@@ -212,7 +213,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       return newValue.toString();
     } else {
       const { errors } = this.state;
-      errors.set(dataFieldName, `Invalid value ${value}: must be between ${min} and ${max}`);
+      errors.set(dataFieldName, `Invalid value '${value}'. It must be between ${min} and ${max}`);
       this.setState({ errors });
     }
     return undefined;
@@ -250,10 +251,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       step: step
     };
 
-    const value = this.props.currentValues.get(dataFieldName).value as number;
+    const value = this.props.currentValues.get(dataFieldName)?.value as number;
     if (input.uiType === NumberUiType.Spinner) {
       return (
-        <>
+        <Stack styles={{root: {width: 400}}} tokens={{childrenGap: 2}}>
           <SpinButton
             {...props}
             id={`${input.dataFieldName}-spinner-input`}
@@ -272,7 +273,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           {this.state.errors.has(dataFieldName) && (
             <MessageBar messageBarType={MessageBarType.error}>Error: {this.state.errors.get(dataFieldName)}</MessageBar>
           )}
-        </>
+        </Stack>
       );
     } else if (input.uiType === NumberUiType.Slider) {
       return (
@@ -282,6 +283,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             value={value}
             onChange={newValue => this.props.onInputChange(input, newValue)}
             styles={{
+              root: {width: 400},
               titleLabel: {
                 ...SmartUiComponent.labelStyle,
                 fontWeight: 600
@@ -297,11 +299,11 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderBooleanInput(input: BooleanInput): JSX.Element {
-    const value = this.props.currentValues.get(input.dataFieldName).value as boolean;
-    const selectedKey = value || input.defaultValue ? "true" : "false";
+    const value = this.props.currentValues.get(input.dataFieldName)?.value as boolean;
+    const selectedKey = value || input.defaultValue ? "true" : "false"
     return (
       input.uiType === BooleanUiType.RadioButton ?
-      <div id={`${input.dataFieldName}-radioSwitch-input`}>
+      <div id={`${input.dataFieldName}-radioSwitch-input`} style={{width: 400}} >
         <div className="inputLabelContainer">
           <Text variant="small" nowrap className="inputLabel">
             {input.label}
@@ -327,21 +329,23 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       <Toggle
         id={`${input.dataFieldName}-toggle-input`}
         label={input.label}
-        checked={value}
+        checked={value ? value : false}
         onText={input.trueLabel}
         offText={input.falseLabel}
-        onChange={(event, checked: boolean) => this.props.onInputChange(input, checked)} />
+        onChange={(event, checked: boolean) => this.props.onInputChange(input, checked)}
+        styles={{root: {width: 400}}}
+        />
     );
   }
 
   private renderChoiceInput(input: ChoiceInput): JSX.Element {
     const { label, defaultKey: defaultKey, dataFieldName, choices, placeholder } = input;
-    const value = this.props.currentValues.get(dataFieldName).value as string;
+    const value = this.props.currentValues.get(dataFieldName)?.value as string;
     return (
       <Dropdown
         id={`${input.dataFieldName}-dropown-input`}
         label={label}
-        selectedKey={value ? value : defaultKey}
+        selectedKey={value ? value : defaultKey? defaultKey : [] as string[]}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
         placeholder={placeholder}
         options={choices.map(c => ({
@@ -349,6 +353,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           text: c.label
         }))}
         styles={{
+          root: {width: 400},
           label: {
             ...SmartUiComponent.labelStyle,
             fontWeight: 600
@@ -405,7 +410,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 20 };
     return (
-      <Stack tokens={containerStackTokens} styles={{ root: { width: 400, padding: 10 } }}>
+      <Stack tokens={containerStackTokens}>
         {this.renderNode(this.props.descriptor.root)}
       </Stack>
     );

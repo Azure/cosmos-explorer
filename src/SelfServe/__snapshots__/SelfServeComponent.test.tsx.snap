@@ -13,7 +13,6 @@ exports[`SelfServeComponent should render 1`] = `
       Object {
         "root": Object {
           "padding": 10,
-          "width": 400,
         },
       }
     }
@@ -23,12 +22,60 @@ exports[`SelfServeComponent should render 1`] = `
       }
     }
   >
+    <StyledCommandBarBase
+      items={
+        Array [
+          Object {
+            "disabled": true,
+            "iconProps": Object {
+              "iconName": "Save",
+            },
+            "id": "submitButton",
+            "key": "save",
+            "onClick": [Function],
+            "split": true,
+            "text": "Save",
+          },
+          Object {
+            "disabled": true,
+            "iconProps": Object {
+              "iconName": "Undo",
+            },
+            "id": "discardButton",
+            "key": "discard",
+            "onClick": [Function],
+            "split": true,
+            "text": "Discard",
+          },
+        ]
+      }
+      styles={
+        Object {
+          "root": Object {
+            "paddingLeft": 10,
+          },
+        }
+      }
+    />
     <SmartUiComponent
       currentValues={
         Map {
-          "throughput" => "450",
-          "analyticalStore" => "false",
-          "database" => "db2",
+          "throughput" => Object {
+            "hidden": false,
+            "value": "450",
+          },
+          "containerId" => Object {
+            "hidden": false,
+            "value": undefined,
+          },
+          "analyticalStore" => Object {
+            "hidden": false,
+            "value": "false",
+          },
+          "database" => Object {
+            "hidden": false,
+            "value": "db2",
+          },
         }
       }
       descriptor={
@@ -128,41 +175,9 @@ exports[`SelfServeComponent should render 1`] = `
           },
         }
       }
+      onError={[Function]}
       onInputChange={[Function]}
     />
-    <Stack
-      horizontal={true}
-      tokens={
-        Object {
-          "childrenGap": 10,
-        }
-      }
-    >
-      <CustomizedPrimaryButton
-        id="submitButton"
-        onClick={[Function]}
-        styles={
-          Object {
-            "root": Object {
-              "width": 100,
-            },
-          }
-        }
-        text="submit"
-      />
-      <CustomizedPrimaryButton
-        id="discardButton"
-        onClick={[Function]}
-        styles={
-          Object {
-            "root": Object {
-              "width": 100,
-            },
-          }
-        }
-        text="discard"
-      />
-    </Stack>
   </Stack>
 </div>
 `;

@@ -1,5 +1,5 @@
 import React from "react";
-import { CommandBar, ICommandBarItemProps, IStackTokens, PrimaryButton, Spinner, SpinnerSize, Stack } from "office-ui-fabric-react";
+import { CommandBar, ICommandBarItemProps, IStackTokens, MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack } from "office-ui-fabric-react";
 import {
   ChoiceItem,
   InputType,
@@ -58,8 +58,9 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
+  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<string>;
   inputNames?: string[];
+  validate?: (currentValues: Map<string, SmartUiInput>) => string
 }
 
 export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
@@ -68,12 +69,19 @@ export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
 }
 
+interface Notification {
+  message: string,
+  type: MessageBarType
+}
+
 export interface SelfServeComponentState {
   root: SelfServeDescriptor;
   currentValues: Map<string, SmartUiInput>;
   baselineValues: Map<string, SmartUiInput>;
   isRefreshing: boolean;
   hasErrors: boolean,
+  compileErrorMessage: string,
+  notification: Notification
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
@@ -88,7 +96,9 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       currentValues: new Map(),
       baselineValues: new Map(),
       isRefreshing: true,
-      hasErrors: false
+      hasErrors: false,
+      compileErrorMessage: undefined,
+      notification: undefined
     };
   }
 
@@ -98,51 +108,64 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   private initializeSmartUiComponent = async (): Promise<void> => {
     this.setState({ isRefreshing: true });
-    await this.initializeSmartUiNode(this.props.descriptor.root);
     await this.setDefaults();
-    this.setState({ isRefreshing: false });
+    const {currentValues , baselineValues} = this.state
+    await this.initializeSmartUiNode(this.props.descriptor.root, currentValues, baselineValues);
+    this.setState({ isRefreshing: false, currentValues, baselineValues });
   };
 
   private setDefaults = async (): Promise<void> => {
-    this.setState({ isRefreshing: true });
     let { currentValues, baselineValues } = this.state;
 
     const initialValues = await this.props.descriptor.initialize();
-    for (const key of initialValues.keys()) {
-      if (this.props.descriptor.inputNames.indexOf(key) === -1) {
-        this.setState({ isRefreshing: false });
-        throw new Error(`${key} is not an input property of this class.`);
+    this.props.descriptor.inputNames.map((inputName) => {
+      let initialValue = initialValues.get(inputName)
+      if (!initialValue) {
+        initialValue = {value: undefined, hidden: false}
+      }
+      currentValues = currentValues.set(inputName, initialValue);
+      baselineValues = baselineValues.set(inputName, initialValue);
+      initialValues.delete(inputName)
+    })
+
+    if (initialValues.size > 0) {
+      const keys = []
+      for (const key of initialValues.keys()) {
+        keys.push(key)
       }
 
-      currentValues = currentValues.set(key, initialValues.get(key));
-      baselineValues = baselineValues.set(key, initialValues.get(key));
+      this.setState({ 
+        compileErrorMessage: `The following fields have default values set but are not input properties of this class: ${keys.join(", ")}`
+      });
     }
-    this.setState({ currentValues, baselineValues, isRefreshing: false });
+    this.setState({ currentValues, baselineValues });
   };
 
   public discard = (): void => {
     let { currentValues } = this.state;
     const { baselineValues } = this.state;
-    for (const key of baselineValues.keys()) {
-      currentValues = currentValues.set(key, baselineValues.get(key));
+    for (const key of currentValues.keys()) {
+      const baselineValue = baselineValues.get(key)
+      const newValue = {value: baselineValue.value, hidden: baselineValue.hidden}
+      currentValues = currentValues.set(key, newValue);
     }
     this.setState({ currentValues });
   };
 
-  private initializeSmartUiNode = async (currentNode: Node): Promise<void> => {
+  private initializeSmartUiNode = async (currentNode: Node, currentValues: Map<string, SmartUiInput>, baselineValues: Map<string, SmartUiInput>): Promise<void> => {
     currentNode.info = await this.getResolvedValue(currentNode.info);
 
     if (currentNode.input) {
-      currentNode.input = await this.getResolvedInput(currentNode.input);
+      currentNode.input = await this.getResolvedInput(currentNode.input, currentValues, baselineValues);
     }
 
-    const promises = currentNode.children?.map(async (child: Node) => await this.initializeSmartUiNode(child));
+    const promises = currentNode.children?.map(async (child: Node) => await this.initializeSmartUiNode(child, currentValues, baselineValues));
     if (promises) {
       await Promise.all(promises);
     }
   };
 
-  private getResolvedInput = async (input: AnyInput): Promise<AnyInput> => {
+  private getResolvedInput = async (input: AnyInput, currentValues: Map<string, SmartUiInput>, baselineValues: Map<string, SmartUiInput>): Promise<AnyInput> => {
     input.label = await this.getResolvedValue(input.label);
     input.placeholder = await this.getResolvedValue(input.placeholder);
 
@@ -159,6 +182,16 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         numberInput.min = await this.getResolvedValue(numberInput.min);
         numberInput.max = await this.getResolvedValue(numberInput.max);
         numberInput.step = await this.getResolvedValue(numberInput.step);
+
+        const dataFieldName = numberInput.dataFieldName
+        const defaultValue = currentValues.get(dataFieldName)?.value
+
+        if (!defaultValue) {
+          const newDefaultValue = {value: numberInput.min, hidden: currentValues.get(dataFieldName)?.hidden}
+          currentValues.set(dataFieldName, newDefaultValue)
+          baselineValues.set(dataFieldName, newDefaultValue)
+        }
+
         return numberInput;
       }
       case "boolean": {
@@ -190,35 +223,61 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       const dataFieldName = input.dataFieldName;
       const { currentValues } = this.state;
       const currentInputValue = currentValues.get(dataFieldName)
-      currentValues.set(dataFieldName, {value: newValue, hidden: currentInputValue.hidden});
+      currentValues.set(dataFieldName, {value: newValue, hidden: currentInputValue?.hidden});
       this.setState({ currentValues });
     }
   };
 
-  onSubmitButtonClick = () : void => {
+  public onSubmitButtonClick = () : void => {
+    const errorMessage = this.props.descriptor.validate(this.state.currentValues)
+    this.setState({notification: { message: errorMessage, type: MessageBarType.error}})
+    if (errorMessage) {
+      return
+    }
     this.setState({isRefreshing: true})
-    this.props.descriptor.onSubmit(this.state.currentValues)
-    .then(() => {
-      this.setState({isRefreshing: false})
+    const onSubmitPromise = this.props.descriptor.onSubmit(this.state.currentValues)
+    onSubmitPromise.catch((error) => {
+      this.setState({
+        isRefreshing: false, 
+        notification: { 
+          message: `Update failed. Error: ${error.message}`, 
+          type: MessageBarType.error
+        }
+      })
+    })
+    onSubmitPromise.then((successMessage: string) => {
       this.setDefaults();
-    });
+      this.setState({
+        isRefreshing: false,
+        notification: { 
+          message: successMessage,
+          type: MessageBarType.success
+        }
+      })
+    })
   }
 
-  isDiscardButtonDisabled = () : boolean => {
+  public isDiscardButtonDisabled = () : boolean => {
     for (const key of this.state.currentValues.keys()) {
-      if (this.state.currentValues.get(key) !== this.state.baselineValues.get(key)) {
+      const currentValue = JSON.stringify(this.state.currentValues.get(key))
+      const baselineValue = JSON.stringify(this.state.baselineValues.get(key))
+
+      if (currentValue !== baselineValue) {
         return false
       }
     }
     return true
   }
 
-  isSaveButtonDisabled = () : boolean => {
+  public isSaveButtonDisabled = () : boolean => {
     if (this.state.hasErrors) {
       return true
     }
     for (const key of this.state.currentValues.keys()) {
-      if (this.state.currentValues.get(key) !== this.state.baselineValues.get(key)) {
+      const currentValue = JSON.stringify(this.state.currentValues.get(key))
+      const baselineValue = JSON.stringify(this.state.baselineValues.get(key))
+
+      if (currentValue !== baselineValue) {
         return false
       }
     }
@@ -233,7 +292,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         iconProps: { iconName: 'Save' },
         split: true,
         disabled: this.isSaveButtonDisabled(),
-        onClick: this.onSubmitButtonClick
+        onClick: this.onSubmitButtonClick,
+        id: "submitButton"
       },
       {
         key: 'discard',
@@ -241,17 +301,41 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         iconProps: { iconName: 'Undo' },
         split: true,
         disabled: this.isDiscardButtonDisabled(),
-        onClick: () => {this.discard()}
+        onClick: () => {this.discard()},
+        id: "discardButton"
       }
     ]
   }
 
   public render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 20 };
-    return !this.state.isRefreshing ? (
+    if (this.state.compileErrorMessage) {
+      return (
+        <MessageBar messageBarType={MessageBarType.error}>
+          {this.state.compileErrorMessage}
+        </MessageBar>
+      )
+    }
+    if (this.state.isRefreshing) {
+      return (
+        <Spinner
+          size={SpinnerSize.large}
+          styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
+        />
+      )
+    }
+    return (
       <div style={{ overflowX: "auto" }}>
-        <Stack tokens={containerStackTokens} styles={{ root: { width: 400, padding: 10 } }}>
-          <CommandBar items={this.getCommandBarItems()} />
+        <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
+          <CommandBar styles={{root: {paddingLeft: 10}}} items={this.getCommandBarItems()} />
+          {this.state.notification && 
+            <MessageBar 
+            messageBarType={this.state.notification.type} 
+            styles={{root: {width: 400}}}
+            onDismiss={() => this.setState({notification: undefined})}>
+              {this.state.notification.message}
+            </MessageBar>
+          }
           <SmartUiComponent
             descriptor={this.state.root as SmartUiDescriptor}
             currentValues={this.state.currentValues}
@@ -260,11 +344,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
           />
         </Stack>
       </div>
-    ) : (
-      <Spinner
-        size={SpinnerSize.large}
-        styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
-      />
-    );
+    ) 
   }
 }

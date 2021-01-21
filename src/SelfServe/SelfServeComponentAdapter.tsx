@@ -28,6 +28,10 @@ export class SelfServeComponentAdapter implements ReactAdapter {
         const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
         return new SelfServeExample.default().toSelfServeDescriptor();
       }
+      case SelfServeType.sqlx: {
+        const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
+        return new SqlX.default().toSelfServeDescriptor();
+      }
       default:
         return undefined;
     }

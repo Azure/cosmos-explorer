@@ -17,16 +17,18 @@ export enum SelfServeType {
   // Unsupported self serve type passed as feature flag
   invalid = "invalid",
   // Add your self serve types here
-  example = "example"
+  example = "example",
+  sqlx="sqlx"
 }
 
 export abstract class SelfServeBaseClass {
-  public abstract onSubmit: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
+  public abstract onSubmit: (currentValues: Map<string, SmartUiInput>) => Promise<string>;
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
+  public abstract validate: (currentvalues: Map<string, SmartUiInput>) => string;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
     const className = this.constructor.name;
-    const smartUiDescriptor = Reflect.getMetadata(className, this) as SelfServeDescriptor;
+    const selfServeDescriptor = Reflect.getMetadata(className, this) as SelfServeDescriptor;
 
     if (!this.initialize) {
       throw new Error(`initialize() was not declared for the class '${className}'`);
@@ -34,13 +36,14 @@ export abstract class SelfServeBaseClass {
     if (!this.onSubmit) {
       throw new Error(`onSubmit() was not declared for the class '${className}'`);
     }
-    if (!smartUiDescriptor?.root) {
+    if (!selfServeDescriptor?.root) {
       throw new Error(`@SmartUi decorator was not declared for the class '${className}'`);
     }
 
-    smartUiDescriptor.initialize = this.initialize;
-    smartUiDescriptor.onSubmit = this.onSubmit;
-    return smartUiDescriptor;
+    selfServeDescriptor.initialize = this.initialize;
+    selfServeDescriptor.onSubmit = this.onSubmit;
+    selfServeDescriptor.validate = this.validate;
+    return selfServeDescriptor;
   }
 }
 

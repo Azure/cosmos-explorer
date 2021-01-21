@@ -30,17 +30,13 @@ const onDbThroughputChange = (currentState: Map<string, SmartUiInput>, newValue:
   return currentState;
 };
 
-const enableDbLevelThroughput = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+const onEnableDbLevelThroughputChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
   currentState.set("enableDbLevelThroughput", { value: newValue, hidden: false});
   const currentDbThroughput = currentState.get("dbThroughput")
-  currentState.set("dbThroughput", {value: currentDbThroughput.value, hidden: !(newValue as boolean)});
+  const isDbThroughputHidden = newValue === undefined || !(newValue as boolean)
+  currentState.set("dbThroughput", {value: currentDbThroughput.value, hidden: isDbThroughputHidden});
   return currentState;
 };
-
-export const delay = (ms: number): Promise<void> => {	
-  console.log("delay called");	
-  return new Promise(resolve => setTimeout(resolve, ms));	
-};	
 
 const initializeMaxThroughput = async (): Promise<number> => {
   return 10000;
@@ -72,6 +68,14 @@ const initializeMaxThroughput = async (): Promise<number> => {
 */
 @ClassInfo(selfServeExampleInfo)
 export default class SelfServeExample extends SelfServeBaseClass {
+  public validate = (currentvalues: Map<string, SmartUiInput>) : string => {
+    console.log(currentvalues.get("regions") , currentvalues.get("accountName"))
+    if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
+      return "Regions and AccountName should not be empty."
+    }
+    return undefined
+  };
+
   /*
   onSubmit()
     - input: (currentValues: Map<string, InputType>) => Promise<void>
@@ -81,14 +85,14 @@ export default class SelfServeExample extends SelfServeBaseClass {
             In this example, the onSubmit callback simply sets the value for keys corresponding to the field name
             in the SessionStorage.
   */
-  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<void> => {
-    await delay(1000)
+  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<string> => {
     SessionStorageUtility.setEntry("regions", currentValues.get("regions")?.value?.toString());
     SessionStorageUtility.setEntry("enableLogging", currentValues.get("enableLogging")?.value?.toString());
     SessionStorageUtility.setEntry("accountName", currentValues.get("accountName")?.value?.toString());
     SessionStorageUtility.setEntry("collectionThroughput", currentValues.get("collectionThroughput")?.value?.toString());
     SessionStorageUtility.setEntry("enableDbLevelThroughput", currentValues.get("enableDbLevelThroughput")?.value?.toString());
     SessionStorageUtility.setEntry("dbThroughput", currentValues.get("dbThroughput")?.value?.toString());
+    return "submitted successfully"
   };
 
   /*
@@ -113,14 +117,24 @@ export default class SelfServeExample extends SelfServeBaseClass {
     const stringInput = SessionStorageUtility.getEntry("accountName");
     defaults.set("accountName", { value: stringInput ? stringInput : "", hidden: false});
     const collectionThroughput = parseInt(SessionStorageUtility.getEntry("collectionThroughput"));
-    defaults.set("collectionThroughput", { value: isNaN(collectionThroughput) ? 1 : collectionThroughput, hidden: false});
+    defaults.set("collectionThroughput", { value: isNaN(collectionThroughput) ? undefined : collectionThroughput, hidden: false});
     const enableDbLevelThroughput = SessionStorageUtility.getEntry("enableDbLevelThroughput") === "true"
     defaults.set("enableDbLevelThroughput", { value: enableDbLevelThroughput, hidden: false});
     const dbThroughput = parseInt(SessionStorageUtility.getEntry("dbThroughput"));
-    defaults.set("dbThroughput", { value: isNaN(dbThroughput) ? 1 : dbThroughput, hidden: !enableDbLevelThroughput});
+    defaults.set("dbThroughput", { value: isNaN(dbThroughput) ? undefined : dbThroughput, hidden: !enableDbLevelThroughput});
     return defaults;
   };
 
+  /*
+  @Values() :
+    - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions | DescriptionDisplay
+    - role: Specifies the required options to display the property as 
+            a) TextBox for text input
+            b) Spinner/Slider for number input
+            c) Radio buton/Toggle for boolean input
+            d) Dropdown for choice input
+            e) Text (with optional hyperlink) for descriptions
+  */
   @Values({
     description: {
       text: "This class sets collection and database throughput.", 
@@ -139,11 +153,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @PropertyInfo(regionDropdownInfo)
 
-  /*
-  @Values() :
-    - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions
-    - role: Specifies the required options to display the property as TextBox, Number Spinner/Slider, Radio buton or Dropdown.
-  */
   @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
   regions: ChoiceItem;
 
@@ -170,7 +179,22 @@ export default class SelfServeExample extends SelfServeBaseClass {
   })
   collectionThroughput: number;
 
-  @OnChange(enableDbLevelThroughput)
+  /*
+  @OnChange()
+    - optional
+    - input: (currentValues: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
+    - role: Takes a Map of current values and the newValue for this property as inputs. This is called when a property,
+            say prop1, changes its value in the UI. This can be used to 
+            a) Change the value (and reflect it in the UI) for prop2 based on prop1.
+            b) Change the visibility for prop2 in the UI, based on prop1
+
+            The new Map of propertyName -> value is returned.
+
+            In this example, the onEnableDbLevelThroughputChange function makes the dbThroughput property visible when
+            enableDbLevelThroughput, a boolean, is set to true and hides dbThroughput property when it is set to false.
+  */
+
+  @OnChange(onEnableDbLevelThroughputChange)
   @Values({
     label: "Enable DB level throughput",
     trueLabel: "Enable",
@@ -180,16 +204,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
   enableDbLevelThroughput: boolean;
   
   /*
-  @OnChange()
-    - optional
-    - input: (currentValues: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
-    - role: Takes a Map of current values and the newValue for this property as inputs. This is called when a property
-            changes its value in the UI. This can be used to change other input values based on some other input.
-
-            The new Map of propertyName -> value is returned.
-
-            In this example, the onDbThroughputChange function sets the collectionThroughput to the same value as the dbThroughput
-            when the slider in moved in the UI.
+    In this example, the onDbThroughputChange function sets the collectionThroughput to the same value as the dbThroughput
+    when the slider in moved in the UI.
   */
   @OnChange(onDbThroughputChange)
   @Values({
