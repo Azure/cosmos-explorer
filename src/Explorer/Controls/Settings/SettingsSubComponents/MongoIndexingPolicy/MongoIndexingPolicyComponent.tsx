@@ -285,7 +285,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   public hasCompoundIndex = (): boolean => {
     for (let index = 0; index < this.props.mongoIndexes.length; index++) {
-      if (this.props.mongoIndexes[index].key.keys.length > 1) {
+      if (this.props.mongoIndexes[index].key?.keys?.length > 1) {
         return true;
       }
     }
