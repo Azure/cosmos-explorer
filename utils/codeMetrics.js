@@ -2,7 +2,7 @@
 const fs = require("fs");
 const fg = require("fast-glob");
 const appInsights = require("applicationinsights");
-appInsights.setup("a19ced82-51c3-4fce-9d26-3b13a77a70be").start();
+appInsights.setup(process.env.CODE_METRICS_APP_ID).start();
 
 const client = appInsights.defaultClient;
 const htmlFiles = fg.sync(["**/*.html", "!node_modules"]);
