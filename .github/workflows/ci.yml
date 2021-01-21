@@ -12,13 +12,14 @@ jobs:
   codemetrics:
     runs-on: ubuntu-latest
     name: "Log Code Metrics"
+    if: github.ref == 'refs/heads/master
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - run: node util/codeMetrics.js
+      - run: node utils/codeMetrics.js
   compile:
     runs-on: ubuntu-latest
     name: "Compile TypeScript"
