@@ -14,7 +14,7 @@ import {
   PivotItem,
   SearchBox,
   Stack,
-  Text,
+  Text
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
@@ -44,14 +44,14 @@ export enum GalleryTab {
   OfficialSamples,
   PublicGallery,
   Favorites,
-  Published,
+  Published
 }
 
 export enum SortBy {
   MostViewed,
   MostDownloaded,
   MostFavorited,
-  MostRecent,
+  MostRecent
 }
 
 interface GalleryViewerComponentState {
@@ -106,27 +106,27 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       sortBy: props.sortBy,
       searchText: props.searchText,
       dialogProps: undefined,
-      isCodeOfConductAccepted: undefined,
+      isCodeOfConductAccepted: undefined
     };
 
     this.sortingOptions = [
       {
         key: SortBy.MostViewed,
-        text: GalleryViewerComponent.mostViewedText,
+        text: GalleryViewerComponent.mostViewedText
       },
       {
         key: SortBy.MostDownloaded,
-        text: GalleryViewerComponent.mostDownloadedText,
+        text: GalleryViewerComponent.mostDownloadedText
       },
       {
         key: SortBy.MostRecent,
-        text: GalleryViewerComponent.mostRecentText,
-      },
+        text: GalleryViewerComponent.mostRecentText
+      }
     ];
     if (this.props.container?.isGalleryPublishEnabled()) {
       this.sortingOptions.push({
         key: SortBy.MostFavorited,
-        text: GalleryViewerComponent.mostFavoritedText,
+        text: GalleryViewerComponent.mostFavoritedText
       });
     }
 
@@ -158,14 +158,14 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     const pivotProps: IPivotProps = {
       onLinkClick: this.onPivotChange,
-      selectedKey: GalleryTab[this.state.selectedTab],
+      selectedKey: GalleryTab[this.state.selectedTab]
     };
 
-    const pivotItems = tabs.map((tab) => {
+    const pivotItems = tabs.map(tab => {
       const pivotItemProps: IPivotItemProps = {
         itemKey: GalleryTab[tab.tab],
         style: { marginTop: 20 },
-        headerText: GalleryUtils.getTabTitle(tab.tab),
+        headerText: GalleryUtils.getTabTitle(tab.tab)
       };
 
       return (
@@ -201,7 +201,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createSamplesTab = (tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo => {
     return {
       tab,
-      content: this.createSearchBarHeader(this.createCardsTabContent(data)),
+      content: this.createSearchBarHeader(this.createCardsTabContent(data))
     };
   };
 
@@ -212,7 +212,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   ): GalleryTabInfo {
     return {
       tab,
-      content: this.createPublicGalleryTabContent(data, acceptedCodeOfConduct),
+      content: this.createPublicGalleryTabContent(data, acceptedCodeOfConduct)
     };
   }
 
@@ -225,7 +225,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
             "You have not liked anything",
             "Like any notebook from Official Samples or Public gallery"
           )
-        : this.createSearchBarHeader(this.createCardsTabContent(data)),
+        : this.createSearchBarHeader(this.createCardsTabContent(data))
     };
   }
 
@@ -238,7 +238,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
             "You have not published anything",
             "Publish your sample notebooks to share your published work with others"
           )
-        : this.createPublishedNotebooksTabContent(data),
+        : this.createPublishedNotebooksTabContent(data)
     };
   };
 
@@ -342,7 +342,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
             <th>Name</th>
             <th>Policy violations</th>
           </tr>
-          {data.map((item) => (
+          {data.map(item => (
             <tr key={`policy-violations-tr-${item.id}`}>
               <td>{item.name}</td>
               <td>{item.policyViolations.join(", ")}</td>
@@ -391,7 +391,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
 
     this.setState({
-      sampleNotebooks: this.sampleNotebooks && [...this.sort(sortBy, this.search(searchText, this.sampleNotebooks))],
+      sampleNotebooks: this.sampleNotebooks && [...this.sort(sortBy, this.search(searchText, this.sampleNotebooks))]
     });
   }
 
@@ -418,7 +418,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     this.setState({
       publicNotebooks: this.publicNotebooks && [...this.sort(sortBy, this.search(searchText, this.publicNotebooks))],
-      isCodeOfConductAccepted: this.isCodeOfConductAccepted,
+      isCodeOfConductAccepted: this.isCodeOfConductAccepted
     });
   }
 
@@ -438,8 +438,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     this.setState({
       favoriteNotebooks: this.favoriteNotebooks && [
-        ...this.sort(sortBy, this.search(searchText, this.favoriteNotebooks)),
-      ],
+        ...this.sort(sortBy, this.search(searchText, this.favoriteNotebooks))
+      ]
     });
 
     // Refresh favorite button state
@@ -464,14 +464,14 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     this.setState({
       publishedNotebooks: this.publishedNotebooks && [
-        ...this.sort(sortBy, this.search(searchText, this.publishedNotebooks)),
-      ],
+        ...this.sort(sortBy, this.search(searchText, this.publishedNotebooks))
+      ]
     });
   }
 
   private search(searchText: string, data: IGalleryItem[]): IGalleryItem[] {
     if (searchText) {
-      return data?.filter((item) => this.isGalleryItemPresent(searchText, item));
+      return data?.filter(item => this.isGalleryItemPresent(searchText, item));
     }
 
     return data;
@@ -482,7 +482,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const searchData: string[] = [item.author.toUpperCase(), item.description.toUpperCase(), item.name.toUpperCase()];
 
     if (item.tags) {
-      searchData.push(...item.tags.map((tag) => tag.toUpperCase()));
+      searchData.push(...item.tags.map(tag => tag.toUpperCase()));
     }
 
     for (const data of searchData) {
@@ -525,7 +525,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   private replaceGalleryItem(item: IGalleryItem, items?: IGalleryItem[]): void {
-    const index = items?.findIndex((value) => value.id === item.id);
+    const index = items?.findIndex(value => value.id === item.id);
     if (index !== -1) {
       items?.splice(index, 1, item);
     }
@@ -539,14 +539,14 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     return {
       height: visibleRect.height,
-      itemCount: this.columnCount * this.rowCount,
+      itemCount: this.columnCount * this.rowCount
     };
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
     let isFavorite: boolean;
     if (this.props.container?.isGalleryPublishEnabled()) {
-      isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
+      isFavorite = this.favoriteNotebooks?.find(item => item.id === data.id) !== undefined;
     }
     const props: GalleryCardComponentProps = {
       data,
@@ -558,7 +558,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
       onDownloadClick: () => this.downloadItem(data),
-      onDeleteClick: () => this.deleteItem(data),
+      onDeleteClick: () => this.deleteItem(data)
     };
 
     return (
@@ -571,7 +571,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private loadTaggedItems = (tag: string): void => {
     const searchText = tag;
     this.setState({
-      searchText,
+      searchText
     });
 
     this.loadTabContent(this.state.selectedTab, searchText, this.state.sortBy, true);
@@ -591,20 +591,18 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private unfavoriteItem = async (data: IGalleryItem): Promise<void> => {
     GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, data, (item: IGalleryItem) => {
-      this.favoriteNotebooks = this.favoriteNotebooks?.filter((value) => value.id !== item.id);
+      this.favoriteNotebooks = this.favoriteNotebooks?.filter(value => value.id !== item.id);
       this.refreshSelectedTab(item);
     });
   };
 
   private downloadItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, data, (item) =>
-      this.refreshSelectedTab(item)
-    );
+    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, data, item => this.refreshSelectedTab(item));
   };
 
   private deleteItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, (item) => {
-      this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
+    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, item => {
+      this.publishedNotebooks = this.publishedNotebooks?.filter(notebook => item.id !== notebook.id);
       this.refreshSelectedTab(item);
     });
   };
@@ -614,7 +612,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const searchText: string = undefined;
     this.setState({
       selectedTab,
-      searchText,
+      searchText
     });
 
     this.loadTabContent(selectedTab, searchText, this.state.sortBy, false);
@@ -624,7 +622,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private onSearchBoxChange = (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string): void => {
     const searchText = newValue;
     this.setState({
-      searchText,
+      searchText
     });
 
     this.loadTabContent(this.state.selectedTab, searchText, this.state.sortBy, true);
@@ -634,7 +632,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private onDropdownChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
     const sortBy = option.key as SortBy;
     this.setState({
-      sortBy,
+      sortBy
     });
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, sortBy, true);

@@ -14,7 +14,7 @@ const fetchMock = () => {
     ok: true,
     text: () => "{}",
     json: () => "{}",
-    headers: new Map(),
+    headers: new Map()
   });
 };
 
@@ -27,8 +27,8 @@ const collection = {
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
-    version: 1,
-  },
+    version: 1
+  }
 } as Collection;
 
 const documentId = ({
@@ -38,8 +38,8 @@ const documentId = ({
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
-    version: 1,
-  },
+    version: 1
+  }
 } as unknown) as DocumentId;
 
 const databaseAccount = {
@@ -52,8 +52,8 @@ const databaseAccount = {
     documentEndpoint: "bar",
     gremlinEndpoint: "foo",
     tableEndpoint: "foo",
-    cassandraEndpoint: "foo",
-  },
+    cassandraEndpoint: "foo"
+  }
 } as DatabaseAccount;
 
 describe("MongoProxyClient", () => {
@@ -61,10 +61,10 @@ describe("MongoProxyClient", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
-        databaseAccount,
+        databaseAccount
       });
       updateConfigContext({
-        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -93,10 +93,10 @@ describe("MongoProxyClient", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
-        databaseAccount,
+        databaseAccount
       });
       updateConfigContext({
-        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -125,10 +125,10 @@ describe("MongoProxyClient", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
-        databaseAccount,
+        databaseAccount
       });
       updateConfigContext({
-        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -157,10 +157,10 @@ describe("MongoProxyClient", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
-        databaseAccount,
+        databaseAccount
       });
       updateConfigContext({
-        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -189,10 +189,10 @@ describe("MongoProxyClient", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
-        databaseAccount,
+        databaseAccount
       });
       updateConfigContext({
-        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -222,10 +222,10 @@ describe("MongoProxyClient", () => {
       resetConfigContext();
       delete window.authType;
       updateUserContext({
-        databaseAccount,
+        databaseAccount
       });
       updateConfigContext({
-        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
       });
     });
 

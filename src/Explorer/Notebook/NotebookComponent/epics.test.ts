@@ -19,7 +19,7 @@ describe("Extract kernel from notebook", () => {
         kernelspec: {
           display_name: "Python 3",
           language: "python",
-          name: "python3",
+          name: "python3"
         },
         language_info: {
           name: "python",
@@ -27,13 +27,13 @@ describe("Extract kernel from notebook", () => {
           mimetype: "text/x-python",
           codemirror_mode: {
             name: "ipython",
-            version: 3,
+            version: 3
           },
           pygments_lexer: "ipython3",
           nbconvert_exporter: "python",
-          file_extension: ".py",
-        },
-      }),
+          file_extension: ".py"
+        }
+      })
     });
 
     const result = NotebookUtil.extractNewKernel("blah", fakeNotebook);
@@ -49,13 +49,13 @@ describe("Extract kernel from notebook", () => {
           mimetype: "text/x-python",
           codemirror_mode: {
             name: "ipython",
-            version: 3,
+            version: 3
           },
           pygments_lexer: "ipython3",
           nbconvert_exporter: "python",
-          file_extension: ".py",
-        },
-      }),
+          file_extension: ".py"
+        }
+      })
     });
 
     const result = NotebookUtil.extractNewKernel("blah", fakeNotebook);
@@ -65,8 +65,8 @@ describe("Extract kernel from notebook", () => {
   it("Returns nothing if no kernelspec nor language info is found in metadata", () => {
     const fakeNotebook = makeNotebookRecord({
       metadata: Immutable.Map({
-        blah: "this should be ignored",
-      }),
+        blah: "this should be ignored"
+      })
     });
 
     const result = NotebookUtil.extractNewKernel("blah", fakeNotebook);
@@ -79,8 +79,8 @@ const initialState = {
     host: state.makeJupyterHostRecord({
       type: "jupyter",
       token: "eh",
-      basePath: "/",
-    }),
+      basePath: "/"
+    })
   }),
   comms: state.makeCommsRecord(),
   config: Immutable.Map({}),
@@ -89,8 +89,8 @@ const initialState = {
     entities: state.makeEntitiesRecord({
       contents: state.makeContentsRecord({
         byRef: Immutable.Map({
-          fakeContentRef: state.makeNotebookContentRecord(),
-        }),
+          fakeContentRef: state.makeNotebookContentRecord()
+        })
       }),
       kernels: state.makeKernelsRecord({
         byRef: Immutable.Map({
@@ -98,16 +98,16 @@ const initialState = {
             type: "websocket",
             channels: new Subject<any>(),
             kernelSpecName: "fancy",
-            id: "0",
-          }),
-        }),
-      }),
-    }),
+            id: "0"
+          })
+        })
+      })
+    })
   }),
   cdb: makeCdbRecord({
     databaseAccountName: "dbAccountName",
-    defaultExperience: "defaultExperience",
-  }),
+    defaultExperience: "defaultExperience"
+  })
 };
 
 describe("launchWebSocketKernelEpic", () => {
@@ -130,7 +130,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelRef,
         kernelSpecName,
         cwd,
-        selectNextKernel: true,
+        selectNextKernel: true
       })
     );
 
@@ -149,18 +149,20 @@ describe("launchWebSocketKernelEpic", () => {
           name: "kernel_launched",
           last_activity: "2019-11-07T14:29:54.432454Z",
           execution_state: "starting",
-          connections: 0,
+          connections: 0
         },
         notebook: {
           path: "notebooks/Untitled7.ipynb",
-          name: "",
-        },
+          name: ""
+        }
       },
       responseText: null,
-      responseType: "json",
+      responseType: "json"
     });
 
-    const responseActions = await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+    const responseActions = await launchWebSocketKernelEpic(action$, state$)
+      .pipe(toArray())
+      .toPromise();
 
     expect(responseActions).toMatchObject([
       {
@@ -175,10 +177,10 @@ describe("launchWebSocketKernelEpic", () => {
             type: "websocket",
             kernelSpecName,
             cwd,
-            id: kernelId,
-          },
-        },
-      },
+            id: kernelId
+          }
+        }
+      }
     ]);
   });
 
@@ -196,7 +198,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelRef,
         kernelSpecName,
         cwd,
-        selectNextKernel: true,
+        selectNextKernel: true
       })
     );
 
@@ -215,23 +217,25 @@ describe("launchWebSocketKernelEpic", () => {
           name: "kernel_launched",
           last_activity: "2019-11-07T14:29:54.432454Z",
           execution_state: "starting",
-          connections: 0,
+          connections: 0
         },
         notebook: {
           path: "notebooks/Untitled7.ipynb",
-          name: "",
-        },
+          name: ""
+        }
       },
       responseText: null,
-      responseType: "json",
+      responseType: "json"
     });
 
-    await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+    await launchWebSocketKernelEpic(action$, state$)
+      .pipe(toArray())
+      .toPromise();
 
     expect(createSpy.lastCall.args[1]).toMatchObject({
       kernel: {
-        name: kernelSpecName,
-      },
+        name: kernelSpecName
+      }
     });
   });
 
@@ -249,7 +253,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelRef,
         kernelSpecName: undefined,
         cwd,
-        selectNextKernel: true,
+        selectNextKernel: true
       })
     );
 
@@ -268,23 +272,25 @@ describe("launchWebSocketKernelEpic", () => {
           name: "kernel_launched",
           last_activity: "2019-11-07T14:29:54.432454Z",
           execution_state: "starting",
-          connections: 0,
+          connections: 0
         },
         notebook: {
           path: "notebooks/Untitled7.ipynb",
-          name: "",
-        },
+          name: ""
+        }
       },
       responseText: null,
-      responseType: "json",
+      responseType: "json"
     });
 
-    const responseActions = await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+    const responseActions = await launchWebSocketKernelEpic(action$, state$)
+      .pipe(toArray())
+      .toPromise();
 
     expect(responseActions).toMatchObject([
       {
-        type: actions.LAUNCH_KERNEL_FAILED,
-      },
+        type: actions.LAUNCH_KERNEL_FAILED
+      }
     ]);
   });
 
@@ -298,7 +304,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelRef,
         kernelSpecName: undefined,
         cwd,
-        selectNextKernel: true,
+        selectNextKernel: true
       })
     );
 
@@ -309,15 +315,17 @@ describe("launchWebSocketKernelEpic", () => {
       status: 500,
       response: null,
       responseText: null,
-      responseType: "json",
+      responseType: "json"
     });
 
-    const responseActions = await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+    const responseActions = await launchWebSocketKernelEpic(action$, state$)
+      .pipe(toArray())
+      .toPromise();
 
     expect(responseActions).toMatchObject([
       {
-        type: actions.LAUNCH_KERNEL_FAILED,
-      },
+        type: actions.LAUNCH_KERNEL_FAILED
+      }
     ]);
   });
 
@@ -338,7 +346,7 @@ describe("launchWebSocketKernelEpic", () => {
                   language: "language1",
                   displayName: "Kernel One",
                   metadata: Immutable.Map(),
-                  resources: Immutable.Map(),
+                  resources: Immutable.Map()
                 }),
                 kernel2: state.makeKernelspec({
                   name: "kernel2",
@@ -348,12 +356,12 @@ describe("launchWebSocketKernelEpic", () => {
                   language: "language2",
                   displayName: "Kernel Two",
                   metadata: Immutable.Map(),
-                  resources: Immutable.Map(),
-                }),
-              }),
-            }),
+                  resources: Immutable.Map()
+                })
+              })
+            })
           }),
-          refs: Immutable.List(["kernelspecsref"]),
+          refs: Immutable.List(["kernelspecsref"])
         });
       initialState.core = initialState.core
         .setIn(["entities", "kernelspecs"], createKernelSpecsRecord())
@@ -375,15 +383,15 @@ describe("launchWebSocketKernelEpic", () => {
             name: "kernel_launched",
             last_activity: "2019-11-07T14:29:54.432454Z",
             execution_state: "starting",
-            connections: 0,
+            connections: 0
           },
           notebook: {
             path: "notebooks/Untitled7.ipynb",
-            name: "",
-          },
+            name: ""
+          }
         },
         responseText: null,
-        responseType: "json",
+        responseType: "json"
       });
     });
 
@@ -396,15 +404,17 @@ describe("launchWebSocketKernelEpic", () => {
           kernelRef,
           kernelSpecName: "kernel2",
           cwd: "cwd",
-          selectNextKernel: true,
+          selectNextKernel: true
         })
       );
 
-      await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+      await launchWebSocketKernelEpic(action$, state$)
+        .pipe(toArray())
+        .toPromise();
       expect(createSpy.lastCall.args[1]).toMatchObject({
         kernel: {
-          name: "kernel2",
-        },
+          name: "kernel2"
+        }
       });
     });
 
@@ -417,16 +427,18 @@ describe("launchWebSocketKernelEpic", () => {
           kernelRef,
           kernelSpecName: undefined,
           cwd: "cwd",
-          selectNextKernel: true,
+          selectNextKernel: true
         })
       );
 
-      await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+      await launchWebSocketKernelEpic(action$, state$)
+        .pipe(toArray())
+        .toPromise();
 
       expect(createSpy.lastCall.args[1]).toMatchObject({
         kernel: {
-          name: "kernel2",
-        },
+          name: "kernel2"
+        }
       });
     });
 
@@ -439,16 +451,18 @@ describe("launchWebSocketKernelEpic", () => {
           kernelRef,
           kernelSpecName: "This is an unknown kernelspec",
           cwd: "cwd",
-          selectNextKernel: true,
+          selectNextKernel: true
         })
       );
 
-      await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+      await launchWebSocketKernelEpic(action$, state$)
+        .pipe(toArray())
+        .toPromise();
 
       expect(createSpy.lastCall.args[1]).toMatchObject({
         kernel: {
-          name: "kernel2",
-        },
+          name: "kernel2"
+        }
       });
     });
 
@@ -461,16 +475,18 @@ describe("launchWebSocketKernelEpic", () => {
           kernelRef,
           kernelSpecName: "ernel1",
           cwd: "cwd",
-          selectNextKernel: true,
+          selectNextKernel: true
         })
       );
 
-      await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
+      await launchWebSocketKernelEpic(action$, state$)
+        .pipe(toArray())
+        .toPromise();
 
       expect(createSpy.lastCall.args[1]).toMatchObject({
         kernel: {
-          name: "kernel1",
-        },
+          name: "kernel1"
+        }
       });
     });
   });

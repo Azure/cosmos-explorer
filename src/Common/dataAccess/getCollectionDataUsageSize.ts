@@ -60,8 +60,8 @@ export const getCollectionUsageSizeInKB = async (databaseName: string, container
       apiVersion: "2018-01-01",
       queryParams: {
         filter,
-        metricNames,
-      },
+        metricNames
+      }
     });
 
     if (metricsResponse?.value?.length !== 2) {

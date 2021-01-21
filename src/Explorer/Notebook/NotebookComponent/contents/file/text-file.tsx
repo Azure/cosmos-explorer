@@ -45,7 +45,7 @@ export class TextFile extends React.PureComponent<TextFileProps, TextFileState> 
   constructor(props: TextFileProps) {
     super(props);
     this.state = {
-      Editor: EditorPlaceholder,
+      Editor: EditorPlaceholder
     };
   }
 
@@ -54,7 +54,7 @@ export class TextFile extends React.PureComponent<TextFileProps, TextFileState> 
   };
 
   componentDidMount(): void {
-    import(/* webpackChunkName: "monaco-editor" */ "@nteract/monaco-editor").then((module) => {
+    import(/* webpackChunkName: "monaco-editor" */ "@nteract/monaco-editor").then(module => {
       this.setState({ Editor: module.default });
     });
   }
@@ -99,7 +99,7 @@ function makeMapStateToTextFileProps(
     return {
       contentRef,
       mimetype: content.mimetype != null ? content.mimetype : "text/plain",
-      text,
+      text
     };
   };
   return mapStateToTextFileProps;
@@ -117,10 +117,10 @@ const makeMapDispatchToTextFileProps = (
         dispatch(
           actions.updateFileText({
             contentRef,
-            text: source,
+            text: source
           })
         );
-      },
+      }
     };
   };
   return mapDispatchToTextFileProps;

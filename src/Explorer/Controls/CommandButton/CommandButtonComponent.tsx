@@ -149,7 +149,9 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
   private onLauncherKeyDown(event: React.KeyboardEvent<HTMLDivElement>): boolean {
     if (event.keyCode === KeyCodes.DownArrow) {
       $(this.dropdownElt).hide();
-      $(this.dropdownElt).show().focus();
+      $(this.dropdownElt)
+        .show()
+        .focus();
       event.stopPropagation();
       return false;
     }
@@ -185,7 +187,7 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
     }
     this.props.onCommandClick(e);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      commandButtonClicked: this.props.commandButtonLabel,
+      commandButtonClicked: this.props.commandButtonLabel
     });
   }
 

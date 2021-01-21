@@ -32,8 +32,8 @@ export default class UrlUtility {
       type: type,
       objectBody: {
         id: id,
-        self: resourcePath,
-      },
+        self: resourcePath
+      }
     };
 
     return result;

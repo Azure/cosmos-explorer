@@ -30,7 +30,7 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
     super(props);
 
     this.state = {
-      panelHeight: this.getPanelHeight(),
+      panelHeight: this.getPanelHeight()
     };
   }
 

@@ -25,10 +25,14 @@ export async function readTriggers(
         databaseId,
         collectionId
       );
-      return rpResponse?.value?.map((trigger) => trigger.properties?.resource as TriggerDefinition & Resource);
+      return rpResponse?.value?.map(trigger => trigger.properties?.resource as TriggerDefinition & Resource);
     }
 
-    const response = await client().database(databaseId).container(collectionId).scripts.triggers.readAll().fetchAll();
+    const response = await client()
+      .database(databaseId)
+      .container(collectionId)
+      .scripts.triggers.readAll()
+      .fetchAll();
     return response?.resources;
   } catch (error) {
     handleError(error, "ReadTriggers", `Failed to query triggers for container ${collectionId}`);

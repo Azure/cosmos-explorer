@@ -9,7 +9,7 @@ describe("Query Utils", () => {
     return {
       paths: [path],
       kind: "hash",
-      version: 2,
+      version: 2
     };
   }
 
@@ -66,7 +66,7 @@ describe("Query Utils", () => {
       hasMoreResults: false,
       firstItemIndex: 0,
       lastItemIndex: 1,
-      itemCount: 1,
+      itemCount: 1
     };
     const queryResultWithNoItemsInPage: ViewModels.QueryResults = {
       documents: [],
@@ -75,7 +75,7 @@ describe("Query Utils", () => {
       hasMoreResults: true,
       firstItemIndex: 0,
       lastItemIndex: 0,
-      itemCount: 0,
+      itemCount: 0
     };
 
     it("should perform multiple queries until it finds a page that has items", async () => {
@@ -91,7 +91,7 @@ describe("Query Utils", () => {
       expect(queryStub.getCall(1).args[0]).toBe(0);
     });
 
-    it("should not perform multiple queries if the first page of results has items", (done) => {
+    it("should not perform multiple queries if the first page of results has items", done => {
       const queryStub = sinon.stub().returns(Q.resolve(queryResultWithItemsInPage));
       QueryUtils.queryPagesUntilContentPresent(0, queryStub).finally(() => {
         expect(queryStub.callCount).toBe(1);
@@ -100,7 +100,7 @@ describe("Query Utils", () => {
       });
     });
 
-    it("should not proceed with subsequent queries if the first one errors out", (done) => {
+    it("should not proceed with subsequent queries if the first one errors out", done => {
       const queryStub = sinon.stub().returns(Q.reject("Error injected for testing purposes"));
       QueryUtils.queryPagesUntilContentPresent(0, queryStub).finally(() => {
         expect(queryStub.callCount).toBe(1);
@@ -118,7 +118,7 @@ describe("Query Utils", () => {
       hasMoreResults: false,
       firstItemIndex: 1,
       lastItemIndex: 1,
-      itemCount: 1,
+      itemCount: 1
     };
     const queryResultWithContinuation: ViewModels.QueryResults = {
       documents: [{ b: "123" }],
@@ -127,10 +127,10 @@ describe("Query Utils", () => {
       hasMoreResults: true,
       firstItemIndex: 0,
       lastItemIndex: 0,
-      itemCount: 1,
+      itemCount: 1
     };
 
-    it("should follow continuation token to fetch all pages", (done) => {
+    it("should follow continuation token to fetch all pages", done => {
       const queryStub = sinon
         .stub()
         .onFirstCall()
@@ -158,7 +158,7 @@ describe("Query Utils", () => {
       );
     });
 
-    it("should not perform subsequent fetches when result has no continuation", (done) => {
+    it("should not perform subsequent fetches when result has no continuation", done => {
       const queryStub = sinon.stub().returns(Q.resolve(queryResultWithNoContinuation));
       QueryUtils.queryAllPages(queryStub).then(
         (results: ViewModels.QueryResults) => {
@@ -175,7 +175,7 @@ describe("Query Utils", () => {
       );
     });
 
-    it("should not proceed with subsequent fetches if the first one errors out", (done) => {
+    it("should not proceed with subsequent fetches if the first one errors out", done => {
       const queryStub = sinon.stub().returns(Q.reject("Error injected for testing purposes"));
       QueryUtils.queryAllPages(queryStub).finally(() => {
         expect(queryStub.callCount).toBe(1);

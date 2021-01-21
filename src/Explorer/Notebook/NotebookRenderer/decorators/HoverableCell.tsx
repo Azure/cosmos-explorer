@@ -34,7 +34,7 @@ const mapDispatchToProps = (
   { id, contentRef }: { id: string; contentRef: ContentRef }
 ): DispatchProps => ({
   hover: () => dispatch(actions.setHoveredCell({ cellId: id })),
-  unHover: () => dispatch(actions.setHoveredCell({ cellId: undefined })),
+  unHover: () => dispatch(actions.setHoveredCell({ cellId: undefined }))
 });
 
 export default connect(undefined, mapDispatchToProps)(HoverableCell);

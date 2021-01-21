@@ -4,7 +4,7 @@ import {
   NotificationConsoleComponentProps,
   ConsoleData,
   NotificationConsoleComponent,
-  ConsoleDataType,
+  ConsoleDataType
 } from "./NotificationConsoleComponent";
 
 describe("NotificationConsoleComponent", () => {
@@ -13,7 +13,7 @@ describe("NotificationConsoleComponent", () => {
       consoleData: [],
       isConsoleExpanded: true,
       onConsoleDataChange: (consoleData: ConsoleData[]) => {},
-      onConsoleExpandedChange: (isExpanded: boolean) => {},
+      onConsoleExpandedChange: (isExpanded: boolean) => {}
     };
   };
 
@@ -22,7 +22,7 @@ describe("NotificationConsoleComponent", () => {
     props.consoleData.push({
       type: ConsoleDataType.Info,
       date: "date",
-      message: "message",
+      message: "message"
     });
 
     const wrapper = shallow(<NotificationConsoleComponent {...props} />);
@@ -37,7 +37,7 @@ describe("NotificationConsoleComponent", () => {
       props.consoleData.push({
         type: ConsoleDataType.InProgress,
         date: "date",
-        message: "message",
+        message: "message"
       });
     }
 
@@ -55,7 +55,7 @@ describe("NotificationConsoleComponent", () => {
       props.consoleData.push({
         type: ConsoleDataType.Error,
         date: "date",
-        message: "message",
+        message: "message"
       });
     }
 
@@ -73,7 +73,7 @@ describe("NotificationConsoleComponent", () => {
       props.consoleData.push({
         type: ConsoleDataType.Info,
         date: "date",
-        message: "message",
+        message: "message"
       });
     }
 
@@ -88,7 +88,7 @@ describe("NotificationConsoleComponent", () => {
     props.consoleData.push({
       date: date,
       message: msg,
-      type: type,
+      type: type
     });
     const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     expect(wrapper.find(".notificationConsoleData .date").text()).toEqual(date);
@@ -113,17 +113,17 @@ describe("NotificationConsoleComponent", () => {
     props.consoleData.push({
       type: ConsoleDataType.InProgress,
       date: "date",
-      message: "message1",
+      message: "message1"
     });
     props.consoleData.push({
       type: ConsoleDataType.Error,
       date: "date",
-      message: "message2",
+      message: "message2"
     });
     props.consoleData.push({
       type: ConsoleDataType.Info,
       date: "date",
-      message: "message3",
+      message: "message3"
     });
 
     const wrapper = shallow(<NotificationConsoleComponent {...props} />);
@@ -137,7 +137,7 @@ describe("NotificationConsoleComponent", () => {
     props.consoleData.push({
       date: "date",
       message: "message",
-      type: ConsoleDataType.Info,
+      type: ConsoleDataType.Info
     });
     props.isConsoleExpanded = true;
 
@@ -153,7 +153,7 @@ describe("NotificationConsoleComponent", () => {
     props2.consoleData.push({
       date: "date",
       message: latestData,
-      type: ConsoleDataType.Info,
+      type: ConsoleDataType.Info
     });
     props2.isConsoleExpanded = true;
 

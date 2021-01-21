@@ -8,7 +8,7 @@ export enum PortalTheme {
   blue = 1,
   azure,
   light,
-  dark,
+  dark
 }
 
 export interface HeatmapData {

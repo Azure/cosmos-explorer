@@ -9,7 +9,7 @@ import {
   HeatmapData,
   LayoutSettings,
   PartitionTimeStampToData,
-  PortalTheme,
+  PortalTheme
 } from "./HeatmapDatatypes";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import { sendCachedDataMessage, sendMessage } from "../../Common/MessageHandler";
@@ -43,7 +43,7 @@ export class Heatmap {
     return {
       family: StyleConstants.DataExplorerFont,
       size,
-      color,
+      color
     };
   }
 
@@ -73,7 +73,7 @@ export class Heatmap {
             return 0;
           }
         }
-      }),
+      })
     };
     // go thru all rows and create 2d matrix for heatmap...
     for (let i = 0; i < rows.length; i++) {
@@ -115,7 +115,7 @@ export class Heatmap {
           [0.7, "#E46612"],
           [0.8, "#E64914"],
           [0.9, "#B80016"],
-          [1.0, "#B80016"],
+          [1.0, "#B80016"]
         ],
         name: "",
         hovertemplate: this._heatmapCaptions.tooltipText,
@@ -123,11 +123,11 @@ export class Heatmap {
           thickness: 15,
           outlinewidth: 0,
           tickcolor: StyleConstants.BaseDark,
-          tickfont: this._getFontStyles(10, this._defaultFontColor),
+          tickfont: this._getFontStyles(10, this._defaultFontColor)
         },
         y: this._chartData.yAxisPoints,
-        x: this._chartData.xAxisPoints,
-      },
+        x: this._chartData.xAxisPoints
+      }
     ];
   }
 
@@ -138,7 +138,7 @@ export class Heatmap {
         r: 10,
         b: 35,
         t: 30,
-        pad: 0,
+        pad: 0
       },
       paper_bgcolor: "transparent",
       plot_bgcolor: "transparent",
@@ -154,7 +154,7 @@ export class Heatmap {
         autotick: true,
         fixedrange: true,
         ticks: "",
-        showticklabels: false,
+        showticklabels: false
       },
       xaxis: {
         fixedrange: true,
@@ -167,13 +167,13 @@ export class Heatmap {
         autotick: true,
         tickformat: this._heatmapCaptions.timeWindow > 7 ? "%I:%M %p" : "%b %e",
         showticklabels: true,
-        tickfont: this._getFontStyles(10),
+        tickfont: this._getFontStyles(10)
       },
       title: {
         text: this._heatmapCaptions.chartTitle,
         x: 0.01,
-        font: this._getFontStyles(13, this._defaultFontColor),
-      },
+        font: this._getFontStyles(13, this._defaultFontColor)
+      }
     };
   }
 
@@ -181,7 +181,7 @@ export class Heatmap {
     return {
       /* heatmap can be fully responsive however the min-height needed in that case is greater than the iframe portal height, hence explicit width + height have been set in _getLayoutSettings
       responsive: true,*/
-      displayModeBar: false,
+      displayModeBar: false
     };
   }
 

@@ -24,13 +24,13 @@ describe("Tabs manager tests", () => {
       type: "",
       kind: "",
       tags: "",
-      properties: undefined,
+      properties: undefined
     });
 
     database = {
       container: explorer,
       id: ko.observable<string>("test"),
-      isDatabaseShared: () => false,
+      isDatabaseShared: () => false
     } as ViewModels.Database;
     database.isDatabaseExpanded = ko.observable<boolean>(true);
     database.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
@@ -38,7 +38,7 @@ describe("Tabs manager tests", () => {
     collection = {
       container: explorer,
       databaseId: "test",
-      id: ko.observable<string>("test"),
+      id: ko.observable<string>("test")
     } as ViewModels.Collection;
     collection.getDatabase = (): ViewModels.Database => database;
     collection.isCollectionExpanded = ko.observable<boolean>(true);
@@ -52,7 +52,7 @@ describe("Tabs manager tests", () => {
       tabPath: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
-      onUpdateTabsButtons: undefined,
+      onUpdateTabsButtons: undefined
     });
 
     documentsTab = new DocumentsTab({
@@ -64,7 +64,7 @@ describe("Tabs manager tests", () => {
       tabPath: "",
       hashLocation: "",
       isActive: ko.observable<boolean>(false),
-      onUpdateTabsButtons: undefined,
+      onUpdateTabsButtons: undefined
     });
 
     // make sure tabs have different tabId
@@ -112,7 +112,7 @@ describe("Tabs manager tests", () => {
 
     const documentsTabs = tabsManager.getTabs(
       ViewModels.CollectionTabKind.Documents,
-      (tab) => tab.tabId === documentsTab.tabId
+      tab => tab.tabId === documentsTab.tabId
     );
     expect(documentsTabs.length).toBe(1);
     expect(documentsTabs[0]).toEqual(documentsTab);
@@ -129,7 +129,7 @@ describe("Tabs manager tests", () => {
     expect(queryTab.isActive()).toBe(true);
     expect(documentsTab.isActive()).toBe(false);
 
-    tabsManager.closeTabsByComparator((tab) => tab.tabId === queryTab.tabId);
+    tabsManager.closeTabsByComparator(tab => tab.tabId === queryTab.tabId);
     expect(tabsManager.openedTabs().length).toBe(0);
     expect(tabsManager.activeTab()).toEqual(undefined);
     expect(queryTab.isActive()).toBe(false);

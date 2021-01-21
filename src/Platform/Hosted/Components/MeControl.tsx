@@ -4,7 +4,7 @@ import {
   DirectionalHint,
   Persona,
   PersonaInitialsColor,
-  PersonaSize,
+  PersonaSize
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { Account } from "msal";
@@ -30,26 +30,26 @@ export const MeControl: React.FunctionComponent<Props> = ({ openPanel, logout, a
           directionalHintFixed: true,
           directionalHint: DirectionalHint.bottomRightEdge,
           calloutProps: {
-            minPagePadding: 0,
+            minPagePadding: 0
           },
           items: [
             {
               key: "SwitchDirectory",
               text: "Switch Directory",
-              onClick: openPanel,
+              onClick: openPanel
             },
             {
               key: "SignOut",
               text: "Sign Out",
-              onClick: logout,
-            },
-          ],
+              onClick: logout
+            }
+          ]
         }}
         styles={{
           rootHovered: { backgroundColor: "#393939" },
           rootFocused: { backgroundColor: "#393939" },
           rootPressed: { backgroundColor: "#393939" },
-          rootExpanded: { backgroundColor: "#393939" },
+          rootExpanded: { backgroundColor: "#393939" }
         }}
       >
         <Persona

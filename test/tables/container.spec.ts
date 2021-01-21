@@ -37,8 +37,8 @@ describe("Collection Add and Delete Tables spec", () => {
       await frame.waitFor(`div[data-test="TablesDB"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
 
-      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", (elements) => {
-        return elements.some((el) => el.textContent.includes("Successfully created"));
+      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", elements => {
+        return elements.some(el => el.textContent.includes("Successfully created"));
       });
 
       expect(didCreateContainer).toBe(true);
@@ -51,7 +51,7 @@ describe("Collection Add and Delete Tables spec", () => {
       const collections = await frame.$$(
         `div[class="collectionHeader main2 nodeItem "] > div[class="treeNodeHeader "]`
       );
-      const textId = await frame.evaluate((element) => {
+      const textId = await frame.evaluate(element => {
         return element.attributes["data-test"].textContent;
       }, collections[0]);
       await frame.waitFor(`div[data-test="${textId}"]`, { visible: true });
@@ -101,7 +101,7 @@ async function clickTablesMenu(frame: Frame, retries = 0) {
 async function ensureMenuIsOpen(frame: Frame, retries: number) {
   await frame.waitFor(RETRY_DELAY);
   const button = await frame.$(`div[data-test="TablesDB"]`);
-  const classList = await frame.evaluate((button) => {
+  const classList = await frame.evaluate(button => {
     return button.parentElement.classList;
   }, button);
   if (!Object.values(classList).includes("selected") && retries < 5) {

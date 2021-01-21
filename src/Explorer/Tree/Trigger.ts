@@ -37,7 +37,7 @@ export default class Trigger {
       description: "Trigger node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree,
+      dataExplorerArea: Constants.Areas.ResourceTree
     });
   }
 
@@ -47,7 +47,7 @@ export default class Trigger {
       id: "",
       body: "function trigger(){}",
       triggerOperation: "All",
-      triggerType: "Pre",
+      triggerType: "Pre"
     };
 
     const triggerTab: TriggerTab = new TriggerTab({
@@ -60,7 +60,7 @@ export default class Trigger {
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
 
     source.container.tabsManager.activateNewTab(triggerTab);
@@ -71,7 +71,7 @@ export default class Trigger {
 
     const triggerTabs: TriggerTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Triggers,
-      (tab) => tab.node && tab.node.rid === this.rid
+      tab => tab.node && tab.node.rid === this.rid
     ) as TriggerTab[];
     let triggerTab: TriggerTab = triggerTabs && triggerTabs[0];
 
@@ -84,7 +84,7 @@ export default class Trigger {
         id: this.id(),
         body: this.body(),
         triggerOperation: this.triggerOperation(),
-        triggerType: this.triggerType(),
+        triggerType: this.triggerType()
       };
 
       triggerTab = new TriggerTab({
@@ -100,7 +100,7 @@ export default class Trigger {
           this.collection.id()
         )}/triggers/${this.id()}`,
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
 
       this.container.tabsManager.activateNewTab(triggerTab);
@@ -114,10 +114,10 @@ export default class Trigger {
 
     deleteTrigger(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.removeTabByComparator((tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      (reason) => {}
+      reason => {}
     );
   }
 }

@@ -7,7 +7,7 @@ import { initializeConfiguration } from "../ConfigContext";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
   GalleryAndNotebookViewerComponent,
-  GalleryAndNotebookViewerComponentProps,
+  GalleryAndNotebookViewerComponentProps
 } from "../Explorer/Controls/NotebookGallery/GalleryAndNotebookViewerComponent";
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
@@ -27,7 +27,7 @@ const onInit = async () => {
     junoClient: new JunoClient(),
     selectedTab: galleryViewerProps.selectedTab || GalleryTab.OfficialSamples,
     sortBy: galleryViewerProps.sortBy || SortBy.MostViewed,
-    searchText: galleryViewerProps.searchText,
+    searchText: galleryViewerProps.searchText
   };
 
   const element = (

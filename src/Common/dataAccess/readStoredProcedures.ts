@@ -25,7 +25,7 @@ export async function readStoredProcedures(
         databaseId,
         collectionId
       );
-      return rpResponse?.value?.map((sproc) => sproc.properties?.resource as StoredProcedureDefinition & Resource);
+      return rpResponse?.value?.map(sproc => sproc.properties?.resource as StoredProcedureDefinition & Resource);
     }
 
     const response = await client()

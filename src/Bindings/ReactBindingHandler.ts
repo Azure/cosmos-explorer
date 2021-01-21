@@ -42,7 +42,7 @@ export class Registerer {
 
         // Initial rendering at mount point
         ReactDOM.render(adapter.renderComponent(), element);
-      },
+      }
     } as ko.BindingHandler;
   }
 }

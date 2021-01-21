@@ -85,7 +85,7 @@ const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps)
     return {
       contentRef,
       mimetype: content.mimetype,
-      type: content.type,
+      type: content.type
     };
   };
 

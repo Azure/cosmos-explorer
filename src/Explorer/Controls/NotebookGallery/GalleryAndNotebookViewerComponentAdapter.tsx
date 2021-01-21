@@ -3,7 +3,7 @@ import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import {
   GalleryAndNotebookViewerComponentProps,
-  GalleryAndNotebookViewerComponent,
+  GalleryAndNotebookViewerComponent
 } from "./GalleryAndNotebookViewerComponent";
 
 export class GalleryAndNotebookViewerComponentAdapter implements ReactAdapter {

@@ -7,7 +7,7 @@ import {
   NumberInput,
   StringInput,
   Node,
-  AnyInput,
+  AnyInput
 } from "./SelfServeComponent";
 
 export enum SelfServeType {
@@ -16,7 +16,7 @@ export enum SelfServeType {
   // Unsupported self serve type passed as feature flag
   invalid = "invalid",
   // Add your self serve types here
-  example = "example",
+  example = "example"
 }
 
 export abstract class SelfServeBaseClass {
@@ -126,8 +126,8 @@ export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): 
     root: {
       id: "root",
       info: root?.info,
-      children: [],
-    },
+      children: []
+    }
   };
 
   while (context.size > 0) {
@@ -151,7 +151,7 @@ const addToDescriptor = (
     id: value.id,
     info: value.info,
     input: getInput(value),
-    children: [],
+    children: []
   } as Node;
   context.delete(key);
   root.children.push(element);

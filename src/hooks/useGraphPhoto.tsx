@@ -9,10 +9,10 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
 
   const options = {
     method: "GET",
-    headers: headers,
+    headers: headers
   };
 
-  return fetch("https://graph.windows.net/me/thumbnailPhoto?api-version=1.6", options).then((response) =>
+  return fetch("https://graph.windows.net/me/thumbnailPhoto?api-version=1.6", options).then(response =>
     response.blob()
   );
 }
@@ -22,7 +22,7 @@ export function useGraphPhoto(graphToken: string): string {
 
   useEffect(() => {
     if (graphToken) {
-      fetchPhoto(graphToken).then((response) => setPhoto(URL.createObjectURL(response)));
+      fetchPhoto(graphToken).then(response => setPhoto(URL.createObjectURL(response)));
     }
   }, [graphToken]);
   return photo;

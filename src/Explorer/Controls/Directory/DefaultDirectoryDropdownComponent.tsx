@@ -19,13 +19,13 @@ export class DefaultDirectoryDropdownComponent extends React.Component<DefaultDi
   public render(): JSX.Element {
     const lastVisitedOption: IDropdownOption = {
       key: DefaultDirectoryDropdownComponent.lastVisitedKey,
-      text: "Sign in to your last visited directory",
+      text: "Sign in to your last visited directory"
     };
     const directoryOptions: Array<IDropdownOption> = this.props.directories.map(
       (dirc): IDropdownOption => {
         return {
           key: dirc.tenantId,
-          text: `${dirc.displayName}(${dirc.tenantId})`,
+          text: `${dirc.displayName}(${dirc.tenantId})`
         };
       }
     );
@@ -35,7 +35,7 @@ export class DefaultDirectoryDropdownComponent extends React.Component<DefaultDi
       options: dropDownOptions,
       defaultSelectedKey: this.props.defaultDirectoryId ? this.props.defaultDirectoryId : lastVisitedOption.key,
       onChange: this._onDropdownChange,
-      className: "defaultDirectoryDropdown",
+      className: "defaultDirectoryDropdown"
     };
 
     return <Dropdown {...dropDownProps} />;
@@ -56,12 +56,12 @@ export class DefaultDirectoryDropdownComponent extends React.Component<DefaultDi
         countryCode: undefined,
         displayName: undefined,
         domains: [],
-        id: undefined,
+        id: undefined
       });
       return;
     }
 
-    const selectedDirectory = _.find(this.props.directories, (d) => d.tenantId === option.key);
+    const selectedDirectory = _.find(this.props.directories, d => d.tenantId === option.key);
     if (!selectedDirectory) {
       return;
     }

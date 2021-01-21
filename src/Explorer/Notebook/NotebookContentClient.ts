@@ -20,9 +20,9 @@ export class NotebookContentClient {
    * @param item
    */
   public updateItemChildren(item: NotebookContentItem): Promise<void> {
-    return this.fetchNotebookFiles(item.path).then((subItems) => {
+    return this.fetchNotebookFiles(item.path).then(subItems => {
       item.children = subItems;
-      subItems.forEach((subItem) => (subItem.parent = item));
+      subItems.forEach(subItem => (subItem.parent = item));
     });
   }
 
@@ -68,7 +68,7 @@ export class NotebookContentClient {
 
       if (item.parent && item.parent.children) {
         // Remove deleted child
-        const newChildren = item.parent.children.filter((child) => child.path !== path);
+        const newChildren = item.parent.children.filter(child => child.path !== path);
         item.parent.children = newChildren;
       }
     });
@@ -98,7 +98,7 @@ export class NotebookContentClient {
       content,
       format: "text",
       name,
-      type: "file",
+      type: "file"
     };
 
     return this.contentProvider
@@ -119,7 +119,7 @@ export class NotebookContentClient {
     const parentDirPath = NotebookUtil.getParentPath(filepath);
     if (parentDirPath) {
       const items = await this.fetchNotebookFiles(parentDirPath);
-      return items.some((value) => FileSystemUtil.isPathEqual(value.path, filepath));
+      return items.some(value => FileSystemUtil.isPathEqual(value.path, filepath));
     }
     return false;
   }
@@ -142,7 +142,7 @@ export class NotebookContentClient {
     return this.contentProvider
       .update<"file" | "notebook" | "directory">(this.getServerConfig(), sourcePath, { path: targetPath })
       .toPromise()
-      .then((xhr) => {
+      .then(xhr => {
         if (typeof xhr.response === "string") {
           throw new Error(`jupyter server response invalid: ${xhr.response}`);
         }
@@ -244,10 +244,10 @@ export class NotebookContentClient {
   private fetchNotebookFiles(path: string): Promise<NotebookContentItem[]> {
     return this.contentProvider
       .get(this.getServerConfig(), path, {
-        type: "directory",
+        type: "directory"
       })
       .toPromise()
-      .then((xhr) => {
+      .then(xhr => {
         if (xhr.status !== 200) {
           throw new Error(JSON.stringify(xhr.response));
         }
@@ -265,7 +265,7 @@ export class NotebookContentClient {
           (item: IEmptyContent<FileType>): NotebookContentItem => ({
             name: item.name,
             path: item.path,
-            type: NotebookUtil.getType(item.type),
+            type: NotebookUtil.getType(item.type)
           })
         );
       });
@@ -275,7 +275,7 @@ export class NotebookContentClient {
     return {
       endpoint: this.notebookServerInfo().notebookServerEndpoint,
       token: this.notebookServerInfo().authToken,
-      crossDomain: true,
+      crossDomain: true
     };
   }
 }

@@ -164,7 +164,7 @@ abstract class DataTableViewModel {
   protected sortColumns(sortOrder: any, oSettings: any) {
     var self = this;
     this.clearSelection();
-    this.cache.data.sort(function (a: any, b: any) {
+    this.cache.data.sort(function(a: any, b: any) {
       return self.dataComparer(a, b, sortOrder, oSettings);
     });
     this.cache.sortOrder = sortOrder;
@@ -190,7 +190,7 @@ abstract class DataTableViewModel {
       draw: draw,
       aaData: renderData,
       recordsTotal: this.cache.length,
-      recordsFiltered: this.cache.length,
+      recordsFiltered: this.cache.length
     };
 
     if (!!postRenderTasks) {
@@ -208,7 +208,7 @@ abstract class DataTableViewModel {
           collectionName: this.queryTablesTab.collection.id(),
           defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
           dataExplorerArea: CommonConstants.Areas.Tab,
-          tabTitle: this.queryTablesTab.tabTitle(),
+          tabTitle: this.queryTablesTab.tabTitle()
         },
         this.queryTablesTab.onLoadStartKey
       );

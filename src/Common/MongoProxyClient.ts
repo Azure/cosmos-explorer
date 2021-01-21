@@ -16,7 +16,7 @@ import { sendMessage } from "./MessageHandler";
 const defaultHeaders = {
   [HttpHeaders.apiType]: ApiType.MongoDB.toString(),
   [CosmosSDKConstants.HttpHeaders.MaxEntityCount]: "100",
-  [CosmosSDKConstants.HttpHeaders.Version]: "2017-11-15",
+  [CosmosSDKConstants.HttpHeaders.Version]: "2017-11-15"
 };
 
 function authHeaders() {
@@ -31,7 +31,7 @@ export function queryIterator(databaseId: string, collection: Collection, query:
   let continuationToken: string;
   return {
     fetchNext: () => {
-      return queryDocuments(databaseId, collection, false, query).then((response) => {
+      return queryDocuments(databaseId, collection, false, query).then(response => {
         continuationToken = response.continuationToken;
         const headers: { [key: string]: string | number } = {};
         response.headers.forEach((value, key) => {
@@ -42,10 +42,10 @@ export function queryIterator(databaseId: string, collection: Collection, query:
           headers,
           requestCharge: Number(headers[CosmosSDKConstants.HttpHeaders.RequestCharge]),
           activityId: String(headers[CosmosSDKConstants.HttpHeaders.ActivityId]),
-          hasMoreResults: !!continuationToken,
+          hasMoreResults: !!continuationToken
         };
       });
-    },
+    }
   };
 }
 
@@ -74,9 +74,7 @@ export function queryDocuments(
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
-      collection && collection.partitionKey && !collection.partitionKey.systemKey
-        ? collection.partitionKeyProperty
-        : "",
+      collection && collection.partitionKey && !collection.partitionKey.systemKey ? collection.partitionKeyProperty : ""
   };
 
   const endpoint = getEndpoint() || "";
@@ -89,7 +87,7 @@ export function queryDocuments(
     [CosmosSDKConstants.HttpHeaders.EnableScanInQuery]: "true",
     [CosmosSDKConstants.HttpHeaders.EnableCrossPartitionQuery]: "true",
     [CosmosSDKConstants.HttpHeaders.ParallelizeCrossPartitionQuery]: "true",
-    [HttpHeaders.contentType]: "application/query+json",
+    [HttpHeaders.contentType]: "application/query+json"
   };
 
   if (continuationToken) {
@@ -102,14 +100,14 @@ export function queryDocuments(
     .fetch(`${endpoint}${path}?${queryString.stringify(params)}`, {
       method: "POST",
       body: JSON.stringify({ query }),
-      headers,
+      headers
     })
-    .then(async (response) => {
+    .then(async response => {
       if (response.ok) {
         return {
           continuationToken: response.headers.get(CosmosSDKConstants.HttpHeaders.Continuation),
           documents: (await response.json()).Documents as DataModels.DocumentId[],
-          headers: response.headers,
+          headers: response.headers
         };
       }
       errorHandling(response, "querying documents", params);
@@ -137,9 +135,7 @@ export function readDocument(
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperty
-        : "",
+      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
   };
 
   const endpoint = getEndpoint();
@@ -151,10 +147,10 @@ export function readDocument(
         ...authHeaders(),
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: encodeURIComponent(
           JSON.stringify(documentId.partitionKeyHeader())
-        ),
-      },
+        )
+      }
     })
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -179,7 +175,7 @@ export function createDocument(
     sid: userContext.subscriptionId,
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
-    pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
+    pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : ""
   };
 
   const endpoint = getEndpoint();
@@ -190,10 +186,10 @@ export function createDocument(
       body: JSON.stringify(documentContent),
       headers: {
         ...defaultHeaders,
-        ...authHeaders(),
-      },
+        ...authHeaders()
+      }
     })
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -222,9 +218,7 @@ export function updateDocument(
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperty
-        : "",
+      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
   };
   const endpoint = getEndpoint();
 
@@ -236,10 +230,10 @@ export function updateDocument(
         ...defaultHeaders,
         ...authHeaders(),
         [HttpHeaders.contentType]: "application/json",
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
-      },
+        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader())
+      }
     })
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -263,9 +257,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperty
-        : "",
+      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey ? documentId.partitionKeyProperty : ""
   };
   const endpoint = getEndpoint();
 
@@ -276,10 +268,10 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         ...defaultHeaders,
         ...authHeaders(),
         [HttpHeaders.contentType]: "application/json",
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
-      },
+        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader())
+      }
     })
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
         return undefined;
       }
@@ -307,7 +299,7 @@ export function createMongoCollectionWithProxy(
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     isAutoPilot: !!params.autoPilotMaxThroughput,
-    autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
+    autoPilotThroughput: params.autoPilotMaxThroughput?.toString()
   };
 
   const endpoint = getEndpoint();
@@ -322,11 +314,11 @@ export function createMongoCollectionWithProxy(
         headers: {
           ...defaultHeaders,
           ...authHeaders(),
-          [HttpHeaders.contentType]: "application/json",
-        },
+          [HttpHeaders.contentType]: "application/json"
+        }
       }
     )
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }

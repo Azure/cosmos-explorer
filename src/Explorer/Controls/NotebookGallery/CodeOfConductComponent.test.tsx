@@ -12,11 +12,11 @@ describe("CodeOfConductComponent", () => {
     const junoClient = new JunoClient(undefined);
     junoClient.acceptCodeOfConduct = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      data: true,
+      data: true
     });
     codeOfConductProps = {
       junoClient: junoClient,
-      onAcceptCodeOfConduct: jest.fn(),
+      onAcceptCodeOfConduct: jest.fn()
     };
   });
 
@@ -27,7 +27,10 @@ describe("CodeOfConductComponent", () => {
 
   it("onAcceptedCodeOfConductCalled", async () => {
     const wrapper = shallow(<CodeOfConductComponent {...codeOfConductProps} />);
-    wrapper.find(".genericPaneSubmitBtn").first().simulate("click");
+    wrapper
+      .find(".genericPaneSubmitBtn")
+      .first()
+      .simulate("click");
     await Promise.resolve();
     expect(codeOfConductProps.onAcceptCodeOfConduct).toBeCalled();
   });

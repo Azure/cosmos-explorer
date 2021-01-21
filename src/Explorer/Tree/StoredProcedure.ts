@@ -63,7 +63,7 @@ export default class StoredProcedure {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.StoredProcedures).length + 1;
     const storedProcedure = <StoredProcedureDefinition>{
       id: "",
-      body: sampleStoredProcedureBody,
+      body: sampleStoredProcedureBody
     };
 
     const storedProcedureTab: StoredProcedureTab = new StoredProcedureTab({
@@ -76,7 +76,7 @@ export default class StoredProcedure {
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
 
     source.container.tabsManager.activateNewTab(storedProcedureTab);
@@ -88,7 +88,7 @@ export default class StoredProcedure {
       description: "Stored procedure node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree,
+      dataExplorerArea: Constants.Areas.ResourceTree
     });
   }
 
@@ -108,7 +108,7 @@ export default class StoredProcedure {
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
-        body: this.body(),
+        body: this.body()
       };
 
       storedProcedureTab = new StoredProcedureTab({
@@ -124,7 +124,7 @@ export default class StoredProcedure {
           this.collection.id()
         )}/sprocs/${this.id()}`,
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
 
       this.container.tabsManager.activateNewTab(storedProcedureTab);
@@ -141,7 +141,7 @@ export default class StoredProcedure {
         this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      (reason) => {}
+      reason => {}
     );
   }
 

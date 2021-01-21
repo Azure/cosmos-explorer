@@ -24,7 +24,7 @@ export default class SettingsTabV2 extends TabsBase {
     this.options = options;
     this.tabId = "SettingsV2-" + this.tabId;
     const props: SettingsComponentProps = {
-      settingsTab: this,
+      settingsTab: this
     };
     this.settingsComponentAdapter = new SettingsComponentAdapter(props);
     this.currentCollection = this.collection as ViewModels.Collection;
@@ -54,7 +54,7 @@ export default class SettingsTabV2 extends TabsBase {
           this.notification = data;
           this.notificationRead(true);
         },
-        (error) => {
+        error => {
           const errorMessage = getErrorMessage(error);
           this.notification = undefined;
           this.notificationRead(true);
@@ -68,7 +68,7 @@ export default class SettingsTabV2 extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle,
               error: errorMessage,
-              errorStack: getErrorStack(error),
+              errorStack: getErrorStack(error)
             },
             this.options.onLoadStartKey
           );

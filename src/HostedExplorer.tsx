@@ -49,25 +49,25 @@ const App: React.FunctionComponent = () => {
         frameWindow.hostedConfig = {
           authType: AuthType.AAD,
           databaseAccount,
-          authorizationToken: armToken,
+          authorizationToken: armToken
         };
       } else if (authType === AuthType.EncryptedToken) {
         frameWindow.hostedConfig = {
           authType: AuthType.EncryptedToken,
           encryptedToken,
-          encryptedTokenMetadata,
+          encryptedTokenMetadata
         };
       } else if (authType === AuthType.ConnectionString) {
         frameWindow.hostedConfig = {
           authType: AuthType.ConnectionString,
           encryptedToken,
           encryptedTokenMetadata,
-          masterKey: extractMasterKeyfromConnectionString(connectionString),
+          masterKey: extractMasterKeyfromConnectionString(connectionString)
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {
           authType: AuthType.ResourceToken,
-          resourceToken: connectionString,
+          resourceToken: connectionString
         };
       }
     }

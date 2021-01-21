@@ -34,7 +34,7 @@ export function parseResourceTokenConnectionString(connectionString: string): Pa
     collectionId,
     databaseId,
     partitionKey,
-    resourceToken,
+    resourceToken
   };
 }
 

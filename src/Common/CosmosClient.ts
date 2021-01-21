@@ -58,13 +58,13 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-ms-encrypted-auth-token": userContext.accessToken,
+        "x-ms-encrypted-auth-token": userContext.accessToken
       },
       body: JSON.stringify({
         verb,
         resourceType,
-        resourceId,
-      }),
+        resourceId
+      })
     });
     //TODO I am not sure why we have to parse the JSON again here. fetch should do it for us when we call .json()
     const result = JSON.parse(await response.json());
@@ -81,9 +81,9 @@ export function client(): Cosmos.CosmosClient {
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
-      enableEndpointDiscovery: false,
+      enableEndpointDiscovery: false
     },
-    userAgentSuffix: "Azure Portal",
+    userAgentSuffix: "Azure Portal"
   };
 
   if (configContext.PROXY_PATH !== undefined) {

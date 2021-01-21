@@ -5,7 +5,7 @@
 import * as React from "react";
 import {
   CommandButtonComponent,
-  CommandButtonComponentProps,
+  CommandButtonComponentProps
 } from "../../Controls/CommandButton/CommandButtonComponent";
 
 export interface ControlBarComponentProps {

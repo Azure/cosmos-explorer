@@ -13,7 +13,7 @@ import {
   getMongoIndexTypeText,
   SingleFieldText,
   WildcardText,
-  isIndexTransforming,
+  isIndexTransforming
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -45,7 +45,7 @@ describe("SettingsUtils", () => {
         onDeleteDatabaseContextMenuClick: undefined,
         readSettings: undefined,
         onSettingsClick: undefined,
-        loadOffer: undefined,
+        loadOffer: undefined
       } as ViewModels.Database;
     };
     newCollection.offer(undefined);
@@ -67,7 +67,7 @@ describe("SettingsUtils", () => {
       automatic: true,
       indexingMode: "consistent",
       includedPaths: [],
-      excludedPaths: [],
+      excludedPaths: []
     } as DataModels.IndexingPolicy;
 
     it("works on all types", () => {

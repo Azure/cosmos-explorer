@@ -20,8 +20,8 @@ describe("Process Gremlin vertex", () => {
       id: "id",
       label: "label",
       inE: {
-        inEdge: [{ id: "id1", outV: "outV1" }],
-      },
+        inEdge: [{ id: "id1", outV: "outV1" }]
+      }
     };
     GraphUtil.createEdgesfromNode(v, graphData);
     const expectedEdge: GremlinEdge = { id: "id1", inV: "id", outV: "outV1", label: "inEdge" };
@@ -33,8 +33,8 @@ describe("Process Gremlin vertex", () => {
       id: "id",
       label: "label",
       outE: {
-        outEdge: [{ id: "id2", inV: "inV2" }],
-      },
+        outEdge: [{ id: "id2", inV: "inV2" }]
+      }
     };
     GraphUtil.createEdgesfromNode(v, graphData);
     const expectedEdge: GremlinEdge = { id: "id2", inV: "inV2", outV: "id", label: "outEdge" };
@@ -47,14 +47,14 @@ describe("Process Gremlin vertex", () => {
       id: "id",
       label: "label",
       inE: {
-        inEdge: [{ id: "id1", outV: "outV1" }],
+        inEdge: [{ id: "id1", outV: "outV1" }]
       },
       outE: {
         outEdge: [
           { id: "id2", inV: "inV2" },
-          { id: "id3", inV: "inV3" },
-        ],
-      },
+          { id: "id3", inV: "inV3" }
+        ]
+      }
     };
     const newNodes = {};
     GraphUtil.createEdgesfromNode(v, graphData, newNodes);
@@ -83,7 +83,7 @@ describe("getLimitedArrayString()", () => {
   it("should handle nth element makes it exceed max limit", () => {
     const expected = {
       result: "'1','2'",
-      consumedCount: 2,
+      consumedCount: 2
     };
     expect(GraphUtil.getLimitedArrayString(["1", "2", "12345", "4", "5"], 10)).toEqual(expected);
   });
@@ -91,7 +91,7 @@ describe("getLimitedArrayString()", () => {
   it("should consume all elements if limit never exceeding limit", () => {
     const expected = {
       result: "'1','22','3'",
-      consumedCount: 3,
+      consumedCount: 3
     };
     expect(GraphUtil.getLimitedArrayString(["1", "22", "3"], 12)).toEqual(expected);
   });

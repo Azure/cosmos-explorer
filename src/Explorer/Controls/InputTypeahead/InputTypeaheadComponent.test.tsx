@@ -8,10 +8,10 @@ describe("inputTypeahead", () => {
     const props: InputTypeaheadComponentProps = {
       choices: [
         { caption: "item1", value: "value1" },
-        { caption: "item2", value: "value2" },
+        { caption: "item2", value: "value2" }
       ],
       placeholder: "placeholder",
-      useTextarea: false,
+      useTextarea: false
     };
 
     const wrapper = shallow(<InputTypeaheadComponent {...props} />);
@@ -22,10 +22,10 @@ describe("inputTypeahead", () => {
     const props: InputTypeaheadComponentProps = {
       choices: [
         { caption: "item1", value: "value1" },
-        { caption: "item2", value: "value2" },
+        { caption: "item2", value: "value2" }
       ],
       placeholder: "placeholder",
-      useTextarea: true,
+      useTextarea: true
     };
 
     const wrapper = shallow(<InputTypeaheadComponent {...props} />);

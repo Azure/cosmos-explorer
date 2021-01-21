@@ -4,7 +4,7 @@ import { GraphHighlightedNodeData } from "./GraphExplorer";
 
 import {
   ReadOnlyNodePropertiesComponent,
-  ReadOnlyNodePropertiesComponentProps,
+  ReadOnlyNodePropertiesComponentProps
 } from "./ReadOnlyNodePropertiesComponent";
 
 describe("<ReadOnlyNodePropertiesComponent />", () => {
@@ -15,11 +15,11 @@ describe("<ReadOnlyNodePropertiesComponent />", () => {
     label: label,
     properties: {
       key1: ["value1"],
-      key2: ["value2"],
+      key2: ["value2"]
     },
     areNeighborsUnknown: false,
     sources: [],
-    targets: [],
+    targets: []
   };
 
   it("renders id", () => {
@@ -44,8 +44,8 @@ describe("<ReadOnlyNodePropertiesComponent />", () => {
     const mockNode2 = {
       ...mockNode,
       properties: {
-        key3: ["abcd", 1234, true, false, undefined, null],
-      },
+        key3: ["abcd", 1234, true, false, undefined, null]
+      }
     };
     const props: ReadOnlyNodePropertiesComponentProps = { node: mockNode2 };
     const wrapper = shallow(<ReadOnlyNodePropertiesComponent {...props} />);
@@ -57,8 +57,8 @@ describe("<ReadOnlyNodePropertiesComponent />", () => {
       ...mockNode,
       properties: {
         key4: ["あきら, アキラ,安喜良"],
-        key5: ["Véronique"],
-      },
+        key5: ["Véronique"]
+      }
     };
     const props: ReadOnlyNodePropertiesComponentProps = { node: mockNode2 };
     const wrapper = shallow(<ReadOnlyNodePropertiesComponent {...props} />);

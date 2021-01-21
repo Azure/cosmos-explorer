@@ -33,7 +33,7 @@ export default class TriggerTab extends ScriptTabBase {
       id: this.id(),
       body: this.editorContent(),
       triggerOperation: this.triggerOperation() as TriggerOperation,
-      triggerType: this.triggerType() as TriggerType,
+      triggerType: this.triggerType() as TriggerType
     });
   };
 
@@ -44,17 +44,17 @@ export default class TriggerTab extends ScriptTabBase {
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateTrigger, {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
 
     return updateTrigger(this.collection.databaseId, this.collection.id(), {
       id: this.id(),
       body: this.editorContent(),
       triggerOperation: this.triggerOperation() as TriggerOperation,
-      triggerType: this.triggerType() as TriggerType,
+      triggerType: this.triggerType() as TriggerType
     })
       .then(
-        (createdResource) => {
+        createdResource => {
           this.resource(createdResource);
           this.tabTitle(createdResource.id);
 
@@ -68,7 +68,7 @@ export default class TriggerTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
@@ -89,7 +89,7 @@ export default class TriggerTab extends ScriptTabBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -128,12 +128,12 @@ export default class TriggerTab extends ScriptTabBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
 
     return createTrigger(this.collection.databaseId, this.collection.id(), resource)
       .then(
-        (createdResource) => {
+        createdResource => {
           this.tabTitle(createdResource.id);
           this.isNew(false);
           this.resource(createdResource);
@@ -156,7 +156,7 @@ export default class TriggerTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
@@ -173,7 +173,7 @@ export default class TriggerTab extends ScriptTabBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -188,7 +188,7 @@ export default class TriggerTab extends ScriptTabBase {
       id: this.id(),
       body: this.editorContent(),
       triggerOperation: this.triggerOperation(),
-      triggerType: this.triggerType(),
+      triggerType: this.triggerType()
     };
   }
 }

@@ -16,7 +16,7 @@ describe("Notebook UI tests", () => {
       uploadedNotebookNode = await uploadNotebookIfNotExist(frame, notebookName);
       await uploadedNotebookNode.click();
       await frame.waitForSelector(".tabNavText");
-      const tabTitle = await frame.$eval(".tabNavText", (element) => element.textContent);
+      const tabTitle = await frame.$eval(".tabNavText", element => element.textContent);
       expect(tabTitle).toEqual(notebookName);
       const closeIcon = await frame.waitForSelector(".close-Icon");
       await closeIcon.click();

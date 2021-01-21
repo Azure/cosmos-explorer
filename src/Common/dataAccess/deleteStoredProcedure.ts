@@ -27,7 +27,11 @@ export async function deleteStoredProcedure(
         storedProcedureId
       );
     } else {
-      await client().database(databaseId).container(collectionId).scripts.storedProcedure(storedProcedureId).delete();
+      await client()
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.storedProcedure(storedProcedureId)
+        .delete();
     }
   } catch (error) {
     handleError(error, "DeleteStoredProcedure", `Error while deleting stored procedure ${storedProcedureId}`);

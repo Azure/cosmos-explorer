@@ -19,8 +19,8 @@ export function parseConnectionString(connectionString: string): AccessInputMeta
           const matches: string[] = connectionStringPart.match(Constants.EndpointsRegex.mongoCompute);
           accessInput.accountName = matches && matches.length > 1 && matches[2];
           accessInput.apiKind = ApiKind.MongoDBCompute;
-        } else if (Constants.EndpointsRegex.cassandra.some((regex) => RegExp(regex).test(connectionStringPart))) {
-          Constants.EndpointsRegex.cassandra.forEach((regex) => {
+        } else if (Constants.EndpointsRegex.cassandra.some(regex => RegExp(regex).test(connectionStringPart))) {
+          Constants.EndpointsRegex.cassandra.forEach(regex => {
             if (RegExp(regex).test(connectionStringPart)) {
               accessInput.accountName = connectionStringPart.match(regex)[1];
               accessInput.apiKind = ApiKind.Cassandra;

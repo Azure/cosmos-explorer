@@ -3,5 +3,5 @@ export enum AuthType {
   EncryptedToken = "encryptedtoken",
   MasterKey = "masterkey",
   ResourceToken = "resourcetoken",
-  ConnectionString = "connectionstring",
+  ConnectionString = "connectionstring"
 }

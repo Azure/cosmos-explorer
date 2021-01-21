@@ -38,7 +38,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
     super(props);
     this.isExpanded = props.isExpanded;
     this.state = {
-      isExpanded: true,
+      isExpanded: true
     };
   }
 
@@ -46,7 +46,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
     if (this.props.isExpanded !== this.isExpanded) {
       this.isExpanded = this.props.isExpanded;
       this.setState({
-        isExpanded: this.props.isExpanded,
+        isExpanded: this.props.isExpanded
       });
     }
   }

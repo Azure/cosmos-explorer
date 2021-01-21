@@ -2,7 +2,7 @@ import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import {
   SqlTriggerCreateUpdateParameters,
-  SqlTriggerResource,
+  SqlTriggerResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { TriggerDefinition } from "@azure/cosmos";
 import { client } from "../CosmosClient";
@@ -36,8 +36,8 @@ export async function updateTrigger(
         const createTriggerParams: SqlTriggerCreateUpdateParameters = {
           properties: {
             resource: trigger as SqlTriggerResource,
-            options: {},
-          },
+            options: {}
+          }
         };
         const rpResponse = await createUpdateSqlTrigger(
           userContext.subscriptionId,

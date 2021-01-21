@@ -35,7 +35,7 @@ export function sendCachedDataMessage<TResponseDataModel>(
   let cachedDataPromise: CachedDataPromise<TResponseDataModel> = {
     deferred: Q.defer<TResponseDataModel>(),
     startTime: new Date(),
-    id: _.uniqueId(),
+    id: _.uniqueId()
   };
   RequestMap[cachedDataPromise.id] = cachedDataPromise;
   sendMessage({ type: messageType, params: params, id: cachedDataPromise.id });
@@ -54,7 +54,7 @@ export function sendMessage(data: any): void {
     portalChildWindow.parent.postMessage(
       {
         signature: "pcIframe",
-        data: data,
+        data: data
       },
       portalChildWindow.document.referrer
     );

@@ -40,7 +40,7 @@ export class ArrayHashMap<T> {
   public forEach(key: string, iteratorFct: (value: T) => void) {
     const values = this.store.get(key);
     if (values) {
-      values.forEach((value) => iteratorFct(value));
+      values.forEach(value => iteratorFct(value));
     }
   }
 

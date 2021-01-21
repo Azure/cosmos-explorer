@@ -79,5 +79,5 @@ export enum StorageKey {
   TenantId,
   MostRecentActivity,
   SetPartitionKeyUndefined,
-  GalleryCalloutDismissed,
+  GalleryCalloutDismissed
 }

@@ -46,7 +46,9 @@ export default class QueryTablesTab extends TabsBase {
     this.queryViewModel(new QueryViewModel(this));
     const sampleQuerySubscription = this.tableEntityListViewModel().items.subscribe(() => {
       if (this.tableEntityListViewModel().items().length > 0 && this.container.isPreferredApiTable()) {
-        this.queryViewModel().queryBuilderViewModel().setExample();
+        this.queryViewModel()
+          .queryBuilderViewModel()
+          .setExample();
       }
       sampleQuerySubscription.dispose();
     });
@@ -58,7 +60,7 @@ export default class QueryTablesTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.queryBuilderButton = {
@@ -72,7 +74,7 @@ export default class QueryTablesTab extends TabsBase {
 
       isSelected: ko.computed<boolean>(() => {
         return this.queryViewModel() ? this.queryViewModel().isHelperActive() : false;
-      }),
+      })
     };
 
     this.queryTextButton = {
@@ -86,7 +88,7 @@ export default class QueryTablesTab extends TabsBase {
 
       isSelected: ko.computed<boolean>(() => {
         return this.queryViewModel() ? this.queryViewModel().isEditorActive() : false;
-      }),
+      })
     };
 
     this.addEntityButton = {
@@ -96,7 +98,7 @@ export default class QueryTablesTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.editEntityButton = {
@@ -109,7 +111,7 @@ export default class QueryTablesTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.deleteEntityButton = {
@@ -122,7 +124,7 @@ export default class QueryTablesTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.buildCommandBarOptions();
@@ -183,7 +185,7 @@ export default class QueryTablesTab extends TabsBase {
         ariaLabel: label,
         hasPopup: false,
         disabled: !this.queryBuilderButton.enabled(),
-        isSelected: this.queryBuilderButton.isSelected(),
+        isSelected: this.queryBuilderButton.isSelected()
       });
     }
 
@@ -197,7 +199,7 @@ export default class QueryTablesTab extends TabsBase {
         ariaLabel: label,
         hasPopup: false,
         disabled: !this.queryTextButton.enabled(),
-        isSelected: this.queryTextButton.isSelected(),
+        isSelected: this.queryTextButton.isSelected()
       });
     }
 
@@ -210,7 +212,7 @@ export default class QueryTablesTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.executeQueryButton.enabled(),
+        disabled: !this.executeQueryButton.enabled()
       });
     }
 
@@ -223,7 +225,7 @@ export default class QueryTablesTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: !this.addEntityButton.enabled(),
+        disabled: !this.addEntityButton.enabled()
       });
     }
 
@@ -236,7 +238,7 @@ export default class QueryTablesTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: !this.editEntityButton.enabled(),
+        disabled: !this.editEntityButton.enabled()
       });
     }
 
@@ -249,7 +251,7 @@ export default class QueryTablesTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: !this.deleteEntityButton.enabled(),
+        disabled: !this.deleteEntityButton.enabled()
       });
     }
     return buttons;
@@ -269,7 +271,7 @@ export default class QueryTablesTab extends TabsBase {
         this.editEntityButton.visible,
         this.editEntityButton.enabled,
         this.deleteEntityButton.visible,
-        this.deleteEntityButton.enabled,
+        this.deleteEntityButton.enabled
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();

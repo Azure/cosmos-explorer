@@ -23,7 +23,10 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       return await readCollectionsWithARM(databaseId);
     }
 
-    const sdkResponse = await client().database(databaseId).containers.readAll().fetchAll();
+    const sdkResponse = await client()
+      .database(databaseId)
+      .containers.readAll()
+      .fetchAll();
     return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
@@ -60,5 +63,5 @@ async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Co
       throw new Error(`Unsupported default experience type: ${defaultExperience}`);
   }
 
-  return rpResponse?.value?.map((collection) => collection.properties?.resource as DataModels.Collection);
+  return rpResponse?.value?.map(collection => collection.properties?.resource as DataModels.Collection);
 }

@@ -2,7 +2,7 @@ import {
   ArcadiaWorkspace,
   ArcadiaWorkspaceFeedResponse,
   SparkPool,
-  SparkPoolFeedResponse,
+  SparkPoolFeedResponse
 } from "../Contracts/DataModels";
 import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";

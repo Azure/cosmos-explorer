@@ -42,7 +42,7 @@ export default class QueryBuilderViewModel {
     Constants.TableType.Guid,
     Constants.TableType.Int32,
     Constants.TableType.Int64,
-    "",
+    ""
   ]);
   public operators = ko.observableArray([
     Constants.Operator.Equal,
@@ -51,7 +51,7 @@ export default class QueryBuilderViewModel {
     Constants.Operator.LessThan,
     Constants.Operator.LessThanOrEqualTo,
     Constants.Operator.NotEqualTo,
-    "",
+    ""
   ]);
   public clauseRules = ko.observableArray([Constants.ClauseRule.And, Constants.ClauseRule.Or]);
   public timeOptions = ko.observableArray([
@@ -61,7 +61,7 @@ export default class QueryBuilderViewModel {
     Constants.timeOptions.last31Days,
     Constants.timeOptions.last365Days,
     Constants.timeOptions.currentMonth,
-    Constants.timeOptions.currentYear,
+    Constants.timeOptions.currentYear
     //Constants.timeOptions.custom
   ]);
   public queryString = ko.observable<string>();
@@ -86,10 +86,10 @@ export default class QueryBuilderViewModel {
         Constants.CassandraType.Varint,
         Constants.CassandraType.Inet,
         Constants.CassandraType.Smallint,
-        Constants.CassandraType.Tinyint,
+        Constants.CassandraType.Tinyint
       ]);
       this.clauseRules([
-        Constants.ClauseRule.And,
+        Constants.ClauseRule.And
         // OR is not supported in CQL
       ]);
       this.andLabel = "And";
@@ -100,7 +100,7 @@ export default class QueryBuilderViewModel {
     this.tableEntityListViewModel = tableEntityListViewModel;
     this.columnOptions = ko.observableArray<string>(queryViewModel.columnOptions());
 
-    this.columnOptions.subscribe((newColumnOptions) => {
+    this.columnOptions.subscribe(newColumnOptions => {
       queryViewModel.columnOptions(newColumnOptions);
     });
   }
@@ -663,7 +663,7 @@ export default class QueryBuilderViewModel {
   private scrollToBottom(): void {
     var scrollBox = document.getElementById("scroll");
     if (!this.scrollEventListener) {
-      scrollBox.addEventListener("scroll", function () {
+      scrollBox.addEventListener("scroll", function() {
         var translate = "translate(0," + this.scrollTop + "px)";
         const allTh = <NodeListOf<HTMLElement>>this.querySelectorAll("thead td");
         for (let i = 0; i < allTh.length; i++) {

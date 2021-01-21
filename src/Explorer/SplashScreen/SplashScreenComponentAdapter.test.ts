@@ -30,7 +30,7 @@ describe("SplashScreenComponentAdapter", () => {
     const mainButtons = splashScreenAdapter.createMainItems();
 
     // Press all buttons and make sure create gets called
-    mainButtons.forEach((button) => {
+    mainButtons.forEach(button => {
       try {
         button.onClick();
       } catch (e) {
@@ -55,7 +55,7 @@ describe("SplashScreenComponentAdapter", () => {
     const mainButtons = splashScreenAdapter.createMainItems();
 
     // Press all buttons and make sure create doesn't get called
-    mainButtons.forEach((button) => {
+    mainButtons.forEach(button => {
       try {
         button.onClick();
       } catch (e) {

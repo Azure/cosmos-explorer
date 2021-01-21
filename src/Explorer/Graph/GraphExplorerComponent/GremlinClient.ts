@@ -79,7 +79,7 @@ export class GremlinClient {
       },
       infoCallback: (msg: string) => {
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-      },
+      }
     });
   }
 
@@ -89,13 +89,13 @@ export class GremlinClient {
     this.pendingResults.set(requestId, {
       result: {
         data: [] as any[],
-        isIncomplete: false,
+        isIncomplete: false
       },
       deferred: deferred,
       timeoutId: window.setTimeout(
         () => this.abortPendingRequest(requestId, GremlinClient.TIMEOUT_ERROR_MSG, null),
         GremlinClient.PENDING_REQUEST_TIMEOUT_MS
-      ),
+      )
     });
     return deferred.promise;
   }

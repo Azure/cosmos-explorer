@@ -24,7 +24,7 @@ export default class SparkMasterTab extends TabsBase {
       this._clusterConnectionInfo &&
       this._clusterConnectionInfo.endpoints &&
       this._clusterConnectionInfo.endpoints.find(
-        (endpoint) => endpoint.kind === DataModels.SparkClusterEndpointKind.SparkUI
+        endpoint => endpoint.kind === DataModels.SparkClusterEndpointKind.SparkUI
       );
     this.sparkMasterSrc = ko.observable<string>(sparkMasterEndpoint && sparkMasterEndpoint.endpoint);
   }

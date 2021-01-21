@@ -3,7 +3,7 @@ import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType
 import { Resource, TriggerDefinition } from "@azure/cosmos";
 import {
   SqlTriggerCreateUpdateParameters,
-  SqlTriggerResource,
+  SqlTriggerResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
@@ -44,8 +44,8 @@ export async function createTrigger(
       const createTriggerParams: SqlTriggerCreateUpdateParameters = {
         properties: {
           resource: trigger as SqlTriggerResource,
-          options: {},
-        },
+          options: {}
+        }
       };
       const rpResponse = await createUpdateSqlTrigger(
         userContext.subscriptionId,
@@ -59,7 +59,10 @@ export async function createTrigger(
       return rpResponse && (rpResponse.properties?.resource as TriggerDefinition & Resource);
     }
 
-    const response = await client().database(databaseId).container(collectionId).scripts.triggers.create(trigger);
+    const response = await client()
+      .database(databaseId)
+      .container(collectionId)
+      .scripts.triggers.create(trigger);
     return response.resource;
   } catch (error) {
     handleError(error, "CreateTrigger", `Error while creating trigger ${trigger.id}`);

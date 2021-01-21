@@ -101,7 +101,7 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
     this.props.editedNeighbors.addedEdges.push({
       inputInV: inV,
       inputOutV: EditorNeighborsComponent.DEFAULT_BLANK_VALUE,
-      label: EditorNeighborsComponent.DEFAULT_BLANK_VALUE,
+      label: EditorNeighborsComponent.DEFAULT_BLANK_VALUE
     });
     this.onUpdateEdges();
   }
@@ -110,7 +110,7 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
     this.props.editedNeighbors.addedEdges.push({
       inputInV: EditorNeighborsComponent.DEFAULT_BLANK_VALUE,
       inputOutV: outV,
-      label: EditorNeighborsComponent.DEFAULT_BLANK_VALUE,
+      label: EditorNeighborsComponent.DEFAULT_BLANK_VALUE
     });
     this.onUpdateEdges();
   }
@@ -215,7 +215,7 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
             </td>
             <td className="actionCol">
               <span className="rightPaneTrashIcon rightPaneBtns">
-                <img src={DeleteIcon} alt="Delete" onClick={(e) => this.removeAddedEdgeToNeighbor(index)} />
+                <img src={DeleteIcon} alt="Delete" onClick={e => this.removeAddedEdgeToNeighbor(index)} />
               </span>
             </td>
           </tr>

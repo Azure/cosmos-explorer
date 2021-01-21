@@ -6,19 +6,19 @@ describe("The Heatmap Control", () => {
   const dataPoints = {
     "1": {
       "2019-06-19T00:59:10Z": {
-        "Normalized Throughput": 0.35,
+        "Normalized Throughput": 0.35
       },
       "2019-06-19T00:48:10Z": {
-        "Normalized Throughput": 0.25,
-      },
-    },
+        "Normalized Throughput": 0.25
+      }
+    }
   };
 
   const chartCaptions = {
     chartTitle: "chart title",
     yAxisTitle: "YAxisTitle",
     tooltipText: "Tooltip text",
-    timeWindow: 123456789,
+    timeWindow: 123456789
   };
 
   let heatmap: Heatmap;
@@ -75,12 +75,12 @@ describe("The Heatmap Control", () => {
       if (dayjs().utcOffset()) {
         expect(heatmap.generateMatrixFromMap(dataPoints).xAxisPoints).not.toEqual([
           "2019-06-19T00:48:10Z",
-          "2019-06-19T00:59:10Z",
+          "2019-06-19T00:59:10Z"
         ]);
       } else {
         expect(heatmap.generateMatrixFromMap(dataPoints).xAxisPoints).toEqual([
           "2019-06-19T00:48:10Z",
-          "2019-06-19T00:59:10Z",
+          "2019-06-19T00:59:10Z"
         ]);
       }
     });
@@ -106,9 +106,9 @@ describe("iframe rendering when there is no data", () => {
         data: {
           chartData: {},
           chartSettings: {},
-          theme: 4,
-        },
-      },
+          theme: 4
+        }
+      }
     };
 
     const divElement: string = `<div id="${Heatmap.elementId}"></div>`;
@@ -126,9 +126,9 @@ describe("iframe rendering when there is no data", () => {
         data: {
           chartData: {},
           chartSettings: {},
-          theme: 2,
-        },
-      },
+          theme: 2
+        }
+      }
     };
 
     const divElement: string = `<div id="${Heatmap.elementId}"></div>`;

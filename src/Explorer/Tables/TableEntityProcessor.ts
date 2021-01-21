@@ -13,12 +13,12 @@ enum DataTypes {
   Boolean = 8,
   DateTime = 9,
   Int32 = 16,
-  Int64 = 18,
+  Int64 = 18
 }
 
 var tablesIndexers = {
   Value: "$v",
-  Type: "$t",
+  Type: "$t"
 };
 
 export var keyProperties = {
@@ -29,13 +29,13 @@ export var keyProperties = {
   resourceId: "_rid",
   self: "_self",
   etag: "_etag",
-  attachments: "_attachments",
+  attachments: "_attachments"
 };
 
 export function convertDocumentsToEntities(documents: any[]): Entities.ITableEntityForTablesAPI[] {
   let results: Entities.ITableEntityForTablesAPI[] = [];
   documents &&
-    documents.forEach((document) => {
+    documents.forEach(document => {
       if (!document.hasOwnProperty(keyProperties.PartitionKey) || !document.hasOwnProperty(keyProperties.Id2)) {
         //Document does not match the current required format for Tables, so we ignore it
         return; // The rest of the key properties should be guaranteed as DocumentDB properties
@@ -43,33 +43,33 @@ export function convertDocumentsToEntities(documents: any[]): Entities.ITableEnt
       let entity: Entities.ITableEntityForTablesAPI = <Entities.ITableEntityForTablesAPI>{
         PartitionKey: {
           _: document[keyProperties.PartitionKey],
-          $: Constants.TableType.String,
+          $: Constants.TableType.String
         },
         RowKey: {
           _: document[keyProperties.Id],
-          $: Constants.TableType.String,
+          $: Constants.TableType.String
         },
         Timestamp: {
           // DocumentDB Timestamp is unix time so we convert to Javascript date here
           _: DateTimeUtilities.convertUnixToJSDate(document[keyProperties.Timestamp]).toUTCString(),
-          $: Constants.TableType.DateTime,
+          $: Constants.TableType.DateTime
         },
         _rid: {
           _: document[keyProperties.resourceId],
-          $: Constants.TableType.String,
+          $: Constants.TableType.String
         },
         _self: {
           _: document[keyProperties.self],
-          $: Constants.TableType.String,
+          $: Constants.TableType.String
         },
         _etag: {
           _: document[keyProperties.etag],
-          $: Constants.TableType.String,
+          $: Constants.TableType.String
         },
         _attachments: {
           _: document[keyProperties.attachments],
-          $: Constants.TableType.String,
-        },
+          $: Constants.TableType.String
+        }
       };
       for (var property in document) {
         if (document.hasOwnProperty(property)) {
@@ -90,12 +90,12 @@ export function convertDocumentsToEntities(documents: any[]): Entities.ITableEnt
               // Convert Ticks datetime to javascript date for better visualization in table
               entity[property] = {
                 _: DateTimeUtilities.convertTicksToJSDate(document[property][tablesIndexers.Value]).toUTCString(),
-                $: DataTypes[document[property][tablesIndexers.Type]],
+                $: DataTypes[document[property][tablesIndexers.Type]]
               };
             } else {
               entity[property] = {
                 _: document[property][tablesIndexers.Value],
-                $: DataTypes[document[property][tablesIndexers.Type]],
+                $: DataTypes[document[property][tablesIndexers.Type]]
               };
             }
           }
@@ -113,7 +113,7 @@ export function convertEntitiesToDocuments(
 ): any[] {
   let results: any[] = [];
   entities &&
-    entities.forEach((entity) => {
+    entities.forEach(entity => {
       let document: any = {
         $id: entity.RowKey._,
         id: entity.RowKey._,
@@ -122,7 +122,7 @@ export function convertEntitiesToDocuments(
         self: entity._self._,
         etag: entity._etag._,
         attachments: entity._attachments._,
-        collection: collection,
+        collection: collection
       };
       if (collection.partitionKey) {
         document["partitionKey"] = collection.partitionKey;
@@ -144,12 +144,12 @@ export function convertEntitiesToDocuments(
             // Convert javascript date back to ticks with 20 zeros padding
             document[property] = {
               $t: (<any>DataTypes)[entity[property].$],
-              $v: DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._),
+              $v: DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._)
             };
           } else {
             document[property] = {
               $t: (<any>DataTypes)[entity[property].$],
-              $v: entity[property]._,
+              $v: entity[property]._
             };
           }
         }
@@ -163,7 +163,7 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
   let document: any = {
     $pk: entity.PartitionKey._,
     $id: entity.RowKey._,
-    id: entity.RowKey._,
+    id: entity.RowKey._
   };
   for (var property in entity) {
     if (
@@ -180,12 +180,12 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
         // Convert javascript date back to ticks with 20 zeros padding
         document[property] = {
           $t: (<any>DataTypes)[entity[property].$],
-          $v: DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._),
+          $v: DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._)
         };
       } else {
         document[property] = {
           $t: (<any>DataTypes)[entity[property].$],
-          $v: entity[property]._,
+          $v: entity[property]._
         };
       }
     }

@@ -42,7 +42,7 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
-        paneTitle: this.title(),
+        paneTitle: this.title()
       });
   }
 
@@ -63,7 +63,7 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
-        paneTitle: this.title(),
+        paneTitle: this.title()
       });
   }
 
@@ -85,7 +85,7 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
-        paneTitle: this.title(),
+        paneTitle: this.title()
       });
   }
 

@@ -25,7 +25,7 @@ export async function readUserDefinedFunctions(
         databaseId,
         collectionId
       );
-      return rpResponse?.value?.map((udf) => udf.properties?.resource as UserDefinedFunctionDefinition & Resource);
+      return rpResponse?.value?.map(udf => udf.properties?.resource as UserDefinedFunctionDefinition & Resource);
     }
 
     const response = await client()

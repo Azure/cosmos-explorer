@@ -36,8 +36,8 @@ export class ResourceTreeContextMenuButtonFactory {
       {
         iconSrc: AddCollectionIcon,
         onClick: () => container.onNewCollectionClicked(),
-        label: container.addCollectionText(),
-      },
+        label: container.addCollectionText()
+      }
     ];
 
     if (userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
@@ -45,7 +45,7 @@ export class ResourceTreeContextMenuButtonFactory {
         iconSrc: DeleteDatabaseIcon,
         onClick: () => container.deleteDatabaseConfirmationPane.open(),
         label: container.deleteDatabaseText(),
-        styleClass: "deleteDatabaseMenuItem",
+        styleClass: "deleteDatabaseMenuItem"
       });
     }
     return items;
@@ -60,7 +60,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null),
-        label: "New SQL Query",
+        label: "New SQL Query"
       });
     }
 
@@ -68,7 +68,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null),
-        label: "New Query",
+        label: "New Query"
       });
 
       items.push({
@@ -77,7 +77,7 @@ export class ResourceTreeContextMenuButtonFactory {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
           selectedCollection && selectedCollection.onNewMongoShellClick();
         },
-        label: "New Shell",
+        label: "New Shell"
       });
     }
 
@@ -88,7 +88,7 @@ export class ResourceTreeContextMenuButtonFactory {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
         },
-        label: "New Stored Procedure",
+        label: "New Stored Procedure"
       });
 
       items.push({
@@ -97,7 +97,7 @@ export class ResourceTreeContextMenuButtonFactory {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
           selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, null);
         },
-        label: "New UDF",
+        label: "New UDF"
       });
 
       items.push({
@@ -106,7 +106,7 @@ export class ResourceTreeContextMenuButtonFactory {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
           selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, null);
         },
-        label: "New Trigger",
+        label: "New Trigger"
       });
     }
 
@@ -117,7 +117,7 @@ export class ResourceTreeContextMenuButtonFactory {
         selectedCollection && selectedCollection.onDeleteCollectionContextMenuClick(selectedCollection, null);
       },
       label: container.deleteCollectionText(),
-      styleClass: "deleteCollectionMenuItem",
+      styleClass: "deleteCollectionMenuItem"
     });
 
     return items;
@@ -135,8 +135,8 @@ export class ResourceTreeContextMenuButtonFactory {
       {
         iconSrc: DeleteSprocIcon,
         onClick: () => storedProcedure.delete(),
-        label: "Delete Store Procedure",
-      },
+        label: "Delete Store Procedure"
+      }
     ];
   }
 
@@ -149,8 +149,8 @@ export class ResourceTreeContextMenuButtonFactory {
       {
         iconSrc: DeleteTriggerIcon,
         onClick: () => trigger.delete(),
-        label: "Delete Trigger",
-      },
+        label: "Delete Trigger"
+      }
     ];
   }
 
@@ -166,8 +166,8 @@ export class ResourceTreeContextMenuButtonFactory {
       {
         iconSrc: DeleteUDFIcon,
         onClick: () => userDefinedFunction.delete(),
-        label: "Delete User Defined Function",
-      },
+        label: "Delete User Defined Function"
+      }
     ];
   }
 }

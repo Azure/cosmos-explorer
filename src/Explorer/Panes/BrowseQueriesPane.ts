@@ -44,7 +44,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
       databaseAccountName: this.container && this.container.databaseAccount().name,
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
-      paneTitle: this.title(),
+      paneTitle: this.title()
     });
     try {
       this.isExecuting(true);
@@ -56,7 +56,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title(),
+          paneTitle: this.title()
         },
         startKey
       );
@@ -70,7 +70,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
           error: errorMessage,
-          errorStack: getErrorStack(error),
+          errorStack: getErrorStack(error)
         },
         startKey
       );
@@ -101,7 +101,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
       queryName: savedQuery.queryName,
-      paneTitle: this.title(),
+      paneTitle: this.title()
     });
     this.close();
   };

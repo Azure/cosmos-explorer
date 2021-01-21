@@ -22,7 +22,7 @@ import {
   renderMongoIndexTransformationRefreshMessage,
   ManualEstimatedSpendingDisplayProps,
   PriceBreakdown,
-  getRuPriceBreakdown,
+  getRuPriceBreakdown
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
@@ -31,15 +31,15 @@ class SettingsRenderUtilsTestComponent extends React.Component {
       { key: "costType", name: "", fieldName: "costType", minWidth: 100, maxWidth: 200, isResizable: true },
       { key: "hourly", name: "Hourly", fieldName: "hourly", minWidth: 100, maxWidth: 200, isResizable: true },
       { key: "daily", name: "Daily", fieldName: "daily", minWidth: 100, maxWidth: 200, isResizable: true },
-      { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true },
+      { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true }
     ];
     const estimatedSpendingItems: ManualEstimatedSpendingDisplayProps[] = [
       {
         costType: <Text>Current Cost</Text>,
         hourly: <Text>$ 1.02</Text>,
         daily: <Text>$ 24.48</Text>,
-        monthly: <Text>$ 744.6</Text>,
-      },
+        monthly: <Text>$ 744.6</Text>
+      }
     ];
     const priceBreakdown: PriceBreakdown = {
       hourlyPrice: 1.02,
@@ -47,7 +47,7 @@ class SettingsRenderUtilsTestComponent extends React.Component {
       monthlyPrice: 744.6,
       pricePerRu: 0.00051,
       currency: "RMB",
-      currencySign: "¥",
+      currencySign: "¥"
     };
 
     return (

@@ -17,7 +17,7 @@ describe("PublishNotebookPaneComponent", () => {
       onChangeTags: undefined,
       onChangeImageSrc: undefined,
       onError: undefined,
-      clearFormError: undefined,
+      clearFormError: undefined
     };
 
     const wrapper = shallow(<PublishNotebookPaneComponent {...props} />);

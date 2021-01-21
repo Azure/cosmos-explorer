@@ -28,7 +28,7 @@ export class RadioSwitchComponent extends React.Component<RadioSwitchComponentPr
             tabIndex={0}
             key={choice.key}
             onClick={() => this.onSelect(choice)}
-            onKeyPress={(event) => this.onKeyPress(event, choice)}
+            onKeyPress={event => this.onKeyPress(event, choice)}
           >
             <Icon iconName={this.props.selectedKey === choice.key ? "RadioBtnOn" : "RadioBtnOff"} />
             <span className="caption">{choice.label}</span>

@@ -66,7 +66,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
     this._setBaselines();
 
-    this.id.editableIsValid.subscribe((isValid) => {
+    this.id.editableIsValid.subscribe(isValid => {
       const currentState = this.editorState();
       switch (currentState) {
         case ViewModels.ScriptEditorState.newValid:
@@ -94,7 +94,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     this.editor = ko.observable<monaco.editor.IStandaloneCodeEditor>();
 
     this.formIsValid = ko.computed<boolean>(() => {
-      const formIsValid: boolean = this.formFields().every((field) => {
+      const formIsValid: boolean = this.formFields().every(field => {
         return field.editableIsValid();
       });
 
@@ -102,7 +102,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     });
 
     this.formIsDirty = ko.computed<boolean>(() => {
-      const formIsDirty: boolean = this.formFields().some((field) => {
+      const formIsDirty: boolean = this.formFields().some(field => {
         return field.editableIsDirty();
       });
 
@@ -124,7 +124,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
       visible: ko.computed<boolean>(() => {
         return this.isNew();
-      }),
+      })
     };
 
     this.updateButton = {
@@ -142,7 +142,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
       visible: ko.computed<boolean>(() => {
         return !this.isNew();
-      }),
+      })
     };
 
     this.discardButton = {
@@ -152,7 +152,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.deleteButton = {
@@ -162,7 +162,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.executeButton = {
@@ -172,7 +172,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
   }
 
@@ -226,7 +226,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveButton.enabled(),
+        disabled: !this.saveButton.enabled()
       });
     }
 
@@ -239,7 +239,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.updateButton.enabled(),
+        disabled: !this.updateButton.enabled()
       });
     }
 
@@ -252,7 +252,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardButton.enabled(),
+        disabled: !this.discardButton.enabled()
       });
     }
     return buttons;
@@ -266,7 +266,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
         this.updateButton.visible,
         this.updateButton.enabled,
         this.discardButton.visible,
-        this.discardButton.enabled,
+        this.discardButton.enabled
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
@@ -324,7 +324,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
     const editorPosition: ViewModels.EditorPosition = {
       line: i + 1,
-      column: target - cursor + 1,
+      column: target - cursor + 1
     };
 
     return editorPosition;
@@ -337,7 +337,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
       value: this.editorContent(),
       language: "javascript",
       readOnly: false,
-      ariaLabel: this.ariaLabel(),
+      ariaLabel: this.ariaLabel()
     };
 
     container.innerHTML = "";
@@ -355,7 +355,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   }
 
   private _setModelMarkers(errors: ViewModels.QueryError[]) {
-    const markers: monaco.editor.IMarkerData[] = errors.map((e) => this._toMarker(e));
+    const markers: monaco.editor.IMarkerData[] = errors.map(e => this._toMarker(e));
     const editorModel = this.editor().getModel();
     monaco.editor.setModelMarkers(editorModel, this.tabId, markers);
   }
@@ -378,7 +378,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
       startColumn: start.column,
       endLineNumber: end.line,
       endColumn: end.column,
-      code: error.code,
+      code: error.code
     };
   }
 }

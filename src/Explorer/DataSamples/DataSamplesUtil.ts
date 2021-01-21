@@ -26,7 +26,7 @@ export class DataSamplesUtil {
 
     await generator
       .createSampleContainerAsync()
-      .catch((error) =>
+      .catch(error =>
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Error creating sample container: ${error}`)
       );
     const msg = `The sample ${containerName} in database ${databaseName} has been successfully created.`;
@@ -48,10 +48,10 @@ export class DataSamplesUtil {
    * @param containerDatabases
    */
   public hasContainer(databaseName: string, containerName: string, containerDatabases: ViewModels.Database[]): boolean {
-    const filteredDatabases = containerDatabases.filter((database) => database.id() === databaseName);
+    const filteredDatabases = containerDatabases.filter(database => database.id() === databaseName);
     return (
       filteredDatabases.length > 0 &&
-      filteredDatabases[0].collections().filter((collection) => collection.id() === containerName).length > 0
+      filteredDatabases[0].collections().filter(collection => collection.id() === containerName).length > 0
     );
   }
 

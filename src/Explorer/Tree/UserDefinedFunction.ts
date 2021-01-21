@@ -32,7 +32,7 @@ export default class UserDefinedFunction {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
     const userDefinedFunction = {
       id: "",
-      body: "function userDefinedFunction(){}",
+      body: "function userDefinedFunction(){}"
     };
 
     const userDefinedFunctionTab: UserDefinedFunctionTab = new UserDefinedFunctionTab({
@@ -45,7 +45,7 @@ export default class UserDefinedFunction {
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
       isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
+      onUpdateTabsButtons: source.container.onUpdateTabsButtons
     });
 
     source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
@@ -56,7 +56,7 @@ export default class UserDefinedFunction {
 
     const userDefinedFunctionTabs: UserDefinedFunctionTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.UserDefinedFunctions,
-      (tab) => tab.node?.rid === this.rid
+      tab => tab.node?.rid === this.rid
     ) as UserDefinedFunctionTab[];
     let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
 
@@ -67,7 +67,7 @@ export default class UserDefinedFunction {
         _rid: this.rid,
         _self: this.self,
         id: this.id(),
-        body: this.body(),
+        body: this.body()
       };
 
       userDefinedFunctionTab = new UserDefinedFunctionTab({
@@ -83,7 +83,7 @@ export default class UserDefinedFunction {
           this.collection.id()
         )}/udfs/${this.id()}`,
         isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons
       });
 
       this.container.tabsManager.activateNewTab(userDefinedFunctionTab);
@@ -96,7 +96,7 @@ export default class UserDefinedFunction {
       description: "UDF item node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree,
+      dataExplorerArea: Constants.Areas.ResourceTree
     });
   }
 
@@ -107,10 +107,10 @@ export default class UserDefinedFunction {
 
     deleteUserDefinedFunction(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.removeTabByComparator((tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.removeTabByComparator(tab => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      (reason) => {}
+      reason => {}
     );
   }
 }

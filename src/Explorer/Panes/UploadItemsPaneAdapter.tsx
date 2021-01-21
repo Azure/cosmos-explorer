@@ -42,13 +42,13 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
       title: "Upload Items",
       submitButtonText: "Upload",
       onClose: () => this.close(),
-      onSubmit: () => this.submit(),
+      onSubmit: () => this.submit()
     };
 
     const uploadItemsPaneProps: UploadItemsPaneProps = {
       selectedFilesTitle: this.selectedFilesTitle,
       updateSelectedFiles: this.updateSelectedFiles,
-      uploadFileData: this.uploadFileData,
+      uploadFileData: this.uploadFileData
     };
 
     return (
@@ -106,7 +106,7 @@ export class UploadItemsPaneAdapter implements ReactAdapter {
             this.selectedFiles = undefined;
             this.selectedFilesTitle = "";
           },
-          (error) => {
+          error => {
             const errorMessage = getErrorMessage(error);
             this.formError = errorMessage;
             this.formErrorDetail = errorMessage;

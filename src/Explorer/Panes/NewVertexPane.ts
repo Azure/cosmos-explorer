@@ -38,7 +38,7 @@ export default class NewVertexPane extends ContextualPaneBase {
 
     this.tempVertexData({
       label: "",
-      properties: <ViewModels.InputProperty[]>[],
+      properties: <ViewModels.InputProperty[]>[]
     });
     this.partitionKeyProperty(null);
   }

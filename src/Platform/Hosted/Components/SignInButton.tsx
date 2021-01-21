@@ -14,7 +14,7 @@ export const SignInButton: React.FunctionComponent<Props> = ({ login }: Props) =
       styles={{
         rootHovered: { backgroundColor: "#393939", color: "#fff" },
         rootFocused: { backgroundColor: "#393939", color: "#fff" },
-        rootPressed: { backgroundColor: "#393939", color: "#fff" },
+        rootPressed: { backgroundColor: "#393939", color: "#fff" }
       }}
     />
   );

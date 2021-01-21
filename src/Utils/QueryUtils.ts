@@ -74,7 +74,7 @@ export class QueryUtils {
         hasMoreResults: results.hasMoreResults,
         itemCount: results.itemCount,
         firstItemIndex: results.firstItemIndex,
-        lastItemIndex: results.lastItemIndex,
+        lastItemIndex: results.lastItemIndex
       };
       if (resultsMetadata.itemCount === 0 && resultsMetadata.hasMoreResults) {
         return await doRequest(resultsMetadata.lastItemIndex);
@@ -96,7 +96,7 @@ export class QueryUtils {
       firstItemIndex: 0,
       lastItemIndex: 0,
       requestCharge: 0,
-      roundTrips: 0,
+      roundTrips: 0
     };
     const doRequest = async (itemIndex: number): Promise<ViewModels.QueryResults> => {
       const results: ViewModels.QueryResults = await queryItems(itemIndex);

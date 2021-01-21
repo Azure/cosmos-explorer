@@ -57,7 +57,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
     this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
-    this.container.isNotebookEnabled.subscribe((newValue) => this.triggerRender());
+    this.container.isNotebookEnabled.subscribe(newValue => this.triggerRender());
 
     this.koSubsDatabaseIdMap = new ArrayHashMap();
     this.koSubsCollectionIdMap = new ArrayHashMap();
@@ -80,7 +80,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     if (myNotebooksTree.children) {
       // Count 1st generation children (tree is lazy-loaded)
       const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
-      myNotebooksTree.children.forEach((treeNode) => {
+      myNotebooksTree.children.forEach(treeNode => {
         switch ((treeNode as NotebookContentItem).type) {
           case NotebookContentItemType.File:
             nodeCounts.files++;
@@ -129,13 +129,13 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.galleryContentRoot = {
       name: "Gallery",
       path: "Gallery",
-      type: NotebookContentItemType.File,
+      type: NotebookContentItemType.File
     };
 
     this.myNotebooksContentRoot = {
       name: ResourceTreeAdapter.MyNotebooksTitle,
       path: this.container.getNotebookBasePath(),
-      type: NotebookContentItemType.Directory,
+      type: NotebookContentItemType.Directory
     };
 
     // Only if notebook server is available we can refresh
@@ -152,7 +152,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       this.gitHubNotebooksContentRoot = {
         name: ResourceTreeAdapter.GitHubReposTitle,
         path: ResourceTreeAdapter.PseudoDirPath,
-        type: NotebookContentItemType.Directory,
+        type: NotebookContentItemType.Directory
       };
     } else {
       this.gitHubNotebooksContentRoot = undefined;
@@ -164,20 +164,20 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public initializeGitHubRepos(pinnedRepos: IPinnedRepo[]): void {
     if (this.gitHubNotebooksContentRoot) {
       this.gitHubNotebooksContentRoot.children = [];
-      pinnedRepos?.forEach((pinnedRepo) => {
+      pinnedRepos?.forEach(pinnedRepo => {
         const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
         const repoTreeItem: NotebookContentItem = {
           name: repoFullName,
           path: ResourceTreeAdapter.PseudoDirPath,
           type: NotebookContentItemType.Directory,
-          children: [],
+          children: []
         };
 
-        pinnedRepo.branches.forEach((branch) => {
+        pinnedRepo.branches.forEach(branch => {
           repoTreeItem.children.push({
             name: branch.name,
             path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
-            type: NotebookContentItemType.Directory,
+            type: NotebookContentItemType.Directory
           });
         });
 
@@ -198,7 +198,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         children: [],
         isSelected: () => this.isDataNodeSelected(database.id()),
         contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
-        onClick: async (isExpanded) => {
+        onClick: async isExpanded => {
           // Rewritten version of expandCollapseDatabase():
           if (isExpanded) {
             database.collapseDatabase();
@@ -213,7 +213,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           this.container.onUpdateTabsButtons([]);
           this.container.tabsManager.refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
         },
-        onContextMenuOpen: () => this.container.selectedNode(database),
+        onContextMenuOpen: () => this.container.selectedNode(database)
       };
 
       if (database.isDatabaseShared()) {
@@ -221,7 +221,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           label: "Scale",
           isSelected: () =>
             this.isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettings]),
-          onClick: database.onSettingsClick.bind(database),
+          onClick: database.onSettingsClick.bind(database)
         });
       }
 
@@ -244,7 +244,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     return {
       label: undefined,
       isExpanded: true,
-      children: databaseTreeNodes,
+      children: databaseTreeNodes
     };
   }
 
@@ -269,16 +269,16 @@ export class ResourceTreeAdapter implements ReactAdapter {
           description: "Data",
           data: {
             databaseId: collection.databaseId,
-            collectionId: collection.id(),
-          },
+            collectionId: collection.id()
+          }
         });
       },
       isSelected: () =>
         this.isDataNodeSelected(collection.databaseId, collection.id(), [
           ViewModels.CollectionTabKind.Documents,
-          ViewModels.CollectionTabKind.Graph,
+          ViewModels.CollectionTabKind.Graph
         ]),
-      contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
+      contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection)
     });
 
     if (!this.container.isPreferredApiCassandra() || !this.container.isServerlessEnabled()) {
@@ -286,7 +286,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>
-          this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings]),
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings])
       });
     }
 
@@ -315,7 +315,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Conflicts",
         onClick: collection.onConflictsClick.bind(collection),
         isSelected: () =>
-          this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Conflicts]),
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Conflicts])
       });
     }
 
@@ -343,7 +343,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         }
       },
       isSelected: () => this.isDataNodeSelected(collection.databaseId, collection.id()),
-      onContextMenuOpen: () => this.container.selectedNode(collection),
+      onContextMenuOpen: () => this.container.selectedNode(collection)
     };
   }
 
@@ -355,9 +355,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: sp.open.bind(sp),
         isSelected: () =>
           this.isDataNodeSelected(collection.databaseId, collection.id(), [
-            ViewModels.CollectionTabKind.StoredProcedures,
+            ViewModels.CollectionTabKind.StoredProcedures
           ]),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container, sp),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(this.container, sp)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
@@ -365,7 +365,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           (tab: TabsBase) =>
             tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
         );
-      },
+      }
     };
   }
 
@@ -377,12 +377,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: udf.open.bind(udf),
         isSelected: () =>
           this.isDataNodeSelected(collection.databaseId, collection.id(), [
-            ViewModels.CollectionTabKind.UserDefinedFunctions,
+            ViewModels.CollectionTabKind.UserDefinedFunctions
           ]),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(
-          this.container,
-          udf
-        ),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(this.container, udf)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
@@ -390,7 +387,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           (tab: TabsBase) =>
             tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
         );
-      },
+      }
     };
   }
 
@@ -402,7 +399,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: trigger.open.bind(trigger),
         isSelected: () =>
           this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Triggers]),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container, trigger),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(this.container, trigger)
       })),
       onClick: () => {
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
@@ -410,7 +407,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           (tab: TabsBase) =>
             tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
         );
-      },
+      }
     };
   }
 
@@ -431,7 +428,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         this.container.tabsManager.refreshActiveTab(
           (tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid
         );
-      },
+      }
     };
   }
 
@@ -487,7 +484,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     let notebooksTree: TreeNode = {
       label: undefined,
       isExpanded: true,
-      children: [],
+      children: []
     };
 
     if (this.galleryContentRoot) {
@@ -500,7 +497,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     if (this.gitHubNotebooksContentRoot) {
       // collapse all other notebook nodes
-      notebooksTree.children.forEach((node) => (node.isExpanded = false));
+      notebooksTree.children.forEach(node => (node.isExpanded = false));
       notebooksTree.children.push(this.buildGitHubNotebooksTree());
     }
 
@@ -526,7 +523,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
         this.triggerRender();
       },
-      setInitialFocus: true,
+      setInitialFocus: true
     };
 
     const openGalleryProps: ILinkProps = {
@@ -534,7 +531,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
         this.container.openGallery();
         this.triggerRender();
-      },
+      }
     };
 
     return (
@@ -562,7 +559,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       isSelected: () => {
         const activeTab = this.container.tabsManager.activeTab();
         return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
-      },
+      }
     };
   }
 
@@ -570,7 +567,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     const myNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
       this.myNotebooksContentRoot,
       (item: NotebookContentItem) => {
-        this.container.openNotebook(item).then((hasOpened) => {
+        this.container.openNotebook(item).then(hasOpened => {
           if (hasOpened) {
             this.pushItemToMostRecent(item);
           }
@@ -583,7 +580,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     myNotebooksTree.isExpanded = true;
     myNotebooksTree.isAlphaSorted = true;
     // Remove "Delete" menu item from context menu
-    myNotebooksTree.contextMenu = myNotebooksTree.contextMenu.filter((menuItem) => menuItem.label !== "Delete");
+    myNotebooksTree.contextMenu = myNotebooksTree.contextMenu.filter(menuItem => menuItem.label !== "Delete");
     return myNotebooksTree;
   }
 
@@ -591,7 +588,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     const gitHubNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
       this.gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
-        this.container.openNotebook(item).then((hasOpened) => {
+        this.container.openNotebook(item).then(hasOpened => {
           if (hasOpened) {
             this.pushItemToMostRecent(item);
           }
@@ -604,7 +601,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.gitHubReposPane.open(),
+        onClick: () => this.container.gitHubReposPane.open()
       },
       {
         label: "Disconnect from GitHub",
@@ -612,11 +609,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
           TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
             databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
             defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
-            dataExplorerArea: Areas.Notebook,
+            dataExplorerArea: Areas.Notebook
           });
           this.container.notebookManager?.gitHubOAuthService.logout();
-        },
-      },
+        }
+      }
     ];
 
     gitHubNotebooksTree.isExpanded = true;
@@ -632,8 +629,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       description: "Notebook",
       data: {
         name: item.name,
-        path: item.path,
-      },
+        path: item.path
+      }
     });
   }
 
@@ -646,7 +643,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     if (!item || !item.children) {
       return [];
     } else {
-      return item.children.map((item) => {
+      return item.children.map(item => {
         const result =
           item.type === NotebookContentItemType.Directory
             ? this.buildNotebookDirectoryNode(item, onFileClick, createDirectoryContextMenu, createFileContextMenu)
@@ -679,7 +676,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         );
       },
       contextMenu: createFileContextMenu && this.createFileContextMenu(item),
-      data: item,
+      data: item
     };
   }
 
@@ -688,7 +685,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item),
+        onClick: () => this.container.renameNotebook(item)
       },
       {
         label: "Delete",
@@ -702,23 +699,23 @@ export class ResourceTreeAdapter implements ReactAdapter {
             "Cancel",
             undefined
           );
-        },
+        }
       },
       {
         label: "Copy to ...",
         iconSrc: CopyIcon,
-        onClick: () => this.copyNotebook(item),
+        onClick: () => this.copyNotebook(item)
       },
       {
         label: "Download",
         iconSrc: NotebookIcon,
-        onClick: () => this.container.downloadFile(item),
-      },
+        onClick: () => this.container.downloadFile(item)
+      }
     ];
 
     // "Copy to ..." isn't needed if github locations are not available
     if (!this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      items = items.filter((item) => item.label !== "Copy to ...");
+      items = items.filter(item => item.label !== "Copy to ...");
     }
 
     return items;
@@ -736,7 +733,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       {
         label: "Refresh",
         iconSrc: RefreshIcon,
-        onClick: () => this.container.refreshContentItem(item).then(() => this.triggerRender()),
+        onClick: () => this.container.refreshContentItem(item).then(() => this.triggerRender())
       },
       {
         label: "Delete",
@@ -750,34 +747,34 @@ export class ResourceTreeAdapter implements ReactAdapter {
             "Cancel",
             undefined
           );
-        },
+        }
       },
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item).then(() => this.triggerRender()),
+        onClick: () => this.container.renameNotebook(item).then(() => this.triggerRender())
       },
       {
         label: "New Directory",
         iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onCreateDirectory(item),
+        onClick: () => this.container.onCreateDirectory(item)
       },
       {
         label: "New Notebook",
         iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onNewNotebookClicked(item),
+        onClick: () => this.container.onNewNotebookClicked(item)
       },
       {
         label: "Upload File",
         iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onUploadToNotebookServerClicked(item),
-      },
+        onClick: () => this.container.onUploadToNotebookServerClicked(item)
+      }
     ];
 
     // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
     if (GitHubUtils.fromContentUri(item.path)) {
       items = items.filter(
-        (item) =>
+        item =>
           item.label !== "Delete" &&
           item.label !== "Rename" &&
           item.label !== "New Directory" &&
@@ -821,7 +818,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           ? this.createDirectoryContextMenu(item)
           : undefined,
       data: item,
-      children: this.buildChildNodes(item, onFileClick, createDirectoryContextMenu, createFileContextMenu),
+      children: this.buildChildNodes(item, onFileClick, createDirectoryContextMenu, createFileContextMenu)
     };
   }
 

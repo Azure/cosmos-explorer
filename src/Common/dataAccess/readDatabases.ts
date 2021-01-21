@@ -21,7 +21,9 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     ) {
       databases = await readDatabasesWithARM();
     } else {
-      const sdkResponse = await client().databases.readAll().fetchAll();
+      const sdkResponse = await client()
+        .databases.readAll()
+        .fetchAll();
       databases = sdkResponse.resources as DataModels.Database[];
     }
   } catch (error) {
@@ -56,5 +58,5 @@ async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
       throw new Error(`Unsupported default experience type: ${defaultExperience}`);
   }
 
-  return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database);
+  return rpResponse?.value?.map(database => database.properties?.resource as DataModels.Database);
 }

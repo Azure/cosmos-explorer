@@ -62,7 +62,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
 
     this.container.subscriptionType &&
-      this.container.subscriptionType.subscribe((subscriptionType) => {
+      this.container.subscriptionType.subscribe(subscriptionType => {
         this.databaseCreateNewShared(this.getSharedThroughputDefault());
       });
 
@@ -278,9 +278,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: this.throughput(),
-        flight: this.container.flight(),
+        flight: this.container.flight()
       },
-      dataExplorerArea: Constants.Areas.ContextualPane,
+      dataExplorerArea: Constants.Areas.ContextualPane
     };
     const focusElement = document.getElementById("database-id");
     focusElement && focusElement.focus();
@@ -299,15 +299,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
       defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
-        shared: this.databaseCreateNewShared(),
+        shared: this.databaseCreateNewShared()
       }),
       offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        flight: this.container.flight(),
+        flight: this.container.flight()
       },
-      dataExplorerArea: Constants.Areas.ContextualPane,
+      dataExplorerArea: Constants.Areas.ContextualPane
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDatabase, addDatabasePaneStartMessage);
     this.formErrors("");
@@ -315,7 +315,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     const createDatabaseParams: DataModels.CreateDatabaseParams = {
       databaseId: addDatabasePaneStartMessage.database.id,
-      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
+      databaseLevelThroughput: addDatabasePaneStartMessage.database.shared
     };
 
     if (this.isAutoPilotSelected()) {
@@ -363,15 +363,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
       defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
-        shared: this.databaseCreateNewShared(),
+        shared: this.databaseCreateNewShared()
       }),
       offerThroughput: offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        flight: this.container.flight(),
+        flight: this.container.flight()
       },
-      dataExplorerArea: Constants.Areas.ContextualPane,
+      dataExplorerArea: Constants.Areas.ContextualPane
     };
     TelemetryProcessor.traceSuccess(Action.CreateDatabase, addDatabasePaneSuccessMessage, startKey);
     this.resetData();
@@ -387,17 +387,17 @@ export default class AddDatabasePane extends ContextualPaneBase {
       defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
-        shared: this.databaseCreateNewShared(),
+        shared: this.databaseCreateNewShared()
       }),
       offerThroughput: offerThroughput,
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        flight: this.container.flight(),
+        flight: this.container.flight()
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       error: errorMessage,
-      errorStack: getErrorStack(error),
+      errorStack: getErrorStack(error)
     };
     TelemetryProcessor.traceFailure(Action.CreateDatabase, addDatabasePaneFailedMessage, startKey);
   }
@@ -458,7 +458,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   private _isAutoPilotSelectedAndWhatTier(): DataModels.AutoPilotCreationSettings {
     if (this.isAutoPilotSelected() && this.maxAutoPilotThroughputSet()) {
       return {
-        maxThroughput: this.maxAutoPilotThroughputSet() * 1,
+        maxThroughput: this.maxAutoPilotThroughputSet() * 1
       };
     }
     return undefined;

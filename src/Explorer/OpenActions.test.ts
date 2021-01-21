@@ -24,11 +24,11 @@ describe("OpenActions", () => {
 
       database = {
         id: ko.observable("db"),
-        collections: ko.observableArray<ViewModels.Collection>([]),
+        collections: ko.observableArray<ViewModels.Collection>([])
       } as ViewModels.Database;
       databases = [database];
       collection = {
-        id: ko.observable("coll"),
+        id: ko.observable("coll")
       } as ViewModels.Collection;
 
       collection.expandCollection = jest.fn();
@@ -43,7 +43,7 @@ describe("OpenActions", () => {
     describe("unknown action type", () => {
       it("should not be handled", () => {
         const action = {
-          actionType: "foo",
+          actionType: "foo"
         };
         const actionHandled = handleOpenAction(action, [], explorer);
         expect(actionHandled).toBe(false);
@@ -53,7 +53,7 @@ describe("OpenActions", () => {
     describe("OpenPane action type", () => {
       it("should handle enum value", () => {
         const action = {
-          actionType: ActionContracts.ActionType.OpenPane,
+          actionType: ActionContracts.ActionType.OpenPane
         };
         const actionHandled = handleOpenAction(action, [], explorer);
         expect(actionHandled).toBe(true);
@@ -61,7 +61,7 @@ describe("OpenActions", () => {
 
       it("should handle string value", () => {
         const action = {
-          actionType: "OpenPane",
+          actionType: "OpenPane"
         };
         const actionHandled = handleOpenAction(action, [], explorer);
         expect(actionHandled).toBe(true);
@@ -71,7 +71,7 @@ describe("OpenActions", () => {
         it("string value should call cassandraAddCollectionPane.open", () => {
           const action = {
             actionType: "OpenPane",
-            paneKind: "CassandraAddCollection",
+            paneKind: "CassandraAddCollection"
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
@@ -81,7 +81,7 @@ describe("OpenActions", () => {
         it("enum value should call cassandraAddCollectionPane.open", () => {
           const action = {
             actionType: "OpenPane",
-            paneKind: ActionContracts.PaneKind.CassandraAddCollection,
+            paneKind: ActionContracts.PaneKind.CassandraAddCollection
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
@@ -93,7 +93,7 @@ describe("OpenActions", () => {
         it("string value should call addCollectionPane.open", () => {
           const action = {
             actionType: "OpenPane",
-            paneKind: "AddCollection",
+            paneKind: "AddCollection"
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
@@ -103,7 +103,7 @@ describe("OpenActions", () => {
         it("enum value should call addCollectionPane.open", () => {
           const action = {
             actionType: "OpenPane",
-            paneKind: ActionContracts.PaneKind.AddCollection,
+            paneKind: ActionContracts.PaneKind.AddCollection
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
@@ -115,7 +115,7 @@ describe("OpenActions", () => {
     describe("OpenCollectionTab action type", () => {
       it("should handle string value", () => {
         const action = {
-          actionType: "OpenCollectionTab",
+          actionType: "OpenCollectionTab"
         };
         const actionHandled = handleOpenAction(action, [], explorer);
         expect(actionHandled).toBe(true);
@@ -123,7 +123,7 @@ describe("OpenActions", () => {
 
       it("should handle enum value", () => {
         const action = {
-          actionType: ActionContracts.ActionType.OpenCollectionTab,
+          actionType: ActionContracts.ActionType.OpenCollectionTab
         };
         const actionHandled = handleOpenAction(action, [], explorer);
         expect(actionHandled).toBe(true);
@@ -133,7 +133,7 @@ describe("OpenActions", () => {
         const action = {
           actionType: "OpenCollectionTab",
           databaseResourceId: "db",
-          collectionResourceId: "coll",
+          collectionResourceId: "coll"
         };
 
         handleOpenAction(action, [database], explorer);
@@ -147,7 +147,7 @@ describe("OpenActions", () => {
         const action = {
           actionType: "OpenCollectionTab",
           databaseResourceId: "db",
-          collectionResourceId: "coll",
+          collectionResourceId: "coll"
         };
 
         database.collections([collection]);
@@ -161,7 +161,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "SQLDocuments",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -176,7 +176,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "SQLDocuments",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -189,7 +189,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.SQLDocuments,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -204,7 +204,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.SQLDocuments,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -219,7 +219,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "MongoDocuments",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -234,7 +234,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "MongoDocuments",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -247,7 +247,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.MongoDocuments,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -262,7 +262,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.MongoDocuments,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -277,7 +277,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "TableEntities",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -292,7 +292,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "TableEntities",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -305,7 +305,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.TableEntities,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -318,7 +318,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.TableEntities,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -335,7 +335,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "Graph",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -350,7 +350,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "Graph",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -363,7 +363,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.Graph,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -378,7 +378,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.Graph,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -393,7 +393,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "SQLQuery",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -408,7 +408,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "SQLQuery",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -421,7 +421,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.SQLQuery,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -436,7 +436,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.SQLQuery,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -451,7 +451,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "ScaleSettings",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -466,7 +466,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: "ScaleSettings",
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);
@@ -479,7 +479,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.ScaleSettings,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           handleOpenAction(action, [database], explorer);
@@ -494,7 +494,7 @@ describe("OpenActions", () => {
             actionType: "OpenCollectionTab",
             tabKind: ActionContracts.TabKind.ScaleSettings,
             databaseResourceId: "db",
-            collectionResourceId: "coll",
+            collectionResourceId: "coll"
           };
 
           database.collections([collection]);

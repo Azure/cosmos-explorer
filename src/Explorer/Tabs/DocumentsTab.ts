@@ -25,7 +25,7 @@ import {
   QueryIterator,
   ItemDefinition,
   Resource,
-  Item,
+  Item
 } from "@azure/cosmos";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
@@ -99,7 +99,10 @@ export default class DocumentsTab extends TabsBase {
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
     this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
-      ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
+      ? this.partitionKeyPropertyHeader
+          .replace(/[/]+/g, ".")
+          .substr(1)
+          .replace(/[']+/g, "")
       : null;
 
     this.isFilterExpanded = ko.observable<boolean>(false);
@@ -110,7 +113,7 @@ export default class DocumentsTab extends TabsBase {
     this.lastFilterContents = ko.observableArray<string>([
       'WHERE c.id = "foo"',
       "ORDER BY c._ts DESC",
-      'WHERE c.id = "foo" ORDER BY c._ts DESC',
+      'WHERE c.id = "foo" ORDER BY c._ts DESC'
     ]);
 
     this.dataContentsGridScrollHeight = ko.observable<string>(null);
@@ -121,13 +124,13 @@ export default class DocumentsTab extends TabsBase {
         const tabContainer: HTMLElement = document.getElementById("content");
         const splitterBounds: SplitterBounds = {
           min: Constants.DocumentsGridMetrics.DocumentEditorMinWidthRatio * tabContainer.clientWidth,
-          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth,
+          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth
         };
         this.splitter = new Splitter({
           splitterId: "h_splitter2",
           leftId: this.documentContentsContainerId,
           bounds: splitterBounds,
-          direction: SplitterDirection.Vertical,
+          direction: SplitterDirection.Vertical
         });
       }
     });
@@ -187,7 +190,7 @@ export default class DocumentsTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
 
     this.saveNewDocumentButton = {
@@ -208,7 +211,7 @@ export default class DocumentsTab extends TabsBase {
         }
 
         return false;
-      }),
+      })
     };
 
     this.discardNewDocumentChangesButton = {
@@ -230,7 +233,7 @@ export default class DocumentsTab extends TabsBase {
         }
 
         return false;
-      }),
+      })
     };
 
     this.saveExisitingDocumentButton = {
@@ -252,7 +255,7 @@ export default class DocumentsTab extends TabsBase {
         }
 
         return false;
-      }),
+      })
     };
 
     this.discardExisitingDocumentChangesButton = {
@@ -275,7 +278,7 @@ export default class DocumentsTab extends TabsBase {
         }
 
         return false;
-      }),
+      })
     };
 
     this.deleteExisitingDocumentButton = {
@@ -299,7 +302,7 @@ export default class DocumentsTab extends TabsBase {
         }
 
         return false;
-      }),
+      })
     };
 
     this.applyFilterButton = {
@@ -309,7 +312,7 @@ export default class DocumentsTab extends TabsBase {
 
       visible: ko.computed<boolean>(() => {
         return true;
-      }),
+      })
     };
     this.buildCommandBarOptions();
     this.shouldShowEditor = ko.computed<boolean>(() => {
@@ -428,7 +431,7 @@ export default class DocumentsTab extends TabsBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
     const document = JSON.parse(this.selectedDocumentContent());
     this.isExecuting(true);
@@ -456,12 +459,12 @@ export default class DocumentsTab extends TabsBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
         },
-        (error) => {
+        error => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
           window.alert(errorMessage);
@@ -473,7 +476,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
-              errorStack: getErrorStack(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -504,7 +507,7 @@ export default class DocumentsTab extends TabsBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
     this.isExecuting(true);
     return updateDocument(this.collection, selectedDocumentId, documentContent)
@@ -525,12 +528,12 @@ export default class DocumentsTab extends TabsBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
         },
-        (error) => {
+        error => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
           window.alert(errorMessage);
@@ -542,7 +545,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
-              errorStack: getErrorStack(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -627,7 +630,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
-              errorStack: getErrorStack(error),
+              errorStack: getErrorStack(error)
             },
             this.onLoadStartKey
           );
@@ -652,7 +655,7 @@ export default class DocumentsTab extends TabsBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
     this.isExecuting(true);
     return this.__deleteDocument(selectedDocumentId)
@@ -668,12 +671,12 @@ export default class DocumentsTab extends TabsBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
         },
-        (error) => {
+        error => {
           this.isExecutionError(true);
           console.error(error);
           TelemetryProcessor.traceFailure(
@@ -684,7 +687,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
-              errorStack: getErrorStack(error),
+              errorStack: getErrorStack(error)
             },
             startKey
           );
@@ -720,7 +723,7 @@ export default class DocumentsTab extends TabsBase {
       .then(
         (documentsIdsResponse = []) => {
           const currentDocuments = this.documentIds();
-          const currentDocumentsRids = currentDocuments.map((currentDocument) => currentDocument.rid);
+          const currentDocumentsRids = currentDocuments.map(currentDocument => currentDocument.rid);
           const nextDocumentIds = documentsIdsResponse
             // filter documents already loaded in observable
             .filter((d: any) => {
@@ -743,14 +746,14 @@ export default class DocumentsTab extends TabsBase {
                 collectionName: this.collection.id(),
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle(),
+                tabTitle: this.tabTitle()
               },
               this.onLoadStartKey
             );
             this.onLoadStartKey = null;
           }
         },
-        (error) => {
+        error => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
@@ -765,7 +768,7 @@ export default class DocumentsTab extends TabsBase {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
                 error: errorMessage,
-                errorStack: getErrorStack(error),
+                errorStack: getErrorStack(error)
               },
               this.onLoadStartKey
             );
@@ -787,7 +790,7 @@ export default class DocumentsTab extends TabsBase {
   };
 
   protected _loadNextPageInternal(): Q.Promise<DataModels.DocumentId[]> {
-    return Q(this._documentsIterator.fetchNext().then((response) => response.resources));
+    return Q(this._documentsIterator.fetchNext().then(response => response.resources));
   }
 
   protected _onEditorContentChange(newContent: string) {
@@ -828,7 +831,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.newDocumentButton.enabled(),
+        disabled: !this.newDocumentButton.enabled()
       });
     }
 
@@ -841,7 +844,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveNewDocumentButton.enabled(),
+        disabled: !this.saveNewDocumentButton.enabled()
       });
     }
 
@@ -854,7 +857,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardNewDocumentChangesButton.enabled(),
+        disabled: !this.discardNewDocumentChangesButton.enabled()
       });
     }
 
@@ -867,7 +870,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveExisitingDocumentButton.enabled(),
+        disabled: !this.saveExisitingDocumentButton.enabled()
       });
     }
 
@@ -880,7 +883,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardExisitingDocumentChangesButton.enabled(),
+        disabled: !this.discardExisitingDocumentChangesButton.enabled()
       });
     }
 
@@ -893,7 +896,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.deleteExisitingDocumentButton.enabled(),
+        disabled: !this.deleteExisitingDocumentButton.enabled()
       });
     }
 
@@ -920,7 +923,7 @@ export default class DocumentsTab extends TabsBase {
         this.discardExisitingDocumentChangesButton.visible,
         this.discardExisitingDocumentChangesButton.enabled,
         this.deleteExisitingDocumentButton.visible,
-        this.deleteExisitingDocumentButton.enabled,
+        this.deleteExisitingDocumentButton.enabled
       ])
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
@@ -953,7 +956,7 @@ export default class DocumentsTab extends TabsBase {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: container.isDatabaseNodeOrNoneSelected()
     };
   }
 }

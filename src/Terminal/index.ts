@@ -23,10 +23,10 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
   let headers: HeadersInit | undefined;
   if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
     body = JSON.stringify({
-      endpoint: urlVars[TerminalQueryParams.TerminalEndpoint],
+      endpoint: urlVars[TerminalQueryParams.TerminalEndpoint]
     });
     headers = {
-      [HttpHeaders.contentType]: "application/json",
+      [HttpHeaders.contentType]: "application/json"
     };
   }
 
@@ -34,7 +34,7 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
   let options: Partial<ServerConnection.ISettings> = {
     baseUrl: server,
     init: { body, headers },
-    fetch: window.parent.fetch,
+    fetch: window.parent.fetch
   };
   if (urlVars.hasOwnProperty(TerminalQueryParams.Token)) {
     options = {
@@ -42,7 +42,7 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
       token: urlVars[TerminalQueryParams.Token],
       appendToken: true,
       init: { body, headers },
-      fetch: window.parent.fetch,
+      fetch: window.parent.fetch
     };
   }
 
@@ -54,7 +54,7 @@ const main = async (): Promise<void> => {
 
   // Initialize userContext. Currently only subscrptionId is required by TelemetryProcessor
   updateUserContext({
-    subscriptionId: urlVars[TerminalQueryParams.SubscriptionId],
+    subscriptionId: urlVars[TerminalQueryParams.SubscriptionId]
   });
 
   const serverSettings = createServerSettings(urlVars);

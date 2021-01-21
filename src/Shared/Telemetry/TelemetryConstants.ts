@@ -91,7 +91,7 @@ export enum Action {
   DiscardSettings,
   SettingsV2Updated,
   SettingsV2Discarded,
-  MongoIndexUpdated,
+  MongoIndexUpdated
 }
 
 export const ActionModifiers = {
@@ -107,7 +107,7 @@ export const ActionModifiers = {
   NoIndex: "no indexing",
   Cancel: "cancel",
   ToggleAutoscaleOn: "autoscale on",
-  ToggleAutoscaleOff: "autoscale off",
+  ToggleAutoscaleOff: "autoscale off"
 } as const;
 
 export enum SourceBlade {
@@ -132,5 +132,5 @@ export enum SourceBlade {
   RpcProvider,
   ScaleCollection,
   ScriptExplorer,
-  Keys,
+  Keys
 }

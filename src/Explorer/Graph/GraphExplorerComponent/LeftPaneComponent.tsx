@@ -58,7 +58,7 @@ export class LeftPaneComponent extends React.Component<LeftPaneComponentProps> {
         className={className}
         as="tr"
         aria-label={node.caption}
-        onActivated={(e) => this.props.onRootNodeSelected(node.id)}
+        onActivated={e => this.props.onRootNodeSelected(node.id)}
         key={node.id}
       >
         <td className="resultItem">

@@ -25,9 +25,9 @@ updateUserContext({
       documentEndpoint: "fakeEndpoint",
       tableEndpoint: "fakeEndpoint",
       gremlinEndpoint: "fakeEndpoint",
-      cassandraEndpoint: "fakeEndpoint",
-    },
-  },
+      cassandraEndpoint: "fakeEndpoint"
+    }
+  }
 });
 
 describe("Add Schema", () => {
@@ -70,7 +70,7 @@ describe("Add Schema", () => {
       resourceGroup: userContext.resourceGroup,
       accountName: userContext.databaseAccount.name,
       resource: `dbs/${database.id}/colls/${collection.id}`,
-      status: "new",
+      status: "new"
     });
     expect(checkForSchema).not.toBeNull();
     expect(database.junoClient.getSchema).toBeCalledWith(

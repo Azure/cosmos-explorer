@@ -145,7 +145,7 @@ export class DefaultExperienceUtility {
   }
 
   private static _findCapability(capabilities: DataModels.Capability[], capabilityName: string): DataModels.Capability {
-    return _.find(capabilities, (capability) => {
+    return _.find(capabilities, capability => {
       return capability && capability.name && capability.name.toLowerCase() === capabilityName.toLowerCase();
     });
   }

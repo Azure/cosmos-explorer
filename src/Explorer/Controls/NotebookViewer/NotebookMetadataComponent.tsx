@@ -10,7 +10,7 @@ import {
   PersonaSize,
   PrimaryButton,
   Stack,
-  Text,
+  Text
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
@@ -35,7 +35,7 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
-      day: "numeric",
+      day: "numeric"
     };
 
     const dateString = new Date(this.props.data.created).toLocaleString("default", options);

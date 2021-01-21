@@ -64,7 +64,7 @@ export function computeRUUsagePriceHourly({
   requestUnits,
   numberOfRegions,
   multimasterEnabled,
-  isAutoscale,
+  isAutoscale
 }: ComputeRUUsagePriceHourlyArgs): number {
   const regionMultiplier: number = getRegionMultiplier(numberOfRegions, multimasterEnabled);
   const multimasterMultiplier: number = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
@@ -183,7 +183,7 @@ export function getEstimatedAutoscaleSpendHtml(
     requestUnits: throughput,
     numberOfRegions: regions,
     multimasterEnabled: multimaster,
-    isAutoscale: true,
+    isAutoscale: true
   });
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
@@ -196,9 +196,8 @@ export function getEstimatedAutoscaleSpendHtml(
     `Estimated monthly cost (${currency}): <b>` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice / 10)} - ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} </b> ` +
-    `(${regions} ${regions === 1 ? "region" : "regions"}, ${
-      throughput / 10
-    } - ${throughput} RU/s, ${currencySign}${pricePerRu}/RU)`
+    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput /
+      10} - ${throughput} RU/s, ${currencySign}${pricePerRu}/RU)`
   );
 }
 
@@ -213,7 +212,7 @@ export function getEstimatedSpendHtml(
     requestUnits: throughput,
     numberOfRegions: regions,
     multimasterEnabled: multimaster,
-    isAutoscale: false,
+    isAutoscale: false
   });
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
@@ -244,7 +243,7 @@ export function getEstimatedSpendAcknowledgeString(
     requestUnits: throughput,
     numberOfRegions: regions,
     multimasterEnabled: multimaster,
-    isAutoscale: isAutoscale,
+    isAutoscale: isAutoscale
   });
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;

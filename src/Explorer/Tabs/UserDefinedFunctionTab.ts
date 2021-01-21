@@ -33,12 +33,12 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
 
     return updateUserDefinedFunction(this.collection.databaseId, this.collection.id(), data)
       .then(
-        (createdResource) => {
+        createdResource => {
           this.resource(createdResource);
           this.tabTitle(createdResource.id);
 
@@ -50,7 +50,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
@@ -71,7 +71,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -104,12 +104,12 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle(),
+      tabTitle: this.tabTitle()
     });
 
     return createUserDefinedFunction(this.collection.databaseId, this.collection.id(), resource)
       .then(
-        (createdResource) => {
+        createdResource => {
           this.tabTitle(createdResource.id);
           this.isNew(false);
           this.resource(createdResource);
@@ -131,7 +131,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               dataExplorerArea: Constants.Areas.Tab,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
-              tabTitle: this.tabTitle(),
+              tabTitle: this.tabTitle()
             },
             startKey
           );
@@ -148,7 +148,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
+              errorStack: getErrorStack(createError)
             },
             startKey
           );
@@ -163,7 +163,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       _rid: this.resource()._rid,
       _self: this.resource()._self,
       id: this.id(),
-      body: this.editorContent(),
+      body: this.editorContent()
     };
 
     return resource;

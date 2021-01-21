@@ -106,7 +106,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseCreateNew = ko.observable<boolean>(true);
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
     this.container.subscriptionType &&
-      this.container.subscriptionType.subscribe((subscriptionType) => {
+      this.container.subscriptionType.subscribe(subscriptionType => {
         this.databaseCreateNewShared(this.getSharedThroughputDefault());
       });
     this.collectionWithThroughputInShared = ko.observable<boolean>(false);
@@ -620,7 +620,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
       // TODO: remove check for capability once all accounts have been migrated
       const capabilities = properties.capabilities || ([] as DataModels.Capability[]);
-      if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
+      if (capabilities.some(capability => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
         return true;
       }
 
@@ -648,9 +648,9 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.isSynapseLinkUpdating = ko.computed(() => this.container.isSynapseLinkUpdating());
 
-    this.useIndexingForSharedThroughput.subscribe((value) => {
+    this.useIndexingForSharedThroughput.subscribe(value => {
       TelemetryProcessor.traceMark(Action.ModifyOptionForThroughputWithSharedDatabase, {
-        changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex,
+        changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex
       });
     });
 
@@ -696,16 +696,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
         storage: this.storage(),
         offerThroughput: this._getThroughput(),
         partitionKey: this.partitionKey(),
-        databaseId: this.databaseId(),
+        databaseId: this.databaseId()
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: this._getThroughput(),
-        flight: this.container.flight(),
+        flight: this.container.flight()
       },
-      dataExplorerArea: Constants.Areas.ContextualPane,
+      dataExplorerArea: Constants.Areas.ContextualPane
     };
 
     await this.container.loadDatabaseOffers();
@@ -778,7 +778,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       ? {
           paths: [partitionKeyPath],
           kind: Constants.BackendDefaults.partitionKeyKind,
-          version: partitionKeyVersion,
+          version: partitionKeyVersion
         }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
@@ -789,7 +789,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       database: ko.toJS({
         id: this.databaseId(),
         new: this.databaseCreateNew(),
-        shared: this.databaseHasSharedOffer(),
+        shared: this.databaseHasSharedOffer()
       }),
       offerThroughput: offerThroughput,
       offerAutopilot: autoPilot,
@@ -798,17 +798,17 @@ export default class AddCollectionPane extends ContextualPaneBase {
         storage: this.storage(),
         partitionKey,
         uniqueKeyPolicy,
-        collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
+        collectionWithThroughputInShared: this.collectionWithThroughputInShared()
       }),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: offerThroughput,
-        flight: this.container.flight(),
+        flight: this.container.flight()
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
-      useIndexingForSharedThroughput: this.useIndexingForSharedThroughput(),
+      useIndexingForSharedThroughput: this.useIndexingForSharedThroughput()
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
 
@@ -850,7 +850,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       indexingPolicy,
       partitionKey,
       uniqueKeyPolicy,
-      createMongoWildcardIndex,
+      createMongoWildcardIndex
     };
 
     createCollection(createCollectionParams).then(
@@ -864,7 +864,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),
-            shared: this.databaseHasSharedOffer(),
+            shared: this.databaseHasSharedOffer()
           }),
           offerThroughput,
           collection: ko.toJS({
@@ -872,16 +872,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
             storage: this.storage(),
             partitionKey,
             uniqueKeyPolicy,
-            collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
+            collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           }),
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight(),
+            flight: this.container.flight()
           },
-          dataExplorerArea: Constants.Areas.ContextualPane,
+          dataExplorerArea: Constants.Areas.ContextualPane
         };
         TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
         this.resetData();
@@ -898,7 +898,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),
-            shared: this.databaseHasSharedOffer(),
+            shared: this.databaseHasSharedOffer()
           }),
           offerThroughput: offerThroughput,
           collection: {
@@ -906,18 +906,18 @@ export default class AddCollectionPane extends ContextualPaneBase {
             storage: this.storage(),
             partitionKey,
             uniqueKeyPolicy,
-            collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
+            collectionWithThroughputInShared: this.collectionWithThroughputInShared()
           },
           subscriptionType: SubscriptionType[this.container.subscriptionType()],
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight(),
+            flight: this.container.flight()
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           error: errorMessage,
-          errorStack: getErrorStack(error),
+          errorStack: getErrorStack(error)
         };
         TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
@@ -1073,12 +1073,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
   private _getAutoPilot(): DataModels.AutoPilotCreationSettings {
     if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected() && this.sharedAutoPilotThroughput()) {
       return {
-        maxThroughput: this.sharedAutoPilotThroughput() * 1,
+        maxThroughput: this.sharedAutoPilotThroughput() * 1
       };
     }
     if (this.isAutoPilotSelected() && this.autoPilotThroughput()) {
       return {
-        maxThroughput: this.autoPilotThroughput() * 1,
+        maxThroughput: this.autoPilotThroughput() * 1
       };
     }
 

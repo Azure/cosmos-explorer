@@ -9,31 +9,31 @@ describe("auto start kernel", () => {
     (configureStore as jest.Mock).mockReturnValue({
       dispatch: () => {
         /* noop */
-      },
+      }
     });
 
     defineConfigOption({
       label: "editorType",
       key: "editorType",
-      defaultValue: "foo",
+      defaultValue: "foo"
     });
 
     defineConfigOption({
       label: "autoSaveInterval",
       key: "autoSaveInterval",
-      defaultValue: 1234,
+      defaultValue: 1234
     });
 
-    [true, false].forEach((isReadOnly) => {
+    [true, false].forEach(isReadOnly => {
       new NotebookClientV2({
         connectionInfo: {
           authToken: "autToken",
-          notebookServerEndpoint: "notebookServerEndpoint",
+          notebookServerEndpoint: "notebookServerEndpoint"
         },
         databaseAccountName: undefined,
         defaultExperience: undefined,
         isReadOnly,
-        contentProvider: undefined,
+        contentProvider: undefined
       });
 
       expect(configureStore).toHaveBeenCalledWith(

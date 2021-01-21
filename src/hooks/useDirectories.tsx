@@ -33,7 +33,7 @@ export function useDirectories(armToken: string): Tenant[] {
 
   useEffect(() => {
     if (armToken) {
-      fetchDirectories(armToken).then((response) => setState(response));
+      fetchDirectories(armToken).then(response => setState(response));
     }
   }, [armToken]);
   return state || [];

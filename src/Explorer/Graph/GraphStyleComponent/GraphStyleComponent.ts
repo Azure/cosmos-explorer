@@ -99,5 +99,5 @@ const template = `
 
 export const GraphStyleComponent = {
   viewModel: GraphStyleViewModel,
-  template,
+  template
 };

@@ -96,7 +96,7 @@ export function copyTableQuery(query: Entities.ITableQuery): Entities.ITableQuer
   return {
     filter: query.filter,
     select: query.select && query.select.slice(),
-    top: query.top,
+    top: query.top
   };
 }
 

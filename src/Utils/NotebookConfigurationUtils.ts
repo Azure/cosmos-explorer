@@ -35,22 +35,22 @@ export class NotebookConfigurationUtils {
 
     const dataExplorer = window.dataExplorer;
     const notebookEndpointInfo: DataModels.NotebookConfigurationEndpointInfo[] = clusterConnectionInfo.endpoints.map(
-      (clusterEndpoint) => ({
+      clusterEndpoint => ({
         type: clusterEndpoint.kind.toLowerCase(),
         endpoint: clusterEndpoint && clusterEndpoint.endpoint,
         username: clusterConnectionInfo.userName,
         password: clusterConnectionInfo.password,
-        token: dataExplorer && dataExplorer.arcadiaToken(),
+        token: dataExplorer && dataExplorer.arcadiaToken()
       })
     );
     const configurationEndpoints: DataModels.NotebookConfigurationEndpoints = {
       path: notebookPath,
-      endpoints: notebookEndpointInfo,
+      endpoints: notebookEndpointInfo
     };
     const kernelMetadata: KernelConnectionMetadata = {
       configurationEndpoints,
       notebookConnectionInfo,
-      name: kernelName,
+      name: kernelName
     };
 
     return await NotebookConfigurationUtils._configureServiceEndpoints(kernelMetadata);
@@ -74,7 +74,7 @@ export class NotebookConfigurationUtils {
         const response = await fetch(`${notebookConnectionInfo.notebookServerEndpoint}/api/configureEndpoints`, {
           method: "POST",
           headers,
-          body: JSON.stringify(configurationEndpoints),
+          body: JSON.stringify(configurationEndpoints)
         });
         if (!response.ok) {
           const responseMessage = await response.json();

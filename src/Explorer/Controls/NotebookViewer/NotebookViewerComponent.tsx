@@ -44,8 +44,7 @@ interface NotebookViewerComponentState {
   showProgressBar: boolean;
 }
 
-export class NotebookViewerComponent
-  extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
+export class NotebookViewerComponent extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
   implements DialogHost {
   private clientManager: NotebookClientV2;
   private notebookComponentBootstrapper: NotebookComponentBootstrapper;
@@ -60,12 +59,12 @@ export class NotebookViewerComponent
       isReadOnly: true,
       cellEditorType: "monaco",
       autoSaveInterval: 365 * 24 * 3600 * 1000, // There is no way to turn off auto-save, set to 1 year
-      contentProvider: contents.JupyterContentProvider, // NotebookViewer only knows how to talk to Jupyter contents API
+      contentProvider: contents.JupyterContentProvider // NotebookViewer only knows how to talk to Jupyter contents API
     });
 
     this.notebookComponentBootstrapper = new NotebookComponentBootstrapper({
       notebookClient: this.clientManager,
-      contentRef: createContentRef(),
+      contentRef: createContentRef()
     });
 
     this.state = {
@@ -73,7 +72,7 @@ export class NotebookViewerComponent
       galleryItem: props.galleryItem,
       isFavorite: props.isFavorite,
       dialogProps: undefined,
-      showProgressBar: true,
+      showProgressBar: true
     };
 
     this.loadNotebookContent();
@@ -149,7 +148,7 @@ export class NotebookViewerComponent
 
         {this.notebookComponentBootstrapper.renderComponent(NotebookReadOnlyRenderer, {
           hideInputs: this.props.hideInputs,
-          hidePrompts: this.props.hidePrompts,
+          hidePrompts: this.props.hidePrompts
         })}
 
         {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
@@ -174,7 +173,7 @@ export class NotebookViewerComponent
 
     return {
       galleryItem,
-      isFavorite,
+      isFavorite
     };
   }
 
@@ -206,25 +205,25 @@ export class NotebookViewerComponent
           onCancel && onCancel();
         },
         choiceGroupProps,
-        textFieldProps,
-      },
+        textFieldProps
+      }
     });
   }
 
   private favoriteItem = async (): Promise<void> => {
-    GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
+    GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item, isFavorite: true })
     );
   };
 
   private unfavoriteItem = async (): Promise<void> => {
-    GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
+    GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item, isFavorite: false })
     );
   };
 
   private downloadItem = async (): Promise<void> => {
-    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
+    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, item =>
       this.setState({ galleryItem: item })
     );
   };

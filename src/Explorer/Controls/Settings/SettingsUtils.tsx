@@ -15,23 +15,23 @@ export const WildcardText = "Wildcard";
 
 export enum ChangeFeedPolicyState {
   Off = "Off",
-  On = "On",
+  On = "On"
 }
 
 export enum TtlType {
   Off = "off",
   On = "on",
-  OnNoDefault = "on-nodefault",
+  OnNoDefault = "on-nodefault"
 }
 
 export enum GeospatialConfigType {
   Geography = "Geography",
-  Geometry = "Geometry",
+  Geometry = "Geometry"
 }
 
 export enum MongoIndexTypes {
   Single = "Single",
-  Wildcard = "Wildcard",
+  Wildcard = "Wildcard"
 }
 
 export interface AddMongoIndexProps {
@@ -44,7 +44,7 @@ export enum SettingsV2TabTypes {
   ScaleTab,
   ConflictResolutionTab,
   SubSettingsTab,
-  IndexingPolicyTab,
+  IndexingPolicyTab
 }
 
 export interface IsComponentDirtyResult {
@@ -54,7 +54,7 @@ export interface IsComponentDirtyResult {
 
 export enum MongoNotificationType {
   Warning = "Warning",
-  Error = "Error",
+  Error = "Error"
 }
 
 export interface MongoNotificationMessage {
@@ -155,19 +155,19 @@ export const getMongoNotification = (description: string, type: MongoIndexTypes)
   if (description && !type) {
     return {
       type: MongoNotificationType.Warning,
-      message: "Please select a type for each index.",
+      message: "Please select a type for each index."
     };
   }
 
   if (type && (!description || description.trim().length === 0)) {
     return {
       type: MongoNotificationType.Error,
-      message: "Please enter a field name.",
+      message: "Please enter a field name."
     };
   } else if (type === MongoIndexTypes.Wildcard && description?.indexOf("$**") === -1) {
     return {
       type: MongoNotificationType.Error,
-      message: "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder,
+      message: "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder
     };
   }
 

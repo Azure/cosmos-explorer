@@ -7,7 +7,7 @@ export enum TabKind {
   TableEntities,
   Graph,
   SQLQuery,
-  ScaleSettings,
+  ScaleSettings
 }
 
 /**
@@ -20,7 +20,7 @@ export enum PaneKind {
   DeleteDatabase,
   GlobalSettings,
   AdHocAccess,
-  SwitchDirectory,
+  SwitchDirectory
 }
 
 /**
@@ -79,5 +79,5 @@ export enum ActionType {
   OpenCollectionTab,
   OpenPane,
   TransmitCachedData,
-  OpenSampleNotebook,
+  OpenSampleNotebook
 }

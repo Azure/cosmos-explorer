@@ -10,15 +10,15 @@ describe("ResourceTreeAdapter", () => {
       selectedNode: ko.observable<ViewModels.TreeNode>({
         nodeKind: "nodeKind",
         rid: "rid",
-        id: ko.observable<string>("id"),
+        id: ko.observable<string>("id")
       }),
       tabsManager: {
         activeTab: ko.observable<TabsBase>({
-          tabKind: ViewModels.CollectionTabKind.Documents,
-        } as TabsBase),
+          tabKind: ViewModels.CollectionTabKind.Documents
+        } as TabsBase)
       },
       isNotebookEnabled: ko.observable<boolean>(true),
-      nonSystemDatabases: ko.observable<ViewModels.Database[]>([]),
+      nonSystemDatabases: ko.observable<ViewModels.Database[]>([])
     } as unknown) as Explorer);
 
   // TODO isDataNodeSelected needs a better design and refactor, but for now, we protect some of the code paths
@@ -52,11 +52,11 @@ describe("ResourceTreeAdapter", () => {
         nodeKind: "Database",
         rid: "dbrid",
         id: ko.observable<string>("dbid"),
-        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind),
+        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
       } as unknown) as ViewModels.TreeNode);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
       const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", undefined, [
-        ViewModels.CollectionTabKind.Documents,
+        ViewModels.CollectionTabKind.Documents
       ]);
       expect(isDataNodeSelected).toBeTruthy();
     });
@@ -65,14 +65,14 @@ describe("ResourceTreeAdapter", () => {
       let subNodeKind = ViewModels.CollectionTabKind.Documents;
       const explorer = mockContainer();
       explorer.tabsManager.activeTab({
-        tabKind: subNodeKind,
+        tabKind: subNodeKind
       } as TabsBase);
       explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
         databaseId: "dbid",
         id: ko.observable<string>("collid"),
-        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind),
+        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
       } as unknown) as ViewModels.TreeNode);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
       let isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [subNodeKind]);
@@ -80,14 +80,14 @@ describe("ResourceTreeAdapter", () => {
 
       subNodeKind = ViewModels.CollectionTabKind.Graph;
       explorer.tabsManager.activeTab({
-        tabKind: subNodeKind,
+        tabKind: subNodeKind
       } as TabsBase);
       explorer.selectedNode(({
         nodeKind: "Collection",
         rid: "collrid",
         databaseId: "dbid",
         id: ko.observable<string>("collid"),
-        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind),
+        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind)
       } as unknown) as ViewModels.TreeNode);
       isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
@@ -100,14 +100,14 @@ describe("ResourceTreeAdapter", () => {
         rid: "collrid",
         databaseId: "dbid",
         id: ko.observable<string>("collid"),
-        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(ViewModels.CollectionTabKind.Documents),
+        selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(ViewModels.CollectionTabKind.Documents)
       } as unknown) as ViewModels.TreeNode);
       explorer.tabsManager.activeTab({
-        tabKind: ViewModels.CollectionTabKind.Documents,
+        tabKind: ViewModels.CollectionTabKind.Documents
       } as TabsBase);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
       const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [
-        ViewModels.CollectionTabKind.Settings,
+        ViewModels.CollectionTabKind.Settings
       ]);
       expect(isDataNodeSelected).toBeFalsy();
     });

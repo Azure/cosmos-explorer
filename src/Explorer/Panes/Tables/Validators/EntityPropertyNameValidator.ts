@@ -226,7 +226,7 @@ var UnicodeCategory = {
   // Connector Punctuation
   Pc: /[_‿-⁀⁔︳-︴﹍-﹏＿]/,
   // Decimal Digit Number
-  Nd: /[0-9٠-٩۰-۹߀-߉०-९০-৯੦-੯૦-૯୦-୯௦-௯౦-౯೦-೯൦-൯๐-๙໐-໙༠-༩၀-၉႐-႙០-៩᠐-᠙᥆-᥏᧐-᧙᭐-᭙᮰-᮹᱀-᱉᱐-᱙꘠-꘩꣐-꣙꤀-꤉꩐-꩙０-９]|\ud801[\udca0-\udca9]|\ud835[\udfce-\udfff]/,
+  Nd: /[0-9٠-٩۰-۹߀-߉०-९০-৯੦-੯૦-૯୦-୯௦-௯౦-౯೦-೯൦-൯๐-๙໐-໙༠-༩၀-၉႐-႙០-៩᠐-᠙᥆-᥏᧐-᧙᭐-᭙᮰-᮹᱀-᱉᱐-᱙꘠-꘩꣐-꣙꤀-꤉꩐-꩙０-９]|\ud801[\udca0-\udca9]|\ud835[\udfce-\udfff]/
 };
 
 function IsValidTypeNameOrIdentifier(value: string, isTypeName: boolean): boolean {

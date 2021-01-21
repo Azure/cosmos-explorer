@@ -14,7 +14,7 @@ import {
   catchError,
   first,
   concatMap,
-  timeout,
+  timeout
 } from "rxjs/operators";
 import {
   AppState,
@@ -27,7 +27,7 @@ import {
   ContentRef,
   KernelInfo,
   actions,
-  selectors,
+  selectors
 } from "@nteract/core";
 import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
 import { sessions, kernels } from "rx-jupyter";
@@ -58,7 +58,7 @@ const logFailureToTelemetry = (state: CdbAppState, title: string, error?: string
     defaultExperience: state.cdb.defaultExperience,
     dataExplorerArea: Constants.Areas.Notebook,
     title,
-    error,
+    error
   });
 };
 
@@ -73,7 +73,7 @@ const addInitialCodeCellEpic = (
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
-    mergeMap((action) => {
+    mergeMap(action => {
       const state = state$.value;
       const contentRef = action.payload.contentRef;
       const model = selectors.model(state, { contentRef });
@@ -88,7 +88,7 @@ const addInitialCodeCellEpic = (
         return of(
           actions.createCellAppend({
             cellType: "code",
-            contentRef,
+            contentRef
           })
         );
       }
@@ -135,8 +135,8 @@ export const acquireKernelInfoEpic = (action$: Observable<actions.NewKernelActio
         payload: {
           kernel: { channels },
           kernelRef,
-          contentRef,
-        },
+          contentRef
+        }
       } = action;
       return acquireKernelInfo(channels, kernelRef, contentRef);
     })
@@ -153,7 +153,7 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
     childOf(message),
     ofMessageType("kernel_info_reply"),
     first(),
-    mergeMap((msg) => {
+    mergeMap(msg => {
       const content = msg.content;
       const languageInfo = (content && content.language_info) || {
         name: "",
@@ -162,7 +162,7 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
         file_extension: "",
         pygments_lexer: "",
         codemirror_mode: "",
-        nbconvert_exporter: "",
+        nbconvert_exporter: ""
       };
 
       switch (languageInfo.name) {
@@ -186,7 +186,7 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
         fileExtension: languageInfo.file_extension,
         pygmentsLexer: languageInfo.pygments_lexer,
         codemirrorMode: languageInfo.codemirror_mode,
-        nbconvertExporter: languageInfo.nbconvert_exporter,
+        nbconvertExporter: languageInfo.nbconvert_exporter
       };
 
       let result;
@@ -197,8 +197,8 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
             contentRef,
             error: new Error(
               "The kernel that you are attempting to launch does not support the latest version (v5) of the messaging protocol."
-            ),
-          }),
+            )
+          })
         ];
       } else {
         result = [
@@ -206,12 +206,12 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
           actions.setLanguageInfo({
             langInfo: msg.content.language_info,
             kernelRef,
-            contentRef,
+            contentRef
           }),
           actions.setKernelInfo({
             kernelRef,
-            info,
-          }),
+            info
+          })
         ];
       }
 
@@ -236,7 +236,7 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
 const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionID?: string): Subject<any> => {
   const wsSubject = webSocket<JupyterMessage>({
     url: formWebSocketURL(serverConfig, kernelID, sessionID),
-    protocol: serverConfig.wsProtocol,
+    protocol: serverConfig.wsProtocol
   });
 
   // Create a subject that does some of the handling inline for the session
@@ -249,8 +249,8 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
             ...message,
             header: {
               session: sessionID,
-              ...message.header,
-            },
+              ...message.header
+            }
           };
 
           wsSubject.next(sessionizedMessage);
@@ -297,7 +297,7 @@ export const launchWebSocketKernelEpic = (
       serverConfig.userPuid = getUserPuid();
 
       const {
-        payload: { kernelSpecName, cwd, kernelRef, contentRef },
+        payload: { kernelSpecName, cwd, kernelRef, contentRef }
       } = action;
 
       const content = selectors.content(state, { contentRef });
@@ -321,7 +321,7 @@ export const launchWebSocketKernelEpic = (
               error: new Error(
                 "Unable to launch kernel: no kernelspec name specified to launch and no default kernelspecs"
               ),
-              contentRef,
+              contentRef
             })
           );
         }
@@ -330,7 +330,7 @@ export const launchWebSocketKernelEpic = (
 
         // Find a kernel that best matches the kernel name
         const match = currentKernelspecs.byName.find(
-          (value) => value.name.toLowerCase().indexOf(kernelSpecName.toLowerCase()) !== -1
+          value => value.name.toLowerCase().indexOf(kernelSpecName.toLowerCase()) !== -1
         );
         if (match) {
           kernelSpecToLaunch = match.name;
@@ -346,15 +346,15 @@ export const launchWebSocketKernelEpic = (
       const sessionPayload = {
         kernel: {
           id: null,
-          name: kernelSpecToLaunch,
+          name: kernelSpecToLaunch
         } as any,
         name: "",
         path: content.filepath.replace(/^\/+/g, ""),
-        type: "notebook",
+        type: "notebook"
       };
 
       return sessions.create(serverConfig, sessionPayload).pipe(
-        mergeMap((data) => {
+        mergeMap(data => {
           const session = data.response;
 
           const sessionId = castToSessionId(session.id);
@@ -365,7 +365,7 @@ export const launchWebSocketKernelEpic = (
             sessionId,
             cwd,
             channels: connect(serverConfig, session.kernel.id, sessionId),
-            kernelSpecName: kernelSpecToLaunch,
+            kernelSpecName: kernelSpecToLaunch
           });
 
           kernel.channels.next(message({ msg_type: "kernel_info_request" }));
@@ -375,11 +375,11 @@ export const launchWebSocketKernelEpic = (
               kernel,
               kernelRef,
               contentRef: action.payload.contentRef,
-              selectNextKernel: true,
+              selectNextKernel: true
             })
           );
         }),
-        catchError((error) => {
+        catchError(error => {
           return of(actions.launchKernelFailed({ error }));
         })
       );
@@ -411,7 +411,7 @@ export const restartWebSocketKernelEpic = (
           actions.restartKernelFailed({
             error: new Error("Can't execute restart without kernel ref."),
             kernelRef: "none provided",
-            contentRef,
+            contentRef
           })
         );
       }
@@ -422,7 +422,7 @@ export const restartWebSocketKernelEpic = (
           actions.restartKernelFailed({
             error: new Error("Can't restart a kernel with no Jupyter host."),
             kernelRef,
-            contentRef,
+            contentRef
           })
         );
       }
@@ -433,7 +433,7 @@ export const restartWebSocketKernelEpic = (
           actions.restartKernelFailed({
             error: new Error("Can't restart a kernel that does not exist."),
             kernelRef,
-            contentRef,
+            contentRef
           })
         );
       }
@@ -443,7 +443,7 @@ export const restartWebSocketKernelEpic = (
           actions.restartKernelFailed({
             error: new Error("Can only restart Websocket kernels via API."),
             kernelRef,
-            contentRef,
+            contentRef
           })
         );
       }
@@ -451,7 +451,7 @@ export const restartWebSocketKernelEpic = (
       const newKernelRef = createKernelRef();
       const kill = actions.killKernel({
         restarting: true,
-        kernelRef,
+        kernelRef
       });
 
       const relaunch = actions.launchKernelByName({
@@ -459,7 +459,7 @@ export const restartWebSocketKernelEpic = (
         cwd: kernel.cwd,
         kernelRef: newKernelRef,
         selectNextKernel: true,
-        contentRef: contentRef,
+        contentRef: contentRef
       });
 
       const awaitKernelReady = action$.pipe(
@@ -470,7 +470,7 @@ export const restartWebSocketKernelEpic = (
         concatMap(() => {
           const restartSuccess = actions.restartKernelSuccessful({
             kernelRef: newKernelRef,
-            contentRef,
+            contentRef
           });
 
           if ((action as actions.RestartKernel).payload.outputHandling === "Run All") {
@@ -479,12 +479,12 @@ export const restartWebSocketKernelEpic = (
             return of(restartSuccess);
           }
         }),
-        catchError((error) => {
+        catchError(error => {
           return of(
             actions.restartKernelFailed({
               error,
               kernelRef: newKernelRef,
-              contentRef,
+              contentRef
             })
           );
         })
@@ -511,7 +511,7 @@ const changeWebSocketKernelEpic = (
     filter(() => selectors.isCurrentHostJupyter(state$.value)),
     switchMap((action: actions.ChangeKernelByName) => {
       const {
-        payload: { contentRef, oldKernelRef, kernelSpecName },
+        payload: { contentRef, oldKernelRef, kernelSpecName }
       } = action;
       const state = state$.value;
       const host = selectors.currentHost(state);
@@ -539,7 +539,7 @@ const changeWebSocketKernelEpic = (
       }
       const {
         filepath,
-        model: { notebook },
+        model: { notebook }
       } = content;
       const { cwd } = NotebookUtil.extractNewKernel(filepath, notebook);
 
@@ -548,7 +548,7 @@ const changeWebSocketKernelEpic = (
         mergeMap(({ response }) => {
           const { id: kernelId } = response;
           const sessionPayload = {
-            kernel: { id: kernelId, name: kernelSpecName },
+            kernel: { id: kernelId, name: kernelSpecName }
           };
           // The sessions API will close down the old kernel for us if it is on this session
           return sessions.update(serverConfig, sessionId, sessionPayload).pipe(
@@ -558,21 +558,21 @@ const changeWebSocketKernelEpic = (
                 sessionId,
                 cwd,
                 channels: connect(serverConfig, session.kernel.id, sessionId),
-                kernelSpecName,
+                kernelSpecName
               });
               return of(
                 actions.launchKernelSuccessful({
                   kernel,
                   kernelRef,
                   contentRef: action.payload.contentRef,
-                  selectNextKernel: true,
+                  selectNextKernel: true
                 })
               );
             }),
-            catchError((error) => of(actions.launchKernelFailed({ error, kernelRef, contentRef })))
+            catchError(error => of(actions.launchKernelFailed({ error, kernelRef, contentRef })))
           );
         }),
-        catchError((error) => of(actions.launchKernelFailed({ error, kernelRef, contentRef })))
+        catchError(error => of(actions.launchKernelFailed({ error, kernelRef, contentRef })))
       );
     })
   );
@@ -589,7 +589,7 @@ const focusInitialCodeCellEpic = (
 ): Observable<{} | actions.FocusCell> => {
   return action$.pipe(
     ofType(actions.CREATE_CELL_APPEND),
-    mergeMap((action) => {
+    mergeMap(action => {
       const state = state$.value;
       const contentRef = action.payload.contentRef;
       const model = selectors.model(state, { contentRef });
@@ -606,7 +606,7 @@ const focusInitialCodeCellEpic = (
         return of(
           actions.focusCell({
             id,
-            contentRef,
+            contentRef
           })
         );
       }
@@ -631,7 +631,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
       actions.SAVE_FAILED,
       actions.FETCH_CONTENT_FAILED
     ),
-    mergeMap((action) => {
+    mergeMap(action => {
       switch (action.type) {
         case actions.RESTART_KERNEL_SUCCESSFUL: {
           const title = "Kernel restart";
@@ -677,7 +677,7 @@ const handleKernelConnectionLostEpic = (
 ): Observable<CdbActions.UpdateKernelRestartDelayAction | actions.RestartKernel | {}> => {
   return action$.pipe(
     ofType(actions.UPDATE_DISPLAY_FAILED),
-    mergeMap((action) => {
+    mergeMap(action => {
       const state = state$.value;
 
       const msg = "Notebook was disconnected from kernel";
@@ -708,14 +708,14 @@ const handleKernelConnectionLostEpic = (
         of(CdbActions.UpdateKernelRestartDelay({ delayMs: delayMs * 1.5 })),
         sessions.list(serverConfig).pipe(
           delayWhen(() => timer(delayMs)),
-          map((xhr) => {
+          map(xhr => {
             return actions.restartKernel({
               outputHandling: "None",
               kernelRef,
-              contentRef,
+              contentRef
             });
           }),
-          retryWhen((errors) => {
+          retryWhen(errors => {
             return errors.pipe(
               delayWhen(() => timer(Constants.Notebook.heartbeatDelayMs)),
               tap(() => console.log("retrying...")) // TODO: Send new action?
@@ -738,12 +738,12 @@ export const cleanKernelOnConnectionLostEpic = (
 ): Observable<actions.KillKernelSuccessful> => {
   return action$.pipe(
     ofType(actions.UPDATE_DISPLAY_FAILED),
-    switchMap((action) => {
+    switchMap(action => {
       const contentRef = action.payload.contentRef;
       const kernelRef = selectors.kernelRefByContentRef(state$.value, { contentRef });
       return of(
         actions.killKernelSuccessful({
-          kernelRef,
+          kernelRef
         })
       );
     })
@@ -761,7 +761,7 @@ const executeFocusedCellAndFocusNextEpic = (
 ): Observable<{} | actions.FocusNextCellEditor> => {
   return action$.pipe(
     ofType(CdbActions.EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT),
-    mergeMap((action) => {
+    mergeMap(action => {
       const contentRef = action.payload.contentRef;
       return concat(
         of(actions.executeFocusedCell({ contentRef })),
@@ -801,7 +801,7 @@ const closeUnsupportedMimetypesEpic = (
 ): Observable<{}> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
-    mergeMap((action) => {
+    mergeMap(action => {
       const mimetype = action.payload.model.mimetype;
       const explorer = window.dataExplorer;
       if (explorer && !TextFile.handles(mimetype)) {
@@ -830,7 +830,7 @@ const closeContentFailedToFetchEpic = (
 ): Observable<{}> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FAILED),
-    mergeMap((action) => {
+    mergeMap(action => {
       const explorer = window.dataExplorer;
       if (explorer) {
         const filepath = action.payload.filepath;
@@ -860,7 +860,7 @@ const traceNotebookTelemetryEpic = (
         ...action.payload.data,
         databaseAccountName: state.cdb.databaseAccountName,
         defaultExperience: state.cdb.defaultExperience,
-        dataExplorerArea: Areas.Notebook,
+        dataExplorerArea: Areas.Notebook
       });
       return EMPTY;
     })
@@ -893,7 +893,7 @@ const traceNotebookInfoEpic = (
         nbCodeCells: 0,
         nbRawCells: 0,
         nbMarkdownCells: 0,
-        nbCells: 0,
+        nbCells: 0
       };
       for (let [id, cell] of selectors.notebook.cellMap(model)) {
         switch (cell.cell_type) {
@@ -914,7 +914,7 @@ const traceNotebookInfoEpic = (
         cdbActions.traceNotebookTelemetry({
           action: TelemetryAction.NotebooksFetched,
           actionModifier: ActionModifiers.Mark,
-          data: dataToLog,
+          data: dataToLog
         })
       );
     })
@@ -938,8 +938,8 @@ const traceNotebookKernelEpic = (
           action: TelemetryAction.NotebooksKernelSpecName,
           actionModifier: ActionModifiers.Mark,
           data: {
-            kernelSpecName: action.payload.kernel.name,
-          },
+            kernelSpecName: action.payload.kernel.name
+          }
         })
       );
     })
@@ -961,5 +961,5 @@ export const allEpics = [
   restartWebSocketKernelEpic,
   traceNotebookTelemetryEpic,
   traceNotebookInfoEpic,
-  traceNotebookKernelEpic,
+  traceNotebookKernelEpic
 ];

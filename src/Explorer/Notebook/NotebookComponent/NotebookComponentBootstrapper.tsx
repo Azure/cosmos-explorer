@@ -13,7 +13,7 @@ import {
   ContentRef,
   KernelRef,
   NotebookContentRecord,
-  selectors,
+  selectors
 } from "@nteract/core";
 import * as Immutable from "immutable";
 import { Provider } from "react-redux";
@@ -58,7 +58,7 @@ export class NotebookComponentBootstrapper {
       mimetype: null as any,
       size: 0,
       writeable: false,
-      type: "notebook",
+      type: "notebook"
     };
   }
 
@@ -72,7 +72,9 @@ export class NotebookComponentBootstrapper {
   }
 
   public getContent(): { name: string; content: string | ImmutableNotebook } {
-    const record = this.getStore().getState().core.entities.contents.byRef.get(this.contentRef);
+    const record = this.getStore()
+      .getState()
+      .core.entities.contents.byRef.get(this.contentRef);
     let content: string | ImmutableNotebook;
     switch (record.model.type) {
       case "notebook":
@@ -87,7 +89,7 @@ export class NotebookComponentBootstrapper {
 
     return {
       name: NotebookUtil.getName(record.filepath),
-      content,
+      content
     };
   }
 
@@ -97,7 +99,7 @@ export class NotebookComponentBootstrapper {
         filepath: undefined,
         model: NotebookComponentBootstrapper.wrapModelIntoContent(name, undefined, content),
         kernelRef: undefined,
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -124,7 +126,7 @@ export class NotebookComponentBootstrapper {
   public notebookSave(): void {
     this.getStore().dispatch(
       actions.save({
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -134,7 +136,7 @@ export class NotebookComponentBootstrapper {
       actions.changeKernelByName({
         contentRef: this.contentRef,
         kernelSpecName,
-        oldKernelRef: this.getCurrentKernelRef(),
+        oldKernelRef: this.getCurrentKernelRef()
       })
     );
   }
@@ -142,7 +144,7 @@ export class NotebookComponentBootstrapper {
   public notebookRunAndAdvance(): void {
     this.getStore().dispatch(
       CdbActions.executeFocusedCellAndFocusNext({
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -150,7 +152,7 @@ export class NotebookComponentBootstrapper {
   public notebookRunAll(): void {
     this.getStore().dispatch(
       actions.executeAllCells({
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -158,7 +160,7 @@ export class NotebookComponentBootstrapper {
   public notebookInterruptKernel(): void {
     this.getStore().dispatch(
       actions.interruptKernel({
-        kernelRef: this.getCurrentKernelRef(),
+        kernelRef: this.getCurrentKernelRef()
       })
     );
   }
@@ -167,7 +169,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.killKernel({
         restarting: false,
-        kernelRef: this.getCurrentKernelRef(),
+        kernelRef: this.getCurrentKernelRef()
       })
     );
   }
@@ -177,7 +179,7 @@ export class NotebookComponentBootstrapper {
       actions.restartKernel({
         kernelRef: this.getCurrentKernelRef(),
         contentRef: this.contentRef,
-        outputHandling: "None",
+        outputHandling: "None"
       })
     );
   }
@@ -185,7 +187,7 @@ export class NotebookComponentBootstrapper {
   public notebookClearAllOutputs(): void {
     this.getStore().dispatch(
       actions.clearAllOutputs({
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -194,7 +196,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.createCellBelow({
         cellType: "code",
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -210,7 +212,7 @@ export class NotebookComponentBootstrapper {
       actions.changeCellType({
         id: focusedCellId,
         contentRef: this.contentRef,
-        to: type,
+        to: type
       })
     );
   }
@@ -225,7 +227,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.copyCell({
         id: focusedCellId,
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -240,7 +242,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.cutCell({
         id: focusedCellId,
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -248,7 +250,7 @@ export class NotebookComponentBootstrapper {
   public notebookPaste(): void {
     this.getStore().dispatch(
       actions.pasteCell({
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }
@@ -261,14 +263,14 @@ export class NotebookComponentBootstrapper {
       store.dispatch(
         actions.killKernel({
           restarting: false,
-          kernelRef,
+          kernelRef
         })
       );
     }
 
     store.dispatch(
       CdbActions.closeNotebook({
-        contentRef: this.contentRef,
+        contentRef: this.contentRef
       })
     );
   }

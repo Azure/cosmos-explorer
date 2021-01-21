@@ -7,7 +7,7 @@ const createBlankProps = (): DefaultDirectoryDropdownProps => {
   return {
     defaultDirectoryId: "",
     directories: [],
-    onDefaultDirectoryChange: jest.fn(),
+    onDefaultDirectoryChange: jest.fn()
   };
 };
 
@@ -17,7 +17,7 @@ const createBlankDirectory = (): Tenant => {
     displayName: "",
     domains: [],
     id: "",
-    tenantId: "",
+    tenantId: ""
   };
 };
 
@@ -90,15 +90,27 @@ describe("test function", () => {
 
     const wrapper = mount(<DefaultDirectoryDropdownComponent {...props} />);
 
-    wrapper.find("div.defaultDirectoryDropdown").find("div.ms-Dropdown").simulate("click");
+    wrapper
+      .find("div.defaultDirectoryDropdown")
+      .find("div.ms-Dropdown")
+      .simulate("click");
     expect(wrapper.exists("div.ms-Callout-main")).toBe(true);
-    wrapper.find("button.ms-Dropdown-item").at(1).simulate("click");
+    wrapper
+      .find("button.ms-Dropdown-item")
+      .at(1)
+      .simulate("click");
     expect(props.onDefaultDirectoryChange).toBeCalled();
     expect(props.onDefaultDirectoryChange).toHaveBeenCalled();
 
-    wrapper.find("div.defaultDirectoryDropdown").find("div.ms-Dropdown").simulate("click");
+    wrapper
+      .find("div.defaultDirectoryDropdown")
+      .find("div.ms-Dropdown")
+      .simulate("click");
     expect(wrapper.exists("div.ms-Callout-main")).toBe(true);
-    wrapper.find("button.ms-Dropdown-item").at(0).simulate("click");
+    wrapper
+      .find("button.ms-Dropdown-item")
+      .at(0)
+      .simulate("click");
     expect(props.onDefaultDirectoryChange).toBeCalled();
     expect(props.onDefaultDirectoryChange).toHaveBeenCalled();
   });

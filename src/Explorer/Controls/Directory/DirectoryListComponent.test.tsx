@@ -7,7 +7,7 @@ const createBlankProps = (): DirectoryListProps => {
   return {
     selectedDirectoryId: undefined,
     directories: [],
-    onNewDirectorySelected: jest.fn(),
+    onNewDirectorySelected: jest.fn()
   };
 };
 
@@ -17,7 +17,7 @@ const createBlankDirectory = (): Tenant => {
     displayName: undefined,
     domains: [],
     id: undefined,
-    tenantId: undefined,
+    tenantId: undefined
   };
 };
 

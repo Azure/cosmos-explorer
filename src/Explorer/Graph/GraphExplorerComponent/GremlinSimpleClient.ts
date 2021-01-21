@@ -165,7 +165,7 @@ export class GremlinSimpleClient {
     const result: Result = {
       requestId: requestId,
       data: rawMessage.result ? rawMessage.result.data : null,
-      requestCharge: rawMessage.status.attributes[GremlinSimpleClient.requestChargeHeader],
+      requestCharge: rawMessage.status.attributes[GremlinSimpleClient.requestChargeHeader]
     };
 
     if (!this.pendingRequests[requestId]) {
@@ -262,8 +262,8 @@ export class GremlinSimpleClient {
       args: {
         gremlin: query,
         bindings: {},
-        language: "gremlin-groovy",
-      },
+        language: "gremlin-groovy"
+      }
     };
     this.connect();
     return requestId;
@@ -271,19 +271,19 @@ export class GremlinSimpleClient {
 
   public buildChallengeResponse(request: GremlinRequestMessage): GremlinRequestMessage {
     var args = {
-      SASL: GremlinSimpleClient.utf8ToB64("\0" + this.params.user + "\0" + this.params.password),
+      SASL: GremlinSimpleClient.utf8ToB64("\0" + this.params.user + "\0" + this.params.password)
     };
     return {
       requestId: request.requestId,
       processor: request.processor,
       op: "authentication",
-      args,
+      args
     };
   }
 
   public static utf8ToB64(utf8Str: string) {
     return btoa(
-      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
         return String.fromCharCode(parseInt(p1, 16));
       })
     );
@@ -342,7 +342,7 @@ export class GremlinSimpleClient {
    * RFC4122 version 4 compliant UUID
    */
   private static uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
       var r = (Math.random() * 16) | 0,
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);

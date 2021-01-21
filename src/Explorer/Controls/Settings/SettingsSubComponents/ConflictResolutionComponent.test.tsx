@@ -25,7 +25,7 @@ describe("ConflictResolutionComponent", () => {
     },
     onConflictResolutionDirtyChange: () => {
       return;
-    },
+    }
   };
 
   it("Sproc text field displayed", () => {

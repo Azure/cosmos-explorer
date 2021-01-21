@@ -59,7 +59,7 @@ export class KeyboardShortcuts extends React.Component<Props> {
       contentRef,
       cellOrder,
       focusedCell,
-      cellMap,
+      cellMap
     } = this.props;
 
     let ctrlKeyPressed = e.ctrlKey;
@@ -90,7 +90,7 @@ export class KeyboardShortcuts extends React.Component<Props> {
         focusNextCell({
           id: undefined,
           createCellIfUndefined: true,
-          contentRef,
+          contentRef
         });
 
         /** Only focus the next editor if it is a code cell or a cell
@@ -125,7 +125,7 @@ export const makeMapStateToProps = (state: AppState, ownProps: ComponentProps) =
     return {
       cellOrder,
       cellMap,
-      focusedCell,
+      focusedCell
     };
   };
   return mapStateToProps;
@@ -136,7 +136,7 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
   focusNextCell: (payload: { id?: CellId; createCellIfUndefined: boolean; contentRef: ContentRef }) =>
     dispatch(actions.focusNextCell(payload)),
   focusNextCellEditor: (payload: { id?: CellId; contentRef: ContentRef }) =>
-    dispatch(actions.focusNextCellEditor(payload)),
+    dispatch(actions.focusNextCellEditor(payload))
 });
 
 export default connect(makeMapStateToProps, mapDispatchToProps)(KeyboardShortcuts);

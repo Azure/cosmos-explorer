@@ -90,7 +90,7 @@ const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps)
       return {
         kernelStatus: NOT_CONNECTED,
         kernelSpecDisplayName: "no kernel",
-        lastSaved: null,
+        lastSaved: null
       };
     }
 
@@ -118,7 +118,7 @@ const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps)
     return {
       kernelSpecDisplayName,
       kernelStatus,
-      lastSaved,
+      lastSaved
     };
   };
 

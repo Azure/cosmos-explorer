@@ -141,7 +141,7 @@ export class GitHubContentProvider implements IContentProvider {
             hour: "numeric",
             minute: "numeric",
             second: "numeric",
-            hour12: false,
+            hour12: false
           };
           const name = `Untitled-${new Date().toLocaleString("default", options)}.ipynb`;
           let path = name;
@@ -169,12 +169,12 @@ export class GitHubContentProvider implements IContentProvider {
             repo: {
               owner: contentInfo.owner,
               name: contentInfo.repo,
-              private: undefined,
+              private: undefined
             },
             branch: {
-              name: contentInfo.branch,
+              name: contentInfo.branch
             },
-            commit: response.data,
+            commit: response.data
           };
 
           return this.createSuccessAjaxResponse(
@@ -357,11 +357,11 @@ export class GitHubContentProvider implements IContentProvider {
             GitHubUtils.toContentUri(file.repo.owner, file.repo.name, file.branch.name, file.path),
             file,
             {
-              content: 0,
+              content: 0
             }
           ) as IEmptyContent<FileType>
       ),
-      format: "json",
+      format: "json"
     };
   }
 
@@ -381,7 +381,7 @@ export class GitHubContentProvider implements IContentProvider {
       last_modified: gitHubFile.commit.commitDate,
       mimetype: content ? "application/x-ipynb+json" : undefined,
       content,
-      format: content ? "json" : undefined,
+      format: content ? "json" : undefined
     };
   }
 
@@ -401,7 +401,7 @@ export class GitHubContentProvider implements IContentProvider {
       last_modified: gitHubFile.commit.commitDate,
       mimetype: content ? "text/plain" : undefined,
       content,
-      format: content ? "text" : undefined,
+      format: content ? "text" : undefined
     };
   }
 
@@ -413,7 +413,7 @@ export class GitHubContentProvider implements IContentProvider {
       status,
       response: content ? content : undefined,
       responseText: content ? JSON.stringify(content) : undefined,
-      responseType: "json",
+      responseType: "json"
     };
   }
 
@@ -425,7 +425,7 @@ export class GitHubContentProvider implements IContentProvider {
       status: error.errno,
       response: error,
       responseText: getErrorMessage(error),
-      responseType: "json",
+      responseType: "json"
     };
   }
 }

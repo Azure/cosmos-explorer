@@ -36,7 +36,7 @@ const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state
     const cellIndex = cellOrder.indexOf(ownProps.id);
 
     return {
-      cellIndex,
+      cellIndex
     };
   };
   return mapStateToProps;

@@ -14,7 +14,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
   constructor(props: CollapsibleSectionProps) {
     super(props);
     this.state = {
-      isExpanded: true,
+      isExpanded: true
     };
   }
 

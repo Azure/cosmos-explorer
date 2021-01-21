@@ -34,7 +34,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
 
     this.state = {
       textFieldValue: "",
-      textFieldErrorMessage: undefined,
+      textFieldErrorMessage: undefined
     };
   }
 
@@ -44,13 +44,13 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
       autoFocus: true,
       value: this.state.textFieldValue,
       errorMessage: this.state.textFieldErrorMessage,
-      onChange: this.onTextFieldChange,
+      onChange: this.onTextFieldChange
     };
 
     const buttonProps: IButtonProps = {
       text: AddRepoComponent.ButtonText,
       ariaLabel: AddRepoComponent.ButtonText,
-      onClick: this.onAddRepoButtonClick,
+      onClick: this.onAddRepoButtonClick
     };
 
     return (
@@ -68,7 +68,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
   ): void => {
     this.setState({
       textFieldValue: newValue || "",
-      textFieldErrorMessage: undefined,
+      textFieldErrorMessage: undefined
     });
   };
 
@@ -76,7 +76,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     const startKey: number = TelemetryProcessor.traceStart(Action.NotebooksGitHubManualRepoAdd, {
       databaseAccountName: this.props.container.databaseAccount() && this.props.container.databaseAccount().name,
       defaultExperience: this.props.container.defaultExperience && this.props.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.Notebook,
+      dataExplorerArea: Constants.Areas.Notebook
     });
     let enteredUrl = this.state.textFieldValue;
     if (enteredUrl.indexOf("/tree/") === -1) {
@@ -87,7 +87,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     if (repoInfo) {
       this.setState({
         textFieldValue: "",
-        textFieldErrorMessage: undefined,
+        textFieldErrorMessage: undefined
       });
 
       const repo = await this.props.getRepo(repoInfo.owner, repoInfo.repo);
@@ -97,9 +97,9 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
           repo,
           branches: [
             {
-              name: repoInfo.branch,
-            },
-          ],
+              name: repoInfo.branch
+            }
+          ]
         };
 
         TelemetryProcessor.traceSuccess(
@@ -107,7 +107,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
           {
             databaseAccountName: this.props.container.databaseAccount() && this.props.container.databaseAccount().name,
             defaultExperience: this.props.container.defaultExperience && this.props.container.defaultExperience(),
-            dataExplorerArea: Constants.Areas.Notebook,
+            dataExplorerArea: Constants.Areas.Notebook
           },
           startKey
         );
@@ -116,7 +116,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     }
 
     this.setState({
-      textFieldErrorMessage: AddRepoComponent.TextFieldErrorMessage,
+      textFieldErrorMessage: AddRepoComponent.TextFieldErrorMessage
     });
     TelemetryProcessor.traceFailure(
       Action.NotebooksGitHubManualRepoAdd,
@@ -124,7 +124,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
         databaseAccountName: this.props.container.databaseAccount() && this.props.container.databaseAccount().name,
         defaultExperience: this.props.container.defaultExperience && this.props.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Notebook,
-        error: AddRepoComponent.TextFieldErrorMessage,
+        error: AddRepoComponent.TextFieldErrorMessage
       },
       startKey
     );

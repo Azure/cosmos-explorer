@@ -7,7 +7,9 @@ export const readOffers = async (): Promise<SDKOfferDefinition[]> => {
   const clearMessage = logConsoleProgress(`Querying offers`);
 
   try {
-    const response = await client().offers.readAll().fetchAll();
+    const response = await client()
+      .offers.readAll()
+      .fetchAll();
     return response?.resources;
   } catch (error) {
     // This should be removed when we can correctly identify if an account is serverless when connected using connection string too.

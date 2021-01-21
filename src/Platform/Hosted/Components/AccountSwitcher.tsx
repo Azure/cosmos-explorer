@@ -20,27 +20,27 @@ const buttonStyles: IButtonStyles = {
     paddingLeft: 10,
     marginRight: 5,
     backgroundColor: StyleConstants.BaseDark,
-    color: StyleConstants.BaseLight,
+    color: StyleConstants.BaseLight
   },
   rootHovered: {
     backgroundColor: StyleConstants.BaseHigh,
-    color: StyleConstants.BaseLight,
+    color: StyleConstants.BaseLight
   },
   rootFocused: {
     backgroundColor: StyleConstants.BaseHigh,
-    color: StyleConstants.BaseLight,
+    color: StyleConstants.BaseLight
   },
   rootPressed: {
     backgroundColor: StyleConstants.BaseHigh,
-    color: StyleConstants.BaseLight,
+    color: StyleConstants.BaseLight
   },
   rootExpanded: {
     backgroundColor: StyleConstants.BaseHigh,
-    color: StyleConstants.BaseLight,
+    color: StyleConstants.BaseLight
   },
   textContainer: {
-    flexGrow: "initial",
-  },
+    flexGrow: "initial"
+  }
 };
 
 interface Props {
@@ -53,12 +53,12 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<string>(() =>
     localStorage.getItem("cachedSubscriptionId")
   );
-  const selectedSubscription = subscriptions?.find((sub) => sub.subscriptionId === selectedSubscriptionId);
+  const selectedSubscription = subscriptions?.find(sub => sub.subscriptionId === selectedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscription?.subscriptionId, armToken);
   const [selectedAccountName, setSelectedAccountName] = useState<string>(() =>
     localStorage.getItem("cachedDatabaseAccountName")
   );
-  const selectedAccount = accounts?.find((account) => account.name === selectedAccountName);
+  const selectedAccount = accounts?.find(account => account.name === selectedAccountName);
 
   useEffect(() => {
     if (selectedAccountName) {
@@ -83,14 +83,14 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
   const items: IContextualMenuItem[] = [
     {
       key: "switchSubscription",
-      onRender: () => <SwitchSubscription {...{ subscriptions, setSelectedSubscriptionId, selectedSubscription }} />,
+      onRender: () => <SwitchSubscription {...{ subscriptions, setSelectedSubscriptionId, selectedSubscription }} />
     },
     {
       key: "switchAccount",
       onRender: (_, dismissMenu) => (
         <SwitchAccount {...{ accounts, dismissMenu, selectedAccount, setSelectedAccountName }} />
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -99,7 +99,7 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
       menuProps={{
         directionalHintFixed: true,
         className: "accountSwitchContextualMenu",
-        items,
+        items
       }}
       styles={buttonStyles}
       className="accountSwitchButton"

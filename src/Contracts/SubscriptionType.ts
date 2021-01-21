@@ -3,5 +3,5 @@ export enum SubscriptionType {
   EA,
   Free,
   Internal,
-  PAYG,
+  PAYG
 }

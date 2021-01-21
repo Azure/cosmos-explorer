@@ -48,7 +48,7 @@ export class ReadOnlyNeighborsComponent extends React.Component<ReadOnlyNeighbor
                     className="clickableLink"
                     as="a"
                     aria-label={_neighbor.name}
-                    onActivated={(e) => this.props.selectNode(_neighbor.id)}
+                    onActivated={e => this.props.selectNode(_neighbor.id)}
                     title={GraphUtil.getNeighborTitle(_neighbor)}
                   >
                     {_neighbor.name}

@@ -57,14 +57,14 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         subText: this.props.subText,
         styles: {
           title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
-          subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE },
+          subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE }
         },
         showCloseButton: this.props.showCloseButton || false,
-        onDismiss: this.props.onDismiss,
+        onDismiss: this.props.onDismiss
       },
       modalProps: { isBlocking: this.props.isModal },
       minWidth: DIALOG_MIN_WIDTH,
-      maxWidth: DIALOG_MAX_WIDTH,
+      maxWidth: DIALOG_MAX_WIDTH
     };
     const choiceGroupProps: IChoiceGroupProps = this.props.choiceGroupProps;
     const textFieldProps: ITextFieldProps = this.props.textFieldProps;
@@ -72,13 +72,13 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
     const primaryButtonProps: IButtonProps = {
       text: this.props.primaryButtonText,
       disabled: this.props.primaryButtonDisabled || false,
-      onClick: this.props.onPrimaryButtonClick,
+      onClick: this.props.onPrimaryButtonClick
     };
     const secondaryButtonProps: IButtonProps =
       this.props.secondaryButtonText && this.props.onSecondaryButtonClick
         ? {
             text: this.props.secondaryButtonText,
-            onClick: this.props.onSecondaryButtonClick,
+            onClick: this.props.onSecondaryButtonClick
           }
         : undefined;
 

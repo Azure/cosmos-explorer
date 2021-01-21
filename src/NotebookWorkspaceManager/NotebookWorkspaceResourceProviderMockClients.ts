@@ -10,7 +10,7 @@ export class NotebookWorkspaceSettingsProviderClient implements IResourceProvide
     return Promise.resolve({
       notebookServerEndpoint: "http://localhost:8888",
       username: "",
-      password: "",
+      password: ""
     });
   }
 

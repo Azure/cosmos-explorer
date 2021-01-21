@@ -3,7 +3,7 @@ import {
   IButtonProps,
   IChoiceGroupProps,
   PrimaryButton,
-  IChoiceGroupOption,
+  IChoiceGroupOption
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { ChildrenMargin } from "./GitHubStyleConstants";
@@ -26,12 +26,12 @@ export class AuthorizeAccessComponent extends React.Component<
   public static readonly Scopes = {
     Public: {
       key: "public_repo",
-      text: "Public repos only",
+      text: "Public repos only"
     },
     PublicAndPrivate: {
       key: "repo",
-      text: "Public and private repos",
-    },
+      text: "Public and private repos"
+    }
   };
 
   private static readonly DescriptionPara1 =
@@ -42,7 +42,7 @@ export class AuthorizeAccessComponent extends React.Component<
 
   private onChoiceGroupChange = (event: React.SyntheticEvent<HTMLElement>, option: IChoiceGroupOption): void =>
     this.setState({
-      scope: option.key,
+      scope: option.key
     });
 
   private onButtonClick = (): void => this.props.authorizeAccess(this.state.scope);
@@ -51,7 +51,7 @@ export class AuthorizeAccessComponent extends React.Component<
     super(props);
 
     this.state = {
-      scope: this.props.scope,
+      scope: this.props.scope
     };
   }
 
@@ -61,22 +61,22 @@ export class AuthorizeAccessComponent extends React.Component<
         {
           key: AuthorizeAccessComponent.Scopes.Public.key,
           text: AuthorizeAccessComponent.Scopes.Public.text,
-          ariaLabel: AuthorizeAccessComponent.Scopes.Public.text,
+          ariaLabel: AuthorizeAccessComponent.Scopes.Public.text
         },
         {
           key: AuthorizeAccessComponent.Scopes.PublicAndPrivate.key,
           text: AuthorizeAccessComponent.Scopes.PublicAndPrivate.text,
-          ariaLabel: AuthorizeAccessComponent.Scopes.PublicAndPrivate.text,
-        },
+          ariaLabel: AuthorizeAccessComponent.Scopes.PublicAndPrivate.text
+        }
       ],
       selectedKey: this.state.scope,
-      onChange: this.onChoiceGroupChange,
+      onChange: this.onChoiceGroupChange
     };
 
     const buttonProps: IButtonProps = {
       text: AuthorizeAccessComponent.AuthorizeButtonText,
       ariaLabel: AuthorizeAccessComponent.AuthorizeButtonText,
-      onClick: this.onButtonClick,
+      onClick: this.onButtonClick
     };
 
     return (

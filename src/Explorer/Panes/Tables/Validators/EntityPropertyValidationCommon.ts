@@ -1,11 +1,11 @@
 export var Int32 = {
   Min: -2147483648,
-  Max: 2147483647,
+  Max: 2147483647
 };
 
 export var Int64 = {
   Min: -9223372036854775808,
-  Max: 9223372036854775807,
+  Max: 9223372036854775807
 };
 
 var yearMonthDay = "\\d{4}[- ][01]\\d[- ][0-3]\\d";
@@ -19,5 +19,5 @@ export var ValidationRegExp = {
   Integer: /^[+-]?\d+$/i, // Used for both Int32 and Int64 values
   Boolean: /^"?(true|false)"?$/i,
   DateTime: new RegExp(`^${yearMonthDay}${timeOfDay}${timeZone}$`),
-  PrimaryKey: /^[^/\\#?\u0000-\u001F\u007F-\u009F]*$/,
+  PrimaryKey: /^[^/\\#?\u0000-\u001F\u007F-\u009F]*$/
 };

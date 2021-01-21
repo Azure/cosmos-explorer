@@ -41,26 +41,26 @@ describe("ContainerSampleGenerator", () => {
       data: [
         {
           firstname: "Eva",
-          age: 44,
+          age: 44
         },
         {
           firstname: "Véronique",
-          age: 50,
+          age: 50
         },
         {
           firstname: "亜妃子",
-          age: 5,
+          age: 5
         },
         {
           firstname: "John",
-          age: 23,
-        },
-      ],
+          age: 23
+        }
+      ]
     };
     const collection = { id: ko.observable(sampleCollectionId) } as ViewModels.Collection;
     const database = {
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray<ViewModels.Collection>([collection]),
+      collections: ko.observableArray<ViewModels.Collection>([collection])
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
 
@@ -87,9 +87,9 @@ describe("ContainerSampleGenerator", () => {
           documentEndpoint: "bar",
           gremlinEndpoint: "foo",
           tableEndpoint: "foo",
-          cassandraEndpoint: "foo",
-        },
-      },
+          cassandraEndpoint: "foo"
+        }
+      }
     });
 
     const sampleCollectionId = "SampleCollection";
@@ -102,13 +102,13 @@ describe("ContainerSampleGenerator", () => {
       createNewDatabase: true,
       collectionId: sampleCollectionId,
       data: [
-        "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)",
-      ],
+        "g.addV('person').property(id, '1').property('_partitionKey','pk').property('name', 'Eva').property('age', 44)"
+      ]
     };
     const collection = { id: ko.observable(sampleCollectionId) } as ViewModels.Collection;
     const database = {
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray<ViewModels.Collection>([collection]),
+      collections: ko.observableArray<ViewModels.Collection>([collection])
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
     collection.databaseId = database.id();

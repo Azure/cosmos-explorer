@@ -12,8 +12,8 @@ describe("getMaxThroughput", () => {
         unlimited: 400,
         unlimitedmax: 1000000,
         unlimitedmin: 400,
-        shared: 400,
-      },
+        shared: 400
+      }
     };
 
     expect(getMaxThroughput(defaults, {} as Explorer)).toEqual(defaults.throughput.unlimited);
@@ -27,12 +27,12 @@ describe("getMaxThroughput", () => {
         unlimited: {
           collectionThreshold: 3,
           lessThanOrEqualToThreshold: 400,
-          greatThanThreshold: 500,
+          greatThanThreshold: 500
         },
         unlimitedmax: 1000000,
         unlimitedmin: 400,
-        shared: 400,
-      },
+        shared: 400
+      }
     };
 
     const mockCollection1 = { id: ko.observable("collection1") } as Collection;
@@ -41,7 +41,7 @@ describe("getMaxThroughput", () => {
     const mockCollection4 = { id: ko.observable("collection4") } as Collection;
     const mockDatabase = {} as Database;
     const mockContainer = {
-      databases: ko.observableArray([mockDatabase]),
+      databases: ko.observableArray([mockDatabase])
     } as Explorer;
 
     it("less than or equal to collection threshold", () => {
@@ -56,7 +56,7 @@ describe("getMaxThroughput", () => {
         mockCollection1,
         mockCollection2,
         mockCollection3,
-        mockCollection4,
+        mockCollection4
       ]);
       expect(getMaxThroughput(defaults, mockContainer)).toEqual(defaults.throughput.unlimited.greatThanThreshold);
     });

@@ -17,7 +17,7 @@ export class SwitchDirectoryPaneComponent {
   constructor() {
     return {
       viewModel: PaneComponent,
-      template: SwitchDirectoryPaneTemplate,
+      template: SwitchDirectoryPaneTemplate
     };
   }
 }
@@ -47,7 +47,7 @@ export class SwitchDirectoryPane {
     this.firstFieldHasFocus(true);
     this.resizePane();
     TelemetryProcessor.trace(Action.ContextualPane, ActionModifiers.Open, {
-      paneTitle: this.title(),
+      paneTitle: this.title()
     });
 
     this.directoryComponentAdapter.forceRender();

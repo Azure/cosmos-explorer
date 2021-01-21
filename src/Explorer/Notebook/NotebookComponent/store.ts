@@ -23,7 +23,7 @@ export default function configureStore(
    */
   const catchErrorMiddleware: Middleware = <D extends Dispatch<AnyAction>, S extends AppState>({
     dispatch,
-    getState,
+    getState
   }: MiddlewareAPI<D, S>) => (next: Dispatch<AnyAction>) => <A extends AnyAction>(action: A): any => {
     try {
       next(action);
@@ -52,7 +52,7 @@ export default function configureStore(
   };
 
   const protectEpics = (epics: Epic[]): Epic[] => {
-    return epics.map((epic) => protect(epic));
+    return epics.map(epic => protect(epic));
   };
 
   const filteredCoreEpics = getCoreEpics(autoStartKernelOnNotebookOpen);
@@ -62,12 +62,12 @@ export default function configureStore(
     reducers: {
       app: reducers.app,
       core: coreReducer as any,
-      cdb: cdbReducer,
+      cdb: cdbReducer
     },
     epics: protectEpics([...filteredCoreEpics, ...allEpics]),
     epicDependencies: { contentProvider },
     epicMiddleware: customMiddlewares.concat(catchErrorMiddleware),
-    enhancer: composeEnhancers,
+    enhancer: composeEnhancers
   });
 
   const store = mythConfigureStore(initialState as any);
@@ -100,7 +100,7 @@ export const getCoreEpics = (autoStartKernelOnNotebookOpen: boolean): Epic[] => 
     coreEpics.saveContentEpic,
     coreEpics.publishToBookstore,
     coreEpics.publishToBookstoreAfterSave,
-    coreEpics.sendInputReplyEpic,
+    coreEpics.sendInputReplyEpic
   ];
 
   if (autoStartKernelOnNotebookOpen) {

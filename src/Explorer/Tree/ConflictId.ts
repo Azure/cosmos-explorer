@@ -139,7 +139,7 @@ export default class ConflictId {
         id,
         partitionKeyValue: partitionKeyValueResolved,
         partitionKeyProperty: this.partitionKeyProperty,
-        partitionKey: this.partitionKey,
+        partitionKey: this.partitionKey
       },
       partitionKeyValueResolved
     );

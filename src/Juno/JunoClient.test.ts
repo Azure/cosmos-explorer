@@ -19,8 +19,8 @@ const sampleDatabaseAccount: DatabaseAccount = {
     documentEndpoint: "documentEndpoint",
     gremlinEndpoint: "gremlinEndpoint",
     tableEndpoint: "tableEndpoint",
-    cassandraEndpoint: "cassandraEndpoint",
-  },
+    cassandraEndpoint: "cassandraEndpoint"
+  }
 };
 
 const samplePinnedRepos: IPinnedRepo[] = [
@@ -30,10 +30,10 @@ const samplePinnedRepos: IPinnedRepo[] = [
     private: false,
     branches: [
       {
-        name: "name",
-      },
-    ],
-  },
+        name: "name"
+      }
+    ]
+  }
 ];
 
 describe("Pinned repos", () => {
@@ -43,7 +43,7 @@ describe("Pinned repos", () => {
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         status: HttpStatusCodes.OK,
-        text: () => JSON.stringify(samplePinnedRepos),
+        text: () => JSON.stringify(samplePinnedRepos)
       };
     });
   });
@@ -87,7 +87,7 @@ describe("GitHub", () => {
 
       return {
         status: HttpStatusCodes.OK,
-        text: () => JSON.stringify({ access_token: "token" }),
+        text: () => JSON.stringify({ access_token: "token" })
       };
     });
 
@@ -113,7 +113,7 @@ describe("GitHub", () => {
 
       return {
         status: HttpStatusCodes.NoContent,
-        text: () => undefined as string,
+        text: () => undefined as string
       };
     });
 
@@ -151,7 +151,7 @@ describe("Gallery", () => {
   it("getSampleNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.getSampleNotebooks();
@@ -163,7 +163,7 @@ describe("Gallery", () => {
   it("getPublicNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.getPublicNotebooks();
@@ -176,7 +176,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.getNotebookInfo(id);
@@ -189,7 +189,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      text: () => undefined as any,
+      text: () => undefined as any
     });
 
     const response = await junoClient.getNotebookContent(id);
@@ -202,14 +202,14 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.increaseNotebookViews(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/views`, {
-      method: "PATCH",
+      method: "PATCH"
     });
   });
 
@@ -217,7 +217,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.increaseNotebookDownloadCount(id);
@@ -230,8 +230,8 @@ describe("Gallery", () => {
         method: "PATCH",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+          [HttpHeaders.contentType]: "application/json"
+        }
       }
     );
   });
@@ -240,7 +240,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.favoriteNotebook(id);
@@ -253,8 +253,8 @@ describe("Gallery", () => {
         method: "PATCH",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+          [HttpHeaders.contentType]: "application/json"
+        }
       }
     );
   });
@@ -263,7 +263,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.unfavoriteNotebook(id);
@@ -274,15 +274,15 @@ describe("Gallery", () => {
       method: "PATCH",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json",
-      },
+        [HttpHeaders.contentType]: "application/json"
+      }
     });
   });
 
   it("getFavoriteNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.getFavoriteNotebooks();
@@ -292,15 +292,15 @@ describe("Gallery", () => {
     expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/favorites`, {
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json",
-      },
+        [HttpHeaders.contentType]: "application/json"
+      }
     });
   });
 
   it("getPublishedNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.getPublishedNotebooks();
@@ -312,8 +312,8 @@ describe("Gallery", () => {
       {
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+          [HttpHeaders.contentType]: "application/json"
+        }
       }
     );
   });
@@ -322,7 +322,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.deleteNotebook(id);
@@ -333,8 +333,8 @@ describe("Gallery", () => {
       method: "DELETE",
       headers: {
         [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json",
-      },
+        [HttpHeaders.contentType]: "application/json"
+      }
     });
   });
 
@@ -348,7 +348,7 @@ describe("Gallery", () => {
     const addLinkToNotebookViewer = false;
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as any
     });
 
     const response = await junoClient.publishNotebook(
@@ -369,7 +369,7 @@ describe("Gallery", () => {
         method: "PUT",
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
+          [HttpHeaders.contentType]: "application/json"
         },
         body: JSON.stringify({
           name,
@@ -378,8 +378,8 @@ describe("Gallery", () => {
           author,
           thumbnailUrl,
           content: JSON.parse(content),
-          addLinkToNotebookViewer,
-        } as IPublishNotebookRequest),
+          addLinkToNotebookViewer
+        } as IPublishNotebookRequest)
       }
     );
   });

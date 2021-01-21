@@ -3,12 +3,12 @@ import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import {
   SqlUserDefinedFunctionCreateUpdateParameters,
-  SqlUserDefinedFunctionResource,
+  SqlUserDefinedFunctionResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
 import {
   createUpdateSqlUserDefinedFunction,
-  getSqlUserDefinedFunction,
+  getSqlUserDefinedFunction
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -49,8 +49,8 @@ export async function createUserDefinedFunction(
       const createUDFParams: SqlUserDefinedFunctionCreateUpdateParameters = {
         properties: {
           resource: userDefinedFunction as SqlUserDefinedFunctionResource,
-          options: {},
-        },
+          options: {}
+        }
       };
       const rpResponse = await createUpdateSqlUserDefinedFunction(
         userContext.subscriptionId,

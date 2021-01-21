@@ -7,7 +7,7 @@ import {
   MarkdownCellParams,
   makeCodeCell,
   makeMarkdownCell,
-  makeNotebookRecord,
+  makeNotebookRecord
 } from "@nteract/commutable";
 import { List, Map } from "immutable";
 
@@ -25,7 +25,7 @@ const notebookRecord = makeNotebookRecord({
     "0": makeMarkdownCell({
       cell_type: "markdown",
       source: "abc",
-      metadata: undefined,
+      metadata: undefined
     } as MarkdownCellParams),
     "1": makeCodeCell({
       cell_type: "code",
@@ -35,8 +35,8 @@ const notebookRecord = makeNotebookRecord({
       outputs: List.of({
         name: "stdout",
         output_type: "stream",
-        text: "5",
-      }),
+        text: "5"
+      })
     } as CodeCellParams),
     "2": makeCodeCell({
       cell_type: "code",
@@ -46,11 +46,11 @@ const notebookRecord = makeNotebookRecord({
       outputs: List.of({
         data: Object.freeze({
           "text/html": "<h1>Sample output</h1>",
-          "text/plain": "<IPython.core.display.HTML object>",
+          "text/plain": "<IPython.core.display.HTML object>"
         } as MediaBundle),
         output_type: "display_data",
-        metadata: undefined,
-      }),
+        metadata: undefined
+      })
     } as CodeCellParams),
     "3": makeCodeCell({
       cell_type: "code",
@@ -60,13 +60,13 @@ const notebookRecord = makeNotebookRecord({
       outputs: List.of({
         name: "stdout",
         output_type: "stream",
-        text: "hello world",
-      }),
-    } as CodeCellParams),
+        text: "hello world"
+      })
+    } as CodeCellParams)
   }),
   nbformat_minor: 2,
   nbformat: 2,
-  metadata: undefined,
+  metadata: undefined
 });
 
 describe("NotebookUtil", () => {

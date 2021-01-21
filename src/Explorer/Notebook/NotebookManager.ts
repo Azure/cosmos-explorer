@@ -64,12 +64,12 @@ export default class NotebookManager {
       visible: ko.observable<boolean>(false),
       container: this.params.container,
       junoClient: this.junoClient,
-      gitHubClient: this.gitHubClient,
+      gitHubClient: this.gitHubClient
     });
 
     this.gitHubContentProvider = new GitHubContentProvider({
       gitHubClient: this.gitHubClient,
-      promptForCommitMsg: this.promptForCommitMsg,
+      promptForCommitMsg: this.promptForCommitMsg
     });
 
     this.notebookContentProvider = new NotebookContentProvider(
@@ -99,7 +99,7 @@ export default class NotebookManager {
       this.gitHubOAuthService
     );
 
-    this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
+    this.gitHubOAuthService.getTokenObservable().subscribe(token => {
       this.gitHubClient.setToken(token?.access_token);
 
       if (this.gitHubReposPane.visible()) {
@@ -110,7 +110,7 @@ export default class NotebookManager {
       this.params.refreshNotebookList();
     });
 
-    this.junoClient.subscribeToPinnedRepos((pinnedRepos) => {
+    this.junoClient.subscribeToPinnedRepos(pinnedRepos => {
       this.params.resourceTree.initializeGitHubRepos(pinnedRepos);
       this.params.resourceTree.triggerRender();
     });
@@ -168,7 +168,7 @@ export default class NotebookManager {
             databaseAccountName:
               this.params.container.databaseAccount() && this.params.container.databaseAccount().name,
             defaultExperience: this.params.container.defaultExperience && this.params.container.defaultExperience(),
-            dataExplorerArea: Areas.Notebook,
+            dataExplorerArea: Areas.Notebook
           });
           resolve(commitMsg);
         },
@@ -185,7 +185,7 @@ export default class NotebookManager {
             commitMsg = newValue;
             this.params.dialogProps().primaryButtonDisabled = !commitMsg;
             this.params.dialogProps.valueHasMutated();
-          },
+          }
         },
         !commitMsg
       );

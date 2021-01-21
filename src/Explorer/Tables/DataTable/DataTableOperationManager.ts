@@ -145,7 +145,7 @@ export default class DataTableOperationManager {
 
   private getEntityIdentity($elem: JQuery): Entities.ITableEntityIdentity {
     return {
-      RowKey: $elem.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr),
+      RowKey: $elem.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr)
     };
   }
 

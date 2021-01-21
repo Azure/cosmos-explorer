@@ -11,7 +11,7 @@ describe("GitHubUtils", () => {
     expect(repoInfo).toEqual({
       owner,
       repo,
-      branch,
+      branch
     });
   });
 
@@ -26,7 +26,7 @@ describe("GitHubUtils", () => {
       owner,
       repo,
       branch,
-      path,
+      path
     });
   });
 });

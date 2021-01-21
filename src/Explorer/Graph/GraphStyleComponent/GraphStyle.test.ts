@@ -11,7 +11,7 @@ function buildComponent(buttonOptions: any) {
 describe("Graph Style Component", () => {
   let buildParams = (config: ViewModels.GraphConfigUiData): GraphStyleParams => {
     return {
-      config: config,
+      config: config
     };
   };
 
@@ -30,7 +30,7 @@ describe("Graph Style Component", () => {
         nodeIconSet: ko.observable(null),
         nodeProperties: ko.observableArray(["prop1", PROP2]),
         nodePropertiesWithNone: ko.observableArray(["propa", "propb", PROPC]),
-        showNeighborType: ko.observable(null),
+        showNeighborType: ko.observable(null)
       });
 
       buildComponent(params);

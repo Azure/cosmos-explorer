@@ -11,15 +11,15 @@ import { createMongoCollectionWithProxy } from "../MongoProxyClient";
 import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   createUpdateCassandraTable,
-  getCassandraTable,
+  getCassandraTable
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateMongoDBCollection,
-  getMongoDBCollection,
+  getMongoDBCollection
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
   createUpdateGremlinGraph,
-  getGremlinGraph,
+  getGremlinGraph
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
@@ -41,7 +41,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
           autoPilotMaxThroughput: params.autoPilotMaxThroughput,
           databaseId: params.databaseId,
           databaseLevelThroughput: params.databaseLevelThroughput,
-          offerThroughput: params.offerThroughput,
+          offerThroughput: params.offerThroughput
         };
         await createDatabase(createDatabaseParams);
       }
@@ -100,7 +100,7 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
 
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.SqlContainerResource = {
-    id: params.collectionId,
+    id: params.collectionId
   };
   if (params.analyticalStorageTtl) {
     resource.analyticalStorageTtl = params.analyticalStorageTtl;
@@ -118,8 +118,8 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
   const rpPayload: ARMTypes.SqlDatabaseCreateUpdateParameters = {
     properties: {
       resource,
-      options,
-    },
+      options
+    }
   };
 
   const createResponse = await createUpdateSqlContainer(
@@ -154,7 +154,7 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
 
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.MongoDBCollectionResource = {
-    id: params.collectionId,
+    id: params.collectionId
   };
   if (params.analyticalStorageTtl) {
     resource.analyticalStorageTtl = params.analyticalStorageTtl;
@@ -170,8 +170,8 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
   const rpPayload: ARMTypes.MongoDBCollectionCreateUpdateParameters = {
     properties: {
       resource,
-      options,
-    },
+      options
+    }
   };
 
   const createResponse = await createUpdateMongoDBCollection(
@@ -185,7 +185,7 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
 
   if (params.createMongoWildcardIndex) {
     TelemetryProcessor.trace(Action.CreateMongoCollectionWithWildcardIndex, ActionModifiers.Mark, {
-      message: "Mongo Collection created with wildcard index on all fields.",
+      message: "Mongo Collection created with wildcard index on all fields."
     });
   }
 
@@ -212,7 +212,7 @@ const createCassandraTable = async (params: DataModels.CreateCollectionParams): 
 
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.CassandraTableResource = {
-    id: params.collectionId,
+    id: params.collectionId
   };
   if (params.analyticalStorageTtl) {
     resource.analyticalStorageTtl = params.analyticalStorageTtl;
@@ -221,8 +221,8 @@ const createCassandraTable = async (params: DataModels.CreateCollectionParams): 
   const rpPayload: ARMTypes.CassandraTableCreateUpdateParameters = {
     properties: {
       resource,
-      options,
-    },
+      options
+    }
   };
 
   const createResponse = await createUpdateCassandraTable(
@@ -256,7 +256,7 @@ const createGraph = async (params: DataModels.CreateCollectionParams): Promise<D
 
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.GremlinGraphResource = {
-    id: params.collectionId,
+    id: params.collectionId
   };
 
   if (params.indexingPolicy) {
@@ -272,8 +272,8 @@ const createGraph = async (params: DataModels.CreateCollectionParams): Promise<D
   const rpPayload: ARMTypes.GremlinGraphCreateUpdateParameters = {
     properties: {
       resource,
-      options,
-    },
+      options
+    }
   };
 
   const createResponse = await createUpdateGremlinGraph(
@@ -306,14 +306,14 @@ const createTable = async (params: DataModels.CreateCollectionParams): Promise<D
 
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.TableResource = {
-    id: params.collectionId,
+    id: params.collectionId
   };
 
   const rpPayload: ARMTypes.TableCreateUpdateParameters = {
     properties: {
       resource,
-      options,
-    },
+      options
+    }
   };
 
   const createResponse = await createUpdateTable(
@@ -334,13 +334,13 @@ export const constructRpOptions = (params: DataModels.CreateDatabaseParams): ARM
   if (params.autoPilotMaxThroughput) {
     return {
       autoscaleSettings: {
-        maxThroughput: params.autoPilotMaxThroughput,
-      },
+        maxThroughput: params.autoPilotMaxThroughput
+      }
     };
   }
 
   return {
-    throughput: params.offerThroughput,
+    throughput: params.offerThroughput
   };
 };
 
@@ -350,7 +350,7 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
     partitionKey: params.partitionKey || undefined,
     indexingPolicy: params.indexingPolicy || undefined,
     uniqueKeyPolicy: params.uniqueKeyPolicy || undefined,
-    analyticalStorageTtl: params.analyticalStorageTtl,
+    analyticalStorageTtl: params.analyticalStorageTtl
   } as ContainerRequest; // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
   const collectionOptions: RequestOptions = {};
   const createDatabaseBody: DatabaseRequest = { id: params.databaseId };

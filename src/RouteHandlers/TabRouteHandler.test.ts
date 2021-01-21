@@ -87,7 +87,7 @@ describe("TabRouteHandler", () => {
       validateRouteWithParams(`${Constants.HashRoutePrefixes.collectionsWithIds("1", "2")}/triggers/3`, [
         "1",
         "2",
-        "3",
+        "3"
       ]);
     });
 

@@ -8,21 +8,21 @@ import {
   GremlinDatabaseCreateUpdateParameters,
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
-  CreateUpdateOptions,
+  CreateUpdateOptions
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { client } from "../CosmosClient";
 import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   createUpdateCassandraKeyspace,
-  getCassandraKeyspace,
+  getCassandraKeyspace
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateMongoDBDatabase,
-  getMongoDBDatabase,
+  getMongoDBDatabase
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
   createUpdateGremlinDatabase,
-  getGremlinDatabase,
+  getGremlinDatabase
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
@@ -85,10 +85,10 @@ async function createSqlDatabase(params: DataModels.CreateDatabaseParams): Promi
   const rpPayload: SqlDatabaseCreateUpdateParameters = {
     properties: {
       resource: {
-        id: params.databaseId,
+        id: params.databaseId
       },
-      options,
-    },
+      options
+    }
   };
   const createResponse = await createUpdateSqlDatabase(
     userContext.subscriptionId,
@@ -121,10 +121,10 @@ async function createMongoDatabase(params: DataModels.CreateDatabaseParams): Pro
   const rpPayload: MongoDBDatabaseCreateUpdateParameters = {
     properties: {
       resource: {
-        id: params.databaseId,
+        id: params.databaseId
       },
-      options,
-    },
+      options
+    }
   };
   const createResponse = await createUpdateMongoDBDatabase(
     userContext.subscriptionId,
@@ -157,10 +157,10 @@ async function createCassandraKeyspace(params: DataModels.CreateDatabaseParams):
   const rpPayload: CassandraKeyspaceCreateUpdateParameters = {
     properties: {
       resource: {
-        id: params.databaseId,
+        id: params.databaseId
       },
-      options,
-    },
+      options
+    }
   };
   const createResponse = await createUpdateCassandraKeyspace(
     userContext.subscriptionId,
@@ -193,10 +193,10 @@ async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): 
   const rpPayload: GremlinDatabaseCreateUpdateParameters = {
     properties: {
       resource: {
-        id: params.databaseId,
+        id: params.databaseId
       },
-      options,
-    },
+      options
+    }
   };
   const createResponse = await createUpdateGremlinDatabase(
     userContext.subscriptionId,
@@ -231,12 +231,12 @@ function constructRpOptions(params: DataModels.CreateDatabaseParams): CreateUpda
   if (params.autoPilotMaxThroughput) {
     return {
       autoscaleSettings: {
-        maxThroughput: params.autoPilotMaxThroughput,
-      },
+        maxThroughput: params.autoPilotMaxThroughput
+      }
     };
   }
 
   return {
-    throughput: params.offerThroughput,
+    throughput: params.offerThroughput
   };
 }

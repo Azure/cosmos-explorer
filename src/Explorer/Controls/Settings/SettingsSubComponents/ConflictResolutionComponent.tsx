@@ -7,7 +7,7 @@ import {
   conflictResolutionLwwTooltip,
   conflictResolutionCustomToolTip,
   subComponentStackProps,
-  getChoiceGroupStyles,
+  getChoiceGroupStyles
 } from "../SettingsRenderUtils";
 import { TextField, ITextFieldProps, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
@@ -35,9 +35,9 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private conflictResolutionChoiceGroupOptions: IChoiceGroupOption[] = [
     {
       key: DataModels.ConflictResolutionMode.LastWriterWins,
-      text: "Last Write Wins (default)",
+      text: "Last Write Wins (default)"
     },
-    { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" },
+    { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" }
   ];
 
   componentDidMount(): void {

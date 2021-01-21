@@ -23,7 +23,11 @@ export async function deleteTrigger(databaseId: string, collectionId: string, tr
         triggerId
       );
     } else {
-      await client().database(databaseId).container(collectionId).scripts.trigger(triggerId).delete();
+      await client()
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.trigger(triggerId)
+        .delete();
     }
   } catch (error) {
     handleError(error, "DeleteTrigger", `Error while deleting trigger ${triggerId}`);

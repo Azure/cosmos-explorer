@@ -9,22 +9,22 @@ export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMe
   if (apiExperience === DefaultAccountExperience.Cassandra) {
     properties = Object.assign(properties, {
       cassandraEndpoint: metadata.apiEndpoint,
-      capabilities: [{ name: CapabilityNames.EnableCassandra }],
+      capabilities: [{ name: CapabilityNames.EnableCassandra }]
     });
   } else if (apiExperience === DefaultAccountExperience.Table) {
     properties = Object.assign(properties, {
       tableEndpoint: metadata.apiEndpoint,
-      capabilities: [{ name: CapabilityNames.EnableTable }],
+      capabilities: [{ name: CapabilityNames.EnableTable }]
     });
   } else if (apiExperience === DefaultAccountExperience.Graph) {
     properties = Object.assign(properties, {
       gremlinEndpoint: metadata.apiEndpoint,
-      capabilities: [{ name: CapabilityNames.EnableGremlin }],
+      capabilities: [{ name: CapabilityNames.EnableGremlin }]
     });
   } else if (apiExperience === DefaultAccountExperience.MongoDB) {
     if (metadata.apiKind === ApiKind.MongoDBCompute) {
       properties = Object.assign(properties, {
-        mongoEndpoint: metadata.mongoEndpoint,
+        mongoEndpoint: metadata.mongoEndpoint
       });
     }
   }

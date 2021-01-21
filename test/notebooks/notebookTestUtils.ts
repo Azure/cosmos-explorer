@@ -42,7 +42,7 @@ export const getNotebookNode = async (frame: Frame, uploadNotebookName: string):
   const treeNodeHeaders = await notebookResourceTree.$$(".treeNodeHeader");
   for (let i = 1; i < treeNodeHeaders.length; i++) {
     currentNotebookNode = treeNodeHeaders[i];
-    const nodeLabel = await currentNotebookNode.$eval(".nodeLabel", (element) => element.textContent);
+    const nodeLabel = await currentNotebookNode.$eval(".nodeLabel", element => element.textContent);
     if (nodeLabel === uploadNotebookName) {
       return currentNotebookNode;
     }

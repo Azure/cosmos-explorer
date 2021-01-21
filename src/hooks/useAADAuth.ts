@@ -4,12 +4,12 @@ import { UserAgentApplication, Account, Configuration } from "msal";
 
 const config: Configuration = {
   cache: {
-    cacheLocation: "localStorage",
+    cacheLocation: "localStorage"
   },
   auth: {
     authority: "https://login.microsoftonline.com/common",
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-  },
+    clientId: "203f1145-856a-4232-83d4-a43568fba23d"
+  }
 };
 
 if (process.env.NODE_ENV === "development") {
@@ -56,9 +56,9 @@ export function useAADAuth(): ReturnType {
   }, []);
 
   const switchTenant = React.useCallback(
-    async (id) => {
+    async id => {
       const response = await msal.loginPopup({
-        authority: `https://login.microsoftonline.com/${id}`,
+        authority: `https://login.microsoftonline.com/${id}`
       });
       setTenantId(response.tenantId);
       setAccount(response.account);
@@ -73,14 +73,14 @@ export function useAADAuth(): ReturnType {
           // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
           forceRefresh: true,
           authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://graph.windows.net//.default"],
+          scopes: ["https://graph.windows.net//.default"]
         }),
         msal.acquireTokenSilent({
           // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
           forceRefresh: true,
           authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://management.azure.com//.default"],
-        }),
+          scopes: ["https://management.azure.com//.default"]
+        })
       ]).then(([graphTokenResponse, armTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);
         setArmToken(armTokenResponse.accessToken);
@@ -96,6 +96,6 @@ export function useAADAuth(): ReturnType {
     armToken,
     login,
     logout,
-    switchTenant,
+    switchTenant
   };
 }

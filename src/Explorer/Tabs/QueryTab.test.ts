@@ -10,12 +10,12 @@ describe("Query Tab", () => {
     const database = {
       container: container,
       id: ko.observable<string>("test"),
-      isDatabaseShared: () => false,
+      isDatabaseShared: () => false
     } as ViewModels.Database;
     const collection = {
       container: container,
       databaseId: "test",
-      id: ko.observable<string>("test"),
+      id: ko.observable<string>("test")
     } as ViewModels.Collection;
 
     return new QueryTab({
@@ -26,7 +26,7 @@ describe("Query Tab", () => {
       tabPath: "",
       isActive: ko.observable<boolean>(false),
       hashLocation: "",
-      onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+      onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {}
     });
   }
 
@@ -34,8 +34,8 @@ describe("Query Tab", () => {
     const collection = {
       id: ko.observable<string>("withoutsystempk"),
       partitionKey: {
-        systemKey: true,
-      },
+        systemKey: true
+      }
     } as ViewModels.Collection;
 
     it("no container with system pk, should not set partition key option", () => {

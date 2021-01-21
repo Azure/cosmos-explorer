@@ -15,7 +15,7 @@ import {
   Link,
   ResponsiveMode,
   SelectionMode,
-  Text,
+  Text
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGitHubBranch, IGitHubPageInfo } from "../../../GitHub/GitHubClient";
@@ -28,7 +28,7 @@ import {
   ReposListRepoColumnMinWidth,
   ReposListBranchesColumnWidth,
   BranchesDropdownWidth,
-  BranchesDropdownStyles,
+  BranchesDropdownStyles
 } from "./GitHubStyleConstants";
 
 export interface ReposListComponentProps {
@@ -71,8 +71,8 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     const pinnedReposListProps: IDetailsListProps = {
       styles: {
         contentWrapper: {
-          height: this.props.pinnedReposProps.repos.length ? undefined : 0,
-        },
+          height: this.props.pinnedReposProps.repos.length ? undefined : 0
+        }
       },
       items: this.props.pinnedReposProps.repos,
       getKey: ReposListComponent.getKey,
@@ -84,7 +84,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
           name: ReposListComponent.PinnedReposColumnName,
           ariaLabel: ReposListComponent.PinnedReposColumnName,
           minWidth: ReposListRepoColumnMinWidth,
-          onRender: this.onRenderPinnedReposColumnItem,
+          onRender: this.onRenderPinnedReposColumnItem
         },
         {
           key: ReposListComponent.BranchesColumnName,
@@ -92,10 +92,10 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
           ariaLabel: ReposListComponent.BranchesColumnName,
           minWidth: ReposListBranchesColumnWidth,
           maxWidth: ReposListBranchesColumnWidth,
-          onRender: this.onRenderPinnedReposBranchesColumnItem,
-        },
+          onRender: this.onRenderPinnedReposBranchesColumnItem
+        }
       ],
-      onRenderDetailsFooter: this.props.pinnedReposProps.repos.length ? undefined : this.onRenderReposFooter,
+      onRenderDetailsFooter: this.props.pinnedReposProps.repos.length ? undefined : this.onRenderReposFooter
     };
 
     const unpinnedReposListProps: IDetailsListProps = {
@@ -109,7 +109,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
           name: ReposListComponent.UnpinnedReposColumnName,
           ariaLabel: ReposListComponent.UnpinnedReposColumnName,
           minWidth: ReposListRepoColumnMinWidth,
-          onRender: this.onRenderUnpinnedReposColumnItem,
+          onRender: this.onRenderUnpinnedReposColumnItem
         },
         {
           key: ReposListComponent.BranchesColumnName,
@@ -117,13 +117,13 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
           ariaLabel: ReposListComponent.BranchesColumnName,
           minWidth: ReposListBranchesColumnWidth,
           maxWidth: ReposListBranchesColumnWidth,
-          onRender: this.onRenderUnpinnedReposBranchesColumnItem,
-        },
+          onRender: this.onRenderUnpinnedReposBranchesColumnItem
+        }
       ],
       onRenderDetailsFooter:
         this.props.unpinnedReposProps.isLoading || this.props.unpinnedReposProps.hasMore
           ? this.onRenderReposFooter
-          : undefined,
+          : undefined
     };
 
     return (
@@ -143,7 +143,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
       ...ReposListComponent.getCheckboxPropsForLabel(GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)),
       styles: ReposListCheckboxStyles,
       defaultChecked: true,
-      onChange: () => this.props.unpinRepo(item),
+      onChange: () => this.props.unpinRepo(item)
     };
 
     return <Checkbox {...checkboxProps} />;
@@ -155,12 +155,12 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     }
 
     const branchesProps = this.props.branchesProps[GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)];
-    const options: IDropdownOption[] = branchesProps.branches.map((branch) => ({
+    const options: IDropdownOption[] = branchesProps.branches.map(branch => ({
       key: branch.name,
       text: branch.name,
       data: item,
       disabled: item.branches.length === 1 && branch.name === item.branches[0].name,
-      selected: item.branches.findIndex((element) => element.name === branch.name) !== -1,
+      selected: item.branches.findIndex(element => element.name === branch.name) !== -1
     }));
 
     if (branchesProps.hasMore || branchesProps.isLoading) {
@@ -169,7 +169,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
         key: text,
         text,
         data: item,
-        index: ReposListComponent.FooterIndex,
+        index: ReposListComponent.FooterIndex
       });
     }
 
@@ -178,7 +178,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
       dropdownWidth: BranchesDropdownWidth,
       responsiveMode: ResponsiveMode.large,
       options,
-      onRenderList: this.onRenderBranchesDropdownList,
+      onRenderList: this.onRenderBranchesDropdownList
     };
 
     if (item.branches.length === 1) {
@@ -199,7 +199,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
       styles: BranchesDropdownStyles,
       options: [],
       placeholder: ReposListComponent.DefaultBranchName,
-      disabled: true,
+      disabled: true
     };
 
     return <Dropdown {...dropdownProps} />;
@@ -228,7 +228,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     if (option.index === ReposListComponent.FooterIndex) {
       const linkProps: ILinkProps = {
         disabled: branchesProps.isLoading,
-        onClick: branchesProps.loadMore,
+        onClick: branchesProps.loadMore
       };
 
       return <Link {...linkProps}>{option.text}</Link>;
@@ -242,13 +242,13 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
       onChange: (event, checked) => {
         const repoListItem = { ...item };
         const branch: IGitHubBranch = { name: option.text };
-        repoListItem.branches = repoListItem.branches.filter((element) => element.name !== branch.name);
+        repoListItem.branches = repoListItem.branches.filter(element => element.name !== branch.name);
         if (checked) {
           repoListItem.branches.push(branch);
         }
 
         this.props.pinRepo(repoListItem);
-      },
+      }
     };
 
     return <Checkbox {...checkboxProps} />;
@@ -258,7 +258,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     if (index === ReposListComponent.FooterIndex) {
       const linkProps: ILinkProps = {
         disabled: this.props.unpinnedReposProps.isLoading,
-        onClick: this.props.unpinnedReposProps.loadMore,
+        onClick: this.props.unpinnedReposProps.loadMore
       };
 
       const linkText = this.props.unpinnedReposProps.isLoading
@@ -274,7 +274,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
         const repoListItem = { ...item };
         repoListItem.branches = [{ name: ReposListComponent.DefaultBranchName }];
         this.props.pinRepo(repoListItem);
-      },
+      }
     };
 
     return <Checkbox {...checkboxProps} />;
@@ -284,7 +284,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     const props: IDetailsRowBaseProps = {
       ...detailsFooterProps,
       item: {},
-      itemIndex: ReposListComponent.FooterIndex,
+      itemIndex: ReposListComponent.FooterIndex
     };
 
     return <DetailsRow {...props} />;
@@ -294,7 +294,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     return {
       label,
       title: label,
-      ariaLabel: label,
+      ariaLabel: label
     };
   }
 

@@ -21,7 +21,7 @@ export default class ClauseGroup {
 
     this.flattenClausesImpl(this, tempArray);
     targetArray.removeAll();
-    tempArray.forEach((element) => {
+    tempArray.forEach(element => {
       targetArray.push(element);
     });
   }
@@ -95,7 +95,7 @@ export default class ClauseGroup {
       var groupedItems = this.children.splice(selection.begin, selection.end - selection.begin + 1, newGroup);
 
       groupedItems &&
-        groupedItems.forEach((element) => {
+        groupedItems.forEach(element => {
           newGroup.children.push(element);
 
           if (element instanceof QueryClauseViewModel) {
@@ -128,7 +128,7 @@ export default class ClauseGroup {
 
       // Move all children one level up.
       toPromote &&
-        toPromote.forEach((element) => {
+        toPromote.forEach(element => {
           if (element instanceof ClauseGroup) {
             (<ClauseGroup>element).parentGroup = parentGroup;
           } else if (element instanceof QueryClauseViewModel) {
@@ -230,7 +230,7 @@ export default class ClauseGroup {
     return {
       canGroup: beginIndex >= 0 && !gapFlag && count > 1,
       begin: beginIndex,
-      end: endIndex,
+      end: endIndex
     };
   }
 
@@ -255,7 +255,7 @@ export default class ClauseGroup {
     return {
       allSelected: selectedCount === this.children.length,
       partiallySelected: selectedCount > 0 && selectedCount < this.children.length,
-      nonSelected: selectedCount === 0,
+      nonSelected: selectedCount === 0
     };
   }
 

@@ -78,7 +78,7 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
         autoscaleMaxThroughput: autoscaleSettings.maxThroughput,
         manualThroughput: undefined,
         minimumThroughput,
-        offerReplacePending: resource.offerReplacePending === "true",
+        offerReplacePending: resource.offerReplacePending === "true"
       };
     }
 
@@ -87,7 +87,7 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
       autoscaleMaxThroughput: undefined,
       manualThroughput: resource.throughput,
       minimumThroughput,
-      offerReplacePending: resource.offerReplacePending === "true",
+      offerReplacePending: resource.offerReplacePending === "true"
     };
   }
 

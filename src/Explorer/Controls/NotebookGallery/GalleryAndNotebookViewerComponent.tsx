@@ -38,7 +38,7 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
       isFavorite: props.isFavorite,
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
-      searchText: props.searchText,
+      searchText: props.searchText
     };
   }
 
@@ -52,7 +52,7 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
         isFavorite: this.state.isFavorite,
         backNavigationText: GalleryUtils.getTabTitle(this.state.selectedTab),
         onBackClick: this.onBackClick,
-        onTagClick: this.loadTaggedItems,
+        onTagClick: this.loadTaggedItems
       };
 
       return <NotebookViewerComponent {...props} />;
@@ -67,7 +67,7 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
       openNotebook: this.openNotebook,
       onSelectedTabChange: this.onSelectedTabChange,
       onSortByChange: this.onSortByChange,
-      onSearchTextChange: this.onSearchTextChange,
+      onSearchTextChange: this.onSearchTextChange
     };
 
     return <GalleryViewerComponent {...props} />;
@@ -75,14 +75,14 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
 
   private onBackClick = (): void => {
     this.setState({
-      notebookUrl: undefined,
+      notebookUrl: undefined
     });
   };
 
   private loadTaggedItems = (tag: string): void => {
     this.setState({
       notebookUrl: undefined,
-      searchText: tag,
+      searchText: tag
     });
   };
 
@@ -90,25 +90,25 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
     this.setState({
       notebookUrl: this.props.junoClient.getNotebookContentUrl(data.id),
       galleryItem: data,
-      isFavorite,
+      isFavorite
     });
   };
 
   private onSelectedTabChange = (selectedTab: GalleryTab): void => {
     this.setState({
-      selectedTab,
+      selectedTab
     });
   };
 
   private onSortByChange = (sortBy: SortBy): void => {
     this.setState({
-      sortBy,
+      sortBy
     });
   };
 
   private onSearchTextChange = (searchText: string): void => {
     this.setState({
-      searchText,
+      searchText
     });
   };
 }

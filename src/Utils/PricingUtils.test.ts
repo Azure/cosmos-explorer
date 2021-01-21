@@ -30,7 +30,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: null,
         multimasterEnabled: false,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0);
     });
@@ -40,7 +40,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: null,
         multimasterEnabled: false,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0);
     });
@@ -51,7 +51,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: -1,
         multimasterEnabled: false,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0);
     });
@@ -61,7 +61,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: -1,
         multimasterEnabled: false,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0);
     });
@@ -72,7 +72,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 1,
         multimasterEnabled: false,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0.00008);
     });
@@ -82,7 +82,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 1,
         multimasterEnabled: false,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0.00012);
     });
@@ -93,7 +93,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 1,
         multimasterEnabled: false,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0.00051);
     });
@@ -103,7 +103,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 1,
         multimasterEnabled: false,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0.00076);
     });
@@ -114,7 +114,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 2,
         multimasterEnabled: false,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0.00016);
     });
@@ -124,7 +124,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 2,
         multimasterEnabled: false,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0.00024);
     });
@@ -135,7 +135,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 1,
         multimasterEnabled: true,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0.00008);
     });
@@ -145,7 +145,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 1,
         multimasterEnabled: true,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0.00012);
     });
@@ -156,7 +156,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 2,
         multimasterEnabled: true,
-        isAutoscale: false,
+        isAutoscale: false
       });
       expect(value).toBe(0.00048);
     });
@@ -166,7 +166,7 @@ describe("PricingUtils Tests", () => {
         requestUnits: 1,
         numberOfRegions: 2,
         multimasterEnabled: true,
-        isAutoscale: true,
+        isAutoscale: true
       });
       expect(value).toBe(0.00096);
     });

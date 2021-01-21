@@ -60,7 +60,7 @@ describe("Delete Database Confirmation Pane", () => {
       let pane = new DeleteDatabaseConfirmationPane({
         id: "deletedatabaseconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any,
+        container: fakeExplorer as any
       });
 
       fakeExplorer.isLastNonEmptyDatabase = () => true;
@@ -88,7 +88,7 @@ describe("Delete Database Confirmation Pane", () => {
         return {
           id: ko.observable<string>(selectedDatabaseId),
           rid: "test",
-          collections: ko.observableArray<ViewModels.Collection>(),
+          collections: ko.observableArray<ViewModels.Collection>()
         } as ViewModels.Database;
       };
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
@@ -99,7 +99,7 @@ describe("Delete Database Confirmation Pane", () => {
       const AccountName = "testAccount";
       fakeExplorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
         id: SubscriptionId,
-        name: AccountName,
+        name: AccountName
       } as DataModels.DatabaseAccount);
       fakeExplorer.defaultExperience = ko.observable<string>("DocumentDB");
       fakeExplorer.isPreferredApiCassandra = ko.computed(() => {
@@ -112,7 +112,7 @@ describe("Delete Database Confirmation Pane", () => {
       let pane = new DeleteDatabaseConfirmationPane({
         id: "deletedatabaseconfirmationpane",
         visible: ko.observable<boolean>(false),
-        container: fakeExplorer as any,
+        container: fakeExplorer as any
       });
       pane.databaseIdConfirmation = ko.observable<string>(selectedDatabaseId);
       const Feedback = "my feedback";
@@ -121,7 +121,7 @@ describe("Delete Database Confirmation Pane", () => {
       return pane.submit().then(() => {
         let deleteFeedback = new DeleteFeedback(SubscriptionId, AccountName, DataModels.ApiKind.SQL, Feedback);
         expect(TelemetryProcessor.trace).toHaveBeenCalledWith(Action.DeleteDatabase, ActionModifiers.Mark, {
-          message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
+          message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
         });
       });
     });
