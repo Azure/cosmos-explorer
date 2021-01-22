@@ -1823,7 +1823,7 @@ export default class Explorer {
     }
   }
 
-  public initDataExplorerWithFrameInputs(inputs: ViewModels.DataExplorerInputsFrame): void {
+  public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
       // In development mode, save the iframe message from the portal in session storage.
       // This allows webpack hot reload to funciton properly

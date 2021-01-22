@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, DefaultAccountExperience, ServerIds } from "../Common/Constants";
+import { sendMessage } from "../Common/MessageHandler";
 import { configContext, ConfigContext, Platform } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -28,80 +29,44 @@ import { updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
-// A function to help us quickly catch problems in development, but prevent them from crashing production users
-function safeError(message: string) {
-  if (process.env.NODE_ENV === "production") {
-    console.error(message);
-  } else {
-    throw new Error(message);
-  }
-}
-
-// This hook will create a new instance of Explorer.ts and bind it to the DOM
-// It should *only* ever run once
-// If it runs more than once it can cause memory leaks or handlers bound to DOM nodes that do not exist anymore.
-let bindingsApplied = false;
+// This hook will create a new instance of Explorer.ts and bind it to the DOMs
+let explorer: Explorer;
 
 export function useKnockoutExplorer(config: ConfigContext): Explorer {
-  const [explorer, _setExplorer] = useState<Explorer>();
-
-  // Wrapping setExplorer allows us to inspect its previous value and ensure it has only be set once
-  const setExplorer = (explorer: Explorer) => {
-    _setExplorer((previous) => {
-      if (previous) {
-        safeError("Explorer has already been set! This should only happen once");
-      }
-      return explorer;
-    });
-  };
-
-  // Instantiate and configure Explorer
+  explorer = explorer || new Explorer();
   useEffect(() => {
     const effect = async () => {
       if (config) {
         if (config.platform === Platform.Hosted) {
-          await configureHosted(setExplorer, config);
+          await configureHosted(config);
         } else if (config.platform === Platform.Emulator) {
-          configureEmulator(setExplorer);
+          configureEmulator();
         } else if (config.platform === Platform.Portal) {
-          configurePortal(setExplorer);
+          configurePortal();
         }
+        applyExplorerBindings(explorer);
       }
     };
     effect();
   }, [config]);
-
-  // Apply binding after Explorer has been fully instantiated
-  useEffect(() => {
-    if (explorer) {
-      if (bindingsApplied) {
-        safeError("Knockout bindings were applied more than once. useKnockoutExplorer has a problem.");
-      }
-      applyExplorerBindings(explorer);
-      bindingsApplied = true;
-    }
-  }, [explorer]);
-
   return explorer;
 }
 
-async function configureHosted(setExplorer: (explorer: Explorer) => void, config: ConfigContext) {
-  const explorer = new Explorer();
+async function configureHosted(config: ConfigContext) {
   const win = (window as unknown) as HostedExplorerChildFrame;
   explorer.selfServeType(SelfServeType.none);
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
-    configureHostedWithEncryptedToken(explorer, win.hostedConfig, config);
+    configureHostedWithEncryptedToken(win.hostedConfig, config);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
-    configureHostedWithResourceToken(win.hostedConfig, explorer);
+    configureHostedWithResourceToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
-    configureHostedWithConnectionString(explorer, win.hostedConfig);
+    configureHostedWithConnectionString(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.AAD) {
-    await configureHostedWithAAD(win.hostedConfig, explorer);
+    await configureHostedWithAAD(win.hostedConfig);
   }
-  setExplorer(explorer);
 }
 
-async function configureHostedWithAAD(config: AAD, explorer: Explorer) {
+async function configureHostedWithAAD(config: AAD) {
   window.authType = AuthType.AAD;
   const account = config.databaseAccount;
   const accountResourceId = account.id;
@@ -112,7 +77,7 @@ async function configureHostedWithAAD(config: AAD, explorer: Explorer) {
     databaseAccount: config.databaseAccount,
   });
   const keys = await listKeys(subscriptionId, resourceGroup, account.name);
-  explorer.initDataExplorerWithFrameInputs({
+  explorer.configure({
     databaseAccount: account,
     subscriptionId,
     resourceGroup,
@@ -132,7 +97,7 @@ async function configureHostedWithAAD(config: AAD, explorer: Explorer) {
   explorer.isAccountReady(true);
 }
 
-function configureHostedWithConnectionString(explorer: Explorer, config: ConnectionString) {
+function configureHostedWithConnectionString(config: ConnectionString) {
   // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
   window.authType = AuthType.EncryptedToken;
   // Impossible to tell if this is a try cosmos sub using an encrypted token
@@ -144,7 +109,7 @@ function configureHostedWithConnectionString(explorer: Explorer, config: Connect
   const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
     config.encryptedTokenMetadata.apiKind
   );
-  explorer.initDataExplorerWithFrameInputs({
+  explorer.configure({
     databaseAccount: {
       id: "",
       // id: Main._databaseAccountId,
@@ -171,7 +136,7 @@ function configureHostedWithConnectionString(explorer: Explorer, config: Connect
   explorer.isAccountReady(true);
 }
 
-function configureHostedWithResourceToken(config: ResourceToken, explorer: Explorer) {
+function configureHostedWithResourceToken(config: ResourceToken) {
   window.authType = AuthType.ResourceToken;
   // Resource tokens can only be used with SQL API
   const apiExperience: string = DefaultAccountExperience.DocumentDB;
@@ -185,7 +150,7 @@ function configureHostedWithResourceToken(config: ResourceToken, explorer: Explo
   if (parsedResourceToken.partitionKey) {
     explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
   }
-  explorer.initDataExplorerWithFrameInputs({
+  explorer.configure({
     databaseAccount: {
       id: "",
       name: parsedResourceToken.accountEndpoint,
@@ -213,7 +178,7 @@ function configureHostedWithResourceToken(config: ResourceToken, explorer: Explo
   explorer.isRefreshingExplorer(false);
 }
 
-function configureHostedWithEncryptedToken(explorer: Explorer, config: EncryptedToken, configContext: ConfigContext) {
+function configureHostedWithEncryptedToken(config: EncryptedToken, configContext: ConfigContext) {
   window.authType = AuthType.EncryptedToken;
   // Impossible to tell if this is a try cosmos sub using an encrypted token
   explorer.isTryCosmosDBSubscription(false);
@@ -224,7 +189,7 @@ function configureHostedWithEncryptedToken(explorer: Explorer, config: Encrypted
   const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
     config.encryptedTokenMetadata.apiKind
   );
-  explorer.initDataExplorerWithFrameInputs({
+  explorer.configure({
     databaseAccount: {
       id: "",
       name: config.encryptedTokenMetadata.accountName,
@@ -250,60 +215,78 @@ function configureHostedWithEncryptedToken(explorer: Explorer, config: Encrypted
   explorer.isAccountReady(true);
 }
 
-function configureEmulator(setExplorer: (explorer: Explorer) => void) {
-  const explorer = new Explorer();
+function configureEmulator() {
   window.authType = AuthType.MasterKey;
   explorer.selfServeType(SelfServeType.none);
   explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
-  setExplorer(explorer);
 }
 
-function configurePortal(setExplorer: (explorer: Explorer) => void) {
-  window.authType = AuthType.AAD;
-  const explorer = new Explorer();
-
+function configurePortal() {
   // In development mode, try to load the iframe message from session storage.
   // This allows webpack hot reload to funciton properly
   if (process.env.NODE_ENV === "development") {
     const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
     if (initMessage) {
       const message = JSON.parse(initMessage);
-      console.warn("Loaded cached portal iframe message from session storage");
+      console.warn(
+        "Loaded cached portal iframe message from session storage. Do a full page refresh to get a new message"
+      );
       console.dir(message);
-      explorer.initDataExplorerWithFrameInputs(message);
-      setExplorer(explorer);
+      explorer.configure(message);
     }
+  } else {
+    // In the Portal, configuration of Explorer happens via iframe message
+    window.authType = AuthType.AAD;
+    window.addEventListener(
+      "message",
+      (event) => {
+        console.dir(event);
+        if (isInvalidParentFrameOrigin(event)) {
+          return;
+        }
+
+        if (!shouldProcessMessage(event)) {
+          return;
+        }
+
+        // Check for init message
+        const message: PortalMessage = event.data?.data;
+        const inputs = message?.inputs;
+        if (inputs) {
+          if (
+            configContext.BACKEND_ENDPOINT &&
+            configContext.platform === Platform.Portal &&
+            process.env.NODE_ENV === "development"
+          ) {
+            inputs.extensionEndpoint = configContext.PROXY_PATH;
+          }
+
+          explorer.configure(inputs);
+        }
+      },
+      false
+    );
+
+    sendMessage("ready");
+  }
+}
+
+function shouldProcessMessage(event: MessageEvent): boolean {
+  if (typeof event.data !== "object") {
+    return false;
+  }
+  if (event.data["signature"] !== "pcIframe") {
+    return false;
+  }
+  if (!("data" in event.data)) {
+    return false;
+  }
+  if (typeof event.data["data"] !== "object") {
+    return false;
   }
 
-  window.addEventListener(
-    "message",
-    (event) => {
-      if (isInvalidParentFrameOrigin(event)) {
-        return;
-      }
-
-      // TODO UNCOMMENT
-      // if (!this._shouldProcessMessage(event)) {
-      //   return;
-      // }
-
-      const message: PortalMessage = event.data?.data;
-      const inputs: DataExplorerInputsFrame = message?.inputs;
-      if (
-        inputs &&
-        configContext.BACKEND_ENDPOINT &&
-        configContext.platform === Platform.Portal &&
-        process.env.NODE_ENV === "development"
-      ) {
-        inputs.extensionEndpoint = configContext.PROXY_PATH;
-      }
-
-      explorer.initDataExplorerWithFrameInputs(inputs);
-      setExplorer(explorer);
-    },
-    false
-  );
+  return true;
 }
 
 interface PortalMessage {
