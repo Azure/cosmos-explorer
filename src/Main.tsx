@@ -60,8 +60,8 @@ import { AuthType } from "./AuthType";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { applyExplorerBindings } from "./applyExplorerBindings";
 import { configContext, initializeConfiguration, Platform } from "./ConfigContext";
-import Explorer from "./Explorer/Explorer";
-import React, { useEffect } from "react";
+import Explorer, { ExplorerParams } from "./Explorer/Explorer";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -82,14 +82,25 @@ import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/Re
 import { AccountKind, DefaultAccountExperience, ServerIds } from "./Common/Constants";
 import { listKeys } from "./Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { SelfServeType } from "./SelfServe/SelfServeUtils";
+import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 
 const App: React.FunctionComponent = () => {
+  const [isNotificationConsoleExpanded, setIsNotificationConsoleExpanded] = useState(false);
+  const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
+  const [inProgressMessageIdToBeDeleted, setInProgressMessageIdToBeDeleted] = useState("");
+  const explorerParams: ExplorerParams = {
+    setIsNotificationConsoleExpanded,
+    setNotificationConsoleData,
+    setInProgressMessageIdToBeDeleted,
+  };
+
   useEffect(() => {
     initializeConfiguration().then(async (config) => {
       let explorer: Explorer;
+
       if (config.platform === Platform.Hosted) {
         const win = (window as unknown) as HostedExplorerChildFrame;
-        explorer = new Explorer();
+        explorer = new Explorer(explorerParams);
         explorer.selfServeType(SelfServeType.none);
         if (win.hostedConfig.authType === AuthType.EncryptedToken) {
           // TODO: Remove window.authType
@@ -237,13 +248,13 @@ const App: React.FunctionComponent = () => {
         }
       } else if (config.platform === Platform.Emulator) {
         window.authType = AuthType.MasterKey;
-        explorer = new Explorer();
+        explorer = new Explorer(explorerParams);
         explorer.selfServeType(SelfServeType.none);
         explorer.databaseAccount(emulatorAccount);
         explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
         window.authType = AuthType.AAD;
-        explorer = new Explorer();
+        explorer = new Explorer(explorerParams);
 
         // In development mode, try to load the iframe message from session storage.
         // This allows webpack hot reload to funciton properly
@@ -463,8 +474,14 @@ const App: React.FunctionComponent = () => {
           role="contentinfo"
           aria-label="Notification console"
           id="explorerNotificationConsole"
-          data-bind="react: notificationConsoleComponentAdapter"
-        />
+        >
+          <NotificationConsoleComponent
+            isConsoleExpanded={isNotificationConsoleExpanded}
+            consoleData={notificationConsoleData}
+            inProgressMessageIdToBeDeleted={inProgressMessageIdToBeDeleted}
+            setIsConsoleExpanded={setIsNotificationConsoleExpanded}
+          />
+        </div>
       </div>
       {/* Global loader - Start */}
 

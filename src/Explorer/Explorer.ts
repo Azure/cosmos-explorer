@@ -55,7 +55,6 @@ import { sendMessage, sendCachedDataMessage, handleCachedDataMessage } from "../
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
-import { NotificationConsoleComponentAdapter } from "./Menus/NotificationConsole/NotificationConsoleComponentAdapter";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
@@ -107,6 +106,12 @@ interface AdHocAccessData {
   readUrl: string;
 }
 
+export interface ExplorerParams {
+  setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
+  setNotificationConsoleData: (consoleData: ConsoleData) => void;
+  setInProgressMessageIdToBeDeleted: (messageId: string) => void;
+}
+
 export default class Explorer {
   public flight: ko.Observable<string> = ko.observable<string>(
     SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
@@ -146,8 +151,9 @@ export default class Explorer {
   public mostRecentActivity: MostRecentActivity.MostRecentActivity;
 
   // Notification Console
-  public notificationConsoleData: ko.ObservableArray<ConsoleData>;
-  public isNotificationConsoleExpanded: ko.Observable<boolean>;
+  private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
+  private setNotificationConsoleData: (consoleData: ConsoleData) => void;
+  private setInProgressMessageIdToBeDeleted: (messageId: string) => void;
 
   // Panes
   public contextPanes: ContextualPaneBase[];
@@ -260,7 +266,6 @@ export default class Explorer {
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
   private splashScreenAdapter: SplashScreenComponentAdapter;
-  private notificationConsoleComponentAdapter: NotificationConsoleComponentAdapter;
   private dialogComponentAdapter: DialogComponentAdapter;
   private _dialogProps: ko.Observable<DialogProps>;
   private addSynapseLinkDialog: DialogComponentAdapter;
@@ -269,7 +274,11 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor() {
+  constructor(params?: ExplorerParams) {
+    this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
+    this.setNotificationConsoleData = params?.setNotificationConsoleData;
+    this.setInProgressMessageIdToBeDeleted = params?.setInProgressMessageIdToBeDeleted;
+
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -430,7 +439,6 @@ export default class Explorer {
     );
 
     this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
-    this.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
     this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
@@ -478,7 +486,6 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.notificationConsoleData = ko.observableArray<ConsoleData>([]);
     this.defaultExperience = ko.observable<string>();
     this.databaseAccount.subscribe((databaseAccount) => {
       const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
@@ -892,7 +899,6 @@ export default class Explorer {
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
     this.selfServeLoadingComponentAdapter = new SelfServeLoadingComponentAdapter();
-    this.notificationConsoleComponentAdapter = new NotificationConsoleComponentAdapter(this);
 
     this._initSettings();
 
@@ -1349,23 +1355,19 @@ export default class Explorer {
   }
 
   public logConsoleData(consoleData: ConsoleData): void {
-    this.notificationConsoleData.splice(0, 0, consoleData);
+    this.setNotificationConsoleData(consoleData);
   }
 
   public deleteInProgressConsoleDataWithId(id: string): void {
-    const updatedConsoleData = _.reject(
-      this.notificationConsoleData(),
-      (data: ConsoleData) => data.type === ConsoleDataType.InProgress && data.id === id
-    );
-    this.notificationConsoleData(updatedConsoleData);
+    this.setInProgressMessageIdToBeDeleted(id);
   }
 
   public expandConsole(): void {
-    this.isNotificationConsoleExpanded(true);
+    this.setIsNotificationConsoleExpanded(true);
   }
 
   public collapseConsole(): void {
-    this.isNotificationConsoleExpanded(false);
+    this.setIsNotificationConsoleExpanded(false);
   }
 
   public toggleLeftPaneExpanded() {
