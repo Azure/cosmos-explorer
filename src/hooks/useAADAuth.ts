@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
-import { UserAgentApplication, Account, Configuration } from "msal";
+import { UserAgentApplication, Account, Configuration, InteractionRequiredAuthError } from "msal";
 
 const config: Configuration = {
   cache: {
@@ -69,18 +69,42 @@ export function useAADAuth(): ReturnType {
   React.useEffect(() => {
     if (account && tenantId) {
       Promise.all([
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
-          authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://graph.windows.net//.default"],
-        }),
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
-          authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://management.azure.com//.default"],
-        }),
+        msal
+          .acquireTokenSilent({
+            // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+            forceRefresh: true,
+            authority: `https://login.microsoftonline.com/${tenantId}`,
+            scopes: ["https://graph.windows.net//.default"],
+          })
+          .catch((error: unknown) => {
+            if (error instanceof InteractionRequiredAuthError) {
+              return msal.acquireTokenPopup({
+                // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+                forceRefresh: true,
+                authority: `https://login.microsoftonline.com/${tenantId}`,
+                scopes: ["https://graph.windows.net//.default"],
+              });
+            }
+            throw error;
+          }),
+        msal
+          .acquireTokenSilent({
+            // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+            forceRefresh: true,
+            authority: `https://login.microsoftonline.com/${tenantId}`,
+            scopes: ["https://management.azure.com//.default"],
+          })
+          .catch((error: unknown) => {
+            if (error instanceof InteractionRequiredAuthError) {
+              return msal.acquireTokenPopup({
+                // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+                forceRefresh: true,
+                authority: `https://login.microsoftonline.com/${tenantId}`,
+                scopes: ["https://management.azure.com//.default"],
+              });
+            }
+            throw error;
+          }),
       ]).then(([graphTokenResponse, armTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);
         setArmToken(armTokenResponse.accessToken);
