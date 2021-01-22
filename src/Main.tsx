@@ -75,7 +75,7 @@ import { emulatorAccount } from "./Platform/Emulator/emulatorAccount";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata
+  getDatabaseAccountPropertiesFromMetadata,
 } from "./Platform/Hosted/HostedUtils";
 import { DefaultExperienceUtility } from "./Shared/DefaultExperienceUtility";
 import { parseResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
@@ -85,7 +85,7 @@ import { SelfServeType } from "./SelfServe/SelfServeUtils";
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
-    initializeConfiguration().then(async config => {
+    initializeConfiguration().then(async (config) => {
       let explorer: Explorer;
       if (config.platform === Platform.Hosted) {
         const win = (window as unknown) as HostedExplorerChildFrame;
@@ -97,7 +97,7 @@ const App: React.FunctionComponent = () => {
           // Impossible to tell if this is a try cosmos sub using an encrypted token
           explorer.isTryCosmosDBSubscription(false);
           updateUserContext({
-            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
+            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken),
           });
 
           const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
@@ -110,45 +110,7 @@ const App: React.FunctionComponent = () => {
               name: win.hostedConfig.encryptedTokenMetadata.accountName,
               kind: getDatabaseAccountKindFromExperience(apiExperience),
               properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
-              tags: []
-            },
-            subscriptionId: undefined,
-            resourceGroup: undefined,
-            masterKey: undefined,
-            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
-            authorizationToken: undefined,
-            features: extractFeatures(),
-            csmEndpoint: undefined,
-            dnsSuffix: undefined,
-            serverId: ServerIds.productionPortal,
-            extensionEndpoint: configContext.BACKEND_ENDPOINT,
-            subscriptionType: CollectionCreation.DefaultSubscriptionType,
-            quotaId: undefined,
-            addCollectionDefaultFlight: explorer.flight(),
-            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
-          });
-          explorer.isAccountReady(true);
-        } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
-          window.authType = AuthType.ResourceToken;
-          // Resource tokens can only be used with SQL API
-          const apiExperience: string = DefaultAccountExperience.DocumentDB;
-          const parsedResourceToken = parseResourceTokenConnectionString(win.hostedConfig.resourceToken);
-          updateUserContext({
-            resourceToken: parsedResourceToken.resourceToken,
-            endpoint: parsedResourceToken.accountEndpoint
-          });
-          explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
-          explorer.resourceTokenCollectionId(parsedResourceToken.collectionId);
-          if (parsedResourceToken.partitionKey) {
-            explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
-          }
-          explorer.initDataExplorerWithFrameInputs({
-            databaseAccount: {
-              id: "",
-              name: parsedResourceToken.accountEndpoint,
-              kind: AccountKind.GlobalDocumentDB,
-              properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
-              tags: { defaultExperience: apiExperience }
+              tags: [],
             },
             subscriptionId: undefined,
             resourceGroup: undefined,
@@ -164,7 +126,45 @@ const App: React.FunctionComponent = () => {
             quotaId: undefined,
             addCollectionDefaultFlight: explorer.flight(),
             isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
-            isAuthWithresourceToken: true
+          });
+          explorer.isAccountReady(true);
+        } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
+          window.authType = AuthType.ResourceToken;
+          // Resource tokens can only be used with SQL API
+          const apiExperience: string = DefaultAccountExperience.DocumentDB;
+          const parsedResourceToken = parseResourceTokenConnectionString(win.hostedConfig.resourceToken);
+          updateUserContext({
+            resourceToken: parsedResourceToken.resourceToken,
+            endpoint: parsedResourceToken.accountEndpoint,
+          });
+          explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
+          explorer.resourceTokenCollectionId(parsedResourceToken.collectionId);
+          if (parsedResourceToken.partitionKey) {
+            explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
+          }
+          explorer.initDataExplorerWithFrameInputs({
+            databaseAccount: {
+              id: "",
+              name: parsedResourceToken.accountEndpoint,
+              kind: AccountKind.GlobalDocumentDB,
+              properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
+              tags: { defaultExperience: apiExperience },
+            },
+            subscriptionId: undefined,
+            resourceGroup: undefined,
+            masterKey: undefined,
+            hasWriteAccess: true, // TODO: we should embed this information in the token ideally
+            authorizationToken: undefined,
+            features: extractFeatures(),
+            csmEndpoint: undefined,
+            dnsSuffix: undefined,
+            serverId: ServerIds.productionPortal,
+            extensionEndpoint: configContext.BACKEND_ENDPOINT,
+            subscriptionType: CollectionCreation.DefaultSubscriptionType,
+            quotaId: undefined,
+            addCollectionDefaultFlight: explorer.flight(),
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
+            isAuthWithresourceToken: true,
           });
           explorer.isAccountReady(true);
           explorer.isRefreshingExplorer(false);
@@ -174,7 +174,7 @@ const App: React.FunctionComponent = () => {
           // Impossible to tell if this is a try cosmos sub using an encrypted token
           explorer.isTryCosmosDBSubscription(false);
           updateUserContext({
-            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken)
+            accessToken: encodeURIComponent(win.hostedConfig.encryptedToken),
           });
 
           const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
@@ -187,7 +187,7 @@ const App: React.FunctionComponent = () => {
               name: win.hostedConfig.encryptedTokenMetadata.accountName,
               kind: getDatabaseAccountKindFromExperience(apiExperience),
               properties: getDatabaseAccountPropertiesFromMetadata(win.hostedConfig.encryptedTokenMetadata),
-              tags: []
+              tags: [],
             },
             subscriptionId: undefined,
             resourceGroup: undefined,
@@ -202,7 +202,7 @@ const App: React.FunctionComponent = () => {
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,
             addCollectionDefaultFlight: explorer.flight(),
-            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
           });
           explorer.isAccountReady(true);
         } else if (win.hostedConfig.authType === AuthType.AAD) {
@@ -213,7 +213,7 @@ const App: React.FunctionComponent = () => {
           const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
           updateUserContext({
             authorizationToken: `Bearer ${win.hostedConfig.authorizationToken}`,
-            databaseAccount: win.hostedConfig.databaseAccount
+            databaseAccount: win.hostedConfig.databaseAccount,
           });
           const keys = await listKeys(subscriptionId, resourceGroup, account.name);
           explorer.initDataExplorerWithFrameInputs({
@@ -231,7 +231,7 @@ const App: React.FunctionComponent = () => {
             subscriptionType: CollectionCreation.DefaultSubscriptionType,
             quotaId: undefined,
             addCollectionDefaultFlight: explorer.flight(),
-            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription()
+            isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
           });
           explorer.isAccountReady(true);
         }
@@ -242,6 +242,7 @@ const App: React.FunctionComponent = () => {
         explorer.databaseAccount(emulatorAccount);
         explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
+        window.authType = AuthType.AAD;
         explorer = new Explorer();
 
         // In development mode, try to load the iframe message from session storage.

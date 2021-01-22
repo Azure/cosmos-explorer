@@ -6,5 +6,5 @@ export enum TestExplorerParams {
   portalRunnerDatabaseAccountKey = "portalRunnerDatabaseAccountKey",
   portalRunnerSubscripton = "portalRunnerSubscripton",
   portalRunnerResourceGroup = "portalRunnerResourceGroup",
-  selfServeType = "selfServeType"
+  selfServeType = "selfServeType",
 }

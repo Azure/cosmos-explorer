@@ -21,7 +21,7 @@ export enum LogEntryLevel {
   /**
    * Error level.
    */
-  Error = 2
+  Error = 2,
 }
 /**
  * Schema of a log entry.

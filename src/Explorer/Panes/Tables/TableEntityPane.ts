@@ -15,7 +15,7 @@ import { ContextualPaneBase } from "../ContextualPaneBase";
 export default abstract class TableEntityPane extends ContextualPaneBase {
   protected static requiredFieldsForTablesAPI: string[] = [
     TableConstants.EntityKeyNames.PartitionKey,
-    TableConstants.EntityKeyNames.RowKey
+    TableConstants.EntityKeyNames.RowKey,
   ];
 
   /* Labels */
@@ -36,7 +36,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
     TableConstants.TableType.Double,
     TableConstants.TableType.Guid,
     TableConstants.TableType.Int32,
-    TableConstants.TableType.Int64
+    TableConstants.TableType.Int64,
   ]);
 
   public canAdd: ko.Computed<boolean>;
@@ -52,7 +52,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
-    this.container.isPreferredApiCassandra.subscribe(isCassandra => {
+    this.container.isPreferredApiCassandra.subscribe((isCassandra) => {
       if (isCassandra) {
         this.edmTypes([
           TableConstants.CassandraType.Text,
@@ -69,7 +69,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
           TableConstants.CassandraType.Varint,
           TableConstants.CassandraType.Inet,
           TableConstants.CassandraType.Smallint,
-          TableConstants.CassandraType.Tinyint
+          TableConstants.CassandraType.Tinyint,
         ]);
       }
     });
@@ -224,7 +224,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
           }
           entity[attribute.name()] = {
             _: value,
-            $: type
+            $: type,
           };
         }
       });

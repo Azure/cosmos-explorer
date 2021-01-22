@@ -136,8 +136,8 @@ export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): 
     root: {
       id: "root",
       info: root?.info,
-      children: []
-    }
+      children: [],
+    },
   };
 
   while (context.size > 0) {
@@ -161,7 +161,7 @@ const addToDescriptor = (
     id: value.id,
     info: value.info,
     input: getInput(value),
-    children: []
+    children: [],
   } as Node;
   context.delete(key);
   root.children.push(element);

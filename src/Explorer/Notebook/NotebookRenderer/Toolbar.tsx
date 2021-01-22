@@ -7,7 +7,7 @@ import { IconButton } from "office-ui-fabric-react/lib/Button";
 import {
   DirectionalHint,
   IContextualMenuItem,
-  ContextualMenuItemType
+  ContextualMenuItemType,
 } from "office-ui-fabric-react/lib/ContextualMenu";
 import { actions, AppState, DocumentRecordProps } from "@nteract/core";
 import { CellToolbarContext } from "@nteract/stateful-components";
@@ -54,7 +54,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
           onClick: () => {
             this.props.executeCell();
             this.props.traceNotebookTelemetry(Action.NotebooksExecuteCellFromMenu, ActionModifiers.Mark);
-          }
+          },
         },
         {
           key: "Clear Outputs",
@@ -62,19 +62,19 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
           onClick: () => {
             this.props.clearOutputs();
             this.props.traceNotebookTelemetry(Action.NotebooksClearOutputsFromMenu, ActionModifiers.Mark);
-          }
+          },
         },
         {
           key: "Divider",
-          itemType: ContextualMenuItemType.Divider
-        }
+          itemType: ContextualMenuItemType.Divider,
+        },
       ]);
     }
 
     items = items.concat([
       {
         key: "Divider2",
-        itemType: ContextualMenuItemType.Divider
+        itemType: ContextualMenuItemType.Divider,
       },
       {
         key: "Insert Code Cell Above",
@@ -82,7 +82,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: () => {
           this.props.insertCodeCellAbove();
           this.props.traceNotebookTelemetry(Action.NotebooksInsertCodeCellAboveFromMenu, ActionModifiers.Mark);
-        }
+        },
       },
       {
         key: "Insert Code Cell Below",
@@ -90,7 +90,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: () => {
           this.props.insertCodeCellBelow();
           this.props.traceNotebookTelemetry(Action.NotebooksInsertCodeCellBelowFromMenu, ActionModifiers.Mark);
-        }
+        },
       },
       {
         key: "Insert Text Cell Above",
@@ -98,7 +98,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: () => {
           this.props.insertTextCellAbove();
           this.props.traceNotebookTelemetry(Action.NotebooksInsertTextCellAboveFromMenu, ActionModifiers.Mark);
-        }
+        },
       },
       {
         key: "Insert Text Cell Below",
@@ -106,12 +106,12 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: () => {
           this.props.insertTextCellBelow();
           this.props.traceNotebookTelemetry(Action.NotebooksInsertTextCellBelowFromMenu, ActionModifiers.Mark);
-        }
+        },
       },
       {
         key: "Divider3",
-        itemType: ContextualMenuItemType.Divider
-      }
+        itemType: ContextualMenuItemType.Divider,
+      },
     ]);
 
     const moveItems: IContextualMenuItem[] = [];
@@ -122,7 +122,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: () => {
           this.props.moveCell(this.props.cellIdAbove, true);
           this.props.traceNotebookTelemetry(Action.NotebooksMoveCellUpFromMenu, ActionModifiers.Mark);
-        }
+        },
       });
     }
 
@@ -133,14 +133,14 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         onClick: () => {
           this.props.moveCell(this.props.cellIdBelow, false);
           this.props.traceNotebookTelemetry(Action.NotebooksMoveCellDownFromMenu, ActionModifiers.Mark);
-        }
+        },
       });
     }
 
     if (moveItems.length > 0) {
       moveItems.push({
         key: "Divider4",
-        itemType: ContextualMenuItemType.Divider
+        itemType: ContextualMenuItemType.Divider,
       });
       items = items.concat(moveItems);
     }
@@ -151,7 +151,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
       onClick: () => {
         this.props.deleteCell();
         this.props.traceNotebookTelemetry(Action.DeleteCellFromMenu, ActionModifiers.Mark);
-      }
+      },
     });
 
     const menuItemLabel = "More";
@@ -162,12 +162,12 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
         ariaLabel={menuItemLabel}
         menuIconProps={{
           iconName: menuItemLabel,
-          styles: { root: { fontSize: "18px", fontWeight: "bold" } }
+          styles: { root: { fontSize: "18px", fontWeight: "bold" } },
         }}
         menuProps={{
           isBeakVisible: false,
           directionalHint: DirectionalHint.bottomRightEdge,
-          items
+          items,
         }}
       />
     );
@@ -188,7 +188,7 @@ const mapDispatchToProps = (
   clearOutputs: () => dispatch(actions.clearOutputs({ id, contentRef })),
   deleteCell: () => dispatch(actions.deleteCell({ id, contentRef })),
   traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) =>
-    dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data }))
+    dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data })),
 });
 
 const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
@@ -204,7 +204,7 @@ const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state
     return {
       cellType,
       cellIdAbove,
-      cellIdBelow
+      cellIdBelow,
     };
   };
   return mapStateToProps;

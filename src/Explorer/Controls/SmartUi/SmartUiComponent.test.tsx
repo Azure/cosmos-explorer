@@ -10,8 +10,8 @@ describe("SmartUiComponent", () => {
         message: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details"
-        }
+          text: "More Details",
+        },
       },
       children: [
         {
@@ -59,8 +59,8 @@ describe("SmartUiComponent", () => {
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
-          }
+            type: "string",
+          },
         },
         {
           id: "analyticalStore",
@@ -83,20 +83,20 @@ describe("SmartUiComponent", () => {
             choices: [
               { label: "Database 1", key: "db1" },
               { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" }
+              { label: "Database 3", key: "db3" },
             ],
-            defaultKey: "db2"
-          }
-        }
-      ]
-    }
+            defaultKey: "db2",
+          },
+        },
+      ],
+    },
   };
 
   it("should render", async () => {
     const wrapper = shallow(
-      <SmartUiComponent descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} onError={undefined}/>
+      <SmartUiComponent disabled={false} descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} onError={undefined}/>
     );
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
   });
 });

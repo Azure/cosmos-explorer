@@ -12,15 +12,15 @@ export async function fetchAccessData(portalToken: string): Promise<AccessInputM
 
   const options = {
     method: "GET",
-    headers: headers
+    headers: headers,
   };
 
   return (
     fetch(url, options)
-      .then(response => response.json())
+      .then((response) => response.json())
       // Portal encrypted token API quirk: The response is double JSON encoded
-      .then(json => JSON.parse(json))
-      .catch(error => console.error(error))
+      .then((json) => JSON.parse(json))
+      .catch((error) => console.error(error))
   );
 }
 
@@ -29,7 +29,7 @@ export function useTokenMetadata(token: string): AccessInputMetadata {
 
   useEffect(() => {
     if (token) {
-      fetchAccessData(token).then(response => setState(response));
+      fetchAccessData(token).then((response) => setState(response));
     }
   }, [token]);
   return state;

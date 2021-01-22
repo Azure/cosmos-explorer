@@ -24,8 +24,8 @@ describe("SelfServeComponent", () => {
         message: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details"
-        }
+          text: "More Details",
+        },
       },
       children: [
         {
@@ -46,8 +46,8 @@ describe("SelfServeComponent", () => {
           input: {
             label: "Container id",
             dataFieldName: "containerId",
-            type: "string"
-          }
+            type: "string",
+          },
         },
         {
           id: "analyticalStore",
@@ -57,8 +57,8 @@ describe("SelfServeComponent", () => {
             falseLabel: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
-            type: "boolean"
-          }
+            type: "boolean",
+          },
         },
         {
           id: "database",
@@ -69,13 +69,13 @@ describe("SelfServeComponent", () => {
             choices: [
               { label: "Database 1", key: "db1" },
               { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" }
+              { label: "Database 3", key: "db3" },
             ],
-            defaultKey: "db2"
-          }
-        }
-      ]
-    }
+            defaultKey: "db2",
+          },
+        },
+      ],
+    },
   };
 
   const verifyDefaultsSet = (currentValues: Map<string, SmartUiInput>): void => {
@@ -88,7 +88,7 @@ describe("SelfServeComponent", () => {
 
   it("should render", async () => {
     const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 
     // initialize() should be called and defaults should be set when component is mounted

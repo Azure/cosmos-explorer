@@ -7,7 +7,7 @@ export class CodeOfConductEndpoints {
 export class EndpointsRegex {
   public static readonly cassandra = [
     "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com",
-    "HostName=(.*).cassandra.cosmos.azure.com"
+    "HostName=(.*).cassandra.cosmos.azure.com",
   ];
   public static readonly mongo = "mongodb://.*:(.*)@(.*).documents.azure.com";
   public static readonly mongoCompute = "mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com";
@@ -147,7 +147,7 @@ export class MongoDBAccounts {
 
 export enum MongoBackendEndpointType {
   local,
-  remote
+  remote,
 }
 
 // TODO: 435619 Add default endpoints per cloud and use regional only when available
@@ -274,7 +274,7 @@ export class HttpStatusCodes {
     HttpStatusCodes.InternalServerError, // TODO: Handle all 500s on Portal backend and remove from retries list
     HttpStatusCodes.BadGateway,
     HttpStatusCodes.ServiceUnavailable,
-    HttpStatusCodes.GatewayTimeout
+    HttpStatusCodes.GatewayTimeout,
   ];
 }
 
@@ -330,10 +330,7 @@ export class HashRoutePrefixes {
   public static docsWithIds(databaseId: string, collectionId: string, docId: string) {
     const transformedDatabasePrefix: string = this.docs.replace("{db_id}", databaseId);
 
-    return transformedDatabasePrefix
-      .replace("{coll_id}", collectionId)
-      .replace("{doc_id}", docId)
-      .replace("/", ""); // strip the first slash since hasher adds it
+    return transformedDatabasePrefix.replace("{coll_id}", collectionId).replace("{doc_id}", docId).replace("/", ""); // strip the first slash since hasher adds it
   }
 }
 
@@ -379,7 +376,7 @@ export class OfferVersions {
 export enum ConflictOperationType {
   Replace = "replace",
   Create = "create",
-  Delete = "delete"
+  Delete = "delete",
 }
 
 export const EmulatorMasterKey =

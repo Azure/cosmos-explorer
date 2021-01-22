@@ -23,7 +23,7 @@ export type InputTypeValue = "number" | "string" | "boolean" | "object";
 
 export enum NumberUiType {
   Spinner = "Spinner",
-  Slider = "Slider"
+  Slider = "Slider",
 }
 
 export enum BooleanUiType {
@@ -131,7 +131,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private static readonly labelStyle = {
     color: "#393939",
     fontFamily: "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-    fontSize: 12
+    fontSize: 12,
   };
 
   componentDidUpdate() {
@@ -146,7 +146,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   constructor(props: SmartUiComponentProps) {
     super(props);
     this.state = {
-      errors: new Map()
+      errors: new Map(),
     };
   }
 
@@ -182,10 +182,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
               label: {
                 root: {
                   ...SmartUiComponent.labelStyle,
-                  fontWeight: 600
-                }
-              }
-            }
+                  fontWeight: 600,
+                },
+              },
+            },
           }}
         />
       </div>
@@ -252,7 +252,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       min: min,
       max: max,
       ariaLabel: label,
-      step: step
+      step: step,
     };
 
     const value = this.props.currentValues.get(dataFieldName)?.value as number;
@@ -264,16 +264,16 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             {...props}
             id={`${input.dataFieldName}-spinner-input`}
             value={value?.toString()}
-            onValidate={newValue => this.onValidate(input, newValue, props.min, props.max)}
-            onIncrement={newValue => this.onIncrement(input, newValue, props.step, props.max)}
-            onDecrement={newValue => this.onDecrement(input, newValue, props.step, props.min)}
+            onValidate={(newValue) => this.onValidate(input, newValue, props.min, props.max)}
+            onIncrement={(newValue) => this.onIncrement(input, newValue, props.step, props.max)}
+            onDecrement={(newValue) => this.onDecrement(input, newValue, props.step, props.min)}
             labelPosition={Position.top}
             disabled={disabled}
             styles={{
               label: {
                 ...SmartUiComponent.labelStyle,
-                fontWeight: 600
-              }
+                fontWeight: 600,
+              },
             }}
           />
           {this.state.errors.has(dataFieldName) && (
@@ -293,9 +293,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
               root: {width: 400},
               titleLabel: {
                 ...SmartUiComponent.labelStyle,
-                fontWeight: 600
+                fontWeight: 600,
               },
-              valueLabel: SmartUiComponent.labelStyle
+              valueLabel: SmartUiComponent.labelStyle,
             }}
           />
         </div>
@@ -322,13 +322,13 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             {
               label: input.falseLabel,
               key: "false",
-              onSelect: () => this.props.onInputChange(input, false)
+              onSelect: () => this.props.onInputChange(input, false),
             },
             {
               label: input.trueLabel,
               key: "true",
-              onSelect: () => this.props.onInputChange(input, true)
-            }
+              onSelect: () => this.props.onInputChange(input, true),
+            },
           ]}
           selectedKey={selectedKey}
         />
@@ -361,15 +361,15 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         disabled={disabled}
         options={choices.map(c => ({
           key: c.key,
-          text: c.label
+          text: c.label,
         }))}
         styles={{
           root: {width: 400},
           label: {
             ...SmartUiComponent.labelStyle,
-            fontWeight: 600
+            fontWeight: 600,
           },
-          dropdown: SmartUiComponent.labelStyle
+          dropdown: SmartUiComponent.labelStyle,
         }}
       />
     );
@@ -413,7 +413,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           {node.info && this.renderInfo(node.info as Info)}
           {node.input && this.renderInput(node.input)}
         </Stack.Item>
-        {node.children && node.children.map(child => <div key={child.id}>{this.renderNode(child)}</div>)}
+        {node.children && node.children.map((child) => <div key={child.id}>{this.renderNode(child)}</div>)}
       </Stack>
     );
   }

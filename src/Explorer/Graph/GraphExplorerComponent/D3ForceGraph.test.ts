@@ -11,7 +11,7 @@ describe("D3ForceGraph", () => {
     outV: "v2",
     label: "l1",
     source: null,
-    target: null
+    target: null,
   };
 
   it("should count neighbors", () => {
@@ -21,7 +21,7 @@ describe("D3ForceGraph", () => {
       outV: v1Id,
       label: "l2",
       source: null,
-      target: null
+      target: null,
     };
 
     const l3: D3Link = {
@@ -30,7 +30,7 @@ describe("D3ForceGraph", () => {
       outV: "v3",
       label: "l3",
       source: null,
-      target: null
+      target: null,
     };
 
     const links = [l1, l2, l3];
@@ -49,11 +49,11 @@ describe("D3ForceGraph", () => {
     newGraph.addVertex({
       id: v1Id,
       label: "vlabel1",
-      _isRoot: true
+      _isRoot: true,
     });
     newGraph.addVertex({
       id: "v2",
-      label: "vlabel2"
+      label: "vlabel2",
     });
     newGraph.addEdge(l1);
 
@@ -76,7 +76,7 @@ describe("D3ForceGraph", () => {
         onInitialized: sinon.spy(),
 
         // For unit testing purposes
-        onGraphUpdated: null
+        onGraphUpdated: null,
       });
 
       forceGraph.init(rootNode);
@@ -86,7 +86,7 @@ describe("D3ForceGraph", () => {
       forceGraph.destroy();
     });
 
-    it("should render graph d3 nodes and edges", done => {
+    it("should render graph d3 nodes and edges", (done) => {
       forceGraph.params.onGraphUpdated = () => {
         expect($(rootNode).find(".nodes").length).toBe(1);
         expect($(rootNode).find(".links").length).toBe(1);
@@ -96,7 +96,7 @@ describe("D3ForceGraph", () => {
       forceGraph.updateGraph(newGraph);
     });
 
-    it("should render vertices (as circle)", done => {
+    it("should render vertices (as circle)", (done) => {
       forceGraph.params.onGraphUpdated = () => {
         expect($(rootNode).find(".node circle").length).toBe(2);
         done();
@@ -105,7 +105,7 @@ describe("D3ForceGraph", () => {
       forceGraph.updateGraph(newGraph);
     });
 
-    it("should render vertex label", done => {
+    it("should render vertex label", (done) => {
       forceGraph.params.onGraphUpdated = () => {
         expect($(rootNode).find(`text:contains(${v1Id})`).length).toBe(1);
         done();
@@ -114,7 +114,7 @@ describe("D3ForceGraph", () => {
       forceGraph.updateGraph(newGraph);
     });
 
-    it("should render root vertex", done => {
+    it("should render root vertex", (done) => {
       forceGraph.params.onGraphUpdated = () => {
         expect($(rootNode).find(".node.root").length).toBe(1);
         done();
@@ -123,7 +123,7 @@ describe("D3ForceGraph", () => {
       forceGraph.updateGraph(newGraph);
     });
 
-    it("should render edge", done => {
+    it("should render edge", (done) => {
       forceGraph.params.onGraphUpdated = () => {
         expect($(rootNode).find("path.link").length).toBe(1);
         done();
@@ -140,9 +140,7 @@ describe("D3ForceGraph", () => {
       forceGraph.params.onGraphUpdated = () => {
         const mouseoverEvent = document.createEvent("Events");
         mouseoverEvent.initEvent("mouseover", true, false);
-        $(rootNode)
-          .find(".node")[0]
-          .dispatchEvent(mouseoverEvent); // [0] is v1 vertex
+        $(rootNode).find(".node")[0].dispatchEvent(mouseoverEvent); // [0] is v1 vertex
 
         // onHighlightedNode is always called once to clear the selection
         expect((forceGraph.params.onHighlightedNode as sinon.SinonSpy).calledTwice).toBe(true);

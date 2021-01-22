@@ -14,7 +14,7 @@ export function logConsoleMessage(type: ConsoleDataType, message: string, id?: s
     const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
       hour12: true,
       hour: "numeric",
-      minute: "numeric"
+      minute: "numeric",
     }).format(date);
     if (!id) {
       id = _.uniqueId();
@@ -38,7 +38,7 @@ export function logConsoleProgress(message: string): () => void {
     const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
       hour12: true,
       hour: "numeric",
-      minute: "numeric"
+      minute: "numeric",
     }).format(date);
     dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
     return () => {
@@ -60,7 +60,7 @@ export function logConsoleError(message: string): void {
     const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
       hour12: true,
       hour: "numeric",
-      minute: "numeric"
+      minute: "numeric",
     }).format(date);
     dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
   }
@@ -75,7 +75,7 @@ export function logConsoleInfo(message: string): void {
     const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
       hour12: true,
       hour: "numeric",
-      minute: "numeric"
+      minute: "numeric",
     }).format(date);
     dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
   }

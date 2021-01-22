@@ -9,16 +9,16 @@ export class GalleryHeaderComponent extends React.Component {
   private static readonly openPortal = () => window.open("https://portal.azure.com", "_blank");
   private static readonly openDataExplorer = () => (window.location.href = new URL("./", window.location.href).href);
   private static readonly headerItemStyle: React.CSSProperties = {
-    color: "white"
+    color: "white",
   };
   private static readonly mainHeaderTextProps: ITextProps = {
     style: GalleryHeaderComponent.headerItemStyle,
     variant: "mediumPlus",
     styles: {
       root: {
-        fontWeight: FontWeights.semibold
-      }
-    }
+        fontWeight: FontWeights.semibold,
+      },
+    },
   };
   private static readonly headerItemTextProps: ITextProps = { style: GalleryHeaderComponent.headerItemStyle };
 

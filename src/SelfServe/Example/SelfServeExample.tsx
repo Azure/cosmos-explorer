@@ -7,21 +7,21 @@ import { SessionStorageUtility } from "../../Shared/StorageUtility";
 export enum Regions {
   NorthCentralUS = "NCUS",
   WestUS = "WUS",
-  EastUS2 = "EUS2"
+  EastUS2 = "EUS2",
 }
 
 export const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
   { label: "West US", key: Regions.WestUS },
-  { label: "East US 2", key: Regions.EastUS2 }
+  { label: "East US 2", key: Regions.EastUS2 },
 ];
 
 export const selfServeExampleInfo: Info = {
-  message: "This is a self serve class"
+  message: "This is a self serve class",
 };
 
 export const regionDropdownInfo: Info = {
-  message: "More regions can be added in the future."
+  message: "More regions can be added in the future.",
 };
 
 const onDbThroughputChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
@@ -166,7 +166,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   @Values({
     label: "Account Name",
-    placeholder: "Enter the account name"
+    placeholder: "Enter the account name",
   })
   accountName: string;
 

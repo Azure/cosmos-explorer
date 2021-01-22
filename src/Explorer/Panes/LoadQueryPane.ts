@@ -141,11 +141,7 @@ export class LoadQueryPane extends ContextualPaneBase {
 
   private resetFileInput(): void {
     const inputElement = $("#importQueryInput");
-    inputElement
-      .wrap("<form>")
-      .closest("form")
-      .get(0)
-      .reset();
+    inputElement.wrap("<form>").closest("form").get(0).reset();
     inputElement.unwrap();
   }
 }

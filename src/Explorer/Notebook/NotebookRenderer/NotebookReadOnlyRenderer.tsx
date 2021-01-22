@@ -62,15 +62,15 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                   prompt: (props: { id: string; contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
                   editor: {
                     monaco: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <MonacoEditor readOnly={true} {...props} editorType={"monaco"} />
-                  }
+                      this.props.hideInputs ? <></> : <MonacoEditor readOnly={true} {...props} editorType={"monaco"} />,
+                  },
                 }}
               </CodeCell>
             ),
             markdown: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
               <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                 {{
-                  editor: {}
+                  editor: {},
                 }}
               </MarkdownCell>
             ),
@@ -79,11 +79,11 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 {{
                   editor: {
                     monaco: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <MonacoEditor {...props} readOnly={true} editorType={"monaco"} />
-                  }
+                      this.props.hideInputs ? <></> : <MonacoEditor {...props} readOnly={true} editorType={"monaco"} />,
+                  },
                 }}
               </RawCell>
-            )
+            ),
           }}
         </Cells>
         <AzureTheme />
@@ -99,10 +99,10 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
         return dispatch(
           actions.addTransform({
             mediaType: transform.MIMETYPE,
-            component: transform
+            component: transform,
           })
         );
-      }
+      },
     };
   };
   return mapDispatchToProps;

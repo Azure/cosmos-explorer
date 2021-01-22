@@ -10,7 +10,7 @@ export const deleteConflict = async (collection: CollectionBase, conflictId: Con
 
   try {
     const options = {
-      partitionKey: getPartitionKeyHeaderForConflict(conflictId)
+      partitionKey: getPartitionKeyHeaderForConflict(conflictId),
     };
 
     await client()

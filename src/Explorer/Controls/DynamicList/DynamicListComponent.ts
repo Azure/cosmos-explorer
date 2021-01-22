@@ -113,5 +113,5 @@ export class DynamicListViewModel extends WaitsForTemplateViewModel {
  */
 export const DynamicListComponent = {
   viewModel: DynamicListViewModel,
-  template
+  template,
 };

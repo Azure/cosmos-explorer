@@ -7,12 +7,12 @@ export const emulatorAccount = {
   type: "",
   kind: AccountKind.DocumentDB,
   tags: {
-    [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB
+    [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB,
   },
   properties: {
     documentEndpoint: "",
     tableEndpoint: "",
     gremlinEndpoint: "",
-    cassandraEndpoint: ""
-  }
+    cassandraEndpoint: "",
+  },
 };

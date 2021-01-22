@@ -2,7 +2,7 @@ import {
   CommonInputTypes,
   mapToSmartUiDescriptor,
   SelfServeBaseClass,
-  updateContextWithDecorator
+  updateContextWithDecorator,
 } from "./SelfServeUtils";
 import { InputType, NumberUiType, SmartUiInput } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
 
@@ -100,8 +100,8 @@ describe("SelfServeUtils", () => {
           dataFieldName: "collName",
           type: "string",
           label: "Coll Name",
-          placeholder: "placeholder text"
-        }
+          placeholder: "placeholder text",
+        },
       ],
       [
         "enableLogging",
@@ -111,8 +111,8 @@ describe("SelfServeUtils", () => {
           type: "boolean",
           label: "Enable Logging",
           trueLabel: "Enable",
-          falseLabel: "Disable"
-        }
+          falseLabel: "Disable",
+        },
       ],
       [
         "invalidEnableLogging",
@@ -121,8 +121,8 @@ describe("SelfServeUtils", () => {
           dataFieldName: "invalidEnableLogging",
           type: "boolean",
           label: "Invalid Enable Logging",
-          placeholder: "placeholder text"
-        }
+          placeholder: "placeholder text",
+        },
       ],
       [
         "regions",
@@ -134,9 +134,9 @@ describe("SelfServeUtils", () => {
           choices: [
             { label: "South West US", key: "SWUS" },
             { label: "North Central US", key: "NCUS" },
-            { label: "East US 2", key: "EUS2" }
-          ]
-        }
+            { label: "East US 2", key: "EUS2" },
+          ],
+        },
       ],
       [
         "invalidRegions",
@@ -145,9 +145,9 @@ describe("SelfServeUtils", () => {
           dataFieldName: "invalidRegions",
           type: "object",
           label: "Invalid Regions",
-          placeholder: "placeholder text"
-        }
-      ]
+          placeholder: "placeholder text",
+        },
+      ],
     ]);
     const expectedDescriptor = {
       root: {
@@ -163,9 +163,9 @@ describe("SelfServeUtils", () => {
               min: 1,
               max: 5,
               step: 1,
-              uiType: "Slider"
+              uiType: "Slider",
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "collThroughput",
@@ -177,9 +177,9 @@ describe("SelfServeUtils", () => {
               min: 1,
               max: 5,
               step: 1,
-              uiType: "Spinner"
+              uiType: "Spinner",
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "invalidThroughput",
@@ -192,9 +192,9 @@ describe("SelfServeUtils", () => {
               max: 5,
               step: 1,
               uiType: "Spinner",
-              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidThroughput'."
+              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidThroughput'.",
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "collName",
@@ -203,9 +203,9 @@ describe("SelfServeUtils", () => {
               dataFieldName: "collName",
               type: "string",
               label: "Coll Name",
-              placeholder: "placeholder text"
+              placeholder: "placeholder text",
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "enableLogging",
@@ -215,9 +215,9 @@ describe("SelfServeUtils", () => {
               type: "boolean",
               label: "Enable Logging",
               trueLabel: "Enable",
-              falseLabel: "Disable"
+              falseLabel: "Disable",
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "invalidEnableLogging",
@@ -227,9 +227,9 @@ describe("SelfServeUtils", () => {
               type: "boolean",
               label: "Invalid Enable Logging",
               placeholder: "placeholder text",
-              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidEnableLogging'."
+              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidEnableLogging'.",
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "regions",
@@ -241,10 +241,10 @@ describe("SelfServeUtils", () => {
               choices: [
                 { label: "South West US", key: "SWUS" },
                 { label: "North Central US", key: "NCUS" },
-                { label: "East US 2", key: "EUS2" }
-              ]
+                { label: "East US 2", key: "EUS2" },
+              ],
             },
-            children: [] as Node[]
+            children: [] as Node[],
           },
           {
             id: "invalidRegions",
@@ -254,11 +254,11 @@ describe("SelfServeUtils", () => {
               type: "object",
               label: "Invalid Regions",
               placeholder: "placeholder text",
-              errorMessage: "label and choices are required for Choice input 'invalidRegions'."
+              errorMessage: "label and choices are required for Choice input 'invalidRegions'.",
             },
-            children: [] as Node[]
-          }
-        ]
+            children: [] as Node[],
+          },
+        ],
       },
       inputNames: [
         "dbThroughput",
@@ -268,8 +268,8 @@ describe("SelfServeUtils", () => {
         "enableLogging",
         "invalidEnableLogging",
         "regions",
-        "invalidRegions"
-      ]
+        "invalidRegions",
+      ],
     };
     const descriptor = mapToSmartUiDescriptor(context);
     expect(descriptor).toEqual(expectedDescriptor);

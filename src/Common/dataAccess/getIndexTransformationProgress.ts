@@ -11,10 +11,7 @@ export async function getIndexTransformationProgress(databaseId: string, collect
   let indexTransformationPercentage: number;
   const clearMessage = logConsoleProgress(`Reading container ${collectionId}`);
   try {
-    const response = await client()
-      .database(databaseId)
-      .container(collectionId)
-      .read({ populateQuotaInfo: true });
+    const response = await client().database(databaseId).container(collectionId).read({ populateQuotaInfo: true });
 
     indexTransformationPercentage = parseInt(
       response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
