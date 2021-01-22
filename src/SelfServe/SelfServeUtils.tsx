@@ -190,8 +190,8 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       }
       return value as StringInput;
     case "boolean":
-      if (!value.label || !value.trueLabel || !value.falseLabel || !value.uiType) {
-        value.errorMessage = `label, truelabel, falselabel and uiType are required for boolean input '${value.id}'.`;
+      if (!value.label || !value.trueLabel || !value.falseLabel) {
+        value.errorMessage = `label, truelabel and falselabel are required for boolean input '${value.id}'.`;
       }
       return value as BooleanInput;
     default:

@@ -26,11 +26,6 @@ export enum NumberUiType {
   Slider = "Slider",
 }
 
-export enum BooleanUiType {
-  RadioButton = "RadioButton",
-  Toggle = "Toggle",
-}
-
 export type ChoiceItem = { label: string; key: string };
 
 export type InputType = number | string | boolean | ChoiceItem;
@@ -78,7 +73,6 @@ interface BooleanInput extends BaseInput {
   trueLabel: string;
   falseLabel: string;
   defaultValue?: boolean;
-  uiType: BooleanUiType;
 }
 
 interface StringInput extends BaseInput {
@@ -313,31 +307,8 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const value = this.props.currentValues.get(input.dataFieldName)?.value as boolean;
     const selectedKey = value || input.defaultValue ? "true" : "false";
     const disabled = this.props.disabled || this.props.currentValues.get(input.dataFieldName)?.disabled;
-    return input.uiType === BooleanUiType.RadioButton ? (
-      <div id={`${input.dataFieldName}-radioSwitch-input`} style={{ width: 400 }}>
-        <div className="inputLabelContainer">
-          <Text variant="small" nowrap className="inputLabel">
-            {input.label}
-          </Text>
-        </div>
-        <RadioSwitchComponent
-          choices={[
-            {
-              label: input.falseLabel,
-              key: "false",
-              onSelect: () => this.props.onInputChange(input, false),
-            },
-            {
-              label: input.trueLabel,
-              key: "true",
-              onSelect: () => this.props.onInputChange(input, true),
-            },
-          ]}
-          selectedKey={selectedKey}
-        />
-      </div>
-    ) : (
-      <Toggle
+    return(
+    <Toggle
         id={`${input.dataFieldName}-toggle-input`}
         label={input.label}
         checked={value ? value : false}

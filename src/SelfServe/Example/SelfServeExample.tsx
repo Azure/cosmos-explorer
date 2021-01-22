@@ -2,7 +2,6 @@ import { PropertyInfo, OnChange, Values } from "../PropertyDecorators";
 import { ClassInfo, IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
 import {
-  BooleanUiType,
   ChoiceItem,
   Info,
   InputType,
@@ -183,8 +182,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   @Values({
     label: "Enable Logging",
     trueLabel: "Enable",
-    falseLabel: "Disable",
-    uiType: BooleanUiType.RadioButton,
+    falseLabel: "Disable"
   })
   enableLogging: boolean;
 
@@ -222,8 +220,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   @Values({
     label: "Enable DB level throughput",
     trueLabel: "Enable",
-    falseLabel: "Disable",
-    uiType: BooleanUiType.Toggle,
+    falseLabel: "Disable"
   })
   enableDbLevelThroughput: boolean;
 

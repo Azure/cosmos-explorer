@@ -2,7 +2,6 @@ import { OnChange, Values } from "../PropertyDecorators";
 import { IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
 import {
-  BooleanUiType,
   ChoiceItem,
   InputType,
   NumberUiType,
@@ -119,8 +118,7 @@ export default class SqlX extends SelfServeBaseClass {
   @Values({
     label: "Dedicated Gateway",
     trueLabel: "Enable",
-    falseLabel: "Disable",
-    uiType: BooleanUiType.Toggle,
+    falseLabel: "Disable"
   })
   enableDedicatedGateway: boolean;
 

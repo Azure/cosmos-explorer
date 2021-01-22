@@ -1,5 +1,4 @@
 import {
-  BooleanUiType,
   ChoiceItem,
   Description,
   Info,
@@ -33,7 +32,6 @@ export interface StringInputOptions extends InputOptionsBase {
 export interface BooleanInputOptions extends InputOptionsBase {
   trueLabel: (() => Promise<string>) | string;
   falseLabel: (() => Promise<string>) | string;
-  uiType: BooleanUiType;
 }
 
 export interface ChoiceInputOptions extends InputOptionsBase {
@@ -111,8 +109,7 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
     return addToMap(
       { name: "label", value: inputOptions.label },
       { name: "trueLabel", value: inputOptions.trueLabel },
-      { name: "falseLabel", value: inputOptions.falseLabel },
-      { name: "uiType", value: inputOptions.uiType }
+      { name: "falseLabel", value: inputOptions.falseLabel }
     );
   } else if (isChoiceInputOptions(inputOptions)) {
     return addToMap(
