@@ -5,7 +5,6 @@ import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { TextField } from "office-ui-fabric-react/lib/TextField";
 import { Text } from "office-ui-fabric-react/lib/Text";
-import { RadioSwitchComponent } from "../RadioSwitchComponent/RadioSwitchComponent";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
 import { Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
 import * as InputUtils from "./InputUtils";
@@ -327,7 +326,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const disabled = this.props.disabled || this.props.currentValues.get(dataFieldName)?.disabled;
     return (
       <Dropdown
-        id={`${input.dataFieldName}-dropown-input`}
+        id={`${input.dataFieldName}-dropdown-input`}
         label={label}
         selectedKey={value ? value : defaultKey ? defaultKey : ([] as string[])}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
