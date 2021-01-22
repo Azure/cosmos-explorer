@@ -29,7 +29,9 @@ import { updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
-// This hook will create a new instance of Explorer.ts and bind it to the DOMs
+// This hook will create a new instance of Explorer.ts and bind it to the DOM
+// This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
+// Pleas tread carefully :)
 let explorer: Explorer;
 
 export function useKnockoutExplorer(config: ConfigContext): Explorer {
