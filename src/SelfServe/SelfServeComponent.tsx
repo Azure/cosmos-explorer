@@ -1,5 +1,15 @@
 import React from "react";
-import { CommandBar, ICommandBarItemProps, IStackTokens, MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack } from "office-ui-fabric-react";
+import {
+  CommandBar,
+  ICommandBarItemProps,
+  IStackTokens,
+  MessageBar,
+  MessageBarType,
+  PrimaryButton,
+  Spinner,
+  SpinnerSize,
+  Stack,
+} from "office-ui-fabric-react";
 import {
   ChoiceItem,
   InputType,
@@ -9,7 +19,7 @@ import {
   SmartUiDescriptor,
   Info,
   SmartUiInput,
-  Description
+  Description,
 } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 
 export interface BaseInput {
@@ -45,7 +55,7 @@ export interface ChoiceInput extends BaseInput {
 }
 
 export interface DescriptionDisplay extends BaseInput {
-  description: (() => Promise<Description>) | Description
+  description: (() => Promise<Description>) | Description;
 }
 
 export interface Node {
@@ -60,8 +70,8 @@ export interface SelfServeDescriptor {
   initialize?: () => Promise<Map<string, SmartUiInput>>;
   onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
   inputNames?: string[];
-  validate?: (currentValues: Map<string, SmartUiInput>) => string
-  onRefresh?: () => Promise<RefreshResult>
+  validate?: (currentValues: Map<string, SmartUiInput>) => string;
+  onRefresh?: () => Promise<RefreshResult>;
 }
 
 export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
@@ -71,13 +81,13 @@ export interface SelfServeComponentProps {
 }
 
 export interface SelfServeNotification {
-  message: string,
-  type: MessageBarType.info | MessageBarType.warning | MessageBarType.error
+  message: string;
+  type: MessageBarType.info | MessageBarType.warning | MessageBarType.error;
 }
 
 export interface RefreshResult {
-  isComponentUpdating: boolean,
-  notificationMessage: string
+  isComponentUpdating: boolean;
+  notificationMessage: string;
 }
 
 export interface SelfServeComponentState {
@@ -85,16 +95,16 @@ export interface SelfServeComponentState {
   currentValues: Map<string, SmartUiInput>;
   baselineValues: Map<string, SmartUiInput>;
   isInitializing: boolean;
-  hasErrors: boolean,
-  compileErrorMessage: string,
-  notification: SelfServeNotification,
-  refreshResult: RefreshResult
+  hasErrors: boolean;
+  compileErrorMessage: string;
+  notification: SelfServeNotification;
+  refreshResult: RefreshResult;
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
   componentDidMount(): void {
-    this.performRefresh()
-    this.initializeSmartUiComponent()
+    this.performRefresh();
+    this.initializeSmartUiComponent();
   }
 
   constructor(props: SelfServeComponentProps) {
@@ -107,18 +117,18 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       hasErrors: false,
       compileErrorMessage: undefined,
       notification: undefined,
-      refreshResult: undefined
+      refreshResult: undefined,
     };
   }
 
-  private onError = (hasErrors: boolean) : void => {
-    this.setState({hasErrors})
-  }
+  private onError = (hasErrors: boolean): void => {
+    this.setState({ hasErrors });
+  };
 
   private initializeSmartUiComponent = async (): Promise<void> => {
     this.setState({ isInitializing: true });
     await this.setDefaults();
-    const {currentValues , baselineValues} = this.state
+    const { currentValues, baselineValues } = this.state;
     await this.initializeSmartUiNode(this.props.descriptor.root, currentValues, baselineValues);
     this.setState({ isInitializing: false, currentValues, baselineValues });
   };
@@ -128,69 +138,81 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
     const initialValues = await this.props.descriptor.initialize();
     this.props.descriptor.inputNames.map((inputName) => {
-      let initialValue = initialValues.get(inputName)
+      let initialValue = initialValues.get(inputName);
       if (!initialValue) {
-        initialValue = {value: undefined, hidden: false}
+        initialValue = { value: undefined, hidden: false };
       }
       currentValues = currentValues.set(inputName, initialValue);
       baselineValues = baselineValues.set(inputName, initialValue);
-      initialValues.delete(inputName)
-    })
+      initialValues.delete(inputName);
+    });
 
     if (initialValues.size > 0) {
-      const keys = []
+      const keys = [];
       for (const key of initialValues.keys()) {
-        keys.push(key)
+        keys.push(key);
       }
 
-      this.setState({ 
-        compileErrorMessage: `The following fields have default values set but are not input properties of this class: ${keys.join(", ")}`
+      this.setState({
+        compileErrorMessage: `The following fields have default values set but are not input properties of this class: ${keys.join(
+          ", "
+        )}`,
       });
     }
     this.setState({ currentValues, baselineValues });
   };
 
-  public resetBaselineValues = () : void => {
+  public resetBaselineValues = (): void => {
     let { currentValues, baselineValues } = this.state;
     for (const key of currentValues.keys()) {
-      const currentValue = currentValues.get(key)
-      baselineValues = baselineValues.set(key, {...currentValue})
+      const currentValue = currentValues.get(key);
+      baselineValues = baselineValues.set(key, { ...currentValue });
     }
-    this.setState({baselineValues})
-  }
+    this.setState({ baselineValues });
+  };
 
   public discard = (): void => {
     let { currentValues } = this.state;
     const { baselineValues } = this.state;
     for (const key of currentValues.keys()) {
-      const baselineValue = baselineValues.get(key)
-      currentValues = currentValues.set(key, {...baselineValue});
+      const baselineValue = baselineValues.get(key);
+      currentValues = currentValues.set(key, { ...baselineValue });
     }
     this.setState({ currentValues });
   };
 
-  private initializeSmartUiNode = async (currentNode: Node, currentValues: Map<string, SmartUiInput>, baselineValues: Map<string, SmartUiInput>): Promise<void> => {
+  private initializeSmartUiNode = async (
+    currentNode: Node,
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: Map<string, SmartUiInput>
+  ): Promise<void> => {
     currentNode.info = await this.getResolvedValue(currentNode.info);
 
     if (currentNode.input) {
       currentNode.input = await this.getResolvedInput(currentNode.input, currentValues, baselineValues);
     }
 
-    const promises = currentNode.children?.map(async (child: Node) => await this.initializeSmartUiNode(child, currentValues, baselineValues));
+    const promises = currentNode.children?.map(
+      async (child: Node) => await this.initializeSmartUiNode(child, currentValues, baselineValues)
+    );
     if (promises) {
       await Promise.all(promises);
     }
   };
 
-  private getResolvedInput = async (input: AnyInput, currentValues: Map<string, SmartUiInput>, baselineValues: Map<string, SmartUiInput>): Promise<AnyInput> => {
+  private getResolvedInput = async (
+    input: AnyInput,
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: Map<string, SmartUiInput>
+  ): Promise<AnyInput> => {
     input.label = await this.getResolvedValue(input.label);
     input.placeholder = await this.getResolvedValue(input.placeholder);
 
     switch (input.type) {
       case "string": {
         if ("description" in input) {
-          const descriptionDisplay = input as DescriptionDisplay
-          descriptionDisplay.description = await this.getResolvedValue(descriptionDisplay.description)
+          const descriptionDisplay = input as DescriptionDisplay;
+          descriptionDisplay.description = await this.getResolvedValue(descriptionDisplay.description);
         }
         return input as StringInput;
       }
@@ -200,13 +222,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         numberInput.max = await this.getResolvedValue(numberInput.max);
         numberInput.step = await this.getResolvedValue(numberInput.step);
 
-        const dataFieldName = numberInput.dataFieldName
-        const defaultValue = currentValues.get(dataFieldName)?.value
+        const dataFieldName = numberInput.dataFieldName;
+        const defaultValue = currentValues.get(dataFieldName)?.value;
 
         if (!defaultValue) {
-          const newDefaultValue = {value: numberInput.min, hidden: currentValues.get(dataFieldName)?.hidden}
-          currentValues.set(dataFieldName, newDefaultValue)
-          baselineValues.set(dataFieldName, newDefaultValue)
+          const newDefaultValue = { value: numberInput.min, hidden: currentValues.get(dataFieldName)?.hidden };
+          currentValues.set(dataFieldName, newDefaultValue);
+          baselineValues.set(dataFieldName, newDefaultValue);
         }
 
         return numberInput;
@@ -239,160 +261,158 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     } else {
       const dataFieldName = input.dataFieldName;
       const { currentValues } = this.state;
-      const currentInputValue = currentValues.get(dataFieldName)
-      currentValues.set(dataFieldName, {value: newValue, hidden: currentInputValue?.hidden});
+      const currentInputValue = currentValues.get(dataFieldName);
+      currentValues.set(dataFieldName, { value: newValue, hidden: currentInputValue?.hidden });
       this.setState({ currentValues });
     }
   };
 
-  public onSubmitButtonClick = () : void => {
-    const errorMessage = this.props.descriptor.validate(this.state.currentValues)
-    this.setState({notification: { message: errorMessage, type: MessageBarType.error}})
+  public onSubmitButtonClick = (): void => {
+    const errorMessage = this.props.descriptor.validate(this.state.currentValues);
+    this.setState({ notification: { message: errorMessage, type: MessageBarType.error } });
     if (errorMessage) {
-      return
+      return;
     }
-    const onSubmitPromise = this.props.descriptor.onSubmit(this.state.currentValues)
+    const onSubmitPromise = this.props.descriptor.onSubmit(this.state.currentValues);
     onSubmitPromise.catch((error) => {
       this.setState({
-        notification: { 
-          message: `Update failed. Error: ${error.message}`, 
-          type: MessageBarType.error
-        }
-      })
-    })
+        notification: {
+          message: `Update failed. Error: ${error.message}`,
+          type: MessageBarType.error,
+        },
+      });
+    });
     onSubmitPromise.then((notification: SelfServeNotification) => {
       this.setState({
-        notification: { 
+        notification: {
           message: notification.message,
-          type: notification.type
-        }
-      })
-      this.resetBaselineValues()
-      this.onRefreshClicked()
-    })
-  }
+          type: notification.type,
+        },
+      });
+      this.resetBaselineValues();
+      this.onRefreshClicked();
+    });
+  };
 
-  public isDiscardButtonDisabled = () : boolean => {
+  public isDiscardButtonDisabled = (): boolean => {
     for (const key of this.state.currentValues.keys()) {
-      const currentValue = JSON.stringify(this.state.currentValues.get(key))
-      const baselineValue = JSON.stringify(this.state.baselineValues.get(key))
+      const currentValue = JSON.stringify(this.state.currentValues.get(key));
+      const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
 
       if (currentValue !== baselineValue) {
-        return false
+        return false;
       }
     }
-    return true
-  }
+    return true;
+  };
 
-  public isSaveButtonDisabled = () : boolean => {
+  public isSaveButtonDisabled = (): boolean => {
     if (this.state.hasErrors) {
-      return true
+      return true;
     }
     for (const key of this.state.currentValues.keys()) {
-      const currentValue = JSON.stringify(this.state.currentValues.get(key))
-      const baselineValue = JSON.stringify(this.state.baselineValues.get(key))
+      const currentValue = JSON.stringify(this.state.currentValues.get(key));
+      const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
 
       if (currentValue !== baselineValue) {
-        return false
+        return false;
       }
     }
-    return true
-  }
+    return true;
+  };
 
-  public performRefresh = async () : Promise<RefreshResult> => {
-    const refreshResult = await this.props.descriptor.onRefresh()
-    this.setState({refreshResult: {...refreshResult}})
-    return refreshResult
-  }
+  public performRefresh = async (): Promise<RefreshResult> => {
+    const refreshResult = await this.props.descriptor.onRefresh();
+    this.setState({ refreshResult: { ...refreshResult } });
+    return refreshResult;
+  };
 
-  public onRefreshClicked = async () : Promise<void> => {
-    this.setState({isInitializing: true})
-    const refreshResult = await this.performRefresh()
+  public onRefreshClicked = async (): Promise<void> => {
+    this.setState({ isInitializing: true });
+    const refreshResult = await this.performRefresh();
     if (!refreshResult.isComponentUpdating) {
-      this.initializeSmartUiComponent()
+      this.initializeSmartUiComponent();
     }
-    this.setState({isInitializing: false})
-  }
+    this.setState({ isInitializing: false });
+  };
 
-  private getCommandBarItems = () : ICommandBarItemProps[] => {
+  private getCommandBarItems = (): ICommandBarItemProps[] => {
     return [
       {
-        key: 'save',
-        text: 'Save',
-        iconProps: { iconName: 'Save' },
+        key: "save",
+        text: "Save",
+        iconProps: { iconName: "Save" },
         split: true,
         disabled: this.isSaveButtonDisabled(),
         onClick: this.onSubmitButtonClick,
-        id: "submitButton"
+        id: "submitButton",
       },
       {
-        key: 'discard',
-        text: 'Discard',
-        iconProps: { iconName: 'Undo' },
+        key: "discard",
+        text: "Discard",
+        iconProps: { iconName: "Undo" },
         split: true,
         disabled: this.isDiscardButtonDisabled(),
-        onClick: () => {this.discard()},
-        id: "discardButton"
+        onClick: () => {
+          this.discard();
+        },
+        id: "discardButton",
       },
       {
-        key: 'refresh',
-        text: 'Refresh',
+        key: "refresh",
+        text: "Refresh",
         disabled: this.state.isInitializing,
-        iconProps: { iconName: 'Refresh' },
+        iconProps: { iconName: "Refresh" },
         split: true,
-        onClick: () => {this.onRefreshClicked()},
-        id: "discardButton"
-      }
-    ]
-  }
+        onClick: () => {
+          this.onRefreshClicked();
+        },
+        id: "discardButton",
+      },
+    ];
+  };
 
   public render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 5 };
     if (this.state.compileErrorMessage) {
-      return (
-        <MessageBar messageBarType={MessageBarType.error}>
-          {this.state.compileErrorMessage}
-        </MessageBar>
-      )
+      return <MessageBar messageBarType={MessageBarType.error}>{this.state.compileErrorMessage}</MessageBar>;
     }
     return (
       <div style={{ overflowX: "auto" }}>
         <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
-          <CommandBar styles={{root: {paddingLeft: 0}}} items={this.getCommandBarItems()} />
-          {this.state.isInitializing ? 
-                  <Spinner
-                  size={SpinnerSize.large}
-                  styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
-                />
-                :
-                <>
-          {this.state.refreshResult?.isComponentUpdating &&
-            <MessageBar 
-            messageBarType={MessageBarType.info} 
-            styles={{root: {width: 400}}}
-            >
-              {this.state.refreshResult.notificationMessage}
-           </MessageBar>
-          }
-          {this.state.notification && 
-            <MessageBar 
-            messageBarType={this.state.notification.type} 
-            styles={{root: {width: 400}}}
-            onDismiss={() => this.setState({notification: undefined})}>
-              {this.state.notification.message}
-            </MessageBar>
-          }
-          <SmartUiComponent
-            disabled={this.state.refreshResult?.isComponentUpdating}
-            descriptor={this.state.root as SmartUiDescriptor}
-            currentValues={this.state.currentValues}
-            onInputChange={this.onInputChange}
-            onError={this.onError}
-          />
-          </>
-        }
+          <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems()} />
+          {this.state.isInitializing ? (
+            <Spinner
+              size={SpinnerSize.large}
+              styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
+            />
+          ) : (
+            <>
+              {this.state.refreshResult?.isComponentUpdating && (
+                <MessageBar messageBarType={MessageBarType.info} styles={{ root: { width: 400 } }}>
+                  {this.state.refreshResult.notificationMessage}
+                </MessageBar>
+              )}
+              {this.state.notification && (
+                <MessageBar
+                  messageBarType={this.state.notification.type}
+                  styles={{ root: { width: 400 } }}
+                  onDismiss={() => this.setState({ notification: undefined })}
+                >
+                  {this.state.notification.message}
+                </MessageBar>
+              )}
+              <SmartUiComponent
+                disabled={this.state.refreshResult?.isComponentUpdating}
+                descriptor={this.state.root as SmartUiDescriptor}
+                currentValues={this.state.currentValues}
+                onInputChange={this.onInputChange}
+                onError={this.onError}
+              />
+            </>
+          )}
         </Stack>
       </div>
-    ) 
+    );
   }
 }

@@ -63,8 +63,8 @@ describe("SelfServeUtils", () => {
           min: 1,
           max: 5,
           step: 1,
-          uiType: NumberUiType.Slider
-        }
+          uiType: NumberUiType.Slider,
+        },
       ],
       [
         "collThroughput",
@@ -76,8 +76,8 @@ describe("SelfServeUtils", () => {
           min: 1,
           max: 5,
           step: 1,
-          uiType: NumberUiType.Spinner
-        }
+          uiType: NumberUiType.Spinner,
+        },
       ],
       [
         "invalidThroughput",
@@ -90,8 +90,8 @@ describe("SelfServeUtils", () => {
           max: 5,
           step: 1,
           uiType: NumberUiType.Spinner,
-          errorMessage: "label, truelabel and falselabel are required for boolean input"
-        }
+          errorMessage: "label, truelabel and falselabel are required for boolean input",
+        },
       ],
       [
         "collName",

@@ -1,5 +1,12 @@
 import "reflect-metadata";
-import { ChoiceItem, Info, InputTypeValue, InputType, SmartUiInput, Description } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import {
+  ChoiceItem,
+  Info,
+  InputTypeValue,
+  InputType,
+  SmartUiInput,
+  Description,
+} from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import {
   BooleanInput,
   ChoiceInput,
@@ -10,7 +17,7 @@ import {
   AnyInput,
   DescriptionDisplay,
   SelfServeNotification,
-  RefreshResult
+  RefreshResult,
 } from "./SelfServeComponent";
 
 export enum SelfServeType {
@@ -20,7 +27,7 @@ export enum SelfServeType {
   invalid = "invalid",
   // Add your self serve types here
   example = "example",
-  sqlx="sqlx"
+  sqlx = "sqlx",
 }
 
 export abstract class SelfServeBaseClass {
@@ -66,7 +73,7 @@ export interface CommonInputTypes {
   choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   uiType?: string;
   errorMessage?: string;
-  description?: (() => Promise<Description>) | Description,
+  description?: (() => Promise<Description>) | Description;
   onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
   onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
@@ -176,7 +183,7 @@ const getInput = (value: CommonInputTypes): AnyInput => {
       return value as NumberInput;
     case "string":
       if (value.description) {
-        return value as DescriptionDisplay
+        return value as DescriptionDisplay;
       }
       if (!value.label) {
         value.errorMessage = `label is required for string input '${value.id}'.`;

@@ -1,7 +1,14 @@
 import { PropertyInfo, OnChange, Values } from "../PropertyDecorators";
 import { ClassInfo, IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
-import { BooleanUiType, ChoiceItem, Info, InputType, NumberUiType, SmartUiInput } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
+import {
+  BooleanUiType,
+  ChoiceItem,
+  Info,
+  InputType,
+  NumberUiType,
+  SmartUiInput,
+} from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
 
 export enum Regions {
@@ -24,17 +31,23 @@ export const regionDropdownInfo: Info = {
   message: "More regions can be added in the future.",
 };
 
-const onDbThroughputChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
-  currentState.set("dbThroughput", { value: newValue, hidden: false});
-  currentState.set("collectionThroughput", {value: newValue, hidden: false});
+const onDbThroughputChange = (
+  currentState: Map<string, SmartUiInput>,
+  newValue: InputType
+): Map<string, SmartUiInput> => {
+  currentState.set("dbThroughput", { value: newValue, hidden: false });
+  currentState.set("collectionThroughput", { value: newValue, hidden: false });
   return currentState;
 };
 
-const onEnableDbLevelThroughputChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
-  currentState.set("enableDbLevelThroughput", { value: newValue, hidden: false});
-  const currentDbThroughput = currentState.get("dbThroughput")
-  const isDbThroughputHidden = newValue === undefined || !(newValue as boolean)
-  currentState.set("dbThroughput", {value: currentDbThroughput.value, hidden: isDbThroughputHidden});
+const onEnableDbLevelThroughputChange = (
+  currentState: Map<string, SmartUiInput>,
+  newValue: InputType
+): Map<string, SmartUiInput> => {
+  currentState.set("enableDbLevelThroughput", { value: newValue, hidden: false });
+  const currentDbThroughput = currentState.get("dbThroughput");
+  const isDbThroughputHidden = newValue === undefined || !(newValue as boolean);
+  currentState.set("dbThroughput", { value: currentDbThroughput.value, hidden: isDbThroughputHidden });
   return currentState;
 };
 
@@ -68,12 +81,12 @@ const initializeMaxThroughput = async (): Promise<number> => {
 */
 @ClassInfo(selfServeExampleInfo)
 export default class SelfServeExample extends SelfServeBaseClass {
-  public validate = (currentvalues: Map<string, SmartUiInput>) : string => {
-    console.log(currentvalues.get("regions") , currentvalues.get("accountName"))
+  public validate = (currentvalues: Map<string, SmartUiInput>): string => {
+    console.log(currentvalues.get("regions"), currentvalues.get("accountName"));
     if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
-      return "Regions and AccountName should not be empty."
+      return "Regions and AccountName should not be empty.";
     }
-    return undefined
+    return undefined;
   };
 
   /*
@@ -89,10 +102,16 @@ export default class SelfServeExample extends SelfServeBaseClass {
     SessionStorageUtility.setEntry("regions", currentValues.get("regions")?.value?.toString());
     SessionStorageUtility.setEntry("enableLogging", currentValues.get("enableLogging")?.value?.toString());
     SessionStorageUtility.setEntry("accountName", currentValues.get("accountName")?.value?.toString());
-    SessionStorageUtility.setEntry("collectionThroughput", currentValues.get("collectionThroughput")?.value?.toString());
-    SessionStorageUtility.setEntry("enableDbLevelThroughput", currentValues.get("enableDbLevelThroughput")?.value?.toString());
+    SessionStorageUtility.setEntry(
+      "collectionThroughput",
+      currentValues.get("collectionThroughput")?.value?.toString()
+    );
+    SessionStorageUtility.setEntry(
+      "enableDbLevelThroughput",
+      currentValues.get("enableDbLevelThroughput")?.value?.toString()
+    );
     SessionStorageUtility.setEntry("dbThroughput", currentValues.get("dbThroughput")?.value?.toString());
-    return "submitted successfully"
+    return "submitted successfully";
   };
 
   /*
@@ -112,16 +131,22 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
     const defaults = new Map<string, SmartUiInput>();
-    defaults.set("regions", { value: SessionStorageUtility.getEntry("regions"), hidden: false});
-    defaults.set("enableLogging", { value: SessionStorageUtility.getEntry("enableLogging") === "true", hidden: false});
+    defaults.set("regions", { value: SessionStorageUtility.getEntry("regions"), hidden: false });
+    defaults.set("enableLogging", { value: SessionStorageUtility.getEntry("enableLogging") === "true", hidden: false });
     const stringInput = SessionStorageUtility.getEntry("accountName");
-    defaults.set("accountName", { value: stringInput ? stringInput : "", hidden: false});
+    defaults.set("accountName", { value: stringInput ? stringInput : "", hidden: false });
     const collectionThroughput = parseInt(SessionStorageUtility.getEntry("collectionThroughput"));
-    defaults.set("collectionThroughput", { value: isNaN(collectionThroughput) ? undefined : collectionThroughput, hidden: false});
-    const enableDbLevelThroughput = SessionStorageUtility.getEntry("enableDbLevelThroughput") === "true"
-    defaults.set("enableDbLevelThroughput", { value: enableDbLevelThroughput, hidden: false});
+    defaults.set("collectionThroughput", {
+      value: isNaN(collectionThroughput) ? undefined : collectionThroughput,
+      hidden: false,
+    });
+    const enableDbLevelThroughput = SessionStorageUtility.getEntry("enableDbLevelThroughput") === "true";
+    defaults.set("enableDbLevelThroughput", { value: enableDbLevelThroughput, hidden: false });
     const dbThroughput = parseInt(SessionStorageUtility.getEntry("dbThroughput"));
-    defaults.set("dbThroughput", { value: isNaN(dbThroughput) ? undefined : dbThroughput, hidden: !enableDbLevelThroughput});
+    defaults.set("dbThroughput", {
+      value: isNaN(dbThroughput) ? undefined : dbThroughput,
+      hidden: !enableDbLevelThroughput,
+    });
     return defaults;
   };
 
@@ -137,14 +162,14 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @Values({
     description: {
-      text: "This class sets collection and database throughput.", 
+      text: "This class sets collection and database throughput.",
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-        text: "Click here for more information"
-      }
-    }
+        text: "Click here for more information",
+      },
+    },
   })
-  description: string
+  description: string;
   /*
   @PropertyInfo()
     - optional
@@ -152,7 +177,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
     - role: Display an Info bar above the UI element for this property.
   */
   @PropertyInfo(regionDropdownInfo)
-
   @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
   regions: ChoiceItem;
 
@@ -160,7 +184,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     label: "Enable Logging",
     trueLabel: "Enable",
     falseLabel: "Disable",
-    uiType: BooleanUiType.RadioButton
+    uiType: BooleanUiType.RadioButton,
   })
   enableLogging: boolean;
 
@@ -175,7 +199,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     min: 400,
     max: initializeMaxThroughput,
     step: 100,
-    uiType: NumberUiType.Spinner
+    uiType: NumberUiType.Spinner,
   })
   collectionThroughput: number;
 
@@ -199,10 +223,10 @@ export default class SelfServeExample extends SelfServeBaseClass {
     label: "Enable DB level throughput",
     trueLabel: "Enable",
     falseLabel: "Disable",
-    uiType: BooleanUiType.Toggle
+    uiType: BooleanUiType.Toggle,
   })
   enableDbLevelThroughput: boolean;
-  
+
   /*
     In this example, the onDbThroughputChange function sets the collectionThroughput to the same value as the dbThroughput
     when the slider in moved in the UI.
@@ -213,7 +237,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     min: 400,
     max: initializeMaxThroughput,
     step: 100,
-    uiType: NumberUiType.Slider
+    uiType: NumberUiType.Slider,
   })
   dbThroughput: number;
 }

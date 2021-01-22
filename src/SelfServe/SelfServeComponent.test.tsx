@@ -5,9 +5,9 @@ import { NumberUiType, SmartUiInput } from "../Explorer/Controls/SmartUi/SmartUi
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, SmartUiInput>([
-    ["throughput", {value: "450", hidden: false}],
-    ["analyticalStore", {value: "false", hidden: false}],
-    ["database", {value: "db2", hidden: false}]
+    ["throughput", { value: "450", hidden: false }],
+    ["analyticalStore", { value: "false", hidden: false }],
+    ["database", { value: "db2", hidden: false }],
   ]);
   const initializeMock = jest.fn(async () => defaultValues);
   const onSubmitMock = jest.fn(async () => {
@@ -38,8 +38,8 @@ describe("SelfServeComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: NumberUiType.Spinner
-          }
+            uiType: NumberUiType.Spinner,
+          },
         },
         {
           id: "containerId",

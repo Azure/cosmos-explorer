@@ -1,4 +1,12 @@
-import { BooleanUiType, ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import {
+  BooleanUiType,
+  ChoiceItem,
+  Description,
+  Info,
+  InputType,
+  NumberUiType,
+  SmartUiInput,
+} from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { addPropertyToMap, CommonInputTypes } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
@@ -37,7 +45,12 @@ export interface DescriptionDisplayOptions {
   description?: (() => Promise<Description>) | Description;
 }
 
-type InputOptions = NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions | DescriptionDisplayOptions;
+type InputOptions =
+  | NumberInputOptions
+  | StringInputOptions
+  | BooleanInputOptions
+  | ChoiceInputOptions
+  | DescriptionDisplayOptions;
 
 const isNumberInputOptions = (inputOptions: InputOptions): inputOptions is NumberInputOptions => {
   return "min" in inputOptions;
@@ -105,11 +118,10 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
     return addToMap(
       { name: "label", value: inputOptions.label },
       { name: "placeholder", value: inputOptions.placeholder },
-      { name: "choices", value: inputOptions.choices });
-  } else if (isDescriptionDisplayOptions(inputOptions)) {
-    return addToMap(
-      { name: "description", value: inputOptions.description }
+      { name: "choices", value: inputOptions.choices }
     );
+  } else if (isDescriptionDisplayOptions(inputOptions)) {
+    return addToMap({ name: "description", value: inputOptions.description });
   } else {
     return addToMap(
       { name: "label", value: inputOptions.label },

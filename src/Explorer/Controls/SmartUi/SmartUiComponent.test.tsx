@@ -24,8 +24,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: NumberUiType.Spinner
-          }
+            uiType: NumberUiType.Spinner,
+          },
         },
         {
           id: "throughput2",
@@ -37,8 +37,8 @@ describe("SmartUiComponent", () => {
             max: 500,
             step: 10,
             defaultValue: 400,
-            uiType: NumberUiType.Slider
-          }
+            uiType: NumberUiType.Slider,
+          },
         },
         {
           id: "throughput3",
@@ -51,8 +51,8 @@ describe("SmartUiComponent", () => {
             step: 10,
             defaultValue: 400,
             uiType: NumberUiType.Spinner,
-            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'"
-          }
+            errorMessage: "label, truelabel and falselabel are required for boolean input 'throughput3'",
+          },
         },
         {
           id: "containerId",
@@ -71,8 +71,8 @@ describe("SmartUiComponent", () => {
             defaultValue: true,
             dataFieldName: "analyticalStore",
             type: "boolean",
-            uiType: BooleanUiType.RadioButton
-          }
+            uiType: BooleanUiType.RadioButton,
+          },
         },
         {
           id: "database",
@@ -94,7 +94,13 @@ describe("SmartUiComponent", () => {
 
   it("should render", async () => {
     const wrapper = shallow(
-      <SmartUiComponent disabled={false} descriptor={exampleData} currentValues={new Map()} onInputChange={undefined} onError={undefined}/>
+      <SmartUiComponent
+        disabled={false}
+        descriptor={exampleData}
+        currentValues={new Map()}
+        onInputChange={undefined}
+        onError={undefined}
+      />
     );
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
