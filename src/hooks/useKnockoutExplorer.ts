@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, DefaultAccountExperience, ServerIds } from "../Common/Constants";
 import { configContext, ConfigContext, Platform } from "../ConfigContext";
+import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
+import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer from "../Explorer/Explorer";
 import {
   AAD,
@@ -23,35 +26,67 @@ import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
+
+// A function to help us quickly catch problems in development, but prevent them from crashing production users
+function safeError(message: string) {
+  if (process.env.NODE_ENV === "production") {
+    console.error(message);
+  } else {
+    throw new Error(message);
+  }
+}
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // It should *only* ever run once
 // If it runs more than once it can cause memory leaks or handlers bound to DOM nodes that do not exist anymore.
 let bindingsApplied = false;
-export function useKnockoutExplorer(config: ConfigContext): void {
+
+export function useKnockoutExplorer(config: ConfigContext): Explorer {
+  const [explorer, _setExplorer] = useState<Explorer>();
+
+  // Wrapping setExplorer allows us to inspect its previous value and ensure it has only be set once
+  const setExplorer = (explorer: Explorer) => {
+    _setExplorer((previous) => {
+      if (previous) {
+        safeError("Explorer has already been set! This should only happen once");
+      }
+      return explorer;
+    });
+  };
+
+  // Instantiate and configure Explorer
   useEffect(() => {
     const effect = async () => {
       if (config) {
-        const explorer = new Explorer();
         if (config.platform === Platform.Hosted) {
-          await configureHosted(explorer, config);
+          await configureHosted(setExplorer, config);
         } else if (config.platform === Platform.Emulator) {
-          configureEmulator(explorer);
+          configureEmulator(setExplorer);
         } else if (config.platform === Platform.Portal) {
-          configurePortal(explorer);
+          configurePortal(setExplorer);
         }
-        if (bindingsApplied) {
-          console.error("Knockout bindings were applied more than once. useKnockoutExplorer has a problem.");
-        }
-        applyExplorerBindings(explorer);
-        bindingsApplied = true;
       }
     };
     effect();
   }, [config]);
+
+  // Apply binding after Explorer has been fully instantiated
+  useEffect(() => {
+    if (explorer) {
+      if (bindingsApplied) {
+        safeError("Knockout bindings were applied more than once. useKnockoutExplorer has a problem.");
+      }
+      applyExplorerBindings(explorer);
+      bindingsApplied = true;
+    }
+  }, [explorer]);
+
+  return explorer;
 }
 
-async function configureHosted(explorer: Explorer, config: ConfigContext) {
+async function configureHosted(setExplorer: (explorer: Explorer) => void, config: ConfigContext) {
+  const explorer = new Explorer();
   const win = (window as unknown) as HostedExplorerChildFrame;
   explorer.selfServeType(SelfServeType.none);
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
@@ -63,6 +98,7 @@ async function configureHosted(explorer: Explorer, config: ConfigContext) {
   } else if (win.hostedConfig.authType === AuthType.AAD) {
     await configureHostedWithAAD(win.hostedConfig, explorer);
   }
+  setExplorer(explorer);
 }
 
 async function configureHostedWithAAD(config: AAD, explorer: Explorer) {
@@ -214,15 +250,18 @@ function configureHostedWithEncryptedToken(explorer: Explorer, config: Encrypted
   explorer.isAccountReady(true);
 }
 
-function configureEmulator(explorer: Explorer) {
+function configureEmulator(setExplorer: (explorer: Explorer) => void) {
+  const explorer = new Explorer();
   window.authType = AuthType.MasterKey;
   explorer.selfServeType(SelfServeType.none);
   explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
+  setExplorer(explorer);
 }
 
-function configurePortal(explorer: Explorer) {
+function configurePortal(setExplorer: (explorer: Explorer) => void) {
   window.authType = AuthType.AAD;
+  const explorer = new Explorer();
 
   // In development mode, try to load the iframe message from session storage.
   // This allows webpack hot reload to funciton properly
@@ -233,8 +272,43 @@ function configurePortal(explorer: Explorer) {
       console.warn("Loaded cached portal iframe message from session storage");
       console.dir(message);
       explorer.initDataExplorerWithFrameInputs(message);
+      setExplorer(explorer);
     }
   }
 
-  window.addEventListener("message", explorer.handleMessage.bind(explorer), false);
+  window.addEventListener(
+    "message",
+    (event) => {
+      if (isInvalidParentFrameOrigin(event)) {
+        return;
+      }
+
+      // TODO UNCOMMENT
+      // if (!this._shouldProcessMessage(event)) {
+      //   return;
+      // }
+
+      const message: PortalMessage = event.data?.data;
+      const inputs: DataExplorerInputsFrame = message?.inputs;
+      if (
+        inputs &&
+        configContext.BACKEND_ENDPOINT &&
+        configContext.platform === Platform.Portal &&
+        process.env.NODE_ENV === "development"
+      ) {
+        inputs.extensionEndpoint = configContext.PROXY_PATH;
+      }
+
+      explorer.initDataExplorerWithFrameInputs(inputs);
+      setExplorer(explorer);
+    },
+    false
+  );
+}
+
+interface PortalMessage {
+  openAction?: DataExplorerAction;
+  actionType?: ActionType;
+  type?: MessageTypes;
+  inputs?: DataExplorerInputsFrame;
 }

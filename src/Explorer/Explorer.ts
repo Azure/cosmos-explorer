@@ -1718,58 +1718,7 @@ export default class Explorer {
     this._addSynapseLinkDialogProps.valueHasMutated();
   };
 
-  private _shouldProcessMessage(event: MessageEvent): boolean {
-    if (typeof event.data !== "object") {
-      return false;
-    }
-    if (event.data["signature"] !== "pcIframe") {
-      return false;
-    }
-    if (!("data" in event.data)) {
-      return false;
-    }
-    if (typeof event.data["data"] !== "object") {
-      return false;
-    }
-
-    // before initialization completed give exception
-    const message = event.data.data;
-    if (!this._importExplorerConfigComplete && message && message.type) {
-      const messageType = message.type;
-      switch (messageType) {
-        case MessageTypes.SendNotification:
-        case MessageTypes.ClearNotification:
-        case MessageTypes.LoadingStatus:
-        case MessageTypes.InitTestExplorer:
-          return true;
-      }
-    }
-    if (!("inputs" in event.data["data"]) && !this._importExplorerConfigComplete) {
-      return false;
-    }
-    return true;
-  }
-
-  public handleMessage(event: MessageEvent) {
-    if (isInvalidParentFrameOrigin(event)) {
-      return;
-    }
-
-    if (!this._shouldProcessMessage(event)) {
-      return;
-    }
-
-    const message: any = event.data.data;
-    const inputs: ViewModels.DataExplorerInputsFrame = message.inputs;
-
-    const isRunningInPortal = configContext.platform === Platform.Portal;
-    const isRunningInDevMode = process.env.NODE_ENV === "development";
-    if (inputs && configContext.BACKEND_ENDPOINT && isRunningInPortal && isRunningInDevMode) {
-      inputs.extensionEndpoint = configContext.PROXY_PATH;
-    }
-
-    this.initDataExplorerWithFrameInputs(inputs);
-
+  public handleMessage(message: any) {
     const openAction: ActionContracts.DataExplorerAction = message.openAction;
     if (!!openAction) {
       if (this.isRefreshingExplorer()) {
