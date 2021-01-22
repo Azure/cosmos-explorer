@@ -3,6 +3,9 @@ import { IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
 import { BooleanUiType, ChoiceItem, InputType, NumberUiType, SmartUiInput } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import { getRegionSpecificSku, initializeDedicatedGatewayProvisioning, Sku, updateDedicatedGatewayProvisioning } from "./SqlX.rp";
+import { RefreshResult, SelfServeNotification } from "../SelfServeComponent";
+import { MessageBarType } from "office-ui-fabric-react";
+import { SessionStorageUtility } from "../../Shared/StorageUtility";
 
 const onEnableDedicatedGatewayChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
   const sku = currentState.get("sku")
@@ -38,8 +41,26 @@ const getSkus = async () : Promise<ChoiceItem[]> => {
     })
 }
 
+function delay(delay: number) {
+  return new Promise( res => setTimeout(res, delay) );
+}
+
 @IsDisplayable()
 export default class SqlX extends SelfServeBaseClass {
+  public onRefresh = async () : Promise<RefreshResult> => {
+    await delay(1000)
+    let refreshCount = parseInt(SessionStorageUtility.getEntry("refreshCount"))
+    refreshCount = isNaN(refreshCount) ? 0 : refreshCount
+    refreshCount++
+    console.log(refreshCount)
+    SessionStorageUtility.setEntry("refreshCount", refreshCount.toString())
+    if (refreshCount % 5 === 0) {
+      return {isComponentUpdating: false, notificationMessage: "done"}
+    } else {
+      return {isComponentUpdating: true, notificationMessage: "Updating Example Self Serve Component"}
+    }
+  }
+
   public validate = (currentvalues: Map<string, SmartUiInput>) : string => {
     if (!currentvalues.get("sku").value || !currentvalues.get("instances").value) {
       return "SKU and instances should not be empty."
@@ -47,7 +68,7 @@ export default class SqlX extends SelfServeBaseClass {
     return undefined
   };
 
-  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<string> => {
+  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
     const enableDedicatedGateway = currentValues.get("enableDedicatedGateway")?.value as boolean
     if (enableDedicatedGateway) {
       const sku = Sku[currentValues.get("sku")?.value as keyof typeof Sku]
@@ -56,7 +77,7 @@ export default class SqlX extends SelfServeBaseClass {
     } else {
       await updateDedicatedGatewayProvisioning(undefined, undefined)
     }
-    return "submitted sqlX update successfully"
+    return {message: "submitted sqlX update successfully", type: MessageBarType.info}
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {

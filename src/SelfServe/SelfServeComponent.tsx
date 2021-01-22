@@ -58,9 +58,10 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<string>;
+  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
   inputNames?: string[];
   validate?: (currentValues: Map<string, SmartUiInput>) => string
+  onRefresh?: () => Promise<RefreshResult>
 }
 
 export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
@@ -69,24 +70,31 @@ export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
 }
 
-interface Notification {
+export interface SelfServeNotification {
   message: string,
-  type: MessageBarType
+  type: MessageBarType.info | MessageBarType.warning | MessageBarType.error
+}
+
+export interface RefreshResult {
+  isComponentUpdating: boolean,
+  notificationMessage: string
 }
 
 export interface SelfServeComponentState {
   root: SelfServeDescriptor;
   currentValues: Map<string, SmartUiInput>;
   baselineValues: Map<string, SmartUiInput>;
-  isRefreshing: boolean;
+  isInitializing: boolean;
   hasErrors: boolean,
   compileErrorMessage: string,
-  notification: Notification
+  notification: SelfServeNotification,
+  refreshResult: RefreshResult
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
   componentDidMount(): void {
-    this.initializeSmartUiComponent();
+    this.performRefresh()
+    this.initializeSmartUiComponent()
   }
 
   constructor(props: SelfServeComponentProps) {
@@ -95,10 +103,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       root: this.props.descriptor,
       currentValues: new Map(),
       baselineValues: new Map(),
-      isRefreshing: true,
+      isInitializing: true,
       hasErrors: false,
       compileErrorMessage: undefined,
-      notification: undefined
+      notification: undefined,
+      refreshResult: undefined
     };
   }
 
@@ -107,14 +116,14 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   }
 
   private initializeSmartUiComponent = async (): Promise<void> => {
-    this.setState({ isRefreshing: true });
+    this.setState({ isInitializing: true });
     await this.setDefaults();
     const {currentValues , baselineValues} = this.state
     await this.initializeSmartUiNode(this.props.descriptor.root, currentValues, baselineValues);
-    this.setState({ isRefreshing: false, currentValues, baselineValues });
+    this.setState({ isInitializing: false, currentValues, baselineValues });
   };
 
-  private setDefaults = async (): Promise<void> => {
+  public setDefaults = async (): Promise<void> => {
     let { currentValues, baselineValues } = this.state;
 
     const initialValues = await this.props.descriptor.initialize();
@@ -141,13 +150,21 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ currentValues, baselineValues });
   };
 
+  public resetBaselineValues = () : void => {
+    let { currentValues, baselineValues } = this.state;
+    for (const key of currentValues.keys()) {
+      const currentValue = currentValues.get(key)
+      baselineValues = baselineValues.set(key, {...currentValue})
+    }
+    this.setState({baselineValues})
+  }
+
   public discard = (): void => {
     let { currentValues } = this.state;
     const { baselineValues } = this.state;
     for (const key of currentValues.keys()) {
       const baselineValue = baselineValues.get(key)
-      const newValue = {value: baselineValue.value, hidden: baselineValue.hidden}
-      currentValues = currentValues.set(key, newValue);
+      currentValues = currentValues.set(key, {...baselineValue});
     }
     this.setState({ currentValues });
   };
@@ -234,26 +251,24 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     if (errorMessage) {
       return
     }
-    this.setState({isRefreshing: true})
     const onSubmitPromise = this.props.descriptor.onSubmit(this.state.currentValues)
     onSubmitPromise.catch((error) => {
       this.setState({
-        isRefreshing: false, 
         notification: { 
           message: `Update failed. Error: ${error.message}`, 
           type: MessageBarType.error
         }
       })
     })
-    onSubmitPromise.then((successMessage: string) => {
-      this.setDefaults();
+    onSubmitPromise.then((notification: SelfServeNotification) => {
       this.setState({
-        isRefreshing: false,
         notification: { 
-          message: successMessage,
-          type: MessageBarType.success
+          message: notification.message,
+          type: notification.type
         }
       })
+      this.resetBaselineValues()
+      this.onRefreshClicked()
     })
   }
 
@@ -284,6 +299,21 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return true
   }
 
+  public performRefresh = async () : Promise<RefreshResult> => {
+    const refreshResult = await this.props.descriptor.onRefresh()
+    this.setState({refreshResult: {...refreshResult}})
+    return refreshResult
+  }
+
+  public onRefreshClicked = async () : Promise<void> => {
+    this.setState({isInitializing: true})
+    const refreshResult = await this.performRefresh()
+    if (!refreshResult.isComponentUpdating) {
+      this.initializeSmartUiComponent()
+    }
+    this.setState({isInitializing: false})
+  }
+
   private getCommandBarItems = () : ICommandBarItemProps[] => {
     return [
       {
@@ -303,12 +333,21 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         disabled: this.isDiscardButtonDisabled(),
         onClick: () => {this.discard()},
         id: "discardButton"
+      },
+      {
+        key: 'refresh',
+        text: 'Refresh',
+        disabled: this.state.isInitializing,
+        iconProps: { iconName: 'Refresh' },
+        split: true,
+        onClick: () => {this.onRefreshClicked()},
+        id: "discardButton"
       }
     ]
   }
 
   public render(): JSX.Element {
-    const containerStackTokens: IStackTokens = { childrenGap: 20 };
+    const containerStackTokens: IStackTokens = { childrenGap: 5 };
     if (this.state.compileErrorMessage) {
       return (
         <MessageBar messageBarType={MessageBarType.error}>
@@ -316,18 +355,25 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         </MessageBar>
       )
     }
-    if (this.state.isRefreshing) {
-      return (
-        <Spinner
-          size={SpinnerSize.large}
-          styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
-        />
-      )
-    }
     return (
       <div style={{ overflowX: "auto" }}>
         <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
-          <CommandBar styles={{root: {paddingLeft: 10}}} items={this.getCommandBarItems()} />
+          <CommandBar styles={{root: {paddingLeft: 0}}} items={this.getCommandBarItems()} />
+          {this.state.isInitializing ? 
+                  <Spinner
+                  size={SpinnerSize.large}
+                  styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
+                />
+                :
+                <>
+          {this.state.refreshResult?.isComponentUpdating &&
+            <MessageBar 
+            messageBarType={MessageBarType.info} 
+            styles={{root: {width: 400}}}
+            >
+              {this.state.refreshResult.notificationMessage}
+           </MessageBar>
+          }
           {this.state.notification && 
             <MessageBar 
             messageBarType={this.state.notification.type} 
@@ -337,11 +383,14 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
             </MessageBar>
           }
           <SmartUiComponent
+            disabled={this.state.refreshResult?.isComponentUpdating}
             descriptor={this.state.root as SmartUiDescriptor}
             currentValues={this.state.currentValues}
             onInputChange={this.onInputChange}
             onError={this.onError}
           />
+          </>
+        }
         </Stack>
       </div>
     ) 

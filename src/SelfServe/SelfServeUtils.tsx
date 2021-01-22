@@ -8,7 +8,9 @@ import {
   StringInput,
   Node,
   AnyInput,
-  DescriptionDisplay
+  DescriptionDisplay,
+  SelfServeNotification,
+  RefreshResult
 } from "./SelfServeComponent";
 
 export enum SelfServeType {
@@ -22,9 +24,10 @@ export enum SelfServeType {
 }
 
 export abstract class SelfServeBaseClass {
-  public abstract onSubmit: (currentValues: Map<string, SmartUiInput>) => Promise<string>;
+  public abstract onSubmit: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
   public abstract validate: (currentvalues: Map<string, SmartUiInput>) => string;
+  public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
     const className = this.constructor.name;
@@ -43,6 +46,7 @@ export abstract class SelfServeBaseClass {
     selfServeDescriptor.initialize = this.initialize;
     selfServeDescriptor.onSubmit = this.onSubmit;
     selfServeDescriptor.validate = this.validate;
+    selfServeDescriptor.onRefresh = this.onRefresh;
     return selfServeDescriptor;
   }
 }
