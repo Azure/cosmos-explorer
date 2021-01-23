@@ -17,7 +17,7 @@ describe("Delete Collection Confirmation Pane", () => {
     let explorer: Explorer;
 
     beforeEach(() => {
-      explorer = new Explorer({});
+      explorer = new Explorer();
     });
 
     it("should be true if 1 database and 1 collection", () => {

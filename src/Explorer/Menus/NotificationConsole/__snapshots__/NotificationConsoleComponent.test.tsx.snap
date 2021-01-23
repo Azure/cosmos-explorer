@@ -1,6 +1,169 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NotificationConsoleComponent renders the console (expanded) 1`] = `
+exports[`NotificationConsoleComponent renders the console 1`] = `
+<div
+  className="notificationConsoleContainer"
+>
+  <div
+    className="notificationConsoleHeader"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    tabIndex={0}
+  >
+    <div
+      className="statusBar"
+    >
+      <span
+        className="dataTypeIcons"
+      >
+        <span
+          className="notificationConsoleHeaderIconWithData"
+        >
+          <img
+            alt="in progress items"
+            src=""
+          />
+          <span
+            className="numInProgress"
+          >
+            0
+          </span>
+        </span>
+        <span
+          className="notificationConsoleHeaderIconWithData"
+        >
+          <img
+            alt="error items"
+            src=""
+          />
+          <span
+            className="numErroredItems"
+          >
+            0
+          </span>
+        </span>
+        <span
+          className="notificationConsoleHeaderIconWithData"
+        >
+          <img
+            alt="info items"
+            src=""
+          />
+          <span
+            className="numInfoItems"
+          >
+            0
+          </span>
+        </span>
+      </span>
+      <span
+        className="consoleSplitter"
+      />
+      <span
+        className="headerStatus"
+      >
+        <span
+          className="headerStatusEllipsis"
+        />
+      </span>
+    </div>
+    <div
+      aria-expanded={true}
+      aria-label="console button expanded"
+      className="expandCollapseButton"
+      role="button"
+      tabIndex={0}
+    >
+      <img
+        alt="ChevronUpIcon"
+        src=""
+      />
+    </div>
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height={0}
+    onAnimationEnd={[Function]}
+    style={Object {}}
+  >
+    <div
+      className="notificationConsoleContents"
+    >
+      <div
+        className="notificationConsoleControls"
+      >
+        <StyledWithResponsiveMode
+          aria-label="All"
+          aria-labelledby="consoleFilterLabel"
+          label="Filter:"
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "All",
+                "text": "All",
+              },
+              Object {
+                "key": "In Progress",
+                "text": "In progress",
+              },
+              Object {
+                "key": "Info",
+                "text": "Info",
+              },
+              Object {
+                "key": "Error",
+                "text": "Error",
+              },
+            ]
+          }
+          role="combobox"
+          selectedKey="All"
+        />
+        <span
+          className="consoleSplitter"
+        />
+        <span
+          className="clearNotificationsButton"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          tabIndex={0}
+        >
+          <img
+            alt="clear notifications image"
+            src=""
+          />
+          Clear Notifications
+        </span>
+      </div>
+      <div
+        className="notificationConsoleData"
+      />
+    </div>
+  </AnimateHeight>
+</div>
+`;
+
+exports[`NotificationConsoleComponent renders the console 2`] = `
 <div
   className="notificationConsoleContainer"
 >
@@ -64,18 +227,20 @@ exports[`NotificationConsoleComponent renders the console (expanded) 1`] = `
       >
         <span
           className="headerStatusEllipsis"
-        />
+        >
+          message
+        </span>
       </span>
     </div>
     <div
-      aria-expanded={false}
-      aria-label="console button collapsed"
+      aria-expanded={true}
+      aria-label="console button expanded"
       className="expandCollapseButton"
       role="button"
       tabIndex={0}
     >
       <img
-        alt="ChevronDownIcon"
+        alt="ChevronUpIcon"
         src=""
       />
     </div>
@@ -100,7 +265,7 @@ exports[`NotificationConsoleComponent renders the console (expanded) 1`] = `
     delay={0}
     duration={200}
     easing="ease"
-    height="auto"
+    height={0}
     onAnimationEnd={[Function]}
     style={Object {}}
   >
