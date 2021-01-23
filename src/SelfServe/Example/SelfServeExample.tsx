@@ -8,13 +8,9 @@ import {
   NumberUiType,
   SmartUiInput,
 } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
-import { SessionStorageUtility } from "../../Shared/StorageUtility";
-
-export enum Regions {
-  NorthCentralUS = "NCUS",
-  WestUS = "WUS",
-  EastUS2 = "EUS2",
-}
+import { RefreshResult, SelfServeNotification } from "../SelfServeComponent";
+import { MessageBarType } from "office-ui-fabric-react";
+import { onRefreshSelfServeExample, getMaxThroughput, Regions, update, initialize } from "./SelfServeExample.rp";
 
 export const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
@@ -30,12 +26,14 @@ export const regionDropdownInfo: Info = {
   message: "More regions can be added in the future.",
 };
 
-const onDbThroughputChange = (
-  currentState: Map<string, SmartUiInput>,
-  newValue: InputType
-): Map<string, SmartUiInput> => {
-  currentState.set("dbThroughput", { value: newValue, hidden: false });
-  currentState.set("collectionThroughput", { value: newValue, hidden: false });
+const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+  currentState.set("regions", { value: newValue });
+  const currentEnableLogging = currentState.get("enableLogging");
+  if (newValue === Regions.NorthCentralUS) {
+    currentState.set("enableLogging", { value: false, disabled: true });
+  } else {
+    currentState.set("enableLogging", { value: currentEnableLogging.value, disabled: false });
+  }
   return currentState;
 };
 
@@ -43,15 +41,11 @@ const onEnableDbLevelThroughputChange = (
   currentState: Map<string, SmartUiInput>,
   newValue: InputType
 ): Map<string, SmartUiInput> => {
-  currentState.set("enableDbLevelThroughput", { value: newValue, hidden: false });
+  currentState.set("enableDbLevelThroughput", { value: newValue });
   const currentDbThroughput = currentState.get("dbThroughput");
   const isDbThroughputHidden = newValue === undefined || !(newValue as boolean);
   currentState.set("dbThroughput", { value: currentDbThroughput.value, hidden: isDbThroughputHidden });
   return currentState;
-};
-
-const initializeMaxThroughput = async (): Promise<number> => {
-  return 10000;
 };
 
 /*
@@ -80,8 +74,28 @@ const initializeMaxThroughput = async (): Promise<number> => {
 */
 @ClassInfo(selfServeExampleInfo)
 export default class SelfServeExample extends SelfServeBaseClass {
+  /*
+  onRefresh()
+    - role : Callback that is triggerrd when the refresh button is clicked. You should perform the your rest API
+             call to check if the update action is completed.
+    - returns: 
+            RefreshResult -
+                isComponentUpdating: Indicated if the state is still being updated
+                notificationMessage: Notification message to be shown in case the component is still being updated
+                                     i.e, isComponentUpdating is true
+  */
+  public onRefresh = async (): Promise<RefreshResult> => {
+    return onRefreshSelfServeExample();
+  };
+
+  /*
+  validate()
+    - role : Custom validation logic that is triggerred when the save button is clicked. If validation fails, the save
+             action is not triggerred.
+    - returns: 
+            errorMessage - String that is shown if validation fails. Incase validation succeeds, return undefined here.
+  */
   public validate = (currentvalues: Map<string, SmartUiInput>): string => {
-    console.log(currentvalues.get("regions"), currentvalues.get("accountName"));
     if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
       return "Regions and AccountName should not be empty.";
     }
@@ -96,26 +110,24 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
             In this example, the onSubmit callback simply sets the value for keys corresponding to the field name
             in the SessionStorage.
+    - returns: SelfServeNotification -
+                message: The message to be displayed in the message bar after the onSubmit is completed
+                type: The type of message bar to be used (info, warning, error)
   */
-  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<string> => {
-    SessionStorageUtility.setEntry("regions", currentValues.get("regions")?.value?.toString());
-    SessionStorageUtility.setEntry("enableLogging", currentValues.get("enableLogging")?.value?.toString());
-    SessionStorageUtility.setEntry("accountName", currentValues.get("accountName")?.value?.toString());
-    SessionStorageUtility.setEntry(
-      "collectionThroughput",
-      currentValues.get("collectionThroughput")?.value?.toString()
-    );
-    SessionStorageUtility.setEntry(
-      "enableDbLevelThroughput",
-      currentValues.get("enableDbLevelThroughput")?.value?.toString()
-    );
-    SessionStorageUtility.setEntry("dbThroughput", currentValues.get("dbThroughput")?.value?.toString());
-    return "submitted successfully";
+  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
+    const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
+    const enableLogging = currentValues.get("enableLogging")?.value as boolean;
+    const accountName = currentValues.get("accountName")?.value as string;
+    const collectionThroughput = currentValues.get("collectionThroughput")?.value as number;
+    const enableDbLevelThroughput = currentValues.get("enableDbLevelThroughput")?.value as boolean;
+    let dbThroughput = currentValues.get("dbThroughput")?.value as number;
+    dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
+    await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
+    return { message: "submitted successfully", type: MessageBarType.info };
   };
 
   /*
   initialize()
-    - input: () => Promise<Map<string, InputType>>
     - role: Set default values for the properties of this class.
 
             The properties of this class (namely regions, enableLogging, accountName, dbThroughput, collectionThroughput),
@@ -127,25 +139,19 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
             In this example, the initialize function simply reads the SessionStorage to fetch the default values
             for these fields. These are then set when the changes are submitted.
+    - returns: () => Promise<Map<string, InputType>>
   */
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
+    const initializeResponse = await initialize();
     const defaults = new Map<string, SmartUiInput>();
-    defaults.set("regions", { value: SessionStorageUtility.getEntry("regions"), hidden: false });
-    defaults.set("enableLogging", { value: SessionStorageUtility.getEntry("enableLogging") === "true", hidden: false });
-    const stringInput = SessionStorageUtility.getEntry("accountName");
-    defaults.set("accountName", { value: stringInput ? stringInput : "", hidden: false });
-    const collectionThroughput = parseInt(SessionStorageUtility.getEntry("collectionThroughput"));
-    defaults.set("collectionThroughput", {
-      value: isNaN(collectionThroughput) ? undefined : collectionThroughput,
-      hidden: false,
-    });
-    const enableDbLevelThroughput = SessionStorageUtility.getEntry("enableDbLevelThroughput") === "true";
-    defaults.set("enableDbLevelThroughput", { value: enableDbLevelThroughput, hidden: false });
-    const dbThroughput = parseInt(SessionStorageUtility.getEntry("dbThroughput"));
-    defaults.set("dbThroughput", {
-      value: isNaN(dbThroughput) ? undefined : dbThroughput,
-      hidden: !enableDbLevelThroughput,
-    });
+    defaults.set("regions", { value: initializeResponse.regions });
+    defaults.set("enableLogging", { value: initializeResponse.enableLogging });
+    const accountName = initializeResponse.accountName;
+    defaults.set("accountName", { value: accountName ? accountName : "" });
+    defaults.set("collectionThroughput", { value: initializeResponse.collectionThroughput });
+    const enableDbLevelThroughput = !!initializeResponse.dbThroughput;
+    defaults.set("enableDbLevelThroughput", { value: enableDbLevelThroughput });
+    defaults.set("dbThroughput", { value: initializeResponse.dbThroughput, hidden: !enableDbLevelThroughput });
     return defaults;
   };
 
@@ -176,30 +182,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
     - role: Display an Info bar above the UI element for this property.
   */
   @PropertyInfo(regionDropdownInfo)
-  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
-  regions: ChoiceItem;
-
-  @Values({
-    label: "Enable Logging",
-    trueLabel: "Enable",
-    falseLabel: "Disable"
-  })
-  enableLogging: boolean;
-
-  @Values({
-    label: "Account Name",
-    placeholder: "Enter the account name",
-  })
-  accountName: string;
-
-  @Values({
-    label: "Collection Throughput",
-    min: 400,
-    max: initializeMaxThroughput,
-    step: 100,
-    uiType: NumberUiType.Spinner,
-  })
-  collectionThroughput: number;
 
   /*
   @OnChange()
@@ -212,27 +194,52 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
             The new Map of propertyName -> value is returned.
 
-            In this example, the onEnableDbLevelThroughputChange function makes the dbThroughput property visible when
-            enableDbLevelThroughput, a boolean, is set to true and hides dbThroughput property when it is set to false.
+            In this example, the onRegionsChange function sets the enableLogging property to false (and disables
+            the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
+            any other value of "regions"
   */
+  @OnChange(onRegionsChange)
+  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
+  regions: ChoiceItem;
 
+  @Values({
+    label: "Enable Logging",
+    trueLabel: "Enable",
+    falseLabel: "Disable",
+  })
+  enableLogging: boolean;
+
+  @Values({
+    label: "Account Name",
+    placeholder: "Enter the account name",
+  })
+  accountName: string;
+
+  @Values({
+    label: "Collection Throughput",
+    min: 400,
+    max: getMaxThroughput,
+    step: 100,
+    uiType: NumberUiType.Spinner,
+  })
+  collectionThroughput: number;
+
+  /*
+    In this example, the onEnableDbLevelThroughputChange function makes the dbThroughput property visible when
+    enableDbLevelThroughput, a boolean, is set to true and hides dbThroughput property when it is set to false.
+  */
   @OnChange(onEnableDbLevelThroughputChange)
   @Values({
     label: "Enable DB level throughput",
     trueLabel: "Enable",
-    falseLabel: "Disable"
+    falseLabel: "Disable",
   })
   enableDbLevelThroughput: boolean;
 
-  /*
-    In this example, the onDbThroughputChange function sets the collectionThroughput to the same value as the dbThroughput
-    when the slider in moved in the UI.
-  */
-  @OnChange(onDbThroughputChange)
   @Values({
     label: "Database Throughput",
     min: 400,
-    max: initializeMaxThroughput,
+    max: getMaxThroughput,
     step: 100,
     uiType: NumberUiType.Slider,
   })

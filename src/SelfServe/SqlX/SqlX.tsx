@@ -1,21 +1,16 @@
 import { OnChange, Values } from "../PropertyDecorators";
 import { IsDisplayable } from "../ClassDecorators";
 import { SelfServeBaseClass } from "../SelfServeUtils";
-import {
-  ChoiceItem,
-  InputType,
-  NumberUiType,
-  SmartUiInput,
-} from "../../Explorer/Controls/SmartUi/SmartUiComponent";
+import { ChoiceItem, InputType, NumberUiType, SmartUiInput } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
 import {
   getRegionSpecificSku,
   initializeDedicatedGatewayProvisioning,
   Sku,
   updateDedicatedGatewayProvisioning,
+  refreshDedicatedGatewayProvisioning,
 } from "./SqlX.rp";
 import { RefreshResult, SelfServeNotification } from "../SelfServeComponent";
 import { MessageBarType } from "office-ui-fabric-react";
-import { SessionStorageUtility } from "../../Shared/StorageUtility";
 
 const onEnableDedicatedGatewayChange = (
   currentState: Map<string, SmartUiInput>,
@@ -24,7 +19,7 @@ const onEnableDedicatedGatewayChange = (
   const sku = currentState.get("sku");
   const instances = currentState.get("instances");
   const isSkuHidden = newValue === undefined || !(newValue as boolean);
-  currentState.set("enableDedicatedGateway", { value: newValue, hidden: false });
+  currentState.set("enableDedicatedGateway", { value: newValue });
   currentState.set("sku", { value: sku.value, hidden: isSkuHidden });
   currentState.set("instances", { value: instances.value, hidden: isSkuHidden });
   return currentState;
@@ -54,24 +49,10 @@ const getSkus = async (): Promise<ChoiceItem[]> => {
   });
 };
 
-function delay(delay: number) {
-  return new Promise((res) => setTimeout(res, delay));
-}
-
 @IsDisplayable()
 export default class SqlX extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
-    await delay(1000);
-    let refreshCount = parseInt(SessionStorageUtility.getEntry("refreshCount"));
-    refreshCount = isNaN(refreshCount) ? 0 : refreshCount;
-    refreshCount++;
-    console.log(refreshCount);
-    SessionStorageUtility.setEntry("refreshCount", refreshCount.toString());
-    if (refreshCount % 5 === 0) {
-      return { isComponentUpdating: false, notificationMessage: "done" };
-    } else {
-      return { isComponentUpdating: true, notificationMessage: "Updating Example Self Serve Component" };
-    }
+    return refreshDedicatedGatewayProvisioning();
   };
 
   public validate = (currentvalues: Map<string, SmartUiInput>): string => {
@@ -97,7 +78,7 @@ export default class SqlX extends SelfServeBaseClass {
     const dedicatedGatewayResponse = await initializeDedicatedGatewayProvisioning();
     const defaults = new Map<string, SmartUiInput>();
     const enableDedicatedGateway = !dedicatedGatewayResponse.instances && !dedicatedGatewayResponse.sku ? false : true;
-    defaults.set("enableDedicatedGateway", { value: enableDedicatedGateway, hidden: false });
+    defaults.set("enableDedicatedGateway", { value: enableDedicatedGateway });
     defaults.set("sku", { value: dedicatedGatewayResponse.sku, hidden: !enableDedicatedGateway });
     defaults.set("instances", { value: dedicatedGatewayResponse.instances, hidden: !enableDedicatedGateway });
     return defaults;
@@ -118,7 +99,7 @@ export default class SqlX extends SelfServeBaseClass {
   @Values({
     label: "Dedicated Gateway",
     trueLabel: "Enable",
-    falseLabel: "Disable"
+    falseLabel: "Disable",
   })
   enableDedicatedGateway: boolean;
 

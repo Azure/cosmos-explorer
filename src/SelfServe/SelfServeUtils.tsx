@@ -46,6 +46,12 @@ export abstract class SelfServeBaseClass {
     if (!this.onSubmit) {
       throw new Error(`onSubmit() was not declared for the class '${className}'`);
     }
+    if (!this.validate) {
+      throw new Error(`validate() was not declared for the class '${className}'`);
+    }
+    if (!this.onRefresh) {
+      throw new Error(`onRefresh() was not declared for the class '${className}'`);
+    }
     if (!selfServeDescriptor?.root) {
       throw new Error(`@SmartUi decorator was not declared for the class '${className}'`);
     }
@@ -112,7 +118,6 @@ export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K e
   descriptorValue: K
 ): void => {
   if (!(context instanceof Map)) {
-    console.log(context);
     throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
   }
 

@@ -5,7 +5,6 @@ import {
   IStackTokens,
   MessageBar,
   MessageBarType,
-  PrimaryButton,
   Spinner,
   SpinnerSize,
   Stack,
@@ -133,7 +132,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ isInitializing: false, currentValues, baselineValues });
   };
 
-  public setDefaults = async (): Promise<void> => {
+  private setDefaults = async (): Promise<void> => {
     let { currentValues, baselineValues } = this.state;
 
     const initialValues = await this.props.descriptor.initialize();
@@ -163,7 +162,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public resetBaselineValues = (): void => {
-    let { currentValues, baselineValues } = this.state;
+    const currentValues = this.state.currentValues;
+    let baselineValues = this.state.baselineValues;
     for (const key of currentValues.keys()) {
       const currentValue = currentValues.get(key);
       baselineValues = baselineValues.set(key, { ...currentValue });
@@ -321,7 +321,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return true;
   };
 
-  public performRefresh = async (): Promise<RefreshResult> => {
+  private performRefresh = async (): Promise<RefreshResult> => {
     const refreshResult = await this.props.descriptor.onRefresh();
     this.setState({ refreshResult: { ...refreshResult } });
     return refreshResult;

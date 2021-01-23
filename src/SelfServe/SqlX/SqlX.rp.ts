@@ -1,4 +1,4 @@
-import { SessionStorageUtility } from "../../Shared/StorageUtility";
+import { RefreshResult } from "../SelfServeComponent";
 
 export enum Sku {
   D4 = "D4",
@@ -14,19 +14,23 @@ export interface DedicatedGatewayResponse {
 }
 
 export const getRegionSpecificSku = async (): Promise<Sku[]> => {
-  return [Sku.D4, Sku.D16, Sku.D64];
+  // TODO: write RP call to get SKUs available for this region
+  throw new Error("getRegionSpecificSku not implemented");
 };
 
 export const updateDedicatedGatewayProvisioning = async (sku: Sku, instances: number): Promise<void> => {
-  SessionStorageUtility.setEntry("sku", sku);
-  SessionStorageUtility.setEntry("instances", instances?.toString());
+  // TODO: write RP call to update dedicated gateway provisioning
+  throw new Error(
+    `updateDedicatedGatewayProvisioning not implemented. Parameters- sku: ${sku}, instances:${instances}`
+  );
 };
 
 export const initializeDedicatedGatewayProvisioning = async (): Promise<DedicatedGatewayResponse> => {
-  const skuString = SessionStorageUtility.getEntry("sku");
-  const instances = parseInt(SessionStorageUtility.getEntry("instances"));
-  return {
-    sku: Sku[skuString as keyof typeof Sku],
-    instances: isNaN(instances) ? undefined : instances,
-  };
+  // TODO: write RP call to initialize UI for dedicated gateway provisioning
+  throw new Error("initializeDedicatedGatewayProvisioning not implemented");
+};
+
+export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResult> => {
+  // TODO: write RP call to check if dedicated gateway update has gone through
+  throw new Error("refreshDedicatedGatewayProvisioning not implemented");
 };

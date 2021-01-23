@@ -127,7 +127,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     fontSize: 12,
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     if (!this.shouldCheckErrors) {
       this.shouldCheckErrors = true;
       return;
@@ -188,7 +188,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private renderDescription(input: DescriptionDisplay): JSX.Element {
     const description = input.description;
     return (
-      <Text>
+      <Text id={`${input.dataFieldName}-text-display`}>
         {input.description.text}{" "}
         {description.link && (
           <Link target="_blank" href={input.description.link.href}>
@@ -304,10 +304,9 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private renderBooleanInput(input: BooleanInput): JSX.Element {
     const value = this.props.currentValues.get(input.dataFieldName)?.value as boolean;
-    const selectedKey = value || input.defaultValue ? "true" : "false";
     const disabled = this.props.disabled || this.props.currentValues.get(input.dataFieldName)?.disabled;
-    return(
-    <Toggle
+    return (
+      <Toggle
         id={`${input.dataFieldName}-toggle-input`}
         label={input.label}
         checked={value ? value : false}

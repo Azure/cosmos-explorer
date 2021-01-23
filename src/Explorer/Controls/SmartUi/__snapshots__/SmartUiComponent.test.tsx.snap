@@ -41,7 +41,9 @@ exports[`SmartUiComponent disable all inputs 1`] = `
         }
       >
         <StackItem>
-          <Text>
+          <Text
+            id="description-text-display"
+          >
             this is an example description text.
              
             <StyledLinkBase
@@ -360,7 +362,9 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
         }
       >
         <StackItem>
-          <Text>
+          <Text
+            id="description-text-display"
+          >
             this is an example description text.
              
             <StyledLinkBase

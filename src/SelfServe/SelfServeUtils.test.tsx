@@ -4,13 +4,16 @@ import {
   SelfServeBaseClass,
   updateContextWithDecorator,
 } from "./SelfServeUtils";
-import { InputType, NumberUiType, SmartUiInput } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
+import { NumberUiType, SmartUiInput } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
+import { RefreshResult, SelfServeNotification } from "./SelfServeComponent";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
-      public onSubmit = async (): Promise<void> => {
-        return;
+      public validate: (currentvalues: Map<string, SmartUiInput>) => string;
+      public onRefresh: () => Promise<RefreshResult>;
+      public onSubmit = async (): Promise<SelfServeNotification> => {
+        return undefined;
       };
       public initialize: () => Promise<Map<string, SmartUiInput>>;
     }
@@ -19,7 +22,9 @@ describe("SelfServeUtils", () => {
 
   it("onSubmit should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
-      public onSubmit: () => Promise<void>;
+      public validate: (currentvalues: Map<string, SmartUiInput>) => string;
+      public onRefresh: () => Promise<RefreshResult>;
+      public onSubmit: () => Promise<SelfServeNotification>;
       public initialize = async (): Promise<Map<string, SmartUiInput>> => {
         return undefined;
       };
@@ -27,10 +32,40 @@ describe("SelfServeUtils", () => {
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onSubmit() was not declared for the class 'Test'");
   });
 
+  it("validate should be declared for self serve classes", () => {
+    class Test extends SelfServeBaseClass {
+      public validate: (currentvalues: Map<string, SmartUiInput>) => string;
+      public onRefresh = async (): Promise<RefreshResult> => undefined;
+      public onSubmit = async (): Promise<SelfServeNotification> => {
+        return undefined;
+      };
+      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
+        return undefined;
+      };
+    }
+    expect(() => new Test().toSelfServeDescriptor()).toThrow("validate() was not declared for the class 'Test'");
+  });
+
+  it("onRefresh should be declared for self serve classes", () => {
+    class Test extends SelfServeBaseClass {
+      public onRefresh: () => Promise<RefreshResult>;
+      public validate = (): string => undefined;
+      public onSubmit = async (): Promise<SelfServeNotification> => {
+        return undefined;
+      };
+      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
+        return undefined;
+      };
+    }
+    expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
+  });
+
   it("@SmartUi decorator must be present for self serve classes", () => {
     class Test extends SelfServeBaseClass {
-      public onSubmit = async (): Promise<void> => {
-        return;
+      public validate = (): string => undefined;
+      public onRefresh = async (): Promise<RefreshResult> => undefined;
+      public onSubmit = async (): Promise<SelfServeNotification> => {
+        return undefined;
       };
       public initialize = async (): Promise<Map<string, SmartUiInput>> => {
         return undefined;
