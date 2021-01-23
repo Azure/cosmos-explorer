@@ -67,7 +67,7 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
   inputNames?: string[];
   validate?: (currentValues: Map<string, SmartUiInput>) => string;
   onRefresh?: () => Promise<RefreshResult>;
@@ -267,14 +267,14 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     }
   };
 
-  public onSubmitButtonClick = (): void => {
+  public onSaveButtonClick = (): void => {
     const errorMessage = this.props.descriptor.validate(this.state.currentValues);
     this.setState({ notification: { message: errorMessage, type: MessageBarType.error } });
     if (errorMessage) {
       return;
     }
-    const onSubmitPromise = this.props.descriptor.onSubmit(this.state.currentValues);
-    onSubmitPromise.catch((error) => {
+    const onSavePromise = this.props.descriptor.onSave(this.state.currentValues);
+    onSavePromise.catch((error) => {
       this.setState({
         notification: {
           message: `Update failed. Error: ${error.message}`,
@@ -282,7 +282,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         },
       });
     });
-    onSubmitPromise.then((notification: SelfServeNotification) => {
+    onSavePromise.then((notification: SelfServeNotification) => {
       this.setState({
         notification: {
           message: notification.message,
@@ -344,8 +344,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         iconProps: { iconName: "Save" },
         split: true,
         disabled: this.isSaveButtonDisabled(),
-        onClick: this.onSubmitButtonClick,
-        id: "submitButton",
+        onClick: this.onSaveButtonClick,
       },
       {
         key: "discard",
@@ -356,7 +355,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         onClick: () => {
           this.discard();
         },
-        id: "discardButton",
       },
       {
         key: "refresh",
@@ -367,7 +365,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         onClick: () => {
           this.onRefreshClicked();
         },
-        id: "discardButton",
       },
     ];
   };

@@ -54,8 +54,10 @@ const onEnableDbLevelThroughputChange = (
   Each self serve class
     - Needs to extends the SelfServeBase class.
     - Needs to have the @IsDisplayable() decorator to tell the compiler that UI needs to be generated from this class.
-    - Needs to define an onSubmit() function, a callback for when the submit button is clicked.
+    - Needs to define an onSave() function, a callback for when the submit button is clicked.
     - Needs to define an initialize() function, to set default values for the inputs.
+    - Needs to define an onRefresh() function, a callback for when the refresh button is clicked.
+    - Needs to define an validate() function, to validate inputs before onSave is triggerred.
 
   You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
   and plumb in similar feature flags for your own self serve class.
@@ -103,18 +105,18 @@ export default class SelfServeExample extends SelfServeBaseClass {
   };
 
   /*
-  onSubmit()
+  onSave()
     - input: (currentValues: Map<string, InputType>) => Promise<void>
     - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
             calls here using the data from the different inputs passed as a Map to this callback function.
 
-            In this example, the onSubmit callback simply sets the value for keys corresponding to the field name
+            In this example, the onSave callback simply sets the value for keys corresponding to the field name
             in the SessionStorage.
     - returns: SelfServeNotification -
-                message: The message to be displayed in the message bar after the onSubmit is completed
+                message: The message to be displayed in the message bar after the onSave is completed
                 type: The type of message bar to be used (info, warning, error)
   */
-  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
+  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
     const enableLogging = currentValues.get("enableLogging")?.value as boolean;
     const accountName = currentValues.get("accountName")?.value as string;
@@ -135,7 +137,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
             defaults can be set by setting values in a Map corresponding to the field's name.
 
             Typically, you can make rest calls in the async initialize function, to fetch the initial values for
-            these fields. This is called after the onSubmit callback, to reinitialize the defaults.
+            these fields. This is called after the onSave callback, to reinitialize the defaults.
 
             In this example, the initialize function simply reads the SessionStorage to fetch the default values
             for these fields. These are then set when the changes are submitted.

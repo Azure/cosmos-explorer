@@ -22,7 +22,7 @@ describe("SelfServeComponent", () => {
   ]);
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
-  const onSubmitMock = jest.fn(async () => {
+  const onSaveMock = jest.fn(async () => {
     return { message: "submitted successfully", type: MessageBarType.info } as SelfServeNotification;
   });
   const validateMock = jest.fn(() => undefined);
@@ -36,7 +36,7 @@ describe("SelfServeComponent", () => {
 
   const exampleData: SelfServeDescriptor = {
     initialize: initializeMock,
-    onSubmit: onSubmitMock,
+    onSave: onSaveMock,
     validate: validateMock,
     onRefresh: onRefreshMock,
     inputNames: ["throughput", "analyticalStore", "database"],
@@ -156,8 +156,8 @@ describe("SelfServeComponent", () => {
     expect(onRefreshMock).toHaveBeenCalledTimes(2);
     expect(initializeMock).toHaveBeenCalledTimes(2);
 
-    selfServeComponent.onSubmitButtonClick();
-    expect(onSubmitMock).toHaveBeenCalledTimes(1);
+    selfServeComponent.onSaveButtonClick();
+    expect(onSaveMock).toHaveBeenCalledTimes(1);
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
 
@@ -186,7 +186,7 @@ describe("SelfServeComponent", () => {
     let wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     let selfServeComponent = wrapper.instance() as SelfServeComponent;
-    selfServeComponent.onSubmitButtonClick();
+    selfServeComponent.onSaveButtonClick();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 
@@ -195,7 +195,7 @@ describe("SelfServeComponent", () => {
     wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     selfServeComponent = wrapper.instance() as SelfServeComponent;
-    selfServeComponent.onSubmitButtonClick();
+    selfServeComponent.onSaveButtonClick();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 

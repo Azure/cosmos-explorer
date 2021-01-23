@@ -12,7 +12,7 @@ describe("SelfServeUtils", () => {
     class Test extends SelfServeBaseClass {
       public validate: (currentvalues: Map<string, SmartUiInput>) => string;
       public onRefresh: () => Promise<RefreshResult>;
-      public onSubmit = async (): Promise<SelfServeNotification> => {
+      public onSave = async (): Promise<SelfServeNotification> => {
         return undefined;
       };
       public initialize: () => Promise<Map<string, SmartUiInput>>;
@@ -20,23 +20,23 @@ describe("SelfServeUtils", () => {
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
   });
 
-  it("onSubmit should be declared for self serve classes", () => {
+  it("onSave should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public validate: (currentvalues: Map<string, SmartUiInput>) => string;
       public onRefresh: () => Promise<RefreshResult>;
-      public onSubmit: () => Promise<SelfServeNotification>;
+      public onSave: () => Promise<SelfServeNotification>;
       public initialize = async (): Promise<Map<string, SmartUiInput>> => {
         return undefined;
       };
     }
-    expect(() => new Test().toSelfServeDescriptor()).toThrow("onSubmit() was not declared for the class 'Test'");
+    expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
   });
 
   it("validate should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public validate: (currentvalues: Map<string, SmartUiInput>) => string;
       public onRefresh = async (): Promise<RefreshResult> => undefined;
-      public onSubmit = async (): Promise<SelfServeNotification> => {
+      public onSave = async (): Promise<SelfServeNotification> => {
         return undefined;
       };
       public initialize = async (): Promise<Map<string, SmartUiInput>> => {
@@ -50,7 +50,7 @@ describe("SelfServeUtils", () => {
     class Test extends SelfServeBaseClass {
       public onRefresh: () => Promise<RefreshResult>;
       public validate = (): string => undefined;
-      public onSubmit = async (): Promise<SelfServeNotification> => {
+      public onSave = async (): Promise<SelfServeNotification> => {
         return undefined;
       };
       public initialize = async (): Promise<Map<string, SmartUiInput>> => {
@@ -64,7 +64,7 @@ describe("SelfServeUtils", () => {
     class Test extends SelfServeBaseClass {
       public validate = (): string => undefined;
       public onRefresh = async (): Promise<RefreshResult> => undefined;
-      public onSubmit = async (): Promise<SelfServeNotification> => {
+      public onSave = async (): Promise<SelfServeNotification> => {
         return undefined;
       };
       public initialize = async (): Promise<Map<string, SmartUiInput>> => {

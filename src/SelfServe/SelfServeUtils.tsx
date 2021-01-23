@@ -31,7 +31,7 @@ export enum SelfServeType {
 }
 
 export abstract class SelfServeBaseClass {
-  public abstract onSubmit: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  public abstract onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
   public abstract validate: (currentvalues: Map<string, SmartUiInput>) => string;
   public abstract onRefresh: () => Promise<RefreshResult>;
@@ -43,8 +43,8 @@ export abstract class SelfServeBaseClass {
     if (!this.initialize) {
       throw new Error(`initialize() was not declared for the class '${className}'`);
     }
-    if (!this.onSubmit) {
-      throw new Error(`onSubmit() was not declared for the class '${className}'`);
+    if (!this.onSave) {
+      throw new Error(`onSave() was not declared for the class '${className}'`);
     }
     if (!this.validate) {
       throw new Error(`validate() was not declared for the class '${className}'`);
@@ -57,7 +57,7 @@ export abstract class SelfServeBaseClass {
     }
 
     selfServeDescriptor.initialize = this.initialize;
-    selfServeDescriptor.onSubmit = this.onSubmit;
+    selfServeDescriptor.onSave = this.onSave;
     selfServeDescriptor.validate = this.validate;
     selfServeDescriptor.onRefresh = this.onRefresh;
     return selfServeDescriptor;
@@ -81,7 +81,7 @@ export interface CommonInputTypes {
   errorMessage?: string;
   description?: (() => Promise<Description>) | Description;
   onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
-  onSubmit?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
+  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
 }
 

@@ -62,7 +62,7 @@ export default class SqlX extends SelfServeBaseClass {
     return undefined;
   };
 
-  public onSubmit = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
+  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
     const enableDedicatedGateway = currentValues.get("enableDedicatedGateway")?.value as boolean;
     if (enableDedicatedGateway) {
       const sku = Sku[currentValues.get("sku")?.value as keyof typeof Sku];
