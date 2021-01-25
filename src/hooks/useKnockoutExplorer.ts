@@ -7,7 +7,7 @@ import { configContext, ConfigContext, Platform } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
-import Explorer from "../Explorer/Explorer";
+import Explorer, { ExplorerParams } from "../Explorer/Explorer";
 import {
   AAD,
   ConnectionString,
@@ -34,8 +34,8 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 // Pleas tread carefully :)
 let explorer: Explorer;
 
-export function useKnockoutExplorer(config: ConfigContext): Explorer {
-  explorer = explorer || new Explorer();
+export function useKnockoutExplorer(config: ConfigContext, explorerParams: ExplorerParams): Explorer {
+  explorer = explorer || new Explorer(explorerParams);
   useEffect(() => {
     const effect = async () => {
       if (config) {

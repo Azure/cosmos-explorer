@@ -54,7 +54,8 @@ import "./Libs/is-integer-polyfill";
 import "url-polyfill/url-polyfill.min";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import React from "react";
+import { ExplorerParams } from "./Explorer/Explorer";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -63,12 +64,21 @@ import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
+  const [isNotificationConsoleExpanded, setIsNotificationConsoleExpanded] = useState(false);
+  const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
+  const [inProgressMessageIdToBeDeleted, setInProgressMessageIdToBeDeleted] = useState("");
+  const explorerParams: ExplorerParams = {
+    setIsNotificationConsoleExpanded,
+    setNotificationConsoleData,
+    setInProgressMessageIdToBeDeleted,
+  };
   const config = useConfig();
-  useKnockoutExplorer(config);
+  useKnockoutExplorer(config, explorerParams);
 
   return (
     <div className="flexContainer">
