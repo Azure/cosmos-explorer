@@ -242,6 +242,7 @@ const App: React.FunctionComponent = () => {
         explorer.databaseAccount(emulatorAccount);
         explorer.isAccountReady(true);
       } else if (config.platform === Platform.Portal) {
+        window.authType = AuthType.AAD;
         explorer = new Explorer();
 
         // In development mode, try to load the iframe message from session storage.
