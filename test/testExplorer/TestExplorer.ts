@@ -1,7 +1,5 @@
-import { MessageTypes } from "../../src/Contracts/ExplorerContracts";
 import "../../less/hostedexplorer.less";
 import { TestExplorerParams } from "./TestExplorerParams";
-import { ClientSecretCredential } from "@azure/identity";
 import { DatabaseAccountsGetResponse } from "@azure/arm-cosmosdb/esm/models";
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import * as msRest from "@azure/ms-rest-js";
@@ -19,26 +17,6 @@ class CustomSigner implements msRest.ServiceClientCredentials {
   }
 }
 
-const handleMessage = (event: MessageEvent): void => {
-  if (event.data.type === MessageTypes.InitTestExplorer) {
-    sendMessageToExplorerFrame(event.data);
-  }
-};
-
-const AADLogin = async (
-  notebooksTestRunnerApplicationId: string,
-  notebooksTestRunnerClientId: string,
-  notebooksTestRunnerClientSecret: string
-): Promise<string> => {
-  const credentials = new ClientSecretCredential(
-    notebooksTestRunnerApplicationId,
-    notebooksTestRunnerClientId,
-    notebooksTestRunnerClientSecret
-  );
-  const token = await credentials.getToken("https://management.core.windows.net/.default");
-  return token.token;
-};
-
 const getDatabaseAccount = async (
   token: string,
   notebooksAccountSubscriptonId: string,
@@ -49,34 +27,8 @@ const getDatabaseAccount = async (
   return client.databaseAccounts.get(notebooksAccountResourceGroup, notebooksAccountName);
 };
 
-const sendMessageToExplorerFrame = (data: unknown): void => {
-  const explorerFrame = document.getElementById("explorerMenu") as HTMLIFrameElement;
-
-  explorerFrame &&
-    explorerFrame.contentDocument &&
-    explorerFrame.contentDocument.referrer &&
-    explorerFrame.contentWindow.postMessage(
-      {
-        signature: "pcIframe",
-        data: data,
-      },
-      explorerFrame.contentDocument.referrer || window.location.href
-    );
-};
-
 const initTestExplorer = async (): Promise<void> => {
-  window.addEventListener("message", handleMessage, false);
-
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const notebooksTestRunnerTenantId = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.notebooksTestRunnerTenantId)
-  );
-  const notebooksTestRunnerClientId = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.notebooksTestRunnerClientId)
-  );
-  const notebooksTestRunnerClientSecret = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.notebooksTestRunnerClientSecret)
-  );
   const portalRunnerDatabaseAccount = decodeURIComponent(
     urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccount)
   );
@@ -89,11 +41,7 @@ const initTestExplorer = async (): Promise<void> => {
   );
   const selfServeType = urlSearchParams.get(TestExplorerParams.selfServeType);
 
-  const token = await AADLogin(
-    notebooksTestRunnerTenantId,
-    notebooksTestRunnerClientId,
-    notebooksTestRunnerClientSecret
-  );
+  const token = decodeURIComponent(urlSearchParams.get(TestExplorerParams.token));
   const databaseAccount = await getDatabaseAccount(
     token,
     portalRunnerSubscripton,
@@ -102,7 +50,6 @@ const initTestExplorer = async (): Promise<void> => {
   );
 
   const initTestExplorerContent = {
-    type: MessageTypes.InitTestExplorer,
     inputs: {
       databaseAccount: databaseAccount,
       subscriptionId: portalRunnerSubscripton,
@@ -130,11 +77,35 @@ const initTestExplorer = async (): Promise<void> => {
       },
       // add UI test only when feature is not dependent on flights anymore
       flights: [],
-      selfServeType: selfServeType,
+      selfServeType,
     } as ViewModels.DataExplorerInputsFrame,
   };
 
-  window.postMessage(initTestExplorerContent, window.location.href);
+  const iframe = document.createElement("iframe");
+  window.addEventListener(
+    "message",
+    (event) => {
+      // After we have received the "ready" message from the child iframe we can post configuration
+      // This simulates the same action that happens in the portal
+      console.dir(event.data);
+      if (event.data?.data === "ready") {
+        iframe.contentWindow.postMessage(
+          {
+            signature: "pcIframe",
+            data: initTestExplorerContent,
+          },
+          iframe.contentDocument.referrer || window.location.href
+        );
+      }
+    },
+    false
+  );
+  iframe.id = "explorerMenu";
+  iframe.name = "explorer";
+  iframe.classList.add("iframe");
+  iframe.title = "explorer";
+  iframe.src = "explorer.html?platform=Portal&disablePortalInitCache";
+  document.body.appendChild(iframe);
 };
 
-window.addEventListener("load", initTestExplorer);
+initTestExplorer();
