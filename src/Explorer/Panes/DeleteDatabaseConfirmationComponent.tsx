@@ -1,4 +1,3 @@
-import { toJSON } from "knockout";
 import * as React from "react";
 
 interface DeleteDatabaseConfirmationPaneProps {
