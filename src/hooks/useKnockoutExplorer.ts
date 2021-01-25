@@ -225,9 +225,10 @@ function configureEmulator() {
 }
 
 function configurePortal() {
+  window.authType = AuthType.AAD;
   // In development mode, try to load the iframe message from session storage.
-  // This allows webpack hot reload to funciton properly
-  if (process.env.NODE_ENV === "development") {
+  // This allows webpack hot reload to function properly in the portal
+  if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
     const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
     if (initMessage) {
       const message = JSON.parse(initMessage);
@@ -237,41 +238,39 @@ function configurePortal() {
       console.dir(message);
       explorer.configure(message);
     }
-  } else {
-    // In the Portal, configuration of Explorer happens via iframe message
-    window.authType = AuthType.AAD;
-    window.addEventListener(
-      "message",
-      (event) => {
-        console.dir(event);
-        if (isInvalidParentFrameOrigin(event)) {
-          return;
-        }
-
-        if (!shouldProcessMessage(event)) {
-          return;
-        }
-
-        // Check for init message
-        const message: PortalMessage = event.data?.data;
-        const inputs = message?.inputs;
-        if (inputs) {
-          if (
-            configContext.BACKEND_ENDPOINT &&
-            configContext.platform === Platform.Portal &&
-            process.env.NODE_ENV === "development"
-          ) {
-            inputs.extensionEndpoint = configContext.PROXY_PATH;
-          }
-
-          explorer.configure(inputs);
-        }
-      },
-      false
-    );
-
-    sendMessage("ready");
   }
+  // In the Portal, configuration of Explorer happens via iframe message
+  window.addEventListener(
+    "message",
+    (event) => {
+      console.dir(event);
+      if (isInvalidParentFrameOrigin(event)) {
+        return;
+      }
+
+      if (!shouldProcessMessage(event)) {
+        return;
+      }
+
+      // Check for init message
+      const message: PortalMessage = event.data?.data;
+      const inputs = message?.inputs;
+      if (inputs) {
+        if (
+          configContext.BACKEND_ENDPOINT &&
+          configContext.platform === Platform.Portal &&
+          process.env.NODE_ENV === "development"
+        ) {
+          inputs.extensionEndpoint = configContext.PROXY_PATH;
+        }
+
+        explorer.configure(inputs);
+      }
+    },
+    false
+  );
+
+  sendMessage("ready");
 }
 
 function shouldProcessMessage(event: MessageEvent): boolean {
