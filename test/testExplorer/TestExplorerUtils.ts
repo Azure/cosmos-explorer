@@ -1,5 +1,6 @@
 import { Frame } from "puppeteer";
 import { TestExplorerParams } from "./TestExplorerParams";
+import { ClientSecretCredential } from "@azure/identity";
 
 let testExplorerFrame: Frame;
 export const getTestExplorerFrame = async (params?: Map<string, string>): Promise<Frame> => {
@@ -15,19 +16,15 @@ export const getTestExplorerFrame = async (params?: Map<string, string>): Promis
   const portalRunnerSubscripton = process.env.PORTAL_RUNNER_SUBSCRIPTION;
   const portalRunnerResourceGroup = process.env.PORTAL_RUNNER_RESOURCE_GROUP;
 
+  const credentials = new ClientSecretCredential(
+    notebooksTestRunnerTenantId,
+    notebooksTestRunnerClientId,
+    notebooksTestRunnerClientSecret
+  );
+
+  const { token } = await credentials.getToken("https://management.core.windows.net/.default");
+
   const testExplorerUrl = new URL("testExplorer.html", "https://localhost:1234");
-  testExplorerUrl.searchParams.append(
-    TestExplorerParams.notebooksTestRunnerTenantId,
-    encodeURI(notebooksTestRunnerTenantId)
-  );
-  testExplorerUrl.searchParams.append(
-    TestExplorerParams.notebooksTestRunnerClientId,
-    encodeURI(notebooksTestRunnerClientId)
-  );
-  testExplorerUrl.searchParams.append(
-    TestExplorerParams.notebooksTestRunnerClientSecret,
-    encodeURI(notebooksTestRunnerClientSecret)
-  );
   testExplorerUrl.searchParams.append(
     TestExplorerParams.portalRunnerDatabaseAccount,
     encodeURI(portalRunnerDatabaseAccount)
@@ -41,6 +38,7 @@ export const getTestExplorerFrame = async (params?: Map<string, string>): Promis
     TestExplorerParams.portalRunnerResourceGroup,
     encodeURI(portalRunnerResourceGroup)
   );
+  testExplorerUrl.searchParams.append(TestExplorerParams.token, encodeURI(token));
 
   if (params) {
     for (const key of params.keys()) {
