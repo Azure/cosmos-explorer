@@ -4,7 +4,7 @@ export enum Platform {
   Emulator = "Emulator",
 }
 
-interface ConfigContext {
+export interface ConfigContext {
   platform: Platform;
   allowedParentFrameOrigins: string[];
   gitSha?: string;
