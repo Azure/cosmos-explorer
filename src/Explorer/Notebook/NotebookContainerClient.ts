@@ -118,8 +118,8 @@ export class NotebookContainerClient {
 
   private getNotebookServerConfig(): { notebookServerEndpoint: string; authToken: string } {
     let authToken: string,
-      notebookServerEndpoint = this.notebookServerInfo().notebookServerEndpoint,
-      token = this.notebookServerInfo().authToken;
+      notebookServerEndpoint = this.notebookServerInfo().notebookServerEndpoint || "",
+      token = this.notebookServerInfo().authToken || "";
     if (token) {
       authToken = `Token ${token}`;
     }
