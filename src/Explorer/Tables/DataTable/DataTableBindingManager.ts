@@ -240,10 +240,7 @@ function updateTableScrollableRegionHeight(): void {
     var dataTablesScrollBodyPosY = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset().top;
     var dataTablesInfoElem = $(tabElement).find(".dataTables_info");
     var dataTablesPaginateElem = $(tabElement).find(".dataTables_paginate");
-    const explorer = window.dataExplorer;
-    const notificationConsoleHeight = explorer.isNotificationConsoleExpanded()
-      ? 252 /** 32px(header) + 220px(content height) **/
-      : 32; /** Header height **/
+    const notificationConsoleHeight = 32; /** Header height **/
 
     var scrollHeight =
       bodyHeight -
