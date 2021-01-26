@@ -253,7 +253,7 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public async expandCollection(): Promise<any> {
+  public expandCollection(): void {
     if (this.isCollectionExpanded()) {
       return;
     }

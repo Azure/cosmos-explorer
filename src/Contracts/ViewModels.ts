@@ -108,7 +108,7 @@ export interface CollectionBase extends TreeNode {
 
   onDocumentDBDocumentsClick(): void;
   onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void;
-  expandCollection(): Promise<any>;
+  expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
 }

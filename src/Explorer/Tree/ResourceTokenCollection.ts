@@ -41,7 +41,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.isCollectionExpanded = ko.observable<boolean>(true);
   }
 
-  public async expandCollection(): Promise<void> {
+  public expandCollection(): void {
     if (this.isCollectionExpanded()) {
       return;
     }
