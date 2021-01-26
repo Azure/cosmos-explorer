@@ -1109,13 +1109,13 @@ export default class Collection implements ViewModels.Collection {
       return undefined;
     }
 
-    const notifications = await fetchPortalNotifications();
-    if (!notifications) {
-      return undefined;
-    }
-
     const throughputUpdateRegExp = new RegExp("Throughput update (.*) in progress");
     try {
+      const notifications = await fetchPortalNotifications();
+      if (!notifications) {
+        return undefined;
+      }
+
       return notifications.find(
         ({ kind, collectionName, description = "" }) =>
           kind === "message" && collectionName === this.id() && throughputUpdateRegExp.test(description)
