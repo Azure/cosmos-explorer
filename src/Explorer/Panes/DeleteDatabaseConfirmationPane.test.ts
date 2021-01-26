@@ -55,7 +55,6 @@ describe("Delete Database Confirmation Pane", () => {
   describe("shouldRecordFeedback()", () => {
     it("should return true if last non empty database or is last database that has shared throughput, else false", () => {
       let fakeExplorer = {} as Explorer;
-      fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
 
       let pane = new DeleteDatabaseConfirmationPane({
         id: "deletedatabaseconfirmationpane",
@@ -92,7 +91,6 @@ describe("Delete Database Confirmation Pane", () => {
         } as ViewModels.Database;
       };
       fakeExplorer.refreshAllDatabases = () => Q.resolve();
-      fakeExplorer.isNotificationConsoleExpanded = ko.observable<boolean>(false);
       fakeExplorer.selectedDatabaseId = ko.computed<string>(() => selectedDatabaseId);
       fakeExplorer.isSelectedDatabaseShared = () => false;
       const SubscriptionId = "testId";
