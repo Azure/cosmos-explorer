@@ -45,8 +45,9 @@ type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatc
 
 const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, children: React.ReactNode) => {
   const Cell = () => (
-    <DraggableCell id={id} contentRef={contentRef}>
-      <HijackScroll id={id} contentRef={contentRef}>
+    // TODO Draggable and HijackScroll not working anymore. Fix or remove when reworking MarkdownCell.
+    // <DraggableCell id={id} contentRef={contentRef}>
+    //   <HijackScroll id={id} contentRef={contentRef}>
         <CellCreator id={id} contentRef={contentRef}>
           <CellLabeler id={id} contentRef={contentRef}>
             <HoverableCell id={id} contentRef={contentRef}>
@@ -54,8 +55,8 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
             </HoverableCell>
           </CellLabeler>
         </CellCreator>
-      </HijackScroll>
-    </DraggableCell>
+    //   </HijackScroll>
+    // </DraggableCell>
   );
 
   Cell.defaultProps = { cell_type };
