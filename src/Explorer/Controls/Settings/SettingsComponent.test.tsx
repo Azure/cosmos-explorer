@@ -46,8 +46,8 @@ describe("SettingsComponent", () => {
       hashLocation: "settings",
       isActive: ko.observable(false),
       onUpdateTabsButtons: undefined,
-      getPendingNotification: Promise.resolve(undefined)
-    })
+      getPendingNotification: Promise.resolve(undefined),
+    }),
   };
 
   it("renders", () => {
