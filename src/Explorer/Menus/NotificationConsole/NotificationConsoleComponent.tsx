@@ -37,15 +37,15 @@ export interface ConsoleData {
 
 export interface NotificationConsoleComponentProps {
   isConsoleExpanded: boolean;
-  onConsoleExpandedChange: (isExpanded: boolean) => void;
-  consoleData: ConsoleData[];
-  onConsoleDataChange: (consoleData: ConsoleData[]) => void;
+  consoleData: ConsoleData;
+  inProgressConsoleDataIdToBeDeleted: string;
+  setIsConsoleExpanded: (isExpanded: boolean) => void;
 }
 
 interface NotificationConsoleComponentState {
   headerStatus: string;
   selectedFilter: string;
-  isExpanded: boolean;
+  allConsoleData: ConsoleData[];
 }
 
 export class NotificationConsoleComponent extends React.Component<
@@ -60,28 +60,28 @@ export class NotificationConsoleComponent extends React.Component<
     { key: "Error", text: "Error" },
   ];
   private headerTimeoutId?: number;
-  private prevHeaderStatus: string | null;
+  private prevHeaderStatus: string;
   private consoleHeaderElement?: HTMLElement;
 
   constructor(props: NotificationConsoleComponentProps) {
     super(props);
     this.state = {
-      headerStatus: "",
-      selectedFilter: NotificationConsoleComponent.FilterOptions[0].key || "",
-      isExpanded: props.isConsoleExpanded,
+      headerStatus: undefined,
+      selectedFilter: NotificationConsoleComponent.FilterOptions[0].key,
+      allConsoleData: props.consoleData ? [props.consoleData] : [],
     };
-    this.prevHeaderStatus = null;
+    this.prevHeaderStatus = undefined;
   }
 
   public componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
     prevState: NotificationConsoleComponentState
   ) {
-    const currentHeaderStatus = NotificationConsoleComponent.extractHeaderStatus(this.props);
+    const currentHeaderStatus = NotificationConsoleComponent.extractHeaderStatus(this.props.consoleData);
 
     if (
       this.prevHeaderStatus !== currentHeaderStatus &&
-      currentHeaderStatus !== null &&
+      currentHeaderStatus !== undefined &&
       prevState.headerStatus !== currentHeaderStatus
     ) {
       this.setHeaderStatus(currentHeaderStatus);
@@ -92,10 +92,8 @@ export class NotificationConsoleComponent extends React.Component<
     // updates: currentHeaderStatus -> "" -> currentHeaderStatus -> "" etc.
     this.prevHeaderStatus = currentHeaderStatus;
 
-    if (prevProps.isConsoleExpanded !== this.props.isConsoleExpanded) {
-      // Sync state and props
-      // TODO react anti-pattern: remove isExpanded from state which duplicates prop's isConsoleExpanded
-      this.setState({ isExpanded: this.props.isConsoleExpanded });
+    if (this.props.consoleData || this.props.inProgressConsoleDataIdToBeDeleted) {
+      this.updateConsoleData(prevProps);
     }
   }
 
@@ -104,12 +102,14 @@ export class NotificationConsoleComponent extends React.Component<
   };
 
   public render(): JSX.Element {
-    const numInProgress = this.props.consoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.InProgress)
+    const numInProgress = this.state.allConsoleData.filter(
+      (data: ConsoleData) => data.type === ConsoleDataType.InProgress
+    ).length;
+    const numErroredItems = this.state.allConsoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Error)
       .length;
-    const numErroredItems = this.props.consoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Error)
+    const numInfoItems = this.state.allConsoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Info)
       .length;
-    const numInfoItems = this.props.consoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Info)
-      .length;
+
     return (
       <div className="notificationConsoleContainer">
         <div
@@ -143,18 +143,18 @@ export class NotificationConsoleComponent extends React.Component<
             className="expandCollapseButton"
             role="button"
             tabIndex={0}
-            aria-label={"console button" + (this.state.isExpanded ? " collapsed" : " expanded")}
-            aria-expanded={!this.state.isExpanded}
+            aria-label={"console button" + (this.props.isConsoleExpanded ? " collapsed" : " expanded")}
+            aria-expanded={!this.props.isConsoleExpanded}
           >
             <img
-              src={this.state.isExpanded ? ChevronDownIcon : ChevronUpIcon}
-              alt={this.state.isExpanded ? "ChevronDownIcon" : "ChevronUpIcon"}
+              src={this.props.isConsoleExpanded ? ChevronDownIcon : ChevronUpIcon}
+              alt={this.props.isConsoleExpanded ? "ChevronDownIcon" : "ChevronUpIcon"}
             />
           </div>
         </div>
         <AnimateHeight
           duration={NotificationConsoleComponent.transitionDurationMs}
-          height={this.state.isExpanded ? "auto" : 0}
+          height={this.props.isConsoleExpanded ? "auto" : 0}
           onAnimationEnd={this.onConsoleWasExpanded}
         >
           <div className="notificationConsoleContents">
@@ -189,7 +189,7 @@ export class NotificationConsoleComponent extends React.Component<
     );
   }
   private expandCollapseConsole() {
-    this.setState({ isExpanded: !this.state.isExpanded });
+    this.props.setIsConsoleExpanded(!this.props.isConsoleExpanded);
   }
 
   private onExpandCollapseKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -209,7 +209,7 @@ export class NotificationConsoleComponent extends React.Component<
   };
 
   private clearNotifications(): void {
-    this.props.onConsoleDataChange([]);
+    this.setState({ allConsoleData: [] });
   }
 
   private renderAllFilteredConsoleData(rowData: ConsoleData[]): JSX.Element[] {
@@ -229,12 +229,9 @@ export class NotificationConsoleComponent extends React.Component<
   };
 
   private getFilteredConsoleData(): ConsoleData[] {
-    let filterType: ConsoleDataType | null = null;
+    let filterType: ConsoleDataType;
 
     switch (this.state.selectedFilter) {
-      case "All":
-        filterType = null;
-        break;
       case "In Progress":
         filterType = ConsoleDataType.InProgress;
         break;
@@ -245,12 +242,12 @@ export class NotificationConsoleComponent extends React.Component<
         filterType = ConsoleDataType.Error;
         break;
       default:
-        filterType = null;
+        filterType = undefined;
     }
 
-    return filterType == null
-      ? this.props.consoleData
-      : this.props.consoleData.filter((data: ConsoleData) => data.type === filterType);
+    return filterType
+      ? this.state.allConsoleData.filter((data: ConsoleData) => data.type === filterType)
+      : this.state.allConsoleData;
   }
 
   private setHeaderStatus(statusMessage: string): void {
@@ -266,18 +263,43 @@ export class NotificationConsoleComponent extends React.Component<
     );
   }
 
-  private static extractHeaderStatus(props: NotificationConsoleComponentProps) {
-    if (props.consoleData && props.consoleData.length > 0) {
-      return props.consoleData[0].message.split(":\n")[0];
-    } else {
-      return null;
-    }
+  private static extractHeaderStatus(consoleData: ConsoleData) {
+    return consoleData?.message.split(":\n")[0];
   }
 
   private onConsoleWasExpanded = (): void => {
-    this.props.onConsoleExpandedChange(this.state.isExpanded);
-    if (this.state.isExpanded && this.consoleHeaderElement) {
+    if (this.props.isConsoleExpanded && this.consoleHeaderElement) {
       this.consoleHeaderElement.focus();
     }
+  };
+
+  private updateConsoleData = (prevProps: NotificationConsoleComponentProps): void => {
+    if (!this.areConsoleDataEqual(this.props.consoleData, prevProps.consoleData)) {
+      this.setState({ allConsoleData: [this.props.consoleData, ...this.state.allConsoleData] });
+    }
+
+    if (
+      this.props.inProgressConsoleDataIdToBeDeleted &&
+      prevProps.inProgressConsoleDataIdToBeDeleted !== this.props.inProgressConsoleDataIdToBeDeleted
+    ) {
+      const allConsoleData = this.state.allConsoleData.filter(
+        (data: ConsoleData) =>
+          !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted)
+      );
+      this.setState({ allConsoleData });
+    }
+  };
+
+  private areConsoleDataEqual = (currentData: ConsoleData, prevData: ConsoleData): boolean => {
+    if (!currentData || !prevData) {
+      return !currentData && !prevData;
+    }
+
+    return (
+      currentData.date === prevData.date &&
+      currentData.message === prevData.message &&
+      currentData.type === prevData.type &&
+      currentData.id === prevData.id
+    );
   };
 }
