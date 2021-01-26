@@ -48,13 +48,13 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
     // TODO Draggable and HijackScroll not working anymore. Fix or remove when reworking MarkdownCell.
     // <DraggableCell id={id} contentRef={contentRef}>
     //   <HijackScroll id={id} contentRef={contentRef}>
-        <CellCreator id={id} contentRef={contentRef}>
-          <CellLabeler id={id} contentRef={contentRef}>
-            <HoverableCell id={id} contentRef={contentRef}>
-              {children}
-            </HoverableCell>
-          </CellLabeler>
-        </CellCreator>
+    <CellCreator id={id} contentRef={contentRef}>
+      <CellLabeler id={id} contentRef={contentRef}>
+        <HoverableCell id={id} contentRef={contentRef}>
+          {children}
+        </HoverableCell>
+      </CellLabeler>
+    </CellCreator>
     //   </HijackScroll>
     // </DraggableCell>
   );
