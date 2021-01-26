@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { shallow } from "enzyme";
 import {
   NotificationConsoleComponentProps,
-  ConsoleData,
   NotificationConsoleComponent,
   ConsoleDataType,
 } from "./NotificationConsoleComponent";
