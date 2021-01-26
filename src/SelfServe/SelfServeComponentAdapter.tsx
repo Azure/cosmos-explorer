@@ -7,7 +7,8 @@ import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import Explorer from "../Explorer/Explorer";
-import { SelfServeDescriptor, SelfServeComponent } from "./SelfServeComponent";
+import { SelfServeComponent } from "./SelfServeComponent";
+import { SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
 
 export class SelfServeComponentAdapter implements ReactAdapter {
@@ -27,6 +28,10 @@ export class SelfServeComponentAdapter implements ReactAdapter {
       case SelfServeType.example: {
         const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
         return new SelfServeExample.default().toSelfServeDescriptor();
+      }
+      case SelfServeType.sqlx: {
+        const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
+        return new SqlX.default().toSelfServeDescriptor();
       }
       default:
         return undefined;
