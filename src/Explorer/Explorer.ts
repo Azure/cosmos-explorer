@@ -109,7 +109,7 @@ interface AdHocAccessData {
 export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  setInProgressMessageIdToBeDeleted: (messageId: string) => void;
+  setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 }
 
 export default class Explorer {
@@ -153,7 +153,7 @@ export default class Explorer {
   // Notification Console
   private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   private setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  private setInProgressMessageIdToBeDeleted: (messageId: string) => void;
+  private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 
   // Panes
   public contextPanes: ContextualPaneBase[];
@@ -277,7 +277,7 @@ export default class Explorer {
   constructor(params?: ExplorerParams) {
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
-    this.setInProgressMessageIdToBeDeleted = params?.setInProgressMessageIdToBeDeleted;
+    this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -1359,7 +1359,7 @@ export default class Explorer {
   }
 
   public deleteInProgressConsoleDataWithId(id: string): void {
-    this.setInProgressMessageIdToBeDeleted(id);
+    this.setInProgressConsoleDataIdToBeDeleted(id);
   }
 
   public expandConsole(): void {

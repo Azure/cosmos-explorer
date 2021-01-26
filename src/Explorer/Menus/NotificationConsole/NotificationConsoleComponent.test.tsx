@@ -11,7 +11,7 @@ describe("NotificationConsoleComponent", () => {
     return {
       consoleData: undefined,
       isConsoleExpanded: false,
-      inProgressMessageIdToBeDeleted: "",
+      inProgressConsoleDataIdToBeDeleted: "",
       setIsConsoleExpanded: (isExpanded: boolean): void => {},
     };
   };
@@ -185,7 +185,7 @@ describe("NotificationConsoleComponent", () => {
     const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual("1");
 
-    props.inProgressMessageIdToBeDeleted = "1";
+    props.inProgressConsoleDataIdToBeDeleted = "1";
     wrapper.setProps(props);
     expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual("0");
   });

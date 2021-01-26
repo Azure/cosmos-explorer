@@ -38,7 +38,7 @@ export interface ConsoleData {
 export interface NotificationConsoleComponentProps {
   isConsoleExpanded: boolean;
   consoleData: ConsoleData;
-  inProgressMessageIdToBeDeleted: string;
+  inProgressConsoleDataIdToBeDeleted: string;
   setIsConsoleExpanded: (isExpanded: boolean) => void;
 }
 
@@ -92,7 +92,7 @@ export class NotificationConsoleComponent extends React.Component<
     // updates: currentHeaderStatus -> "" -> currentHeaderStatus -> "" etc.
     this.prevHeaderStatus = currentHeaderStatus;
 
-    if (this.props.consoleData || this.props.inProgressMessageIdToBeDeleted) {
+    if (this.props.consoleData || this.props.inProgressConsoleDataIdToBeDeleted) {
       this.updateConsoleData(prevProps);
     }
   }
@@ -274,23 +274,23 @@ export class NotificationConsoleComponent extends React.Component<
   };
 
   private updateConsoleData = (prevProps: NotificationConsoleComponentProps): void => {
-    if (!this.compareConsoleData(this.props.consoleData, prevProps.consoleData)) {
+    if (!this.areConsoleDataEqual(this.props.consoleData, prevProps.consoleData)) {
       this.setState({ allConsoleData: [this.props.consoleData, ...this.state.allConsoleData] });
     }
 
     if (
-      this.props.inProgressMessageIdToBeDeleted &&
-      prevProps.inProgressMessageIdToBeDeleted !== this.props.inProgressMessageIdToBeDeleted
+      this.props.inProgressConsoleDataIdToBeDeleted &&
+      prevProps.inProgressConsoleDataIdToBeDeleted !== this.props.inProgressConsoleDataIdToBeDeleted
     ) {
       const allConsoleData = this.state.allConsoleData.filter(
         (data: ConsoleData) =>
-          !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressMessageIdToBeDeleted)
+          !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted)
       );
       this.setState({ allConsoleData });
     }
   };
 
-  private compareConsoleData = (currentData: ConsoleData, prevData: ConsoleData): boolean => {
+  private areConsoleDataEqual = (currentData: ConsoleData, prevData: ConsoleData): boolean => {
     if (!currentData || !prevData) {
       return !currentData && !prevData;
     }

@@ -71,11 +71,12 @@ initializeIcons();
 const App: React.FunctionComponent = () => {
   const [isNotificationConsoleExpanded, setIsNotificationConsoleExpanded] = useState(false);
   const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
-  const [inProgressMessageIdToBeDeleted, setInProgressMessageIdToBeDeleted] = useState("");
+  //TODO: Refactor so we don't need to pass the id to remove a console data
+  const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
     setNotificationConsoleData,
-    setInProgressMessageIdToBeDeleted,
+    setInProgressConsoleDataIdToBeDeleted,
   };
   const config = useConfig();
   useKnockoutExplorer(config, explorerParams);
@@ -284,7 +285,7 @@ const App: React.FunctionComponent = () => {
           <NotificationConsoleComponent
             isConsoleExpanded={isNotificationConsoleExpanded}
             consoleData={notificationConsoleData}
-            inProgressMessageIdToBeDeleted={inProgressMessageIdToBeDeleted}
+            inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
             setIsConsoleExpanded={setIsNotificationConsoleExpanded}
           />
         </div>
