@@ -1122,7 +1122,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selfServeType": [Function],
                 "serverId": [Function],
-                "setInProgressMessageIdToBeDeleted": undefined,
+                "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
                 "settingsPane": SettingsPane {
@@ -2401,7 +2401,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selfServeType": [Function],
               "serverId": [Function],
-              "setInProgressMessageIdToBeDeleted": undefined,
+              "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
               "settingsPane": SettingsPane {
@@ -3693,7 +3693,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selfServeType": [Function],
                 "serverId": [Function],
-                "setInProgressMessageIdToBeDeleted": undefined,
+                "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
                 "settingsPane": SettingsPane {
@@ -4972,7 +4972,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selfServeType": [Function],
               "serverId": [Function],
-              "setInProgressMessageIdToBeDeleted": undefined,
+              "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
               "settingsPane": SettingsPane {
