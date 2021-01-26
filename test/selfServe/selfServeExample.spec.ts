@@ -12,10 +12,27 @@ describe("Self Serve", () => {
       frame = await getTestExplorerFrame(
         new Map<string, string>([[TestExplorerParams.selfServeType, SelfServeType.example]])
       );
-      await frame.waitForSelector("#regions-dropown-input");
-      await frame.waitForSelector("#enableLogging-radioSwitch-input");
-      await frame.waitForSelector("#accountName-textBox-input");
+
+      // id of the display element is in the format {PROPERTY_NAME}-{DISPLAY_NAME}-{DISPLAY_TYPE}
+      await frame.waitForSelector("#description-text-display");
+
+      const regions = await frame.waitForSelector("#regions-dropdown-input");
+      let disabledLoggingToggle = await frame.$$("#enableLogging-toggle-input[disabled]");
+      expect(disabledLoggingToggle).toHaveLength(0);
+      await regions.click();
+      const regionsDropdownElement1 = await frame.waitForSelector("#regions-dropdown-input-list0");
+      await regionsDropdownElement1.click();
+      disabledLoggingToggle = await frame.$$("#enableLogging-toggle-input[disabled]");
+      expect(disabledLoggingToggle).toHaveLength(1);
+
+      await frame.waitForSelector("#accountName-textField-input");
+
+      const enableDbLevelThroughput = await frame.waitForSelector("#enableDbLevelThroughput-toggle-input");
+      const dbThroughput = await frame.$$("#dbThroughput-slider-input");
+      expect(dbThroughput).toHaveLength(0);
+      await enableDbLevelThroughput.click();
       await frame.waitForSelector("#dbThroughput-slider-input");
+
       await frame.waitForSelector("#collectionThroughput-spinner-input");
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
