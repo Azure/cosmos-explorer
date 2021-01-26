@@ -1,28 +1,28 @@
-import { PropertyInfo, OnChange, Values } from "../PropertyDecorators";
-import { ClassInfo, IsDisplayable } from "../ClassDecorators";
-import { SelfServeBaseClass } from "../SelfServeUtils";
+import { PropertyInfo, OnChange, Values, IsDisplayable, ClassInfo } from "../Decorators";
 import {
   ChoiceItem,
   Info,
   InputType,
   NumberUiType,
+  RefreshResult,
+  SelfServeBaseClass,
+  SelfServeNotification,
+  SelfServeNotificationType,
   SmartUiInput,
-} from "../../Explorer/Controls/SmartUi/SmartUiComponent";
-import { RefreshResult, SelfServeNotification } from "../SelfServeComponent";
-import { MessageBarType } from "office-ui-fabric-react";
+} from "../SelfServeTypes";
 import { onRefreshSelfServeExample, getMaxThroughput, Regions, update, initialize } from "./SelfServeExample.rp";
 
-export const regionDropdownItems: ChoiceItem[] = [
+const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
   { label: "West US", key: Regions.WestUS },
   { label: "East US 2", key: Regions.EastUS2 },
 ];
 
-export const selfServeExampleInfo: Info = {
+const selfServeExampleInfo: Info = {
   message: "This is a self serve class",
 };
 
-export const regionDropdownInfo: Info = {
+const regionDropdownInfo: Info = {
   message: "More regions can be added in the future.",
 };
 
@@ -48,6 +48,12 @@ const onEnableDbLevelThroughputChange = (
   return currentState;
 };
 
+const validate = (currentvalues: Map<string, SmartUiInput>): void => {
+  if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
+    throw new Error("Regions and AccountName should not be empty.");
+  }
+};
+
 /*
   This is an example self serve class that auto generates UI components for your feature.
 
@@ -57,7 +63,6 @@ const onEnableDbLevelThroughputChange = (
     - Needs to define an onSave() function, a callback for when the submit button is clicked.
     - Needs to define an initialize() function, to set default values for the inputs.
     - Needs to define an onRefresh() function, a callback for when the refresh button is clicked.
-    - Needs to define an validate() function, to validate inputs before onSave is triggerred.
 
   You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
   and plumb in similar feature flags for your own self serve class.
@@ -91,20 +96,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
   };
 
   /*
-  validate()
-    - role : Custom validation logic that is triggerred when the save button is clicked. If validation fails, the save
-             action is not triggerred.
-    - returns: 
-            errorMessage - String that is shown if validation fails. Incase validation succeeds, return undefined here.
-  */
-  public validate = (currentvalues: Map<string, SmartUiInput>): string => {
-    if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
-      return "Regions and AccountName should not be empty.";
-    }
-    return undefined;
-  };
-
-  /*
   onSave()
     - input: (currentValues: Map<string, InputType>) => Promise<void>
     - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
@@ -117,6 +108,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
                 type: The type of message bar to be used (info, warning, error)
   */
   public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
+    validate(currentValues);
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
     const enableLogging = currentValues.get("enableLogging")?.value as boolean;
     const accountName = currentValues.get("accountName")?.value as string;
@@ -125,7 +117,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
     await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
-    return { message: "submitted successfully", type: MessageBarType.info };
+    return { message: "submitted successfully", type: SelfServeNotificationType.info };
   };
 
   /*

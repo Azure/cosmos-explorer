@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { SmartUiComponent, SmartUiDescriptor, NumberUiType, SmartUiInput } from "./SmartUiComponent";
+import { SmartUiComponent, SmartUiDescriptor } from "./SmartUiComponent";
+import { NumberUiType, SmartUiInput } from "../../../SelfServe/SelfServeTypes";
 
 describe("SmartUiComponent", () => {
   const exampleData: SmartUiDescriptor = {
@@ -17,7 +18,6 @@ describe("SmartUiComponent", () => {
         {
           id: "description",
           input: {
-            label: undefined,
             dataFieldName: "description",
             type: "string",
             description: {
@@ -113,7 +113,7 @@ describe("SmartUiComponent", () => {
         disabled={false}
         descriptor={exampleData}
         currentValues={currentValues}
-        onInputChange={undefined}
+        onInputChange={jest.fn()}
         onError={() => {
           return;
         }}
@@ -141,7 +141,7 @@ describe("SmartUiComponent", () => {
         disabled={true}
         descriptor={exampleData}
         currentValues={new Map()}
-        onInputChange={undefined}
+        onInputChange={jest.fn()}
         onError={() => {
           return;
         }}

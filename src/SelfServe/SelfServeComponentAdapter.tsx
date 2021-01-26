@@ -7,7 +7,8 @@ import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import Explorer from "../Explorer/Explorer";
-import { SelfServeDescriptor, SelfServeComponent } from "./SelfServeComponent";
+import { SelfServeComponent } from "./SelfServeComponent";
+import { SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
 
 export class SelfServeComponentAdapter implements ReactAdapter {

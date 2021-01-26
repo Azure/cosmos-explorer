@@ -1,13 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
-import {
-  SelfServeDescriptor,
-  SelfServeComponent,
-  SelfServeComponentState,
-  SelfServeNotification,
-} from "./SelfServeComponent";
-import { NumberUiType, SmartUiInput } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { MessageBarType } from "office-ui-fabric-react";
+import { SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
+import { NumberUiType, SelfServeDescriptor, SelfServeNotificationType, SmartUiInput } from "./SelfServeTypes";
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, SmartUiInput>([
@@ -23,21 +17,18 @@ describe("SelfServeComponent", () => {
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
-    return { message: "submitted successfully", type: MessageBarType.info } as SelfServeNotification;
+    return { message: "submitted successfully", type: SelfServeNotificationType.info };
   });
-  const validateMock = jest.fn(() => undefined);
-  const validateMockWithErrorMessage = jest.fn(() => "sample validation error message");
   const onRefreshMock = jest.fn(async () => {
-    return { isComponentUpdating: false, notificationMessage: "refresh performed successfully" };
+    return { isUpdateInProgress: false, notificationMessage: "refresh performed successfully" };
   });
   const onRefreshIsUpdatingMock = jest.fn(async () => {
-    return { isComponentUpdating: true, notificationMessage: "refresh performed successfully" };
+    return { isUpdateInProgress: true, notificationMessage: "refresh performed successfully" };
   });
 
   const exampleData: SelfServeDescriptor = {
     initialize: initializeMock,
     onSave: onSaveMock,
-    validate: validateMock,
     onRefresh: onRefreshMock,
     inputNames: ["throughput", "analyticalStore", "database"],
     root: {
@@ -158,7 +149,6 @@ describe("SelfServeComponent", () => {
 
     selfServeComponent.onSaveButtonClick();
     expect(onSaveMock).toHaveBeenCalledTimes(1);
-    expect(validateMock).toHaveBeenCalledTimes(1);
   });
 
   it("getResolvedValue", async () => {
@@ -190,7 +180,6 @@ describe("SelfServeComponent", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 
-    newDescriptor.validate = validateMockWithErrorMessage;
     newDescriptor.onRefresh = onRefreshMock;
     wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
     await new Promise((resolve) => setTimeout(resolve, 0));

@@ -10,83 +10,25 @@ import {
   Stack,
 } from "office-ui-fabric-react";
 import {
-  ChoiceItem,
+  AnyDisplay,
+  Node,
   InputType,
-  InputTypeValue,
-  SmartUiComponent,
-  NumberUiType,
-  SmartUiDescriptor,
-  Info,
+  RefreshResult,
+  SelfServeDescriptor,
+  SelfServeNotification,
   SmartUiInput,
-  Description,
-} from "../Explorer/Controls/SmartUi/SmartUiComponent";
-
-export interface BaseInput {
-  dataFieldName: string;
-  errorMessage?: string;
-  type: InputTypeValue;
-  label?: (() => Promise<string>) | string;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
-  placeholder?: (() => Promise<string>) | string;
-}
-
-export interface NumberInput extends BaseInput {
-  min: (() => Promise<number>) | number;
-  max: (() => Promise<number>) | number;
-  step: (() => Promise<number>) | number;
-  defaultValue?: number;
-  uiType: NumberUiType;
-}
-
-export interface BooleanInput extends BaseInput {
-  trueLabel: (() => Promise<string>) | string;
-  falseLabel: (() => Promise<string>) | string;
-  defaultValue?: boolean;
-}
-
-export interface StringInput extends BaseInput {
-  defaultValue?: string;
-}
-
-export interface ChoiceInput extends BaseInput {
-  choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
-  defaultKey?: string;
-}
-
-export interface DescriptionDisplay extends BaseInput {
-  description: (() => Promise<Description>) | Description;
-}
-
-export interface Node {
-  id: string;
-  info?: (() => Promise<Info>) | Info;
-  input?: AnyInput;
-  children?: Node[];
-}
-
-export interface SelfServeDescriptor {
-  root: Node;
-  initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
-  inputNames?: string[];
-  validate?: (currentValues: Map<string, SmartUiInput>) => string;
-  onRefresh?: () => Promise<RefreshResult>;
-}
-
-export type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
+  DescriptionDisplay,
+  StringInput,
+  NumberInput,
+  BooleanInput,
+  ChoiceInput,
+  SelfServeNotificationType,
+} from "./SelfServeTypes";
+import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { getMessageBarType } from "./SelfServeUtils";
 
 export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
-}
-
-export interface SelfServeNotification {
-  message: string;
-  type: MessageBarType.info | MessageBarType.warning | MessageBarType.error;
-}
-
-export interface RefreshResult {
-  isComponentUpdating: boolean;
-  notificationMessage: string;
 }
 
 export interface SelfServeComponentState {
@@ -201,10 +143,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   private getResolvedInput = async (
-    input: AnyInput,
+    input: AnyDisplay,
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
-  ): Promise<AnyInput> => {
+  ): Promise<AnyDisplay> => {
     input.label = await this.getResolvedValue(input.label);
     input.placeholder = await this.getResolvedValue(input.placeholder);
 
@@ -254,7 +196,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return value;
   }
 
-  private onInputChange = (input: AnyInput, newValue: InputType) => {
+  private onInputChange = (input: AnyDisplay, newValue: InputType) => {
     if (input.onChange) {
       const newValues = input.onChange(this.state.currentValues, newValue);
       this.setState({ currentValues: newValues });
@@ -268,17 +210,12 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public onSaveButtonClick = (): void => {
-    const errorMessage = this.props.descriptor.validate(this.state.currentValues);
-    this.setState({ notification: { message: errorMessage, type: MessageBarType.error } });
-    if (errorMessage) {
-      return;
-    }
     const onSavePromise = this.props.descriptor.onSave(this.state.currentValues);
     onSavePromise.catch((error) => {
       this.setState({
         notification: {
-          message: `Update failed. Error: ${error.message}`,
-          type: MessageBarType.error,
+          message: `Error: ${error.message}`,
+          type: SelfServeNotificationType.error,
         },
       });
     });
@@ -330,7 +267,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   public onRefreshClicked = async (): Promise<void> => {
     this.setState({ isInitializing: true });
     const refreshResult = await this.performRefresh();
-    if (!refreshResult.isComponentUpdating) {
+    if (!refreshResult.isUpdateInProgress) {
       this.initializeSmartUiComponent();
     }
     this.setState({ isInitializing: false });
@@ -385,14 +322,14 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
             />
           ) : (
             <>
-              {this.state.refreshResult?.isComponentUpdating && (
+              {this.state.refreshResult?.isUpdateInProgress && (
                 <MessageBar messageBarType={MessageBarType.info} styles={{ root: { width: 400 } }}>
                   {this.state.refreshResult.notificationMessage}
                 </MessageBar>
               )}
               {this.state.notification && (
                 <MessageBar
-                  messageBarType={this.state.notification.type}
+                  messageBarType={getMessageBarType(this.state.notification.type)}
                   styles={{ root: { width: 400 } }}
                   onDismiss={() => this.setState({ notification: undefined })}
                 >
@@ -400,7 +337,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                 </MessageBar>
               )}
               <SmartUiComponent
-                disabled={this.state.refreshResult?.isComponentUpdating}
+                disabled={this.state.refreshResult?.isUpdateInProgress}
                 descriptor={this.state.root as SmartUiDescriptor}
                 currentValues={this.state.currentValues}
                 onInputChange={this.onInputChange}

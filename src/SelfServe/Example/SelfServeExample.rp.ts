@@ -1,7 +1,7 @@
 import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
-import { RefreshResult } from "../SelfServeComponent";
 import { userContext } from "../../UserContext";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
+import { RefreshResult } from "../SelfServeTypes";
 export enum Regions {
   NorthCentralUS = "NorthCentralUS",
   WestUS = "WestUS",
@@ -56,9 +56,9 @@ export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
   const resourceGroup = userContext.resourceGroup;
   const databaseAccountName = userContext.databaseAccount.name;
   const databaseAccountGetResults = await get(subscriptionId, resourceGroup, databaseAccountName);
-  const isComponentUpdating = databaseAccountGetResults.properties.provisioningState !== "Succeeded";
+  const isUpdateInProgress = databaseAccountGetResults.properties.provisioningState !== "Succeeded";
   return {
-    isComponentUpdating: isComponentUpdating,
+    isUpdateInProgress: isUpdateInProgress,
     notificationMessage: "Self Serve Example successfully refreshing",
   };
 };

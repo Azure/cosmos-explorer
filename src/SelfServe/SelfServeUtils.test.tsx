@@ -1,75 +1,39 @@
-import {
-  CommonInputTypes,
-  mapToSmartUiDescriptor,
-  SelfServeBaseClass,
-  updateContextWithDecorator,
-} from "./SelfServeUtils";
-import { NumberUiType, SmartUiInput } from "./../Explorer/Controls/SmartUi/SmartUiComponent";
-import { RefreshResult, SelfServeNotification } from "./SelfServeComponent";
+import { NumberUiType, RefreshResult, SelfServeBaseClass, SelfServeNotification, SmartUiInput } from "./SelfServeTypes";
+import { DecoratorProperties, mapToSmartUiDescriptor, updateContextWithDecorator } from "./SelfServeUtils";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
-      public validate: (currentvalues: Map<string, SmartUiInput>) => string;
-      public onRefresh: () => Promise<RefreshResult>;
-      public onSave = async (): Promise<SelfServeNotification> => {
-        return undefined;
-      };
       public initialize: () => Promise<Map<string, SmartUiInput>>;
+      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+      public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
   });
 
   it("onSave should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
-      public validate: (currentvalues: Map<string, SmartUiInput>) => string;
-      public onRefresh: () => Promise<RefreshResult>;
+      public initialize = jest.fn();
       public onSave: () => Promise<SelfServeNotification>;
-      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-        return undefined;
-      };
+      public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
   });
 
-  it("validate should be declared for self serve classes", () => {
-    class Test extends SelfServeBaseClass {
-      public validate: (currentvalues: Map<string, SmartUiInput>) => string;
-      public onRefresh = async (): Promise<RefreshResult> => undefined;
-      public onSave = async (): Promise<SelfServeNotification> => {
-        return undefined;
-      };
-      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-        return undefined;
-      };
-    }
-    expect(() => new Test().toSelfServeDescriptor()).toThrow("validate() was not declared for the class 'Test'");
-  });
-
   it("onRefresh should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
+      public initialize = jest.fn();
+      public onSave = jest.fn();
       public onRefresh: () => Promise<RefreshResult>;
-      public validate = (): string => undefined;
-      public onSave = async (): Promise<SelfServeNotification> => {
-        return undefined;
-      };
-      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-        return undefined;
-      };
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
   });
 
   it("@SmartUi decorator must be present for self serve classes", () => {
     class Test extends SelfServeBaseClass {
-      public validate = (): string => undefined;
-      public onRefresh = async (): Promise<RefreshResult> => undefined;
-      public onSave = async (): Promise<SelfServeNotification> => {
-        return undefined;
-      };
-      public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-        return undefined;
-      };
+      public initialize = jest.fn();
+      public onSave = jest.fn();
+      public onRefresh = jest.fn();
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
       "@SmartUi decorator was not declared for the class 'Test'"
@@ -77,7 +41,7 @@ describe("SelfServeUtils", () => {
   });
 
   it("updateContextWithDecorator", () => {
-    const context = new Map<string, CommonInputTypes>();
+    const context = new Map<string, DecoratorProperties>();
     updateContextWithDecorator(context, "dbThroughput", "testClass", "max", 1);
     updateContextWithDecorator(context, "dbThroughput", "testClass", "min", 2);
     updateContextWithDecorator(context, "collThroughput", "testClass", "max", 5);
@@ -87,7 +51,7 @@ describe("SelfServeUtils", () => {
   });
 
   it("mapToSmartUiDescriptor", () => {
-    const context: Map<string, CommonInputTypes> = new Map([
+    const context: Map<string, DecoratorProperties> = new Map([
       [
         "dbThroughput",
         {

@@ -9,6 +9,15 @@ import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
 import { Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
+import {
+  ChoiceItem,
+  Description,
+  Info,
+  InputType,
+  InputTypeValue,
+  NumberUiType,
+  SmartUiInput,
+} from "../../../SelfServe/SelfServeTypes";
 
 /**
  * Generic UX renderer
@@ -17,33 +26,6 @@ import "./SmartUiComponent.less";
  * - a Map of callbacks
  * - a descriptor of the UX.
  */
-
-export type InputTypeValue = "number" | "string" | "boolean" | "object";
-
-export enum NumberUiType {
-  Spinner = "Spinner",
-  Slider = "Slider",
-}
-
-export type ChoiceItem = { label: string; key: string };
-
-export type InputType = number | string | boolean | ChoiceItem;
-
-export interface Info {
-  message: string;
-  link?: {
-    href: string;
-    text: string;
-  };
-}
-
-export interface Description {
-  text: string;
-  link?: {
-    href: string;
-    text: string;
-  };
-}
 
 interface BaseDisplay {
   dataFieldName: string;
@@ -87,12 +69,12 @@ interface DescriptionDisplay extends BaseDisplay {
   description: Description;
 }
 
-type AnyInput = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
+type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
 
 interface Node {
   id: string;
   info?: Info;
-  input?: AnyInput;
+  input?: AnyDisplay;
   children?: Node[];
 }
 
@@ -101,16 +83,10 @@ export interface SmartUiDescriptor {
 }
 
 /************************** Component implementation starts here ************************************* */
-export interface SmartUiInput {
-  value: InputType;
-  hidden?: boolean;
-  disabled?: boolean;
-}
-
 export interface SmartUiComponentProps {
   descriptor: SmartUiDescriptor;
   currentValues: Map<string, SmartUiInput>;
-  onInputChange: (input: AnyInput, newValue: InputType) => void;
+  onInputChange: (input: AnyDisplay, newValue: InputType) => void;
   onError: (hasError: boolean) => void;
   disabled: boolean;
 }
@@ -165,7 +141,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           id={`${input.dataFieldName}-textField-input`}
           label={input.label}
           type="text"
-          value={value ? value : ""}
+          value={value || ""}
           placeholder={input.placeholder}
           disabled={disabled}
           onChange={(_, newValue) => this.props.onInputChange(input, newValue)}
@@ -309,7 +285,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       <Toggle
         id={`${input.dataFieldName}-toggle-input`}
         label={input.label}
-        checked={value ? value : false}
+        checked={value || false}
         onText={input.trueLabel}
         offText={input.falseLabel}
         disabled={disabled}
@@ -323,11 +299,15 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const { label, defaultKey: defaultKey, dataFieldName, choices, placeholder } = input;
     const value = this.props.currentValues.get(dataFieldName)?.value as string;
     const disabled = this.props.disabled || this.props.currentValues.get(dataFieldName)?.disabled;
+    let selectedKey = value ? value : defaultKey;
+    if (!selectedKey) {
+      selectedKey = "";
+    }
     return (
       <Dropdown
         id={`${input.dataFieldName}-dropdown-input`}
         label={label}
-        selectedKey={value ? value : defaultKey ? defaultKey : ([] as string[])}
+        selectedKey={selectedKey}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
         placeholder={placeholder}
         disabled={disabled}
@@ -347,11 +327,11 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private renderError(input: AnyInput): JSX.Element {
+  private renderError(input: AnyDisplay): JSX.Element {
     return <MessageBar messageBarType={MessageBarType.error}>Error: {input.errorMessage}</MessageBar>;
   }
 
-  private renderInput(input: AnyInput): JSX.Element {
+  private renderDisplay(input: AnyDisplay): JSX.Element {
     if (input.errorMessage) {
       return this.renderError(input);
     }
@@ -383,7 +363,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       <Stack tokens={containerStackTokens} className="widgetRendererContainer">
         <Stack.Item>
           {node.info && this.renderInfo(node.info as Info)}
-          {node.input && this.renderInput(node.input)}
+          {node.input && this.renderDisplay(node.input)}
         </Stack.Item>
         {node.children && node.children.map((child) => <div key={child.id}>{this.renderNode(child)}</div>)}
       </Stack>
@@ -391,6 +371,6 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   render(): JSX.Element {
-    return <Stack>{this.renderNode(this.props.descriptor.root)}</Stack>;
+    return this.renderNode(this.props.descriptor.root);
   }
 }

@@ -1,17 +1,10 @@
-import {
-  ChoiceItem,
-  Description,
-  Info,
-  InputType,
-  NumberUiType,
-  SmartUiInput,
-} from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { addPropertyToMap, CommonInputTypes } from "./SelfServeUtils";
+import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput } from "./SelfServeTypes";
+import { addPropertyToMap, DecoratorProperties, buildSmartUiDescriptor } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
 interface Decorator {
-  name: keyof CommonInputTypes;
-  value: ValueOf<CommonInputTypes>;
+  name: keyof DecoratorProperties;
+  value: ValueOf<DecoratorProperties>;
 }
 
 interface InputOptionsBase {
@@ -125,4 +118,16 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "placeholder", value: inputOptions.placeholder }
     );
   }
+};
+
+export const IsDisplayable = (): ClassDecorator => {
+  return (target) => {
+    buildSmartUiDescriptor(target.name, target.prototype);
+  };
+};
+
+export const ClassInfo = (info: (() => Promise<Info>) | Info): ClassDecorator => {
+  return (target) => {
+    addPropertyToMap(target.prototype, "root", target.name, "info", info);
+  };
 };

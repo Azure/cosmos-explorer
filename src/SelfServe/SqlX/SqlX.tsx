@@ -1,16 +1,14 @@
-import { OnChange, Values } from "../PropertyDecorators";
-import { IsDisplayable } from "../ClassDecorators";
-import { SelfServeBaseClass } from "../SelfServeUtils";
-import { ChoiceItem, InputType, NumberUiType, SmartUiInput } from "../../Explorer/Controls/SmartUi/SmartUiComponent";
+import { IsDisplayable, OnChange, Values } from "../Decorators";
 import {
-  getRegionSpecificSku,
-  initializeDedicatedGatewayProvisioning,
-  Sku,
-  updateDedicatedGatewayProvisioning,
-  refreshDedicatedGatewayProvisioning,
-} from "./SqlX.rp";
-import { RefreshResult, SelfServeNotification } from "../SelfServeComponent";
-import { MessageBarType } from "office-ui-fabric-react";
+  ChoiceItem,
+  InputType,
+  NumberUiType,
+  RefreshResult,
+  SelfServeBaseClass,
+  SelfServeNotification,
+  SmartUiInput,
+} from "../SelfServeTypes";
+import { refreshDedicatedGatewayProvisioning } from "./SqlX.rp";
 
 const onEnableDedicatedGatewayChange = (
   currentState: Map<string, SmartUiInput>,
@@ -25,28 +23,24 @@ const onEnableDedicatedGatewayChange = (
   return currentState;
 };
 
-const getSkuLabel = (sku: Sku): string => {
-  switch (sku) {
-    case Sku.D4:
-      return "Cosmos D4s";
-    case Sku.D8:
-      return "Cosmos D8s";
-    case Sku.D16:
-      return "Cosmos D16s";
-    case Sku.D32:
-      return "Cosmos D32s";
-    case Sku.D64:
-      return "Cosmos D64s";
-    default:
-      return "Unsupported Sku";
-  }
+const getSkus = async (): Promise<ChoiceItem[]> => {
+  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
+  throw new Error("getSkus not implemented.");
 };
 
-const getSkus = async (): Promise<ChoiceItem[]> => {
-  const skus = await getRegionSpecificSku();
-  return skus.map((sku) => {
-    return { label: getSkuLabel(sku), key: sku };
-  });
+const getInstancesMin = async (): Promise<number> => {
+  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
+  throw new Error("getInstancesMin not implemented.");
+};
+
+const getInstancesMax = async (): Promise<number> => {
+  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
+  throw new Error("getInstancesMax not implemented.");
+};
+
+const validate = (currentValues: Map<string, SmartUiInput>): void => {
+  // TODO: add cusom validation logic to be called before Saving the data.
+  throw new Error(`validate not implemented. No. of properties to validate: ${currentValues.size}`);
 };
 
 @IsDisplayable()
@@ -55,33 +49,15 @@ export default class SqlX extends SelfServeBaseClass {
     return refreshDedicatedGatewayProvisioning();
   };
 
-  public validate = (currentvalues: Map<string, SmartUiInput>): string => {
-    if (!currentvalues.get("sku").value || !currentvalues.get("instances").value) {
-      return "SKU and instances should not be empty.";
-    }
-    return undefined;
-  };
-
   public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
-    const enableDedicatedGateway = currentValues.get("enableDedicatedGateway")?.value as boolean;
-    if (enableDedicatedGateway) {
-      const sku = Sku[currentValues.get("sku")?.value as keyof typeof Sku];
-      const instances = currentValues.get("instances")?.value as number;
-      await updateDedicatedGatewayProvisioning(sku, instances);
-    } else {
-      await updateDedicatedGatewayProvisioning(undefined, undefined);
-    }
-    return { message: "submitted sqlX update successfully", type: MessageBarType.info };
+    validate(currentValues);
+    // TODO: add pre processing logic before calling the updateDedicatedGatewayProvisioning() RP call.
+    throw new Error(`onSave not implemented. No. of properties to save: ${currentValues.size}`);
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-    const dedicatedGatewayResponse = await initializeDedicatedGatewayProvisioning();
-    const defaults = new Map<string, SmartUiInput>();
-    const enableDedicatedGateway = !dedicatedGatewayResponse.instances && !dedicatedGatewayResponse.sku ? false : true;
-    defaults.set("enableDedicatedGateway", { value: enableDedicatedGateway });
-    defaults.set("sku", { value: dedicatedGatewayResponse.sku, hidden: !enableDedicatedGateway });
-    defaults.set("instances", { value: dedicatedGatewayResponse.instances, hidden: !enableDedicatedGateway });
-    return defaults;
+    // TODO: get initialization data from initializeDedicatedGatewayProvisioning() RP call.
+    throw new Error("onSave not implemented");
   };
 
   @Values({
@@ -112,8 +88,8 @@ export default class SqlX extends SelfServeBaseClass {
 
   @Values({
     label: "Number of instances",
-    min: 1,
-    max: 5,
+    min: getInstancesMin,
+    max: getInstancesMax,
     step: 1,
     uiType: NumberUiType.Spinner,
   })

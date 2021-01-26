@@ -12,6 +12,8 @@ describe("Self Serve", () => {
       frame = await getTestExplorerFrame(
         new Map<string, string>([[TestExplorerParams.selfServeType, SelfServeType.example]])
       );
+
+      // id of the display element is in the format {PROPERTY_NAME}-{DISPLAY_NAME}-{DISPLAY_TYPE}
       await frame.waitForSelector("#description-text-display");
 
       const regions = await frame.waitForSelector("#regions-dropdown-input");

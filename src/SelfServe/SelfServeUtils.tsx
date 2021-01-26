@@ -1,24 +1,22 @@
+import { MessageBarType } from "office-ui-fabric-react";
 import "reflect-metadata";
 import {
-  ChoiceItem,
-  Info,
-  InputTypeValue,
-  InputType,
-  SmartUiInput,
-  Description,
-} from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import {
+  Node,
+  AnyDisplay,
   BooleanInput,
   ChoiceInput,
-  SelfServeDescriptor,
-  NumberInput,
-  StringInput,
-  Node,
-  AnyInput,
+  ChoiceItem,
+  Description,
   DescriptionDisplay,
-  SelfServeNotification,
-  RefreshResult,
-} from "./SelfServeComponent";
+  Info,
+  InputType,
+  InputTypeValue,
+  NumberInput,
+  SelfServeDescriptor,
+  SmartUiInput,
+  StringInput,
+  SelfServeNotificationType,
+} from "./SelfServeTypes";
 
 export enum SelfServeType {
   // No self serve type passed, launch explorer
@@ -30,41 +28,7 @@ export enum SelfServeType {
   sqlx = "sqlx",
 }
 
-export abstract class SelfServeBaseClass {
-  public abstract onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
-  public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
-  public abstract validate: (currentvalues: Map<string, SmartUiInput>) => string;
-  public abstract onRefresh: () => Promise<RefreshResult>;
-
-  public toSelfServeDescriptor(): SelfServeDescriptor {
-    const className = this.constructor.name;
-    const selfServeDescriptor = Reflect.getMetadata(className, this) as SelfServeDescriptor;
-
-    if (!this.initialize) {
-      throw new Error(`initialize() was not declared for the class '${className}'`);
-    }
-    if (!this.onSave) {
-      throw new Error(`onSave() was not declared for the class '${className}'`);
-    }
-    if (!this.validate) {
-      throw new Error(`validate() was not declared for the class '${className}'`);
-    }
-    if (!this.onRefresh) {
-      throw new Error(`onRefresh() was not declared for the class '${className}'`);
-    }
-    if (!selfServeDescriptor?.root) {
-      throw new Error(`@SmartUi decorator was not declared for the class '${className}'`);
-    }
-
-    selfServeDescriptor.initialize = this.initialize;
-    selfServeDescriptor.onSave = this.onSave;
-    selfServeDescriptor.validate = this.validate;
-    selfServeDescriptor.onRefresh = this.onRefresh;
-    return selfServeDescriptor;
-  }
-}
-
-export interface CommonInputTypes {
+export interface DecoratorProperties {
   id: string;
   info?: (() => Promise<Info>) | Info;
   type?: InputTypeValue;
@@ -85,36 +49,37 @@ export interface CommonInputTypes {
   initialize?: () => Promise<Map<string, SmartUiInput>>;
 }
 
-const setValue = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
+const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   name: T,
   value: K,
-  fieldObject: CommonInputTypes
+  fieldObject: DecoratorProperties
 ): void => {
   fieldObject[name] = value;
 };
 
-const getValue = <T extends keyof CommonInputTypes>(name: T, fieldObject: CommonInputTypes): unknown => {
+const getValue = <T extends keyof DecoratorProperties>(name: T, fieldObject: DecoratorProperties): unknown => {
   return fieldObject[name];
 };
 
-export const addPropertyToMap = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
+export const addPropertyToMap = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   target: unknown,
   propertyName: string,
   className: string,
-  descriptorName: keyof CommonInputTypes,
+  descriptorName: keyof DecoratorProperties,
   descriptorValue: K
 ): void => {
   const context =
-    (Reflect.getMetadata(className, target) as Map<string, CommonInputTypes>) ?? new Map<string, CommonInputTypes>();
+    (Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>) ??
+    new Map<string, DecoratorProperties>();
   updateContextWithDecorator(context, propertyName, className, descriptorName, descriptorValue);
   Reflect.defineMetadata(className, context, target);
 };
 
-export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K extends CommonInputTypes[T]>(
-  context: Map<string, CommonInputTypes>,
+export const updateContextWithDecorator = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
+  context: Map<string, DecoratorProperties>,
   propertyName: string,
   className: string,
-  descriptorName: keyof CommonInputTypes,
+  descriptorName: keyof DecoratorProperties,
   descriptorValue: K
 ): void => {
   if (!(context instanceof Map)) {
@@ -134,12 +99,12 @@ export const updateContextWithDecorator = <T extends keyof CommonInputTypes, K e
 };
 
 export const buildSmartUiDescriptor = (className: string, target: unknown): void => {
-  const context = Reflect.getMetadata(className, target) as Map<string, CommonInputTypes>;
+  const context = Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>;
   const smartUiDescriptor = mapToSmartUiDescriptor(context);
   Reflect.defineMetadata(className, smartUiDescriptor, target);
 };
 
-export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): SelfServeDescriptor => {
+export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>): SelfServeDescriptor => {
   const root = context.get("root");
   context.delete("root");
   const inputNames: string[] = [];
@@ -162,7 +127,7 @@ export const mapToSmartUiDescriptor = (context: Map<string, CommonInputTypes>): 
 };
 
 const addToDescriptor = (
-  context: Map<string, CommonInputTypes>,
+  context: Map<string, DecoratorProperties>,
   root: Node,
   key: string,
   inputNames: string[]
@@ -179,7 +144,7 @@ const addToDescriptor = (
   root.children.push(element);
 };
 
-const getInput = (value: CommonInputTypes): AnyInput => {
+const getInput = (value: DecoratorProperties): AnyDisplay => {
   switch (value.type) {
     case "number":
       if (!value.label || !value.step || !value.uiType || !value.min || !value.max) {
@@ -204,5 +169,16 @@ const getInput = (value: CommonInputTypes): AnyInput => {
         value.errorMessage = `label and choices are required for Choice input '${value.id}'.`;
       }
       return value as ChoiceInput;
+  }
+};
+
+export const getMessageBarType = (type: SelfServeNotificationType): MessageBarType => {
+  switch (type) {
+    case SelfServeNotificationType.info:
+      return MessageBarType.info;
+    case SelfServeNotificationType.warning:
+      return MessageBarType.warning;
+    case SelfServeNotificationType.error:
+      return MessageBarType.error;
   }
 };

@@ -1,639 +1,635 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SmartUiComponent disable all inputs 1`] = `
-<Stack>
-  <Stack
-    className="widgetRendererContainer"
-    tokens={
-      Object {
-        "childrenGap": 10,
-      }
+<Stack
+  className="widgetRendererContainer"
+  tokens={
+    Object {
+      "childrenGap": 10,
     }
+  }
+>
+  <StackItem>
+    <StyledMessageBarBase
+      styles={
+        Object {
+          "root": Object {
+            "width": 400,
+          },
+        }
+      }
+    >
+      Start at $24/mo per database
+      <StyledLinkBase
+        href="https://aka.ms/azure-cosmos-db-pricing"
+        target="_blank"
+      >
+        More Details
+      </StyledLinkBase>
+    </StyledMessageBarBase>
+  </StackItem>
+  <div
+    key="description"
   >
-    <StackItem>
-      <StyledMessageBarBase
-        styles={
-          Object {
-            "root": Object {
-              "width": 400,
-            },
-          }
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
         }
-      >
-        Start at $24/mo per database
-        <StyledLinkBase
-          href="https://aka.ms/azure-cosmos-db-pricing"
-          target="_blank"
+      }
+    >
+      <StackItem>
+        <Text
+          id="description-text-display"
         >
-          More Details
-        </StyledLinkBase>
-      </StyledMessageBarBase>
-    </StackItem>
-    <div
-      key="description"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <Text
-            id="description-text-display"
+          this is an example description text.
+           
+          <StyledLinkBase
+            href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
+            target="_blank"
           >
-            this is an example description text.
-             
-            <StyledLinkBase
-              href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
-              target="_blank"
-            >
-              Click here for more information.
-            </StyledLinkBase>
-          </Text>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="throughput"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
+            Click here for more information.
+          </StyledLinkBase>
+        </Text>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="throughput"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
         }
-      >
-        <StackItem>
-          <Stack
-            styles={
+      }
+    >
+      <StackItem>
+        <Stack
+          styles={
+            Object {
+              "root": Object {
+                "width": 400,
+              },
+            }
+          }
+          tokens={
+            Object {
+              "childrenGap": 2,
+            }
+          }
+        >
+          <CustomizedSpinButton
+            ariaLabel="Throughput (input)"
+            decrementButtonIcon={
               Object {
-                "root": Object {
-                  "width": 400,
-                },
+                "iconName": "ChevronDownSmall",
               }
             }
-            tokens={
-              Object {
-                "childrenGap": 2,
-              }
-            }
-          >
-            <CustomizedSpinButton
-              ariaLabel="Throughput (input)"
-              decrementButtonIcon={
-                Object {
-                  "iconName": "ChevronDownSmall",
-                }
-              }
-              disabled={true}
-              id="throughput-spinner-input"
-              incrementButtonIcon={
-                Object {
-                  "iconName": "ChevronUpSmall",
-                }
-              }
-              label="Throughput (input)"
-              labelPosition={0}
-              max={500}
-              min={400}
-              onDecrement={[Function]}
-              onIncrement={[Function]}
-              onValidate={[Function]}
-              step={10}
-              styles={
-                Object {
-                  "label": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                    "fontWeight": 600,
-                  },
-                }
-              }
-            />
-          </Stack>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="throughput2"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <div
-            id="throughput2-slider-input"
-          >
-            <StyledSliderBase
-              ariaLabel="Throughput (Slider)"
-              disabled={true}
-              label="Throughput (Slider)"
-              max={500}
-              min={400}
-              onChange={[Function]}
-              step={10}
-              styles={
-                Object {
-                  "root": Object {
-                    "width": 400,
-                  },
-                  "titleLabel": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                    "fontWeight": 600,
-                  },
-                  "valueLabel": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                  },
-                }
-              }
-            />
-          </div>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="throughput3"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <StyledMessageBarBase
-            messageBarType={1}
-          >
-            Error: 
-            label, truelabel and falselabel are required for boolean input 'throughput3'
-          </StyledMessageBarBase>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="containerId"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <div
-            className="stringInputContainer"
-          >
-            <StyledTextFieldBase
-              disabled={true}
-              id="containerId-textField-input"
-              label="Container id"
-              onChange={[Function]}
-              styles={
-                Object {
-                  "root": Object {
-                    "width": 400,
-                  },
-                  "subComponentStyles": Object {
-                    "label": Object {
-                      "root": Object {
-                        "color": "#393939",
-                        "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                        "fontSize": 12,
-                        "fontWeight": 600,
-                      },
-                    },
-                  },
-                }
-              }
-              type="text"
-              value=""
-            />
-          </div>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="analyticalStore"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <StyledToggleBase
-            checked={false}
             disabled={true}
-            id="analyticalStore-toggle-input"
-            label="Analytical Store"
-            offText="Disabled"
-            onChange={[Function]}
-            onText="Enabled"
-            styles={
+            id="throughput-spinner-input"
+            incrementButtonIcon={
               Object {
-                "root": Object {
-                  "width": 400,
-                },
+                "iconName": "ChevronUpSmall",
               }
             }
-          />
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="database"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <StyledWithResponsiveMode
-            disabled={true}
-            id="database-dropdown-input"
-            label="Database"
-            onChange={[Function]}
-            options={
-              Array [
-                Object {
-                  "key": "db1",
-                  "text": "Database 1",
-                },
-                Object {
-                  "key": "db2",
-                  "text": "Database 2",
-                },
-                Object {
-                  "key": "db3",
-                  "text": "Database 3",
-                },
-              ]
-            }
-            selectedKey="db2"
+            label="Throughput (input)"
+            labelPosition={0}
+            max={500}
+            min={400}
+            onDecrement={[Function]}
+            onIncrement={[Function]}
+            onValidate={[Function]}
+            step={10}
             styles={
               Object {
-                "dropdown": Object {
-                  "color": "#393939",
-                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                  "fontSize": 12,
-                },
                 "label": Object {
                   "color": "#393939",
                   "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
                   "fontSize": 12,
                   "fontWeight": 600,
                 },
+              }
+            }
+          />
+        </Stack>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="throughput2"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <div
+          id="throughput2-slider-input"
+        >
+          <StyledSliderBase
+            ariaLabel="Throughput (Slider)"
+            disabled={true}
+            label="Throughput (Slider)"
+            max={500}
+            min={400}
+            onChange={[Function]}
+            step={10}
+            styles={
+              Object {
                 "root": Object {
                   "width": 400,
+                },
+                "titleLabel": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
+                  "fontWeight": 600,
+                },
+                "valueLabel": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
                 },
               }
             }
           />
-        </StackItem>
-      </Stack>
-    </div>
-  </Stack>
+        </div>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="throughput3"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <StyledMessageBarBase
+          messageBarType={1}
+        >
+          Error: 
+          label, truelabel and falselabel are required for boolean input 'throughput3'
+        </StyledMessageBarBase>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="containerId"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <div
+          className="stringInputContainer"
+        >
+          <StyledTextFieldBase
+            disabled={true}
+            id="containerId-textField-input"
+            label="Container id"
+            onChange={[Function]}
+            styles={
+              Object {
+                "root": Object {
+                  "width": 400,
+                },
+                "subComponentStyles": Object {
+                  "label": Object {
+                    "root": Object {
+                      "color": "#393939",
+                      "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                      "fontSize": 12,
+                      "fontWeight": 600,
+                    },
+                  },
+                },
+              }
+            }
+            type="text"
+            value=""
+          />
+        </div>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="analyticalStore"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <StyledToggleBase
+          checked={false}
+          disabled={true}
+          id="analyticalStore-toggle-input"
+          label="Analytical Store"
+          offText="Disabled"
+          onChange={[Function]}
+          onText="Enabled"
+          styles={
+            Object {
+              "root": Object {
+                "width": 400,
+              },
+            }
+          }
+        />
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="database"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <StyledWithResponsiveMode
+          disabled={true}
+          id="database-dropdown-input"
+          label="Database"
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "db1",
+                "text": "Database 1",
+              },
+              Object {
+                "key": "db2",
+                "text": "Database 2",
+              },
+              Object {
+                "key": "db3",
+                "text": "Database 3",
+              },
+            ]
+          }
+          selectedKey="db2"
+          styles={
+            Object {
+              "dropdown": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+              },
+              "label": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+                "fontWeight": 600,
+              },
+              "root": Object {
+                "width": 400,
+              },
+            }
+          }
+        />
+      </StackItem>
+    </Stack>
+  </div>
 </Stack>
 `;
 
 exports[`SmartUiComponent should render and honor input's hidden, disabled state 1`] = `
-<Stack>
-  <Stack
-    className="widgetRendererContainer"
-    tokens={
-      Object {
-        "childrenGap": 10,
-      }
+<Stack
+  className="widgetRendererContainer"
+  tokens={
+    Object {
+      "childrenGap": 10,
     }
+  }
+>
+  <StackItem>
+    <StyledMessageBarBase
+      styles={
+        Object {
+          "root": Object {
+            "width": 400,
+          },
+        }
+      }
+    >
+      Start at $24/mo per database
+      <StyledLinkBase
+        href="https://aka.ms/azure-cosmos-db-pricing"
+        target="_blank"
+      >
+        More Details
+      </StyledLinkBase>
+    </StyledMessageBarBase>
+  </StackItem>
+  <div
+    key="description"
   >
-    <StackItem>
-      <StyledMessageBarBase
-        styles={
-          Object {
-            "root": Object {
-              "width": 400,
-            },
-          }
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
         }
-      >
-        Start at $24/mo per database
-        <StyledLinkBase
-          href="https://aka.ms/azure-cosmos-db-pricing"
-          target="_blank"
+      }
+    >
+      <StackItem>
+        <Text
+          id="description-text-display"
         >
-          More Details
-        </StyledLinkBase>
-      </StyledMessageBarBase>
-    </StackItem>
-    <div
-      key="description"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <Text
-            id="description-text-display"
+          this is an example description text.
+           
+          <StyledLinkBase
+            href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
+            target="_blank"
           >
-            this is an example description text.
-             
-            <StyledLinkBase
-              href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
-              target="_blank"
-            >
-              Click here for more information.
-            </StyledLinkBase>
-          </Text>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="throughput"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
+            Click here for more information.
+          </StyledLinkBase>
+        </Text>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="throughput"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
         }
-      >
-        <StackItem>
-          <Stack
+      }
+    >
+      <StackItem>
+        <Stack
+          styles={
+            Object {
+              "root": Object {
+                "width": 400,
+              },
+            }
+          }
+          tokens={
+            Object {
+              "childrenGap": 2,
+            }
+          }
+        >
+          <CustomizedSpinButton
+            ariaLabel="Throughput (input)"
+            decrementButtonIcon={
+              Object {
+                "iconName": "ChevronDownSmall",
+              }
+            }
+            disabled={false}
+            id="throughput-spinner-input"
+            incrementButtonIcon={
+              Object {
+                "iconName": "ChevronUpSmall",
+              }
+            }
+            label="Throughput (input)"
+            labelPosition={0}
+            max={500}
+            min={400}
+            onDecrement={[Function]}
+            onIncrement={[Function]}
+            onValidate={[Function]}
+            step={10}
             styles={
               Object {
-                "root": Object {
-                  "width": 400,
-                },
-              }
-            }
-            tokens={
-              Object {
-                "childrenGap": 2,
-              }
-            }
-          >
-            <CustomizedSpinButton
-              ariaLabel="Throughput (input)"
-              decrementButtonIcon={
-                Object {
-                  "iconName": "ChevronDownSmall",
-                }
-              }
-              disabled={false}
-              id="throughput-spinner-input"
-              incrementButtonIcon={
-                Object {
-                  "iconName": "ChevronUpSmall",
-                }
-              }
-              label="Throughput (input)"
-              labelPosition={0}
-              max={500}
-              min={400}
-              onDecrement={[Function]}
-              onIncrement={[Function]}
-              onValidate={[Function]}
-              step={10}
-              styles={
-                Object {
-                  "label": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                    "fontWeight": 600,
-                  },
-                }
-              }
-            />
-          </Stack>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="throughput2"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <div
-            id="throughput2-slider-input"
-          >
-            <StyledSliderBase
-              ariaLabel="Throughput (Slider)"
-              label="Throughput (Slider)"
-              max={500}
-              min={400}
-              onChange={[Function]}
-              step={10}
-              styles={
-                Object {
-                  "root": Object {
-                    "width": 400,
-                  },
-                  "titleLabel": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                    "fontWeight": 600,
-                  },
-                  "valueLabel": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                  },
-                }
-              }
-            />
-          </div>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="throughput3"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <StyledMessageBarBase
-            messageBarType={1}
-          >
-            Error: 
-            label, truelabel and falselabel are required for boolean input 'throughput3'
-          </StyledMessageBarBase>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="containerId"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <div
-            className="stringInputContainer"
-          >
-            <StyledTextFieldBase
-              id="containerId-textField-input"
-              label="Container id"
-              onChange={[Function]}
-              styles={
-                Object {
-                  "root": Object {
-                    "width": 400,
-                  },
-                  "subComponentStyles": Object {
-                    "label": Object {
-                      "root": Object {
-                        "color": "#393939",
-                        "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                        "fontSize": 12,
-                        "fontWeight": 600,
-                      },
-                    },
-                  },
-                }
-              }
-              type="text"
-              value=""
-            />
-          </div>
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="analyticalStore"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <StyledToggleBase
-            checked={false}
-            id="analyticalStore-toggle-input"
-            label="Analytical Store"
-            offText="Disabled"
-            onChange={[Function]}
-            onText="Enabled"
-            styles={
-              Object {
-                "root": Object {
-                  "width": 400,
-                },
-              }
-            }
-          />
-        </StackItem>
-      </Stack>
-    </div>
-    <div
-      key="database"
-    >
-      <Stack
-        className="widgetRendererContainer"
-        tokens={
-          Object {
-            "childrenGap": 10,
-          }
-        }
-      >
-        <StackItem>
-          <StyledWithResponsiveMode
-            id="database-dropdown-input"
-            label="Database"
-            onChange={[Function]}
-            options={
-              Array [
-                Object {
-                  "key": "db1",
-                  "text": "Database 1",
-                },
-                Object {
-                  "key": "db2",
-                  "text": "Database 2",
-                },
-                Object {
-                  "key": "db3",
-                  "text": "Database 3",
-                },
-              ]
-            }
-            selectedKey="db2"
-            styles={
-              Object {
-                "dropdown": Object {
-                  "color": "#393939",
-                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                  "fontSize": 12,
-                },
                 "label": Object {
                   "color": "#393939",
                   "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
                   "fontSize": 12,
                   "fontWeight": 600,
                 },
+              }
+            }
+          />
+        </Stack>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="throughput2"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <div
+          id="throughput2-slider-input"
+        >
+          <StyledSliderBase
+            ariaLabel="Throughput (Slider)"
+            label="Throughput (Slider)"
+            max={500}
+            min={400}
+            onChange={[Function]}
+            step={10}
+            styles={
+              Object {
                 "root": Object {
                   "width": 400,
+                },
+                "titleLabel": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
+                  "fontWeight": 600,
+                },
+                "valueLabel": Object {
+                  "color": "#393939",
+                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                  "fontSize": 12,
                 },
               }
             }
           />
-        </StackItem>
-      </Stack>
-    </div>
-  </Stack>
+        </div>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="throughput3"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <StyledMessageBarBase
+          messageBarType={1}
+        >
+          Error: 
+          label, truelabel and falselabel are required for boolean input 'throughput3'
+        </StyledMessageBarBase>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="containerId"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <div
+          className="stringInputContainer"
+        >
+          <StyledTextFieldBase
+            id="containerId-textField-input"
+            label="Container id"
+            onChange={[Function]}
+            styles={
+              Object {
+                "root": Object {
+                  "width": 400,
+                },
+                "subComponentStyles": Object {
+                  "label": Object {
+                    "root": Object {
+                      "color": "#393939",
+                      "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                      "fontSize": 12,
+                      "fontWeight": 600,
+                    },
+                  },
+                },
+              }
+            }
+            type="text"
+            value=""
+          />
+        </div>
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="analyticalStore"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <StyledToggleBase
+          checked={false}
+          id="analyticalStore-toggle-input"
+          label="Analytical Store"
+          offText="Disabled"
+          onChange={[Function]}
+          onText="Enabled"
+          styles={
+            Object {
+              "root": Object {
+                "width": 400,
+              },
+            }
+          }
+        />
+      </StackItem>
+    </Stack>
+  </div>
+  <div
+    key="database"
+  >
+    <Stack
+      className="widgetRendererContainer"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StackItem>
+        <StyledWithResponsiveMode
+          id="database-dropdown-input"
+          label="Database"
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "db1",
+                "text": "Database 1",
+              },
+              Object {
+                "key": "db2",
+                "text": "Database 2",
+              },
+              Object {
+                "key": "db3",
+                "text": "Database 3",
+              },
+            ]
+          }
+          selectedKey="db2"
+          styles={
+            Object {
+              "dropdown": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+              },
+              "label": Object {
+                "color": "#393939",
+                "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                "fontSize": 12,
+                "fontWeight": 600,
+              },
+              "root": Object {
+                "width": 400,
+              },
+            }
+          }
+        />
+      </StackItem>
+    </Stack>
+  </div>
 </Stack>
 `;

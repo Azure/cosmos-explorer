@@ -273,46 +273,6 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
               "message": "Start at $24/mo per database",
             },
           },
-          "validate": [MockFunction] {
-            "calls": Array [
-              Array [
-                Map {
-                  "throughput" => Object {
-                    "value": 450,
-                  },
-                  "analyticalStore" => Object {
-                    "value": false,
-                  },
-                  "database" => Object {
-                    "value": "db2",
-                  },
-                },
-              ],
-              Array [
-                Map {
-                  "throughput" => Object {
-                    "value": 450,
-                  },
-                  "analyticalStore" => Object {
-                    "value": false,
-                  },
-                  "database" => Object {
-                    "value": "db2",
-                  },
-                },
-              ],
-            ],
-            "results": Array [
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
-            ],
-          },
         }
       }
       disabled={true}
@@ -389,7 +349,7 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
       }
     />
     <StyledMessageBarBase
-      messageBarType={1}
+      messageBarType={0}
       onDismiss={[Function]}
       styles={
         Object {
@@ -399,7 +359,7 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
         }
       }
     >
-      sample validation error message
+      submitted successfully
     </StyledMessageBarBase>
     <SmartUiComponent
       currentValues={
@@ -425,8 +385,13 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
               Array [],
               Array [],
               Array [],
+              Array [],
             ],
             "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
               Object {
                 "type": "return",
                 "value": Promise {},
@@ -465,8 +430,13 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
               Array [],
               Array [],
               Array [],
+              Array [],
             ],
             "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
               Object {
                 "type": "return",
                 "value": Promise {},
@@ -517,8 +487,25 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
                   },
                 },
               ],
+              Array [
+                Map {
+                  "throughput" => Object {
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "value": "db2",
+                  },
+                },
+              ],
             ],
             "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
               Object {
                 "type": "return",
                 "value": Promise {},
@@ -603,29 +590,6 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
               },
               "message": "Start at $24/mo per database",
             },
-          },
-          "validate": [MockFunction] {
-            "calls": Array [
-              Array [
-                Map {
-                  "throughput" => Object {
-                    "value": 450,
-                  },
-                  "analyticalStore" => Object {
-                    "value": false,
-                  },
-                  "database" => Object {
-                    "value": "db2",
-                  },
-                },
-              ],
-            ],
-            "results": Array [
-              Object {
-                "type": "return",
-                "value": "sample validation error message",
-              },
-            ],
           },
         }
       }
@@ -911,7 +875,6 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
               "message": "Start at $24/mo per database",
             },
           },
-          "validate": [MockFunction],
         }
       }
       disabled={false}

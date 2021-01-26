@@ -1,24 +1,21 @@
-import { RefreshResult } from "../SelfServeComponent";
-
-export enum Sku {
-  D4 = "D4",
-  D8 = "D8",
-  D16 = "D16",
-  D32 = "D32",
-  D64 = "D64",
-}
+import { RefreshResult } from "../SelfServeTypes";
 
 export interface DedicatedGatewayResponse {
-  sku: Sku;
+  sku: string;
   instances: number;
 }
 
-export const getRegionSpecificSku = async (): Promise<Sku[]> => {
-  // TODO: write RP call to get SKUs available for this region
-  throw new Error("getRegionSpecificSku not implemented");
+export const getRegionSpecificMinInstances = async (): Promise<number> => {
+  // TODO: write RP call to get min number of instances needed for this region
+  throw new Error("getRegionSpecificMinInstances not implemented");
 };
 
-export const updateDedicatedGatewayProvisioning = async (sku: Sku, instances: number): Promise<void> => {
+export const getRegionSpecificMaxInstances = async (): Promise<number> => {
+  // TODO: write RP call to get max number of instances needed for this region
+  throw new Error("getRegionSpecificMaxInstances not implemented");
+};
+
+export const updateDedicatedGatewayProvisioning = async (sku: string, instances: number): Promise<void> => {
   // TODO: write RP call to update dedicated gateway provisioning
   throw new Error(
     `updateDedicatedGatewayProvisioning not implemented. Parameters- sku: ${sku}, instances:${instances}`
