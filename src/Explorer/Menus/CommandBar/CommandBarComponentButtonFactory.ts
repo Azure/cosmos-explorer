@@ -38,7 +38,7 @@ export class CommandBarComponentButtonFactory {
     const newCollectionBtn = CommandBarComponentButtonFactory.createNewCollectionGroup(container);
     const buttons: CommandButtonComponentProps[] = [];
 
-    if (container.isFeatureEnabled("regionselectbutton")) {
+    if (container.isFeatureEnabled && container.isFeatureEnabled("regionselectbutton")) {
       const regions = [{ name: "West US" }, { name: "East US" }, { name: "North Europe" }];
       buttons.push({
         iconSrc: null,
