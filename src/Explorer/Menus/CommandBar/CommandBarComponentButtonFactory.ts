@@ -36,7 +36,36 @@ export class CommandBarComponentButtonFactory {
     }
 
     const newCollectionBtn = CommandBarComponentButtonFactory.createNewCollectionGroup(container);
-    const buttons: CommandButtonComponentProps[] = [newCollectionBtn];
+    const buttons: CommandButtonComponentProps[] = [];
+
+    if (container.isFeatureEnabled("regionselectbutton")) {
+      const regions = [{ name: "West US" }, { name: "East US" }, { name: "North Europe" }];
+      buttons.push({
+        iconSrc: null,
+        onCommandClick: () => {},
+        commandButtonLabel: null,
+        hasPopup: false,
+        isDropdown: true,
+        dropdownPlaceholder: "West US",
+        dropdownSelectedKey: "West US",
+        dropdownWidth: 100,
+        children: regions.map(
+          (region) =>
+            ({
+              iconSrc: null,
+              onCommandClick: () => {},
+              commandButtonLabel: region.name,
+              dropdownItemKey: region.name,
+              hasPopup: false,
+              disabled: false,
+              ariaLabel: "",
+            } as CommandButtonComponentProps)
+        ),
+        ariaLabel: "",
+      });
+    }
+
+    buttons.push(newCollectionBtn);
 
     const addSynapseLink = CommandBarComponentButtonFactory.createOpenSynapseLinkDialogButton(container);
     if (addSynapseLink) {
