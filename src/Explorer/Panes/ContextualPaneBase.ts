@@ -29,10 +29,6 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     this.title = ko.observable<string>();
     this.formErrorsDetails = ko.observable<string>();
     this.isExecuting = ko.observable<boolean>(false);
-    this.container.isNotificationConsoleExpanded.subscribe((isExpanded: boolean) => {
-      this.resizePane();
-    });
-    this.container.isNotificationConsoleExpanded.extend({ rateLimit: 10 });
   }
 
   public cancel() {

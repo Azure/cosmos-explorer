@@ -248,7 +248,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery/${id}/favorite`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/${sampleDatabaseAccount.name}/gallery/${id}/favorite`,
       {
         method: "PATCH",
         headers: {

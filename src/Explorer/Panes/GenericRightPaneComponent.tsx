@@ -34,13 +34,6 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
     };
   }
 
-  public componentDidMount(): void {
-    this.notificationConsoleSubscription = this.props.container.isNotificationConsoleExpanded.subscribe(() => {
-      this.setState({ panelHeight: this.getPanelHeight() });
-    });
-    this.props.container.isNotificationConsoleExpanded.extend({ rateLimit: 10 });
-  }
-
   public componentWillUnmount(): void {
     this.notificationConsoleSubscription && this.notificationConsoleSubscription.dispose();
   }
