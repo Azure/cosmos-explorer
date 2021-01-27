@@ -66,6 +66,9 @@ const validate = (currentvalues: Map<string, SmartUiInput>): void => {
 
   You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
   and plumb in similar feature flags for your own self serve class.
+
+  All string to be used should be present in the "src/Localization" folder, in the language specific json files. The 
+  corresponding key should be given as the value for the fields like "label", the error message etc.
 */
 
 /*
