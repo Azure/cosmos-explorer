@@ -19,11 +19,11 @@ const regionDropdownItems: ChoiceItem[] = [
 ];
 
 const selfServeExampleInfo: Info = {
-  message: "This is a self serve class",
+  message: "ClassInfo",
 };
 
 const regionDropdownInfo: Info = {
-  message: "More regions can be added in the future.",
+  message: "RegionDropdownInfo",
 };
 
 const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
@@ -50,7 +50,7 @@ const onEnableDbLevelThroughputChange = (
 
 const validate = (currentvalues: Map<string, SmartUiInput>): void => {
   if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
-    throw new Error("Regions and AccountName should not be empty.");
+    throw new Error("ValidationError");
   }
 };
 
@@ -117,7 +117,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
     await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
-    return { message: "submitted successfully", type: SelfServeNotificationType.info };
+    return { message: "SubmissionMessage", type: SelfServeNotificationType.info };
   };
 
   /*
@@ -161,10 +161,10 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @Values({
     description: {
-      text: "This class sets collection and database throughput.",
+      text: "DescriptionText",
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-        text: "Click here for more information",
+        text: "DecriptionLinkText",
       },
     },
   })
@@ -193,7 +193,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
             any other value of "regions"
   */
   @OnChange(onRegionsChange)
-  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
+  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "RegionsPlaceholder" })
   regions: ChoiceItem;
 
   @Values({
@@ -205,7 +205,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   @Values({
     label: "Account Name",
-    placeholder: "Enter the account name",
+    placeholder: "AccountNamePlaceHolder",
   })
   accountName: string;
 

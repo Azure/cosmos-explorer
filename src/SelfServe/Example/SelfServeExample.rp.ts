@@ -59,6 +59,6 @@ export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
   const isUpdateInProgress = databaseAccountGetResults.properties.provisioningState !== "Succeeded";
   return {
     isUpdateInProgress: isUpdateInProgress,
-    notificationMessage: "Self Serve Example successfully refreshing",
+    notificationMessage: "RefreshMessage",
   };
 };

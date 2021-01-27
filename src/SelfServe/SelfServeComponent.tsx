@@ -26,6 +26,9 @@ import {
 } from "./SelfServeTypes";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { getMessageBarType } from "./SelfServeUtils";
+import "../i18n";
+import { Translation } from "react-i18next";
+import { TFunction } from "i18next";
 
 export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
@@ -43,6 +46,8 @@ export interface SelfServeComponentState {
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
+  private smartUiGeneratorClassName: string;
+
   componentDidMount(): void {
     this.performRefresh();
     this.initializeSmartUiComponent();
@@ -60,6 +65,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       notification: undefined,
       refreshResult: undefined,
     };
+    this.smartUiGeneratorClassName = this.props.descriptor.root.id;
   }
 
   private onError = (hasErrors: boolean): void => {
@@ -214,7 +220,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     onSavePromise.catch((error) => {
       this.setState({
         notification: {
-          message: `Error: ${error.message}`,
+          message: `${error.message}`,
           type: SelfServeNotificationType.error,
         },
       });
@@ -273,11 +279,15 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ isInitializing: false });
   };
 
-  private getCommandBarItems = (): ICommandBarItemProps[] => {
+  public getCommonTranslation = (translationFunction: TFunction, key: string): string => {
+    return translationFunction(`Common.${key}`);
+  };
+
+  private getCommandBarItems = (translate: TFunction): ICommandBarItemProps[] => {
     return [
       {
         key: "save",
-        text: "Save",
+        text: this.getCommonTranslation(translate, "Save"),
         iconProps: { iconName: "Save" },
         split: true,
         disabled: this.isSaveButtonDisabled(),
@@ -285,7 +295,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       },
       {
         key: "discard",
-        text: "Discard",
+        text: this.getCommonTranslation(translate, "Discard"),
         iconProps: { iconName: "Undo" },
         split: true,
         disabled: this.isDiscardButtonDisabled(),
@@ -295,7 +305,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       },
       {
         key: "refresh",
-        text: "Refresh",
+        text: this.getCommonTranslation(translate, "Refresh"),
         disabled: this.state.isInitializing,
         iconProps: { iconName: "Refresh" },
         split: true,
@@ -312,41 +322,52 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       return <MessageBar messageBarType={MessageBarType.error}>{this.state.compileErrorMessage}</MessageBar>;
     }
     return (
-      <div style={{ overflowX: "auto" }}>
-        <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
-          <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems()} />
-          {this.state.isInitializing ? (
-            <Spinner
-              size={SpinnerSize.large}
-              styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
-            />
-          ) : (
-            <>
-              {this.state.refreshResult?.isUpdateInProgress && (
-                <MessageBar messageBarType={MessageBarType.info} styles={{ root: { width: 400 } }}>
-                  {this.state.refreshResult.notificationMessage}
-                </MessageBar>
-              )}
-              {this.state.notification && (
-                <MessageBar
-                  messageBarType={getMessageBarType(this.state.notification.type)}
-                  styles={{ root: { width: 400 } }}
-                  onDismiss={() => this.setState({ notification: undefined })}
-                >
-                  {this.state.notification.message}
-                </MessageBar>
-              )}
-              <SmartUiComponent
-                disabled={this.state.refreshResult?.isUpdateInProgress}
-                descriptor={this.state.root as SmartUiDescriptor}
-                currentValues={this.state.currentValues}
-                onInputChange={this.onInputChange}
-                onError={this.onError}
-              />
-            </>
-          )}
-        </Stack>
-      </div>
+      <Translation>
+        {(translate) => {
+          const getTranslation = (key: string): string => {
+            return translate(`${this.smartUiGeneratorClassName}.${key}`);
+          };
+
+          return (
+            <div style={{ overflowX: "auto" }}>
+              <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
+                <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems(translate)} />
+                {this.state.isInitializing ? (
+                  <Spinner
+                    size={SpinnerSize.large}
+                    styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
+                  />
+                ) : (
+                  <>
+                    {this.state.refreshResult?.isUpdateInProgress && (
+                      <MessageBar messageBarType={MessageBarType.info} styles={{ root: { width: 400 } }}>
+                        {getTranslation(this.state.refreshResult.notificationMessage)}
+                      </MessageBar>
+                    )}
+                    {this.state.notification && (
+                      <MessageBar
+                        messageBarType={getMessageBarType(this.state.notification.type)}
+                        styles={{ root: { width: 400 } }}
+                        onDismiss={() => this.setState({ notification: undefined })}
+                      >
+                        {getTranslation(this.state.notification.message)}
+                      </MessageBar>
+                    )}
+                    <SmartUiComponent
+                      disabled={this.state.refreshResult?.isUpdateInProgress}
+                      descriptor={this.state.root as SmartUiDescriptor}
+                      currentValues={this.state.currentValues}
+                      onInputChange={this.onInputChange}
+                      onError={this.onError}
+                      getTranslation={getTranslation}
+                    />
+                  </>
+                )}
+              </Stack>
+            </div>
+          );
+        }}
+      </Translation>
     );
   }
 }

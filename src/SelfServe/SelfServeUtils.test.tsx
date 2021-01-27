@@ -150,7 +150,7 @@ describe("SelfServeUtils", () => {
     ]);
     const expectedDescriptor = {
       root: {
-        id: "root",
+        id: "TestClass",
         children: [
           {
             id: "dbThroughput",
@@ -270,7 +270,7 @@ describe("SelfServeUtils", () => {
         "invalidRegions",
       ],
     };
-    const descriptor = mapToSmartUiDescriptor(context);
+    const descriptor = mapToSmartUiDescriptor("TestClass", context);
     expect(descriptor).toEqual(expectedDescriptor);
   });
 });

@@ -18,6 +18,7 @@ import {
   NumberUiType,
   SmartUiInput,
 } from "../../../SelfServe/SelfServeTypes";
+import { TFunction } from "i18next";
 
 /**
  * Generic UX renderer
@@ -89,6 +90,7 @@ export interface SmartUiComponentProps {
   onInputChange: (input: AnyDisplay, newValue: InputType) => void;
   onError: (hasError: boolean) => void;
   disabled: boolean;
+  getTranslation: TFunction;
 }
 
 interface SmartUiComponentState {
@@ -122,10 +124,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private renderInfo(info: Info): JSX.Element {
     return (
       <MessageBar styles={{ root: { width: 400 } }}>
-        {info.message}
+        {this.props.getTranslation(info.message)}
         {info.link && (
           <Link href={info.link.href} target="_blank">
-            {info.link.text}
+            {this.props.getTranslation(info.link.text)}
           </Link>
         )}
       </MessageBar>
@@ -139,10 +141,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       <div className="stringInputContainer">
         <TextField
           id={`${input.dataFieldName}-textField-input`}
-          label={input.label}
+          label={this.props.getTranslation(input.label)}
           type="text"
           value={value || ""}
-          placeholder={input.placeholder}
+          placeholder={this.props.getTranslation(input.placeholder)}
           disabled={disabled}
           onChange={(_, newValue) => this.props.onInputChange(input, newValue)}
           styles={{
@@ -165,10 +167,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const description = input.description;
     return (
       <Text id={`${input.dataFieldName}-text-display`}>
-        {input.description.text}{" "}
+        {this.props.getTranslation(input.description.text)}{" "}
         {description.link && (
           <Link target="_blank" href={input.description.link.href}>
-            {input.description.link.text}
+            {this.props.getTranslation(input.description.link.text)}
           </Link>
         )}
       </Text>
@@ -221,7 +223,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private renderNumberInput(input: NumberInput): JSX.Element {
     const { label, min, max, dataFieldName, step } = input;
     const props = {
-      label: label,
+      label: this.props.getTranslation(label),
       min: min,
       max: max,
       ariaLabel: label,
@@ -284,10 +286,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       <Toggle
         id={`${input.dataFieldName}-toggle-input`}
-        label={input.label}
+        label={this.props.getTranslation(input.label)}
         checked={value || false}
-        onText={input.trueLabel}
-        offText={input.falseLabel}
+        onText={this.props.getTranslation(input.trueLabel)}
+        offText={this.props.getTranslation(input.falseLabel)}
         disabled={disabled}
         onChange={(event, checked: boolean) => this.props.onInputChange(input, checked)}
         styles={{ root: { width: 400 } }}
@@ -306,14 +308,14 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       <Dropdown
         id={`${input.dataFieldName}-dropdown-input`}
-        label={label}
+        label={this.props.getTranslation(label)}
         selectedKey={selectedKey}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
         placeholder={placeholder}
         disabled={disabled}
         options={choices.map((c) => ({
           key: c.key,
-          text: c.label,
+          text: this.props.getTranslation(c.label),
         }))}
         styles={{
           root: { width: 400 },
