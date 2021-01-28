@@ -288,11 +288,9 @@ export class TabRouteHandler {
   private _openSprocTabForResource(databaseId: string, collectionId: string, sprocId: string): void {
     this._executeActionHelper(() => {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
-      collection &&
-        collection.expandCollection().then(() => {
-          const storedProcedure = collection && collection.findStoredProcedureWithId(sprocId);
-          storedProcedure && storedProcedure.open();
-        });
+      collection && collection.expandCollection();
+      const storedProcedure = collection && collection.findStoredProcedureWithId(sprocId);
+      storedProcedure && storedProcedure.open();
     });
   }
 
@@ -319,11 +317,9 @@ export class TabRouteHandler {
   private _openTriggerTabForResource(databaseId: string, collectionId: string, triggerId: string): void {
     this._executeActionHelper(() => {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
-      collection &&
-        collection.expandCollection().then(() => {
-          const trigger = collection && collection.findTriggerWithId(triggerId);
-          trigger && trigger.open();
-        });
+      collection && collection.expandCollection();
+      const trigger = collection && collection.findTriggerWithId(triggerId);
+      trigger && trigger.open();
     });
   }
 
@@ -350,11 +346,9 @@ export class TabRouteHandler {
   private _openUserDefinedFunctionTabForResource(databaseId: string, collectionId: string, udfId: string): void {
     this._executeActionHelper(() => {
       const collection: ViewModels.Collection = this._findMatchingCollectionForResource(databaseId, collectionId);
-      collection &&
-        collection.expandCollection().then(() => {
-          const userDefinedFunction = collection && collection.findUserDefinedFunctionWithId(udfId);
-          userDefinedFunction && userDefinedFunction.open();
-        });
+      collection && collection.expandCollection();
+      const userDefinedFunction = collection && collection.findUserDefinedFunctionWithId(udfId);
+      userDefinedFunction && userDefinedFunction.open();
     });
   }
 

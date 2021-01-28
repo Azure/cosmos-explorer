@@ -18,6 +18,7 @@ import {
   NumberUiType,
   SmartUiInput,
 } from "../../../SelfServe/SelfServeTypes";
+import { TFunction } from "i18next";
 
 /**
  * Generic UX renderer
@@ -34,8 +35,8 @@ interface BaseDisplay {
 }
 
 interface BaseInput extends BaseDisplay {
-  label: string;
-  placeholder?: string;
+  labelTKey: string;
+  placeholderTKey?: string;
   errorMessage?: string;
 }
 
@@ -51,8 +52,8 @@ interface NumberInput extends BaseInput {
 }
 
 interface BooleanInput extends BaseInput {
-  trueLabel: string;
-  falseLabel: string;
+  trueLabelTKey: string;
+  falseLabelTKey: string;
   defaultValue?: boolean;
 }
 
@@ -89,6 +90,7 @@ export interface SmartUiComponentProps {
   onInputChange: (input: AnyDisplay, newValue: InputType) => void;
   onError: (hasError: boolean) => void;
   disabled: boolean;
+  getTranslation: TFunction;
 }
 
 interface SmartUiComponentState {
@@ -122,10 +124,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private renderInfo(info: Info): JSX.Element {
     return (
       <MessageBar styles={{ root: { width: 400 } }}>
-        {info.message}
+        {this.props.getTranslation(info.messageTKey)}
         {info.link && (
           <Link href={info.link.href} target="_blank">
-            {info.link.text}
+            {this.props.getTranslation(info.link.textTKey)}
           </Link>
         )}
       </MessageBar>
@@ -139,10 +141,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       <div className="stringInputContainer">
         <TextField
           id={`${input.dataFieldName}-textField-input`}
-          label={input.label}
+          label={this.props.getTranslation(input.labelTKey)}
           type="text"
           value={value || ""}
-          placeholder={input.placeholder}
+          placeholder={this.props.getTranslation(input.placeholderTKey)}
           disabled={disabled}
           onChange={(_, newValue) => this.props.onInputChange(input, newValue)}
           styles={{
@@ -165,10 +167,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const description = input.description;
     return (
       <Text id={`${input.dataFieldName}-text-display`}>
-        {input.description.text}{" "}
+        {this.props.getTranslation(input.description.textTKey)}{" "}
         {description.link && (
           <Link target="_blank" href={input.description.link.href}>
-            {input.description.link.text}
+            {this.props.getTranslation(input.description.link.textTKey)}
           </Link>
         )}
       </Text>
@@ -219,12 +221,12 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   };
 
   private renderNumberInput(input: NumberInput): JSX.Element {
-    const { label, min, max, dataFieldName, step } = input;
+    const { labelTKey, min, max, dataFieldName, step } = input;
     const props = {
-      label: label,
+      label: this.props.getTranslation(labelTKey),
       min: min,
       max: max,
-      ariaLabel: label,
+      ariaLabel: labelTKey,
       step: step,
     };
 
@@ -284,10 +286,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       <Toggle
         id={`${input.dataFieldName}-toggle-input`}
-        label={input.label}
+        label={this.props.getTranslation(input.labelTKey)}
         checked={value || false}
-        onText={input.trueLabel}
-        offText={input.falseLabel}
+        onText={this.props.getTranslation(input.trueLabelTKey)}
+        offText={this.props.getTranslation(input.falseLabelTKey)}
         disabled={disabled}
         onChange={(event, checked: boolean) => this.props.onInputChange(input, checked)}
         styles={{ root: { width: 400 } }}
@@ -296,7 +298,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderChoiceInput(input: ChoiceInput): JSX.Element {
-    const { label, defaultKey: defaultKey, dataFieldName, choices, placeholder } = input;
+    const { labelTKey, defaultKey, dataFieldName, choices, placeholderTKey } = input;
     const value = this.props.currentValues.get(dataFieldName)?.value as string;
     const disabled = this.props.disabled || this.props.currentValues.get(dataFieldName)?.disabled;
     let selectedKey = value ? value : defaultKey;
@@ -306,14 +308,14 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       <Dropdown
         id={`${input.dataFieldName}-dropdown-input`}
-        label={label}
+        label={this.props.getTranslation(labelTKey)}
         selectedKey={selectedKey}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
-        placeholder={placeholder}
+        placeholder={this.props.getTranslation(placeholderTKey)}
         disabled={disabled}
         options={choices.map((c) => ({
           key: c.key,
-          text: c.label,
+          text: this.props.getTranslation(c.label),
         }))}
         styles={{
           root: { width: 400 },

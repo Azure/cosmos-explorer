@@ -2,9 +2,9 @@ interface BaseInput {
   dataFieldName: string;
   errorMessage?: string;
   type: InputTypeValue;
-  label?: (() => Promise<string>) | string;
+  labelTKey?: (() => Promise<string>) | string;
   onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
-  placeholder?: (() => Promise<string>) | string;
+  placeholderTKey?: (() => Promise<string>) | string;
 }
 
 export interface NumberInput extends BaseInput {
@@ -16,8 +16,8 @@ export interface NumberInput extends BaseInput {
 }
 
 export interface BooleanInput extends BaseInput {
-  trueLabel: (() => Promise<string>) | string;
-  falseLabel: (() => Promise<string>) | string;
+  trueLabelTKey: (() => Promise<string>) | string;
+  falseLabelTKey: (() => Promise<string>) | string;
   defaultValue?: boolean;
 }
 
@@ -92,18 +92,18 @@ export type ChoiceItem = { label: string; key: string };
 export type InputType = number | string | boolean | ChoiceItem;
 
 export interface Info {
-  message: string;
+  messageTKey: string;
   link?: {
     href: string;
-    text: string;
+    textTKey: string;
   };
 }
 
 export interface Description {
-  text: string;
+  textTKey: string;
   link?: {
     href: string;
-    text: string;
+    textTKey: string;
   };
 }
 
