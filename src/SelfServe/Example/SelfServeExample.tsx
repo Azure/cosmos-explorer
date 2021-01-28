@@ -10,7 +10,16 @@ import {
   SelfServeNotificationType,
   SmartUiInput,
 } from "../SelfServeTypes";
-import { onRefreshSelfServeExample, getMaxThroughput, Regions, update, initialize } from "./SelfServeExample.rp";
+import {
+  onRefreshSelfServeExample,
+  Regions,
+  update,
+  initialize,
+  getMinDatabaseThroughput,
+  getMaxDatabaseThroughput,
+  getMinCollectionThroughput,
+  getMaxCollectionThroughput,
+} from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
@@ -19,11 +28,11 @@ const regionDropdownItems: ChoiceItem[] = [
 ];
 
 const selfServeExampleInfo: Info = {
-  message: "This is a self serve class",
+  messageTKey: "ClassInfo",
 };
 
 const regionDropdownInfo: Info = {
-  message: "More regions can be added in the future.",
+  messageTKey: "RegionDropdownInfo",
 };
 
 const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
@@ -50,7 +59,7 @@ const onEnableDbLevelThroughputChange = (
 
 const validate = (currentvalues: Map<string, SmartUiInput>): void => {
   if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
-    throw new Error("Regions and AccountName should not be empty.");
+    throw new Error("ValidationError");
   }
 };
 
@@ -66,6 +75,9 @@ const validate = (currentvalues: Map<string, SmartUiInput>): void => {
 
   You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
   and plumb in similar feature flags for your own self serve class.
+
+  All string to be used should be present in the "src/Localization" folder, in the language specific json files. The 
+  corresponding key should be given as the value for the fields like "label", the error message etc.
 */
 
 /*
@@ -117,7 +129,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
     await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
-    return { message: "submitted successfully", type: SelfServeNotificationType.info };
+    return { message: "SubmissionMessage", type: SelfServeNotificationType.info };
   };
 
   /*
@@ -161,10 +173,10 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @Values({
     description: {
-      text: "This class sets collection and database throughput.",
+      textTKey: "DescriptionText",
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-        text: "Click here for more information",
+        textTKey: "DecriptionLinkText",
       },
     },
   })
@@ -193,26 +205,26 @@ export default class SelfServeExample extends SelfServeBaseClass {
             any other value of "regions"
   */
   @OnChange(onRegionsChange)
-  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "Select a region" })
+  @Values({ labelTKey: "Regions", choices: regionDropdownItems, placeholderTKey: "RegionsPlaceholder" })
   regions: ChoiceItem;
 
   @Values({
-    label: "Enable Logging",
-    trueLabel: "Enable",
-    falseLabel: "Disable",
+    labelTKey: "Enable Logging",
+    trueLabelTKey: "Enable",
+    falseLabelTKey: "Disable",
   })
   enableLogging: boolean;
 
   @Values({
-    label: "Account Name",
-    placeholder: "Enter the account name",
+    labelTKey: "Account Name",
+    placeholderTKey: "AccountNamePlaceHolder",
   })
   accountName: string;
 
   @Values({
-    label: "Collection Throughput",
-    min: 400,
-    max: getMaxThroughput,
+    labelTKey: "Collection Throughput",
+    min: getMinCollectionThroughput,
+    max: getMaxCollectionThroughput,
     step: 100,
     uiType: NumberUiType.Spinner,
   })
@@ -224,16 +236,16 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @OnChange(onEnableDbLevelThroughputChange)
   @Values({
-    label: "Enable DB level throughput",
-    trueLabel: "Enable",
-    falseLabel: "Disable",
+    labelTKey: "Enable DB level throughput",
+    trueLabelTKey: "Enable",
+    falseLabelTKey: "Disable",
   })
   enableDbLevelThroughput: boolean;
 
   @Values({
-    label: "Database Throughput",
-    min: 400,
-    max: getMaxThroughput,
+    labelTKey: "Database Throughput",
+    min: getMinDatabaseThroughput,
+    max: getMaxDatabaseThroughput,
     step: 100,
     uiType: NumberUiType.Slider,
   })

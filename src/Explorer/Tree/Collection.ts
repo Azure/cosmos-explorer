@@ -1,6 +1,5 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import Q from "q";
 import * as _ from "underscore";
 import UploadWorker from "worker-loader!../../workers/upload";
 import { AuthType } from "../../AuthType";
@@ -254,9 +253,9 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public expandCollection(): Q.Promise<any> {
+  public expandCollection(): void {
     if (this.isCollectionExpanded()) {
-      return Q();
+      return;
     }
 
     this.isCollectionExpanded(true);
@@ -268,8 +267,6 @@ export default class Collection implements ViewModels.Collection {
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-
-    return Q.resolve();
   }
 
   public onDocumentDBDocumentsClick() {
@@ -547,7 +544,7 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
-    const pendingNotificationsPromise: Q.Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
+    const pendingNotificationsPromise: Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
     const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.SettingsV2, (tab) => {
       return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
     });
@@ -580,7 +577,7 @@ export default class Collection implements ViewModels.Collection {
     settingsTabV2: SettingsTabV2,
     traceStartData: any,
     settingsTabOptions: ViewModels.TabOptions,
-    getPendingNotification: Q.Promise<DataModels.Notification>
+    getPendingNotification: Promise<DataModels.Notification>
   ): void => {
     const settingsTabV2Options: ViewModels.SettingsTabV2Options = {
       ...settingsTabOptions,
@@ -980,19 +977,19 @@ export default class Collection implements ViewModels.Collection {
     this.container.deleteCollectionConfirmationPane.open();
   }
 
-  public uploadFiles = (fileList: FileList): Q.Promise<UploadDetails> => {
+  public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
     // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
     if (configContext.platform === Platform.Hosted && window.authType === AuthType.AAD) {
       return this._uploadFilesCors(fileList);
     }
     const documentUploader: Worker = new UploadWorker();
-    const deferred: Q.Deferred<UploadDetails> = Q.defer<UploadDetails>();
     let inProgressNotificationId: string = "";
 
     if (!fileList || fileList.length === 0) {
-      return Q.reject("No files specified");
+      return Promise.reject("No files specified");
     }
-    documentUploader.onmessage = (event: MessageEvent) => {
+
+    const onmessage = (resolve: (value: UploadDetails) => void, reject: (reason: any) => void, event: MessageEvent) => {
       const numSuccessful: number = event.data.numUploadsSuccessful;
       const numFailed: number = event.data.numUploadsFailed;
       const runtimeError: string = event.data.runtimeError;
@@ -1001,31 +998,26 @@ export default class Collection implements ViewModels.Collection {
       NotificationConsoleUtils.clearInProgressMessageWithId(inProgressNotificationId);
       documentUploader.terminate();
       if (!!runtimeError) {
-        deferred.reject(runtimeError);
+        reject(runtimeError);
       } else if (numSuccessful === 0) {
         // all uploads failed
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to upload all documents to container ${this.id()}`
-        );
+        NotificationConsoleUtils.logConsoleError(`Failed to upload all documents to container ${this.id()}`);
       } else if (numFailed > 0) {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
+        NotificationConsoleUtils.logConsoleError(
           `Failed to upload ${numFailed} of ${numSuccessful + numFailed} documents to container ${this.id()}`
         );
       } else {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
+        NotificationConsoleUtils.logConsoleInfo(
           `Successfully uploaded all ${numSuccessful} documents to container ${this.id()}`
         );
       }
       this._logUploadDetailsInConsole(uploadDetails);
-      deferred.resolve(uploadDetails);
+      resolve(uploadDetails);
     };
-    documentUploader.onerror = (event: ErrorEvent): void => {
+    function onerror(reject: (reason: any) => void, event: ErrorEvent) {
       documentUploader.terminate();
-      deferred.reject(event.error);
-    };
+      reject(event.error);
+    }
 
     const uploaderMessage: StartUploadMessageParams = {
       files: fileList,
@@ -1040,42 +1032,33 @@ export default class Collection implements ViewModels.Collection {
       },
     };
 
-    documentUploader.postMessage(uploaderMessage);
-    inProgressNotificationId = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      `Uploading and creating documents in container ${this.id()}`
-    );
+    return new Promise<UploadDetails>((resolve, reject) => {
+      documentUploader.onmessage = onmessage.bind(null, resolve, reject);
+      documentUploader.onerror = onerror.bind(null, reject);
 
-    return deferred.promise;
+      documentUploader.postMessage(uploaderMessage);
+      inProgressNotificationId = NotificationConsoleUtils.logConsoleMessage(
+        ConsoleDataType.InProgress,
+        `Uploading and creating documents in container ${this.id()}`
+      );
+    });
   };
 
-  private _uploadFilesCors(files: FileList): Q.Promise<UploadDetails> {
-    const deferred: Q.Deferred<UploadDetails> = Q.defer<UploadDetails>();
-    const promises: Array<Q.Promise<UploadDetailsRecord>> = [];
+  private async _uploadFilesCors(files: FileList): Promise<UploadDetails> {
+    const data = await Promise.all(Array.from(files).map((file) => this._uploadFile(file)));
 
-    for (let i = 0; i < files.length; i++) {
-      promises.push(this._uploadFile(files[i]));
-    }
-    Q.all(promises).then((uploadDetails: Array<UploadDetailsRecord>) => {
-      deferred.resolve({ data: uploadDetails });
-    });
-
-    return deferred.promise;
+    return { data };
   }
 
-  private _uploadFile(file: File): Q.Promise<UploadDetailsRecord> {
-    const deferred: Q.Deferred<UploadDetailsRecord> = Q.defer();
-
+  private _uploadFile(file: File): Promise<UploadDetailsRecord> {
     const reader = new FileReader();
-    reader.onload = (evt: any): void => {
+    const onload = (resolve: (value: UploadDetailsRecord) => void, evt: any): void => {
       const fileData: string = evt.target.result;
-      this._createDocumentsFromFile(file.name, fileData).then((record) => {
-        deferred.resolve(record);
-      });
+      this._createDocumentsFromFile(file.name, fileData).then((record) => resolve(record));
     };
 
-    reader.onerror = (evt: ProgressEvent): void => {
-      deferred.resolve({
+    const onerror = (resolve: (value: UploadDetailsRecord) => void, evt: ProgressEvent): void => {
+      resolve({
         fileName: file.name,
         numSucceeded: 0,
         numFailed: 1,
@@ -1083,9 +1066,11 @@ export default class Collection implements ViewModels.Collection {
       });
     };
 
-    reader.readAsText(file);
-
-    return deferred.promise;
+    return new Promise<UploadDetailsRecord>((resolve) => {
+      reader.onload = onload.bind(this, resolve);
+      reader.onerror = onerror.bind(this, resolve);
+      reader.readAsText(file);
+    });
   }
 
   private async _createDocumentsFromFile(fileName: string, documentContent: string): Promise<UploadDetailsRecord> {
@@ -1119,46 +1104,35 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  private _getPendingThroughputSplitNotification(): Q.Promise<DataModels.Notification> {
+  private async _getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
     if (!this.container) {
-      return Q.resolve(undefined);
+      return undefined;
     }
 
-    const deferred: Q.Deferred<DataModels.Notification> = Q.defer<DataModels.Notification>();
-    fetchPortalNotifications().then(
-      (notifications: DataModels.Notification[]) => {
-        if (!notifications || notifications.length === 0) {
-          deferred.resolve(undefined);
-          return;
-        }
-
-        const pendingNotification = _.find(notifications, (notification: DataModels.Notification) => {
-          const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
-          return (
-            notification.kind === "message" &&
-            notification.collectionName === this.id() &&
-            notification.description &&
-            throughputUpdateRegExp.test(notification.description)
-          );
-        });
-
-        deferred.resolve(pendingNotification);
-      },
-      (error: any) => {
-        Logger.logError(
-          JSON.stringify({
-            error: getErrorMessage(error),
-            accountName: this.container && this.container.databaseAccount(),
-            databaseName: this.databaseId,
-            collectionName: this.id(),
-          }),
-          "Settings tree node"
-        );
-        deferred.resolve(undefined);
+    const throughputUpdateRegExp = new RegExp("Throughput update (.*) in progress");
+    try {
+      const notifications = await fetchPortalNotifications();
+      if (!notifications) {
+        return undefined;
       }
-    );
 
-    return deferred.promise;
+      return notifications.find(
+        ({ kind, collectionName, description = "" }) =>
+          kind === "message" && collectionName === this.id() && throughputUpdateRegExp.test(description)
+      );
+    } catch (error) {
+      Logger.logError(
+        JSON.stringify({
+          error: getErrorMessage(error),
+          accountName: this.container && this.container.databaseAccount(),
+          databaseName: this.databaseId,
+          collectionName: this.id(),
+        }),
+        "Settings tree node"
+      );
+    }
+
+    return undefined;
   }
 
   private _logUploadDetailsInConsole(uploadDetails: UploadDetails): void {
