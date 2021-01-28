@@ -7,7 +7,7 @@ import {
   GalleryViewerComponent,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
-import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
+import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
 import { handleError } from "../Common/ErrorHandlingUtils";
 import { HttpStatusCodes } from "../Common/Constants";
@@ -81,6 +81,14 @@ export interface GalleryViewerProps {
 }
 
 export interface DialogHost {
+  showOkModalDialog(
+    title: string,
+    msg: string,
+    okLabel: string,
+    onOk: () => void,
+    progressIndicatorProps?: IProgressIndicatorProps
+  ): void;
+
   showOkCancelModalDialog(
     title: string,
     msg: string,
@@ -88,8 +96,10 @@ export interface DialogHost {
     onOk: () => void,
     cancelLabel: string,
     onCancel: () => void,
+    progressIndicatorProps?: IProgressIndicatorProps,
     choiceGroupProps?: IChoiceGroupProps,
-    textFieldProps?: TextFieldProps
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
   ): void;
 }
 
@@ -108,8 +118,17 @@ export function reportAbuse(
     undefined,
     "Report Abuse",
     async () => {
-      const clearSubmitReportNotification = NotificationConsoleUtils.logConsoleProgress(
-        `Submitting your report on ${data.name} violating code of conduct`
+      dialogHost.showOkCancelModalDialog(
+        "Report Abuse",
+        `Submitting your report on ${data.name} violating code of conduct`,
+        "Reporting...",
+        undefined,
+        "Cancel",
+        undefined,
+        {},
+        undefined,
+        undefined,
+        true
       );
 
       try {
@@ -118,9 +137,16 @@ export function reportAbuse(
           throw new Error(`Received HTTP ${response.status} when submitting report for ${data.name}`);
         }
 
-        NotificationConsoleUtils.logConsoleInfo(
-          `Your report on ${data.name} has been submitted. Thank you for reporting the violation.`
+        dialogHost.showOkModalDialog(
+          "Report Abuse",
+          `Your report on ${data.name} has been submitted. Thank you for reporting the violation.`,
+          "OK",
+          undefined,
+          {
+            percentComplete: 1,
+          }
         );
+
         onComplete(response.data);
       } catch (error) {
         handleError(
@@ -128,11 +154,20 @@ export function reportAbuse(
           "GalleryUtils/reportAbuse",
           `Failed to submit report on ${data.name} violating code of conduct`
         );
-      }
 
-      clearSubmitReportNotification();
+        dialogHost.showOkModalDialog(
+          "Report Abuse",
+          `Failed to submit report on ${data.name} violating code of conduct`,
+          "OK",
+          undefined,
+          {
+            percentComplete: 1,
+          }
+        );
+      }
     },
     "Cancel",
+    undefined,
     undefined,
     {
       label: "How does this content violate the code of conduct?",

@@ -91,6 +91,7 @@ import { appInsights } from "../Shared/appInsights";
 import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
+import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -2810,9 +2811,35 @@ export default class Explorer {
     }
   }
 
-  public async openGallery(notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) {
+  public async openGallery(
+    selectedTab?: GalleryTab,
+    notebookUrl?: string,
+    galleryItem?: IGalleryItem,
+    isFavorite?: boolean
+  ) {
     let title: string = "Gallery";
     let hashLocation: string = "gallery";
+
+    const galleryTabOptions: any = {
+      // GalleryTabOptions
+      account: userContext.databaseAccount,
+      container: this,
+      junoClient: this.notebookManager?.junoClient,
+      selectedTab: selectedTab || GalleryTab.OfficialSamples,
+      notebookUrl,
+      galleryItem,
+      isFavorite,
+      // TabOptions
+      tabKind: ViewModels.CollectionTabKind.Gallery,
+      title: title,
+      tabPath: title,
+      documentClientUtility: null,
+      isActive: ko.observable(false),
+      hashLocation: hashLocation,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
+      isTabsContentExpanded: ko.observable(true),
+      onLoadStartKey: null,
+    };
 
     const galleryTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Gallery,
@@ -2822,31 +2849,12 @@ export default class Explorer {
 
     if (galleryTab) {
       this.tabsManager.activateTab(galleryTab);
+      (galleryTab as any).reset(galleryTabOptions);
     } else {
       if (!this.galleryTab) {
         this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
       }
-
-      const newTab = new this.galleryTab.default({
-        // GalleryTabOptions
-        account: userContext.databaseAccount,
-        container: this,
-        junoClient: this.notebookManager?.junoClient,
-        notebookUrl,
-        galleryItem,
-        isFavorite,
-        // TabOptions
-        tabKind: ViewModels.CollectionTabKind.Gallery,
-        title: title,
-        tabPath: title,
-        documentClientUtility: null,
-        isActive: ko.observable(false),
-        hashLocation: hashLocation,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-      });
-
+      const newTab = new this.galleryTab.default(galleryTabOptions);
       this.tabsManager.activateNewTab(newTab);
     }
   }

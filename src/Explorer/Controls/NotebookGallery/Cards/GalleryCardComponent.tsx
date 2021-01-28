@@ -127,7 +127,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
               {this.props.isFavorite !== undefined &&
                 this.generateIconButtonWithTooltip(
                   this.props.isFavorite ? "HeartFill" : "Heart",
-                  this.props.isFavorite ? "Unlike" : "Like",
+                  this.props.isFavorite ? "Unfavorite" : "Favorite",
                   "left",
                   this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick
                 )}

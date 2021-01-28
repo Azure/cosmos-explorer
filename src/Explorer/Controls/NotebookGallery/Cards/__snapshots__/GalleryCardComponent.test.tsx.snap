@@ -185,7 +185,7 @@ exports[`GalleryCardComponent renders 1`] = `
             "gapSpace": 0,
           }
         }
-        content="Like"
+        content="Favorite"
         id="TooltipHost-IconButton-Heart"
         styles={
           Object {
@@ -197,14 +197,14 @@ exports[`GalleryCardComponent renders 1`] = `
         }
       >
         <CustomizedIconButton
-          ariaLabel="Like"
+          ariaLabel="Favorite"
           iconProps={
             Object {
               "iconName": "Heart",
             }
           }
           onClick={[Function]}
-          title="Like"
+          title="Favorite"
         />
       </StyledTooltipHostBase>
       <StyledTooltipHostBase

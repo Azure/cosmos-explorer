@@ -172,11 +172,12 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     this.nameProps = {
       label: "Name",
       ariaLabel: "Name",
-      defaultValue: this.props.notebookName,
+      defaultValue: FileSystemUtil.stripExtension(this.props.notebookName, "ipynb"),
       required: true,
       onChange: (event, newValue) => {
-        this.props.onChangeName(newValue);
-        this.setState({ notebookName: newValue });
+        const notebookName = newValue + ".ipynb";
+        this.props.onChangeName(notebookName);
+        this.setState({ notebookName });
       },
     };
 
