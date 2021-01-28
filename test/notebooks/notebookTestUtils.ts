@@ -37,6 +37,7 @@ export const uploadNotebookIfNotExist = async (frame: Frame, notebookName: strin
 
 export const getNotebookNode = async (frame: Frame, uploadNotebookName: string): Promise<ElementHandle<Element>> => {
   const notebookResourceTree = await frame.waitForSelector(".notebookResourceTree");
+  await frame.waitFor(RENDER_DELAY);
   let currentNotebookNode: ElementHandle<Element>;
 
   const treeNodeHeaders = await notebookResourceTree.$$(".treeNodeHeader");
