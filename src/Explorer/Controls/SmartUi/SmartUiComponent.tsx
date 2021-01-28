@@ -311,7 +311,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         label={this.props.getTranslation(label)}
         selectedKey={selectedKey}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
-        placeholder={placeholder}
+        placeholder={this.props.getTranslation(placeholder)}
         disabled={disabled}
         options={choices.map((c) => ({
           key: c.key,

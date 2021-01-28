@@ -10,7 +10,7 @@ import {
   SelfServeNotificationType,
   SmartUiInput,
 } from "../SelfServeTypes";
-import { onRefreshSelfServeExample, getMaxThroughput, Regions, update, initialize } from "./SelfServeExample.rp";
+import { onRefreshSelfServeExample, Regions, update, initialize, getMinDatabaseThroughput, getMaxDatabaseThroughput, getMinCollectionThroughput, getMaxCollectionThroughput } from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
@@ -214,8 +214,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   @Values({
     label: "Collection Throughput",
-    min: 400,
-    max: getMaxThroughput,
+    min: getMinCollectionThroughput,
+    max: getMaxCollectionThroughput,
     step: 100,
     uiType: NumberUiType.Spinner,
   })
@@ -235,8 +235,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   @Values({
     label: "Database Throughput",
-    min: 400,
-    max: getMaxThroughput,
+    min: getMinDatabaseThroughput,
+    max: getMaxDatabaseThroughput,
     step: 100,
     uiType: NumberUiType.Slider,
   })

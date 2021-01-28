@@ -16,8 +16,20 @@ export interface InitializeResponse {
   dbThroughput: number;
 }
 
-export const getMaxThroughput = async (): Promise<number> => {
+export const getMaxCollectionThroughput = async (): Promise<number> => {
   return 10000;
+};
+
+export const getMinCollectionThroughput = async (): Promise<number> => {
+  return 400;
+};
+
+export const getMaxDatabaseThroughput = async (): Promise<number> => {
+  return 10000;
+};
+
+export const getMinDatabaseThroughput = async (): Promise<number> => {
+  return 400;
 };
 
 export const update = async (
