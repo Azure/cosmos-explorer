@@ -26,9 +26,9 @@ import {
 } from "./SelfServeTypes";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { getMessageBarType } from "./SelfServeUtils";
-import "../i18n";
 import { Translation } from "react-i18next";
 import { TFunction } from "i18next";
+import "../i18n";
 
 export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
@@ -153,8 +153,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<AnyDisplay> => {
-    input.label = await this.getResolvedValue(input.label);
-    input.placeholder = await this.getResolvedValue(input.placeholder);
+    input.labelTKey = await this.getResolvedValue(input.labelTKey);
+    input.placeholderTKey = await this.getResolvedValue(input.placeholderTKey);
 
     switch (input.type) {
       case "string": {
@@ -183,8 +183,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       }
       case "boolean": {
         const booleanInput = input as BooleanInput;
-        booleanInput.trueLabel = await this.getResolvedValue(booleanInput.trueLabel);
-        booleanInput.falseLabel = await this.getResolvedValue(booleanInput.falseLabel);
+        booleanInput.trueLabelTKey = await this.getResolvedValue(booleanInput.trueLabelTKey);
+        booleanInput.falseLabelTKey = await this.getResolvedValue(booleanInput.falseLabelTKey);
         return booleanInput;
       }
       default: {
@@ -316,6 +316,14 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     ];
   };
 
+  private getNotificationMessageTranslation = (translationFunction: TFunction, messageKey: string): string => {
+    const translation = translationFunction(messageKey);
+    if (translation === `${this.smartUiGeneratorClassName}.${messageKey}`) {
+      return messageKey;
+    }
+    return translation;
+  };
+
   public render(): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 5 };
     if (this.state.compileErrorMessage) {
@@ -350,7 +358,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                         styles={{ root: { width: 400 } }}
                         onDismiss={() => this.setState({ notification: undefined })}
                       >
-                        {getTranslation(this.state.notification.message)}
+                        {this.getNotificationMessageTranslation(getTranslation, this.state.notification.message)}
                       </MessageBar>
                     )}
                     <SmartUiComponent

@@ -28,11 +28,11 @@ const regionDropdownItems: ChoiceItem[] = [
 ];
 
 const selfServeExampleInfo: Info = {
-  message: "ClassInfo",
+  messageTKey: "ClassInfo",
 };
 
 const regionDropdownInfo: Info = {
-  message: "RegionDropdownInfo",
+  messageTKey: "RegionDropdownInfo",
 };
 
 const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
@@ -173,10 +173,10 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @Values({
     description: {
-      text: "DescriptionText",
+      textTKey: "DescriptionText",
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-        text: "DecriptionLinkText",
+        textTKey: "DecriptionLinkText",
       },
     },
   })
@@ -205,24 +205,24 @@ export default class SelfServeExample extends SelfServeBaseClass {
             any other value of "regions"
   */
   @OnChange(onRegionsChange)
-  @Values({ label: "Regions", choices: regionDropdownItems, placeholder: "RegionsPlaceholder" })
+  @Values({ labelTKey: "Regions", choices: regionDropdownItems, placeholderTKey: "RegionsPlaceholder" })
   regions: ChoiceItem;
 
   @Values({
-    label: "Enable Logging",
-    trueLabel: "Enable",
-    falseLabel: "Disable",
+    labelTKey: "Enable Logging",
+    trueLabelTKey: "Enable",
+    falseLabelTKey: "Disable",
   })
   enableLogging: boolean;
 
   @Values({
-    label: "Account Name",
-    placeholder: "AccountNamePlaceHolder",
+    labelTKey: "Account Name",
+    placeholderTKey: "AccountNamePlaceHolder",
   })
   accountName: string;
 
   @Values({
-    label: "Collection Throughput",
+    labelTKey: "Collection Throughput",
     min: getMinCollectionThroughput,
     max: getMaxCollectionThroughput,
     step: 100,
@@ -236,14 +236,14 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   @OnChange(onEnableDbLevelThroughputChange)
   @Values({
-    label: "Enable DB level throughput",
-    trueLabel: "Enable",
-    falseLabel: "Disable",
+    labelTKey: "Enable DB level throughput",
+    trueLabelTKey: "Enable",
+    falseLabelTKey: "Disable",
   })
   enableDbLevelThroughput: boolean;
 
   @Values({
-    label: "Database Throughput",
+    labelTKey: "Database Throughput",
     min: getMinDatabaseThroughput,
     max: getMaxDatabaseThroughput,
     step: 100,

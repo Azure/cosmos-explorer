@@ -32,14 +32,14 @@ export interface DecoratorProperties {
   id: string;
   info?: (() => Promise<Info>) | Info;
   type?: InputTypeValue;
-  label?: (() => Promise<string>) | string;
-  placeholder?: (() => Promise<string>) | string;
+  labelTKey?: (() => Promise<string>) | string;
+  placeholderTKey?: (() => Promise<string>) | string;
   dataFieldName?: string;
   min?: (() => Promise<number>) | number;
   max?: (() => Promise<number>) | number;
   step?: (() => Promise<number>) | number;
-  trueLabel?: (() => Promise<string>) | string;
-  falseLabel?: (() => Promise<string>) | string;
+  trueLabelTKey?: (() => Promise<string>) | string;
+  falseLabelTKey?: (() => Promise<string>) | string;
   choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   uiType?: string;
   errorMessage?: string;
@@ -150,7 +150,7 @@ const addToDescriptor = (
 const getInput = (value: DecoratorProperties): AnyDisplay => {
   switch (value.type) {
     case "number":
-      if (!value.label || !value.step || !value.uiType || !value.min || !value.max) {
+      if (!value.labelTKey || !value.step || !value.uiType || !value.min || !value.max) {
         value.errorMessage = `label, step, min, max and uiType are required for number input '${value.id}'.`;
       }
       return value as NumberInput;
@@ -158,17 +158,17 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
       if (value.description) {
         return value as DescriptionDisplay;
       }
-      if (!value.label) {
+      if (!value.labelTKey) {
         value.errorMessage = `label is required for string input '${value.id}'.`;
       }
       return value as StringInput;
     case "boolean":
-      if (!value.label || !value.trueLabel || !value.falseLabel) {
+      if (!value.labelTKey || !value.trueLabelTKey || !value.falseLabelTKey) {
         value.errorMessage = `label, truelabel and falselabel are required for boolean input '${value.id}'.`;
       }
       return value as BooleanInput;
     default:
-      if (!value.label || !value.choices) {
+      if (!value.labelTKey || !value.choices) {
         value.errorMessage = `label and choices are required for Choice input '${value.id}'.`;
       }
       return value as ChoiceInput;
