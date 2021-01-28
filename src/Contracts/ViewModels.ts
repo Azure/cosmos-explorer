@@ -5,7 +5,6 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import Q from "q";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
@@ -109,7 +108,7 @@ export interface CollectionBase extends TreeNode {
 
   onDocumentDBDocumentsClick(): void;
   onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void;
-  expandCollection(): Q.Promise<any>;
+  expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
 }
@@ -176,7 +175,7 @@ export interface Collection extends CollectionBase {
 
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
-  uploadFiles(fileList: FileList): Q.Promise<UploadDetails>;
+  uploadFiles(fileList: FileList): Promise<UploadDetails>;
 
   getLabel(): string;
 }
@@ -294,7 +293,7 @@ export interface DocumentsTabOptions extends TabOptions {
 }
 
 export interface SettingsTabV2Options extends TabOptions {
-  getPendingNotification: Q.Promise<DataModels.Notification>;
+  getPendingNotification: Promise<DataModels.Notification>;
 }
 
 export interface ConflictsTabOptions extends TabOptions {
