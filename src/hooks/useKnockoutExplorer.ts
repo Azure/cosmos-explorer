@@ -41,12 +41,13 @@ export function useKnockoutExplorer(config: ConfigContext, explorerParams: Explo
       if (config) {
         if (config.platform === Platform.Hosted) {
           await configureHosted(config);
+          applyExplorerBindings(explorer);
         } else if (config.platform === Platform.Emulator) {
           configureEmulator();
+          applyExplorerBindings(explorer);
         } else if (config.platform === Platform.Portal) {
           configurePortal();
         }
-        applyExplorerBindings(explorer);
       }
     };
     effect();
@@ -237,13 +238,14 @@ function configurePortal() {
       );
       console.dir(message);
       explorer.configure(message);
+      applyExplorerBindings(explorer);
     }
   }
+
   // In the Portal, configuration of Explorer happens via iframe message
   window.addEventListener(
     "message",
     (event) => {
-      console.dir(event);
       if (isInvalidParentFrameOrigin(event)) {
         return;
       }
@@ -265,6 +267,7 @@ function configurePortal() {
         }
 
         explorer.configure(inputs);
+        applyExplorerBindings(explorer);
       }
     },
     false
