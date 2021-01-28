@@ -989,7 +989,7 @@ export default class Collection implements ViewModels.Collection {
       return Promise.reject("No files specified");
     }
 
-    function onmessage(resolve: (value: UploadDetails) => void, reject: (reason: any) => void, event: MessageEvent) {
+    const onmessage = (resolve: (value: UploadDetails) => void, reject: (reason: any) => void, event: MessageEvent) => {
       const numSuccessful: number = event.data.numUploadsSuccessful;
       const numFailed: number = event.data.numUploadsFailed;
       const runtimeError: string = event.data.runtimeError;
@@ -1013,7 +1013,7 @@ export default class Collection implements ViewModels.Collection {
       }
       this._logUploadDetailsInConsole(uploadDetails);
       resolve(uploadDetails);
-    }
+    };
     function onerror(reject: (reason: any) => void, event: ErrorEvent) {
       documentUploader.terminate();
       reject(event.error);
