@@ -10,7 +10,16 @@ import {
   SelfServeNotificationType,
   SmartUiInput,
 } from "../SelfServeTypes";
-import { onRefreshSelfServeExample, Regions, update, initialize, getMinDatabaseThroughput, getMaxDatabaseThroughput, getMinCollectionThroughput, getMaxCollectionThroughput } from "./SelfServeExample.rp";
+import {
+  onRefreshSelfServeExample,
+  Regions,
+  update,
+  initialize,
+  getMinDatabaseThroughput,
+  getMaxDatabaseThroughput,
+  getMinCollectionThroughput,
+  getMaxCollectionThroughput,
+} from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
   { label: "North Central US", key: Regions.NorthCentralUS },
