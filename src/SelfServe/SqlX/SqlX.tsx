@@ -62,10 +62,10 @@ export default class SqlX extends SelfServeBaseClass {
 
   @Values({
     description: {
-      text: "Provisioning dedicated gateways for SqlX accounts.",
+      textTKey: "Provisioning dedicated gateways for SqlX accounts.",
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-        text: "Learn more about dedicated gateway.",
+        textTKey: "Learn more about dedicated gateway.",
       },
     },
   })
@@ -73,21 +73,21 @@ export default class SqlX extends SelfServeBaseClass {
 
   @OnChange(onEnableDedicatedGatewayChange)
   @Values({
-    label: "Dedicated Gateway",
-    trueLabel: "Enable",
-    falseLabel: "Disable",
+    labelTKey: "Dedicated Gateway",
+    trueLabelTKey: "Enable",
+    falseLabelTKey: "Disable",
   })
   enableDedicatedGateway: boolean;
 
   @Values({
-    label: "SKUs",
+    labelTKey: "SKUs",
     choices: getSkus,
-    placeholder: "Select SKUs",
+    placeholderTKey: "Select SKUs",
   })
   sku: ChoiceItem;
 
   @Values({
-    label: "Number of instances",
+    labelTKey: "Number of instances",
     min: getInstancesMin,
     max: getInstancesMax,
     step: 1,

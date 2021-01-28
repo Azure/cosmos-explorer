@@ -34,17 +34,17 @@ describe("SelfServeComponent", () => {
     root: {
       id: "root",
       info: {
-        message: "Start at $24/mo per database",
+        messageTKey: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details",
+          textTKey: "More Details",
         },
       },
       children: [
         {
           id: "throughput",
           input: {
-            label: "Throughput (input)",
+            labelTKey: "Throughput (input)",
             dataFieldName: "throughput",
             type: "number",
             min: 400,
@@ -57,7 +57,7 @@ describe("SelfServeComponent", () => {
         {
           id: "containerId",
           input: {
-            label: "Container id",
+            labelTKey: "Container id",
             dataFieldName: "containerId",
             type: "string",
           },
@@ -65,9 +65,9 @@ describe("SelfServeComponent", () => {
         {
           id: "analyticalStore",
           input: {
-            label: "Analytical Store",
-            trueLabel: "Enabled",
-            falseLabel: "Disabled",
+            labelTKey: "Analytical Store",
+            trueLabelTKey: "Enabled",
+            falseLabelTKey: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
             type: "boolean",
@@ -76,7 +76,7 @@ describe("SelfServeComponent", () => {
         {
           id: "database",
           input: {
-            label: "Database",
+            labelTKey: "Database",
             dataFieldName: "database",
             type: "object",
             choices: [

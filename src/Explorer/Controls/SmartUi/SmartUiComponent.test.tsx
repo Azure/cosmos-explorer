@@ -8,10 +8,10 @@ describe("SmartUiComponent", () => {
     root: {
       id: "root",
       info: {
-        message: "Start at $24/mo per database",
+        messageTKey: "Start at $24/mo per database",
         link: {
           href: "https://aka.ms/azure-cosmos-db-pricing",
-          text: "More Details",
+          textTKey: "More Details",
         },
       },
       children: [
@@ -21,10 +21,10 @@ describe("SmartUiComponent", () => {
             dataFieldName: "description",
             type: "string",
             description: {
-              text: "this is an example description text.",
+              textTKey: "this is an example description text.",
               link: {
                 href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-                text: "Click here for more information.",
+                textTKey: "Click here for more information.",
               },
             },
           },
@@ -32,7 +32,7 @@ describe("SmartUiComponent", () => {
         {
           id: "throughput",
           input: {
-            label: "Throughput (input)",
+            labelTKey: "Throughput (input)",
             dataFieldName: "throughput",
             type: "number",
             min: 400,
@@ -45,7 +45,7 @@ describe("SmartUiComponent", () => {
         {
           id: "throughput2",
           input: {
-            label: "Throughput (Slider)",
+            labelTKey: "Throughput (Slider)",
             dataFieldName: "throughput2",
             type: "number",
             min: 400,
@@ -58,7 +58,7 @@ describe("SmartUiComponent", () => {
         {
           id: "throughput3",
           input: {
-            label: "Throughput (invalid)",
+            labelTKey: "Throughput (invalid)",
             dataFieldName: "throughput3",
             type: "boolean",
             min: 400,
@@ -72,7 +72,7 @@ describe("SmartUiComponent", () => {
         {
           id: "containerId",
           input: {
-            label: "Container id",
+            labelTKey: "Container id",
             dataFieldName: "containerId",
             type: "string",
           },
@@ -80,9 +80,9 @@ describe("SmartUiComponent", () => {
         {
           id: "analyticalStore",
           input: {
-            label: "Analytical Store",
-            trueLabel: "Enabled",
-            falseLabel: "Disabled",
+            labelTKey: "Analytical Store",
+            trueLabelTKey: "Enabled",
+            falseLabelTKey: "Disabled",
             defaultValue: true,
             dataFieldName: "analyticalStore",
             type: "boolean",
@@ -91,7 +91,7 @@ describe("SmartUiComponent", () => {
         {
           id: "database",
           input: {
-            label: "Database",
+            labelTKey: "Database",
             dataFieldName: "database",
             type: "object",
             choices: [
@@ -116,6 +116,9 @@ describe("SmartUiComponent", () => {
         onInputChange={jest.fn()}
         onError={() => {
           return;
+        }}
+        getTranslation={(key: string) => {
+          return key;
         }}
       />
     );
@@ -144,6 +147,9 @@ describe("SmartUiComponent", () => {
         onInputChange={jest.fn()}
         onError={() => {
           return;
+        }}
+        getTranslation={(key: string) => {
+          return key;
         }}
       />
     );

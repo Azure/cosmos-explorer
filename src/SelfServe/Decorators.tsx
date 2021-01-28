@@ -8,7 +8,7 @@ interface Decorator {
 }
 
 interface InputOptionsBase {
-  label: string;
+  labelTKey: string;
 }
 
 export interface NumberInputOptions extends InputOptionsBase {
@@ -19,17 +19,17 @@ export interface NumberInputOptions extends InputOptionsBase {
 }
 
 export interface StringInputOptions extends InputOptionsBase {
-  placeholder?: (() => Promise<string>) | string;
+  placeholderTKey?: (() => Promise<string>) | string;
 }
 
 export interface BooleanInputOptions extends InputOptionsBase {
-  trueLabel: (() => Promise<string>) | string;
-  falseLabel: (() => Promise<string>) | string;
+  trueLabelTKey: (() => Promise<string>) | string;
+  falseLabelTKey: (() => Promise<string>) | string;
 }
 
 export interface ChoiceInputOptions extends InputOptionsBase {
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
-  placeholder?: (() => Promise<string>) | string;
+  placeholderTKey?: (() => Promise<string>) | string;
 }
 
 export interface DescriptionDisplayOptions {
@@ -48,7 +48,7 @@ const isNumberInputOptions = (inputOptions: InputOptions): inputOptions is Numbe
 };
 
 const isBooleanInputOptions = (inputOptions: InputOptions): inputOptions is BooleanInputOptions => {
-  return "trueLabel" in inputOptions;
+  return "trueLabelTKey" in inputOptions;
 };
 
 const isChoiceInputOptions = (inputOptions: InputOptions): inputOptions is ChoiceInputOptions => {
@@ -92,7 +92,7 @@ export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecora
 export const Values = (inputOptions: InputOptions): PropertyDecorator => {
   if (isNumberInputOptions(inputOptions)) {
     return addToMap(
-      { name: "label", value: inputOptions.label },
+      { name: "labelTKey", value: inputOptions.labelTKey },
       { name: "min", value: inputOptions.min },
       { name: "max", value: inputOptions.max },
       { name: "step", value: inputOptions.step },
@@ -100,22 +100,22 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
     );
   } else if (isBooleanInputOptions(inputOptions)) {
     return addToMap(
-      { name: "label", value: inputOptions.label },
-      { name: "trueLabel", value: inputOptions.trueLabel },
-      { name: "falseLabel", value: inputOptions.falseLabel }
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "trueLabelTKey", value: inputOptions.trueLabelTKey },
+      { name: "falseLabelTKey", value: inputOptions.falseLabelTKey }
     );
   } else if (isChoiceInputOptions(inputOptions)) {
     return addToMap(
-      { name: "label", value: inputOptions.label },
-      { name: "placeholder", value: inputOptions.placeholder },
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "placeholderTKey", value: inputOptions.placeholderTKey },
       { name: "choices", value: inputOptions.choices }
     );
   } else if (isDescriptionDisplayOptions(inputOptions)) {
     return addToMap({ name: "description", value: inputOptions.description });
   } else {
     return addToMap(
-      { name: "label", value: inputOptions.label },
-      { name: "placeholder", value: inputOptions.placeholder }
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "placeholderTKey", value: inputOptions.placeholderTKey }
     );
   }
 };
