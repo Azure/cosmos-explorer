@@ -156,6 +156,7 @@ jobs:
         run: |
           npm ci
           npm start &
+          node utils/cleanupDBs.js
           npm run wait-for-server
           npm run test:e2e
         shell: bash

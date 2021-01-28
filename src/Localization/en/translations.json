@@ -1,0 +1,33 @@
+{
+    "translations": {
+        "Common": {
+            "Save": "Save",
+            "Discard": "Discard",
+            "Refresh": "Refesh"
+        },
+        "SelfServeExample": {
+            "North Central US": "North Central US",
+            "West US": "West US",
+            "East US 2": "East US 2",
+            "ClassInfo": "This is a self serve class",
+            "RegionDropdownInfo": "More regions can be added in the future.",
+            "ValidationError": "Regions and AccountName should not be empty.",
+            "DescriptionText": "This class sets collection and database throughput.",
+            "DecriptionLinkText": "Click here for more information",
+            "Regions": "Regions",
+            "RegionsPlaceholder": "Select a region",
+            "Enable Logging": "Enable Logging",
+            "Enable": "Enable",
+            "Disable": "Disable",
+            "Account Name": "Account Name",
+            "AccountNamePlaceHolder": "Enter the account name",
+            "Collection Throughput": "Collection Throughput",
+            "Enable DB level throughput": "Enable DB level throughput",
+            "Database Throughput": "Database Throughput",
+            "RefreshMessage": "Self Serve Example successfully refreshing",
+            "SubmissionMessage": "Submitted successfully"
+        },
+        "SqlX": {
+        }
+    }
+}
