@@ -41,14 +41,14 @@ export class NotebookContainerClient {
   }
 
   private async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
+    if (this.isResettingWorkspace) {
+      return undefined;
+    }
+    
     if (!this.notebookServerInfo() || !this.notebookServerInfo().notebookServerEndpoint) {
       const error = "No server endpoint detected";
       Logger.logError(error, "NotebookContainerClient/getMemoryUsage");
       return Promise.reject(error);
-    }
-
-    if (this.isResettingWorkspace) {
-      return undefined;
     }
 
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
@@ -118,8 +118,8 @@ export class NotebookContainerClient {
 
   private getNotebookServerConfig(): { notebookServerEndpoint: string; authToken: string } {
     let authToken: string,
-      notebookServerEndpoint = this.notebookServerInfo().notebookServerEndpoint || "",
-      token = this.notebookServerInfo().authToken || "";
+      notebookServerEndpoint = this.notebookServerInfo().notebookServerEndpoint,
+      token = this.notebookServerInfo().authToken;
     if (token) {
       authToken = `Token ${token}`;
     }
