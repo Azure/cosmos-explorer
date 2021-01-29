@@ -10,6 +10,7 @@ import {
   IRectangle,
   Label,
   List,
+  Overlay,
   Pivot,
   PivotItem,
   SearchBox,
@@ -74,14 +75,14 @@ interface GalleryTabInfo {
 export class GalleryViewerComponent extends React.Component<GalleryViewerComponentProps, GalleryViewerComponentState> {
   public static readonly OfficialSamplesTitle = "Official samples";
   public static readonly PublicGalleryTitle = "Public gallery";
-  public static readonly FavoritesTitle = "Liked";
-  public static readonly PublishedTitle = "Your published work";
+  public static readonly FavoritesTitle = "My favorites";
+  public static readonly PublishedTitle = "My published work";
 
   private static readonly rowsPerPage = 5;
 
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
-  private static readonly mostFavoritedText = "Most liked";
+  private static readonly mostFavoritedText = "Most favorited";
   private static readonly mostRecentText = "Most recent";
 
   private readonly sortingOptions: IDropdownOption[];
@@ -222,8 +223,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       content: this.isEmptyData(data)
         ? this.createEmptyTabContent(
             "ContactHeart",
-            "You have not liked anything",
-            "Like any notebook from Official Samples or Public gallery"
+            "You have not favorited anything",
+            "Favorite any notebook from Official samples or Public gallery"
           )
         : this.createSearchBarHeader(this.createCardsTabContent(data)),
     };
@@ -245,7 +246,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createPublishedNotebooksTabContent = (data: IGalleryItem[]): JSX.Element => {
     const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
     const content = (
-      <Stack tokens={{ childrenGap: 10 }}>
+      <Stack tokens={{ childrenGap: 20 }}>
         {published?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             undefined,
@@ -276,7 +277,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     content: JSX.Element
   ): JSX.Element => {
     return (
-      <Stack tokens={{ childrenGap: 5 }}>
+      <Stack tokens={{ childrenGap: 10 }}>
         {title && <Text styles={{ root: { fontWeight: FontWeights.semibold } }}>{title}</Text>}
         {description && <Text>{description}</Text>}
         {content}
@@ -285,15 +286,22 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private createPublicGalleryTabContent(data: IGalleryItem[], acceptedCodeOfConduct: boolean): JSX.Element {
-    return acceptedCodeOfConduct === false ? (
-      <CodeOfConductComponent
-        junoClient={this.props.junoClient}
-        onAcceptCodeOfConduct={(result: boolean) => {
-          this.setState({ isCodeOfConductAccepted: result });
-        }}
-      />
-    ) : (
-      this.createSearchBarHeader(this.createCardsTabContent(data))
+    return (
+      <div className="publicGalleryTabContainer">
+        {this.createSearchBarHeader(this.createCardsTabContent(data))}
+        {acceptedCodeOfConduct === false && (
+          <Overlay isDarkThemed>
+            <div className="publicGalleryTabOverlayContent">
+              <CodeOfConductComponent
+                junoClient={this.props.junoClient}
+                onAcceptCodeOfConduct={(result: boolean) => {
+                  this.setState({ isCodeOfConductAccepted: result });
+                }}
+              />
+            </div>
+          </Overlay>
+        )}
+      </div>
     );
   }
 

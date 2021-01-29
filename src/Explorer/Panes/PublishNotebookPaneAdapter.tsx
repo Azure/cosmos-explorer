@@ -11,6 +11,7 @@ import { toJS } from "@nteract/commutable";
 import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
 import { HttpStatusCodes } from "../../Common/Constants";
 import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -163,6 +164,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
           );
         } else {
           NotificationConsoleUtils.logConsoleInfo(`Published ${this.name} to gallery`);
+          this.container.openGallery(GalleryTab.Published);
         }
       }
     } catch (error) {

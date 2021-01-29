@@ -25,7 +25,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
     <StackItem>
       <StyledTextFieldBase
         ariaLabel="Name"
-        defaultValue="SampleNotebook.ipynb"
+        defaultValue="SampleNotebook"
         label="Name"
         onChange={[Function]}
         required={true}

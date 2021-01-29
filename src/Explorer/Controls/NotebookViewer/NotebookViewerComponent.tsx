@@ -3,14 +3,11 @@
  */
 import { Notebook } from "@nteract/commutable";
 import { createContentRef } from "@nteract/core";
-import { IChoiceGroupProps, Icon, Link, ProgressIndicator } from "office-ui-fabric-react";
+import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "office-ui-fabric-react";
 import * as React from "react";
 import { contents } from "rx-jupyter";
-import * as Logger from "../../../Common/Logger";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
@@ -21,7 +18,7 @@ import Explorer from "../../Explorer";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
 import { SessionStorageUtility } from "../../../Shared/StorageUtility";
 import { DialogHost } from "../../../Utils/GalleryUtils";
-import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -179,6 +176,32 @@ export class NotebookViewerComponent
   }
 
   // DialogHost
+  showOkModalDialog(
+    title: string,
+    msg: string,
+    okLabel: string,
+    onOk: () => void,
+    progressIndicatorProps?: IProgressIndicatorProps
+  ): void {
+    this.setState({
+      dialogProps: {
+        isModal: true,
+        visible: true,
+        title,
+        subText: msg,
+        primaryButtonText: okLabel,
+        onPrimaryButtonClick: () => {
+          this.setState({ dialogProps: undefined });
+          onOk && onOk();
+        },
+        secondaryButtonText: undefined,
+        onSecondaryButtonClick: undefined,
+        progressIndicatorProps,
+      },
+    });
+  }
+
+  // DialogHost
   showOkCancelModalDialog(
     title: string,
     msg: string,
@@ -186,8 +209,10 @@ export class NotebookViewerComponent
     onOk: () => void,
     cancelLabel: string,
     onCancel: () => void,
+    progressIndicatorProps?: IProgressIndicatorProps,
     choiceGroupProps?: IChoiceGroupProps,
-    textFieldProps?: TextFieldProps
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
   ): void {
     this.setState({
       dialogProps: {
@@ -205,8 +230,10 @@ export class NotebookViewerComponent
           this.setState({ dialogProps: undefined });
           onCancel && onCancel();
         },
+        progressIndicatorProps,
         choiceGroupProps,
         textFieldProps,
+        primaryButtonDisabled,
       },
     });
   }
