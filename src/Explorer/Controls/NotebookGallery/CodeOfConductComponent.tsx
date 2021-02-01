@@ -2,7 +2,9 @@ import * as React from "react";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constants";
 import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
-import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
+import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface CodeOfConductComponentProps {
   junoClient: JunoClient;
@@ -14,6 +16,7 @@ interface CodeOfConductComponentState {
 }
 
 export class CodeOfConductComponent extends React.Component<CodeOfConductComponentProps, CodeOfConductComponentState> {
+  private viewCodeOfConductTraced: boolean;
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionPara3: string;
@@ -36,14 +39,27 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
   }
 
   private async acceptCodeOfConduct(): Promise<void> {
+    const startKey = traceStart(Action.NotebooksGalleryAcceptCodeOfConduct);
+
     try {
       const response = await this.props.junoClient.acceptCodeOfConduct();
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
         throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
       }
 
+      traceSuccess(Action.NotebooksGalleryAcceptCodeOfConduct, startKey);
+
       this.props.onAcceptCodeOfConduct(response.data);
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryAcceptCodeOfConduct,
+        {
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       handleError(error, "CodeOfConductComponent/acceptCodeOfConduct", "Failed to accept code of conduct");
     }
   }
@@ -53,6 +69,11 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
   };
 
   public render(): JSX.Element {
+    if (!this.viewCodeOfConductTraced) {
+      this.viewCodeOfConductTraced = true;
+      trace(Action.NotebooksGalleryViewCodeOfConduct);
+    }
+
     return (
       <Stack tokens={{ childrenGap: 20 }}>
         <Stack.Item>

@@ -92,6 +92,17 @@ export enum Action {
   SettingsV2Updated,
   SettingsV2Discarded,
   MongoIndexUpdated,
+  NotebooksGalleryPublish,
+  NotebooksGalleryReportAbuse,
+  NotebooksGalleryClickReportAbuse,
+  NotebooksGalleryViewCodeOfConduct,
+  NotebooksGalleryAcceptCodeOfConduct,
+  NotebooksGalleryFavorite,
+  NotebooksGalleryUnfavorite,
+  NotebooksGalleryClickDelete,
+  NotebooksGalleryDelete,
+  NotebooksGalleryClickDownload,
+  NotebooksGalleryDownload,
 }
 
 export const ActionModifiers = {
