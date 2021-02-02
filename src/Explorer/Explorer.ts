@@ -425,7 +425,7 @@ export default class Explorer {
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryPublishEnabled = ko.computed<boolean>(
-      () => this.isFeatureEnabled(Constants.Features.enableGalleryPublish) || configContext.ENABLE_GALLERY_PUBLISH
+      () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
