@@ -103,6 +103,12 @@ export enum Action {
   NotebooksGalleryDelete,
   NotebooksGalleryClickDownload,
   NotebooksGalleryDownload,
+  NotebooksGalleryViewNotebook,
+  NotebooksGalleryViewGallery,
+  NotebooksGalleryViewOfficialSamples,
+  NotebooksGalleryViewPublicGallery,
+  NotebooksGalleryViewFavorites,
+  NotebooksGalleryViewPublishedNotebooks,
 }
 
 export const ActionModifiers = {

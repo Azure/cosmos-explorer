@@ -716,6 +716,19 @@ export class ResourceTreeAdapter implements ReactAdapter {
       },
     ];
 
+    if (item.type === NotebookContentItemType.Notebook) {
+      items.push({
+        label: "Publish to gallery",
+        iconSrc: undefined, // TODO
+        onClick: async () => {
+          const content = await this.container.readFile(item);
+          if (content) {
+            await this.container.publishNotebook(item.name, content);
+          }
+        },
+      });
+    }
+
     // "Copy to ..." isn't needed if github locations are not available
     if (!this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       items = items.filter((item) => item.label !== "Copy to ...");
