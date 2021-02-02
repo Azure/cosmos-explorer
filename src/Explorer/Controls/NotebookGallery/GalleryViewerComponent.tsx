@@ -343,8 +343,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   ): JSX.Element => {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
-        {title && <Text styles={{ root: { fontWeight: FontWeights.semibold } }}>{title}</Text>}
-        {description && <Text>{description}</Text>}
+        {title && (
+          <Text styles={{ root: { fontWeight: FontWeights.semibold, marginLeft: 10, marginRight: 10 } }}>{title}</Text>
+        )}
+        {description && <Text styles={{ root: { marginLeft: 10, marginRight: 10 } }}>{description}</Text>}
         {content}
       </Stack>
     );
@@ -409,7 +411,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private createPolicyViolationsListContent(data: IGalleryItem[]): JSX.Element {
     return (
-      <table>
+      <table style={{ margin: 10 }}>
         <tbody>
           <tr>
             <th>Name</th>
