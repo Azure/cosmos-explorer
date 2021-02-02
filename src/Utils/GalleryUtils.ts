@@ -216,6 +216,7 @@ export function downloadItem(
   trace(Action.NotebooksGalleryClickDownload, ActionModifiers.Mark, {
     notebookId: data.id,
     downloadCount: data.downloads,
+    isSample: data.isSample,
   });
 
   const name = data.name;

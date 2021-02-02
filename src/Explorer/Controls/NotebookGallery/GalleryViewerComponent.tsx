@@ -281,7 +281,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       content: this.isEmptyData(data)
         ? this.createEmptyTabContent(
             "ContactHeart",
-            <>You don't have any favorites yet</>,
+            <>You don&apos;t have any favorites yet</>,
             <>
               Favorite any notebook from the{" "}
               <Link onClick={() => this.setState({ selectedTab: GalleryTab.OfficialSamples })}>official samples</Link>{" "}

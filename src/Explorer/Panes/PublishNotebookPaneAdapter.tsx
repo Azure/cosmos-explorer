@@ -184,6 +184,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
           {
             databaseAccountName: this.container.databaseAccount()?.name,
             defaultExperience: this.container.defaultExperience(),
+            notebookId: data.id,
             isPublishPending,
           },
           startKey

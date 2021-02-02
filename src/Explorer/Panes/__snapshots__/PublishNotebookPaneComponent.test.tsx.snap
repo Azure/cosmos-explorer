@@ -14,7 +14,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
   >
     <StackItem>
       <Text>
-        This notebook has your data. Please make sure you delete any sensitive data/output before publishing.
+        When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.
       </Text>
     </StackItem>
     <StackItem>
@@ -65,14 +65,6 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
               "key": "Custom Image",
               "text": "Custom Image",
             },
-            Object {
-              "key": "Take Screenshot",
-              "text": "Take Screenshot",
-            },
-            Object {
-              "key": "Use First Display Output",
-              "text": "Use First Display Output",
-            },
           ]
         }
       />
@@ -112,9 +104,8 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             "views": 0,
           }
         }
-        isFavorite={false}
-        showDelete={true}
-        showDownload={true}
+        showDelete={false}
+        showDownload={false}
       />
     </StackItem>
   </Stack>
