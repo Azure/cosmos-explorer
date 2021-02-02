@@ -1890,6 +1890,9 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
+    if (flights.indexOf(Constants.Flights.GalleryPublish) !== -1) {
+      this.isGalleryPublishEnabled(true);
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
