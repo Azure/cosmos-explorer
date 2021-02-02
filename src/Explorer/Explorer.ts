@@ -92,6 +92,7 @@ import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingC
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
+import { PanelManager } from "./Panes/PanelManager";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -111,6 +112,7 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
+  panelManager: PanelManager;
 }
 
 export default class Explorer {
@@ -158,6 +160,7 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
+  public panelManager: PanelManager;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -279,6 +282,7 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
+    this.panelManager = params?.panelManager;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -3038,5 +3042,11 @@ export default class Explorer {
       // use has created an empty database without shared throughput
       return false;
     });
+  }
+
+  public openDeleteCollectionConfirmationPane(): void {
+    this.isFeatureEnabled(Constants.Features.enableKOPanel)
+      ? this.deleteCollectionConfirmationPane.open()
+      : this.panelManager.openDeleteCollectionConfirmationPane(this);
   }
 }

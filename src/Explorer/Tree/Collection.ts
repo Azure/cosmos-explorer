@@ -973,10 +973,6 @@ export default class Collection implements ViewModels.Collection {
     this.uploadFiles(event.originalEvent.dataTransfer.files);
   }
 
-  public onDeleteCollectionContextMenuClick(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
-    this.container.deleteCollectionConfirmationPane.open();
-  }
-
   public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
     // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
     if (configContext.platform === Platform.Hosted && window.authType === AuthType.AAD) {

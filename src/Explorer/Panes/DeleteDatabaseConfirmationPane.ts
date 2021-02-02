@@ -58,8 +58,7 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
       promise = (<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
         this.container.databaseAccount().properties.cassandraEndpoint,
         this.container.databaseAccount().id,
-        `DROP KEYSPACE ${selectedDatabase.id()};`,
-        this.container
+        `DROP KEYSPACE ${selectedDatabase.id()};`
       );
     } else {
       promise = Q(deleteDatabase(selectedDatabase.id()));
