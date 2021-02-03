@@ -20,7 +20,7 @@ import { NotebookUtil } from "../Notebook/NotebookUtil";
 import _ from "underscore";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
@@ -716,11 +716,15 @@ export class ResourceTreeAdapter implements ReactAdapter {
       },
     ];
 
-    if (item.type === NotebookContentItemType.Notebook) {
+    if (this.container.isGalleryPublishEnabled() && item.type === NotebookContentItemType.Notebook) {
       items.push({
         label: "Publish to gallery",
         iconSrc: undefined, // TODO
         onClick: async () => {
+          TelemetryProcessor.trace(Action.NotebooksGalleryClickPublishToGallery, ActionModifiers.Mark, {
+            source: Source.ResourceTreeMenu,
+          });
+
           const content = await this.container.readFile(item);
           if (content) {
             await this.container.publishNotebook(item.name, content);
