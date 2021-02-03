@@ -154,6 +154,6 @@ export enum SourceBlade {
 }
 
 export enum Source {
-  ResourceTreeMenu,
-  CommandBarMenu,
+  ResourceTreeMenu = "ResourceTreeMenu",
+  CommandBarMenu = "CommandBarMenu",
 }
