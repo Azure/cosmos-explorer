@@ -428,8 +428,8 @@ export default class Explorer {
     this.shouldShowShareDialogContents = ko.observable<boolean>(false);
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
-    this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
+    this.isGalleryPublishEnabled = ko.computed<boolean>(
+      () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
@@ -2257,7 +2257,7 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): Promise<void> {
+  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(
         name,

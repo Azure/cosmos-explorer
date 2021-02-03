@@ -18,7 +18,9 @@ import Explorer from "../../Explorer";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
 import { SessionStorageUtility } from "../../../Shared/StorageUtility";
 import { DialogHost } from "../../../Utils/GalleryUtils";
-import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
+import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -77,12 +79,23 @@ export class NotebookViewerComponent
   }
 
   private async loadNotebookContent(): Promise<void> {
+    const startKey = traceStart(Action.NotebooksGalleryViewNotebook, {
+      notebookUrl: this.props.notebookUrl,
+      notebookId: this.props.galleryItem?.id,
+    });
+
     try {
       const response = await fetch(this.props.notebookUrl);
       if (!response.ok) {
         this.setState({ showProgressBar: false });
         throw new Error(`Received HTTP ${response.status} while fetching ${this.props.notebookUrl}`);
       }
+
+      traceSuccess(
+        Action.NotebooksGalleryViewNotebook,
+        { notebookUrl: this.props.notebookUrl, notebookId: this.props.galleryItem?.id },
+        startKey
+      );
 
       const notebook: Notebook = await response.json();
       this.removeNotebookViewerLink(notebook, this.props.galleryItem?.newCellId);
@@ -98,6 +111,17 @@ export class NotebookViewerComponent
         SessionStorageUtility.setEntry(this.props.galleryItem?.id, "true");
       }
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryViewNotebook,
+        {
+          notebookUrl: this.props.notebookUrl,
+          notebookId: this.props.galleryItem?.id,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       this.setState({ showProgressBar: false });
       handleError(error, "NotebookViewerComponent/loadNotebookContent", "Failed to load notebook content");
     }
