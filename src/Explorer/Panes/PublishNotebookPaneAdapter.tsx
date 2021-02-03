@@ -14,6 +14,7 @@ import { handleError, getErrorMessage, getErrorStack } from "../../Common/ErrorH
 import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -203,7 +204,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       );
 
       const errorMessage = getErrorMessage(error);
-      this.formError = `Failed to publish ${this.name} to gallery`;
+      this.formError = `Failed to publish ${FileSystemUtil.stripExtension(this.name, "ipynb")} to gallery`;
       this.formErrorDetail = `${errorMessage}`;
       handleError(errorMessage, "PublishNotebookPaneAdapter/submit", this.formError);
       return;
