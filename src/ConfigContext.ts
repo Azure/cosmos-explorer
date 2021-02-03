@@ -80,7 +80,11 @@ if (process.env.NODE_ENV === "development") {
 
 export async function initializeConfiguration(): Promise<ConfigContext> {
   try {
-    const response = await fetch("./config.json");
+    const response = await fetch("./config.json", {
+      headers: {
+        "If-None-Match": "", // disable client side cache
+      },
+    });
     if (response.status === 200) {
       try {
         const { allowedParentFrameOrigins, ...externalConfig } = await response.json();
