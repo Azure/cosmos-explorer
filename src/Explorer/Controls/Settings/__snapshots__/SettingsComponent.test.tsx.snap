@@ -1021,6 +1021,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
+                "panelManager": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -2300,6 +2301,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
+              "panelManager": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -3592,6 +3594,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
+                "panelManager": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -4871,6 +4874,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
+              "panelManager": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
