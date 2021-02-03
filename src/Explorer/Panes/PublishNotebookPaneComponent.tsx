@@ -14,7 +14,7 @@ export interface PublishNotebookPaneProps {
   notebookAuthor: string;
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
-  notebookParentDomElement: HTMLElement;
+  notebookParentDomElement?: HTMLElement;
   onChangeName: (newValue: string) => void;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
@@ -110,7 +110,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     };
 
     this.descriptionPara1 =
-      "This notebook has your data. Please make sure you delete any sensitive data/output before publishing.";
+      "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.";
 
     this.descriptionPara2 = `Would you like to publish and share "${FileSystemUtil.stripExtension(
       this.props.notebookName,
@@ -140,16 +140,20 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       this.props.onError(formError, formErrorDetail, area);
     };
 
+    const options: ImageTypes[] = [ImageTypes.Url, ImageTypes.CustomImage];
+
+    if (this.props.notebookParentDomElement) {
+      options.push(ImageTypes.TakeScreenshot);
+      if (this.props.notebookObject) {
+        options.push(ImageTypes.UseFirstDisplayOutput);
+      }
+    }
+
     this.thumbnailSelectorProps = {
       label: "Cover image",
       defaultSelectedKey: ImageTypes.Url,
       ariaLabel: "Cover image",
-      options: [
-        ImageTypes.Url,
-        ImageTypes.CustomImage,
-        ImageTypes.TakeScreenshot,
-        ImageTypes.UseFirstDisplayOutput,
-      ].map((value: string) => ({ text: value, key: value })),
+      options: options.map((value: string) => ({ text: value, key: value })),
       onChange: async (event, options) => {
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
@@ -301,9 +305,9 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 policyViolations: undefined,
                 pendingScanJobIds: undefined,
               }}
-              isFavorite={false}
-              showDownload={true}
-              showDelete={true}
+              isFavorite={undefined}
+              showDownload={false}
+              showDelete={false}
               onClick={undefined}
               onTagClick={undefined}
               onFavoriteClick={undefined}
