@@ -54,7 +54,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     super(props);
 
     this.state = {
-      type: ImageTypes.Url,
+      type: ImageTypes.CustomImage,
       notebookName: props.notebookName,
       notebookDescription: "",
       notebookTags: "",
@@ -120,6 +120,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     this.thumbnailUrlProps = {
       label: "Cover image url",
       ariaLabel: "Cover image url",
+      required: true,
       onChange: (event, newValue) => {
         this.props.onChangeImageSrc(newValue);
         this.setState({ imageSrc: newValue });
@@ -140,7 +141,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       this.props.onError(formError, formErrorDetail, area);
     };
 
-    const options: ImageTypes[] = [ImageTypes.Url, ImageTypes.CustomImage];
+    const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];
 
     if (this.props.notebookParentDomElement) {
       options.push(ImageTypes.TakeScreenshot);
@@ -151,10 +152,12 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
     this.thumbnailSelectorProps = {
       label: "Cover image",
-      defaultSelectedKey: ImageTypes.Url,
+      defaultSelectedKey: ImageTypes.CustomImage,
       ariaLabel: "Cover image",
       options: options.map((value: string) => ({ text: value, key: value })),
       onChange: async (event, options) => {
+        this.setState({ imageSrc: undefined });
+        this.props.onChangeImageSrc(undefined);
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
           try {

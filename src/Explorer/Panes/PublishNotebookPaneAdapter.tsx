@@ -70,7 +70,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       onChangeDescription: (newValue: string) => (this.description = newValue),
       onChangeTags: (newValue: string) => (this.tags = newValue),
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
-      onError: this.createFormErrorForLargeImageSelection,
+      onError: this.createFormError,
       clearFormError: this.clearFormError,
     };
 
@@ -146,11 +146,15 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
     let startKey: number;
 
-    try {
-      if (!this.name || !this.description || !this.author) {
-        throw new Error("Name, description, and author are required");
-      }
+    if (!this.name || !this.description || !this.author || !this.imageSrc) {
+      const formError = `Failed to publish ${this.name} to gallery`;
+      const formErrorDetail = "Name, description, author and cover image are required";
+      this.createFormError(formError, formErrorDetail, "PublishNotebookPaneAdapter/submit");
+      this.isExecuting = false;
+      return;
+    }
 
+    try {
       startKey = traceStart(Action.NotebooksGalleryPublish, {
         databaseAccountName: this.container.databaseAccount()?.name,
         defaultExperience: this.container.defaultExperience(),
@@ -217,7 +221,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.close();
   }
 
-  private createFormErrorForLargeImageSelection = (formError: string, formErrorDetail: string, area: string): void => {
+  private createFormError = (formError: string, formErrorDetail: string, area: string): void => {
     this.formError = formError;
     this.formErrorDetail = formErrorDetail;
     handleError(formErrorDetail, area, formError);
