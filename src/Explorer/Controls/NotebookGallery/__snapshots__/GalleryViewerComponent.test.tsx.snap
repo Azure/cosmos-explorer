@@ -77,9 +77,6 @@ exports[`GalleryViewerComponent renders 1`] = `
               selectedKey={0}
             />
           </StackItem>
-          <StackItem>
-            <InfoComponent />
-          </StackItem>
         </Stack>
         <StackItem>
           <FocusZone
