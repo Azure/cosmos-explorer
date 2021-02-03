@@ -2253,7 +2253,7 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): Promise<void> {
+  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(
         name,

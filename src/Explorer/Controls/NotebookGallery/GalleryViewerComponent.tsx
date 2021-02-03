@@ -9,6 +9,7 @@ import {
   IPivotProps,
   IRectangle,
   Label,
+  Link,
   List,
   Overlay,
   Pivot,
@@ -28,6 +29,8 @@ import Explorer from "../../Explorer";
 import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -88,6 +91,12 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private readonly sortingOptions: IDropdownOption[];
 
+  private viewGalleryTraced: boolean;
+  private viewOfficialSamplesTraced: boolean;
+  private viewPublicGalleryTraced: boolean;
+  private viewFavoritesTraced: boolean;
+  private viewPublishedNotebooksTraced: boolean;
+
   private sampleNotebooks: IGalleryItem[];
   private publicNotebooks: IGalleryItem[];
   private favoriteNotebooks: IGalleryItem[];
@@ -139,6 +148,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   public render(): JSX.Element {
+    this.traceViewGallery();
+
     const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
     if (this.props.isGalleryPublishEnabled) {
@@ -189,11 +200,58 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   }
 
+  private traceViewGallery = (): void => {
+    if (!this.viewGalleryTraced) {
+      this.viewGalleryTraced = true;
+      trace(Action.NotebooksGalleryViewGallery);
+    }
+
+    switch (this.state.selectedTab) {
+      case GalleryTab.OfficialSamples:
+        if (!this.viewOfficialSamplesTraced) {
+          this.resetViewGalleryTabTracedFlags();
+          this.viewOfficialSamplesTraced = true;
+          trace(Action.NotebooksGalleryViewOfficialSamples);
+        }
+        break;
+      case GalleryTab.PublicGallery:
+        if (!this.viewPublicGalleryTraced) {
+          this.resetViewGalleryTabTracedFlags();
+          this.viewPublicGalleryTraced = true;
+          trace(Action.NotebooksGalleryViewPublicGallery);
+        }
+        break;
+      case GalleryTab.Favorites:
+        if (!this.viewFavoritesTraced) {
+          this.resetViewGalleryTabTracedFlags();
+          this.viewFavoritesTraced = true;
+          trace(Action.NotebooksGalleryViewFavorites);
+        }
+        break;
+      case GalleryTab.Published:
+        if (!this.viewPublishedNotebooksTraced) {
+          this.resetViewGalleryTabTracedFlags();
+          this.viewPublishedNotebooksTraced = true;
+          trace(Action.NotebooksGalleryViewPublishedNotebooks);
+        }
+        break;
+      default:
+        throw new Error(`Unknown selected tab ${this.state.selectedTab}`);
+    }
+  };
+
+  private resetViewGalleryTabTracedFlags = (): void => {
+    this.viewOfficialSamplesTraced = false;
+    this.viewPublicGalleryTraced = false;
+    this.viewFavoritesTraced = false;
+    this.viewPublishedNotebooksTraced = false;
+  };
+
   private isEmptyData = (data: IGalleryItem[]): boolean => {
     return !data || data.length === 0;
   };
 
-  private createEmptyTabContent = (iconName: string, line1: string, line2: string): JSX.Element => {
+  private createEmptyTabContent = (iconName: string, line1: JSX.Element, line2: JSX.Element): JSX.Element => {
     return (
       <Stack horizontalAlign="center" tokens={{ childrenGap: 10 }}>
         <FontIcon iconName={iconName} style={{ fontSize: 100, color: "lightgray", marginTop: 20 }} />
@@ -227,8 +285,12 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       content: this.isEmptyData(data)
         ? this.createEmptyTabContent(
             "ContactHeart",
-            "You have not favorited anything",
-            "Favorite any notebook from Official samples or Public gallery"
+            <>You don&apos;t have any favorites yet</>,
+            <>
+              Favorite any notebook from the{" "}
+              <Link onClick={() => this.setState({ selectedTab: GalleryTab.OfficialSamples })}>official samples</Link>{" "}
+              or <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link>
+            </>
           )
         : this.createSearchBarHeader(this.createCardsTabContent(data)),
     };
@@ -240,8 +302,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       content: this.isEmptyData(data)
         ? this.createEmptyTabContent(
             "Contact",
-            "You have not published anything",
-            "Publish your sample notebooks to share your published work with others"
+            <>
+              You have not published anything to the{" "}
+              <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link> yet
+            </>,
+            <>Publish your notebooks to share your work with other users</>
           )
         : this.createPublishedNotebooksTabContent(data),
     };
@@ -254,7 +319,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         {published?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             undefined,
-            "You have successfully published the following notebook(s) to public gallery and shared with other Azure Cosmos DB users.",
+            "You have successfully published and shared the following notebook(s) to the public gallery.",
             this.createCardsTabContent(published)
           )}
         {underReview?.length > 0 &&
@@ -282,8 +347,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   ): JSX.Element => {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
-        {title && <Text styles={{ root: { fontWeight: FontWeights.semibold } }}>{title}</Text>}
-        {description && <Text>{description}</Text>}
+        {title && (
+          <Text styles={{ root: { fontWeight: FontWeights.semibold, marginLeft: 10, marginRight: 10 } }}>{title}</Text>
+        )}
+        {description && <Text styles={{ root: { marginLeft: 10, marginRight: 10 } }}>{description}</Text>}
         {content}
       </Stack>
     );
@@ -348,7 +415,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private createPolicyViolationsListContent(data: IGalleryItem[]): JSX.Element {
     return (
-      <table>
+      <table style={{ margin: 10 }}>
         <tbody>
           <tr>
             <th>Name</th>

@@ -10,8 +10,10 @@ import { ImmutableNotebook } from "@nteract/commutable/src";
 import { toJS } from "@nteract/commutable";
 import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
 import { HttpStatusCodes } from "../../Common/Constants";
-import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { handleError, getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
+import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -141,10 +143,17 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.isExecuting = true;
     this.triggerRender();
 
+    let startKey: number;
+
     try {
       if (!this.name || !this.description || !this.author) {
         throw new Error("Name, description, and author are required");
       }
+
+      startKey = traceStart(Action.NotebooksGalleryPublish, {
+        databaseAccountName: this.container.databaseAccount()?.name,
+        defaultExperience: this.container.defaultExperience(),
+      });
 
       const response = await this.junoClient.publishNotebook(
         this.name,
@@ -158,7 +167,10 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
       const data = response.data;
       if (data) {
+        let isPublishPending = false;
+
         if (data.pendingScanJobIds?.length > 0) {
+          isPublishPending = true;
           NotificationConsoleUtils.logConsoleInfo(
             `Content of ${this.name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`
           );
@@ -166,8 +178,30 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
           NotificationConsoleUtils.logConsoleInfo(`Published ${this.name} to gallery`);
           this.container.openGallery(GalleryTab.Published);
         }
+
+        traceSuccess(
+          Action.NotebooksGalleryPublish,
+          {
+            databaseAccountName: this.container.databaseAccount()?.name,
+            defaultExperience: this.container.defaultExperience(),
+            notebookId: data.id,
+            isPublishPending,
+          },
+          startKey
+        );
       }
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryPublish,
+        {
+          databaseAccountName: this.container.databaseAccount()?.name,
+          defaultExperience: this.container.defaultExperience(),
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       const errorMessage = getErrorMessage(error);
       this.formError = `Failed to publish ${this.name} to gallery`;
       this.formErrorDetail = `${errorMessage}`;
