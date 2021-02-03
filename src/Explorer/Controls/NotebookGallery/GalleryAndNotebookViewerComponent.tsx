@@ -7,6 +7,7 @@ import Explorer from "../../Explorer";
 
 export interface GalleryAndNotebookViewerComponentProps {
   container?: Explorer;
+  isGalleryPublishEnabled: boolean;
   junoClient: JunoClient;
   notebookUrl?: string;
   galleryItem?: IGalleryItem;
@@ -60,6 +61,7 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
 
     const props: GalleryViewerComponentProps = {
       container: this.props.container,
+      isGalleryPublishEnabled: this.props.isGalleryPublishEnabled,
       junoClient: this.props.junoClient,
       selectedTab: this.state.selectedTab,
       sortBy: this.state.sortBy,
