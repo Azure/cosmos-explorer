@@ -109,6 +109,7 @@ export enum Action {
   NotebooksGalleryViewPublicGallery,
   NotebooksGalleryViewFavorites,
   NotebooksGalleryViewPublishedNotebooks,
+  NotebooksGalleryClickPublishToGallery,
 }
 
 export const ActionModifiers = {
@@ -150,4 +151,9 @@ export enum SourceBlade {
   ScaleCollection,
   ScriptExplorer,
   Keys,
+}
+
+export enum Source {
+  ResourceTreeMenu = "ResourceTreeMenu",
+  CommandBarMenu = "CommandBarMenu",
 }
