@@ -156,8 +156,8 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       ariaLabel: "Cover image",
       options: options.map((value: string) => ({ text: value, key: value })),
       onChange: async (event, options) => {
-        this.setState({imageSrc: undefined})
-        this.props.onChangeImageSrc(undefined)
+        this.setState({ imageSrc: undefined });
+        this.props.onChangeImageSrc(undefined);
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
           try {

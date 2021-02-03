@@ -147,10 +147,10 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
     if (!this.name || !this.description || !this.author || !this.imageSrc) {
       const formError = `Failed to publish ${this.name} to gallery`;
-      const formErrorDetail = "Name, description, author and cover image are required"
-      this.createFormError(formError, formErrorDetail, "PublishNotebookPaneAdapter/submit")
-      this.isExecuting = false
-      return
+      const formErrorDetail = "Name, description, author and cover image are required";
+      this.createFormError(formError, formErrorDetail, "PublishNotebookPaneAdapter/submit");
+      this.isExecuting = false;
+      return;
     }
 
     try {
