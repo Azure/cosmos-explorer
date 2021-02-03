@@ -34,6 +34,7 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
+  isGalleryPublishEnabled: boolean;
   junoClient: JunoClient;
   selectedTab: GalleryTab;
   sortBy: SortBy;
@@ -151,7 +152,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
-    if (this.props.container?.isGalleryPublishEnabled()) {
+    if (this.props.isGalleryPublishEnabled) {
       tabs.push(
         this.createPublicGalleryTab(
           GalleryTab.PublicGallery,
@@ -159,6 +160,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           this.state.isCodeOfConductAccepted
         )
       );
+    }
+
+    if (this.props.container?.isGalleryPublishEnabled()) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
 
       // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
@@ -385,7 +389,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
-          {(!this.props.container || this.props.container.isGalleryPublishEnabled()) && (
+          {this.props.isGalleryPublishEnabled && (
             <Stack.Item>
               <InfoComponent />
             </Stack.Item>
