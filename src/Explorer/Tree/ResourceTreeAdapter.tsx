@@ -15,6 +15,7 @@ import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
 import FileIcon from "../../../images/notebook/file-cosmos.svg";
+import PublishIcon from "../../../images/notebook/publish_content.svg";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import _ from "underscore";
@@ -719,7 +720,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     if (this.container.isGalleryPublishEnabled() && item.type === NotebookContentItemType.Notebook) {
       items.push({
         label: "Publish to gallery",
-        iconSrc: undefined, // TODO
+        iconSrc: PublishIcon,
         onClick: async () => {
           TelemetryProcessor.trace(Action.NotebooksGalleryClickPublishToGallery, ActionModifiers.Mark, {
             source: Source.ResourceTreeMenu,
