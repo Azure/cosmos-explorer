@@ -361,7 +361,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       <div className="publicGalleryTabContainer">
         {this.createSearchBarHeader(this.createCardsTabContent(data))}
         {acceptedCodeOfConduct === false && (
-          <Overlay isDarkThemed>
+          <Overlay>
             <div className="publicGalleryTabOverlayContent">
               <CodeOfConductComponent
                 junoClient={this.props.junoClient}
