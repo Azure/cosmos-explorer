@@ -101,7 +101,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
                 fontSize: 12,
               },
             }}
-            label="I have read and accepted the code of conduct."
+            label="I have read and accept the code of conduct."
             onChange={this.onChangeCheckbox}
           />
         </Stack.Item>

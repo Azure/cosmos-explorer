@@ -38,7 +38,7 @@ exports[`CodeOfConductComponent renders 1`] = `
   </StackItem>
   <StackItem>
     <StyledCheckboxBase
-      label="I have read and accepted the code of conduct."
+      label="I have read and accept the code of conduct."
       onChange={[Function]}
       styles={
         Object {
