@@ -164,12 +164,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     if (this.props.container?.isGalleryPublishEnabled()) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-
-      // explicitly checking if isCodeOfConductAccepted is not false, as it is initially undefined.
-      // Displaying code of conduct component on gallery load should not be the default behavior.
-      if (this.state.isCodeOfConductAccepted !== false) {
-        tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
-      }
+      tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
     }
 
     const pivotProps: IPivotProps = {
