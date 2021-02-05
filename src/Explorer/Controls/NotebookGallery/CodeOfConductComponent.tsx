@@ -4,7 +4,7 @@ import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constan
 import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface CodeOfConductComponentProps {
   junoClient: JunoClient;
@@ -68,7 +68,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
   public render(): JSX.Element {
     if (!this.viewCodeOfConductTraced) {
       this.viewCodeOfConductTraced = true;
-      trace(Action.NotebooksGalleryViewCodeOfConduct);
+      trace(Action.NotebooksGalleryViewCodeOfConduct, ActionModifiers.Mark, {});
     }
 
     return (

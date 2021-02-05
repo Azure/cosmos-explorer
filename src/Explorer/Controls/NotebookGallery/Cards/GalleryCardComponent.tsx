@@ -152,7 +152,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
     return (
       <Text
         variant="tiny"
-        styles={{ root: { color: StyleConstants.BaseMedium, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
+        styles={{ root: { color: StyleConstants.BaseMediumHigh, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
       >
         <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
       </Text>
