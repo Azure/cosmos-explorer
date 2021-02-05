@@ -30,7 +30,7 @@ import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -459,6 +459,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         }
 
         this.sampleNotebooks = response.data;
+
+        trace(Action.NotebooksGalleryOfficialSamplesCount, ActionModifiers.Mark, {
+          count: this.sampleNotebooks?.length,
+        });
       } catch (error) {
         handleError(error, "GalleryViewerComponent/loadSampleNotebooks", "Failed to load sample notebooks");
       }
@@ -485,6 +489,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading public notebooks`);
         }
+
+        trace(Action.NotebooksGalleryPublicGalleryCount, ActionModifiers.Mark, { count: this.publicNotebooks?.length });
       } catch (error) {
         handleError(error, "GalleryViewerComponent/loadPublicNotebooks", "Failed to load public notebooks");
       }
@@ -505,6 +511,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         }
 
         this.favoriteNotebooks = response.data;
+
+        trace(Action.NotebooksGalleryFavoritesCount, ActionModifiers.Mark, { count: this.favoriteNotebooks?.length });
       } catch (error) {
         handleError(error, "GalleryViewerComponent/loadFavoriteNotebooks", "Failed to load favorite notebooks");
       }
@@ -531,6 +539,14 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         }
 
         this.publishedNotebooks = response.data;
+
+        const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(this.publishedNotebooks);
+        trace(Action.NotebooksGalleryPublishedCount, ActionModifiers.Mark, {
+          count: this.publishedNotebooks?.length,
+          publishedCount: published.length,
+          underReviewCount: underReview.length,
+          removedCount: removed.length,
+        });
       } catch (error) {
         handleError(error, "GalleryViewerComponent/loadPublishedNotebooks", "Failed to load published notebooks");
       }
