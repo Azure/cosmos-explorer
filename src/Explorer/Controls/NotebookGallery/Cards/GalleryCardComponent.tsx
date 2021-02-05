@@ -54,6 +54,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
     return (
       <Card
+        style={{ background: "white" }}
         aria-label={cardTitle}
         data-is-focusable="true"
         tokens={{ width: GalleryCardComponent.CARD_WIDTH, childrenGap: 0 }}
@@ -159,10 +160,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
   private generateIconText = (iconName: string, text: string): JSX.Element => {
     return (
-      <Text
-        variant="tiny"
-        styles={{ root: { color: StyleConstants.BaseMedium, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
-      >
+      <Text variant="tiny" styles={{ root: { color: "#605E5C", paddingRight: GalleryCardComponent.cardItemGapSmall } }}>
         <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
       </Text>
     );
