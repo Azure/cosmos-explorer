@@ -22,11 +22,6 @@ export const getTestExplorerFrame = async (apiKind?: ApiKind, params?: Map<strin
       portalRunnerDatabaseAccountKey = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY;
   }
 
-  // eslint-disable-next-line no-console
-  console.log("portalRunnerDatabaseAccount:" + portalRunnerDatabaseAccount);
-  // eslint-disable-next-line no-console
-  console.log("portalRunnerDatabaseAccountKey:" + portalRunnerDatabaseAccountKey);
-
   const notebooksTestRunnerTenantId = process.env.NOTEBOOKS_TEST_RUNNER_TENANT_ID;
   const notebooksTestRunnerClientId = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_ID;
   const notebooksTestRunnerClientSecret = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET;
