@@ -1891,7 +1891,7 @@ export default class Explorer {
       this.isMongoIndexingEnabled(true);
     }
     if (flights.indexOf(Constants.Flights.GalleryPublish) !== -1) {
-      this.isGalleryPublishEnabled(true);
+      this.isGalleryPublishEnabled = ko.computed<boolean>(() => true);
     }
   }
 
