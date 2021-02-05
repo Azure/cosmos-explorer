@@ -151,7 +151,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
   private renderTruncatedDescription = (): string => {
     let truncatedDescription = this.props.data.description.substr(0, GalleryCardComponent.cardDescriptionMaxChars);
-    if (truncatedDescription.length === GalleryCardComponent.cardDescriptionMaxChars) {
+    if (this.props.data.description.length > GalleryCardComponent.cardDescriptionMaxChars) {
       truncatedDescription = `${truncatedDescription} ...`;
     }
     return truncatedDescription;
