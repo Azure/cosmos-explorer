@@ -110,6 +110,10 @@ export enum Action {
   NotebooksGalleryViewFavorites,
   NotebooksGalleryViewPublishedNotebooks,
   NotebooksGalleryClickPublishToGallery,
+  NotebooksGalleryOfficialSamplesCount,
+  NotebooksGalleryPublicGalleryCount,
+  NotebooksGalleryFavoritesCount,
+  NotebooksGalleryPublishedCount,
 }
 
 export const ActionModifiers = {
