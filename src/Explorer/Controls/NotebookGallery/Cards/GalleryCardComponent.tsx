@@ -38,7 +38,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private static readonly cardImageHeight = 144;
   public static readonly cardHeightToWidthRatio =
     GalleryCardComponent.cardImageHeight / GalleryCardComponent.CARD_WIDTH;
-  private static readonly cardDescriptionMaxChars = 88;
+  private static readonly cardDescriptionMaxChars = 80;
   private static readonly cardItemGapBig = 10;
   private static readonly cardItemGapSmall = 8;
 
@@ -105,13 +105,14 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           </Text>
 
           <Text variant="small" styles={{ root: { height: 36 } }}>
-            {this.props.data.description.substr(0, GalleryCardComponent.cardDescriptionMaxChars)}
+            {this.renderTruncatedDescription()}
           </Text>
 
           <span>
-            {this.generateIconText("RedEye", this.props.data.views.toString())}
-            {this.generateIconText("Download", this.props.data.downloads.toString())}
-            {this.props.isFavorite !== undefined &&
+            {this.props.data.views !== undefined && this.generateIconText("RedEye", this.props.data.views.toString())}
+            {this.props.data.downloads !== undefined &&
+              this.generateIconText("Download", this.props.data.downloads.toString())}
+            {this.props.data.favorites !== undefined &&
               this.generateIconText("Heart", this.props.data.favorites.toString())}
           </span>
         </Card.Section>
@@ -148,11 +149,19 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
     );
   }
 
+  private renderTruncatedDescription = (): string => {
+    let truncatedDescription = this.props.data.description.substr(0, GalleryCardComponent.cardDescriptionMaxChars);
+    if (this.props.data.description.length > GalleryCardComponent.cardDescriptionMaxChars) {
+      truncatedDescription = `${truncatedDescription} ...`;
+    }
+    return truncatedDescription;
+  };
+
   private generateIconText = (iconName: string, text: string): JSX.Element => {
     return (
       <Text
         variant="tiny"
-        styles={{ root: { color: StyleConstants.BaseMedium, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
+        styles={{ root: { color: StyleConstants.BaseMediumHigh, paddingRight: GalleryCardComponent.cardItemGapSmall } }}
       >
         <Icon iconName={iconName} styles={{ root: { verticalAlign: "middle" } }} /> {text}
       </Text>

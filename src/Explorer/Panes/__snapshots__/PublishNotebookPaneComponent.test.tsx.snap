@@ -89,8 +89,8 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             "author": "CosmosDB",
             "created": "2020-07-17T00:00:00Z",
             "description": "",
-            "downloads": 0,
-            "favorites": 0,
+            "downloads": undefined,
+            "favorites": undefined,
             "gitSha": undefined,
             "id": undefined,
             "isSample": false,
@@ -102,7 +102,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
               "",
             ],
             "thumbnailUrl": undefined,
-            "views": 0,
+            "views": undefined,
           }
         }
         showDelete={false}

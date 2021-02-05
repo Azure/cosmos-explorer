@@ -69,7 +69,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         showCloseButton: this.props.showCloseButton || false,
         onDismiss: this.props.onDismiss,
       },
-      modalProps: { isBlocking: this.props.isModal },
+      modalProps: { isBlocking: this.props.isModal, isDarkOverlay: false },
       minWidth: DIALOG_MIN_WIDTH,
       maxWidth: DIALOG_MAX_WIDTH,
     };
