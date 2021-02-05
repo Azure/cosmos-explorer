@@ -1,6 +1,6 @@
 import "../../less/hostedexplorer.less";
 import { TestExplorerParams } from "./TestExplorerParams";
-import { DatabaseAccountsGetResponse } from "@azure/arm-cosmosdb/esm/models";
+import {​​​​​​​​ Capability, DatabaseAccount }​​​​​​​​ from"../../src/Contracts/DataModels";
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import * as msRest from "@azure/ms-rest-js";
 import * as ViewModels from "../../src/Contracts/ViewModels";
@@ -22,9 +22,32 @@ const getDatabaseAccount = async (
   notebooksAccountSubscriptonId: string,
   notebooksAccountResourceGroup: string,
   notebooksAccountName: string
-): Promise<DatabaseAccountsGetResponse> => {
+): Promise<DatabaseAccount> => {
   const client = new CosmosDBManagementClient(new CustomSigner(token), notebooksAccountSubscriptonId);
-  return client.databaseAccounts.get(notebooksAccountResourceGroup, notebooksAccountName);
+  const databaseAccountGetResponse = await client.databaseAccounts.get(
+    notebooksAccountResourceGroup,
+    notebooksAccountName
+  );
+ 
+  const databaseAccount: DatabaseAccount = {
+    id: databaseAccountGetResponse.id,
+    name: databaseAccountGetResponse.name,
+    location: databaseAccountGetResponse.location,
+    type: databaseAccountGetResponse.type,
+    kind: databaseAccountGetResponse.kind,
+    tags: databaseAccountGetResponse.tags,
+    properties: {
+      documentEndpoint: databaseAccountGetResponse.documentEndpoint,
+      tableEndpoint: undefined,
+      gremlinEndpoint: undefined,
+      cassandraEndpoint: undefined,
+      capabilities: databaseAccountGetResponse.capabilities.map(capability => {
+        return {name: capability.name} as Capability
+      })
+    },
+  };
+ 
+  return databaseAccount;
 };
 
 const initTestExplorer = async (): Promise<void> => {
@@ -55,7 +78,7 @@ const initTestExplorer = async (): Promise<void> => {
       subscriptionId: portalRunnerSubscripton,
       resourceGroup: portalRunnerResourceGroup,
       authorizationToken: `Bearer ${token}`,
-      features: {},
+      features: {sampleFeature: "sampleFeatureValue"},
       hasWriteAccess: true,
       csmEndpoint: "https://management.azure.com",
       dnsSuffix: "documents.azure.com",
