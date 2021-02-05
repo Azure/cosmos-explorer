@@ -1,3 +1,4 @@
+import React from "react";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
@@ -47,7 +48,6 @@ import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { handleOpenAction } from "./OpenActions";
-import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
@@ -92,7 +92,7 @@ import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingC
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
-import { PanelManager } from "./Panes/PanelManager";
+import { DeleteCollectionConfirmationPaneComponent } from "./Panes/DeleteCollectionConfirmationPaneComponent";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -112,7 +112,8 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  panelManager: PanelManager;
+  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  closeSidePanel: () => void;
 }
 
 export default class Explorer {
@@ -160,7 +161,8 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  public panelManager: PanelManager;
+  private openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  private closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -282,7 +284,8 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
-    this.panelManager = params?.panelManager;
+    this.openSidePanel = params?.openSidePanel;
+    this.closeSidePanel = params?.closeSidePanel;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -3047,6 +3050,13 @@ export default class Explorer {
   public openDeleteCollectionConfirmationPane(): void {
     this.isFeatureEnabled(Constants.Features.enableKOPanel)
       ? this.deleteCollectionConfirmationPane.open()
-      : this.panelManager.openDeleteCollectionConfirmationPane(this);
+      : this.openSidePanel(
+          "Delete Collection",
+          <DeleteCollectionConfirmationPaneComponent
+            explorer={this}
+            closePanel={() => this.closeSidePanel()}
+            openNotificationConsole={() => this.expandConsole()}
+          />
+        );
   }
 }

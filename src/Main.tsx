@@ -65,9 +65,9 @@ import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import { useSidePanel } from "./hooks/useSidePanel";
 import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
-import { PanelManager } from "./Explorer/Panes/PanelManager";
 
 initializeIcons();
 
@@ -76,14 +76,15 @@ const App: React.FunctionComponent = () => {
   const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
-  const [panelParams, setPanelParams] = useState(undefined);
-  const panelManager = new PanelManager({ setPanelParams, setIsNotificationConsoleExpanded });
+
+  const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
     setNotificationConsoleData,
     setInProgressConsoleDataIdToBeDeleted,
-    panelManager,
+    openSidePanel,
+    closeSidePanel,
   };
   const config = useConfig();
   useKnockoutExplorer(config, explorerParams);
@@ -316,7 +317,13 @@ const App: React.FunctionComponent = () => {
         </div>
       </div>
       {/* Global loader - End */}
-      <PanelContainerComponent panelParams={panelParams} isConsoleExpanded={isNotificationConsoleExpanded} />
+      <PanelContainerComponent
+        isOpen={isPanelOpen}
+        panelContent={panelContent}
+        headerText={headerText}
+        closePanel={closeSidePanel}
+        isConsoleExpanded={isNotificationConsoleExpanded}
+      />
       <div data-bind="react:uploadItemsPaneAdapter" />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
