@@ -18,7 +18,6 @@ import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../../Notebook/FileSystemUtil";
 import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
-import { StyleConstants } from "../../../../Common/Constants";
 
 export interface GalleryCardComponentProps {
   data: IGalleryItem;
