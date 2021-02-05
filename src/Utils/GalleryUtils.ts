@@ -135,7 +135,7 @@ export function reportAbuse(
         true
       );
 
-      const startKey = traceStart(Action.NotebooksGalleryReportAbuse, { notebookId: data.id });
+      const startKey = traceStart(Action.NotebooksGalleryReportAbuse, { notebookId: data.id, abuseCategory });
 
       try {
         const response = await junoClient.reportAbuse(notebookId, abuseCategory, additionalDetails);
@@ -161,6 +161,7 @@ export function reportAbuse(
           Action.NotebooksGalleryReportAbuse,
           {
             notebookId: data.id,
+            abuseCategory,
             error: getErrorMessage(error),
             errorStack: getErrorStack(error),
           },
@@ -233,6 +234,7 @@ export function downloadItem(
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,
         downloadCount: data.downloads,
+        isSample: data.isSample,
       });
 
       try {
@@ -251,7 +253,7 @@ export function downloadItem(
         if (increaseDownloadResponse.data) {
           traceSuccess(
             Action.NotebooksGalleryDownload,
-            { notebookId: data.id, downloadCount: increaseDownloadResponse.data.downloads },
+            { notebookId: data.id, downloadCount: increaseDownloadResponse.data.downloads, isSample: data.isSample },
             startKey
           );
           onComplete(increaseDownloadResponse.data);
@@ -262,6 +264,7 @@ export function downloadItem(
           {
             notebookId: data.id,
             downloadCount: data.downloads,
+            isSample: data.isSample,
             error: getErrorMessage(error),
             errorStack: getErrorStack(error),
           },
@@ -287,6 +290,7 @@ export async function favoriteItem(
   if (container) {
     const startKey = traceStart(Action.NotebooksGalleryFavorite, {
       notebookId: data.id,
+      isSample: data.isSample,
       favoriteCount: data.favorites,
     });
 
@@ -298,7 +302,7 @@ export async function favoriteItem(
 
       traceSuccess(
         Action.NotebooksGalleryFavorite,
-        { notebookId: data.id, favoriteCount: response.data.favorites },
+        { notebookId: data.id, isSample: data.isSample, favoriteCount: response.data.favorites },
         startKey
       );
 
@@ -308,6 +312,7 @@ export async function favoriteItem(
         Action.NotebooksGalleryFavorite,
         {
           notebookId: data.id,
+          isSample: data.isSample,
           favoriteCount: data.favorites,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
@@ -329,6 +334,7 @@ export async function unfavoriteItem(
   if (container) {
     const startKey = traceStart(Action.NotebooksGalleryUnfavorite, {
       notebookId: data.id,
+      isSample: data.isSample,
       favoriteCount: data.favorites,
     });
 
@@ -340,7 +346,7 @@ export async function unfavoriteItem(
 
       traceSuccess(
         Action.NotebooksGalleryUnfavorite,
-        { notebookId: data.id, favoriteCount: response.data.favorites },
+        { notebookId: data.id, isSample: data.isSample, favoriteCount: response.data.favorites },
         startKey
       );
 
@@ -350,6 +356,7 @@ export async function unfavoriteItem(
         Action.NotebooksGalleryUnfavorite,
         {
           notebookId: data.id,
+          isSample: data.isSample,
           favoriteCount: data.favorites,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),

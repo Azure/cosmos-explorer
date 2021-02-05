@@ -31,6 +31,26 @@ export interface NotebookMetadataComponentProps {
 }
 
 export class NotebookMetadataComponent extends React.Component<NotebookMetadataComponentProps> {
+  private renderFavouriteButton = (): JSX.Element => {
+    return (
+      <Text>
+        {this.props.isFavorite !== undefined ? (
+          <>
+            <IconButton
+              iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
+              onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
+            />
+            {this.props.data.favorites} likes
+          </>
+        ) : (
+          <>
+            <Icon iconName="Heart" /> {this.props.data.favorites} likes
+          </>
+        )}
+      </Text>
+    );
+  };
+
   public render(): JSX.Element {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -49,19 +69,7 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
             </Text>
           </Stack.Item>
 
-          <Stack.Item>
-            <Text>
-              {this.props.isFavorite !== undefined && (
-                <>
-                  <IconButton
-                    iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
-                    onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
-                  />
-                  {this.props.data.favorites} likes
-                </>
-              )}
-            </Text>
-          </Stack.Item>
+          <Stack.Item>{this.renderFavouriteButton()}</Stack.Item>
 
           {this.props.downloadButtonText && (
             <Stack.Item>
