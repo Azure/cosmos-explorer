@@ -177,6 +177,10 @@ export default class Explorer {
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
   public conversationToken: ko.Observable<string>;
+  public userToken: ko.Observable<string>;
+  public subId: ko.Observable<string>;
+  public rg: ko.Observable<string>;
+  public accName: ko.Observable<string>;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -329,6 +333,10 @@ export default class Explorer {
     this.hasStorageAnalyticsAfecFeature.subscribe((enabled: boolean) => this.refreshCommandBarButtons());
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.conversationToken = ko.observable<string>();
+    this.userToken = ko.observable<string>();
+    this.subId = ko.observable<string>();
+    this.rg = ko.observable<string>();
+    this.accName = ko.observable<string>();
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
         this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
@@ -1625,7 +1633,6 @@ export default class Explorer {
 
     const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
     this.conversationToken(tokenResponse?.token);
-
     if (tokenResponse?.expires_in) {
       setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
     }
@@ -1998,6 +2005,11 @@ export default class Explorer {
         resourceGroup: inputs.resourceGroup,
         subscriptionId: inputs.subscriptionId
       });
+      
+      this.userToken(userContext.authorizationToken);
+      this.subId(userContext.subscriptionId);
+      this.rg(userContext.resourceGroup);
+      this.accName(userContext.databaseAccount.name);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {

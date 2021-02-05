@@ -180,7 +180,7 @@ export class CommandBarComponentButtonFactory {
     }
 
     if (window.authType === AuthType.AAD) {
-      const label = "Support";
+      const label = "Chat Assistant";
       const supportPaneButton: CommandButtonComponentProps = {
         iconSrc: FeedbackIcon,
         iconAlt: label,

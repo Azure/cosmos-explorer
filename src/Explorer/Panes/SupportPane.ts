@@ -7,7 +7,7 @@ export class SupportPane extends ContextualPaneBase {
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
-    this.title("Cosmos DB Support");
+    this.title("Cosmos DB Chat Assistant");
     this.resetData();
     this.supportPaneComponentAdapter = new SupportPaneComponentAdapter(this.container);
   }
