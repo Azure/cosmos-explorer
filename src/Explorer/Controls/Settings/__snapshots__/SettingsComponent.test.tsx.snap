@@ -804,6 +804,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "clickHostedAccountSwitch": [Function],
                 "clickHostedDirectorySwitch": [Function],
+                "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
                   "storage": "100",
@@ -1021,7 +1022,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
-                "panelManager": undefined,
+                "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -2084,6 +2085,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "clickHostedAccountSwitch": [Function],
               "clickHostedDirectorySwitch": [Function],
+              "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
                 "storage": "100",
@@ -2301,7 +2303,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
-              "panelManager": undefined,
+              "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -3377,6 +3379,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "clickHostedAccountSwitch": [Function],
                 "clickHostedDirectorySwitch": [Function],
+                "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
                   "storage": "100",
@@ -3594,7 +3597,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
                 "onToggleKeyDown": [Function],
-                "panelManager": undefined,
+                "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -4657,6 +4660,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "clickHostedAccountSwitch": [Function],
               "clickHostedDirectorySwitch": [Function],
+              "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
                 "storage": "100",
@@ -4874,7 +4878,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
               "onToggleKeyDown": [Function],
-              "panelManager": undefined,
+              "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
