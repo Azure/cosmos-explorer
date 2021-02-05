@@ -209,7 +209,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private traceViewGallery = (): void => {
     if (!this.viewGalleryTraced) {
       this.viewGalleryTraced = true;
-      trace(Action.NotebooksGalleryViewGallery, ActionModifiers.Mark, {});
+      trace(Action.NotebooksGalleryViewGallery);
     }
 
     switch (this.state.selectedTab) {
@@ -217,28 +217,28 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         if (!this.viewOfficialSamplesTraced) {
           this.resetViewGalleryTabTracedFlags();
           this.viewOfficialSamplesTraced = true;
-          trace(Action.NotebooksGalleryViewOfficialSamples, ActionModifiers.Mark, {});
+          trace(Action.NotebooksGalleryViewOfficialSamples);
         }
         break;
       case GalleryTab.PublicGallery:
         if (!this.viewPublicGalleryTraced) {
           this.resetViewGalleryTabTracedFlags();
           this.viewPublicGalleryTraced = true;
-          trace(Action.NotebooksGalleryViewPublicGallery, ActionModifiers.Mark, {});
+          trace(Action.NotebooksGalleryViewPublicGallery);
         }
         break;
       case GalleryTab.Favorites:
         if (!this.viewFavoritesTraced) {
           this.resetViewGalleryTabTracedFlags();
           this.viewFavoritesTraced = true;
-          trace(Action.NotebooksGalleryViewFavorites, ActionModifiers.Mark, {});
+          trace(Action.NotebooksGalleryViewFavorites);
         }
         break;
       case GalleryTab.Published:
         if (!this.viewPublishedNotebooksTraced) {
           this.resetViewGalleryTabTracedFlags();
           this.viewPublishedNotebooksTraced = true;
-          trace(Action.NotebooksGalleryViewPublishedNotebooks, ActionModifiers.Mark, {});
+          trace(Action.NotebooksGalleryViewPublishedNotebooks);
         }
         break;
       default:

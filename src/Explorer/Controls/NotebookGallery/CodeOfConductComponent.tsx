@@ -68,7 +68,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
   public render(): JSX.Element {
     if (!this.viewCodeOfConductTraced) {
       this.viewCodeOfConductTraced = true;
-      trace(Action.NotebooksGalleryViewCodeOfConduct, ActionModifiers.Mark, {});
+      trace(Action.NotebooksGalleryViewCodeOfConduct);
     }
 
     return (
