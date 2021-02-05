@@ -32,7 +32,7 @@ import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
