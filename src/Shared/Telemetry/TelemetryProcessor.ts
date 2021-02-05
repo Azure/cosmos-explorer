@@ -12,7 +12,7 @@ import { getDataExplorerWindow } from "../../Utils/WindowUtils";
 
 type TelemetryData = { [key: string]: unknown };
 
-export function trace(action: Action, actionModifier: string = ActionModifiers.Mark, data?: TelemetryData): void {
+export function trace(action: Action, actionModifier: string = ActionModifiers.Mark, data: TelemetryData = {}): void {
   sendMessage({
     type: MessageTypes.TelemetryInfo,
     data: {

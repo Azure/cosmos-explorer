@@ -186,10 +186,7 @@ export class JunoClient {
 
   public async getPublicGalleryData(): Promise<IJunoResponse<IPublicGalleryData>> {
     const url = `${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/public`;
-    const response = await window.fetch(url, {
-      method: "PATCH",
-      headers: JunoClient.getHeaders(),
-    });
+    const response = await window.fetch(url, { headers: JunoClient.getHeaders() });
 
     let data: IPublicGalleryData;
     if (response.status === HttpStatusCodes.OK) {
@@ -222,10 +219,7 @@ export class JunoClient {
 
   public async isCodeOfConductAccepted(): Promise<IJunoResponse<boolean>> {
     const url = `${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/isCodeOfConductAccepted`;
-    const response = await window.fetch(url, {
-      method: "PATCH",
-      headers: JunoClient.getHeaders(),
-    });
+    const response = await window.fetch(url, { headers: JunoClient.getHeaders() });
 
     let data: boolean;
     if (response.status === HttpStatusCodes.OK) {

@@ -82,6 +82,7 @@ export class NotebookViewerComponent
     const startKey = traceStart(Action.NotebooksGalleryViewNotebook, {
       notebookUrl: this.props.notebookUrl,
       notebookId: this.props.galleryItem?.id,
+      isSample: this.props.galleryItem?.isSample,
     });
 
     try {
@@ -93,7 +94,11 @@ export class NotebookViewerComponent
 
       traceSuccess(
         Action.NotebooksGalleryViewNotebook,
-        { notebookUrl: this.props.notebookUrl, notebookId: this.props.galleryItem?.id },
+        {
+          notebookUrl: this.props.notebookUrl,
+          notebookId: this.props.galleryItem?.id,
+          isSample: this.props.galleryItem?.isSample,
+        },
         startKey
       );
 
@@ -116,6 +121,7 @@ export class NotebookViewerComponent
         {
           notebookUrl: this.props.notebookUrl,
           notebookId: this.props.galleryItem?.id,
+          isSample: this.props.galleryItem?.isSample,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
