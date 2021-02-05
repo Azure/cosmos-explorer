@@ -79,12 +79,16 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
         <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
           <Text variant="small" nowrap>
-            {this.props.data.tags?.map((tag, index, array) => (
-              <span key={tag}>
-                <Link onClick={(event) => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
-                {index === array.length - 1 ? <></> : ", "}
-              </span>
-            ))}
+            {this.props.data.tags ? (
+              this.props.data.tags.map((tag, index, array) => (
+                <span key={tag}>
+                  <Link onClick={(event) => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
+                  {index === array.length - 1 ? <></> : ", "}
+                </span>
+              ))
+            ) : (
+              <br />
+            )}
           </Text>
 
           <Text

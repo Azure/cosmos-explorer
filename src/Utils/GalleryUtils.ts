@@ -9,8 +9,10 @@ import {
 import Explorer from "../Explorer/Explorer";
 import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
-import { handleError } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { HttpStatusCodes } from "../Common/Constants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -109,6 +111,8 @@ export function reportAbuse(
   dialogHost: DialogHost,
   onComplete: (success: boolean) => void
 ): void {
+  trace(Action.NotebooksGalleryClickReportAbuse, ActionModifiers.Mark, { notebookId: data.id });
+
   const notebookId = data.id;
   let abuseCategory = defaultSelectedAbuseCategory;
   let additionalDetails: string;
@@ -131,6 +135,8 @@ export function reportAbuse(
         true
       );
 
+      const startKey = traceStart(Action.NotebooksGalleryReportAbuse, { notebookId: data.id });
+
       try {
         const response = await junoClient.reportAbuse(notebookId, abuseCategory, additionalDetails);
         if (response.status !== HttpStatusCodes.Accepted) {
@@ -147,8 +153,20 @@ export function reportAbuse(
           }
         );
 
+        traceSuccess(Action.NotebooksGalleryReportAbuse, { notebookId: data.id, abuseCategory }, startKey);
+
         onComplete(response.data);
       } catch (error) {
+        traceFailure(
+          Action.NotebooksGalleryReportAbuse,
+          {
+            notebookId: data.id,
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey
+        );
+
         handleError(
           error,
           "GalleryUtils/reportAbuse",
@@ -195,6 +213,12 @@ export function downloadItem(
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void
 ): void {
+  trace(Action.NotebooksGalleryClickDownload, ActionModifiers.Mark, {
+    notebookId: data.id,
+    downloadCount: data.downloads,
+    isSample: data.isSample,
+  });
+
   const name = data.name;
   container.showOkCancelModalDialog(
     "Download to My Notebooks",
@@ -205,6 +229,11 @@ export function downloadItem(
         ConsoleDataType.InProgress,
         `Downloading ${name} to My Notebooks`
       );
+
+      const startKey = traceStart(Action.NotebooksGalleryDownload, {
+        notebookId: data.id,
+        downloadCount: data.downloads,
+      });
 
       try {
         const response = await junoClient.getNotebookContent(data.id);
@@ -220,9 +249,25 @@ export function downloadItem(
 
         const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
         if (increaseDownloadResponse.data) {
+          traceSuccess(
+            Action.NotebooksGalleryDownload,
+            { notebookId: data.id, downloadCount: increaseDownloadResponse.data.downloads },
+            startKey
+          );
           onComplete(increaseDownloadResponse.data);
         }
       } catch (error) {
+        traceFailure(
+          Action.NotebooksGalleryDownload,
+          {
+            notebookId: data.id,
+            downloadCount: data.downloads,
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey
+        );
+
         handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
       }
 
@@ -240,14 +285,36 @@ export async function favoriteItem(
   onComplete: (item: IGalleryItem) => void
 ): Promise<void> {
   if (container) {
+    const startKey = traceStart(Action.NotebooksGalleryFavorite, {
+      notebookId: data.id,
+      favoriteCount: data.favorites,
+    });
+
     try {
       const response = await junoClient.favoriteNotebook(data.id);
       if (!response.data) {
         throw new Error(`Received HTTP ${response.status} when favoriting ${data.name}`);
       }
 
+      traceSuccess(
+        Action.NotebooksGalleryFavorite,
+        { notebookId: data.id, favoriteCount: response.data.favorites },
+        startKey
+      );
+
       onComplete(response.data);
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryFavorite,
+        {
+          notebookId: data.id,
+          favoriteCount: data.favorites,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       handleError(error, "GalleryUtils/favoriteItem", `Failed to favorite ${data.name}`);
     }
   }
@@ -260,14 +327,36 @@ export async function unfavoriteItem(
   onComplete: (item: IGalleryItem) => void
 ): Promise<void> {
   if (container) {
+    const startKey = traceStart(Action.NotebooksGalleryUnfavorite, {
+      notebookId: data.id,
+      favoriteCount: data.favorites,
+    });
+
     try {
       const response = await junoClient.unfavoriteNotebook(data.id);
       if (!response.data) {
         throw new Error(`Received HTTP ${response.status} when unfavoriting ${data.name}`);
       }
 
+      traceSuccess(
+        Action.NotebooksGalleryUnfavorite,
+        { notebookId: data.id, favoriteCount: response.data.favorites },
+        startKey
+      );
+
       onComplete(response.data);
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryUnfavorite,
+        {
+          notebookId: data.id,
+          favoriteCount: data.favorites,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       handleError(error, "GalleryUtils/unfavoriteItem", `Failed to unfavorite ${data.name}`);
     }
   }
@@ -280,6 +369,8 @@ export function deleteItem(
   onComplete: (item: IGalleryItem) => void
 ): void {
   if (container) {
+    trace(Action.NotebooksGalleryClickDelete, ActionModifiers.Mark, { notebookId: data.id });
+
     container.showOkCancelModalDialog(
       "Remove published notebook",
       `Would you like to remove ${data.name} from the gallery?`,
@@ -291,15 +382,25 @@ export function deleteItem(
           `Removing ${name} from gallery`
         );
 
+        const startKey = traceStart(Action.NotebooksGalleryDelete, { notebookId: data.id });
+
         try {
           const response = await junoClient.deleteNotebook(data.id);
           if (!response.data) {
             throw new Error(`Received HTTP ${response.status} while removing ${name}`);
           }
 
+          traceSuccess(Action.NotebooksGalleryDelete, { notebookId: data.id }, startKey);
+
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
           onComplete(response.data);
         } catch (error) {
+          traceFailure(
+            Action.NotebooksGalleryDelete,
+            { notebookId: data.id, error: getErrorMessage(error), errorStack: getErrorStack(error) },
+            startKey
+          );
+
           handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
         }
 

@@ -10,8 +10,11 @@ import { ImmutableNotebook } from "@nteract/commutable/src";
 import { toJS } from "@nteract/commutable";
 import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
 import { HttpStatusCodes } from "../../Common/Constants";
-import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { handleError, getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
+import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -67,7 +70,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       onChangeDescription: (newValue: string) => (this.description = newValue),
       onChangeTags: (newValue: string) => (this.tags = newValue),
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
-      onError: this.createFormErrorForLargeImageSelection,
+      onError: this.createFormError,
       clearFormError: this.clearFormError,
     };
 
@@ -141,10 +144,21 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.isExecuting = true;
     this.triggerRender();
 
+    let startKey: number;
+
+    if (!this.name || !this.description || !this.author || !this.imageSrc) {
+      const formError = `Failed to publish ${this.name} to gallery`;
+      const formErrorDetail = "Name, description, author and cover image are required";
+      this.createFormError(formError, formErrorDetail, "PublishNotebookPaneAdapter/submit");
+      this.isExecuting = false;
+      return;
+    }
+
     try {
-      if (!this.name || !this.description || !this.author) {
-        throw new Error("Name, description, and author are required");
-      }
+      startKey = traceStart(Action.NotebooksGalleryPublish, {
+        databaseAccountName: this.container.databaseAccount()?.name,
+        defaultExperience: this.container.defaultExperience(),
+      });
 
       const response = await this.junoClient.publishNotebook(
         this.name,
@@ -158,7 +172,10 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
       const data = response.data;
       if (data) {
+        let isPublishPending = false;
+
         if (data.pendingScanJobIds?.length > 0) {
+          isPublishPending = true;
           NotificationConsoleUtils.logConsoleInfo(
             `Content of ${this.name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`
           );
@@ -166,10 +183,32 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
           NotificationConsoleUtils.logConsoleInfo(`Published ${this.name} to gallery`);
           this.container.openGallery(GalleryTab.Published);
         }
+
+        traceSuccess(
+          Action.NotebooksGalleryPublish,
+          {
+            databaseAccountName: this.container.databaseAccount()?.name,
+            defaultExperience: this.container.defaultExperience(),
+            notebookId: data.id,
+            isPublishPending,
+          },
+          startKey
+        );
       }
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryPublish,
+        {
+          databaseAccountName: this.container.databaseAccount()?.name,
+          defaultExperience: this.container.defaultExperience(),
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       const errorMessage = getErrorMessage(error);
-      this.formError = `Failed to publish ${this.name} to gallery`;
+      this.formError = `Failed to publish ${FileSystemUtil.stripExtension(this.name, "ipynb")} to gallery`;
       this.formErrorDetail = `${errorMessage}`;
       handleError(errorMessage, "PublishNotebookPaneAdapter/submit", this.formError);
       return;
@@ -182,7 +221,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.close();
   }
 
-  private createFormErrorForLargeImageSelection = (formError: string, formErrorDetail: string, area: string): void => {
+  private createFormError = (formError: string, formErrorDetail: string, area: string): void => {
     this.formError = formError;
     this.formErrorDetail = formErrorDetail;
     handleError(formErrorDetail, area, formError);

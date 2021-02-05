@@ -2,7 +2,9 @@ import * as React from "react";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constants";
 import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
-import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
+import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface CodeOfConductComponentProps {
   junoClient: JunoClient;
@@ -14,11 +16,11 @@ interface CodeOfConductComponentState {
 }
 
 export class CodeOfConductComponent extends React.Component<CodeOfConductComponentProps, CodeOfConductComponentState> {
+  private viewCodeOfConductTraced: boolean;
   private descriptionPara1: string;
   private descriptionPara2: string;
   private descriptionPara3: string;
   private link1: { label: string; url: string };
-  private link2: { label: string; url: string };
 
   constructor(props: CodeOfConductComponentProps) {
     super(props);
@@ -27,23 +29,34 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
       readCodeOfConduct: false,
     };
 
-    this.descriptionPara1 = "Azure CosmosDB Notebook Gallery - Code of Conduct and Privacy Statement";
-    this.descriptionPara2 =
-      "Azure Cosmos DB Notebook Public Gallery contains notebook samples shared by users of Cosmos DB.";
-    this.descriptionPara3 = "In order to access Azure Cosmos DB Notebook Gallery resources, you must accept the ";
-    this.link1 = { label: "code of conduct", url: CodeOfConductEndpoints.codeOfConduct };
-    this.link2 = { label: "privacy statement", url: CodeOfConductEndpoints.privacyStatement };
+    this.descriptionPara1 = "Azure Cosmos DB Notebook Gallery - Code of Conduct";
+    this.descriptionPara2 = "The notebook public gallery contains notebook samples shared by users of Azure Cosmos DB.";
+    this.descriptionPara3 = "In order to view and publish your samples to the gallery, you must accept the ";
+    this.link1 = { label: "code of conduct.", url: CodeOfConductEndpoints.codeOfConduct };
   }
 
   private async acceptCodeOfConduct(): Promise<void> {
+    const startKey = traceStart(Action.NotebooksGalleryAcceptCodeOfConduct);
+
     try {
       const response = await this.props.junoClient.acceptCodeOfConduct();
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
         throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
       }
 
+      traceSuccess(Action.NotebooksGalleryAcceptCodeOfConduct, startKey);
+
       this.props.onAcceptCodeOfConduct(response.data);
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryAcceptCodeOfConduct,
+        {
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       handleError(error, "CodeOfConductComponent/acceptCodeOfConduct", "Failed to accept code of conduct");
     }
   }
@@ -53,6 +66,11 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
   };
 
   public render(): JSX.Element {
+    if (!this.viewCodeOfConductTraced) {
+      this.viewCodeOfConductTraced = true;
+      trace(Action.NotebooksGalleryViewCodeOfConduct);
+    }
+
     return (
       <Stack tokens={{ childrenGap: 20 }}>
         <Stack.Item>
@@ -69,10 +87,6 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
             <Link href={this.link1.url} target="_blank">
               {this.link1.label}
             </Link>
-            {" and "}
-            <Link href={this.link2.url} target="_blank">
-              {this.link2.label}
-            </Link>
           </Text>
         </Stack.Item>
 
@@ -87,7 +101,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
                 fontSize: 12,
               },
             }}
-            label="I have read and accepted the code of conduct and privacy statement"
+            label="I have read and accepted the code of conduct."
             onChange={this.onChangeCheckbox}
           />
         </Stack.Item>
