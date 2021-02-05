@@ -21,6 +21,8 @@ export const getTestExplorerFrame = async (apiKind?: ApiKind, params?: Map<strin
       portalRunnerDatabaseAccount = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT;
       portalRunnerDatabaseAccountKey = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY;
   }
+  console.log("portalRunnerDatabaseAccount:" + portalRunnerDatabaseAccount);
+  console.log("portalRunnerDatabaseAccountKey:" + portalRunnerDatabaseAccountKey);
 
   const notebooksTestRunnerTenantId = process.env.NOTEBOOKS_TEST_RUNNER_TENANT_ID;
   const notebooksTestRunnerClientId = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_ID;
