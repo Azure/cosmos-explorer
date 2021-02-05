@@ -23,14 +23,14 @@ export interface DeleteCollectionConfirmationPaneProps {
   openNotificationConsole: () => void;
 }
 
-export interface DeleteCollectionConfirmationPaneStates {
+export interface DeleteCollectionConfirmationPaneState {
   formError: string;
   isExecuting: boolean;
 }
 
 export class DeleteCollectionConfirmationPaneComponent extends React.Component<
   DeleteCollectionConfirmationPaneProps,
-  DeleteCollectionConfirmationPaneStates
+  DeleteCollectionConfirmationPaneState
 > {
   private inputCollectionName: string;
   private deleteCollectionFeedback: string;
@@ -48,8 +48,34 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
     return (
       <div className="panelContentContainer">
         <PanelErrorComponent {...this.getPanelErrorProps()} />
-        {this.renderConfirmDeleteSection()}
-        {this.renderDeleteCollectionFeedbackSection()}
+        <div className="confirmDeleteInput">
+          <div>
+            <span className="mandatoryStar">* </span>
+            <Text variant="small">Confirm by typing the collection id</Text>
+          </div>
+          <TextField
+            styles={{ fieldGroup: { width: 300 } }}
+            onChange={(event, newInput?: string) => {
+              this.inputCollectionName = newInput;
+            }}
+          />
+        </div>
+        <div className="deleteCollectionFeedback contentBeforeFooter">
+          <Text variant="small" block>
+            Help us improve Azure Cosmos DB!
+          </Text>
+          <Text variant="small" block>
+            What is the reason why you are deleting this container?
+          </Text>
+          <TextField
+            styles={{ fieldGroup: { width: 300 } }}
+            multiline
+            rows={3}
+            onChange={(event, newInput?: string) => {
+              this.deleteCollectionFeedback = newInput;
+            }}
+          />
+        </div>
         <PanelFooterComponent buttonLabel="OK" onOKButtonClicked={() => this.submit()} />
         <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.state.isExecuting}>
           <img className="dataExplorerLoader" src={LoadingIndicator_3Squares} />
@@ -74,44 +100,6 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
       message:
         "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
     };
-  }
-
-  private renderConfirmDeleteSection(): JSX.Element {
-    return (
-      <div className="confirmDeleteInput">
-        <div>
-          <span className="mandatoryStar">* </span>
-          <Text variant="small">Confirm by typing the collection id</Text>
-        </div>
-        <TextField
-          styles={{ fieldGroup: { width: 300 } }}
-          onChange={(event, newInput?: string) => {
-            this.inputCollectionName = newInput;
-          }}
-        />
-      </div>
-    );
-  }
-
-  private renderDeleteCollectionFeedbackSection(): JSX.Element {
-    return (
-      <div className="deleteCollectionFeedback contentBeforeFooter">
-        <Text variant="small" block>
-          Help us improve Azure Cosmos DB!
-        </Text>
-        <Text variant="small" block>
-          What is the reason why you are deleting this container?
-        </Text>
-        <TextField
-          styles={{ fieldGroup: { width: 300 } }}
-          multiline
-          rows={3}
-          onChange={(event, newInput?: string) => {
-            this.deleteCollectionFeedback = newInput;
-          }}
-        />
-      </div>
-    );
   }
 
   private async submit(): Promise<void> {

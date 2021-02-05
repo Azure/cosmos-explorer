@@ -6,12 +6,10 @@ export interface PanelFooterProps {
   onOKButtonClicked: () => void;
 }
 
-export class PanelFooterComponent extends React.Component<PanelFooterProps> {
-  render(): JSX.Element {
-    return (
-      <div className="panelFooter">
-        <PrimaryButton text={this.props.buttonLabel} onClick={() => this.props.onOKButtonClicked()} />
-      </div>
-    );
-  }
-}
+export const PanelFooterComponent: React.FunctionComponent<PanelFooterProps> = (
+  props: PanelFooterProps
+): JSX.Element => (
+  <div className="panelFooter">
+    <PrimaryButton text={props.buttonLabel} onClick={() => props.onOKButtonClicked()} />
+  </div>
+);
