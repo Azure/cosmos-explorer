@@ -15,6 +15,8 @@ import {
   Pivot,
   PivotItem,
   SearchBox,
+  Spinner,
+  SpinnerSize,
   Stack,
   Text,
 } from "office-ui-fabric-react";
@@ -69,6 +71,8 @@ interface GalleryViewerComponentState {
   searchText: string;
   dialogProps: DialogProps;
   isCodeOfConductAccepted: boolean;
+  isFetchingPublishedNotebooks: boolean;
+  isFetchingFavouriteNotebooks: boolean;
 }
 
 interface GalleryTabInfo {
@@ -118,6 +122,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       searchText: props.searchText,
       dialogProps: undefined,
       isCodeOfConductAccepted: undefined,
+      isFetchingFavouriteNotebooks: true,
+      isFetchingPublishedNotebooks: true,
     };
 
     this.sortingOptions = [
@@ -274,36 +280,52 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
   }
 
+  private getFavouriteNotebooksTabContent = (data: IGalleryItem[]) => {
+    if (this.isEmptyData(data)) {
+      if (this.state.isFetchingFavouriteNotebooks) {
+        return <Spinner size={SpinnerSize.large} />;
+      }
+      return this.createEmptyTabContent(
+        "ContactHeart",
+        <>You don&apos;t have any favorites yet</>,
+        <>
+          Favorite any notebook from the{" "}
+          <Link onClick={() => this.setState({ selectedTab: GalleryTab.OfficialSamples })}>official samples</Link> or{" "}
+          <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link>
+        </>
+      );
+    }
+    return this.createSearchBarHeader(this.createCardsTabContent(data));
+  };
+
   private createFavoritesTab(tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo {
     return {
       tab,
-      content: this.isEmptyData(data)
-        ? this.createEmptyTabContent(
-            "ContactHeart",
-            <>You don&apos;t have any favorites yet</>,
-            <>
-              Favorite any notebook from the{" "}
-              <Link onClick={() => this.setState({ selectedTab: GalleryTab.OfficialSamples })}>official samples</Link>{" "}
-              or <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link>
-            </>
-          )
-        : this.createSearchBarHeader(this.createCardsTabContent(data)),
+      content: this.getFavouriteNotebooksTabContent(data),
     };
   }
+
+  private getPublishedNotebooksTabContent = (data: IGalleryItem[]) => {
+    if (this.isEmptyData(data)) {
+      if (this.state.isFetchingPublishedNotebooks) {
+        return <Spinner size={SpinnerSize.large} />;
+      }
+      return this.createEmptyTabContent(
+        "Contact",
+        <>
+          You have not published anything to the{" "}
+          <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link> yet
+        </>,
+        <>Publish your notebooks to share your work with other users</>
+      );
+    }
+    return this.createPublishedNotebooksTabContent(data);
+  };
 
   private createPublishedNotebooksTab = (tab: GalleryTab, data: IGalleryItem[]): GalleryTabInfo => {
     return {
       tab,
-      content: this.isEmptyData(data)
-        ? this.createEmptyTabContent(
-            "Contact",
-            <>
-              You have not published anything to the{" "}
-              <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link> yet
-            </>,
-            <>Publish your notebooks to share your work with other users</>
-          )
-        : this.createPublishedNotebooksTabContent(data),
+      content: this.getPublishedNotebooksTabContent(data),
     };
   };
 
@@ -396,7 +418,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   }
 
   private createCardsTabContent(data: IGalleryItem[]): JSX.Element {
-    return (
+    return data ? (
       <FocusZone>
         <List
           items={data}
@@ -405,6 +427,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           onRenderCell={this.onRenderCell}
         />
       </FocusZone>
+    ) : (
+      <Spinner size={SpinnerSize.large} />
     );
   }
 
@@ -505,6 +529,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadFavoriteNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
+        this.setState({ isFetchingFavouriteNotebooks: true });
         const response = await this.props.junoClient.getFavoriteNotebooks();
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading favorite notebooks`);
@@ -515,6 +540,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         trace(Action.NotebooksGalleryFavoritesCount, ActionModifiers.Mark, { count: this.favoriteNotebooks?.length });
       } catch (error) {
         handleError(error, "GalleryViewerComponent/loadFavoriteNotebooks", "Failed to load favorite notebooks");
+      } finally {
+        this.setState({ isFetchingFavouriteNotebooks: false });
       }
     }
 
@@ -533,6 +560,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private async loadPublishedNotebooks(searchText: string, sortBy: SortBy, offline: boolean): Promise<void> {
     if (!offline) {
       try {
+        this.setState({ isFetchingPublishedNotebooks: true });
         const response = await this.props.junoClient.getPublishedNotebooks();
         if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
           throw new Error(`Received HTTP ${response.status} when loading published notebooks`);
@@ -549,6 +577,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         });
       } catch (error) {
         handleError(error, "GalleryViewerComponent/loadPublishedNotebooks", "Failed to load published notebooks");
+      } finally {
+        this.setState({ isFetchingPublishedNotebooks: false });
       }
     }
 
