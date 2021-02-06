@@ -10,6 +10,6 @@ export const PanelFooterComponent: React.FunctionComponent<PanelFooterProps> = (
   props: PanelFooterProps
 ): JSX.Element => (
   <div className="panelFooter">
-    <PrimaryButton text={props.buttonLabel} onClick={() => props.onOKButtonClicked()} />
+    <PrimaryButton id="sidePanelOkButton" text={props.buttonLabel} onClick={() => props.onOKButtonClicked()} />
   </div>
 );

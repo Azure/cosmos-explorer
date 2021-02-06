@@ -54,6 +54,7 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
             <Text variant="small">Confirm by typing the collection id</Text>
           </div>
           <TextField
+            id="confirmCollectionId"
             styles={{ fieldGroup: { width: 300 } }}
             onChange={(event, newInput?: string) => {
               this.inputCollectionName = newInput;
