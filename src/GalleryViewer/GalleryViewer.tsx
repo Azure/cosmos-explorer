@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.css";
+import "./GalleryViewer.less";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { Text, Link } from "office-ui-fabric-react";
 import * as React from "react";
@@ -32,7 +33,7 @@ const onInit = async () => {
   };
 
   const element = (
-    <>
+    <div className="standalone-gallery-root">
       <header>
         <GalleryHeaderComponent />
       </header>
@@ -53,7 +54,7 @@ const onInit = async () => {
 
         <GalleryAndNotebookViewerComponent {...props} />
       </div>
-    </>
+    </div>
   );
 
   ReactDOM.render(element, document.getElementById("galleryContent"));

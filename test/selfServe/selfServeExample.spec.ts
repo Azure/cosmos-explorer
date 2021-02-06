@@ -8,7 +8,7 @@ jest.setTimeout(300000);
 
 let frame: Frame;
 describe("Self Serve", () => {
-  it("Launch Self Serve Example", async () => {
+  it.skip("Launch Self Serve Example", async () => {
     try {
       frame = await getTestExplorerFrame(
         ApiKind.SQL,
