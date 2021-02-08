@@ -1,6 +1,6 @@
 import "../../less/hostedexplorer.less";
 import { TestExplorerParams } from "./TestExplorerParams";
-import {​​​​​​​​ Capability, DatabaseAccount }​​​​​​​​ from"../../src/Contracts/DataModels";
+import { Capability, DatabaseAccount } from "../../src/Contracts/DataModels";
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import * as msRest from "@azure/ms-rest-js";
 import * as ViewModels from "../../src/Contracts/ViewModels";
@@ -28,7 +28,6 @@ const getDatabaseAccount = async (
     notebooksAccountResourceGroup,
     notebooksAccountName
   );
- 
   const databaseAccount: DatabaseAccount = {
     id: databaseAccountGetResponse.id,
     name: databaseAccountGetResponse.name,
@@ -41,12 +40,12 @@ const getDatabaseAccount = async (
       tableEndpoint: undefined,
       gremlinEndpoint: undefined,
       cassandraEndpoint: undefined,
-      capabilities: databaseAccountGetResponse.capabilities.map(capability => {
-        return {name: capability.name} as Capability
-      })
+      capabilities: databaseAccountGetResponse.capabilities.map((capability) => {
+        return { name: capability.name } as Capability;
+      }),
     },
   };
- 
+
   return databaseAccount;
 };
 
@@ -78,7 +77,7 @@ const initTestExplorer = async (): Promise<void> => {
       subscriptionId: portalRunnerSubscripton,
       resourceGroup: portalRunnerResourceGroup,
       authorizationToken: `Bearer ${token}`,
-      features: {sampleFeature: "sampleFeatureValue"},
+      features: { sampleFeature: "sampleFeatureValue" },
       hasWriteAccess: true,
       csmEndpoint: "https://management.azure.com",
       dnsSuffix: "documents.azure.com",
