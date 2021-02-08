@@ -15,7 +15,8 @@ describe("MongoDB Index policy tests", () => {
       const wildCardId = generateUniqueName("key") + "$**";
       const frame = await getTestExplorerFrame(ApiKind.MongoDB);
       const dropDown = "Index Type ";
-      let index = 0, throughput;
+      let index = 0,
+        throughput;
 
       //open dataBaseMenu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });

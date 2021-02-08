@@ -28,7 +28,7 @@ const getDatabaseAccount = async (
     notebooksAccountResourceGroup,
     notebooksAccountName
   );
-  
+
   const databaseAccount: DatabaseAccount = {
     id: databaseAccountGetResponse.id,
     name: databaseAccountGetResponse.name,
