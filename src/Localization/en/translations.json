@@ -28,6 +28,23 @@
             "SubmissionMessage": "Submitted successfully"
         },
         "SqlX": {
+            "DedicatedGatewayDescription": "Provisioning dedicated gateways for SqlX accounts.",
+            "DedicatedGateway": "Dedicated Gateway",
+            "Enable": "Enable",
+            "Disable": "Disable",
+            "LearnAboutDedicatedGateway": "Learn more about dedicated gateway.",
+            "SKUs": "SKUs",
+            "NumberOfInstances": "Number of instances",
+            "CosmosD4s": "Cosmos.D4s",
+            "CosmosD8s": "Cosmos.D8s",
+            "CosmosD16s": "Cosmos.D16s",
+            "CosmosD32s": "Cosmos.D32s",
+            "CreateMessage": "DedicatedGateway resource is being created.",
+            "UpdateMessage": "DedicatedGateway resource is being updated.",
+            "DeleteMessage": "DedicatedGateway resource is being deleted.",
+            "CannotSave": "Cannot save the changes to the DedicatedGateway resource at the moment",
+            "DedicatedGatewayEndpoint": "DedicatedGatewayEndpoint",
+            "NoValue": ""
         }
     }
 }

@@ -126,5 +126,5 @@ export interface SelfServeNotification {
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  notificationMessage: string;
+  notificationMessage?: string;
 }
