@@ -1,9 +1,7 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
