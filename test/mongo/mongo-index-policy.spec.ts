@@ -3,10 +3,9 @@ import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
 import { createDatabase } from "../utils/shared";
 import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
-import { Frame } from "puppeteer";
 
 const LOADING_STATE_DELAY = 1000;
-const RETRY_DELAY = 5000;
+
 const CREATE_DELAY = 10000;
 jest.setTimeout(300000);
 
@@ -89,8 +88,8 @@ describe("MongoDB Index policy tests", () => {
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span");
 
       const elements = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
-      for (var i = 0; i < elements.length; i++) {
-        let element = elements[i];
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
         const text = await frame.evaluate((element) => element.textContent, element);
         if (text === wildId) {
           wildCardIndexInserted = true;
