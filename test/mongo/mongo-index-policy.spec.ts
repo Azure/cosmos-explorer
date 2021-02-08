@@ -5,7 +5,6 @@ import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
 const LOADING_STATE_DELAY = 1000;
-
 const CREATE_DELAY = 10000;
 jest.setTimeout(300000);
 
