@@ -1,9 +1,9 @@
 import "../../less/hostedexplorer.less";
 import { TestExplorerParams } from "./TestExplorerParams";
-import { Capability, DatabaseAccount } from "../../src/Contracts/DataModels";
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import * as msRest from "@azure/ms-rest-js";
 import * as ViewModels from "../../src/Contracts/ViewModels";
+import { Capability, DatabaseAccount } from "../../src/Contracts/DataModels";
 
 class CustomSigner implements msRest.ServiceClientCredentials {
   private token: string;
@@ -28,6 +28,7 @@ const getDatabaseAccount = async (
     notebooksAccountResourceGroup,
     notebooksAccountName
   );
+  
   const databaseAccount: DatabaseAccount = {
     id: databaseAccountGetResponse.id,
     name: databaseAccountGetResponse.name,

@@ -9,11 +9,13 @@ const CREATE_DELAY = 10000;
 jest.setTimeout(300000);
 
 describe("MongoDB Index policy tests", () => {
-  it("Open, Create and Saved Index", async () => {
+  it("Open, Create and Save Index", async () => {
     try {
       const singleFieldId = generateUniqueName("key");
-      const wildId = generateUniqueName("key") + "$**";
+      const wildCardId = generateUniqueName("key") + "$**";
       const frame = await getTestExplorerFrame(ApiKind.MongoDB);
+      const dropDown = "Index Type ";
+      let index = 0, throughput;
 
       //open dataBaseMenu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
@@ -51,13 +53,9 @@ describe("MongoDB Index policy tests", () => {
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.click(`button[data-content="Indexing Policy"]`);
 
-      let index = 0;
-      let throughput;
-      const DropDown = "Index Type ";
-
       //Type to single Field
       throughput = await frame.$$(".ms-TextField-field");
-      const selectedDropDownSingleField = DropDown + index;
+      const selectedDropDownSingleField = dropDown + index;
       await frame.waitFor(`div[aria-label="${selectedDropDownSingleField}"]`), { visible: true };
       await throughput[index].type(singleFieldId);
       await frame.click(`div[aria-label="${selectedDropDownSingleField}"]`);
@@ -67,8 +65,8 @@ describe("MongoDB Index policy tests", () => {
 
       //Type to wild card
       throughput = await frame.$$(".ms-TextField-field");
-      await throughput[index].type(wildId);
-      const selectedDropDownWildCard = DropDown + index;
+      await throughput[index].type(wildCardId);
+      const selectedDropDownWildCard = dropDown + index;
       await frame.waitFor(`div[aria-label="${selectedDropDownWildCard}"]`), { visible: true };
       await frame.click(`div[aria-label="${selectedDropDownWildCard}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
@@ -90,7 +88,7 @@ describe("MongoDB Index policy tests", () => {
       for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         const text = await frame.evaluate((element) => element.textContent, element);
-        if (text === wildId) {
+        if (text === wildCardId) {
           wildCardIndexInserted = true;
         } else if (text === singleFieldId) {
           singleFieldIndexInserted = true;
