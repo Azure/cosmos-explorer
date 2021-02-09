@@ -8,22 +8,22 @@ import {
   MongoDBCollectionCreateUpdateParameters,
   MongoDBCollectionResource,
   SqlContainerCreateUpdateParameters,
-  SqlContainerResource
+  SqlContainerResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { client } from "../CosmosClient";
 import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   createUpdateCassandraTable,
-  getCassandraTable
+  getCassandraTable,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateMongoDBCollection,
-  getMongoDBCollection
+  getMongoDBCollection,
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
   createUpdateGremlinGraph,
-  getGremlinGraph
+  getGremlinGraph,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { handleError } from "../ErrorHandlingUtils";
@@ -130,8 +130,8 @@ export async function updateMongoDBCollectionThroughRP(
     const updateParams: MongoDBCollectionCreateUpdateParameters = {
       properties: {
         resource: newCollection,
-        options: updateOptions
-      }
+        options: updateOptions,
+      },
     };
 
     const updateResponse = await createUpdateMongoDBCollection(

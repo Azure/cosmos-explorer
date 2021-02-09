@@ -3,9 +3,8 @@ import {
   Resource,
   StoredProcedureDefinition,
   TriggerDefinition,
-  UserDefinedFunctionDefinition
+  UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import Q from "q";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
@@ -15,6 +14,7 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
@@ -109,7 +109,7 @@ export interface CollectionBase extends TreeNode {
 
   onDocumentDBDocumentsClick(): void;
   onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void;
-  expandCollection(): Q.Promise<any>;
+  expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
 }
@@ -176,7 +176,7 @@ export interface Collection extends CollectionBase {
 
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
-  uploadFiles(fileList: FileList): Q.Promise<UploadDetails>;
+  uploadFiles(fileList: FileList): Promise<UploadDetails>;
 
   getLabel(): string;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
@@ -197,7 +197,7 @@ export interface PaneOptions {
 export enum NeighborType {
   SOURCES_ONLY,
   TARGETS_ONLY,
-  BOTH
+  BOTH,
 }
 
 /**
@@ -323,14 +323,14 @@ export enum DocumentExplorerState {
   newDocumentInvalid,
   exisitingDocumentNoEdits,
   exisitingDocumentDirtyValid,
-  exisitingDocumentDirtyInvalid
+  exisitingDocumentDirtyInvalid,
 }
 
 export enum IndexingPolicyEditorState {
   noCollectionSelected,
   noEdits,
   dirtyValid,
-  dirtyInvalid
+  dirtyInvalid,
 }
 
 export enum ScriptEditorState {
@@ -338,7 +338,7 @@ export enum ScriptEditorState {
   newValid,
   exisitingNoEdits,
   exisitingDirtyValid,
-  exisitingDirtyInvalid
+  exisitingDirtyInvalid,
 }
 
 export enum CollectionTabKind {
@@ -361,13 +361,13 @@ export enum CollectionTabKind {
   NotebookViewer = 18,
   Schema = 19,
   CollectionSettingsV2 = 20,
-  DatabaseSettingsV2 = 21
+  DatabaseSettingsV2 = 21,
 }
 
 export enum TerminalKind {
   Default = 0,
   Mongo = 1,
-  Cassandra = 2
+  Cassandra = 2,
 }
 
 export interface DataExplorerInputsFrame {
@@ -394,6 +394,7 @@ export interface DataExplorerInputsFrame {
   isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
+  selfServeType?: SelfServeType;
 }
 
 export interface CollectionCreationDefaults {

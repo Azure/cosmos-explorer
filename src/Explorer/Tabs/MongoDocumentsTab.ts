@@ -14,7 +14,7 @@ import {
   deleteDocument,
   queryDocuments,
   readDocument,
-  updateDocument
+  updateDocument,
 } from "../../Common/MongoProxyClient";
 import { extractPartitionKey } from "@azure/cosmos";
 import * as Logger from "../../Common/Logger";
@@ -51,7 +51,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     if (
@@ -73,7 +73,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
           defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
-          error: message
+          error: message,
         },
         startKey
       );
@@ -110,12 +110,12 @@ export default class MongoDocumentsTab extends DocumentsTab {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
         },
-        error => {
+        (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
           window.alert(errorMessage);
@@ -127,7 +127,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             startKey
           );
@@ -145,7 +145,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
       defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.tabTitle()
+      tabTitle: this.tabTitle(),
     });
 
     return updateDocument(this.collection.databaseId, this.collection, selectedDocumentId, documentContent)
@@ -174,12 +174,12 @@ export default class MongoDocumentsTab extends DocumentsTab {
               databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.tabTitle()
+              tabTitle: this.tabTitle(),
             },
             startKey
           );
         },
-        error => {
+        (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
           window.alert(errorMessage);
@@ -191,7 +191,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             startKey
           );
@@ -221,7 +221,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
         ({ continuationToken, documents }) => {
           this.continuationToken = continuationToken;
           let currentDocuments = this.documentIds();
-          const currentDocumentsRids = currentDocuments.map(currentDocument => currentDocument.rid);
+          const currentDocumentsRids = currentDocuments.map((currentDocument) => currentDocument.rid);
           const nextDocumentIds = documents
             .filter((d: any) => {
               return currentDocumentsRids.indexOf(d._rid) < 0;
@@ -251,7 +251,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 collectionName: this.collection.id(),
                 defaultExperience: this.collection.container.defaultExperience(),
                 dataExplorerArea: Constants.Areas.Tab,
-                tabTitle: this.tabTitle()
+                tabTitle: this.tabTitle(),
               },
               this.onLoadStartKey
             );
@@ -270,7 +270,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
                 error: getErrorMessage(error),
-                errorStack: getErrorStack(error)
+                errorStack: getErrorStack(error),
               },
               this.onLoadStartKey
             );
@@ -320,7 +320,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       partitionKey = {
         kind: partitionKey.kind,
         paths: ["/" + this.partitionKeyProperty.replace(/\./g, "/")],
-        version: partitionKey.version
+        version: partitionKey.version,
       };
     }
 

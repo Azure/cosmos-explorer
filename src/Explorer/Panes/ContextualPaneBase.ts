@@ -29,10 +29,6 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     this.title = ko.observable<string>();
     this.formErrorsDetails = ko.observable<string>();
     this.isExecuting = ko.observable<boolean>(false);
-    this.container.isNotificationConsoleExpanded.subscribe((isExpanded: boolean) => {
-      this.resizePane();
-    });
-    this.container.isNotificationConsoleExpanded.extend({ rateLimit: 10 });
   }
 
   public cancel() {
@@ -42,7 +38,7 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
-        paneTitle: this.title()
+        paneTitle: this.title(),
       });
   }
 
@@ -63,7 +59,7 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
-        paneTitle: this.title()
+        paneTitle: this.title(),
       });
   }
 
@@ -85,7 +81,7 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
         databaseAccountName: this.container.databaseAccount().name,
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
-        paneTitle: this.title()
+        paneTitle: this.title(),
       });
   }
 

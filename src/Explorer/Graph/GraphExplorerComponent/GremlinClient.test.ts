@@ -9,7 +9,7 @@ describe("Gremlin Client", () => {
     collectionId: null,
     databaseId: null,
     masterKey: null,
-    maxResultSize: 10000
+    maxResultSize: 10000,
   };
 
   it("should use databaseId, collectionId and masterKey to authenticate", () => {
@@ -23,7 +23,7 @@ describe("Gremlin Client", () => {
       collectionId,
       databaseId,
       masterKey,
-      maxResultSize: 0
+      maxResultSize: 0,
     });
 
     // User must includes these values
@@ -32,7 +32,7 @@ describe("Gremlin Client", () => {
     expect(gremlinClient.client.params.password).toEqual(masterKey);
   });
 
-  it("should aggregate RU charges across multiple responses", done => {
+  it("should aggregate RU charges across multiple responses", (done) => {
     const gremlinClient = new GremlinClient();
     const ru1 = 1;
     const ru2 = 2;
@@ -42,23 +42,23 @@ describe("Gremlin Client", () => {
     sinon.stub(gremlinClient.client, "executeGremlinQuery").callsFake((query: string): string => requestId);
     gremlinClient
       .execute("fake query")
-      .then(result => expect(result.totalRequestCharge).toBe(ru1 + ru2 + ru3))
+      .then((result) => expect(result.totalRequestCharge).toBe(ru1 + ru2 + ru3))
       .finally(done);
 
     gremlinClient.client.params.progressCallback({
       data: ["data1"],
       requestCharge: ru1,
-      requestId: requestId
+      requestId: requestId,
     });
     gremlinClient.client.params.progressCallback({
       data: ["data2"],
       requestCharge: ru2,
-      requestId: requestId
+      requestId: requestId,
     });
     gremlinClient.client.params.successCallback({
       data: ["data3"],
       requestCharge: ru3,
-      requestId: requestId
+      requestId: requestId,
     });
   });
 
@@ -83,7 +83,7 @@ describe("Gremlin Client", () => {
         gremlinClient.client.params.successCallback({
           data: ["data1"],
           requestCharge: ru1,
-          requestId: requestId
+          requestId: requestId,
         });
       }, 0);
       return requestId;
@@ -103,7 +103,7 @@ describe("Gremlin Client", () => {
     gremlinClient.client.params.successCallback({
       data: ["data1"],
       requestCharge: 1,
-      requestId: "unknownId"
+      requestId: "unknownId",
     });
 
     expect(logConsoleSpy.called).toBe(true);
@@ -121,7 +121,7 @@ describe("Gremlin Client", () => {
     expect(GremlinClient.getRequestChargeString("123")).not.toEqual(emptyResult);
   });
 
-  it("should not aggregate RU if not a number and reset totalRequestCharge to undefined", done => {
+  it("should not aggregate RU if not a number and reset totalRequestCharge to undefined", (done) => {
     const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleError");
     const logErrorSpy = sinon.spy(Logger, "logError");
 
@@ -135,7 +135,7 @@ describe("Gremlin Client", () => {
     gremlinClient
       .execute("fake query")
       .then(
-        result => {
+        (result) => {
           try {
             expect(result.totalRequestCharge).toBe(undefined);
             expect(logConsoleSpy.called).toBe(true);
@@ -145,7 +145,7 @@ describe("Gremlin Client", () => {
             done(e);
           }
         },
-        error => done.fail(error)
+        (error) => done.fail(error)
       )
       .finally(() => {
         logConsoleSpy.restore();
@@ -155,16 +155,16 @@ describe("Gremlin Client", () => {
     gremlinClient.client.params.progressCallback({
       data: ["data1"],
       requestCharge: ru1,
-      requestId: requestId
+      requestId: requestId,
     });
     gremlinClient.client.params.successCallback({
       data: ["data2"],
       requestCharge: ru2 as any,
-      requestId: requestId
+      requestId: requestId,
     });
   });
 
-  it("should not aggregate RU if undefined and reset totalRequestCharge to undefined", done => {
+  it("should not aggregate RU if undefined and reset totalRequestCharge to undefined", (done) => {
     const logConsoleSpy = sinon.spy(NotificationConsoleUtils, "logConsoleError");
     const logErrorSpy = sinon.spy(Logger, "logError");
 
@@ -178,7 +178,7 @@ describe("Gremlin Client", () => {
     gremlinClient
       .execute("fake query")
       .then(
-        result => {
+        (result) => {
           try {
             expect(result.totalRequestCharge).toBe(undefined);
             expect(logConsoleSpy.called).toBe(true);
@@ -188,7 +188,7 @@ describe("Gremlin Client", () => {
             done(e);
           }
         },
-        error => done.fail(error)
+        (error) => done.fail(error)
       )
       .finally(() => {
         logConsoleSpy.restore();
@@ -198,16 +198,16 @@ describe("Gremlin Client", () => {
     gremlinClient.client.params.progressCallback({
       data: ["data1"],
       requestCharge: ru1,
-      requestId: requestId
+      requestId: requestId,
     });
     gremlinClient.client.params.successCallback({
       data: ["data2"],
       requestCharge: ru2,
-      requestId: requestId
+      requestId: requestId,
     });
   });
 
-  it("should track RUs even on failure", done => {
+  it("should track RUs even on failure", (done) => {
     const gremlinClient = new GremlinClient();
     const requestId = "id";
     const RU = 1234;
@@ -217,8 +217,8 @@ describe("Gremlin Client", () => {
     sinon.stub(gremlinClient.client, "executeGremlinQuery").callsFake((query: string): string => requestId);
     const abortPendingRequestSpy = sinon.spy(gremlinClient, "abortPendingRequest");
     gremlinClient.execute("fake query").then(
-      result => done.fail(`Unexpectedly succeeded with ${result}`),
-      error => {
+      (result) => done.fail(`Unexpectedly succeeded with ${result}`),
+      (error) => {
         try {
           expect(abortPendingRequestSpy.calledWith(requestId, error, RU)).toBe(true);
           done();
@@ -232,13 +232,13 @@ describe("Gremlin Client", () => {
       {
         data: null,
         requestCharge: RU,
-        requestId: requestId
+        requestId: requestId,
       },
       error
     );
   });
 
-  it("should abort all pending requests if requestId from failure response", done => {
+  it("should abort all pending requests if requestId from failure response", (done) => {
     const gremlinClient = new GremlinClient();
     const requestId = "id";
     const error = "Some error";
@@ -258,7 +258,7 @@ describe("Gremlin Client", () => {
       {
         data: null,
         requestCharge: undefined,
-        requestId: undefined
+        requestId: undefined,
       },
       error
     );

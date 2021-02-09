@@ -45,17 +45,18 @@ type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatc
 
 const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, children: React.ReactNode) => {
   const Cell = () => (
-    <DraggableCell id={id} contentRef={contentRef}>
-      <HijackScroll id={id} contentRef={contentRef}>
-        <CellCreator id={id} contentRef={contentRef}>
-          <CellLabeler id={id} contentRef={contentRef}>
-            <HoverableCell id={id} contentRef={contentRef}>
-              {children}
-            </HoverableCell>
-          </CellLabeler>
-        </CellCreator>
-      </HijackScroll>
-    </DraggableCell>
+    // TODO Draggable and HijackScroll not working anymore. Fix or remove when reworking MarkdownCell.
+    // <DraggableCell id={id} contentRef={contentRef}>
+    //   <HijackScroll id={id} contentRef={contentRef}>
+    <CellCreator id={id} contentRef={contentRef}>
+      <CellLabeler id={id} contentRef={contentRef}>
+        <HoverableCell id={id} contentRef={contentRef}>
+          {children}
+        </HoverableCell>
+      </CellLabeler>
+    </CellCreator>
+    //   </HijackScroll>
+    // </DraggableCell>
   );
 
   Cell.defaultProps = { cell_type };
@@ -69,7 +70,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     super(props);
 
     this.state = {
-      hoveredCellId: undefined
+      hoveredCellId: undefined,
     };
   }
 
@@ -103,14 +104,14 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <CodeCell id={id} contentRef={contentRef} cell_type="code">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />
+                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
                               <Prompt id={id} contentRef={contentRef} isHovered={false}>
                                 {promptContent}
                               </Prompt>
                             ),
-                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
+                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
                         </CodeCell>
                       ),
@@ -122,9 +123,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />
+                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
                             },
-                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
+                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
                         </MarkdownCell>
                       ),
@@ -137,12 +138,12 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <RawCell id={id} contentRef={contentRef} cell_type="raw">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />
+                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
                             },
-                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />
+                            toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
                         </RawCell>
-                      )
+                      ),
                   }}
                 </Cells>
               </KeyboardShortcuts>
@@ -163,7 +164,7 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
         return dispatch(
           actions.addTransform({
             mediaType: transform.MIMETYPE,
-            component: transform
+            component: transform,
           })
         );
       },
@@ -171,10 +172,10 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
         return dispatch(
           cdbActions.UpdateNotebookParentDomElt({
             contentRef,
-            parentElt
+            parentElt,
           })
         );
-      }
+      },
     };
   };
   return mapDispatchToProps;

@@ -58,7 +58,7 @@ describe("Collection Add and Delete Mongo spec", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
       const databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
-      const selectedDbId = await frame.evaluate(element => {
+      const selectedDbId = await frame.evaluate((element) => {
         return element.attributes["data-test"].textContent;
       }, databases[0]);
 
@@ -66,8 +66,8 @@ describe("Collection Add and Delete Mongo spec", () => {
       await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[class='rowData'] > span[class='message']");
 
-      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", elements => {
-        return elements.some(el => el.textContent.includes("Successfully created"));
+      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", (elements) => {
+        return elements.some((el) => el.textContent.includes("Successfully created"));
       });
 
       expect(didCreateContainer).toBe(true);
@@ -82,7 +82,7 @@ describe("Collection Add and Delete Mongo spec", () => {
       );
 
       if (collections.length) {
-        const textId = await frame.evaluate(element => {
+        const textId = await frame.evaluate((element) => {
           return element.attributes["data-test"].textContent;
         }, collections[0]);
         await frame.waitFor(`div[data-test="${textId}"]`, { visible: true });
@@ -154,7 +154,7 @@ async function clickDBMenu(dbId: string, frame: Frame, retries = 0) {
 async function ensureMenuIsOpen(dbId: string, frame: Frame, retries: number) {
   await frame.waitFor(RETRY_DELAY);
   const button = await frame.$(`div[data-test="${dbId}"]`);
-  const classList = await frame.evaluate(button => {
+  const classList = await frame.evaluate((button) => {
     return button.parentElement.classList;
   }, button);
   if (!Object.values(classList).includes("selected") && retries < 5) {

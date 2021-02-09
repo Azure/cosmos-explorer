@@ -11,7 +11,7 @@ import {
   MessageBarType,
   Spinner,
   SpinnerSize,
-  Separator
+  Separator,
 } from "office-ui-fabric-react";
 import {
   addMongoIndexStackProps,
@@ -23,7 +23,8 @@ import {
   separatorStyles,
   indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle,
-  onRenderRow
+  onRenderRow,
+  mongoCompoundIndexNotSupportedMessage,
 } from "../../SettingsRenderUtils";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
@@ -33,7 +34,7 @@ import {
   MongoNotificationType,
   getMongoIndexType,
   getMongoIndexTypeText,
-  isIndexTransforming
+  isIndexTransforming,
 } from "../../SettingsUtils";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
@@ -71,8 +72,8 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
       fieldName: "actionButton",
       minWidth: 100,
       maxWidth: 200,
-      isResizable: true
-    }
+      isResizable: true,
+    },
   ];
 
   private indexesToBeDroppedColumns: IColumn[] = [
@@ -84,8 +85,8 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
       fieldName: "actionButton",
       minWidth: 100,
       maxWidth: 200,
-      isResizable: true
-    }
+      isResizable: true,
+    },
   ];
 
   componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
@@ -114,7 +115,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
       return false;
     }
 
-    const addErrorsExist = !!this.props.indexesToAdd.find(addMongoIndexProps => addMongoIndexProps.notification);
+    const addErrorsExist = !!this.props.indexesToAdd.find((addMongoIndexProps) => addMongoIndexProps.notification);
 
     if (addErrorsExist) {
       return false;
@@ -129,7 +130,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   public getMongoWarningNotificationMessage = (): JSX.Element => {
     const warningMessage = this.props.indexesToAdd.find(
-      addMongoIndexProps => addMongoIndexProps.notification?.type === MongoNotificationType.Warning
+      (addMongoIndexProps) => addMongoIndexProps.notification?.type === MongoNotificationType.Warning
     )?.notification.message;
 
     if (warningMessage) {
@@ -172,7 +173,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
       mongoIndexDisplayProps = {
         definition: <Text>{definition}</Text>,
         type: <Text>{getMongoIndexTypeText(type)}</Text>,
-        actionButton: definition === MongoIndexIdField ? <></> : this.getActionButton(arrayPosition, isCurrentIndex)
+        actionButton: definition === MongoIndexIdField ? <></> : this.getActionButton(arrayPosition, isCurrentIndex),
       };
     }
     return mongoIndexDisplayProps;
@@ -282,6 +283,15 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     );
   };
 
+  public hasCompoundIndex = (): boolean => {
+    for (let index = 0; index < this.props.mongoIndexes.length; index++) {
+      if (this.props.mongoIndexes[index].key?.keys?.length > 1) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   private renderWarningMessage = (): JSX.Element => {
     let warningMessage: JSX.Element;
     if (this.getMongoWarningNotificationMessage()) {
@@ -303,6 +313,9 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   public render(): JSX.Element {
     if (this.props.mongoIndexes) {
+      if (this.hasCompoundIndex()) {
+        return mongoCompoundIndexNotSupportedMessage;
+      }
       return (
         <Stack {...subComponentStackProps}>
           {this.renderWarningMessage()}

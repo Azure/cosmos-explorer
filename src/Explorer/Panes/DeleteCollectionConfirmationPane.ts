@@ -1,9 +1,7 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
@@ -48,26 +46,15 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
       defaultExperience: this.container.defaultExperience(),
       collectionId: selectedCollection.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
-    let promise: Promise<any>;
-    if (this.container.isPreferredApiCassandra()) {
-      promise = ((<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
-        this.container.databaseAccount().properties.cassandraEndpoint,
-        this.container.databaseAccount().id,
-        `DROP TABLE ${selectedCollection.databaseId}.${selectedCollection.id()};`,
-        this.container
-      ) as unknown) as Promise<any>;
-    } else {
-      promise = deleteCollection(selectedCollection.databaseId, selectedCollection.id());
-    }
-    return promise.then(
+    return deleteCollection(selectedCollection.databaseId, selectedCollection.id()).then(
       () => {
         this.isExecuting(false);
         this.close();
         this.container.selectedNode(selectedCollection.database);
         this.container.tabsManager?.closeTabsByComparator(
-          tab =>
+          (tab) =>
             tab.node?.id() === selectedCollection.id() &&
             (tab.node as ViewModels.Collection).databaseId === selectedCollection.databaseId
         );
@@ -80,7 +67,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title()
+            paneTitle: this.title(),
           },
           startKey
         );
@@ -93,7 +80,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
           );
 
           TelemetryProcessor.trace(Action.DeleteCollection, ActionModifiers.Mark, {
-            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback))
+            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
           });
 
           this.containerDeleteFeedback("");
@@ -113,7 +100,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
             error: errorMessage,
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );

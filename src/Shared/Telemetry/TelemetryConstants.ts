@@ -91,7 +91,29 @@ export enum Action {
   DiscardSettings,
   SettingsV2Updated,
   SettingsV2Discarded,
-  MongoIndexUpdated
+  MongoIndexUpdated,
+  NotebooksGalleryPublish,
+  NotebooksGalleryReportAbuse,
+  NotebooksGalleryClickReportAbuse,
+  NotebooksGalleryViewCodeOfConduct,
+  NotebooksGalleryAcceptCodeOfConduct,
+  NotebooksGalleryFavorite,
+  NotebooksGalleryUnfavorite,
+  NotebooksGalleryClickDelete,
+  NotebooksGalleryDelete,
+  NotebooksGalleryClickDownload,
+  NotebooksGalleryDownload,
+  NotebooksGalleryViewNotebook,
+  NotebooksGalleryViewGallery,
+  NotebooksGalleryViewOfficialSamples,
+  NotebooksGalleryViewPublicGallery,
+  NotebooksGalleryViewFavorites,
+  NotebooksGalleryViewPublishedNotebooks,
+  NotebooksGalleryClickPublishToGallery,
+  NotebooksGalleryOfficialSamplesCount,
+  NotebooksGalleryPublicGalleryCount,
+  NotebooksGalleryFavoritesCount,
+  NotebooksGalleryPublishedCount,
 }
 
 export const ActionModifiers = {
@@ -107,7 +129,7 @@ export const ActionModifiers = {
   NoIndex: "no indexing",
   Cancel: "cancel",
   ToggleAutoscaleOn: "autoscale on",
-  ToggleAutoscaleOff: "autoscale off"
+  ToggleAutoscaleOff: "autoscale off",
 } as const;
 
 export enum SourceBlade {
@@ -132,5 +154,10 @@ export enum SourceBlade {
   RpcProvider,
   ScaleCollection,
   ScriptExplorer,
-  Keys
+  Keys,
+}
+
+export enum Source {
+  ResourceTreeMenu = "ResourceTreeMenu",
+  CommandBarMenu = "CommandBarMenu",
 }

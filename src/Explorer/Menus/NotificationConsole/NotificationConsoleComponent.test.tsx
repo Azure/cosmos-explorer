@@ -2,46 +2,47 @@ import React from "react";
 import { shallow } from "enzyme";
 import {
   NotificationConsoleComponentProps,
-  ConsoleData,
   NotificationConsoleComponent,
-  ConsoleDataType
+  ConsoleDataType,
 } from "./NotificationConsoleComponent";
 
 describe("NotificationConsoleComponent", () => {
   const createBlankProps = (): NotificationConsoleComponentProps => {
     return {
-      consoleData: [],
-      isConsoleExpanded: true,
-      onConsoleDataChange: (consoleData: ConsoleData[]) => {},
-      onConsoleExpandedChange: (isExpanded: boolean) => {}
+      consoleData: undefined,
+      isConsoleExpanded: false,
+      inProgressConsoleDataIdToBeDeleted: "",
+      setIsConsoleExpanded: (isExpanded: boolean): void => {},
     };
   };
 
-  it("renders the console (expanded)", () => {
+  it("renders the console", () => {
     const props = createBlankProps();
-    props.consoleData.push({
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
+
+    props.consoleData = {
       type: ConsoleDataType.Info,
       date: "date",
-      message: "message"
-    });
-
-    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+      message: "message",
+    };
+    wrapper.setProps(props);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("shows proper progress count", () => {
     const count = 100;
     const props = createBlankProps();
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
 
     for (let i = 0; i < count; i++) {
-      props.consoleData.push({
+      props.consoleData = {
         type: ConsoleDataType.InProgress,
-        date: "date",
-        message: "message"
-      });
+        date: "date" + i,
+        message: "message",
+      };
+      wrapper.setProps(props);
     }
-
-    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual(count.toString());
     expect(wrapper.find(".notificationConsoleHeader .numErroredItems").text()).toEqual("0");
     expect(wrapper.find(".notificationConsoleHeader .numInfoItems").text()).toEqual("0");
@@ -50,16 +51,17 @@ describe("NotificationConsoleComponent", () => {
   it("shows proper error count", () => {
     const count = 100;
     const props = createBlankProps();
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
 
     for (let i = 0; i < count; i++) {
-      props.consoleData.push({
+      props.consoleData = {
         type: ConsoleDataType.Error,
-        date: "date",
-        message: "message"
-      });
+        date: "date" + i,
+        message: "message",
+      };
+      wrapper.setProps(props);
     }
 
-    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual("0");
     expect(wrapper.find(".notificationConsoleHeader .numErroredItems").text()).toEqual(count.toString());
     expect(wrapper.find(".notificationConsoleHeader .numInfoItems").text()).toEqual("0");
@@ -68,31 +70,34 @@ describe("NotificationConsoleComponent", () => {
   it("shows proper info count", () => {
     const count = 100;
     const props = createBlankProps();
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
 
     for (let i = 0; i < count; i++) {
-      props.consoleData.push({
+      props.consoleData = {
         type: ConsoleDataType.Info,
-        date: "date",
-        message: "message"
-      });
+        date: "date" + i,
+        message: "message",
+      };
+      wrapper.setProps(props);
     }
 
-    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual("0");
     expect(wrapper.find(".notificationConsoleHeader .numErroredItems").text()).toEqual("0");
     expect(wrapper.find(".notificationConsoleHeader .numInfoItems").text()).toEqual(count.toString());
   });
 
-  const testRenderNotification = (date: string, msg: string, type: ConsoleDataType, iconClassName: string) => {
+  const testRenderNotification = (date: string, message: string, type: ConsoleDataType, iconClassName: string) => {
     const props = createBlankProps();
-    props.consoleData.push({
-      date: date,
-      message: msg,
-      type: type
-    });
     const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+
+    props.consoleData = {
+      type,
+      date,
+      message,
+    };
+    wrapper.setProps(props);
     expect(wrapper.find(".notificationConsoleData .date").text()).toEqual(date);
-    expect(wrapper.find(".notificationConsoleData .message").text()).toEqual(msg);
+    expect(wrapper.find(".notificationConsoleData .message").text()).toEqual(message);
     expect(wrapper.exists(`.notificationConsoleData .${iconClassName}`));
   };
 
@@ -110,55 +115,78 @@ describe("NotificationConsoleComponent", () => {
 
   it("clears notifications", () => {
     const props = createBlankProps();
-    props.consoleData.push({
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+
+    props.consoleData = {
       type: ConsoleDataType.InProgress,
       date: "date",
-      message: "message1"
-    });
-    props.consoleData.push({
+      message: "message1",
+    };
+    wrapper.setProps(props);
+
+    props.consoleData = {
       type: ConsoleDataType.Error,
       date: "date",
-      message: "message2"
-    });
-    props.consoleData.push({
+      message: "message2",
+    };
+    wrapper.setProps(props);
+
+    props.consoleData = {
       type: ConsoleDataType.Info,
       date: "date",
-      message: "message3"
-    });
+      message: "message3",
+    };
+    wrapper.setProps(props);
 
-    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     wrapper.find(".clearNotificationsButton").simulate("click");
-
     expect(!wrapper.exists(".notificationConsoleData"));
   });
 
   it("collapses and hide content", () => {
     const props = createBlankProps();
-    props.consoleData.push({
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+
+    props.consoleData = {
+      type: ConsoleDataType.Info,
       date: "date",
       message: "message",
-      type: ConsoleDataType.Info
-    });
+    };
     props.isConsoleExpanded = true;
+    wrapper.setProps(props);
 
-    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
     wrapper.find(".notificationConsoleHeader").simulate("click");
     expect(!wrapper.exists(".notificationConsoleContent"));
   });
 
   it("display latest data in header", () => {
     const latestData = "latest data";
-    const props1 = createBlankProps();
-    const props2 = createBlankProps();
-    props2.consoleData.push({
+    const props = createBlankProps();
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+
+    props.consoleData = {
+      type: ConsoleDataType.Info,
       date: "date",
       message: latestData,
-      type: ConsoleDataType.Info
-    });
-    props2.isConsoleExpanded = true;
+    };
+    props.isConsoleExpanded = true;
+    wrapper.setProps(props);
 
-    const wrapper = shallow(<NotificationConsoleComponent {...props1} />);
-    wrapper.setProps(props2);
     expect(wrapper.find(".headerStatusEllipsis").text()).toEqual(latestData);
+  });
+
+  it("delete in progress message", () => {
+    const props = createBlankProps();
+    props.consoleData = {
+      type: ConsoleDataType.InProgress,
+      date: "date",
+      message: "message",
+      id: "1",
+    };
+    const wrapper = shallow(<NotificationConsoleComponent {...props} />);
+    expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual("1");
+
+    props.inProgressConsoleDataIdToBeDeleted = "1";
+    wrapper.setProps(props);
+    expect(wrapper.find(".notificationConsoleHeader .numInProgress").text()).toEqual("0");
   });
 });

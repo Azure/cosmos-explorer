@@ -57,7 +57,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
       databaseAccountName: this.container && this.container.databaseAccount().name,
       defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
-      paneTitle: this.title()
+      paneTitle: this.title(),
     });
     const id = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
@@ -77,7 +77,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
           databaseAccountName: this.container && this.container.databaseAccount().name,
           defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: this.title()
+          paneTitle: this.title(),
         },
         startKey
       );
@@ -95,7 +95,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         startKey
       );

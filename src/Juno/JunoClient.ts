@@ -80,8 +80,8 @@ export class JunoClient {
   }
 
   public async getPinnedRepos(scope: string): Promise<IJunoResponse<IPinnedRepo[]>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/github/pinnedrepos`, {
-      headers: JunoClient.getHeaders()
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/github/pinnedrepos`, {
+      headers: JunoClient.getHeaders(),
     });
 
     let pinnedRepos: IPinnedRepo[];
@@ -90,7 +90,7 @@ export class JunoClient {
 
       // In case we're restricted to public only scope, we return only public repos
       if (scope === AuthorizeAccessComponent.Scopes.Public.key) {
-        pinnedRepos = pinnedRepos.filter(repo => !repo.private);
+        pinnedRepos = pinnedRepos.filter((repo) => !repo.private);
       }
 
       this.cachedPinnedRepos(pinnedRepos);
@@ -98,15 +98,15 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data: pinnedRepos
+      data: pinnedRepos,
     };
   }
 
   public async updatePinnedRepos(repos: IPinnedRepo[]): Promise<IJunoResponse<undefined>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/github/pinnedrepos`, {
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/github/pinnedrepos`, {
       method: "PUT",
       body: JSON.stringify(repos),
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     if (response.status === HttpStatusCodes.OK) {
@@ -115,19 +115,19 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data: undefined
+      data: undefined,
     };
   }
 
   public async deleteGitHubInfo(): Promise<IJunoResponse<undefined>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/github`, {
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/github`, {
       method: "DELETE",
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     return {
       status: response.status,
-      data: undefined
+      data: undefined,
     };
   }
 
@@ -135,9 +135,12 @@ export class JunoClient {
     const githubParams = JunoClient.getGitHubClientParams();
     githubParams.append("code", code);
 
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/github/token?${githubParams.toString()}`, {
-      headers: JunoClient.getHeaders()
-    });
+    const response = await window.fetch(
+      `${this.getNotebooksSubscriptionIdAccountUrl()}/github/token?${githubParams.toString()}`,
+      {
+        headers: JunoClient.getHeaders(),
+      }
+    );
 
     let data: IGitHubOAuthToken;
     const body = await response.text();
@@ -145,13 +148,13 @@ export class JunoClient {
       data = JSON.parse(body);
     } else {
       data = {
-        error: response.statusText
+        error: response.statusText,
       };
     }
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -159,14 +162,17 @@ export class JunoClient {
     const githubParams = JunoClient.getGitHubClientParams();
     githubParams.append("access_token", token);
 
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/github/token?${githubParams.toString()}`, {
-      method: "DELETE",
-      headers: JunoClient.getHeaders()
-    });
+    const response = await window.fetch(
+      `${this.getNotebooksSubscriptionIdAccountUrl()}/github/token?${githubParams.toString()}`,
+      {
+        method: "DELETE",
+        headers: JunoClient.getHeaders(),
+      }
+    );
 
     return {
       status: response.status,
-      data: await response.text()
+      data: await response.text(),
     };
   }
 
@@ -179,11 +185,8 @@ export class JunoClient {
   }
 
   public async getPublicGalleryData(): Promise<IJunoResponse<IPublicGalleryData>> {
-    const url = `${this.getNotebooksAccountUrl()}/gallery/public`;
-    const response = await window.fetch(url, {
-      method: "PATCH",
-      headers: JunoClient.getHeaders()
-    });
+    const url = `${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/public`;
+    const response = await window.fetch(url, { headers: JunoClient.getHeaders() });
 
     let data: IPublicGalleryData;
     if (response.status === HttpStatusCodes.OK) {
@@ -192,15 +195,15 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async acceptCodeOfConduct(): Promise<IJunoResponse<boolean>> {
-    const url = `${this.getNotebooksAccountUrl()}/gallery/acceptCodeOfConduct`;
+    const url = `${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/acceptCodeOfConduct`;
     const response = await window.fetch(url, {
       method: "PATCH",
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     let data: boolean;
@@ -210,16 +213,13 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async isCodeOfConductAccepted(): Promise<IJunoResponse<boolean>> {
-    const url = `${this.getNotebooksAccountUrl()}/gallery/isCodeOfConductAccepted`;
-    const response = await window.fetch(url, {
-      method: "PATCH",
-      headers: JunoClient.getHeaders()
-    });
+    const url = `${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/isCodeOfConductAccepted`;
+    const response = await window.fetch(url, { headers: JunoClient.getHeaders() });
 
     let data: boolean;
     if (response.status === HttpStatusCodes.OK) {
@@ -228,7 +228,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -242,7 +242,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -256,13 +256,13 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async increaseNotebookViews(id: string): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(`${this.getNotebooksUrl()}/gallery/${id}/views`, {
-      method: "PATCH"
+      method: "PATCH",
     });
 
     let data: IGalleryItem;
@@ -272,14 +272,14 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async increaseNotebookDownloadCount(id: string): Promise<IJunoResponse<IGalleryItem>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery/${id}/downloads`, {
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/${id}/downloads`, {
       method: "PATCH",
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     let data: IGalleryItem;
@@ -289,14 +289,14 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async favoriteNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
-    const response = await window.fetch(`${this.getNotebooksAccountUrl()}/gallery/${id}/favorite`, {
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/${id}/favorite`, {
       method: "PATCH",
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     let data: IGalleryItem;
@@ -306,14 +306,14 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async unfavoriteNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
-    const response = await window.fetch(`${this.getNotebooksUrl()}/gallery/${id}/unfavorite`, {
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/${id}/unfavorite`, {
       method: "PATCH",
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     let data: IGalleryItem;
@@ -323,26 +323,26 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
   public async getFavoriteNotebooks(): Promise<IJunoResponse<IGalleryItem[]>> {
-    return await this.getNotebooks(`${this.getNotebooksUrl()}/gallery/favorites`, {
-      headers: JunoClient.getHeaders()
+    return await this.getNotebooks(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/favorites`, {
+      headers: JunoClient.getHeaders(),
     });
   }
 
   public async getPublishedNotebooks(): Promise<IJunoResponse<IGalleryItem[]>> {
-    return await this.getNotebooks(`${this.getNotebooksUrl()}/${this.getSubscriptionId()}/gallery/published`, {
-      headers: JunoClient.getHeaders()
+    return await this.getNotebooks(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/published`, {
+      headers: JunoClient.getHeaders(),
     });
   }
 
   public async deleteNotebook(id: string): Promise<IJunoResponse<IGalleryItem>> {
-    const response = await window.fetch(`${this.getNotebooksUrl()}/gallery/${id}`, {
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery/${id}`, {
       method: "DELETE",
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     let data: IGalleryItem;
@@ -352,7 +352,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -365,22 +365,19 @@ export class JunoClient {
     content: string,
     isLinkInjectionEnabled: boolean
   ): Promise<IJunoResponse<IGalleryItem>> {
-    const response = await window.fetch(
-      `${this.getNotebooksUrl()}/${this.getSubscriptionId()}/${this.getAccount()}/gallery`,
-      {
-        method: "PUT",
-        headers: JunoClient.getHeaders(),
-        body: JSON.stringify({
-          name,
-          description,
-          tags,
-          author,
-          thumbnailUrl,
-          content: JSON.parse(content),
-          addLinkToNotebookViewer: isLinkInjectionEnabled
-        } as IPublishNotebookRequest)
-      }
-    );
+    const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery`, {
+      method: "PUT",
+      headers: JunoClient.getHeaders(),
+      body: JSON.stringify({
+        name,
+        description,
+        tags,
+        author,
+        thumbnailUrl,
+        content: JSON.parse(content),
+        addLinkToNotebookViewer: isLinkInjectionEnabled,
+      } as IPublishNotebookRequest),
+    });
 
     let data: IGalleryItem;
     if (response.status === HttpStatusCodes.OK) {
@@ -391,7 +388,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -409,11 +406,11 @@ export class JunoClient {
       body: JSON.stringify({
         notebookId,
         abuseCategory,
-        notes
+        notes,
       }),
       headers: {
-        [HttpHeaders.contentType]: "application/json"
-      }
+        [HttpHeaders.contentType]: "application/json",
+      },
     });
 
     let data: boolean;
@@ -423,7 +420,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -433,7 +430,7 @@ export class JunoClient {
     const response = await window.fetch(`${this.getAnalyticsUrl()}/${schemaRequest.accountName}/schema/request`, {
       method: "POST",
       body: JSON.stringify(schemaRequest),
-      headers: JunoClient.getHeaders()
+      headers: JunoClient.getHeaders(),
     });
 
     let data: DataModels.ISchemaRequest;
@@ -443,7 +440,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -456,7 +453,7 @@ export class JunoClient {
       `${this.getAnalyticsUrl()}/${accountName}/schema/${databaseName}/${containerName}`,
       {
         method: "GET",
-        headers: JunoClient.getHeaders()
+        headers: JunoClient.getHeaders(),
       }
     );
 
@@ -468,7 +465,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -482,7 +479,7 @@ export class JunoClient {
 
     return {
       status: response.status,
-      data
+      data,
     };
   }
 
@@ -498,8 +495,8 @@ export class JunoClient {
     return userContext.subscriptionId;
   }
 
-  private getNotebooksAccountUrl(): string {
-    return `${this.getNotebooksUrl()}/${this.getAccount()}`;
+  private getNotebooksSubscriptionIdAccountUrl(): string {
+    return `${this.getNotebooksUrl()}/subscriptions/${this.getSubscriptionId()}/databaseAccounts/${this.getAccount()}`;
   }
 
   private getAnalyticsUrl(): string {
@@ -510,13 +507,13 @@ export class JunoClient {
     const authorizationHeader = getAuthorizationHeader();
     return {
       [authorizationHeader.header]: authorizationHeader.token,
-      [HttpHeaders.contentType]: "application/json"
+      [HttpHeaders.contentType]: "application/json",
     };
   }
 
   private static getGitHubClientParams(): URLSearchParams {
     const githubParams = new URLSearchParams({
-      client_id: configContext.GITHUB_CLIENT_ID
+      client_id: configContext.GITHUB_CLIENT_ID,
     });
 
     if (configContext.GITHUB_CLIENT_SECRET) {

@@ -13,7 +13,7 @@ describe("DataSampleUtils", () => {
     const collection = { id: ko.observable(sampleCollectionId) } as Collection;
     const database = {
       id: ko.observable(sampleDatabaseId),
-      collections: ko.observableArray<Collection>([collection])
+      collections: ko.observableArray<Collection>([collection]),
     } as Database;
     const explorer = {} as Explorer;
     explorer.nonSystemDatabases = ko.computed(() => [database]);

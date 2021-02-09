@@ -20,7 +20,7 @@ export function fromRepoUri(repoUri: string): undefined | { owner: string; repo:
     return {
       owner: matches[1],
       repo: matches[2],
-      branch: matches[3]
+      branch: matches[3],
     };
   }
 
@@ -36,19 +36,17 @@ export function fromContentUri(
       owner: matches[1],
       repo: matches[2],
       branch: matches[4],
-      path: matches[3]
+      path: matches[3],
     };
   }
 
   matches = contentUri.match(LegacyContentUriPattern);
   if (matches && matches.length > 4) {
-    console.log(`Using legacy github content uri scheme ${contentUri}`);
-
     return {
       owner: matches[1],
       repo: matches[2],
       branch: matches[3],
-      path: matches[4]
+      path: matches[4],
     };
   }
 

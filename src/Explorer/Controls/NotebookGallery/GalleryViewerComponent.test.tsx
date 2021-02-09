@@ -5,6 +5,7 @@ import { GalleryViewerComponent, GalleryViewerComponentProps, GalleryTab, SortBy
 describe("GalleryViewerComponent", () => {
   it("renders", () => {
     const props: GalleryViewerComponentProps = {
+      isGalleryPublishEnabled: false,
       junoClient: undefined,
       selectedTab: GalleryTab.OfficialSamples,
       sortBy: SortBy.MostViewed,
@@ -12,7 +13,7 @@ describe("GalleryViewerComponent", () => {
       openNotebook: undefined,
       onSelectedTabChange: undefined,
       onSortByChange: undefined,
-      onSearchTextChange: undefined
+      onSearchTextChange: undefined,
     };
 
     const wrapper = shallow(<GalleryViewerComponent {...props} />);

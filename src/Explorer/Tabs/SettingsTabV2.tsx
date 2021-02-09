@@ -16,7 +16,7 @@ export class SettingsTabV2 extends TabsBase {
   constructor(options: ViewModels.TabOptions) {
     super(options);
     const props: SettingsComponentProps = {
-      settingsTab: this
+      settingsTab: this,
     };
     this.settingsComponentAdapter = new SettingsComponentAdapter(props);
   }
@@ -71,7 +71,7 @@ export class CollectionSettingsTabV2 extends SettingsTabV2 {
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle,
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         this.onLoadStartKey
       );
@@ -126,7 +126,7 @@ export class DatabaseSettingsTabV2 extends SettingsTabV2 {
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle,
           error: errorMessage,
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         this.onLoadStartKey
       );

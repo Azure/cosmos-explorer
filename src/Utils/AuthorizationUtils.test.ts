@@ -11,7 +11,7 @@ describe("AuthorizationUtils", () => {
     it("should return authorization header if authentication type is AAD", () => {
       window.authType = AuthType.AAD;
       updateUserContext({
-        authorizationToken: "some-token"
+        authorizationToken: "some-token",
       });
 
       expect(AuthorizationUtils.getAuthorizationHeader().header).toBe(Constants.HttpHeaders.authorization);
@@ -21,7 +21,7 @@ describe("AuthorizationUtils", () => {
     it("should return guest access header if authentication type is EncryptedToken", () => {
       window.authType = AuthType.EncryptedToken;
       updateUserContext({
-        accessToken: "some-token"
+        accessToken: "some-token",
       });
 
       expect(AuthorizationUtils.getAuthorizationHeader().header).toBe(Constants.HttpHeaders.guestAccessToken);
@@ -66,7 +66,7 @@ describe("AuthorizationUtils", () => {
       jest.clearAllMocks();
       window.dataExplorer = explorer;
       updateConfigContext({
-        platform: Platform.Hosted
+        platform: Platform.Hosted,
       });
     });
 
@@ -91,7 +91,7 @@ describe("AuthorizationUtils", () => {
 
     it("should not open token renewal prompt if running on a different platform", () => {
       updateConfigContext({
-        platform: Platform.Portal
+        platform: Platform.Portal,
       });
       AuthorizationUtils.displayTokenRenewalPromptForStatus(Constants.HttpStatusCodes.Unauthorized);
       expect(explorer.displayGuestAccessTokenRenewalPrompt).not.toHaveBeenCalled();

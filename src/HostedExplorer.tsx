@@ -1,0 +1,143 @@
+import { useBoolean } from "@uifabric/react-hooks";
+import { initializeIcons } from "office-ui-fabric-react";
+import * as React from "react";
+import { render } from "react-dom";
+import ChevronRight from "../images/chevron-right.svg";
+import "../less/hostedexplorer.less";
+import { AuthType } from "./AuthType";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
+import { DatabaseAccount } from "./Contracts/DataModels";
+import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
+import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
+import "./Explorer/Menus/NavBar/MeControlComponent.less";
+import { useTokenMetadata } from "./hooks/usePortalAccessToken";
+import { MeControl } from "./Platform/Hosted/Components/MeControl";
+import "./Platform/Hosted/ConnectScreen.less";
+import "./Shared/appInsights";
+import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
+import { useAADAuth } from "./hooks/useAADAuth";
+import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
+import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
+import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
+
+initializeIcons();
+
+const App: React.FunctionComponent = () => {
+  // For handling encrypted portal tokens sent via query paramter
+  const params = new URLSearchParams(window.location.search);
+  const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
+  const encryptedTokenMetadata = useTokenMetadata(encryptedToken);
+
+  // For showing/hiding panel
+  const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
+
+  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
+  const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
+  const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
+  const [connectionString, setConnectionString] = React.useState<string>();
+
+  const ref = React.useRef<HTMLIFrameElement>();
+
+  React.useEffect(() => {
+    // If ref.current is undefined no iframe has been rendered
+    if (ref.current) {
+      // In hosted mode, we can set global properties directly on the child iframe.
+      // This is not possible in the portal where the iframes have different origins
+      const frameWindow = ref.current.contentWindow as HostedExplorerChildFrame;
+      // AAD authenticated uses ALWAYS using AAD authType
+      if (isLoggedIn) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.AAD,
+          databaseAccount,
+          authorizationToken: armToken,
+        };
+      } else if (authType === AuthType.EncryptedToken) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.EncryptedToken,
+          encryptedToken,
+          encryptedTokenMetadata,
+        };
+      } else if (authType === AuthType.ConnectionString) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.ConnectionString,
+          encryptedToken,
+          encryptedTokenMetadata,
+          masterKey: extractMasterKeyfromConnectionString(connectionString),
+        };
+      } else if (authType === AuthType.ResourceToken) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.ResourceToken,
+          resourceToken: connectionString,
+        };
+      }
+    }
+  });
+
+  const showExplorer =
+    (isLoggedIn && databaseAccount) ||
+    (encryptedTokenMetadata && encryptedTokenMetadata) ||
+    (authType === AuthType.ResourceToken && connectionString);
+
+  return (
+    <>
+      <header>
+        <div className="items" role="menubar">
+          <div className="cosmosDBTitle">
+            <span
+              className="title"
+              onClick={() => window.open("https://portal.azure.com", "_blank")}
+              tabIndex={0}
+              title="Go to Azure Portal"
+            >
+              Microsoft Azure
+            </span>
+            <span className="accontSplitter" /> <span className="serviceTitle">Cosmos DB</span>
+            {(isLoggedIn || encryptedTokenMetadata?.accountName) && (
+              <img className="chevronRight" src={ChevronRight} alt="account separator" />
+            )}
+            {isLoggedIn && (
+              <span className="accountSwitchComponentContainer">
+                <AccountSwitcher armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
+              </span>
+            )}
+            {!isLoggedIn && encryptedTokenMetadata?.accountName && (
+              <span className="accountSwitchComponentContainer">
+                <span className="accountNameHeader">{encryptedTokenMetadata?.accountName}</span>
+              </span>
+            )}
+          </div>
+          <FeedbackCommandButton />
+          <div className="meControl">
+            {isLoggedIn ? (
+              <MeControl {...{ graphToken, openPanel, logout, account }} />
+            ) : (
+              <SignInButton {...{ login }} />
+            )}
+          </div>
+        </div>
+      </header>
+      {showExplorer && (
+        // Ideally we would import and render data explorer like any other React component, however
+        // because it still has a significant amount of Knockout code, this would lead to memory leaks.
+        // Knockout does not have a way to tear down all of its binding and listeners with a single method.
+        // It's possible this can be changed once all knockout code has been removed.
+        <iframe
+          // Setting key is needed so React will re-render this element on any account change
+          key={databaseAccount?.id || encryptedTokenMetadata?.accountName || authType}
+          ref={ref}
+          id="explorerMenu"
+          name="explorer"
+          className="iframe"
+          title="explorer"
+          src="explorer.html?v=1.0.1&platform=Hosted"
+        ></iframe>
+      )}
+      {!isLoggedIn && !encryptedTokenMetadata && (
+        <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
+      )}
+      {isLoggedIn && <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId, switchTenant }} />}
+    </>
+  );
+};
+
+render(<App />, document.getElementById("App"));

@@ -55,7 +55,7 @@ export default class Database implements ViewModels.Database {
       description: "Settings node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
@@ -65,7 +65,7 @@ export default class Database implements ViewModels.Database {
     const tabKind: ViewModels.CollectionTabKind = useDatabaseSettingsTabV1
       ? ViewModels.CollectionTabKind.DatabaseSettings
       : ViewModels.CollectionTabKind.DatabaseSettingsV2;
-    const matchingTabs = this.container.tabsManager.getTabs(tabKind, tab => tab.node?.id() === this.id());
+    const matchingTabs = this.container.tabsManager.getTabs(tabKind, (tab) => tab.node?.id() === this.id());
     let settingsTab: DatabaseSettingsTab | DatabaseSettingsTabV2 = useDatabaseSettingsTabV1
       ? (matchingTabs?.[0] as DatabaseSettingsTab)
       : (matchingTabs?.[0] as DatabaseSettingsTabV2);
@@ -75,7 +75,7 @@ export default class Database implements ViewModels.Database {
         databaseName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Scale"
+        tabTitle: "Scale",
       });
       pendingNotificationsPromise.then(
         (data: any) => {
@@ -92,7 +92,7 @@ export default class Database implements ViewModels.Database {
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
             isActive: ko.observable(false),
             onLoadStartKey: startKey,
-            onUpdateTabsButtons: this.container.onUpdateTabsButtons
+            onUpdateTabsButtons: this.container.onUpdateTabsButtons,
           };
           settingsTab = useDatabaseSettingsTabV1
             ? new DatabaseSettingsTab(tabOptions)
@@ -112,7 +112,7 @@ export default class Database implements ViewModels.Database {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: "Scale",
               error: errorMessage,
-              errorStack: getErrorStack(error)
+              errorStack: getErrorStack(error),
             },
             startKey
           );
@@ -157,7 +157,7 @@ export default class Database implements ViewModels.Database {
       description: "Database node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -173,7 +173,7 @@ export default class Database implements ViewModels.Database {
       description: "Database node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -187,7 +187,7 @@ export default class Database implements ViewModels.Database {
       description: "Database node",
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -223,7 +223,7 @@ export default class Database implements ViewModels.Database {
     if (!this.container.isServerlessEnabled() && !this.offer()) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
-        databaseResourceId: this.self
+        databaseResourceId: this.self,
       };
       this.offer(await readDatabaseOffer(params));
     }
@@ -256,7 +256,7 @@ export default class Database implements ViewModels.Database {
           error: getErrorMessage(error),
           accountName: this.container && this.container.databaseAccount(),
           databaseName: this.id(),
-          collectionName: this.id()
+          collectionName: this.id(),
         }),
         "Settings tree node"
       );
@@ -330,7 +330,7 @@ export default class Database implements ViewModels.Database {
           resourceGroup: userContext.resourceGroup,
           accountName: userContext.databaseAccount.name,
           resource: `dbs/${this.id}/colls/${collection.id}`,
-          status: "new"
+          status: "new",
         });
         checkForSchema = setInterval(async () => {
           const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(

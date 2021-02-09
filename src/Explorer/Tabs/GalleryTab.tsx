@@ -11,6 +11,7 @@ interface GalleryTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
   container: Explorer;
   junoClient: JunoClient;
+  selectedTab: GalleryViewerTab;
   notebookUrl?: string;
   galleryItem?: IGalleryItem;
   isFavorite?: boolean;
@@ -21,24 +22,43 @@ interface GalleryTabOptions extends ViewModels.TabOptions {
  */
 export default class GalleryTab extends TabsBase {
   private container: Explorer;
+  private galleryAndNotebookViewerComponentProps: GalleryAndNotebookViewerComponentProps;
   public galleryAndNotebookViewerComponentAdapter: GalleryAndNotebookViewerComponentAdapter;
 
   constructor(options: GalleryTabOptions) {
     super(options);
-
     this.container = options.container;
-    const props: GalleryAndNotebookViewerComponentProps = {
+
+    this.galleryAndNotebookViewerComponentProps = {
       container: options.container,
+      isGalleryPublishEnabled: options.container.isGalleryPublishEnabled(),
       junoClient: options.junoClient,
       notebookUrl: options.notebookUrl,
       galleryItem: options.galleryItem,
       isFavorite: options.isFavorite,
-      selectedTab: GalleryViewerTab.OfficialSamples,
+      selectedTab: options.selectedTab,
       sortBy: SortBy.MostViewed,
-      searchText: undefined
+      searchText: undefined,
     };
+    this.galleryAndNotebookViewerComponentAdapter = new GalleryAndNotebookViewerComponentAdapter(
+      this.galleryAndNotebookViewerComponentProps
+    );
+  }
 
-    this.galleryAndNotebookViewerComponentAdapter = new GalleryAndNotebookViewerComponentAdapter(props);
+  public reset(options: GalleryTabOptions) {
+    this.container = options.container;
+
+    this.galleryAndNotebookViewerComponentProps.container = options.container;
+    this.galleryAndNotebookViewerComponentProps.junoClient = options.junoClient;
+    this.galleryAndNotebookViewerComponentProps.notebookUrl = options.notebookUrl;
+    this.galleryAndNotebookViewerComponentProps.galleryItem = options.galleryItem;
+    this.galleryAndNotebookViewerComponentProps.isFavorite = options.isFavorite;
+    this.galleryAndNotebookViewerComponentProps.selectedTab = options.selectedTab;
+    this.galleryAndNotebookViewerComponentProps.sortBy = SortBy.MostViewed;
+    this.galleryAndNotebookViewerComponentProps.searchText = undefined;
+
+    this.galleryAndNotebookViewerComponentAdapter.reset();
+    this.galleryAndNotebookViewerComponentAdapter.triggerRender();
   }
 
   public getContainer(): Explorer {

@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { ConnectionStringParser } from "../../Platform/Hosted/Helpers/ConnectionStringParser";
+import { parseConnectionString } from "../../Platform/Hosted/Helpers/ConnectionStringParser";
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
@@ -48,9 +48,7 @@ export class RenewAdHocAccessPane extends ContextualPaneBase {
   };
 
   private _shouldShowContextSwitchPrompt(): boolean {
-    const inputMetadata: DataModels.AccessInputMetadata = ConnectionStringParser.parseConnectionString(
-      this.accessKey()
-    );
+    const inputMetadata: DataModels.AccessInputMetadata = parseConnectionString(this.accessKey());
     const apiKind: DataModels.ApiKind =
       this.container && DefaultExperienceUtility.getApiKindFromDefaultExperience(this.container.defaultExperience());
     const hasOpenedTabs: boolean =

@@ -1,13 +1,14 @@
 import "bootstrap/dist/css/bootstrap.css";
+import "./GalleryViewer.less";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { Text, Link } from "office-ui-fabric-react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { initializeConfiguration } from "../ConfigContext";
+import { configContext, initializeConfiguration } from "../ConfigContext";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
   GalleryAndNotebookViewerComponent,
-  GalleryAndNotebookViewerComponentProps
+  GalleryAndNotebookViewerComponentProps,
 } from "../Explorer/Controls/NotebookGallery/GalleryAndNotebookViewerComponent";
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
@@ -24,14 +25,15 @@ const onInit = async () => {
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
 
   const props: GalleryAndNotebookViewerComponentProps = {
+    isGalleryPublishEnabled: configContext.ENABLE_GALLERY_PUBLISH,
     junoClient: new JunoClient(),
     selectedTab: galleryViewerProps.selectedTab || GalleryTab.OfficialSamples,
     sortBy: galleryViewerProps.sortBy || SortBy.MostViewed,
-    searchText: galleryViewerProps.searchText
+    searchText: galleryViewerProps.searchText,
   };
 
   const element = (
-    <>
+    <div className="standalone-gallery-root">
       <header>
         <GalleryHeaderComponent />
       </header>
@@ -52,7 +54,7 @@ const onInit = async () => {
 
         <GalleryAndNotebookViewerComponent {...props} />
       </div>
-    </>
+    </div>
   );
 
   ReactDOM.render(element, document.getElementById("galleryContent"));

@@ -3,7 +3,13 @@ import { Dialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric
 import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
 import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
 import { Link } from "office-ui-fabric-react/lib/Link";
-import { ChoiceGroup, FontIcon, IChoiceGroupProps } from "office-ui-fabric-react";
+import {
+  ChoiceGroup,
+  FontIcon,
+  IChoiceGroupProps,
+  IProgressIndicatorProps,
+  ProgressIndicator,
+} from "office-ui-fabric-react";
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -27,6 +33,7 @@ export interface DialogProps {
   choiceGroupProps?: IChoiceGroupProps;
   textFieldProps?: TextFieldProps;
   linkProps?: LinkProps;
+  progressIndicatorProps?: IProgressIndicatorProps;
   primaryButtonText: string;
   secondaryButtonText: string;
   onPrimaryButtonClick: () => void;
@@ -57,28 +64,29 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         subText: this.props.subText,
         styles: {
           title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
-          subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE }
+          subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE },
         },
         showCloseButton: this.props.showCloseButton || false,
-        onDismiss: this.props.onDismiss
+        onDismiss: this.props.onDismiss,
       },
-      modalProps: { isBlocking: this.props.isModal },
+      modalProps: { isBlocking: this.props.isModal, isDarkOverlay: false },
       minWidth: DIALOG_MIN_WIDTH,
-      maxWidth: DIALOG_MAX_WIDTH
+      maxWidth: DIALOG_MAX_WIDTH,
     };
     const choiceGroupProps: IChoiceGroupProps = this.props.choiceGroupProps;
     const textFieldProps: ITextFieldProps = this.props.textFieldProps;
     const linkProps: LinkProps = this.props.linkProps;
+    const progressIndicatorProps: IProgressIndicatorProps = this.props.progressIndicatorProps;
     const primaryButtonProps: IButtonProps = {
       text: this.props.primaryButtonText,
       disabled: this.props.primaryButtonDisabled || false,
-      onClick: this.props.onPrimaryButtonClick
+      onClick: this.props.onPrimaryButtonClick,
     };
     const secondaryButtonProps: IButtonProps =
       this.props.secondaryButtonText && this.props.onSecondaryButtonClick
         ? {
             text: this.props.secondaryButtonText,
-            onClick: this.props.onSecondaryButtonClick
+            onClick: this.props.onSecondaryButtonClick,
           }
         : undefined;
 
@@ -91,6 +99,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
             {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
           </Link>
         )}
+        {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
         <DialogFooter>
           <PrimaryButton {...primaryButtonProps} />
           {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}

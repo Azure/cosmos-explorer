@@ -14,7 +14,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
   >
     <StackItem>
       <Text>
-        This notebook has your data. Please make sure you delete any sensitive data/output before publishing.
+        When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.
       </Text>
     </StackItem>
     <StackItem>
@@ -25,7 +25,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
     <StackItem>
       <StyledTextFieldBase
         ariaLabel="Name"
-        defaultValue="SampleNotebook.ipynb"
+        defaultValue="SampleNotebook"
         label="Name"
         onChange={[Function]}
         required={true}
@@ -52,36 +52,29 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
     <StackItem>
       <StyledWithResponsiveMode
         ariaLabel="Cover image"
-        defaultSelectedKey="URL"
+        defaultSelectedKey="Custom Image"
         label="Cover image"
         onChange={[Function]}
         options={
           Array [
             Object {
-              "key": "URL",
-              "text": "URL",
-            },
-            Object {
               "key": "Custom Image",
               "text": "Custom Image",
             },
             Object {
-              "key": "Take Screenshot",
-              "text": "Take Screenshot",
-            },
-            Object {
-              "key": "Use First Display Output",
-              "text": "Use First Display Output",
+              "key": "URL",
+              "text": "URL",
             },
           ]
         }
       />
     </StackItem>
     <StackItem>
-      <StyledTextFieldBase
-        ariaLabel="Cover image url"
-        label="Cover image url"
+      <input
+        accept="image/*"
+        id="selectImageFile"
         onChange={[Function]}
+        type="file"
       />
     </StackItem>
     <StackItem>
@@ -96,8 +89,8 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             "author": "CosmosDB",
             "created": "2020-07-17T00:00:00Z",
             "description": "",
-            "downloads": 0,
-            "favorites": 0,
+            "downloads": undefined,
+            "favorites": undefined,
             "gitSha": undefined,
             "id": undefined,
             "isSample": false,
@@ -109,12 +102,11 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
               "",
             ],
             "thumbnailUrl": undefined,
-            "views": 0,
+            "views": undefined,
           }
         }
-        isFavorite={false}
-        showDelete={true}
-        showDownload={true}
+        showDelete={false}
+        showDownload={false}
       />
     </StackItem>
   </Stack>

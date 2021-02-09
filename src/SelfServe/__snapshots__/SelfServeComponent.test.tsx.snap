@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
+<Translation>
+  <Component />
+</Translation>
+`;
+
+exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
+<Translation>
+  <Component />
+</Translation>
+`;
+
+exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
+<Translation>
+  <Component />
+</Translation>
+`;
+
+exports[`SelfServeComponent message bar and spinner snapshots 4`] = `
+<StyledMessageBarBase
+  messageBarType={1}
+>
+  sample error message
+</StyledMessageBarBase>
+`;
+
+exports[`SelfServeComponent should render and honor save, discard, refresh actions 1`] = `
+<Translation>
+  <Component />
+</Translation>
+`;

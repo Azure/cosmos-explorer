@@ -41,7 +41,7 @@
                                     }"
   ></div>
   <div
-    style="margin-left:50px; margin-top:-75px;"
+    style="margin-left: 50px; margin-top: -75px"
     data-bind="
                                 visible: $root.isPreferredApiMongoDB() && sqlQueryEditorContent().length == 0"
   >
@@ -90,7 +90,7 @@
         </span>
       </div>
       <div
-        style="height: 600px;"
+        style="height: 600px"
         data-bind="
                                             attr: {
                                                 id: resultsEditorId
@@ -109,7 +109,7 @@
                                     visible: errors().length > 0"
     >
       <!-- ko foreach: errors -->
-      <div style="margin-left:17px; font-size: 12px;">
+      <div style="margin-left: 17px; font-size: 12px">
         <span data-bind="text: $data.code"></span> : <span data-bind="text: $data.message"></span>
       </div>
       <!-- /ko -->

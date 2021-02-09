@@ -21,7 +21,7 @@ export class QueryContainerComponent extends React.Component<
   public constructor(props: QueryContainerComponentProps) {
     super(props);
     this.state = {
-      query: this.props.initialQuery
+      query: this.props.initialQuery,
     };
   }
 
@@ -82,7 +82,7 @@ export class QueryContainerComponent extends React.Component<
         <button
           type="button"
           className="filterbtnstyle queryButton"
-          onClick={e => this.props.onExecuteClick(this.state.query)}
+          onClick={(e) => this.props.onExecuteClick(this.state.query)}
           disabled={this.props.isLoading || !QueryContainerComponent.isQueryValid(this.state.query)}
         >
           Execute Gremlin Query

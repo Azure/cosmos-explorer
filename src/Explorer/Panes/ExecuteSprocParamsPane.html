@@ -32,7 +32,7 @@
           data-bind="visible: formErrors() && formErrors() !== ''"
         >
           <div class="warningErrorContent">
-            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error"/></span>
+            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
             <span class="warningErrorDetailsLinkContainer">
               <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
               <a
@@ -51,21 +51,31 @@
         <!-- Script for each param clause to be used for executing a stored procedure -->
         <script type="text/html" id="param-template">
           <tr>
-              <td class="paramTemplateRow">
-                  <select class="dataTypeSelector" data-bind="value: type, attr: { 'aria-label': type }">
-                      <option value="custom">Custom</option>
-                      <option value="string">String</option>
-                  </select>
-              </td>
-              <td class="paramTemplateRow">
-                  <input class="valueTextBox" aria-label="Param" data-bind="textInput: value" />
-                  <span class="spEntityAddCancel" data-bind="click: $parent.deleteParam.bind($parent, $index()), event: { keypress: $parent.onDeleteParamKeyPress.bind($parent, $index()) }" role="button" tabindex="0">
-                      <img src="/Entity_cancel.svg" alt="Delete param">
-                  </span>
-                  <span class="spEntityAddCancel" data-bind="click: $parent.addNewParamAtIndex.bind($parent, $index()), event: { keypress: $parent.onAddNewParamAtIndexKeyPress.bind($parent, $index()) }" role="button" tabindex="0">
-                      <img src="/Add-property.svg" alt="Add param">
-                  </span>
-              </td>
+            <td class="paramTemplateRow">
+              <select class="dataTypeSelector" data-bind="value: type, attr: { 'aria-label': type }">
+                <option value="custom">Custom</option>
+                <option value="string">String</option>
+              </select>
+            </td>
+            <td class="paramTemplateRow">
+              <input class="valueTextBox" aria-label="Param" data-bind="textInput: value" />
+              <span
+                class="spEntityAddCancel"
+                data-bind="click: $parent.deleteParam.bind($parent, $index()), event: { keypress: $parent.onDeleteParamKeyPress.bind($parent, $index()) }"
+                role="button"
+                tabindex="0"
+              >
+                <img src="/Entity_cancel.svg" alt="Delete param" />
+              </span>
+              <span
+                class="spEntityAddCancel"
+                data-bind="click: $parent.addNewParamAtIndex.bind($parent, $index()), event: { keypress: $parent.onAddNewParamAtIndexKeyPress.bind($parent, $index()) }"
+                role="button"
+                tabindex="0"
+              >
+                <img src="/Add-property.svg" alt="Add param" />
+              </span>
+            </td>
           </tr>
         </script>
 

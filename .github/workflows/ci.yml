@@ -9,6 +9,20 @@ on:
     branches:
       - master
 jobs:
+  codemetrics:
+    runs-on: ubuntu-latest
+    name: "Log Code Metrics"
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: node utils/codeMetrics.js
+        env:
+          CODE_METRICS_APP_ID: ${{ secrets.CODE_METRICS_APP_ID }}
   compile:
     runs-on: ubuntu-latest
     name: "Compile TypeScript"
@@ -94,7 +108,7 @@ jobs:
           npm ci
           npm start &
           npm run wait-for-server
-          npx jest -c ./jest.config.e2e.js --detectOpenHandles sql
+          npx jest -c ./jest.config.e2e.js --detectOpenHandles test/sql/container.spec.ts
         shell: bash
         env:
           DATA_EXPLORER_ENDPOINT: "https://localhost:1234/explorer.html?platform=Emulator"
@@ -142,6 +156,7 @@ jobs:
         run: |
           npm ci
           npm start &
+          node utils/cleanupDBs.js
           npm run wait-for-server
           npm run test:e2e
         shell: bash
@@ -151,6 +166,8 @@ jobs:
           PORTAL_RUNNER_RESOURCE_GROUP: ${{ secrets.PORTAL_RUNNER_RESOURCE_GROUP }}
           PORTAL_RUNNER_DATABASE_ACCOUNT: ${{ secrets.PORTAL_RUNNER_DATABASE_ACCOUNT }}
           PORTAL_RUNNER_DATABASE_ACCOUNT_KEY: ${{ secrets.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY }}
+          PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT: ${{ secrets.PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT }}
+          PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT_KEY: ${{ secrets.PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT_KEY }}
           NOTEBOOKS_TEST_RUNNER_TENANT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_TENANT_ID }}
           NOTEBOOKS_TEST_RUNNER_CLIENT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_ID }}
           NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
@@ -206,31 +223,6 @@ jobs:
           name: dist
       - run: cp ./configs/mpac.json config.json
       - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
-      - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
-      - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-      - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
-      - uses: actions/upload-artifact@v2
-        name: packages
-        with:
-          path: "*.nupkg"
-  nugetie:
-    name: Publish Nuget IE
-    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted, accessibility]
-    runs-on: ubuntu-latest
-    env:
-      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
-      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-    steps:
-      - uses: nuget/setup-nuget@v1
-        with:
-          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-      - name: Download Dist Folder
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-      - run: cp ./configs/prod.json config.json
-      - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.IE/g' DataExplorer.nuspec
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg

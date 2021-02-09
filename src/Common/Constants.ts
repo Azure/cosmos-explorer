@@ -1,10 +1,3 @@
-import { HashMap } from "./HashMap";
-
-export class AuthorizationEndpoints {
-  public static arm: string = "https://management.core.windows.net/";
-  public static common: string = "https://login.windows.net/";
-}
-
 export class CodeOfConductEndpoints {
   public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
   public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
@@ -14,7 +7,7 @@ export class CodeOfConductEndpoints {
 export class EndpointsRegex {
   public static readonly cassandra = [
     "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com",
-    "HostName=(.*).cassandra.cosmos.azure.com"
+    "HostName=(.*).cassandra.cosmos.azure.com",
   ];
   public static readonly mongo = "mongodb://.*:(.*)@(.*).documents.azure.com";
   public static readonly mongoCompute = "mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com";
@@ -127,33 +120,22 @@ export class Features {
   public static readonly enableSDKoperations = "enablesdkoperations";
   public static readonly showMinRUSurvey = "showminrusurvey";
   public static readonly enableDatabaseSettingsTabV1 = "enabledbsettingsv1";
+  public static readonly selfServeType = "selfservetype";
 }
 
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
   public static readonly MongoIndexEditor = "mongoindexeditor";
-  public static readonly AutoscaleTest = "autoscaletest";
   public static readonly MongoIndexing = "mongoindexing";
+  public static readonly AutoscaleTest = "autoscaletest";
+  public static readonly GalleryPublish = "gallerypublish";
 }
 
 export class AfecFeatures {
   public static readonly Spark = "spark-public-preview";
   public static readonly Notebooks = "sparknotebooks-public-preview";
   public static readonly StorageAnalytics = "storageanalytics-public-preview";
-}
-
-export class Spark {
-  public static readonly MaxWorkerCount = 10;
-  public static readonly SKUs: HashMap<string> = new HashMap({
-    "Cosmos.Spark.D1s": "D1s / 1 core / 4GB RAM",
-    "Cosmos.Spark.D2s": "D2s / 2 cores / 8GB RAM",
-    "Cosmos.Spark.D4s": "D4s / 4 cores / 16GB RAM",
-    "Cosmos.Spark.D8s": "D8s / 8 cores / 32GB RAM",
-    "Cosmos.Spark.D16s": "D16s / 16 cores / 64GB RAM",
-    "Cosmos.Spark.D32s": "D32s / 32 cores / 128GB RAM",
-    "Cosmos.Spark.D64s": "D64s / 64 cores / 256GB RAM"
-  });
 }
 
 export class TagNames {
@@ -167,7 +149,7 @@ export class MongoDBAccounts {
 
 export enum MongoBackendEndpointType {
   local,
-  remote
+  remote,
 }
 
 // TODO: 435619 Add default endpoints per cloud and use regional only when available
@@ -294,7 +276,7 @@ export class HttpStatusCodes {
     HttpStatusCodes.InternalServerError, // TODO: Handle all 500s on Portal backend and remove from retries list
     HttpStatusCodes.BadGateway,
     HttpStatusCodes.ServiceUnavailable,
-    HttpStatusCodes.GatewayTimeout
+    HttpStatusCodes.GatewayTimeout,
   ];
 }
 
@@ -350,10 +332,7 @@ export class HashRoutePrefixes {
   public static docsWithIds(databaseId: string, collectionId: string, docId: string) {
     const transformedDatabasePrefix: string = this.docs.replace("{db_id}", databaseId);
 
-    return transformedDatabasePrefix
-      .replace("{coll_id}", collectionId)
-      .replace("{doc_id}", docId)
-      .replace("/", ""); // strip the first slash since hasher adds it
+    return transformedDatabasePrefix.replace("{coll_id}", collectionId).replace("{doc_id}", docId).replace("/", ""); // strip the first slash since hasher adds it
   }
 }
 
@@ -399,7 +378,7 @@ export class OfferVersions {
 export enum ConflictOperationType {
   Replace = "replace",
   Create = "create",
-  Delete = "delete"
+  Delete = "delete",
 }
 
 export const EmulatorMasterKey =

@@ -17,35 +17,28 @@ exports[`CodeOfConductComponent renders 1`] = `
         }
       }
     >
-      Azure CosmosDB Notebook Gallery - Code of Conduct and Privacy Statement
+      Azure Cosmos DB Notebook Gallery - Code of Conduct
     </Text>
   </StackItem>
   <StackItem>
     <Text>
-      Azure Cosmos DB Notebook Public Gallery contains notebook samples shared by users of Cosmos DB.
+      The notebook public gallery contains notebook samples shared by users of Azure Cosmos DB.
     </Text>
   </StackItem>
   <StackItem>
     <Text>
-      In order to access Azure Cosmos DB Notebook Gallery resources, you must accept the 
+      In order to view and publish your samples to the gallery, you must accept the 
       <StyledLinkBase
         href="https://aka.ms/cosmos-code-of-conduct"
         target="_blank"
       >
-        code of conduct
-      </StyledLinkBase>
-       and 
-      <StyledLinkBase
-        href="https://aka.ms/ms-privacy-policy"
-        target="_blank"
-      >
-        privacy statement
+        code of conduct.
       </StyledLinkBase>
     </Text>
   </StackItem>
   <StackItem>
     <StyledCheckboxBase
-      label="I have read and accepted the code of conduct and privacy statement"
+      label="I have read and accept the code of conduct."
       onChange={[Function]}
       styles={
         Object {

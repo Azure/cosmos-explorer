@@ -9,7 +9,7 @@ import {
   DetailsListLayoutMode,
   IDetailsListProps,
   IDetailsRowProps,
-  DetailsRow
+  DetailsRow,
 } from "office-ui-fabric-react/lib/DetailsList";
 import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
 import { IconButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
@@ -20,7 +20,7 @@ import {
   ISelectionZoneProps,
   Selection,
   SelectionMode,
-  SelectionZone
+  SelectionZone,
 } from "office-ui-fabric-react/lib/utilities/selection/index";
 import { StyleConstants } from "../../../Common/Constants";
 import { TextField, ITextFieldProps, ITextField } from "office-ui-fabric-react/lib/TextField";
@@ -54,7 +54,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
     super(props);
     this.state = {
       queries: [],
-      filteredResults: []
+      filteredResults: [],
     };
     this.selection = new Selection();
     this.selection.setItems(this.state.filteredResults);
@@ -91,13 +91,13 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       componentRef: (queryInput: ITextField) => (this.queryFilter = queryInput),
       styles: {
         root: { paddingBottom: "12px" },
-        field: { fontSize: `${StyleConstants.mediumFontSize}px` }
-      }
+        field: { fontSize: `${StyleConstants.mediumFontSize}px` },
+      },
     };
     const selectionContainerProps: ISelectionZoneProps = {
       selection: this.selection,
       selectionMode: SelectionMode.single,
-      onItemInvoked: (item: Query) => this.props.onQuerySelect(item)
+      onItemInvoked: (item: Query) => this.props.onQuerySelect(item),
     };
     const detailsListProps: IDetailsListProps = {
       items: this.state.filteredResults,
@@ -110,8 +110,8 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       compact: true,
       onRenderRow: this.onRenderRow,
       styles: {
-        root: { width: "100%" }
-      }
+        root: { width: "100%" },
+      },
     };
 
     return (
@@ -132,8 +132,8 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
         height: "150px",
         width: "310px",
         marginTop: "20px",
-        border: `1px solid ${StyleConstants.BaseMedium}`
-      }
+        border: `1px solid ${StyleConstants.BaseMedium}`,
+      },
     };
     return (
       <div>
@@ -154,12 +154,12 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
           savedQuery.queryName.indexOf(query) > -1 || savedQuery.queryName.toLowerCase().indexOf(query) > -1
       );
       this.setState({
-        filteredResults: filteredQueries
+        filteredResults: filteredQueries,
       });
     } else {
       // no filter
       this.setState({
-        filteredResults: this.state.queries
+        filteredResults: this.state.queries,
       });
     }
   };
@@ -169,11 +169,11 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       root: { width: "100%" },
       fields: {
         width: "100%",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
       },
       cell: {
-        margin: "auto 0"
-      }
+        margin: "auto 0",
+      },
     };
     return <DetailsRow data-selection-invoke={true} {...props} />;
   };
@@ -184,7 +184,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
         key: "Name",
         name: "Name",
         fieldName: "queryName",
-        minWidth: 260
+        minWidth: 260,
       },
       {
         key: "Action",
@@ -196,10 +196,10 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
             iconProps: {
               iconName: "More",
               title: "More",
-              ariaLabel: "More actions button"
+              ariaLabel: "More actions button",
             },
             menuIconProps: {
-              styles: { root: { display: "none" } }
+              styles: { root: { display: "none" } },
             },
             menuProps: {
               isBeakVisible: true,
@@ -209,7 +209,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                   text: "Open query",
                   onClick: (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>, menuItem: any) => {
                     this.props.onQuerySelect(query);
-                  }
+                  },
                 },
                 {
                   key: "Delete",
@@ -224,7 +224,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                         databaseAccountName: container && container.databaseAccount().name,
                         defaultExperience: container && container.defaultExperience(),
                         dataExplorerArea: Constants.Areas.ContextualPane,
-                        paneTitle: container && container.browseQueriesPane.title()
+                        paneTitle: container && container.browseQueriesPane.title(),
                       });
                       try {
                         await this.props.queriesClient.deleteQuery(query);
@@ -234,7 +234,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                             databaseAccountName: container && container.databaseAccount().name,
                             defaultExperience: container && container.defaultExperience(),
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title()
+                            paneTitle: container && container.browseQueriesPane.title(),
                           },
                           startKey
                         );
@@ -247,24 +247,24 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                             dataExplorerArea: Constants.Areas.ContextualPane,
                             paneTitle: container && container.browseQueriesPane.title(),
                             error: getErrorMessage(error),
-                            errorStack: getErrorStack(error)
+                            errorStack: getErrorStack(error),
                           },
                           startKey
                         );
                       }
                       await this.fetchSavedQueries(); // get latest state
                     }
-                  }
-                }
-              ]
+                  },
+                },
+              ],
             },
             menuAs: (menuProps: IContextualMenuProps): JSX.Element => {
               return <ContextualMenu {...menuProps} />;
-            }
+            },
           };
           return <IconButton {...buttonProps} />;
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -285,7 +285,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
     if (!_.isEqual(queries, this.state.queries)) {
       this.setState({
         filteredResults: queries,
-        queries: queries
+        queries: queries,
       });
     }
   }

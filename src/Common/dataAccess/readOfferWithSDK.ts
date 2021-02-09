@@ -8,7 +8,7 @@ import { readOffers } from "./readOffers";
 export const readOfferWithSDK = async (offerId: string, resourceId: string): Promise<Offer> => {
   if (!offerId) {
     const offers = await readOffers();
-    const offer = offers.find(offer => offer.resource === resourceId);
+    const offer = offers.find((offer) => offer.resource === resourceId);
 
     if (!offer) {
       return undefined;
@@ -18,12 +18,10 @@ export const readOfferWithSDK = async (offerId: string, resourceId: string): Pro
 
   const options: RequestOptions = {
     initialHeaders: {
-      [HttpHeaders.populateCollectionThroughputInfo]: true
-    }
+      [HttpHeaders.populateCollectionThroughputInfo]: true,
+    },
   };
-  const response = await client()
-    .offer(offerId)
-    .read(options);
+  const response = await client().offer(offerId).read(options);
 
   return parseSDKOfferResponse(response);
 };

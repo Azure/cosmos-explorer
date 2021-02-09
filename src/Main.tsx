@@ -44,7 +44,6 @@ import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
 import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
-import "../externals/adal.js";
 import "promise-polyfill/src/polyfill";
 import "abort-controller/polyfill";
 import "whatwg-fetch";
@@ -54,79 +53,47 @@ import "object.entries/auto";
 import "./Libs/is-integer-polyfill";
 import "url-polyfill/url-polyfill.min";
 
-initializeIcons();
-
-import * as ko from "knockout";
-import * as TelemetryProcessor from "./Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "./Shared/Telemetry/TelemetryConstants";
-
-import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
-import * as Emulator from "./Platform/Emulator/Main";
-import Hosted from "./Platform/Hosted/Main";
-import * as Portal from "./Platform/Portal/Main";
-import { AuthType } from "./AuthType";
-
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { applyExplorerBindings } from "./applyExplorerBindings";
-import { initializeConfiguration, Platform } from "./ConfigContext";
-import Explorer from "./Explorer/Explorer";
-import React, { useEffect } from "react";
+import { ExplorerParams } from "./Explorer/Explorer";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import errorImage from "../images/error.svg";
 import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
+import { useConfig } from "./hooks/useConfig";
+import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 
-// TODO: Encapsulate and reuse all global variables as environment variables
-window.authType = AuthType.AAD;
+initializeIcons();
 
 const App: React.FunctionComponent = () => {
-  useEffect(() => {
-    initializeConfiguration().then(config => {
-      if (config.platform === Platform.Hosted) {
-        try {
-          Hosted.initializeExplorer().then(
-            (explorer: Explorer) => {
-              applyExplorerBindings(explorer);
-              Hosted.configureTokenValidationDisplayPrompt(explorer);
-            },
-            (error: unknown) => {
-              try {
-                const uninitializedExplorer: Explorer = Hosted.getUninitializedExplorerForGuestAccess();
-                window.dataExplorer = uninitializedExplorer;
-                ko.applyBindings(uninitializedExplorer);
-                BindingHandlersRegisterer.registerBindingHandlers();
-                if (window.authType !== AuthType.AAD) {
-                  uninitializedExplorer.isRefreshingExplorer(false);
-                  uninitializedExplorer.displayConnectExplorerForm();
-                }
-              } catch (e) {
-                console.log(e);
-              }
-              console.error(error);
-            }
-          );
-        } catch (e) {
-          console.log(e);
-        }
-      } else if (config.platform === Platform.Emulator) {
-        window.authType = AuthType.MasterKey;
-        const explorer = Emulator.initializeExplorer();
-        applyExplorerBindings(explorer);
-      } else if (config.platform === Platform.Portal) {
-        TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.Open, {});
-        const explorer = Portal.initializeExplorer();
-        TelemetryProcessor.trace(Action.InitializeDataExplorer, ActionModifiers.IFrameReady, {});
-        applyExplorerBindings(explorer);
-      }
-    });
-  }, []);
+  const [isNotificationConsoleExpanded, setIsNotificationConsoleExpanded] = useState(false);
+  const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
+  //TODO: Refactor so we don't need to pass the id to remove a console data
+  const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
+  const explorerParams: ExplorerParams = {
+    setIsNotificationConsoleExpanded,
+    setNotificationConsoleData,
+    setInProgressConsoleDataIdToBeDeleted,
+  };
+  const config = useConfig();
+  useKnockoutExplorer(config, explorerParams);
 
   return (
     <div className="flexContainer">
-      <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
+      <div
+        id="divSelfServe"
+        className="flexContainer"
+        data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter"
+      ></div>
+      <div
+        id="divExplorer"
+        data-bind="if: selfServeType() === 'none'"
+        className="flexContainer hideOverflows"
+        style={{ display: "none" }}
+      >
         {/* Main Command Bar - Start */}
         <div data-bind="react: commandBarComponentAdapter" />
         {/* Main Command Bar - End */}
@@ -177,7 +144,7 @@ const App: React.FunctionComponent = () => {
                   aria-label="Share url link"
                   className="shareLink"
                   type="text"
-                  read-only
+                  read-only={true}
                   data-bind="value: shareAccessUrl"
                 />
                 <span
@@ -241,14 +208,11 @@ const App: React.FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                  {/* Collections Window Title/Command Bar - End  */}
-
-                  {!window.dataExplorer?.isAuthWithResourceToken() && (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
-                  )}
-                  {window.dataExplorer?.isAuthWithResourceToken() && (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
-                  )}
+                  <div
+                    style={{ overflowY: "auto" }}
+                    data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
+                  />
+                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
                 </div>
                 {/*  Collections Window - End */}
               </div>
@@ -317,71 +281,31 @@ const App: React.FunctionComponent = () => {
           role="contentinfo"
           aria-label="Notification console"
           id="explorerNotificationConsole"
-          data-bind="react: notificationConsoleComponentAdapter"
-        />
+        >
+          <NotificationConsoleComponent
+            isConsoleExpanded={isNotificationConsoleExpanded}
+            consoleData={notificationConsoleData}
+            inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
+            setIsConsoleExpanded={setIsNotificationConsoleExpanded}
+          />
+        </div>
       </div>
-      {/* Explorer Connection - Encryption Token / AAD - Start */}
-      <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "none" }}>
-        <div className="connectExplorerFormContainer">
-          <div className="connectExplorer">
+      {/* Global loader - Start */}
+
+      <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
+        <div className="splashLoaderContentContainer">
+          <div data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter"></div>
+          <div data-bind="if: selfServeType() === 'none'" style={{ display: "none" }}>
             <p className="connectExplorerContent">
               <img src={hdeConnectImage} alt="Azure Cosmos DB" />
             </p>
-            <p className="welcomeText">Welcome to Azure Cosmos DB</p>
-            <div id="connectWithAad">
-              <input
-                className="filterbtnstyle"
-                data-test="cosmosdb-signinBtn"
-                type="button"
-                defaultValue="Sign In"
-                data-bind="click: $data.signInAad"
-              />
-              <p
-                className="switchConnectTypeText"
-                data-test="cosmosdb-connectionString"
-                data-bind="click: $data.onSwitchToConnectionString"
-              >
-                Connect to your account with connection string
-              </p>
-            </div>
-            <form id="connectWithConnectionString" data-bind="submit: renewToken" style={{ display: "none" }}>
-              <p className="connectExplorerContent connectStringText">Connect to your account with connection string</p>
-              <p className="connectExplorerContent">
-                <input
-                  className="inputToken"
-                  type="text"
-                  required
-                  placeholder="Please enter a connection string"
-                  data-bind="value: tokenForRenewal"
-                />
-                <span className="errorDetailsInfoTooltip" data-bind="visible: renewTokenError().length > 0">
-                  <img className="errorImg" src={errorImage} alt="Error notification" />
-                  <span className="errorDetails" data-bind="text: renewTokenError" />
-                </span>
-              </p>
-              <p className="connectExplorerContent">
-                <input className="filterbtnstyle" type="submit" value="Connect" />
-              </p>
-              <p className="switchConnectTypeText" data-bind="click: $data.signInAad">
-                Sign In with Azure Account
-              </p>
-            </form>
+            <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+              Welcome to Azure Cosmos DB
+            </p>
+            <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+              Connecting...
+            </p>
           </div>
-        </div>
-      </div>
-      {/* Explorer Connection - Encryption Token / AAD - End */}
-      {/* Global loader - Start */}
-      <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
-        <div className="splashLoaderContentContainer">
-          <p className="connectExplorerContent">
-            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-          </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-            Welcome to Azure Cosmos DB
-          </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-            Connecting...
-          </p>
         </div>
       </div>
       {/* Global loader - End */}

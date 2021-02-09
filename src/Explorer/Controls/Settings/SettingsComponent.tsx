@@ -16,7 +16,7 @@ import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
   MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps
+  MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import {
   hasDatabaseSharedThroughput,
@@ -30,11 +30,11 @@ import {
   MongoIndexTypes,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
-  getMongoNotification
+  getMongoNotification,
 } from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
-  ConflictResolutionComponentProps
+  ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
@@ -198,21 +198,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isConflictResolutionDirty: false,
 
       initialNotification: undefined,
-      selectedTab: SettingsV2TabTypes.ScaleTab
+      selectedTab: SettingsV2TabTypes.ScaleTab,
     };
 
     this.saveSettingsButton = {
       isEnabled: this.isSaveSettingsButtonEnabled,
       isVisible: () => {
         return true;
-      }
+      },
     };
 
     this.discardSettingsChangesButton = {
       isEnabled: this.isDiscardSettingsButtonEnabled,
       isVisible: () => {
         return true;
-      }
+      },
     };
   }
 
@@ -248,7 +248,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       if (this.mongoDBCollectionResource) {
         this.setState({
-          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes],
         });
       }
     }
@@ -291,7 +291,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         isAutoPilotSelected: true,
         wasAutopilotOriginallySet: true,
         autoPilotThroughput: autoscaleMaxThroughput,
-        autoPilotThroughputBaseline: autoscaleMaxThroughput
+        autoPilotThroughputBaseline: autoscaleMaxThroughput,
       });
     }
   };
@@ -320,7 +320,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       databaseAccountName: this.container.databaseAccount()?.name,
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: this.props.settingsTab.tabTitle()
+      tabTitle: this.props.settingsTab.tabTitle(),
     });
 
     try {
@@ -341,7 +341,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
           error: getErrorMessage(error),
-          errorStack: getErrorStack(error)
+          errorStack: getErrorStack(error),
         },
         startKey
       );
@@ -352,7 +352,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public onRevertClick = (): void => {
     trace(Action.SettingsV2Discarded, ActionModifiers.Mark, {
-      message: "Settings Discarded"
+      message: "Settings Discarded",
     });
 
     this.setState({
@@ -379,7 +379,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isIndexingPolicyDirty: false,
       isMongoIndexingPolicySaveable: false,
       isMongoIndexingPolicyDiscardable: false,
-      isConflictResolutionDirty: false
+      isConflictResolutionDirty: false,
     });
   };
 
@@ -415,7 +415,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           collectionName: this.collection.id(),
           defaultExperience: this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
-          tabTitle: this.props.settingsTab.tabTitle()
+          tabTitle: this.props.settingsTab.tabTitle(),
         },
         this.props.settingsTab.onLoadStartKey
       );
@@ -443,7 +443,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const newMongoIndexWithType: AddMongoIndexProps = {
       mongoIndex: { key: { keys: [description] } } as MongoIndex,
       type: type,
-      notification: notification
+      notification: notification,
     };
     if (index === newIndexesToAdd.length) {
       newIndexesToAdd.push(newMongoIndexWithType);
@@ -518,7 +518,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     const policy: DataModels.ConflictResolutionPolicy = {
-      mode: parseConflictResolutionMode(this.state.conflictResolutionPolicyMode)
+      mode: parseConflictResolutionMode(this.state.conflictResolutionPolicyMode),
     };
 
     if (
@@ -549,7 +549,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (!this.isCollectionSettingsTab) {
       this.setState({
         throughput: offerThroughput,
-        throughputBaseline: offerThroughput
+        throughputBaseline: offerThroughput,
       });
 
       return;
@@ -625,7 +625,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedure: conflictResolutionPolicyProcedure,
       conflictResolutionPolicyProcedureBaseline: conflictResolutionPolicyProcedure,
       geospatialConfigType: geoSpatialConfigType,
-      geospatialConfigTypeBaseline: geoSpatialConfigType
+      geospatialConfigTypeBaseline: geoSpatialConfigType,
     });
   };
 
@@ -640,7 +640,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveSettingsButton.isEnabled()
+        disabled: !this.saveSettingsButton.isEnabled(),
       });
     }
 
@@ -653,7 +653,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardSettingsChangesButton.isEnabled()
+        disabled: !this.discardSettingsChangesButton.isEnabled(),
       });
     }
     return buttons;
@@ -678,7 +678,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         databaseId: this.database.id(),
         currentOffer: this.database.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
-        manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput
+        manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -694,12 +694,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       if (this.state.isAutoPilotSelected) {
         this.setState({
           autoPilotThroughput: updatedOffer.autoscaleMaxThroughput,
-          autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput
+          autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput,
         });
       } else {
         this.setState({
           throughput: updatedOffer.manualThroughput,
-          throughputBaseline: updatedOffer.manualThroughput
+          throughputBaseline: updatedOffer.manualThroughput,
         });
       }
     }
@@ -714,7 +714,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         databaseName: this.database.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: this.props.settingsTab.tabTitle()
+        tabTitle: this.props.settingsTab.tabTitle(),
       },
       startKey
     );
@@ -746,14 +746,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration
+              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
             }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
 
       newCollection.geospatialConfig = {
-        type: this.state.geospatialConfigType
+        type: this.state.geospatialConfigType,
       };
 
       const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
@@ -783,7 +783,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         isSubSettingsSaveable: false,
         isSubSettingsDiscardable: false,
         isIndexingPolicyDirty: false,
-        isConflictResolutionDirty: false
+        isConflictResolutionDirty: false,
       });
     }
 
@@ -792,7 +792,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         const newMongoIndexes = this.getMongoIndexesToSave();
         const newMongoCollection: MongoDBCollectionResource = {
           ...this.mongoDBCollectionResource,
-          indexes: newMongoIndexes
+          indexes: newMongoIndexes,
         };
 
         this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
@@ -806,7 +806,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           isMongoIndexingPolicySaveable: false,
           indexesToDrop: [],
           indexesToAdd: [],
-          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes]
+          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes],
         });
         traceSuccess(
           Action.MongoIndexUpdated,
@@ -816,7 +816,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             collectionName: this.collection?.id(),
             defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.Tab,
-            tabTitle: this.props.settingsTab.tabTitle()
+            tabTitle: this.props.settingsTab.tabTitle(),
           },
           startKey
         );
@@ -831,7 +831,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             dataExplorerArea: Constants.Areas.Tab,
             tabTitle: this.props.settingsTab.tabTitle(),
             error: getErrorMessage(error),
-            errorStack: getErrorStack(error)
+            errorStack: getErrorStack(error),
           },
           startKey
         );
@@ -845,7 +845,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         collectionId: this.collection.id(),
         currentOffer: this.collection.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
-        manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput
+        manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -861,12 +861,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       if (this.state.isAutoPilotSelected) {
         this.setState({
           autoPilotThroughput: updatedOffer.autoscaleMaxThroughput,
-          autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput
+          autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput,
         });
       } else {
         this.setState({
           throughput: updatedOffer.manualThroughput,
-          throughputBaseline: updatedOffer.manualThroughput
+          throughputBaseline: updatedOffer.manualThroughput,
         });
       }
     }
@@ -881,7 +881,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         collectionName: this.collection?.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: this.props.settingsTab.tabTitle()
+        tabTitle: this.props.settingsTab.tabTitle(),
       },
       startKey
     );
@@ -904,7 +904,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,
-      initialNotification: this.props.settingsTab.pendingNotification()
+      initialNotification: this.props.settingsTab.pendingNotification(),
     };
 
     if (!this.isCollectionSettingsTab) {
@@ -941,7 +941,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       changeFeedPolicyBaseline: this.state.changeFeedPolicyBaseline,
       onChangeFeedPolicyChange: this.onChangeFeedPolicyChange,
       onSubSettingsSaveableChange: this.onSubSettingsSaveableChange,
-      onSubSettingsDiscardableChange: this.onSubSettingsDiscardableChange
+      onSubSettingsDiscardableChange: this.onSubSettingsDiscardableChange,
     };
 
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
@@ -953,7 +953,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       logIndexingPolicySuccessMessage: this.logIndexingPolicySuccessMessage,
       indexTransformationProgress: this.state.indexTransformationProgress,
       refreshIndexTransformationProgress: this.refreshIndexTransformationProgress,
-      onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange
+      onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange,
     };
 
     const mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps = {
@@ -967,7 +967,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       indexTransformationProgress: this.state.indexTransformationProgress,
       refreshIndexTransformationProgress: this.refreshIndexTransformationProgress,
       onMongoIndexingPolicySaveableChange: this.onMongoIndexingPolicySaveableChange,
-      onMongoIndexingPolicyDiscardableChange: this.onMongoIndexingPolicyDiscardableChange
+      onMongoIndexingPolicyDiscardableChange: this.onMongoIndexingPolicyDiscardableChange,
     };
 
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
@@ -982,37 +982,37 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedure: this.state.conflictResolutionPolicyProcedure,
       conflictResolutionPolicyProcedureBaseline: this.state.conflictResolutionPolicyProcedureBaseline,
       onConflictResolutionPolicyProcedureChange: this.onConflictResolutionPolicyProcedureChange,
-      onConflictResolutionDirtyChange: this.onConflictResolutionDirtyChange
+      onConflictResolutionDirtyChange: this.onConflictResolutionDirtyChange,
     };
 
     const tabs: SettingsV2TabInfo[] = [];
     if (!hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
         tab: SettingsV2TabTypes.ScaleTab,
-        content: <ScaleComponent {...scaleComponentProps} />
+        content: <ScaleComponent {...scaleComponentProps} />,
       });
     }
 
     tabs.push({
       tab: SettingsV2TabTypes.SubSettingsTab,
-      content: <SubSettingsComponent {...subSettingsComponentProps} />
+      content: <SubSettingsComponent {...subSettingsComponentProps} />,
     });
 
     if (this.shouldShowIndexingPolicyEditor) {
       tabs.push({
         tab: SettingsV2TabTypes.IndexingPolicyTab,
-        content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />
+        content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
     } else if (this.container.isPreferredApiMongoDB()) {
       if (isEmpty(this.container.features())) {
         tabs.push({
           tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: mongoIndexingPolicyAADError
+          content: mongoIndexingPolicyAADError,
         });
       } else if (this.container.isEnableMongoCapabilityPresent()) {
         tabs.push({
           tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />
+          content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />,
         });
       }
     }
@@ -1020,20 +1020,20 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.hasConflictResolution()) {
       tabs.push({
         tab: SettingsV2TabTypes.ConflictResolutionTab,
-        content: <ConflictResolutionComponent {...conflictResolutionPolicyComponentProps} />
+        content: <ConflictResolutionComponent {...conflictResolutionPolicyComponentProps} />,
       });
     }
 
     const pivotProps: IPivotProps = {
       onLinkClick: this.onPivotChange,
-      selectedKey: SettingsV2TabTypes[this.state.selectedTab]
+      selectedKey: SettingsV2TabTypes[this.state.selectedTab],
     };
 
-    const pivotItems = tabs.map(tab => {
+    const pivotItems = tabs.map((tab) => {
       const pivotItemProps: IPivotItemProps = {
         itemKey: SettingsV2TabTypes[tab.tab],
         style: { marginTop: 20 },
-        headerText: getTabTitle(tab.tab)
+        headerText: getTabTitle(tab.tab),
       };
 
       return (

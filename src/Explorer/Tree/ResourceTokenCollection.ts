@@ -41,9 +41,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.isCollectionExpanded = ko.observable<boolean>(true);
   }
 
-  public expandCollection(): Q.Promise<void> {
+  public expandCollection(): void {
     if (this.isCollectionExpanded()) {
-      return Q();
+      return;
     }
 
     this.isCollectionExpanded(true);
@@ -53,10 +53,8 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
-
-    return Q.resolve();
   }
 
   public collapseCollection() {
@@ -71,7 +69,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
 
@@ -85,7 +83,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: title
+      tabTitle: title,
     });
 
     const queryTab: QueryTab = new QueryTab({
@@ -100,7 +98,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       partitionKey: collection.partitionKey,
       resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
       onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons
+      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
     this.container.tabsManager.activateNewTab(queryTab);
@@ -115,7 +113,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       databaseName: this.databaseId,
       collectionName: this.id(),
       defaultExperience: this.container.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ResourceTree
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
     const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
@@ -135,7 +133,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         collectionName: this.id(),
         defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Items"
+        tabTitle: "Items",
       });
 
       documentsTab = new DocumentsTab({
@@ -150,7 +148,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(documentsTab);

@@ -4,62 +4,64 @@ import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/Notificat
 import {
   GalleryTab,
   SortBy,
-  GalleryViewerComponent
+  GalleryViewerComponent,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
-import { IChoiceGroupOption, IChoiceGroupProps } from "office-ui-fabric-react";
+import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
 import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
-import { handleError } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { HttpStatusCodes } from "../Common/Constants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
   {
     key: "ChildEndangermentExploitation",
-    text: "Child endangerment or exploitation"
+    text: "Child endangerment or exploitation",
   },
   {
     key: "ContentInfringement",
-    text: "Content infringement"
+    text: "Content infringement",
   },
   {
     key: "OffensiveContent",
-    text: "Offensive content"
+    text: "Offensive content",
   },
   {
     key: "Terrorism",
-    text: "Terrorism"
+    text: "Terrorism",
   },
   {
     key: "ThreatsCyberbullyingHarassment",
-    text: "Threats, cyber bullying or harassment"
+    text: "Threats, cyber bullying or harassment",
   },
   {
     key: "VirusSpywareMalware",
-    text: "Virus, spyware or malware"
+    text: "Virus, spyware or malware",
   },
   {
     key: "Fraud",
-    text: "Fraud"
+    text: "Fraud",
   },
   {
     key: "HateSpeech",
-    text: "Hate speech"
+    text: "Hate speech",
   },
   {
     key: "ImminentHarmToPersonsOrProperty",
-    text: "Imminent harm to persons or property"
+    text: "Imminent harm to persons or property",
   },
   {
     key: "Other",
-    text: "Other"
-  }
+    text: "Other",
+  },
 ];
 
 export enum NotebookViewerParams {
   NotebookUrl = "notebookUrl",
   GalleryItemId = "galleryItemId",
-  HideInputs = "hideInputs"
+  HideInputs = "hideInputs",
 }
 
 export interface NotebookViewerProps {
@@ -71,7 +73,7 @@ export interface NotebookViewerProps {
 export enum GalleryViewerParams {
   SelectedTab = "tab",
   SortBy = "sort",
-  SearchText = "q"
+  SearchText = "q",
 }
 
 export interface GalleryViewerProps {
@@ -81,6 +83,14 @@ export interface GalleryViewerProps {
 }
 
 export interface DialogHost {
+  showOkModalDialog(
+    title: string,
+    msg: string,
+    okLabel: string,
+    onOk: () => void,
+    progressIndicatorProps?: IProgressIndicatorProps
+  ): void;
+
   showOkCancelModalDialog(
     title: string,
     msg: string,
@@ -88,8 +98,10 @@ export interface DialogHost {
     onOk: () => void,
     cancelLabel: string,
     onCancel: () => void,
+    progressIndicatorProps?: IProgressIndicatorProps,
     choiceGroupProps?: IChoiceGroupProps,
-    textFieldProps?: TextFieldProps
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
   ): void;
 }
 
@@ -99,6 +111,8 @@ export function reportAbuse(
   dialogHost: DialogHost,
   onComplete: (success: boolean) => void
 ): void {
+  trace(Action.NotebooksGalleryClickReportAbuse, ActionModifiers.Mark, { notebookId: data.id });
+
   const notebookId = data.id;
   let abuseCategory = defaultSelectedAbuseCategory;
   let additionalDetails: string;
@@ -108,9 +122,20 @@ export function reportAbuse(
     undefined,
     "Report Abuse",
     async () => {
-      const clearSubmitReportNotification = NotificationConsoleUtils.logConsoleProgress(
-        `Submitting your report on ${data.name} violating code of conduct`
+      dialogHost.showOkCancelModalDialog(
+        "Report Abuse",
+        `Submitting your report on ${data.name} violating code of conduct`,
+        "Reporting...",
+        undefined,
+        "Cancel",
+        undefined,
+        {},
+        undefined,
+        undefined,
+        true
       );
+
+      const startKey = traceStart(Action.NotebooksGalleryReportAbuse, { notebookId: data.id, abuseCategory });
 
       try {
         const response = await junoClient.reportAbuse(notebookId, abuseCategory, additionalDetails);
@@ -118,21 +143,50 @@ export function reportAbuse(
           throw new Error(`Received HTTP ${response.status} when submitting report for ${data.name}`);
         }
 
-        NotificationConsoleUtils.logConsoleInfo(
-          `Your report on ${data.name} has been submitted. Thank you for reporting the violation.`
+        dialogHost.showOkModalDialog(
+          "Report Abuse",
+          `Your report on ${data.name} has been submitted. Thank you for reporting the violation.`,
+          "OK",
+          undefined,
+          {
+            percentComplete: 1,
+          }
         );
+
+        traceSuccess(Action.NotebooksGalleryReportAbuse, { notebookId: data.id, abuseCategory }, startKey);
+
         onComplete(response.data);
       } catch (error) {
+        traceFailure(
+          Action.NotebooksGalleryReportAbuse,
+          {
+            notebookId: data.id,
+            abuseCategory,
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey
+        );
+
         handleError(
           error,
           "GalleryUtils/reportAbuse",
           `Failed to submit report on ${data.name} violating code of conduct`
         );
-      }
 
-      clearSubmitReportNotification();
+        dialogHost.showOkModalDialog(
+          "Report Abuse",
+          `Failed to submit report on ${data.name} violating code of conduct`,
+          "OK",
+          undefined,
+          {
+            percentComplete: 1,
+          }
+        );
+      }
     },
     "Cancel",
+    undefined,
     undefined,
     {
       label: "How does this content violate the code of conduct?",
@@ -140,7 +194,7 @@ export function reportAbuse(
       defaultSelectedKey: defaultSelectedAbuseCategory,
       onChange: (_event?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption) => {
         abuseCategory = option?.key;
-      }
+      },
     },
     {
       label: "You can also include additional relevant details on the offensive content",
@@ -149,7 +203,7 @@ export function reportAbuse(
       autoAdjustHeight: false,
       onChange: (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         additionalDetails = newValue;
-      }
+      },
     }
   );
 }
@@ -160,6 +214,12 @@ export function downloadItem(
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void
 ): void {
+  trace(Action.NotebooksGalleryClickDownload, ActionModifiers.Mark, {
+    notebookId: data.id,
+    downloadCount: data.downloads,
+    isSample: data.isSample,
+  });
+
   const name = data.name;
   container.showOkCancelModalDialog(
     "Download to My Notebooks",
@@ -170,6 +230,12 @@ export function downloadItem(
         ConsoleDataType.InProgress,
         `Downloading ${name} to My Notebooks`
       );
+
+      const startKey = traceStart(Action.NotebooksGalleryDownload, {
+        notebookId: data.id,
+        downloadCount: data.downloads,
+        isSample: data.isSample,
+      });
 
       try {
         const response = await junoClient.getNotebookContent(data.id);
@@ -185,9 +251,26 @@ export function downloadItem(
 
         const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
         if (increaseDownloadResponse.data) {
+          traceSuccess(
+            Action.NotebooksGalleryDownload,
+            { notebookId: data.id, downloadCount: increaseDownloadResponse.data.downloads, isSample: data.isSample },
+            startKey
+          );
           onComplete(increaseDownloadResponse.data);
         }
       } catch (error) {
+        traceFailure(
+          Action.NotebooksGalleryDownload,
+          {
+            notebookId: data.id,
+            downloadCount: data.downloads,
+            isSample: data.isSample,
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey
+        );
+
         handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
       }
 
@@ -205,14 +288,38 @@ export async function favoriteItem(
   onComplete: (item: IGalleryItem) => void
 ): Promise<void> {
   if (container) {
+    const startKey = traceStart(Action.NotebooksGalleryFavorite, {
+      notebookId: data.id,
+      isSample: data.isSample,
+      favoriteCount: data.favorites,
+    });
+
     try {
       const response = await junoClient.favoriteNotebook(data.id);
       if (!response.data) {
         throw new Error(`Received HTTP ${response.status} when favoriting ${data.name}`);
       }
 
+      traceSuccess(
+        Action.NotebooksGalleryFavorite,
+        { notebookId: data.id, isSample: data.isSample, favoriteCount: response.data.favorites },
+        startKey
+      );
+
       onComplete(response.data);
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryFavorite,
+        {
+          notebookId: data.id,
+          isSample: data.isSample,
+          favoriteCount: data.favorites,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       handleError(error, "GalleryUtils/favoriteItem", `Failed to favorite ${data.name}`);
     }
   }
@@ -225,14 +332,38 @@ export async function unfavoriteItem(
   onComplete: (item: IGalleryItem) => void
 ): Promise<void> {
   if (container) {
+    const startKey = traceStart(Action.NotebooksGalleryUnfavorite, {
+      notebookId: data.id,
+      isSample: data.isSample,
+      favoriteCount: data.favorites,
+    });
+
     try {
       const response = await junoClient.unfavoriteNotebook(data.id);
       if (!response.data) {
         throw new Error(`Received HTTP ${response.status} when unfavoriting ${data.name}`);
       }
 
+      traceSuccess(
+        Action.NotebooksGalleryUnfavorite,
+        { notebookId: data.id, isSample: data.isSample, favoriteCount: response.data.favorites },
+        startKey
+      );
+
       onComplete(response.data);
     } catch (error) {
+      traceFailure(
+        Action.NotebooksGalleryUnfavorite,
+        {
+          notebookId: data.id,
+          isSample: data.isSample,
+          favoriteCount: data.favorites,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+
       handleError(error, "GalleryUtils/unfavoriteItem", `Failed to unfavorite ${data.name}`);
     }
   }
@@ -245,6 +376,8 @@ export function deleteItem(
   onComplete: (item: IGalleryItem) => void
 ): void {
   if (container) {
+    trace(Action.NotebooksGalleryClickDelete, ActionModifiers.Mark, { notebookId: data.id });
+
     container.showOkCancelModalDialog(
       "Remove published notebook",
       `Would you like to remove ${data.name} from the gallery?`,
@@ -256,15 +389,25 @@ export function deleteItem(
           `Removing ${name} from gallery`
         );
 
+        const startKey = traceStart(Action.NotebooksGalleryDelete, { notebookId: data.id });
+
         try {
           const response = await junoClient.deleteNotebook(data.id);
           if (!response.data) {
             throw new Error(`Received HTTP ${response.status} while removing ${name}`);
           }
 
+          traceSuccess(Action.NotebooksGalleryDelete, { notebookId: data.id }, startKey);
+
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
           onComplete(response.data);
         } catch (error) {
+          traceFailure(
+            Action.NotebooksGalleryDelete,
+            { notebookId: data.id, error: getErrorMessage(error), errorStack: getErrorStack(error) },
+            startKey
+          );
+
           handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
         }
 
@@ -291,7 +434,7 @@ export function getGalleryViewerProps(search: string): GalleryViewerProps {
   return {
     selectedTab,
     sortBy,
-    searchText: params.get(GalleryViewerParams.SearchText)
+    searchText: params.get(GalleryViewerParams.SearchText),
   };
 }
 
@@ -300,7 +443,7 @@ export function getNotebookViewerProps(search: string): NotebookViewerProps {
   return {
     notebookUrl: params.get(NotebookViewerParams.NotebookUrl),
     galleryItemId: params.get(NotebookViewerParams.GalleryItemId),
-    hideInputs: JSON.parse(params.get(NotebookViewerParams.HideInputs))
+    hideInputs: JSON.parse(params.get(NotebookViewerParams.HideInputs)),
   };
 }
 
@@ -330,7 +473,7 @@ export function filterPublishedNotebooks(
   const removed: IGalleryItem[] = [];
   const published: IGalleryItem[] = [];
 
-  items?.forEach(item => {
+  items?.forEach((item) => {
     if (item.policyViolations?.length > 0) {
       removed.push(item);
     } else if (item.pendingScanJobIds?.length > 0) {

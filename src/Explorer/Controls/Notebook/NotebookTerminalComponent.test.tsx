@@ -11,10 +11,10 @@ const createTestDatabaseAccount = (): DataModels.DatabaseAccount => {
       cassandraEndpoint: null,
       documentEndpoint: "https://testDocumentEndpoint.azure.com/",
       gremlinEndpoint: null,
-      tableEndpoint: null
+      tableEndpoint: null,
     },
     tags: "testTags",
-    type: "testType"
+    type: "testType",
   };
 };
 
@@ -28,10 +28,10 @@ const createTestMongo32DatabaseAccount = (): DataModels.DatabaseAccount => {
       cassandraEndpoint: null,
       documentEndpoint: "https://testDocumentEndpoint.azure.com/",
       gremlinEndpoint: null,
-      tableEndpoint: null
+      tableEndpoint: null,
     },
     tags: "testTags",
-    type: "testType"
+    type: "testType",
   };
 };
 
@@ -46,10 +46,10 @@ const createTestMongo36DatabaseAccount = (): DataModels.DatabaseAccount => {
       documentEndpoint: "https://testDocumentEndpoint.azure.com/",
       gremlinEndpoint: null,
       tableEndpoint: null,
-      mongoEndpoint: "https://testMongoEndpoint.azure.com/"
+      mongoEndpoint: "https://testMongoEndpoint.azure.com/",
     },
     tags: "testTags",
-    type: "testType"
+    type: "testType",
   };
 };
 
@@ -63,10 +63,10 @@ const createTestCassandraDatabaseAccount = (): DataModels.DatabaseAccount => {
       cassandraEndpoint: "https://testCassandraEndpoint.azure.com/",
       documentEndpoint: null,
       gremlinEndpoint: null,
-      tableEndpoint: null
+      tableEndpoint: null,
     },
     tags: "testTags",
-    type: "testType"
+    type: "testType",
   };
 };
 
@@ -74,9 +74,9 @@ const createTerminal = (): NotebookTerminalComponent => {
   return new NotebookTerminalComponent({
     notebookServerInfo: {
       authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/"
+      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/",
     },
-    databaseAccount: createTestDatabaseAccount()
+    databaseAccount: createTestDatabaseAccount(),
   });
 };
 
@@ -84,9 +84,9 @@ const createMongo32Terminal = (): NotebookTerminalComponent => {
   return new NotebookTerminalComponent({
     notebookServerInfo: {
       authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo"
+      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo",
     },
-    databaseAccount: createTestMongo32DatabaseAccount()
+    databaseAccount: createTestMongo32DatabaseAccount(),
   });
 };
 
@@ -94,9 +94,9 @@ const createMongo36Terminal = (): NotebookTerminalComponent => {
   return new NotebookTerminalComponent({
     notebookServerInfo: {
       authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo"
+      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo",
     },
-    databaseAccount: createTestMongo36DatabaseAccount()
+    databaseAccount: createTestMongo36DatabaseAccount(),
   });
 };
 
@@ -104,9 +104,9 @@ const createCassandraTerminal = (): NotebookTerminalComponent => {
   return new NotebookTerminalComponent({
     notebookServerInfo: {
       authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/cassandra"
+      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/cassandra",
     },
-    databaseAccount: createTestCassandraDatabaseAccount()
+    databaseAccount: createTestCassandraDatabaseAccount(),
   });
 };
 
@@ -127,7 +127,7 @@ describe("NotebookTerminalComponent", () => {
     expect(params).toEqual(
       new Map<string, string>([
         ["terminal", "true"],
-        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.documentEndpoint).host]
+        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.documentEndpoint).host],
       ])
     );
   });
@@ -139,7 +139,7 @@ describe("NotebookTerminalComponent", () => {
     expect(params).toEqual(
       new Map<string, string>([
         ["terminal", "true"],
-        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.mongoEndpoint).host]
+        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.mongoEndpoint).host],
       ])
     );
   });
@@ -151,7 +151,7 @@ describe("NotebookTerminalComponent", () => {
     expect(params).toEqual(
       new Map<string, string>([
         ["terminal", "true"],
-        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.cassandraEndpoint).host]
+        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.cassandraEndpoint).host],
       ])
     );
   });

@@ -10,17 +10,17 @@ describe("tokenProvider", () => {
     resourceId: "",
     resourceType: "dbs" as ResourceType,
     headers: {},
-    getAuthorizationTokenUsingMasterKey: () => ""
+    getAuthorizationTokenUsingMasterKey: () => "",
   };
 
   beforeEach(() => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
     });
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         json: () => "{}",
-        headers: new Map()
+        headers: new Map(),
       };
     });
   });
@@ -36,7 +36,7 @@ describe("tokenProvider", () => {
 
   it("does not call the auth service if a master key is set", async () => {
     updateUserContext({
-      masterKey: "foo"
+      masterKey: "foo",
     });
     await tokenProvider(options);
     expect((window.fetch as any).mock.calls.length).toBe(0);
@@ -50,7 +50,7 @@ describe("getTokenFromAuthService", () => {
     window.fetch = jest.fn().mockImplementation(() => {
       return {
         json: () => "{}",
-        headers: new Map()
+        headers: new Map(),
       };
     });
   });
@@ -61,7 +61,7 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in production", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com"
+      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
@@ -72,7 +72,7 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in dev", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://localhost:1234"
+      BACKEND_ENDPOINT: "https://localhost:1234",
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
@@ -96,15 +96,15 @@ describe("endpoint", () => {
           documentEndpoint: "bar",
           gremlinEndpoint: "foo",
           tableEndpoint: "foo",
-          cassandraEndpoint: "foo"
-        }
-      }
+          cassandraEndpoint: "foo",
+        },
+      },
     });
     expect(endpoint()).toEqual("bar");
   });
   it("uses _endpoint if set", () => {
     updateUserContext({
-      endpoint: "baz"
+      endpoint: "baz",
     });
     expect(endpoint()).toEqual("baz");
   });
@@ -121,7 +121,7 @@ describe("requestPlugin", () => {
       updateConfigContext({
         platform: Platform.Hosted,
         BACKEND_ENDPOINT: "https://localhost:1234",
-        PROXY_PATH: "/proxy"
+        PROXY_PATH: "/proxy",
       });
       const headers = {};
       const endpoint = "https://docs.azure.com";

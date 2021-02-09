@@ -5,7 +5,6 @@ import {
   getSanitizedInputValue,
   hasDatabaseSharedThroughput,
   isDirty,
-  isDirtyTypes,
   MongoIndexTypes,
   MongoNotificationType,
   parseConflictResolutionMode,
@@ -14,7 +13,7 @@ import {
   getMongoIndexTypeText,
   SingleFieldText,
   WildcardText,
-  isIndexTransforming
+  isIndexTransforming,
 } from "./SettingsUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -47,7 +46,7 @@ describe("SettingsUtils", () => {
         readSettings: undefined,
         onSettingsClick: undefined,
         loadOffer: undefined,
-        getPendingThroughputSplitNotification: undefined
+        getPendingThroughputSplitNotification: undefined,
       } as ViewModels.Database;
     };
     newCollection.offer(undefined);
@@ -69,20 +68,21 @@ describe("SettingsUtils", () => {
       automatic: true,
       indexingMode: "consistent",
       includedPaths: [],
-      excludedPaths: []
+      excludedPaths: [],
     } as DataModels.IndexingPolicy;
 
-    const cases = [
-      ["baseline", "current"],
-      [0, 1],
-      [true, false],
-      [undefined, indexingPolicy],
-      [indexingPolicy, { ...indexingPolicy, automatic: false }]
-    ];
+    it("works on all types", () => {
+      expect(isDirty("baseline", "baseline")).toEqual(false);
+      expect(isDirty(0, 0)).toEqual(false);
+      expect(isDirty(true, true)).toEqual(false);
+      expect(isDirty(undefined, undefined)).toEqual(false);
+      expect(isDirty(indexingPolicy, indexingPolicy)).toEqual(false);
 
-    test.each(cases)("", (baseline: isDirtyTypes, current: isDirtyTypes) => {
-      expect(isDirty(baseline, baseline)).toEqual(false);
-      expect(isDirty(baseline, current)).toEqual(true);
+      expect(isDirty("baseline", "current")).toEqual(true);
+      expect(isDirty(0, 1)).toEqual(true);
+      expect(isDirty(true, false)).toEqual(true);
+      expect(isDirty(undefined, indexingPolicy)).toEqual(true);
+      expect(isDirty(indexingPolicy, { ...indexingPolicy, automatic: false })).toEqual(true);
     });
   });
 

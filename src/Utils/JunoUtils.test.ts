@@ -6,7 +6,7 @@ import { IGitHubRepo } from "../GitHub/GitHubClient";
 const gitHubRepo: IGitHubRepo = {
   name: "repo-name",
   owner: "owner",
-  private: false
+  private: false,
 };
 
 const repoListItem: RepoListItem = {
@@ -14,13 +14,13 @@ const repoListItem: RepoListItem = {
   repo: {
     name: "repo-name",
     owner: "owner",
-    private: false
+    private: false,
   },
   branches: [
     {
-      name: "branch-name"
-    }
-  ]
+      name: "branch-name",
+    },
+  ],
 };
 
 const pinnedRepo: IPinnedRepo = {
@@ -29,9 +29,9 @@ const pinnedRepo: IPinnedRepo = {
   private: false,
   branches: [
     {
-      name: "branch-name"
-    }
-  ]
+      name: "branch-name",
+    },
+  ],
 };
 
 describe("JunoUtils", () => {

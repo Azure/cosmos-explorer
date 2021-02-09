@@ -49,7 +49,7 @@ const makeMapStateToProps = (
       return {
         kernelStatus,
         kernelSpecName,
-        currentCellType
+        currentCellType,
       } as VirtualCommandBarComponentProps;
     }
 
@@ -69,7 +69,7 @@ const makeMapStateToProps = (
       kernelStatus,
       kernelSpecName,
       currentCellType,
-      onRender: initialProps.onRender
+      onRender: initialProps.onRender,
     };
   };
 
