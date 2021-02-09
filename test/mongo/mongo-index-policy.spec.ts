@@ -4,7 +4,7 @@ import { createDatabase } from "../utils/shared";
 import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
-const LOADING_STATE_DELAY = 1000;
+const LOADING_STATE_DELAY = 3000;
 const CREATE_DELAY = 10000;
 jest.setTimeout(300000);
 
@@ -15,27 +15,29 @@ describe("MongoDB Index policy tests", () => {
       const wildCardId = generateUniqueName("key") + "$**";
       const frame = await getTestExplorerFrame(ApiKind.MongoDB);
       const dropDown = "Index Type ";
-      let index = 0,
-        throughput;
+      let index = 0;
 
       //open dataBaseMenu
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      const databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
+      let databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
       if (databases.length === 0) {
-        createDatabase(frame);
+        await createDatabase(frame);
+        databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
       }
+
       const selectedDbId = await frame.evaluate((element) => {
         return element.attributes["data-test"].textContent;
       }, databases[0]);
 
-      // Click into database
+      // click on database
       await frame.waitFor(`div[data-test="${selectedDbId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.click(`div[data-test="${selectedDbId}"]`);
+      await frame.waitFor(LOADING_STATE_DELAY);
 
-      //click intp scale& setting
+      // click on scale & setting
       const containers = await frame.$$(
         `div[class="nodeChildren"] > div[class="collectionHeader main2 nodeItem "]> div[class="treeNodeHeader "]`
       );
@@ -54,8 +56,8 @@ describe("MongoDB Index policy tests", () => {
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.click(`button[data-content="Indexing Policy"]`);
 
-      //Type to single Field
-      throughput = await frame.$$(".ms-TextField-field");
+      // Type to single Field
+      let throughput = await frame.$$(".ms-TextField-field");
       const selectedDropDownSingleField = dropDown + index;
       await frame.waitFor(`div[aria-label="${selectedDropDownSingleField}"]`), { visible: true };
       await throughput[index].type(singleFieldId);
@@ -64,7 +66,7 @@ describe("MongoDB Index policy tests", () => {
       await frame.click(`button[title="Single Field"]`);
       index++;
 
-      //Type to wild card
+      // Type to wild card
       throughput = await frame.$$(".ms-TextField-field");
       await throughput[index].type(wildCardId);
       const selectedDropDownWildCard = dropDown + index;
@@ -74,13 +76,13 @@ describe("MongoDB Index policy tests", () => {
       await frame.click(`button[title="Wildcard"]`);
       index++;
 
-      //Save Button
+      // click save Button
       await frame.waitFor(`button[data-test="Save"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.click(`button[data-test="Save"]`);
       await frame.waitFor(CREATE_DELAY);
 
-      //check the array
+      // check the array
       let singleFieldIndexInserted = false,
         wildCardIndexInserted = false;
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span");
