@@ -144,7 +144,7 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
       TelemetryProcessor.traceSuccess(
         Action.DeleteCollection,
         {
-          databaseAccountName: userContext.databaseAccount.name,
+          databaseAccountName: userContext.databaseAccount?.name,
           defaultExperience: userContext.defaultExperience,
           collectionId: collection.id(),
           dataExplorerArea: Areas.ContextualPane,
@@ -155,8 +155,8 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
 
       if (this.shouldRecordFeedback()) {
         const deleteFeedback = new DeleteFeedback(
-          userContext.databaseAccount.id,
-          userContext.databaseAccount.name,
+          userContext.databaseAccount?.id,
+          userContext.databaseAccount?.name,
           DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.defaultExperience),
           this.deleteCollectionFeedback
         );
@@ -173,7 +173,7 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
       TelemetryProcessor.traceFailure(
         Action.DeleteCollection,
         {
-          databaseAccountName: userContext.databaseAccount.name,
+          databaseAccountName: userContext.databaseAccount?.name,
           defaultExperience: userContext.defaultExperience,
           collectionId: collection.id(),
           dataExplorerArea: Areas.ContextualPane,
