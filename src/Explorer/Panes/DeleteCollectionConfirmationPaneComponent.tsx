@@ -7,8 +7,6 @@ import { Collection } from "../../Contracts/ViewModels";
 import { Text, TextField } from "office-ui-fabric-react";
 import { userContext } from "../../UserContext";
 import { Areas } from "../../Common/Constants";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
@@ -48,34 +46,40 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
     return (
       <div className="panelContentContainer">
         <PanelErrorComponent {...this.getPanelErrorProps()} />
-        <div className="confirmDeleteInput">
-          <div>
-            <span className="mandatoryStar">* </span>
-            <Text variant="small">Confirm by typing the collection id</Text>
+        <div className="panelMainContent">
+          <div className="confirmDeleteInput">
+            <div>
+              <span className="mandatoryStar">* </span>
+              <Text variant="small">Confirm by typing the collection id</Text>
+            </div>
+            <TextField
+              id="confirmCollectionId"
+              autoFocus
+              styles={{ fieldGroup: { width: 300 } }}
+              onChange={(event, newInput?: string) => {
+                this.inputCollectionName = newInput;
+              }}
+            />
           </div>
-          <TextField
-            id="confirmCollectionId"
-            styles={{ fieldGroup: { width: 300 } }}
-            onChange={(event, newInput?: string) => {
-              this.inputCollectionName = newInput;
-            }}
-          />
-        </div>
-        <div className="deleteCollectionFeedback contentBeforeFooter">
-          <Text variant="small" block>
-            Help us improve Azure Cosmos DB!
-          </Text>
-          <Text variant="small" block>
-            What is the reason why you are deleting this container?
-          </Text>
-          <TextField
-            styles={{ fieldGroup: { width: 300 } }}
-            multiline
-            rows={3}
-            onChange={(event, newInput?: string) => {
-              this.deleteCollectionFeedback = newInput;
-            }}
-          />
+          {this.shouldRecordFeedback() && (
+            <div className="deleteCollectionFeedback">
+              <Text variant="small" block>
+                Help us improve Azure Cosmos DB!
+              </Text>
+              <Text variant="small" block>
+                What is the reason why you are deleting this container?
+              </Text>
+              <TextField
+                id="deleteCollectionFeedbackInput"
+                styles={{ fieldGroup: { width: 300 } }}
+                multiline
+                rows={3}
+                onChange={(event, newInput?: string) => {
+                  this.deleteCollectionFeedback = newInput;
+                }}
+              />
+            </div>
+          )}
         </div>
         <PanelFooterComponent buttonLabel="OK" onOKButtonClicked={() => this.submit()} />
         <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.state.isExecuting}>
@@ -103,7 +107,11 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
     };
   }
 
-  private async submit(): Promise<void> {
+  private shouldRecordFeedback(): boolean {
+    return this.props.explorer.isLastCollection() && !this.props.explorer.isSelectedDatabaseShared();
+  }
+
+  public async submit(): Promise<void> {
     const collection = this.props.explorer.findSelectedCollection();
 
     if (!collection || this.inputCollectionName !== collection.id()) {
@@ -116,7 +124,7 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
     this.setState({ formError: "", isExecuting: true });
 
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteCollection, {
-      databaseAccountName: userContext.databaseAccount.name,
+      databaseAccountName: userContext.databaseAccount?.name,
       defaultExperience: userContext.defaultExperience,
       collectionId: collection.id(),
       dataExplorerArea: Areas.ContextualPane,
@@ -124,19 +132,9 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
     });
 
     try {
-      if (userContext.defaultExperience === DefaultAccountExperienceType.Cassandra) {
-        const cassandraDataClient = this.props.explorer.tableDataClient as CassandraAPIDataClient;
-        await cassandraDataClient.deleteTableOrKeyspace(
-          userContext.databaseAccount.properties.cassandraEndpoint,
-          userContext.databaseAccount.id,
-          `DROP TABLE ${collection.databaseId}.${collection.id()};`
-        );
-      } else {
-        await deleteCollection(collection.databaseId, collection.id());
-      }
+      await deleteCollection(collection.databaseId, collection.id());
 
       this.setState({ isExecuting: false });
-
       this.props.explorer.selectedNode(collection.database);
       this.props.explorer.tabsManager?.closeTabsByComparator(
         (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
@@ -155,11 +153,11 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
         startKey
       );
 
-      if (this.props.explorer.isLastCollection() && !this.props.explorer.isSelectedDatabaseShared()) {
+      if (this.shouldRecordFeedback()) {
         const deleteFeedback = new DeleteFeedback(
           userContext.databaseAccount.id,
           userContext.databaseAccount.name,
-          DefaultExperienceUtility.getApiKindFromDefaultExperience(this.props.explorer.defaultExperience()),
+          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.defaultExperience),
           this.deleteCollectionFeedback
         );
 
