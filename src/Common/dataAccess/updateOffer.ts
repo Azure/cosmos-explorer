@@ -58,7 +58,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
   const clearMessage = logConsoleProgress(`Updating offer for ${offerResourceText}`);
 
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
       if (params.collectionId) {
         updatedOffer = await updateCollectionOfferWithARM(params);
       } else if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {

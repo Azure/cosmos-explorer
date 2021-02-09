@@ -373,20 +373,20 @@ export enum TerminalKind {
 
 export interface DataExplorerInputsFrame {
   databaseAccount: any;
-  subscriptionId: string;
-  resourceGroup: string;
-  masterKey: string;
-  hasWriteAccess: boolean;
-  authorizationToken: string;
-  features: any;
-  csmEndpoint: string;
-  dnsSuffix: string;
-  serverId: string;
-  extensionEndpoint: string;
-  subscriptionType: SubscriptionType;
-  quotaId: string;
-  addCollectionDefaultFlight: string;
-  isTryCosmosDBSubscription: boolean;
+  subscriptionId?: string;
+  resourceGroup?: string;
+  masterKey?: string;
+  hasWriteAccess?: boolean;
+  authorizationToken?: string;
+  features: { [key: string]: string };
+  csmEndpoint?: string;
+  dnsSuffix?: string;
+  serverId?: string;
+  extensionEndpoint?: string;
+  subscriptionType?: SubscriptionType;
+  quotaId?: string;
+  addCollectionDefaultFlight?: string;
+  isTryCosmosDBSubscription?: boolean;
   loadDatabaseAccountTimestamp?: number;
   sharedThroughputMinimum?: number;
   sharedThroughputMaximum?: number;

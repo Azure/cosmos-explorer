@@ -1841,19 +1841,21 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.features(inputs.features);
-      this.serverId(inputs.serverId);
+      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess);
-      this.flight(inputs.addCollectionDefaultFlight);
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
-      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
+      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
+      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
+      if (inputs.addCollectionDefaultFlight) {
+        this.flight(inputs.addCollectionDefaultFlight);
+      }
+      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
+      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
       this.setSelfServeType(inputs);
       this._importExplorerConfigComplete = true;
 
       updateConfigContext({
-        BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
+        BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
         ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
       });
 
@@ -2501,7 +2503,7 @@ export default class Explorer {
   }
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const authType = window.authType as AuthType;
+    const authType = userContext.authType;
     if (
       authType === AuthType.EncryptedToken ||
       authType === AuthType.ResourceToken ||
@@ -2550,7 +2552,7 @@ export default class Explorer {
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
     const subscriptionId = userContext.subscriptionId;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = window.authType as AuthType;
+    const authType = userContext.authType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       this.isSparkEnabledForAccount(false);
@@ -2579,7 +2581,7 @@ export default class Explorer {
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
     const subscriptionId = userContext.subscriptionId;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = window.authType as AuthType;
+    const authType = userContext.authType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       return false;

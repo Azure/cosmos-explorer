@@ -79,7 +79,7 @@ const App: React.FunctionComponent = () => {
     setInProgressConsoleDataIdToBeDeleted,
   };
   const config = useConfig();
-  useKnockoutExplorer(config, explorerParams);
+  useKnockoutExplorer(config?.platform, explorerParams);
 
   return (
     <div className="flexContainer">

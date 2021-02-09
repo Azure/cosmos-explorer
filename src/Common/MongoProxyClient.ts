@@ -20,7 +20,7 @@ const defaultHeaders = {
 };
 
 function authHeaders() {
-  if (window.authType === AuthType.EncryptedToken) {
+  if (userContext.authType === AuthType.EncryptedToken) {
     return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
   } else {
     return { [HttpHeaders.authorization]: userContext.authorizationToken };
@@ -337,7 +337,7 @@ export function createMongoCollectionWithProxy(
 export function getEndpoint(): string {
   let url = (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT) + "/api/mongo/explorer";
 
-  if (window.authType === AuthType.EncryptedToken) {
+  if (userContext.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");
   }
   return url;

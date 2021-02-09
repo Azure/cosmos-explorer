@@ -19,6 +19,7 @@ import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { userContext } from "../../UserContext";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -260,7 +261,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
     try {
-      const authType = window.authType;
+      const authType = userContext.authType;
       const apiEndpoint: string =
         authType === AuthType.EncryptedToken
           ? Constants.CassandraBackend.guestQueryApi
@@ -424,7 +425,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching keys for table ${collection.id()}`
     );
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
@@ -474,7 +475,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching schema for table ${collection.id()}`
     );
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
@@ -523,7 +524,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     explorer: Explorer
   ): Q.Promise<any> {
     const deferred = Q.defer();
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi

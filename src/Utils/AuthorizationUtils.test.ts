@@ -9,8 +9,8 @@ jest.mock("../Explorer/Explorer");
 describe("AuthorizationUtils", () => {
   describe("getAuthorizationHeader()", () => {
     it("should return authorization header if authentication type is AAD", () => {
-      window.authType = AuthType.AAD;
       updateUserContext({
+        authType: AuthType.AAD,
         authorizationToken: "some-token",
       });
 
@@ -19,8 +19,8 @@ describe("AuthorizationUtils", () => {
     });
 
     it("should return guest access header if authentication type is EncryptedToken", () => {
-      window.authType = AuthType.EncryptedToken;
       updateUserContext({
+        authType: AuthType.EncryptedToken,
         accessToken: "some-token",
       });
 

@@ -3,9 +3,10 @@ import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import * as Constants from "../Constants";
 import { AuthType } from "../../AuthType";
+import { userContext } from "../../UserContext";
 
 export async function getIndexTransformationProgress(databaseId: string, collectionId: string): Promise<number> {
-  if (window.authType !== AuthType.AAD) {
+  if (userContext.authType !== AuthType.AAD) {
     return undefined;
   }
   let indexTransformationPercentage: number;
