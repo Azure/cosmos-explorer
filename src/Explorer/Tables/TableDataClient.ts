@@ -416,41 +416,6 @@ export class CassandraAPIDataClient extends TableDataClient {
     return deferred.promise;
   }
 
-  public deleteTableOrKeyspace(
-    cassandraEndpoint: string,
-    resourceId: string,
-    deleteQuery: string,
-    explorer: Explorer
-  ): Q.Promise<any> {
-    const deferred = Q.defer<any>();
-    const notificationId = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      `Deleting resource with query ${deleteQuery}`
-    );
-    this.createOrDeleteQuery(cassandraEndpoint, resourceId, deleteQuery, explorer)
-      .then(
-        () => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `Successfully deleted resource with query ${deleteQuery}`
-          );
-          deferred.resolve();
-        },
-        (error) => {
-          handleError(
-            error,
-            "DeleteKeyspaceOrTableCassandra",
-            `Error while deleting resource with query ${deleteQuery}`
-          );
-          deferred.reject(error);
-        }
-      )
-      .finally(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
-      });
-    return deferred.promise;
-  }
-
   public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
     if (!!collection.cassandraKeys) {
       return Q.resolve(collection.cassandraKeys);
