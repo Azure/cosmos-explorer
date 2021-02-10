@@ -15,25 +15,25 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
 import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
 
-export interface DeleteCollectionConfirmationPaneProps {
+export interface DeleteCollectionConfirmationPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   openNotificationConsole: () => void;
 }
 
-export interface DeleteCollectionConfirmationPaneState {
+export interface DeleteCollectionConfirmationPanelState {
   formError: string;
   isExecuting: boolean;
 }
 
-export class DeleteCollectionConfirmationPaneComponent extends React.Component<
-  DeleteCollectionConfirmationPaneProps,
-  DeleteCollectionConfirmationPaneState
+export class DeleteCollectionConfirmationPanel extends React.Component<
+  DeleteCollectionConfirmationPanelProps,
+  DeleteCollectionConfirmationPanelState
 > {
   private inputCollectionName: string;
   private deleteCollectionFeedback: string;
 
-  constructor(props: DeleteCollectionConfirmationPaneProps) {
+  constructor(props: DeleteCollectionConfirmationPanelProps) {
     super(props);
 
     this.state = {
@@ -48,10 +48,8 @@ export class DeleteCollectionConfirmationPaneComponent extends React.Component<
         <PanelErrorComponent {...this.getPanelErrorProps()} />
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
-            <div>
-              <span className="mandatoryStar">* </span>
-              <Text variant="small">Confirm by typing the collection id</Text>
-            </div>
+            <span className="mandatoryStar">* </span>
+            <Text variant="small">Confirm by typing the collection id</Text>
             <TextField
               id="confirmCollectionId"
               autoFocus

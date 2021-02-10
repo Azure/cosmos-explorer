@@ -10,8 +10,8 @@ export interface PanelContainerProps {
 }
 
 export class PanelContainerComponent extends React.Component<PanelContainerProps> {
-  private readonly consoleHeaderHeight = 32;
-  private readonly consoleContentHeight = 220;
+  private static readonly consoleHeaderHeight = 32;
+  private static readonly consoleContentHeight = 220;
 
   render(): JSX.Element {
     if (!this.props.panelContent) {
@@ -50,8 +50,8 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 
   private getPanelHeight = (): string => {
     const consoleHeight = this.props.isConsoleExpanded
-      ? this.consoleContentHeight + this.consoleHeaderHeight
-      : this.consoleHeaderHeight;
+      ? PanelContainerComponent.consoleContentHeight + PanelContainerComponent.consoleHeaderHeight
+      : PanelContainerComponent.consoleHeaderHeight;
     const panelHeight = window.innerHeight - consoleHeight;
     return panelHeight + "px";
   };

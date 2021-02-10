@@ -92,7 +92,7 @@ import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingC
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
-import { DeleteCollectionConfirmationPaneComponent } from "./Panes/DeleteCollectionConfirmationPaneComponent";
+import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -3052,7 +3052,7 @@ export default class Explorer {
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
           "Delete Collection",
-          <DeleteCollectionConfirmationPaneComponent
+          <DeleteCollectionConfirmationPanel
             explorer={this}
             closePanel={() => this.closeSidePanel()}
             openNotificationConsole={() => this.expandConsole()}

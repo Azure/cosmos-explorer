@@ -11,7 +11,7 @@ import Explorer from "../Explorer";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
-import { DeleteCollectionConfirmationPaneComponent } from "./DeleteCollectionConfirmationPaneComponent";
+import { DeleteCollectionConfirmationPanel } from "./DeleteCollectionConfirmationPanel";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { updateUserContext } from "../../UserContext";
 
@@ -66,7 +66,7 @@ describe("Delete Collection Confirmation Pane", () => {
         closePanel: (): void => undefined,
         openNotificationConsole: (): void => undefined,
       };
-      const wrapper = shallow(<DeleteCollectionConfirmationPaneComponent {...props} />);
+      const wrapper = shallow(<DeleteCollectionConfirmationPanel {...props} />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
 
       props.explorer.isLastCollection = () => true;
@@ -120,7 +120,7 @@ describe("Delete Collection Confirmation Pane", () => {
         closePanel: (): void => undefined,
         openNotificationConsole: (): void => undefined,
       };
-      wrapper = mount(<DeleteCollectionConfirmationPaneComponent {...props} />);
+      wrapper = mount(<DeleteCollectionConfirmationPanel {...props} />);
     });
 
     it("should call delete collection", () => {
