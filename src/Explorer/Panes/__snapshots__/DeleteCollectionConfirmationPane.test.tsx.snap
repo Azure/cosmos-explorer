@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Delete Collection Confirmation Pane submit() should call delete collection 1`] = `
-<DeleteCollectionConfirmationPaneComponent
+<DeleteCollectionConfirmationPanel
   closePanel={[Function]}
   explorer={
     Object {
@@ -339,22 +339,20 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
       <div
         className="confirmDeleteInput"
       >
-        <div>
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          variant="small"
+        >
           <span
-            className="mandatoryStar"
+            className="css-110"
           >
-            * 
+            Confirm by typing the collection id
           </span>
-          <Text
-            variant="small"
-          >
-            <span
-              className="css-110"
-            >
-              Confirm by typing the collection id
-            </span>
-          </Text>
-        </div>
+        </Text>
         <StyledTextFieldBase
           autoFocus={true}
           id="confirmCollectionId"
@@ -2734,5 +2732,5 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
       />
     </div>
   </div>
-</DeleteCollectionConfirmationPaneComponent>
+</DeleteCollectionConfirmationPanel>
 `;
