@@ -98,12 +98,12 @@ describe("Collection Add and Delete Mongo spec", () => {
         await frame.click('span[class="treeComponentMenuItemLabel deleteCollectionMenuItemLabel"]');
 
         // confirm delete container
-        await frame.waitFor('input[data-test="confirmCollectionId"]', { visible: true });
-        await frame.type('input[data-test="confirmCollectionId"]', textId);
+        await frame.waitFor('input[id="confirmCollectionId"]', { visible: true });
+        await frame.type('input[id="confirmCollectionId"]', textId);
 
         // click delete
-        await frame.waitFor('input[data-test="deleteCollection"]', { visible: true });
-        await frame.click('input[data-test="deleteCollection"]');
+        await frame.waitFor('button[id="sidePanelOkButton"]', { visible: true });
+        await frame.click('button[id="sidePanelOkButton"]');
         await frame.waitFor(LOADING_STATE_DELAY);
         await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 

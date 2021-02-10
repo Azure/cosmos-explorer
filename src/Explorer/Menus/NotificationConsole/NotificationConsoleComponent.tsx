@@ -114,6 +114,7 @@ export class NotificationConsoleComponent extends React.Component<
       <div className="notificationConsoleContainer">
         <div
           className="notificationConsoleHeader"
+          id="notificationConsoleHeader"
           ref={this.setElememntRef}
           onClick={(event: React.MouseEvent<HTMLDivElement>) => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
