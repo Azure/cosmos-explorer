@@ -170,8 +170,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   private getThroughputInputComponent = (): JSX.Element => (
     <ThroughputInputAutoPilotV3Component
       databaseAccount={this.props.container.databaseAccount()}
-      databaseName={this.props.collection.databaseId}
-      collectionName={this.props.collection.id()}
+      databaseName={this.databaseId}
+      collectionName={this.collectionId}
       serverId={this.props.container.serverId()}
       throughput={this.props.throughput}
       throughputBaseline={this.props.throughputBaseline}
