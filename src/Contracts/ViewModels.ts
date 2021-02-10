@@ -137,7 +137,6 @@ export interface Collection extends CollectionBase {
   openTab(): void;
 
   onSettingsClick: () => Promise<void>;
-  onDeleteCollectionContextMenuClick(source: Collection, event: MouseEvent): void;
 
   onNewGraphClick(): void;
   onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string): void;

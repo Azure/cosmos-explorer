@@ -112,10 +112,7 @@ export class ResourceTreeContextMenuButtonFactory {
 
     items.push({
       iconSrc: DeleteCollectionIcon,
-      onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onDeleteCollectionContextMenuClick(selectedCollection, null);
-      },
+      onClick: () => container.openDeleteCollectionConfirmationPane(),
       label: container.deleteCollectionText(),
       styleClass: "deleteCollectionMenuItem",
     });

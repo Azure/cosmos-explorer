@@ -19,6 +19,7 @@ import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { userContext } from "../../UserContext";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -345,7 +346,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Creating a new keyspace with query ${createKeyspaceQuery}`
     );
-    this.createOrDeleteQuery(cassandraEndpoint, resourceId, createKeyspaceQuery, explorer)
+    this.createOrDeleteQuery(cassandraEndpoint, resourceId, createKeyspaceQuery)
       .then(
         (data: any) => {
           NotificationConsoleUtils.logConsoleMessage(
@@ -391,7 +392,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           ConsoleDataType.InProgress,
           `Creating a new table with query ${createTableQuery}`
         );
-        this.createOrDeleteQuery(cassandraEndpoint, resourceId, createTableQuery, explorer)
+        this.createOrDeleteQuery(cassandraEndpoint, resourceId, createTableQuery)
           .then(
             (data: any) => {
               NotificationConsoleUtils.logConsoleMessage(
@@ -516,12 +517,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     return deferred.promise;
   }
 
-  private createOrDeleteQuery(
-    cassandraEndpoint: string,
-    resourceId: string,
-    query: string,
-    explorer: Explorer
-  ): Q.Promise<any> {
+  private createOrDeleteQuery(cassandraEndpoint: string, resourceId: string, query: string): Q.Promise<any> {
     const deferred = Q.defer();
     const authType = window.authType;
     const apiEndpoint: string =
@@ -531,7 +527,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
       type: "POST",
       data: {
-        accountName: explorer.databaseAccount() && explorer.databaseAccount().name,
+        accountName: userContext.databaseAccount?.name,
         cassandraEndpoint: this.trimCassandraEndpoint(cassandraEndpoint),
         resourceId: resourceId,
         query: query,
