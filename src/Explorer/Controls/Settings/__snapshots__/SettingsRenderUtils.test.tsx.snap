@@ -256,11 +256,7 @@ exports[`SettingsUtils functions render 1`] = `
   >
     A request to increase the throughput is currently in progress. This operation will take some time to complete.
     <br />
-    Database: 
-    sampleDb
-    , Container: 
-    sampleCollection
-     
+    Database: sampleDb, Container: sampleCollection 
     , Current manual throughput: 1000 RU/s
   </Text>
   <Text
@@ -275,11 +271,7 @@ exports[`SettingsUtils functions render 1`] = `
   >
     A request to increase the throughput is currently in progress. This operation will take 1-3 business days to complete. View the latest status in Notifications.
     <br />
-    Database: 
-    sampleDb
-    , Container: 
-    sampleCollection
-     
+    Database: sampleDb, Container: sampleCollection 
     , Current manual throughput: 1000 RU/s, Target manual throughput: 2000
   </Text>
   <Text

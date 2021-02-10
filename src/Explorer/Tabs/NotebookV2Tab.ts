@@ -117,7 +117,7 @@ export default class NotebookTabV2 extends TabsBase {
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
   }
 
-  protected getContainer(): Explorer {
+  public getContainer(): Explorer {
     return this.container;
   }
 

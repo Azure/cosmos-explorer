@@ -21,6 +21,7 @@ import { configContext, Platform } from "../../../../ConfigContext";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
+  database: ViewModels.Database;
   container: Explorer;
   isFixedContainer: boolean;
   onThroughputChange: (newThroughput: number) => void;
@@ -39,9 +40,16 @@ export interface ScaleComponentProps {
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {
   private isEmulator: boolean;
+  private offer: DataModels.Offer;
+  private databaseId: string;
+  private collectionId: string;
+
   constructor(props: ScaleComponentProps) {
     super(props);
     this.isEmulator = configContext.platform === Platform.Emulator;
+    this.offer = this.props.database?.offer() || this.props.collection?.offer();
+    this.databaseId = this.props.database?.id() || this.props.collection.databaseId;
+    this.collectionId = this.props.collection?.id();
   }
 
   public isAutoScaleEnabled = (): boolean => {
@@ -87,9 +95,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
 
-    return (
-      this.props.collection.offer()?.minimumThroughput || SharedConstants.CollectionCreation.DefaultCollectionRUs400
-    );
+    return this.offer?.minimumThroughput || SharedConstants.CollectionCreation.DefaultCollectionRUs400;
   };
 
   public getThroughputTitle = (): string => {
@@ -115,15 +121,14 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       return this.getLongDelayMessage();
     }
 
-    const offer = this.props.collection?.offer();
-    if (offer?.offerReplacePending) {
-      const throughput = offer.manualThroughput || offer.autoscaleMaxThroughput;
+    if (this.offer?.offerReplacePending) {
+      const throughput = this.offer.manualThroughput || this.offer.autoscaleMaxThroughput;
       return getThroughputApplyShortDelayMessage(
         this.props.isAutoPilotSelected,
         throughput,
         throughputUnit,
-        this.props.collection.databaseId,
-        this.props.collection.id()
+        this.databaseId,
+        this.collectionId
       );
     }
 
@@ -135,7 +140,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       this.canThroughputExceedMaximumValue() &&
       this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
 
-    if (throughputExceedsBackendLimits && !!this.props.collection.partitionKey && !this.props.isFixedContainer) {
+    if (throughputExceedsBackendLimits && !this.props.isFixedContainer) {
       return updateThroughputBeyondLimitWarningMessage;
     }
 
@@ -154,8 +159,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         this.props.wasAutopilotOriginallySet,
         throughput,
         throughputUnit,
-        this.props.collection.databaseId,
-        this.props.collection.id(),
+        this.databaseId,
+        this.collectionId,
         targetThroughput
       );
     }
@@ -165,15 +170,15 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   private getThroughputInputComponent = (): JSX.Element => (
     <ThroughputInputAutoPilotV3Component
       databaseAccount={this.props.container.databaseAccount()}
-      databaseName={this.props.collection.databaseId}
-      collectionName={this.props.collection.id()}
+      databaseName={this.databaseId}
+      collectionName={this.collectionId}
       serverId={this.props.container.serverId()}
       throughput={this.props.throughput}
       throughputBaseline={this.props.throughputBaseline}
       onThroughputChange={this.props.onThroughputChange}
       minimum={this.getMinRUs()}
       maximum={this.getMaxRUs()}
-      isEnabled={!hasDatabaseSharedThroughput(this.props.collection)}
+      isEnabled={!!this.props.database || !hasDatabaseSharedThroughput(this.props.collection)}
       canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
       label={this.getThroughputTitle()}
       isEmulator={this.isEmulator}
@@ -189,7 +194,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       onScaleSaveableChange={this.props.onScaleSaveableChange}
       onScaleDiscardableChange={this.props.onScaleDiscardableChange}
       getThroughputWarningMessage={this.getThroughputWarningMessage}
-      usageSizeInKB={this.props.collection.usageSizeInKB()}
+      usageSizeInKB={this.props.collection?.usageSizeInKB()}
     />
   );
 
@@ -230,7 +235,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         {!this.isAutoScaleEnabled() && (
           <Stack {...subComponentStackProps}>
             {this.getThroughputInputComponent()}
-            {this.getStorageCapacityTitle()}
+            {!this.props.database && this.getStorageCapacityTitle()}
           </Stack>
         )}
 
