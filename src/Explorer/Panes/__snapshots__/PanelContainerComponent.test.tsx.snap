@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PaneContainerComponent test should be resize if notification console is expanded 1`] = `
+<StyledPanelBase
+  closeButtonAriaLabel="Close"
+  customWidth="440px"
+  headerClassName="panelHeader"
+  headerText="test"
+  isLightDismiss={true}
+  isOpen={true}
+  onDismiss={[Function]}
+  style={
+    Object {
+      "height": "516px",
+    }
+  }
+  styles={
+    Object {
+      "content": Object {
+        "height": "100%",
+        "padding": "24px 34px 20px 34px",
+      },
+      "navigation": Object {
+        "borderBottom": "1px solid #cccccc",
+      },
+      "scrollableContent": Object {
+        "height": "100%",
+      },
+    }
+  }
+  type={7}
+>
+  <div />
+</StyledPanelBase>
+`;
+
+exports[`PaneContainerComponent test should render nothing if content is undefined 1`] = `<Fragment />`;
+
+exports[`PaneContainerComponent test should render with panel content and header 1`] = `
+<StyledPanelBase
+  closeButtonAriaLabel="Close"
+  customWidth="440px"
+  headerClassName="panelHeader"
+  headerText="test"
+  isLightDismiss={true}
+  isOpen={true}
+  onDismiss={[Function]}
+  style={
+    Object {
+      "height": "736px",
+    }
+  }
+  styles={
+    Object {
+      "content": Object {
+        "height": "100%",
+        "padding": "24px 34px 20px 34px",
+      },
+      "navigation": Object {
+        "borderBottom": "1px solid #cccccc",
+      },
+      "scrollableContent": Object {
+        "height": "100%",
+      },
+    }
+  }
+  type={7}
+>
+  <div />
+</StyledPanelBase>
+`;
