@@ -1,6 +1,6 @@
 import "expect-puppeteer";
 import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
-import { createDatabase } from "../utils/shared";
+import { createDatabase, savePolicy } from "../utils/shared";
 import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
@@ -77,29 +77,40 @@ describe("MongoDB Index policy tests", () => {
       index++;
 
       // click save Button
-      await frame.waitFor(`button[data-test="Save"]`), { visible: true };
-      await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.click(`button[data-test="Save"]`);
-      await frame.waitFor(CREATE_DELAY);
+      await savePolicy(frame);
 
       // check the array
       let singleFieldIndexInserted = false,
         wildCardIndexInserted = false;
-      await frame.waitFor("div[data-automationid='DetailsRowCell'] > span");
+      await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
 
       const elements = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         const text = await frame.evaluate((element) => element.textContent, element);
-        if (text === wildCardId) {
+        if (text.includes(wildCardId)) {
           wildCardIndexInserted = true;
-        } else if (text === singleFieldId) {
+        } else if (text.includes(singleFieldId)) {
           singleFieldIndexInserted = true;
         }
       }
-
+      await frame.waitFor(LOADING_STATE_DELAY);
       expect(wildCardIndexInserted).toBe(true);
       expect(singleFieldIndexInserted).toBe(true);
+
+      //delete all index policy
+      await frame.waitFor("button[aria-label='Delete index Button']"), { visible: true };
+      const deleteButton = await frame.$$("button[aria-label='Delete index Button']");
+      for (let i = 0; i < deleteButton.length; i++) {
+        await frame.click(`button[aria-label="Delete index Button"]`);
+      }
+      await savePolicy(frame);
+      
+      //check for cleaning
+      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
+      const completedDeleted = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
+      expect(completedDeleted).toHaveLength(2);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;

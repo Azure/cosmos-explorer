@@ -1,6 +1,9 @@
 import crypto from "crypto";
 import { Frame } from "puppeteer";
 
+const LOADING_STATE_DELAY = 3000;
+const CREATE_DELAY = 10000;
+
 export async function login(connectionString: string): Promise<Frame> {
   const prodUrl = process.env.DATA_EXPLORER_ENDPOINT;
   await page.goto(prodUrl);
@@ -61,4 +64,11 @@ export async function createDatabase(frame: Frame) {
   // click submit
   await frame.waitFor("#submitBtnAddCollection");
   await frame.click("#submitBtnAddCollection");
+}
+
+export async function savePolicy(frame: Frame) {
+  await frame.waitFor(`button[data-test="Save"]`), { visible: true };
+  await frame.waitFor(LOADING_STATE_DELAY);
+  await frame.click(`button[data-test="Save"]`);
+  await frame.waitFor(CREATE_DELAY);
 }
