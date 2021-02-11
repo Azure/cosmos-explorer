@@ -5,7 +5,7 @@ import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
 const LOADING_STATE_DELAY = 3000;
-const CREATE_DELAY = 10000;
+const CREATE_DELAY = 5000;
 jest.setTimeout(300000);
 
 describe("MongoDB Index policy tests", () => {
@@ -107,7 +107,7 @@ describe("MongoDB Index policy tests", () => {
       await savePolicy(frame);
       
       //check for cleaning
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
       const completedDeleted = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       expect(completedDeleted).toHaveLength(2);
