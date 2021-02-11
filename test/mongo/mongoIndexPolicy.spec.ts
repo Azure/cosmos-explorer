@@ -105,7 +105,7 @@ describe("MongoDB Index policy tests", () => {
         await frame.click(`button[aria-label="Delete index Button"]`);
       }
       await savePolicy(frame);
-      
+
       //check for cleaning
       await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
